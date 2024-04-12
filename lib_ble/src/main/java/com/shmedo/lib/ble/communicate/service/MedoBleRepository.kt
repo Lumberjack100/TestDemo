@@ -66,7 +66,7 @@ class MedoBleRepository private constructor(
     }
 
     fun startConnect(device: DiscoveredBluetoothDevice, scope: CoroutineScope) {
-        val manager = MedoBleManager(context, scope)
+        val manager = MedoBleManager(context, scope, device.device)
         this.medoBleManager = manager
 
         manager.data.onEach {
@@ -77,7 +77,7 @@ class MedoBleRepository private constructor(
 
         scope.launch {
             Timber.v("MedoBle call connect()")
-            manager.connect(device)
+            manager.connect()
         }
     }
 

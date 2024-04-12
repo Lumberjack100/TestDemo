@@ -52,7 +52,6 @@ import com.shmedo.lib.ble.communicate.spec.GOCW91200Spec
 import com.shmedo.lib.ble.communicate.spec.MS52SF1Spec
 import com.shmedo.lib.ble.communicate.spec.PacketMerger
 import com.shmedo.lib.ble.communicate.spec.USRSpec
-import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.ext.addIOTDeviceLogItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -71,7 +70,8 @@ import timber.log.Timber
 
 class MedoBleManager(
     context: Context,
-    private val scope: CoroutineScope
+    private val scope: CoroutineScope,
+    private val device: BluetoothDevice,
 ) : BleManager(context) {
     private var notifyCharacteristic: BluetoothGattCharacteristic? = null
     private var writeCharacteristic: BluetoothGattCharacteristic? = null
@@ -82,8 +82,6 @@ class MedoBleManager(
     )
     val data = _data.asSharedFlow()
 
-    val device: BluetoothDevice?
-        get() = this.bluetoothDevice
 
     init {
         connectionObserver = object : ConnectionObserver {
@@ -157,23 +155,18 @@ class MedoBleManager(
         // Increase the MTU
         requestMtu(512).enqueue()
 
+        // Enable notifications
         setNotificationCallback(notifyCharacteristic)
             // Merges packets until the entire text is present in the stream [PacketMerger.merge].
             .merge(PacketMerger())
             .asValidResponseFlow<CommandResponse>()
             .onEach {
-//                val cmdList = data.value.responseList.toMutableList().apply {
-//                    clear()
-//                    addAll(it.responseList)
-//                }
-                this.bluetoothDevice?.let { device ->
-                    _data.tryEmit(
-                        SuccessResult(
-                            device,
-                            CommandData(response = it.response, responseList = it.responseList)
-                        )
+                _data.emit(
+                    SuccessResult(
+                        device,
+                        CommandData(response = it.response, responseList = it.responseList)
                     )
-                }
+                )
             }
             .launchIn(scope)
 
@@ -261,21 +254,21 @@ class MedoBleManager(
                 Data.from(command),
                 it.writeType
             )
+                // Outgoing data can use automatic splitting.
+                //.split() with no parameters uses the default MTU splitter.
                 .split()
                 .suspend()
         }
     }
 
-    suspend fun connect(device: DiscoveredBluetoothDevice) {
-        try {
-            connect(device.device)
-                .useAutoConnect(false)
-                .retry(3, 100)
-                .suspend()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-    }
+    suspend fun connect() = connect(device)
+        .useAutoConnect(false)
+        // Automatic retries are supported, in case of 133 error.
+        .retry(3, 300)
+        // A connection timeout can be set. This is additional to the Android's connection timeout which is 30 seconds.
+        .timeout(15_000)
+        // To suspend until the connection AND initialization is complete, call suspend().
+        .suspend()
 
     fun release() {
         cancelQueue()

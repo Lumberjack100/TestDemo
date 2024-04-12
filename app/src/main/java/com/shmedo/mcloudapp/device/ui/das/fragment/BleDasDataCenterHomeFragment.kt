@@ -2,18 +2,27 @@ package com.shmedo.mcloudapp.device.ui.das.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
+import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.device.base.iot_cmd.enums.ServerOne
+import com.shmedo.lib.device.base.iot_cmd.enums.ServerThree
+import com.shmedo.lib.device.base.iot_cmd.enums.ServerTwo
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.device.base.md_cmd.enums.SaveConfigMode
+import com.shmedo.lib.device.base.md_cmd.model.common.DeviceNetStatus
 import com.shmedo.lib.device.base.md_cmd.model.das.DasBaseConfigInfo
 import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
@@ -29,7 +38,6 @@ import com.shmedo.mcloudapp.databinding.FragmentBleDasDataCenterHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.DataCenterStatusItem
-import com.shmedo.mcloudapp.device.ui.common.DataCenterParamFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.BleDasDataCenterHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
@@ -97,7 +105,7 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
             addType<DataCenterStatusItem>(R.layout.data_center_status_item)
             R.id.item.onClick {
                 val item = getModel<DataCenterStatusItem>()
-                val bundle = DataCenterParamFragment.newBundleArguments(
+                val bundle = BleDasDataCenterParamFragment.newBundleArguments(
                     item,
                     ProductType.DAS,
                     communicateWay,
@@ -105,7 +113,7 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
                     bleDevice
                 )
                 nav().navigate(
-                    R.id.action_dasDataCenterHomeFragment_to_dataCenterParamFragment,
+                    R.id.action_bleDasDataCenterHomeFragment_to_dataCenterParamFragment,
                     bundle
                 )
             }
@@ -115,6 +123,21 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
     override fun initData() {
         super.initData()
         mStates.dataCommunicationMode.set(communicatModeList[0])
+    }
+
+    override fun createObserver() {
+        super.createObserver()
+        //从编辑页面返回需要刷新事件详情页面
+        setFragmentResultListener(AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { key, bundle ->
+            val centerNumber = bundle.getInt(AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
+
+            commandItems.clear()
+            val command = MDCommandUtil.getCommand(MDCommandType.QUERY_NETWORK_STATUS, centerNumber.toString())
+            commandItems.add(command)
+
+            showLoadingDialog(StringUtils.getString(R.string.loading))
+            sendMDCommandFromCmdList(isStartTimeoutJob = true)
+        }
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -145,24 +168,49 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
         }
     }
 
-
     private fun initSaveCommand() {
         commandItems.clear()
         if (mStates.reportingInterval.get().isEmpty()) {
             showMessageDialog("请输入上报间隔!")
             return
         }
-//        val entity = DasBdTerminalEntity(
-//            sw = "1",
-//            dstaddr = mStates.address.get(),
-//            baud = mStates.baudRate.get()
-//        )
-//        val command = MDCommandUtil.getCommand(
-//            IOTCommandType.DAS_MD_SET_BD_TERMINAL,
-//            entity.toCommandString()
-//        )
-//        commandItems.add(command)
-//
+        if (mStates.isBdCardNumberVisible.get()) {
+            if (mStates.bdCardNumber.get().isEmpty()) {
+                showMessageDialog("请输入北斗卡号!")
+                return
+            }
+        }
+
+        commandItems.clear()
+        var command = MDCommandUtil.getCommand(
+            MDCommandType.DATA_MASSAGE_MODEL,
+            (communicatModeList.indexOf(mStates.dataCommunicationMode.get()) + 1).toString()
+        )
+        Timber.d("设置数据通讯模式===%s", command)
+        commandItems.add(command)
+
+        command = MDCommandUtil.getCommand(
+            MDCommandType.DATA_REPORT_INTERVAL,
+            mStates.reportingInterval.get()
+        )
+        Timber.d("设置数据上报间隔===%s", command)
+        commandItems.add(command)
+
+        if (mStates.isBdCardNumberVisible.get()) {
+            command = MDCommandUtil.getCommand(
+                MDCommandType.SIX_TARGER_BD_NUMBER,
+                mStates.bdCardNumber.get()
+            )
+            Timber.d("北斗配置参数===%s", command)
+            commandItems.add(command)
+        }
+
+        command = MDCommandUtil.getCommand(
+            MDCommandType.SAVE_CONFIG_INFO,
+            SaveConfigMode.SAVE_NO_REBOOT.toString()
+        )
+        commandItems.add(command)
+
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendMDCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -174,9 +222,14 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
 
-        val command =
+        var command =
             MDCommandUtil.getCommand(MDCommandType.BASE_CONFIG)
         commandItems.add(command)
+
+        for (i in 1..3) {
+            command = MDCommandUtil.getCommand(MDCommandType.QUERY_NETWORK_STATUS, i.toString())
+            commandItems.add(command)
+        }
 
         sendMDCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -206,6 +259,94 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
                 }
             }
 
+            MDCommandType.QUERY_NETWORK_STATUS -> {
+                val result = mdParseManager.parse<DeviceNetStatus>(
+                    cmdStr,
+                    MDCommandType.QUERY_NETWORK_STATUS
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "查询数据中心状态错"
+                        Timber.e("$errMsg: ${result.message}")
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    is MDCommandResult.Success -> {
+                        sendMDCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initDataCenterStatus(result.data)
+                    }
+                }
+            }
+
+            MDCommandType.DATA_MASSAGE_MODEL -> {//设置数据通讯方式
+                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "数据通讯方式配置错误!"
+                        Timber.e("$errMsg: ${result.message}")
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendMDCommandFromCmdList()
+                    }
+                }
+            }
+
+            MDCommandType.DATA_REPORT_INTERVAL -> {//设置数据上报间隔
+                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "数据上报间隔配置错误!"
+                        Timber.e("$errMsg: ${result.message}")
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendMDCommandFromCmdList()
+                    }
+                }
+            }
+
+            MDCommandType.SIX_TARGER_BD_NUMBER -> {//北斗配置
+                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "北斗目标卡号配置错误!"
+                        Timber.e("$errMsg: ${result.message}")
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendMDCommandFromCmdList()
+                    }
+                }
+            }
+
+            MDCommandType.SAVE_CONFIG_INFO -> {//
+                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "保存出错!"
+                        Timber.e("$errMsg: ${result.message}")
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendMDCommandFromCmdList {
+                            Toaster.show("保存成功")
+                        }
+                    }
+                }
+            }
 
             else -> {}
         }
@@ -216,6 +357,25 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
         mStates.isBdCardNumberVisible.set(info.dataCommunicateMode == "3" || info.dataCommunicateMode == "4")
         mStates.reportingInterval.set(info.dataReportInterval)
         mStates.bdCardNumber.set(info.targetBGNum)
+    }
+
+    private fun initDataCenterStatus(info: DeviceNetStatus) {
+        when (info.linkNumber) {
+            ServerOne.centerId.toString() -> {
+                binding.recyclerView.bindingAdapter.getModel<DataCenterStatusItem>(0)
+                    .refreshStatus(info.linkEnable)
+            }
+
+            ServerTwo.centerId.toString() -> {
+                binding.recyclerView.bindingAdapter.getModel<DataCenterStatusItem>(1)
+                    .refreshStatus(info.linkEnable)
+            }
+
+            ServerThree.centerId.toString() -> {
+                binding.recyclerView.bindingAdapter.getModel<DataCenterStatusItem>(2)
+                    .refreshStatus(info.linkEnable)
+            }
+        }
     }
 
     private fun getAdapterData() = mutableListOf(

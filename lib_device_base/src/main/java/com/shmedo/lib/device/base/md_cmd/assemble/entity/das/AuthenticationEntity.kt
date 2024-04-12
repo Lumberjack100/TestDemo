@@ -13,7 +13,7 @@ data class AuthenticationEntity(
 ) {
     fun toCommandString(): String {
 
-        return "${MDConstants.COMMAND_SPLICER}$sn${MDConstants.COMMAND_SPLICER}$mode"
+        return "${MDConstants.COMMAND_SPLICER_COMMA}$sn${MDConstants.COMMAND_SPLICER_COMMA}$mode"
     }
 }
 

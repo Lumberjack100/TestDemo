@@ -22,9 +22,10 @@ class MDParserManager private constructor(
         cmdType: MDCommandType = MDCommandType.COMMON_SETTING_COMMAND
     ): MDCommandResult<T> {
 
+        val cmdStr = result.replace("\r\n", "")
         //检查响应指令是否包含表示错误的字段
-        if (result.contains(MDConstants.ERROR_FLAG)) {
-            val reason = extractFailureReason(result)
+        if (cmdStr.endsWith(MDConstants.ERROR_FLAG)) {
+            val reason = extractFailureReason(cmdStr)
             return MDCommandResult.Failure(reason, cmdType)
         }
 
@@ -34,13 +35,13 @@ class MDParserManager private constructor(
         )
 
         //在调用 parse 进行正式解析前，先对响应指令字符串做个基础检查
-        val validationResult = parser.validCheckBeforeParse(result)
+        val validationResult = parser.validCheckBeforeParse(cmdStr)
         if (!validationResult.isValid)
             return MDCommandResult.Failure(
                 validationResult.errorMessage ?: "指令字符串格式验证失败", cmdType
             )
 
-        return when (val parseResult = parser.parse(result)) {
+        return when (val parseResult = parser.parse(cmdStr)) {
             is ParseResult.Success -> {
                 @Suppress("UNCHECKED_CAST")
                 MDCommandResult.Success(parseResult.data as T, cmdType)

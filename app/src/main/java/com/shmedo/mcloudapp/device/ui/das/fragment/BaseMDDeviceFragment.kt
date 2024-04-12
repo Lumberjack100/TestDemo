@@ -112,6 +112,11 @@ abstract class BaseMDDeviceFragment: BaseFragment()  {
                     }
 
                     is SuccessResult -> {
+                        addIOTDeviceLogItem(
+                            priority = Log.INFO,
+                            data = state.result.data.response,
+                            logViewModel.viewModelScope
+                        )
                         setResultData(state.result.data.response)
                     }
 

@@ -23,7 +23,7 @@ interface MDCommandParser<T> {
 
     fun parse(result: String): ParseResult<T> {
         return try {
-            val values = result.replace("\r\n", "").split(MDConstants.COMMAND_SPLICER)
+            val values = result.replace("\r\n", "").split(MDConstants.COMMAND_SPLICER_COMMA)
             // 子类实现
             ParseResult.Success(parseInstance(values))
         } catch (ex: Exception) {

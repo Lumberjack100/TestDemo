@@ -66,8 +66,8 @@
         tools:layout="@layout/fragment_ble_das_data_center_home">
 
         <action
-            android:id="@+id/action_dasDataCenterHomeFragment_to_dataCenterParamFragment"
-            app:destination="@id/dataCenterParamFragment"
+            android:id="@+id/action_bleDasDataCenterHomeFragment_to_dataCenterParamFragment"
+            app:destination="@id/bleDataCenterParamFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
@@ -76,10 +76,10 @@
     </fragment>
 
     <fragment
-        android:id="@+id/dataCenterParamFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.common.DataCenterParamFragment"
-        android:label="DataCenterParamFragment"
-        tools:layout="@layout/fragment_data_center_param" />
+        android:id="@+id/bleDataCenterParamFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.BleDasDataCenterParamFragment"
+        android:label="BleDataCenterParamFragment"
+        tools:layout="@layout/fragment_ble_das_data_center_param" />
 
     <fragment
         android:id="@+id/dasSensorHomeFragment"
