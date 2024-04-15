@@ -29,7 +29,7 @@ import com.shmedo.lib.device.base.md_cmd.utils.MDConstants
  * (13):MQTT密码
  * 注：不同通讯协议下的参数不一致，不存在的参数，逗号之间为空
  */
-class BleDataCenterInfoParser : MDCommandParser<BleDataCenterInfo> {
+class MDBleDataCenterInfoParser : MDCommandParser<BleDataCenterInfo> {
     override fun parseInstance(values: List<String>): BleDataCenterInfo {
         return BleDataCenterInfo().apply {
             communicationProtocol = values.getOrNull(2) ?: communicationProtocol

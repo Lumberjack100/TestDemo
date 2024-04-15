@@ -12,7 +12,7 @@ import com.shmedo.lib.device.base.md_cmd.utils.MDConstants
  * 描述： TODO
  * $$2003 httphub.shmedo.cn 1883
  */
-class ServerAddressInfoParser: MDCommandParser<ServerAddressInfo> {
+class MDServerAddressInfoParser: MDCommandParser<ServerAddressInfo> {
     override fun parse(result: String): ParseResult<ServerAddressInfo> {
         return try {
             val values = result.replace("\r\n", "").split(MDConstants.COMMAND_SPLICER_WHITESPACE)

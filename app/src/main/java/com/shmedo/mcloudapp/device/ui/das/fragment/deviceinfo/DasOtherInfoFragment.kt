@@ -135,7 +135,7 @@ class DasOtherInfoFragment : BaseIOTDeviceFragment() {
         val decimalFormat = DecimalFormat("#.#")
         try {
             val info = MoshiUtil.fromJson<DasSolarStatusInfo>(content) ?: return
-            mStates.errNo.set(info.solar.errno)
+            mStates.errNo.set(info.solar.errno.toString())
             mStates.solarvolt.set(decimalFormat.format(info.solar.solarvolt))
             mStates.batvolt.set(decimalFormat.format(info.solar.batvolt))
             mStates.solarpwr.set(decimalFormat.format(info.solar.solarpwr))
@@ -152,11 +152,11 @@ class DasOtherInfoFragment : BaseIOTDeviceFragment() {
         val decimalFormat = DecimalFormat("#.#")
         try {
             val info = MoshiUtil.fromJson<DasTemperatureAndHumidityStatusinfo>(content) ?: return
-            mStates.inthErrNo.set(info.inth.errno)
+            mStates.inthErrNo.set(info.inth.errno.toString())
             mStates.inthTemp.set(decimalFormat.format(info.inth.temp))
             mStates.inthHumi.set(decimalFormat.format(info.inth.humi))
 
-            mStates.outthErrNo.set(info.outth.errno)
+            mStates.outthErrNo.set(info.outth.errno.toString())
             mStates.outthTemp.set(decimalFormat.format(info.outth.temp))
             mStates.outthHumi.set(decimalFormat.format(info.outth.humi))
         } catch (e: Exception) {

@@ -40,7 +40,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/device_online_platform"
                 android:textSize="13sp"
-                app:bind_sensor_errno="@{m.errno}"
+                app:bind_sensor_errno='@{m.errno+""}'
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="正常" />

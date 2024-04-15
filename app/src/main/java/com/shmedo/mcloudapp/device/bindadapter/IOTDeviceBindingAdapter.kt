@@ -43,9 +43,9 @@ object IOTDeviceBindingAdapter {
 
     @JvmStatic
     @BindingAdapter(value = ["bind_errno"], requireAll = false)
-    fun setErrnoStatus(view: TextView, errno: Int) {
+    fun setErrnoStatus(view: TextView, errno: String) {
         when (errno) {
-            1 -> {
+            "1" -> {
                 view.text = "正常"
                 view.setTextColor(ColorUtils.getColor(R.color.device_online_platform))
             }
@@ -59,10 +59,10 @@ object IOTDeviceBindingAdapter {
 
     @JvmStatic
     @BindingAdapter(value = ["bind_sensor_errno"], requireAll = false)
-    fun setSensorErrnoStatus(view: TextView, errno: Int) {
+    fun setSensorErrnoStatus(view: TextView, errno: String) {
         view.text = SensorErrorType.getErrorMessageByCode(errno.toString())
         when (errno) {
-            0 -> {
+            "0" -> {
                 view.setTextColor(ColorUtils.getColor(R.color.device_online_platform))
             }
 

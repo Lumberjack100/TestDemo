@@ -11,14 +11,14 @@ class DasSensorInfoViewModel : ViewModel() {
 
     //数字水位计
     val isVWPSensorVisible = NonNullObservableField(false)
-    val vwpErrNo = NonNullObservableField(0)//
+    val vwpErrNo = NonNullObservableField("0")//
     val vwpValue1 = NonNullObservableField("")//
     val vwpValue2 = NonNullObservableField("")//
     val vwpValue3 = NonNullObservableField("")//
 
     //MEMS传感器
     val isMEMSSensorVisible = NonNullObservableField(false)
-    val memsErrNo = NonNullObservableField(0)//
+    val memsErrNo = NonNullObservableField("0")//
     val memsAxisX = NonNullObservableField("")//X 轴角度
     val memsAxisY = NonNullObservableField("")//Y 轴角度
     val memsAxisZ = NonNullObservableField("")//Z 轴角度

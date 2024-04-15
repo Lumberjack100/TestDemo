@@ -26,7 +26,7 @@ import com.shmedo.lib.device.base.md_cmd.model.common.DeviceNetStatus
  * $$0442,0,0,1,0x00600000,0x00600000,0,0,2,3,0.0
  * $$0443,38442,38447,1,0x00D0B01C,0x00D0B01C,1,1,4,7,100.0
  */
-class DeviceNetStatusParser : MDCommandParser<DeviceNetStatus> {
+class MDDeviceNetStatusParser : MDCommandParser<DeviceNetStatus> {
     override fun parseInstance(values: List<String>): DeviceNetStatus {
         return DeviceNetStatus().apply {
             linkNumber = values.getOrNull(0)?.substring(5) ?: linkNumber

@@ -2,15 +2,21 @@ package com.shmedo.mcloudapp.di
 
 import com.shmedo.lib.device.base.md_cmd.interfaces.MDCommandParser
 import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
-import com.shmedo.lib.device.base.md_cmd.parser.common.BleDataCenterInfoParser
 import com.shmedo.lib.device.base.md_cmd.parser.common.CommonSettingMDCommandResponseParser
-import com.shmedo.lib.device.base.md_cmd.parser.common.DeviceNetStatusParser
+import com.shmedo.lib.device.base.md_cmd.parser.common.MDBleDataCenterInfoParser
+import com.shmedo.lib.device.base.md_cmd.parser.common.MDDeviceNetStatusParser
 import com.shmedo.lib.device.base.md_cmd.parser.common.MDLocalTimeParser
-import com.shmedo.lib.device.base.md_cmd.parser.common.ServerAddressInfoParser
-import com.shmedo.lib.device.base.md_cmd.parser.das.AuthenticationInfoParser
-import com.shmedo.lib.device.base.md_cmd.parser.das.AuthenticationResultInfoParser
+import com.shmedo.lib.device.base.md_cmd.parser.common.MDServerAddressInfoParser
+import com.shmedo.lib.device.base.md_cmd.parser.das.MDAuthenticationInfoParser
+import com.shmedo.lib.device.base.md_cmd.parser.das.MDAuthenticationResultInfoParser
 import com.shmedo.lib.device.base.md_cmd.parser.das.MDDasBaseConfigInfoParser
 import com.shmedo.lib.device.base.md_cmd.parser.das.MDDasCollectorInfoParser
+import com.shmedo.lib.device.base.md_cmd.parser.das.MDDeviceStatusInfoOneParser
+import com.shmedo.lib.device.base.md_cmd.parser.das.MDDeviceStatusInfoThreeParser
+import com.shmedo.lib.device.base.md_cmd.parser.das.MDDeviceStatusInfoTwoParser
+import com.shmedo.lib.device.base.md_cmd.parser.das.MDInclinometerInfoParser
+import com.shmedo.lib.device.base.md_cmd.parser.das.MDSystemRunStateInfoParser
+import com.shmedo.lib.device.base.md_cmd.parser.das.MDVersionMessageInfoParser
 import org.koin.dsl.module
 
 /**
@@ -21,26 +27,38 @@ import org.koin.dsl.module
 val mdCommandModule = module {
     factory { CommonSettingMDCommandResponseParser() }
     factory { MDLocalTimeParser() }
-    factory { DeviceNetStatusParser() }
-    factory { BleDataCenterInfoParser() }
-    factory { ServerAddressInfoParser() }
-    factory { AuthenticationInfoParser() }
-    factory { AuthenticationResultInfoParser() }
+    factory { MDDeviceNetStatusParser() }
+    factory { MDBleDataCenterInfoParser() }
+    factory { MDServerAddressInfoParser() }
+    factory { MDAuthenticationInfoParser() }
+    factory { MDAuthenticationResultInfoParser() }
     factory { MDDasBaseConfigInfoParser() }
     factory { MDDasCollectorInfoParser() }
+    factory { MDDeviceStatusInfoOneParser() }
+    factory { MDVersionMessageInfoParser() }
+    factory { MDSystemRunStateInfoParser() }
+    factory { MDDeviceStatusInfoTwoParser() }
+    factory { MDInclinometerInfoParser() }
+    factory { MDDeviceStatusInfoThreeParser() }
 
     // 提供 IOTParseManager 的实例
     single {
         val parsers: List<MDCommandParser<*>> = listOf(
             get<CommonSettingMDCommandResponseParser>(),
             get<MDLocalTimeParser>(),
-            get<DeviceNetStatusParser>(),
-            get<BleDataCenterInfoParser>(),
-            get<ServerAddressInfoParser>(),
-            get<AuthenticationInfoParser>(),
-            get<AuthenticationResultInfoParser>(),
+            get<MDDeviceNetStatusParser>(),
+            get<MDBleDataCenterInfoParser>(),
+            get<MDServerAddressInfoParser>(),
+            get<MDAuthenticationInfoParser>(),
+            get<MDAuthenticationResultInfoParser>(),
             get<MDDasBaseConfigInfoParser>(),
-            get<MDDasCollectorInfoParser>()
+            get<MDDasCollectorInfoParser>(),
+            get<MDDeviceStatusInfoOneParser>(),
+            get<MDVersionMessageInfoParser>(),
+            get<MDSystemRunStateInfoParser>(),
+            get<MDDeviceStatusInfoTwoParser>(),
+            get<MDInclinometerInfoParser>(),
+            get<MDDeviceStatusInfoThreeParser>()
         )
         MDParserManager.getInstance(parsers)
     }

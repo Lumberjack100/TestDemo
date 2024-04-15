@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui.das.fragment
+package com.shmedo.mcloudapp.device.ui.das.fragment.ble
 
 import android.os.Bundle
 import android.widget.CompoundButton
@@ -644,7 +644,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
                     "关于设备",
                     "设备基本信息、运行数据",
                     R.drawable.ic_device_running_info,
-                    navId = R.id.action_dasHomeFragment_to_dasDeviceInfoFragment
+                    navId = R.id.action_bleDasHomeFragment_to_bleDasDeviceInfoFragment
                 )
             )
         )
@@ -658,10 +658,10 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
             ConfigModule(RebootModule())
         )
         moduleList.add(
-            ConfigModule(CollectorConfigModule(navId = R.id.action_dasHomeFragment_to_bleDasCollectorSettingFragment))
+            ConfigModule(CollectorConfigModule(navId = R.id.action_bleDasHomeFragment_to_bleDasCollectorSettingFragment))
         )
         moduleList.add(
-            ConfigModule(DataCenterModule(navId = R.id.action_dasHomeFragment_to_bleDasDataCenterHomeFragment))
+            ConfigModule(DataCenterModule(navId = R.id.action_bleDasHomeFragment_to_bleDasDataCenterHomeFragment))
         )
         moduleList.add(
             ConfigModule(SensorConfigModule(navId = R.id.action_dasHomeFragment_to_dasSensorHomeFragment))

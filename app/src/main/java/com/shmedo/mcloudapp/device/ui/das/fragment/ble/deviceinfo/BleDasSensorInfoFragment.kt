@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui.das.fragment.deviceinfo
+package com.shmedo.mcloudapp.device.ui.das.fragment.ble.deviceinfo
 
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -10,14 +10,15 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.MoshiUtil
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.device.base.iot_cmd.model.das.DasSensorStatusInfo
-import com.shmedo.lib.device.base.iot_cmd.model.das.DasSubSensorStatusInfo
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.device.base.md_cmd.model.das.DeviceStatusInfoThree
+import com.shmedo.lib.device.base.md_cmd.model.das.DeviceStatusInfoTwo
+import com.shmedo.lib.device.base.md_cmd.model.das.InclinometerInfo
+import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
+import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
+import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
@@ -26,15 +27,24 @@ import com.shmedo.mcloudapp.databinding.FragmentDasSensorInfoBinding
 import com.shmedo.mcloudapp.databinding.ItemDasSensorStatusBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.DasSensorSubMonitorStatusItem
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.ble.BaseMDDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasSensorInfoViewModel
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 
-class DasSensorInfoFragment : BaseIOTDeviceFragment() {
+/**
+ * 创建者：gonghe
+ * 创建时间：2024/4/15
+ * 描述： TODO
+ */
+class BleDasSensorInfoFragment : BaseMDDeviceFragment() {
     private lateinit var binding: FragmentDasSensorInfoBinding
     private lateinit var mStates: DasSensorInfoViewModel
-    private val iotParseManager: IOTParserManager by inject()
+    private val mdParseManager: MDParserManager by inject()
+    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
     override fun initViewModel() {
         super.initViewModel()
@@ -92,18 +102,10 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     val typeCode =
                         if (info.type.length > 1 && info.type.startsWith("0")) info.type.substring(1) else info.type
                     val sensorType = IOTSensorType.value(typeCode)
-//                    if (sensorType === IOTSensorType.VW08
-//                        || sensorType === IOTSensorType.KANG_PERCOLATE
-//                        || sensorType === IOTSensorType.GUDAN_PERCOLATE
-//                        || sensorType === IOTSensorType.GUDAN_STRESS
-//                        || sensorType === IOTSensorType.JUNXING_ZLJ_300T
-//                    ) String.format(
-//                        "通道 %s",
-//                        (info.addr + 1).toString()
-//                    ) else String.format("地址 %s", info.addr.toString())
-                    val addressText = String.format("通道 %s", info.addr.toString())
+
                     val itemBinding = getBinding<ItemDasSensorStatusBinding>()
-                    itemBinding.tvAddress.text = addressText
+                    itemBinding.tvAddress.text =
+                        String.format("通道 %s", (info.addr + 1).toString())
                     itemBinding.tvSensorName.text = sensorType.description
                     itemBinding.rvSubSensorData.models =
                         getSubMonitorStatusList(sensorType, info._val)
@@ -292,6 +294,21 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "Y轴角度(°)",
+                            dataList[1].toDoubleOrNull()?.let {
+                                decimalFormat.format(it)
+                            } ?: "--"
+                        )
+                    )
+                }
+            }
+
+            IOTSensorType.INFRASOUND //次声传感器
+            -> {
+                val dataList = data.split(",")
+                if (dataList.isNotEmpty()) {
+                    subMonitorStatusList.add(
+                        DasSensorSubMonitorStatusItem(
+                            "触发值(单位:Hz)",
                             dataList[1].toDoubleOrNull()?.let {
                                 decimalFormat.format(it)
                             } ?: "--"
@@ -651,56 +668,120 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
     private fun queryInfo() {
         commandItems.clear()
 
+        /**
+         * 查询设备状态2:##042\r\n<br/>
+         * $$042,(1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12),(13),(15),(16),(17),(18)\r\n<br/>
+         * （1）SN号<br/>
+         * （2）经度<br/>
+         * （3）纬度<br/>
+         * （4）设备内部电压<br/>
+         * （5）设备外部电压<br/>
+         * （6）太阳能控制器状态<br/>
+         * （7）太阳能板电压<br/>
+         * （8）电池电压<br/>
+         * （9）日发电量<br/>
+         * （10）日耗电量<br/>
+         * （11）机箱内部温湿度状态<br/>
+         * （12）机箱内部温度<br/>
+         * （13）机箱内部湿度<br/>
+         * （14）机箱外部温湿度状态<br/>
+         * （15）机箱外部温度<br/>
+         * （16）机箱外部湿度<br/>
+         * （17）开关量类型，1：雨量计，2：关闭，3：断线报警器<br/>
+         * （18）降雨量或断线报警器状态(1:断开，0：闭合)<br/>
+         * 示例：$$042,150000L,0.000000,0.000000,8.4,11.9,0,1.1,11.9,0.0,0.0,0,23.1,35.9,0,23.8,35.1,2,0.0<br/>
+         */
         var command =
-            IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_SUB_SENSOR_STATUS)
+            MDCommandUtil.getCommand(MDCommandType.QUERY_DAS_STATUS_2)
         commandItems.add(command)
 
+        //查询倾角计信息
         command =
-            IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_SENSOR_STATUS, "index=0")
+            MDCommandUtil.getCommand(MDCommandType.QUERY_INCLINOMETER_INFO)
         commandItems.add(command)
 
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        /**
+         * 获取主传感器状态:##043\r\n<br/>
+         * 应答:$$043,(1),(2),(3),(4),(5)<br/>
+         * （1）SN号<br/>
+         * （2）采集器型号<br/>
+         * （3）采集器地址(当采集器地址为0时，关闭采集功能)<br/>
+         * （4）传感器状态，用冒号分隔的字符串<br/>
+         * ①:②:③，其中 ①：传感器地址，②：传感器状态，0正常，1异常，③：传感器数据<br/>
+         * （5）传感器状态，和（2）格式相同，<br/>
+         * 注：传感器状态可能有很多个，有接入传感器个数决定。<br/>
+         */
+        command =
+            MDCommandUtil.getCommand(MDCommandType.QUERY_DAS_STATUS_3)
+        commandItems.add(command)
+
+        sendMDCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.DAS_MD_GET_SUB_SENSOR_STATUS -> {
-                val result = iotParseManager.parse<String>(
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.QUERY_DAS_STATUS_2 -> {//##042\r\n：查询设备状态2
+                val result = mdParseManager.parse<DeviceStatusInfoTwo>(
                     cmdStr,
-                    IOTCommandType.DAS_MD_GET_SUB_SENSOR_STATUS
+                    MDCommandType.QUERY_DAS_STATUS_2
                 )
                 when (result) {
-                    is IOTCommandResult.Failure -> {
+                    is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "查询辅传感器状态出错: ${result.message}"
+                        val errMsg = "查询开关量传感器信息出错"
+                        Timber.e("$errMsg: ${result.message}")
                         Toaster.show(errMsg)
                         return
                     }
 
-                    is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
+                    is MDCommandResult.Success -> {
+                        sendMDCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        initInternalSensorData(result.data)
+                        setDeviceStatusTwo(result.data)
                     }
                 }
             }
 
-            IOTCommandType.DAS_MD_GET_SENSOR_STATUS -> {
-                val result = iotParseManager.parse<String>(
+            MDCommandType.QUERY_INCLINOMETER_INFO -> {//##046
+                val result = mdParseManager.parse<InclinometerInfo>(
                     cmdStr,
-                    IOTCommandType.DAS_MD_GET_SENSOR_STATUS
+                    MDCommandType.QUERY_INCLINOMETER_INFO
                 )
                 when (result) {
-                    is IOTCommandResult.Failure -> {
+                    is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "查询扩展传感器状态出错: ${result.message}"
+                        val errMsg = "查询倾角计信息出错"
+                        Timber.e("$errMsg: ${result.message}")
                         Toaster.show(errMsg)
                         return
                     }
 
-                    is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
+                    is MDCommandResult.Success -> {
+                        sendMDCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        setInclinometerInfo(result.data)
+                    }
+                }
+            }
+
+            MDCommandType.QUERY_DAS_STATUS_3 -> {//##043\r\n: 获取主传感器状态
+                val result = mdParseManager.parse<DeviceStatusInfoThree>(
+                    cmdStr,
+                    MDCommandType.QUERY_DAS_STATUS_3
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "查询扩展传感器状态出错"
+                        Timber.e("$errMsg: ${result.message}")
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    is MDCommandResult.Success -> {
+                        sendMDCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initExternalSensorData(result.data)
@@ -712,105 +793,107 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initInternalSensorData(content: String) {
-        val decimalFormat = DecimalFormat("#.#")
+
+    private fun setDeviceStatusTwo(info: DeviceStatusInfoTwo) {
         try {
-            val info = MoshiUtil.fromJson<DasSubSensorStatusInfo>(content) ?: return
-            //开关量传感器
-            info.io?.let {
-                mStates.isIOSensorVisible.set(true)
-                mStates.ioType.set(it.type)
-                mStates.ioValue.set(it.vaule.toString())
-            }
+            decimalFormat.applyPattern("#.#")
+            when (info.switchType) {
+                "1" -> {
+                    mStates.isIOSensorVisible.set(true)
+                    mStates.ioType.set(1)
+                    mStates.ioValue.set(info.rainfallStatus.toDoubleOrNull()?.let {
+                        decimalFormat.format(it)
+                    } ?: "")
+                }
 
-            //数字水位计
-            info.vwp?.let { vwpBean ->
-                mStates.isVWPSensorVisible.set(true)
-                mStates.vwpErrNo.set(vwpBean.errno.toString())
-                val dataList = vwpBean.vaule.split(",")
-                if (dataList.isNotEmpty()) {
-                    decimalFormat.applyPattern("#.###")
-                    mStates.vwpValue1.set(dataList[0].toFloatOrNull()?.let {
-                        decimalFormat.format(it)
-                    } ?: "--")
+                "2" -> {
+                    mStates.isIOSensorVisible.set(false)
                 }
-                if (dataList.size >= 2) {
-                    decimalFormat.applyPattern("#.###")
-                    mStates.vwpValue2.set(dataList[1].toFloatOrNull()?.let {
-                        decimalFormat.format(it)
-                    } ?: "--")
-                }
-                if (dataList.size >= 3) {
-                    decimalFormat.applyPattern("#.#")
-                    mStates.vwpValue3.set(dataList[2].toFloatOrNull()?.let {
-                        decimalFormat.format(it)
-                    } ?: "--")
+
+                "3" -> {
+                    mStates.isIOSensorVisible.set(true)
+                    mStates.ioType.set(3)
+                    mStates.ioValue.set(if (info.rainfallStatus == "1" || info.rainfallStatus == "1.0") "1" else "0")
                 }
             }
 
-            //MEMS传感器
-            info.mems?.let { memBean ->
-                mStates.isMEMSSensorVisible.set(true)
-                mStates.memsErrNo.set(memBean.errno.toString())
-
-                val dataList = memBean.vaule.split(",")
-                if (dataList.isNotEmpty()) {
-                    decimalFormat.applyPattern("#.#")
-                    mStates.memsAxisX.set(dataList[0].toFloatOrNull()?.let {
-                        decimalFormat.format(it)
-                    } ?: "--")
-                }
-                if (dataList.size >= 2) {
-                    decimalFormat.applyPattern("#.#")
-                    mStates.memsAxisY.set(dataList[1].toFloatOrNull()?.let {
-                        decimalFormat.format(it)
-                    } ?: "--")
-                }
-                if (dataList.size >= 3) {
-                    decimalFormat.applyPattern("#.#")
-                    mStates.memsAxisZ.set(dataList[2].toFloatOrNull()?.let {
-                        decimalFormat.format(it)
-                    } ?: "--")
-                }
-                if (dataList.size >= 4) {
-                    decimalFormat.applyPattern("#.#")
-                    mStates.memsAccelerationX.set(dataList[3].toFloatOrNull()?.let {
-                        decimalFormat.format(it)
-                    } ?: "--")
-                }
-                if (dataList.size >= 5) {
-                    decimalFormat.applyPattern("#.#")
-                    mStates.memsAccelerationY.set(dataList[4].toFloatOrNull()?.let {
-                        decimalFormat.format(it)
-                    } ?: "--")
-                }
-                if (dataList.size >= 6) {
-                    decimalFormat.applyPattern("#.#")
-                    mStates.memsAccelerationZ.set(dataList[5].toFloatOrNull()?.let {
-                        decimalFormat.format(it)
-                    } ?: "--")
-                }
-            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    private fun initExternalSensorData(content: String) {
+    /**
+     * 设置倾角计信息
+     */
+    private fun setInclinometerInfo(info: InclinometerInfo) {
+        if (info.status.isNullOrEmpty()) {
+            mStates.isMEMSSensorVisible.set(false)
+            return
+        }
         try {
-            val dataList = MoshiUtil.fromJson<List<DasSensorStatusInfo>>(content)
-            if (dataList.isNullOrEmpty()) {
+            mStates.isMEMSSensorVisible.set(true)
+            mStates.memsErrNo.set(info.status)
+
+            decimalFormat.applyPattern("#.###")
+            mStates.memsAxisX.set(info.xAxis.toFloatOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "--")
+            mStates.memsAxisY.set(info.yAxis.toFloatOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "--")
+            mStates.memsAxisZ.set(info.zAxis.toFloatOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "--")
+
+            mStates.memsAccelerationX.set(info.xAcceleration.toFloatOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "--")
+            mStates.memsAccelerationY.set(info.yAcceleration.toFloatOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "--")
+            mStates.memsAccelerationZ.set(info.zAcceleration.toFloatOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "--")
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun initExternalSensorData(info: DeviceStatusInfoThree) {
+        try {
+            val dataList = mutableListOf<DasSensorStatusInfo>()
+            if (info.collectorAddress == "0" || info.sensorStatus.isNullOrEmpty()) {
                 mStates.isExternalSensorVisible.set(false)
                 return
             }
+
             mStates.isExternalSensorVisible.set(true)
+            info.sensorStatus.forEach {
+                //①:②:③，其中①：传感器地址，②：传感器状态，0正常，1异常，③：传感器数据
+                val sensorStatus = it.split(":")
+                if (sensorStatus.size < 3) {
+                    return@forEach
+                }
+                val addr = sensorStatus[0].toIntOrNull() ?: 0
+                val status = sensorStatus[1].toIntOrNull() ?: 0
+                val value = sensorStatus[2]
+                dataList.add(
+                    DasSensorStatusInfo(
+                        type = info.collectorModel,
+                        addr = addr,
+                        errno = status,
+                        _val = value
+                    )
+                )
+            }
             binding.rvSensor.models = dataList
+
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
     companion object {
-        fun newInstance() = DasSensorInfoFragment()
+        fun newInstance() = BleDasSensorInfoFragment()
     }
 }

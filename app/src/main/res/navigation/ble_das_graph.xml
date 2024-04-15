@@ -10,20 +10,20 @@
 
     <fragment
         android:id="@+id/bleDasHomeFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.BleDasHomeFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.ble.BleDasHomeFragment"
         android:label="BleDasHomeFragment"
         tools:layout="@layout/fragment_ble_das_home">
 
         <action
-            android:id="@+id/action_dasHomeFragment_to_dasDeviceInfoFragment"
-            app:destination="@id/dasDeviceInfoFragment"
+            android:id="@+id/action_bleDasHomeFragment_to_bleDasDeviceInfoFragment"
+            app:destination="@id/bleDasDeviceInfoFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
-            android:id="@+id/action_dasHomeFragment_to_bleDasCollectorSettingFragment"
+            android:id="@+id/action_bleDasHomeFragment_to_bleDasCollectorSettingFragment"
             app:destination="@id/bleDasCollectorSettingFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
@@ -31,7 +31,7 @@
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
-            android:id="@+id/action_dasHomeFragment_to_bleDasDataCenterHomeFragment"
+            android:id="@+id/action_bleDasHomeFragment_to_bleDasDataCenterHomeFragment"
             app:destination="@id/bleDasDataCenterHomeFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
@@ -39,8 +39,8 @@
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
-            android:id="@+id/action_dasHomeFragment_to_dasSensorHomeFragment"
-            app:destination="@id/dasSensorHomeFragment"
+            android:id="@+id/action_bleDasHomeFragment_to_bleDasSensorHomeFragment"
+            app:destination="@id/bleDasSensorHomeFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
@@ -48,25 +48,25 @@
     </fragment>
 
     <fragment
-        android:id="@+id/dasDeviceInfoFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.deviceinfo.DasDeviceInfoFragment"
-        android:label="DasDeviceInfoFragment"
+        android:id="@+id/bleDasDeviceInfoFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.ble.deviceinfo.BleDasDeviceInfoFragment"
+        android:label="BleDasDeviceInfoFragment"
         tools:layout="@layout/fragment_das_device_info" />
 
     <fragment
         android:id="@+id/bleDasCollectorSettingFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.BleDasCollectorSettingFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.ble.BleDasCollectorSettingFragment"
         android:label="BleDasCollectorSettingFragment"
         tools:layout="@layout/fragment_das_collector_setting" />
 
     <fragment
         android:id="@+id/bleDasDataCenterHomeFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.BleDasDataCenterHomeFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.ble.BleDasDataCenterHomeFragment"
         android:label="BleDasDataCenterHomeFragment"
         tools:layout="@layout/fragment_ble_das_data_center_home">
 
         <action
-            android:id="@+id/action_bleDasDataCenterHomeFragment_to_dataCenterParamFragment"
+            android:id="@+id/action_bleDasDataCenterHomeFragment_to_bleDataCenterParamFragment"
             app:destination="@id/bleDataCenterParamFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
@@ -77,27 +77,27 @@
 
     <fragment
         android:id="@+id/bleDataCenterParamFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.BleDasDataCenterParamFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.ble.BleDasDataCenterParamFragment"
         android:label="BleDataCenterParamFragment"
         tools:layout="@layout/fragment_ble_das_data_center_param" />
 
     <fragment
-        android:id="@+id/dasSensorHomeFragment"
+        android:id="@+id/bleDasSensorHomeFragment"
         android:name="com.shmedo.mcloudapp.device.ui.das.fragment.DasSensorHomeFragment"
         android:label="DasSensorHomeFragment"
         tools:layout="@layout/fragment_das_sensor_home">
 
         <action
-            android:id="@+id/action_dasSensorHomeFragment_to_dasExternalDigitalSensorFragment"
-            app:destination="@id/dasExternalDigitalSensorFragment"
+            android:id="@+id/action_bleDasSensorHomeFragment_to_bleDasExternalDigitalSensorFragment"
+            app:destination="@id/bleDasExternalDigitalSensorFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
-            android:id="@+id/action_dasSensorHomeFragment_to_dasExternalVibratingSensorFragment"
-            app:destination="@id/dasExternalVibratingSensorFragment"
+            android:id="@+id/action_bleDasSensorHomeFragment_to_bleDasExternalVibratingSensorFragment"
+            app:destination="@id/bleDasExternalVibratingSensorFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
@@ -105,13 +105,13 @@
     </fragment>
 
     <fragment
-        android:id="@+id/dasExternalDigitalSensorFragment"
+        android:id="@+id/bleDasExternalDigitalSensorFragment"
         android:name="com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalDigitalSensorFragment"
         android:label="DasExternalDigitalSensorFragment"
         tools:layout="@layout/fragment_das_external_digital_sensor" />
 
     <fragment
-        android:id="@+id/dasExternalVibratingSensorFragment"
+        android:id="@+id/bleDasExternalVibratingSensorFragment"
         android:name="com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalVibratingSensorFragment"
         android:label="DasExternalVibratingSensorFragment"
         tools:layout="@layout/fragment_das_external_vibrating_sensor" />

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui.das.fragment
+package com.shmedo.mcloudapp.device.ui.das.fragment.ble
 
 import android.os.Bundle
 import android.view.View

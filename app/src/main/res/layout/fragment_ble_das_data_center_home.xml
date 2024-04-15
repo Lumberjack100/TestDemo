@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.das.fragment.BleDasDataCenterHomeFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.device.ui.das.fragment.ble.BleDasDataCenterHomeFragment.ClickProxy" />
 
     </data>
 

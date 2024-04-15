@@ -9,7 +9,7 @@ import com.shmedo.lib.device.base.md_cmd.model.das.AuthenticationInfo
  * 创建时间：2024/4/10
  * 描述：设备认证方式解析器
  */
-class AuthenticationInfoParser : MDCommandParser<AuthenticationInfo> {
+class MDAuthenticationInfoParser : MDCommandParser<AuthenticationInfo> {
     override fun parseInstance(values: List<String>): AuthenticationInfo {
         return AuthenticationInfo().apply {
             sn = values.getOrNull(1) ?: sn

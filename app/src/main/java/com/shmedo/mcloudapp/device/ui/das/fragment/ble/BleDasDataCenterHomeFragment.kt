@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui.das.fragment
+package com.shmedo.mcloudapp.device.ui.das.fragment.ble
 
 import android.os.Bundle
 import android.view.View
@@ -113,7 +113,7 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
                     bleDevice
                 )
                 nav().navigate(
-                    R.id.action_bleDasDataCenterHomeFragment_to_dataCenterParamFragment,
+                    R.id.action_bleDasDataCenterHomeFragment_to_bleDataCenterParamFragment,
                     bundle
                 )
             }
