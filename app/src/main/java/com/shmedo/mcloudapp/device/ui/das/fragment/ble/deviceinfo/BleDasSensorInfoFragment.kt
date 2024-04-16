@@ -13,6 +13,7 @@ import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.device.base.iot_cmd.model.das.DasSensorStatusInfo
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.device.base.md_cmd.enums.MDRainStation
 import com.shmedo.lib.device.base.md_cmd.model.das.DeviceStatusInfoThree
 import com.shmedo.lib.device.base.md_cmd.model.das.DeviceStatusInfoTwo
 import com.shmedo.lib.device.base.md_cmd.model.das.InclinometerInfo
@@ -797,8 +798,12 @@ class BleDasSensorInfoFragment : BaseMDDeviceFragment() {
     private fun setDeviceStatusTwo(info: DeviceStatusInfoTwo) {
         try {
             decimalFormat.applyPattern("#.#")
-            when (info.switchType) {
-                "1" -> {
+            when (MDRainStation.value(info.switchType)) {
+                MDRainStation.CLOSE -> {//2：关闭
+                    mStates.isIOSensorVisible.set(false)
+                }
+
+                MDRainStation.RAIN_OPEN -> {//1：雨量计
                     mStates.isIOSensorVisible.set(true)
                     mStates.ioType.set(1)
                     mStates.ioValue.set(info.rainfallStatus.toDoubleOrNull()?.let {
@@ -806,11 +811,7 @@ class BleDasSensorInfoFragment : BaseMDDeviceFragment() {
                     } ?: "")
                 }
 
-                "2" -> {
-                    mStates.isIOSensorVisible.set(false)
-                }
-
-                "3" -> {
+                MDRainStation.ALARM_OPEN -> {//3：断线报警器
                     mStates.isIOSensorVisible.set(true)
                     mStates.ioType.set(3)
                     mStates.ioValue.set(if (info.rainfallStatus == "1" || info.rainfallStatus == "1.0") "1" else "0")

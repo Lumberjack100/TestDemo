@@ -741,7 +741,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     } ?: "--")
                 }
                 if (dataList.size >= 3) {
-                    decimalFormat.applyPattern("#.#")
+                    decimalFormat.applyPattern("#.###")
                     mStates.vwpValue3.set(dataList[2].toFloatOrNull()?.let {
                         decimalFormat.format(it)
                     } ?: "--")
@@ -755,37 +755,37 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
 
                 val dataList = memBean.vaule.split(",")
                 if (dataList.isNotEmpty()) {
-                    decimalFormat.applyPattern("#.#")
+                    decimalFormat.applyPattern("#.###")
                     mStates.memsAxisX.set(dataList[0].toFloatOrNull()?.let {
                         decimalFormat.format(it)
                     } ?: "--")
                 }
                 if (dataList.size >= 2) {
-                    decimalFormat.applyPattern("#.#")
+                    decimalFormat.applyPattern("#.###")
                     mStates.memsAxisY.set(dataList[1].toFloatOrNull()?.let {
                         decimalFormat.format(it)
                     } ?: "--")
                 }
                 if (dataList.size >= 3) {
-                    decimalFormat.applyPattern("#.#")
+                    decimalFormat.applyPattern("#.###")
                     mStates.memsAxisZ.set(dataList[2].toFloatOrNull()?.let {
                         decimalFormat.format(it)
                     } ?: "--")
                 }
                 if (dataList.size >= 4) {
-                    decimalFormat.applyPattern("#.#")
+                    decimalFormat.applyPattern("#.###")
                     mStates.memsAccelerationX.set(dataList[3].toFloatOrNull()?.let {
                         decimalFormat.format(it)
                     } ?: "--")
                 }
                 if (dataList.size >= 5) {
-                    decimalFormat.applyPattern("#.#")
+                    decimalFormat.applyPattern("#.###")
                     mStates.memsAccelerationY.set(dataList[4].toFloatOrNull()?.let {
                         decimalFormat.format(it)
                     } ?: "--")
                 }
                 if (dataList.size >= 6) {
-                    decimalFormat.applyPattern("#.#")
+                    decimalFormat.applyPattern("#.###")
                     mStates.memsAccelerationZ.set(dataList[5].toFloatOrNull()?.let {
                         decimalFormat.format(it)
                     } ?: "--")

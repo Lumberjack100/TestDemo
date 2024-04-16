@@ -4,7 +4,7 @@ package com.shmedo.lib.device.base.md_cmd.enums
  * Created by adu on 2017/12/11.
  * 工作模式
  */
-enum class WorkModel(//info模式
+enum class MDWorkModel(//info模式
     private val model: Int
 ) {
     INITIALZE(0),
@@ -23,7 +23,7 @@ enum class WorkModel(//info模式
     }
 
     companion object {
-        fun value(model: Int): WorkModel {
+        fun value(model: Int): MDWorkModel {
             return when (model) {
                 0 -> INITIALZE
                 1 -> WORK

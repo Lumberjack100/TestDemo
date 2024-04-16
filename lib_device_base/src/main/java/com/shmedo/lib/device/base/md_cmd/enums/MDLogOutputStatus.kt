@@ -7,7 +7,7 @@ package com.shmedo.lib.device.base.md_cmd.enums
  * 创建时间:  2020/4/23 <br></br>
  * 描述：   日志输出状态
  */
-enum class LogOutputStatus(//打开
+enum class MDLogOutputStatus(//打开
     private val status: Int
 ) {
     CLOSE(0),
@@ -20,7 +20,7 @@ enum class LogOutputStatus(//打开
     }
 
     companion object {
-        fun value(status: Int): LogOutputStatus {
+        fun value(status: Int): MDLogOutputStatus {
             return when (status) {
                 0 -> CLOSE
                 1 -> OPEN

@@ -12,7 +12,9 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasIOSensorEntity
+import com.shmedo.lib.device.base.iot_cmd.enums.IOTBreakAlarmStatus
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.enums.IOTRainStation
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.das.DasIOSensorInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
@@ -23,7 +25,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.databinding.FragmentDasIoSensorBinding
-import com.shmedo.mcloudapp.device.common.BaseClickProxy
+import com.shmedo.mcloudapp.device.common.BaseDasIOSensorClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasIOSensorViewModel
@@ -74,30 +76,30 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        mStates.checkMode.set(0)
+        mStates.switchType.set(IOTRainStation.CLOSE)
         mStates.rainResolution.set(rainResolutionList[0])
     }
 
-    inner class ClickProxy : BaseClickProxy() {
-        fun onModeCheckedChanged(view: View) {
+    inner class ClickProxy : BaseDasIOSensorClickProxy() {
+        override fun onModeCheckedChanged(view: View) {
             when (view.id) {
                 R.id.radio_close -> {
-                    mStates.checkMode.set(0)
-                    initSaveCommand("0")
+                    mStates.switchType.set(IOTRainStation.CLOSE)
+                    initSaveCommand(IOTRainStation.CLOSE.toString())
                 }
 
                 R.id.radio_rain_gauge -> {
-                    mStates.checkMode.set(1)
+                    mStates.switchType.set(IOTRainStation.RAIN_OPEN)
                 }
 
                 R.id.radio_break_alarm -> {
-                    mStates.checkMode.set(2)
-                    initSaveCommand("2", "0")
+                    mStates.switchType.set(IOTRainStation.ALARM_OPEN)
+                    initSaveCommand(IOTRainStation.ALARM_OPEN.toString(), value = IOTBreakAlarmStatus.OPEN.toString())
                 }
             }
         }
 
-        fun onChooseResolutionClick() {
+        override fun onChooseResolutionClick() {
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .hasShadowBg(false)
@@ -109,28 +111,31 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        fun onBreakAlarmCheckedChanged(view: View) {
+        override fun onBreakAlarmCheckedChanged(view: View) {
             when (view.id) {
                 R.id.radio_break_alarm_open -> {
                     mStates.isBreakAlarmOpen.set(true)
-                    initSaveCommand("2", "0")
+                    initSaveCommand(
+                        IOTRainStation.ALARM_OPEN.toString(),
+                        value = IOTBreakAlarmStatus.OPEN.toString()
+                    )
                 }
 
                 R.id.radio_break_alarm_close -> {
                     mStates.isBreakAlarmOpen.set(false)
-                    initSaveCommand("2", "1")
+                    initSaveCommand(IOTRainStation.ALARM_OPEN.toString(), value = IOTBreakAlarmStatus.CLOSE.toString())
                 }
             }
         }
 
-        fun onSubmitClick() {
+        override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
             if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
             initSaveCommand(
-                type = mStates.checkMode.get().toString(),
+                type = mStates.switchType.get().toString(),
                 value = mStates.rainResolution.get(),
                 minTime = if (mStates.isSupportDumpMInTime.get() && !TextUtils.isEmpty(mStates.dumpMinTime.get())) mStates.dumpMinTime.get() else IOTConstants.NULL_KEY
             )
@@ -220,26 +225,24 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
 
     private fun initParamData(ioSensorInfo: DasIOSensorInfo) {
         try {
-            ioSensorInfo.type.let {
-                when (it) {
-                    "1" -> {
-                        mStates.checkMode.set(1)
-                        ioSensorInfo.value.toDoubleOrNull()?.let { value ->
-                            mStates.rainResolution.set(decimalFormat.format(value))
-                        }
-                    }
+            when (IOTRainStation.value(ioSensorInfo.type)) {
+                IOTRainStation.CLOSE -> {//0：关闭开关量功能
+                    mStates.switchType.set(IOTRainStation.CLOSE)
+                }
 
-                    "2" -> {
-                        mStates.checkMode.set(2)
-                        if (ioSensorInfo.value == "0")
-                            mStates.isBreakAlarmOpen.set(true)
-                        else
-                            mStates.isBreakAlarmOpen.set(false)
+                IOTRainStation.RAIN_OPEN -> {//1：雨量站模式
+                    mStates.switchType.set(IOTRainStation.RAIN_OPEN)
+                    ioSensorInfo.value.toDoubleOrNull()?.let { value ->
+                        mStates.rainResolution.set(decimalFormat.format(value))
                     }
+                }
 
-                    else -> {
-                        mStates.checkMode.set(0)
-                    }
+                IOTRainStation.ALARM_OPEN -> {//2：断线报警器模式
+                    mStates.switchType.set(IOTRainStation.ALARM_OPEN)
+                    if (IOTBreakAlarmStatus.value(ioSensorInfo.value) == IOTBreakAlarmStatus.OPEN)
+                        mStates.isBreakAlarmOpen.set(true)
+                    else
+                        mStates.isBreakAlarmOpen.set(false)
                 }
             }
             if (ioSensorInfo.min_time != IOTConstants.NULL_KEY) {

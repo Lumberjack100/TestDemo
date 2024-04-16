@@ -5,13 +5,15 @@
 
     <data>
 
+        <import type="com.shmedo.lib.device.base.iot_cmd.enums.IOTRainStation" />
+
         <variable
             name="stateVM"
             type="com.shmedo.mcloudapp.device.viewmodel.state.DasIOSensorViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor.DasIOSensorFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.device.common.BaseDasIOSensorClickProxy" />
 
     </data>
 
@@ -39,11 +41,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_marginStart="@dimen/dimen_size_16"
-                    android:drawableStart='@{stateVM.checkMode==0?@drawable/ic_radio_checked:@drawable/ic_radio_uncheck}'
+                    android:drawableStart="@{stateVM.switchType==IOTRainStation.CLOSE?@drawable/ic_radio_checked:@drawable/ic_radio_uncheck}"
                     android:drawablePadding="@dimen/dimen_size_6"
                     android:gravity="center_vertical"
                     android:text="关闭"
-                    android:textColor='@{stateVM.checkMode==0?@color/title_text_color:@color/sub_title_text_color}'
+                    android:textColor="@{stateVM.switchType==IOTRainStation.CLOSE?@color/title_text_color:@color/sub_title_text_color}"
                     android:textSize="@dimen/text_size_16"
                     tools:drawableStart="@drawable/ic_radio_checked" />
 
@@ -62,11 +64,11 @@
                         onClickWithDebouncing="@{(textView)->click.onModeCheckedChanged(textView)}"
                         android:layout_width="wrap_content"
                         android:layout_height="50dp"
-                        android:drawableStart='@{stateVM.checkMode==1?@drawable/ic_radio_checked:@drawable/ic_radio_uncheck}'
+                        android:drawableStart="@{stateVM.switchType==IOTRainStation.RAIN_OPEN?@drawable/ic_radio_checked:@drawable/ic_radio_uncheck}"
                         android:drawablePadding="@dimen/dimen_size_6"
                         android:gravity="center_vertical"
                         android:text="雨量计精度(mm)"
-                        android:textColor='@{stateVM.checkMode==1?@color/title_text_color:@color/sub_title_text_color}'
+                        android:textColor="@{stateVM.switchType==IOTRainStation.RAIN_OPEN?@color/title_text_color:@color/sub_title_text_color}"
                         android:textSize="@dimen/text_size_16"
                         tools:drawableStart="@drawable/ic_radio_checked" />
 
@@ -78,7 +80,7 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/ll_rain_resolution"
                         onClickWithDebouncing="@{()->click.onChooseResolutionClick()}"
-                        visible='@{stateVM.checkMode==1}'
+                        visible="@{stateVM.switchType==IOTRainStation.RAIN_OPEN}"
                         android:layout_width="wrap_content"
                         android:layout_height="34dp"
                         android:clickable="true"
@@ -112,7 +114,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_LayoutStyle"
-                    visible='@{stateVM.checkMode==1 &amp;&amp; stateVM.isSupportDumpMInTime}'
+                    visible="@{stateVM.switchType==IOTRainStation.RAIN_OPEN &amp;&amp; stateVM.isSupportDumpMInTime}"
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:paddingStart="@dimen/dimen_size_30">
 
@@ -135,17 +137,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="50dp"
                     android:layout_marginStart="@dimen/dimen_size_16"
-                    android:drawableStart='@{stateVM.checkMode==2?@drawable/ic_radio_checked:@drawable/ic_radio_uncheck}'
+                    android:drawableStart="@{stateVM.switchType==IOTRainStation.ALARM_OPEN?@drawable/ic_radio_checked:@drawable/ic_radio_uncheck}"
                     android:drawablePadding="@dimen/dimen_size_6"
                     android:gravity="center_vertical"
                     android:text="断线报警器"
-                    android:textColor='@{stateVM.checkMode==2?@color/title_text_color:@color/sub_title_text_color}'
+                    android:textColor="@{stateVM.switchType==IOTRainStation.ALARM_OPEN?@color/title_text_color:@color/sub_title_text_color}"
                     android:textSize="@dimen/text_size_16"
                     tools:drawableStart="@drawable/ic_radio_checked" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/rg_break_alarm_items"
-                    visible='@{stateVM.checkMode==2}'
+                    visible="@{stateVM.switchType==IOTRainStation.ALARM_OPEN}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/dimen_size_20"
@@ -185,8 +187,8 @@
         <TextView
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
-            onClickWithDebouncing="@{()->click.onSubmitClick()}"
-            visible='@{stateVM.checkMode==1}'
+            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+            visible="@{stateVM.switchType==IOTRainStation.RAIN_OPEN}"
             android:layout_marginTop="0dp"
             android:layout_marginBottom="50dp"
             android:text="保存"

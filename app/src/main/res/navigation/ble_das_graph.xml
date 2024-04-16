@@ -83,8 +83,8 @@
 
     <fragment
         android:id="@+id/bleDasSensorHomeFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.DasSensorHomeFragment"
-        android:label="DasSensorHomeFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.ble.BleDasSensorHomeFragment"
+        android:label="BleDasSensorHomeFragment"
         tools:layout="@layout/fragment_das_sensor_home">
 
         <action

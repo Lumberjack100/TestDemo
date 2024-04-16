@@ -17,8 +17,8 @@ import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.md_cmd.assemble.entity.das.AuthenticationEntity
-import com.shmedo.lib.device.base.md_cmd.enums.LowEnergyModel
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.device.base.md_cmd.enums.MDLowEnergyModel
 import com.shmedo.lib.device.base.md_cmd.model.common.DeviceTimeInfo
 import com.shmedo.lib.device.base.md_cmd.model.das.AuthenticationInfo
 import com.shmedo.lib.device.base.md_cmd.model.das.AuthenticationResultInfo
@@ -40,7 +40,6 @@ import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CollectorConfigModule
-import com.shmedo.mcloudapp.device.model.CommonModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DataCenterModule
 import com.shmedo.mcloudapp.device.model.RebootModule
@@ -367,7 +366,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
         commandItems.clear()
         val command = MDCommandUtil.getCommand(
             MDCommandType.LOW_ENERGY,
-            if (isActivate) LowEnergyModel.ACTIVATE.toString() else LowEnergyModel.STANDBY.toString()
+            if (isActivate) MDLowEnergyModel.ACTIVATE.toString() else MDLowEnergyModel.STANDBY.toString()
         )
         commandItems.add(command)
         Timber.d("打开/关闭设备低功耗模式指令===%s", command)
@@ -630,7 +629,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
     private fun initBaseConfigInfo(info: DasBaseConfigInfo) {
         try {
             mStates.collectorModel.set(info.collectorModel)
-            mStates.isActivated.set(LowEnergyModel.value(info.activeStatus) == LowEnergyModel.ACTIVATE)
+            mStates.isActivated.set(MDLowEnergyModel.value(info.activeStatus) == MDLowEnergyModel.ACTIVATE)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -664,17 +663,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
             ConfigModule(DataCenterModule(navId = R.id.action_bleDasHomeFragment_to_bleDasDataCenterHomeFragment))
         )
         moduleList.add(
-            ConfigModule(SensorConfigModule(navId = R.id.action_dasHomeFragment_to_dasSensorHomeFragment))
-        )
-        moduleList.add(
-            ConfigModule(
-                CommonModule(
-                    name = "上报方式",
-                    desc = "上报规则设置",
-                    resID = R.drawable.ic_device_data_center,
-                    navId = R.id.action_dasHomeFragment_to_dasTerminalParameterFragment
-                )
-            )
+            ConfigModule(SensorConfigModule(navId = R.id.action_bleDasHomeFragment_to_bleDasSensorHomeFragment))
         )
         moduleList.add(
             ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_dasAdvancedSettingFragment))

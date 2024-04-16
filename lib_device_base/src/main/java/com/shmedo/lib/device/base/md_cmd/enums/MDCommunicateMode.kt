@@ -4,7 +4,7 @@ package com.shmedo.lib.device.base.md_cmd.enums
  * Created by adu on 2017/12/11.
  * 数据通讯模式
  */
-enum class CommunicateMode(private val mode: Int) {
+enum class MDCommunicateMode(private val mode: Int) {
     /**
      * GPRS模式
      */
@@ -27,7 +27,7 @@ enum class CommunicateMode(private val mode: Int) {
     }
 
     companion object {
-        fun value(mode: Int): CommunicateMode {
+        fun value(mode: Int): MDCommunicateMode {
             return when (mode) {
                 1 -> GPRS
                 2 -> SMS
