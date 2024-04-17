@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor
+package com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor
 
 import android.os.Bundle
 import com.blankj.utilcode.util.ConvertUtils
@@ -21,6 +21,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
@@ -33,18 +34,25 @@ import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.DASSensorItem
 import com.shmedo.mcloudapp.device.model.RVEmptyFooter
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.ble.BaseMDDeviceFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalDigitalSensorFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalSensorListFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalVibratingSensorFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasExternalSensorListViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
+/**
+ * 创建者：gonghe
+ * 创建时间：2024/4/17
+ * 描述： TODO
+ */
+class BleDasExternalSensorListFragment: BaseMDDeviceFragment() {
     private lateinit var binding: FragmentDasExternalSensorListBinding
     private lateinit var mStates: DasExternalSensorListViewModel
-    private val iotParseManager: IOTParserManager by inject()
+    private val mdParseManager: MDParserManager by inject()
 
     private var deleteItemIndex = 0
-
 
     override fun initViewModel() {
         super.initViewModel()
@@ -65,7 +73,6 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
         initRefresh()
         initSensorAdapter()
     }
-
     private fun initRefresh() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)

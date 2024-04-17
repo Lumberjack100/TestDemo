@@ -422,13 +422,18 @@ class AdmeInclinometerFragment : BaseIOTDeviceFragment() {
             mStates.isTorsionAngleVisible.set(info.compenway == "1")
             mStates.compensateWay.set(if (info.compenway == "1") communicateWayList[1] else communicateWayList[0])
             decimalFormat.applyPattern("#.##")
-            mStates.torsionAngle.set(decimalFormat.format(info.torangle.toDouble()))
+            mStates.torsionAngle.set(info.torangle.toDoubleOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "")
+
             mStates.address.set(info.address)
             mStates.collectionInterval.set(info.collinval)
             mStates.solvingInterval.set(info.calcinval)
             mStates.sleepTime.set(info.dormancytime)
             decimalFormat.applyPattern("#.###")
-            mStates.correctionValue.set(decimalFormat.format(info.interupdate.toDouble()))
+            mStates.correctionValue.set(info.interupdate.toDoubleOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "")
         } catch (e: Exception) {
             e.printStackTrace()
         }

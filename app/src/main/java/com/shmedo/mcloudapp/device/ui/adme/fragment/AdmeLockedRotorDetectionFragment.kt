@@ -674,7 +674,11 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
 
             mStates.downEnable.set(info.lowtbtss == "1")
             mStates.downPulsesPerUnitTime.set(info.numpput)//下放单位时间脉冲数
-            mStates.downPulseDetectionTime.set(decimalFormat.format(info.pdajtime.toDouble()))//下放脉冲检测判断时间
+
+            //下放脉冲检测判断时间
+            mStates.downPulseDetectionTime.set(info.pdajtime.toDoubleOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "")
             //下放缓起区间终值(加速阶段)
             mStates.downSlowStartIntervalEndValue.set(
                 info.lowsusranb.replace(
@@ -722,9 +726,15 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             )
 
             decimalFormat.applyPattern("#.##")
-            mStates.downTorqueStallThreshold.set(decimalFormat.format(info.lowtorblothr.toDouble()))//下放力矩堵转阈值
+            //下放力矩堵转阈值
+            mStates.downTorqueStallThreshold.set(info.lowtorblothr.toDoubleOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "")
             decimalFormat.applyPattern("#.#")
-            mStates.downTorqueDetectionTime.set(decimalFormat.format(info.lowtordetime.toDouble()))//下放力矩检测判断时间
+            //下放力矩检测判断时间
+            mStates.downTorqueDetectionTime.set(info.lowtordetime.toDoubleOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "")
 
             mStates.pullUpEnable.set(info.uptbtss == "1")
             //上拉缓起区间终值(加速阶段)
@@ -743,9 +753,16 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             )
 
             decimalFormat.applyPattern("#.##")
-            mStates.pullUpTorqueStallThreshold.set(decimalFormat.format(info.uptorblothr.toDouble()))//下放力矩堵转阈值
+            //上拉力矩堵转阈值
+            mStates.pullUpTorqueStallThreshold.set(info.uptorblothr.toDoubleOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "")
+
             decimalFormat.applyPattern("#.#")
-            mStates.pullUpTorqueDetectionTime.set(decimalFormat.format(info.uptordetime.toDouble()))//下放力矩检测判断时间
+            //上拉力矩检测判断时间
+            mStates.pullUpTorqueDetectionTime.set(info.uptordetime.toDoubleOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "")
 
             var leftProgress3: Float = if (measpacing == 0) 0f
             else mStates.pullUpSlowStartIntervalEndValue.get()

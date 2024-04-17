@@ -418,8 +418,13 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
     private fun initParamConfigInfo(grooveCalibrationInfo: AdmeGuideGrooveCalibrationInfo) {
         try {
             mStates.motionType.set(motionTypeList[grooveCalibrationInfo.movementway.toInt()])
-            mStates.speed.set(decimalFormat.format(grooveCalibrationInfo.motorspeed.toDouble()))
-            mStates.pulseGoal.set(decimalFormat.format(grooveCalibrationInfo.movepulse.toDouble()))
+            mStates.speed.set(grooveCalibrationInfo.motorspeed.toDoubleOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "")
+
+            mStates.pulseGoal.set(grooveCalibrationInfo.movepulse.toDoubleOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "")
         } catch (ex: Exception) {
             ex.printStackTrace()
         }

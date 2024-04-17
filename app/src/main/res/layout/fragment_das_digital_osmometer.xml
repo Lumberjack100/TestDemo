@@ -11,7 +11,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor.DasDigitalOsmometerFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.device.common.BaseClickProxy" />
 
     </data>
 
@@ -88,7 +88,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:text="@={stateVM.triggerValue}"
-                            app:inputTypeFilter='@{"number"}'
+                            app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -100,7 +100,7 @@
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isOpened}"
-                            android:text="水深修正值(米)" />
+                            android:text="水深修正值(毫米)" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -154,7 +154,7 @@
         <TextView
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
-            onClickWithDebouncing="@{()->click.onSubmitClick()}"
+            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
             visible="@{stateVM.isOpened }"
             android:layout_marginTop="0dp"
             android:layout_marginBottom="50dp"

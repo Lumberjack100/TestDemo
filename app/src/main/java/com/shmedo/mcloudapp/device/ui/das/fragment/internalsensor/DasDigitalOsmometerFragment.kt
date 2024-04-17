@@ -81,7 +81,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
             }
         }
 
-        fun onSubmitClick() {
+        override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
             if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
@@ -245,6 +245,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
 
     private fun initParamData(digitalPiezometerInfo: DasDigitalPiezometerInfo) {
         try {
+            mStates.isOpened.set(digitalPiezometerInfo.sw == "1")
             mStates.address.set(digitalPiezometerInfo.addr)
             mStates.triggerValue.set(digitalPiezometerInfo.threshold)
             mStates.correctValue.set(digitalPiezometerInfo.corrval)

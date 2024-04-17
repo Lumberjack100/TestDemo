@@ -352,7 +352,9 @@ class BleDasCollectorSettingFragment : BaseMDDeviceFragment() {
             mStates.sensitivity.set(collectorInfo.sensitivity)
             mStates.isShowSensitivity.set(collectorInfo.sensitivity != IOTConstants.NULL_KEY)
             if (mStates.isShowSensitivity.get()) {
-                mStates.sensitivity.set(decimalFormat.format(collectorInfo.sensitivity.toDouble()))
+                collectorInfo.sensitivity.toDoubleOrNull()?.let {
+                    mStates.sensitivity.set(decimalFormat.format(it))
+                }
             }
         } catch (e: Exception) {
             e.printStackTrace()

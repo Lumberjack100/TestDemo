@@ -335,7 +335,9 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
         try {
             mStates.encoderLineNumber.set(info.enclinenum)
             decimalFormat.applyPattern("#")
-            mStates.outerDiameter.set(decimalFormat.format(info.outline.toDouble()))
+            info.outline.toDoubleOrNull()?.let {
+                mStates.outerDiameter.set(decimalFormat.format(it))
+            }
 
             decimalFormat.applyPattern("#.######")
             mStates.upCorrectionParametersOne.set(decimalFormat.format(info.uptiona.toDouble()))

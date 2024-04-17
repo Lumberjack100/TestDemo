@@ -747,7 +747,9 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                 mAdapter.notifyDataSetChanged()
             }
             decimalFormat.applyPattern("#.##")
-            mStates.inclinometerTubeHoleDepth.set(decimalFormat.format(info.interdeep.toDouble()))
+            mStates.inclinometerTubeHoleDepth.set(info.interdeep.toDoubleOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "")
             mStates.decentralizationSpeed.set(info.downspeed)
             mStates.decentralizationWaitingTime.set(info.downwaitetime)
         } catch (e: Exception) {

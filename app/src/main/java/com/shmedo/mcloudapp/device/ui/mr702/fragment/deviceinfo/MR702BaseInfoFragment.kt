@@ -127,9 +127,15 @@ class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
                 sn = deviceInfo.deviceToken
                 ver = baseInfo.ver
                 imei = baseInfo.imei
-                temp = decimalFormat.format(baseInfo.temp.toDouble())
-                hum = decimalFormat.format(baseInfo.hum.toDouble())
-                volt = decimalFormat.format(baseInfo.volt.toDouble())
+                temp = baseInfo.temp.toDoubleOrNull()?.let {
+                    decimalFormat.format(it)
+                } ?: ""
+                hum = baseInfo.hum.toDoubleOrNull()?.let {
+                    decimalFormat.format(it)
+                } ?: ""
+                volt = baseInfo.volt.toDoubleOrNull()?.let {
+                    decimalFormat.format(it)
+                } ?: ""
                 csq = when (baseInfo.csq.toInt()) {
                     1 -> "优"
                     2 -> "良好"

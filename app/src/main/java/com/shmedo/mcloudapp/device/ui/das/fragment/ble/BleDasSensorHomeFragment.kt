@@ -25,11 +25,9 @@ import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.ui.das.fragment.DasSensorHomeFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.ble.internalsensor.BleDasDigitalOsmometerFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.internalsensor.BleDasIOSensorFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalSensorListFragment
-import com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor.DasDigitalOsmometerFragment
-import com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor.DasMCUAddressFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 
 /**
@@ -45,6 +43,7 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     private var communicateWay: CommunicateWay = NetPlatformConnect
     private lateinit var deviceInfo: DeviceInfo
     private var bleDevice: DiscoveredBluetoothDevice? = null
+    private var collectorModel = "-1"
 
     private val tabNames = arrayListOf<String>("开关量", "数字式水位计", "扩展传感器")
 
@@ -79,32 +78,34 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
             deviceInfo = it.getParcelable(AppContants.Extras.DEVICE_INFO)!!
             bleDevice = it.getParcelable(AppContants.Extras.BLE_DEVICE)
             statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
-        }
-        if (deviceInfo.productName.contains("MR701")) {
-            tabNames.add(2, "MCU地址")
+            collectorModel = it.getString(COLLECTOR_MODEL, "-1")
         }
         initViewPager()
     }
 
     private fun initViewPager() {
-        val bundle = BaseIOTDeviceFragment.newBundleArguments(
-            communicateWay,
-            deviceInfo,
-            bleDevice
-        )
         val mFragments =
             listOf<Fragment>(
                 BleDasIOSensorFragment.newInstance().apply {
-                    arguments = bundle
+                    arguments = BaseIOTDeviceFragment.newBundleArguments(
+                        communicateWay,
+                        deviceInfo,
+                        bleDevice
+                    )
                 },
-                DasDigitalOsmometerFragment.newInstance().apply {
-                    arguments = bundle
-                },
-                DasMCUAddressFragment.newInstance().apply {
-                    arguments = bundle
+                BleDasDigitalOsmometerFragment.newInstance().apply {
+                    arguments = BaseIOTDeviceFragment.newBundleArguments(
+                        communicateWay,
+                        deviceInfo,
+                        bleDevice
+                    )
                 },
                 DasExternalSensorListFragment.newInstance().apply {
-                    arguments = bundle
+                    arguments = BaseIOTDeviceFragment.newBundleArguments(
+                        communicateWay,
+                        deviceInfo,
+                        bleDevice
+                    )
                 }
             )
         binding.viewpager.adapter = PageAdapter(this, mFragments)
@@ -161,6 +162,20 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
         private val normalColor: Int = ColorUtils.getColor(R.color.title_text_color)
         private const val activeSize: Float = 17f
         private const val normalSize: Float = 15f
-        fun newInstance() = DasSensorHomeFragment()
+
+        private const val COLLECTOR_MODEL = "collector_model"
+        fun newBundleArguments(
+            communicateWay: CommunicateWay = NetPlatformConnect,
+            deviceInfo: DeviceInfo,
+            bleDevice: DiscoveredBluetoothDevice? = null,
+            collectorModel: String,
+            statusBarColor: Int = R.color.white
+        ): Bundle = Bundle().apply {
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
+            putString(COLLECTOR_MODEL, collectorModel)
+            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+        }
     }
 }

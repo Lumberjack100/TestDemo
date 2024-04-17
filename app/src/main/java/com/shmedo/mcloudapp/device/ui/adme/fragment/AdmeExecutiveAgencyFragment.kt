@@ -677,8 +677,12 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             }
             mStates.dataReadingInterval.set(info.datainval)
             mStates.measurementCompensationTime.set(info.compensatetime)
+
             decimalFormat.applyPattern("#.##")
-            mStates.inclinometerTubeHoleDepth.set(decimalFormat.format(info.interdeep.toDouble()))
+            mStates.inclinometerTubeHoleDepth.set(info.interdeep.toDoubleOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "")
+
             mStates.motorDriveAddress.set(info.driveaddress)
             mStates.decentralizationSpeed.set(info.downspeed)
             mStates.decentralizationWaitingTime.set(info.downwaitetime)
@@ -688,18 +692,35 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
                 mStates.pullUpZeroSpeed.set(info.pzspeed)
             }
             decimalFormat.applyPattern("#.##")
-            mStates.measuringDistance.set(decimalFormat.format(info.measpacing.toDouble()))
+            mStates.measuringDistance.set(info.measpacing.toDoubleOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "")
+
             mStates.measurementIntervalTime.set(info.meaintertime)
             decimalFormat.applyPattern("#.##")
-            mStates.measuringReferenceDepth.set(decimalFormat.format(info.meabaseth.toDouble()))
+            mStates.measuringReferenceDepth.set(info.meabaseth.toDoubleOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "")
+
             decimalFormat.applyPattern("#.###")
-            mStates.intervalCompensation.set(decimalFormat.format(info.interval_compensation.toDouble()))
+            mStates.intervalCompensation.set(info.interval_compensation.toDoubleOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "")
+
             decimalFormat.applyPattern("#.###")
-            mStates.bottomSafetyDistance.set(decimalFormat.format(info.bottom_safe_distance.toDouble()))
+            mStates.bottomSafetyDistance.set(info.bottom_safe_distance.toDoubleOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "")
+
             decimalFormat.applyPattern("#.#")
-            mStates.intervalFitting.set(decimalFormat.format(info.interval_fitting.toDouble()))
+            mStates.intervalFitting.set(info.interval_fitting.toDoubleOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "")
+
             decimalFormat.applyPattern("#.###")
-            mStates.pointOffset.set(decimalFormat.format(info.point_offset.toDouble()))
+            mStates.pointOffset.set(info.point_offset.toDoubleOrNull()?.let {
+                decimalFormat.format(it)
+            } ?: "")
         } catch (e: Exception) {
             e.printStackTrace()
         }

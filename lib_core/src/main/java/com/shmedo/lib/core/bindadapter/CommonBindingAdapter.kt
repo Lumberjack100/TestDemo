@@ -19,6 +19,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.text.InputFilter
+import android.text.InputType
 import android.util.Pair
 import android.util.SparseIntArray
 import android.view.View
@@ -49,25 +50,6 @@ object CommonBindingAdapter {
         mColors.put(LogLevel.ERROR, Color.RED)
     }
 
-
-    private val numberFilter = InputFilter { source, start, end, _, _, _ ->
-        for (i in start until end) {
-            if (!"0123456789".contains(source[i].toString())) {
-                return@InputFilter ""
-            }
-        }
-        null
-    }
-
-    private val numberDecimalFilter = InputFilter { source, start, end, _, _, _ ->
-        for (i in start until end) {
-            if (!"-.0123456789".contains(source[i].toString())) {
-                return@InputFilter ""
-            }
-        }
-        null
-    }
-
     private val characterFilter = InputFilter { source, start, end, _, _, _ ->
         for (i in start until end) {
             if (!"_0123456789qwertzuiopasdfghjklyxcvbnmQWERTZUIOPASDFGHJKLYXCVBNM".contains(source[i].toString())) {
@@ -76,7 +58,6 @@ object CommonBindingAdapter {
         }
         null
     }
-
 
     @JvmStatic
     @BindingAdapter(value = ["imageUrl", "placeHolder"], requireAll = false)
@@ -219,8 +200,8 @@ object CommonBindingAdapter {
         length: Int? = null,
         textFilter: String? = ""
     ) {
-        val effectiveLength = length ?: 20 // 如果length为null，则使用-1作为默认值
-        val lengthFilter = InputFilter.LengthFilter(effectiveLength)
+        //如果length为null，则使用-1作为默认值
+        val lengthFilter = InputFilter.LengthFilter(length ?: 20)
         if (textFilter.isNullOrEmpty()) {
             editText.filters = arrayOf(lengthFilter)
             return
@@ -228,15 +209,16 @@ object CommonBindingAdapter {
 
         when (textFilter) {
             "number" -> {
-                editText.filters = arrayOf(lengthFilter, numberFilter)
-                editText.inputType = android.text.InputType.TYPE_CLASS_NUMBER
+                editText.filters = arrayOf(lengthFilter)
+                // 允许输入整数
+                editText.inputType = InputType.TYPE_CLASS_NUMBER
             }
 
             "numberDecimal" -> {
-                editText.filters =
-                    arrayOf(lengthFilter, numberDecimalFilter)
+                editText.filters = arrayOf(lengthFilter)
+                // 允许输入带符号的小数
                 editText.inputType =
-                    android.text.InputType.TYPE_NUMBER_FLAG_SIGNED or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+                    InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED or InputType.TYPE_NUMBER_FLAG_DECIMAL
             }
 
             "character" -> editText.filters = arrayOf(lengthFilter, characterFilter)

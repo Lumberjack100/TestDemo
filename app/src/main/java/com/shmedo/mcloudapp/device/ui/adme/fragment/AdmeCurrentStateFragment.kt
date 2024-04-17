@@ -186,66 +186,43 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                 "2" -> mStates.workMode.set("静态测量模式")
                 "3" -> mStates.workMode.set("设备停用模式")
             }
-            mStates.ctrInputVoltage.set(
-                String.format(
-                    "%sV",
-                    decimalFormat.format(currentStateInfo.ctrinputv.toDouble())
-                )
-            )
-            mStates.driverInputVoltage.set(
-                String.format(
-                    "%sV",
-                    decimalFormat.format(currentStateInfo.driveinputv.toDouble())
-                )
-            )
-            mStates.deviceTemperature.set(
-                String.format(
-                    "%s℃",
-                    decimalFormat.format(currentStateInfo.temperature.toDouble())
-                )
-            )
-            mStates.deviceHumidity.set(
-                String.format(
-                    "%s%%",
-                    decimalFormat.format(currentStateInfo.humidity.toDouble())
-                )
-            )
+            mStates.ctrInputVoltage.set(currentStateInfo.ctrinputv.toDoubleOrNull()?.let {
+                decimalFormat.format(it) + "V"
+            } ?: "--V")
+            mStates.driverInputVoltage.set(currentStateInfo.driveinputv.toDoubleOrNull()?.let {
+                decimalFormat.format(it) + "V"
+            } ?: "--V")
+            mStates.deviceTemperature.set(currentStateInfo.temperature.toDoubleOrNull()?.let {
+                decimalFormat.format(it) + "℃"
+            } ?: "--℃")
+            mStates.deviceHumidity.set(currentStateInfo.humidity.toDoubleOrNull()?.let {
+                decimalFormat.format(it) + "%"
+            } ?: "--%")
             mStates.deviceDropNumber.set(currentStateInfo.downnum)
+
             decimalFormat.applyPattern("#.#")
-            currentStateInfo.runmileage.toDoubleOrNull()?.let {
-                mStates.deviceMileage.set(
-                    String.format(
-                        "%sm",
-                        decimalFormat.format(it / 10)
-                    )
-                )
-            }
-            currentStateInfo.nexttime.toULongOrNull()?.let {
+            mStates.deviceMileage.set(currentStateInfo.runmileage.toDoubleOrNull()?.let {
+                decimalFormat.format(it / 10) + "m"
+            } ?: "--m")
+            mStates.nextMeasureTime.set(currentStateInfo.nexttime.toULongOrNull()?.let {
                 if (it > 0u) {
-                    mStates.nextMeasureTime.set(
-                        TimeUtils.millis2String(
-                            it.toLong(),
-                            "yyyy-MM-dd HH:mm"
-                        )
+                    TimeUtils.millis2String(
+                        it.toLong(),
+                        "yyyy-MM-dd HH:mm"
                     )
-                }
-            }
+                } else "--"
+            } ?: "--")
             mStates.inclinometerType.set(if (currentStateInfo.inctype == "0") "433测斜仪" else "蓝牙测斜仪")
             mStates.inclinometerChannelNumber.set(currentStateInfo.incnum)
             mStates.inclinometerLocationInfo.set(currentStateInfo.incloc)
+
             decimalFormat.applyPattern("#.#")
-            mStates.inclinometerVoltage.set(
-                String.format(
-                    "%sV",
-                    decimalFormat.format(currentStateInfo.incvoltage.toDouble())
-                )
-            )
-            mStates.inclinometerTemperature.set(
-                String.format(
-                    "%s℃",
-                    decimalFormat.format(currentStateInfo.intertempe.toDouble())
-                )
-            )
+            mStates.inclinometerVoltage.set(currentStateInfo.incvoltage.toDoubleOrNull()?.let {
+                decimalFormat.format(it) + "V"
+            } ?: "--V")
+            mStates.inclinometerTemperature.set(currentStateInfo.intertempe.toDoubleOrNull()?.let {
+                decimalFormat.format(it) + "℃"
+            } ?: "--℃")
             mStates.inclinometerBluetoothSignal.set(String.format("%sdBm", currentStateInfo.bcsq))
             mStates.inclinometerBluetoothSignalValue.set(currentStateInfo.bcsq.toInt())
 
