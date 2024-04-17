@@ -12,6 +12,6 @@ data class MDDasDigitalPiezometerInfo(
     var depthCorrect: String = "", //水深度修正值
     var temperatureTrigger: String = "", //温度触发阈值
     var temperatureCorrect: String = "", //温度修正值
-    var cordLenght: String = "", //绳长
-    var installHeight: String = "", //安装高程
+    var wireRopeLength: String = "", //绳长
+    var installElevation: String = "", //安装高程
 )

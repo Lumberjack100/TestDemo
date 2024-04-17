@@ -11,7 +11,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalSensorListFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.device.common.BaseClickProxy" />
 
     </data>
 

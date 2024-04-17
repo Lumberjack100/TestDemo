@@ -208,7 +208,7 @@ class BleDasCollectorSettingFragment : BaseMDDeviceFragment() {
     private fun queryCollectorInfo() {
         commandItems.clear()
         val command = MDCommandUtil.getCommand(
-            MDCommandType.COLLECTOR_CONFIG
+            MDCommandType.COLLECTOR_CONFIG, collectorModel
         )
         commandItems.add(command)
         Timber.d("查询采集器配置信息===%s", command)

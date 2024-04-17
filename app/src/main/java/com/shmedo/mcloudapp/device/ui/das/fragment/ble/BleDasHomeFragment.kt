@@ -246,6 +246,20 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
                     )
                 }
             }
+            is SensorConfigModule -> {//传感器配置
+                if (module.configModule.navId != 0) {
+                    val bundle = BleDasSensorHomeFragment.newBundleArguments(
+                        communicateWay,
+                        deviceInfo,
+                        bleDevice,
+                        mStates.collectorModel.get()
+                    )
+                    nav().navigate(
+                        module.configModule.navId,
+                        bundle
+                    )
+                }
+            }
 
             else -> {
                 if (module.configModule.navId != 0) {

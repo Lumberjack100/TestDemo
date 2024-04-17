@@ -151,14 +151,14 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
             return
         }
         try {
-            val value = mStates.nozzelHeight.get().toDouble()
+            val value = mStates.installElevation.get().toDouble()
         } catch (ex: Exception) {
             showMessageDialog("请输入安装高程值!")
             return
         }
 
         try {
-            val value = mStates.nozzelHeight.get().toDouble()
+            val value = mStates.installElevation.get().toDouble()
         } catch (ex: Exception) {
             showMessageDialog("请输入正确的安装高程值!")
             return
@@ -170,7 +170,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
             threshold = mStates.triggerValue.get(),
             corrval = mStates.correctValue.get(),
             ropelen = mStates.wireRopeLength.get(),
-            tubealti = mStates.nozzelHeight.get()
+            tubealti = mStates.installElevation.get()
         )
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
@@ -250,7 +250,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
             mStates.triggerValue.set(digitalPiezometerInfo.threshold)
             mStates.correctValue.set(digitalPiezometerInfo.corrval)
             mStates.wireRopeLength.set(digitalPiezometerInfo.ropelen)
-            mStates.nozzelHeight.set(digitalPiezometerInfo.tubealti)
+            mStates.installElevation.set(digitalPiezometerInfo.tubealti)
 
             decimalFormat.applyPattern("#.###")
             digitalPiezometerInfo.corrval.toDoubleOrNull()?.let {
@@ -260,7 +260,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                 mStates.wireRopeLength.set(decimalFormat.format(it))
             }
             digitalPiezometerInfo.tubealti.toDoubleOrNull()?.let {
-                mStates.nozzelHeight.set(decimalFormat.format(it))
+                mStates.installElevation.set(decimalFormat.format(it))
             }
         } catch (e: Exception) {
             e.printStackTrace()

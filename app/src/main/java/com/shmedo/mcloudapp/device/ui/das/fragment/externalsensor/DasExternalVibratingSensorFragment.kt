@@ -42,7 +42,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
     private lateinit var binding: FragmentDasExternalVibratingSensorBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: DasExternalVibratingSensorViewModel
-    private lateinit var sensorListViewModel: DasExternalSensorListViewModel
+    private lateinit var sensorListViewModel: DasExternalSensorListViewModel<DasExternalSensorInfo>
 
     private val sensorTypeList = listOf(
         IOTSensorType.KANG_PERCOLATE.description,

@@ -25,9 +25,9 @@ import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor.BleDasExternalSensorListFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.internalsensor.BleDasDigitalOsmometerFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.internalsensor.BleDasIOSensorFragment
-import com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalSensorListFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 
 /**
@@ -100,11 +100,12 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
                         bleDevice
                     )
                 },
-                DasExternalSensorListFragment.newInstance().apply {
-                    arguments = BaseIOTDeviceFragment.newBundleArguments(
+                BleDasExternalSensorListFragment.newInstance().apply {
+                    arguments = BleDasExternalSensorListFragment.newBundleArguments(
                         communicateWay,
                         deviceInfo,
-                        bleDevice
+                        bleDevice,
+                        collectorModel
                     )
                 }
             )

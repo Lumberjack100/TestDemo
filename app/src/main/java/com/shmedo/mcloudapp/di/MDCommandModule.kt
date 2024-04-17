@@ -13,6 +13,7 @@ import com.shmedo.lib.device.base.md_cmd.parser.das.MDBreakAlarmStatusInfoParser
 import com.shmedo.lib.device.base.md_cmd.parser.das.MDDasBaseConfigInfoParser
 import com.shmedo.lib.device.base.md_cmd.parser.das.MDDasCollectorInfoParser
 import com.shmedo.lib.device.base.md_cmd.parser.das.MDDasDigitalPiezometerInfoParser
+import com.shmedo.lib.device.base.md_cmd.parser.das.MDDasExternalSensorInfoParser
 import com.shmedo.lib.device.base.md_cmd.parser.das.MDDeviceStatusInfoOneParser
 import com.shmedo.lib.device.base.md_cmd.parser.das.MDDeviceStatusInfoThreeParser
 import com.shmedo.lib.device.base.md_cmd.parser.das.MDDeviceStatusInfoTwoParser
@@ -44,6 +45,7 @@ val mdCommandModule = module {
     factory { MDDeviceStatusInfoThreeParser() }
     factory { MDBreakAlarmStatusInfoParser() }
     factory { MDDasDigitalPiezometerInfoParser() }
+    factory { MDDasExternalSensorInfoParser() }
 
     // 提供 IOTParseManager 的实例
     single {
@@ -64,7 +66,8 @@ val mdCommandModule = module {
             get<MDInclinometerInfoParser>(),
             get<MDDeviceStatusInfoThreeParser>(),
             get<MDBreakAlarmStatusInfoParser>(),
-            get<MDDasDigitalPiezometerInfoParser>()
+            get<MDDasDigitalPiezometerInfoParser>(),
+            get<MDDasExternalSensorInfoParser>()
         )
         MDParserManager.getInstance(parsers)
     }

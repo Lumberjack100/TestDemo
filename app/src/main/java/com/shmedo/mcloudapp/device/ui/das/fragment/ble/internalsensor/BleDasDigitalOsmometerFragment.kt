@@ -170,7 +170,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
             )
             commandItems.add(command)
         }
-        if (mStates.wrapInfoBackUp.get().cordLenght != mStates.wireRopeLength.get()) {
+        if (mStates.wrapInfoBackUp.get().wireRopeLength != mStates.wireRopeLength.get()) {
             if (mStates.wireRopeLength.get().isEmpty()) {
                 showMessageDialog("请输入水位计绳长!")
                 return
@@ -187,20 +187,20 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
             )
             commandItems.add(command)
         }
-        if (mStates.wrapInfoBackUp.get().installHeight != mStates.nozzelHeight.get()) {
-            if (mStates.nozzelHeight.get().isEmpty()) {
+        if (mStates.wrapInfoBackUp.get().installElevation != mStates.installElevation.get()) {
+            if (mStates.installElevation.get().isEmpty()) {
                 showMessageDialog("请输入安装高程值!")
                 return
             }
             try {
-                val value = mStates.nozzelHeight.get().toDouble()
+                val value = mStates.installElevation.get().toDouble()
             } catch (ex: Exception) {
                 showMessageDialog("请输入正确的安装高程值!")
                 return
             }
             command = MDCommandUtil.getCommand(
                 MDCommandType.SET_OSMOMETR_NOZZEL_HEIGHT,
-                mStates.nozzelHeight.get()
+                mStates.installElevation.get()
             )
             commandItems.add(command)
         }
@@ -382,18 +382,18 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
             mStates.address.set(digitalPiezometerInfo.osmometerAddress)
             mStates.triggerValue.set(digitalPiezometerInfo.depthTrigger)
             mStates.correctValue.set(digitalPiezometerInfo.depthCorrect)
-            mStates.wireRopeLength.set(digitalPiezometerInfo.cordLenght)
-            mStates.nozzelHeight.set(digitalPiezometerInfo.installHeight)
+            mStates.wireRopeLength.set(digitalPiezometerInfo.wireRopeLength)
+            mStates.installElevation.set(digitalPiezometerInfo.installElevation)
 
             decimalFormat.applyPattern("#.###")
             digitalPiezometerInfo.depthCorrect.toDoubleOrNull()?.let {
                 mStates.correctValue.set(decimalFormat.format(it))
             }
-            digitalPiezometerInfo.cordLenght.toDoubleOrNull()?.let {
+            digitalPiezometerInfo.wireRopeLength.toDoubleOrNull()?.let {
                 mStates.wireRopeLength.set(decimalFormat.format(it))
             }
-            digitalPiezometerInfo.installHeight.toDoubleOrNull()?.let {
-                mStates.nozzelHeight.set(decimalFormat.format(it))
+            digitalPiezometerInfo.installElevation.toDoubleOrNull()?.let {
+                mStates.installElevation.set(decimalFormat.format(it))
             }
 
             mStates.wrapInfoBackUp.get().apply {
@@ -401,8 +401,8 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
                 osmometerAddress = mStates.address.get()
                 depthTrigger = mStates.triggerValue.get()
                 depthCorrect = mStates.correctValue.get()
-                cordLenght = mStates.wireRopeLength.get()
-                installHeight = mStates.nozzelHeight.get()
+                wireRopeLength = mStates.wireRopeLength.get()
+                installElevation = mStates.installElevation.get()
             }
         } catch (e: Exception) {
             e.printStackTrace()

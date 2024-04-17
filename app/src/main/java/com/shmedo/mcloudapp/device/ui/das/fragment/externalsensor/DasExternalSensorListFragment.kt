@@ -40,7 +40,7 @@ import timber.log.Timber
 
 class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasExternalSensorListBinding
-    private lateinit var mStates: DasExternalSensorListViewModel
+    private lateinit var mStates: DasExternalSensorListViewModel<DasExternalSensorInfo>
     private val iotParseManager: IOTParserManager by inject()
 
     private var deleteItemIndex = 0
@@ -493,13 +493,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
             //采集器地址为 0 时，表示采集器未启用，不允许配置传感器，退出页面
             if (collectorInfo.addr == "0") {
                 cancelNearbyCommunicationTimeoutJob()
-                showMessage(
-                    "采集器地址为0,无法配置扩展传感器,请先修改采集器地址!",
-                    "温馨提示",
-                    "确定",
-                    {
-                        nav().navigateUp()
-                    })
+                showMessageDialog("采集器地址为0,无法配置扩展传感器,请先修改采集器地址!")
                 return
             }
             mStates.collectorType.set(collectorInfo.type)
@@ -510,8 +504,8 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
             }
             queryExtendSensorConfigInfo(collectorInfo.sensornum.toInt())
         } catch (e: Exception) {
-            e.printStackTrace()
             cancelNearbyCommunicationTimeoutJob()
+            e.printStackTrace()
         }
     }
 

@@ -18,8 +18,8 @@ class MDDasDigitalPiezometerInfoParser: MDCommandParser<MDDasDigitalPiezometerIn
             depthCorrect = values.getOrNull(4) ?: depthCorrect
             temperatureTrigger = values.getOrNull(5) ?: temperatureTrigger
             temperatureCorrect = values.getOrNull(6) ?: temperatureCorrect
-            cordLenght = values.getOrNull(7) ?: cordLenght
-            installHeight = values.getOrNull(8) ?: installHeight
+            wireRopeLength = values.getOrNull(7) ?: wireRopeLength
+            installElevation = values.getOrNull(8) ?: installElevation
         }
     }
 

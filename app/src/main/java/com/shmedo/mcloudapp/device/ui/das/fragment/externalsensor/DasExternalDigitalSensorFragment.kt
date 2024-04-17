@@ -50,7 +50,7 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasExternalDigitalSensorBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: DasExternalDigitalSensorViewModel
-    private lateinit var sensorListViewModel: DasExternalSensorListViewModel
+    private lateinit var sensorListViewModel: DasExternalSensorListViewModel<DasExternalSensorInfo>
     private val iotParseManager: IOTParserManager by inject()
 
     private val iotSensorType: IOTSensorType by lazy {

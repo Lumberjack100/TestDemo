@@ -141,7 +141,7 @@
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
-                            android:text="@={stateVM.nozzelHeight}"
+                            android:text="@={stateVM.installElevation}"
                             app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{8}" />
 

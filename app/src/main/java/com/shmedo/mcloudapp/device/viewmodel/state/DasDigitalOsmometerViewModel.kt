@@ -11,5 +11,5 @@ class DasDigitalOsmometerViewModel : ViewModel() {
     val triggerValue = NonNullObservableField("")//触发值
     val correctValue = NonNullObservableField("")//修正值
     val wireRopeLength = NonNullObservableField("")//绳长度
-    val nozzelHeight = NonNullObservableField("")//高程
+    val installElevation = NonNullObservableField("")//高程
 }
