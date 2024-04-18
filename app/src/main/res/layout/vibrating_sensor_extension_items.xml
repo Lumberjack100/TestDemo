@@ -11,7 +11,8 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalVibratingSensorFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.device.common.BaseDasExternalVibratingSensorClickProxy" />
+
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -36,7 +37,7 @@
                 textViewEnabled="@{stateVM.extension1ValueEnable }"
                 android:hint="请输入"
                 android:text="@={stateVM.extension1Value}"
-                app:inputTypeFilter='@{"numberDecimal"}'
+                app:inputTypeFilter='@{@string/edittext_input_filter_decimal_characters}'
                 app:lengthFilter="@{20}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -57,7 +58,7 @@
                 textViewEnabled="@{stateVM.extension2ValueEnable }"
                 android:hint="请输入"
                 android:text="@={stateVM.extension2Value}"
-                app:inputTypeFilter='@{"numberDecimal"}'
+                app:inputTypeFilter='@{@string/edittext_input_filter_decimal_characters}'
                 app:lengthFilter="@{20}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -78,7 +79,7 @@
                 textViewEnabled="@{stateVM.extension3ValueEnable }"
                 android:hint="请输入"
                 android:text="@={stateVM.extension3Value}"
-                app:inputTypeFilter='@{"numberDecimal"}'
+                app:inputTypeFilter='@{@string/edittext_input_filter_decimal_characters}'
                 app:lengthFilter="@{20}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -99,7 +100,7 @@
                 textViewEnabled="@{stateVM.extension4ValueEnable }"
                 android:hint="请输入"
                 android:text="@={stateVM.extension4Value}"
-                app:inputTypeFilter='@{"numberDecimal"}'
+                app:inputTypeFilter='@{@string/edittext_input_filter_decimal_characters}'
                 app:lengthFilter="@{20}" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -119,7 +120,7 @@
                 textViewEnabled="@{stateVM.extension5ValueEnable }"
                 android:hint="请输入"
                 android:text="@={stateVM.extension5Value}"
-                app:inputTypeFilter='@{"numberDecimal"}'
+                app:inputTypeFilter='@{@string/edittext_input_filter_decimal_characters}'
                 app:lengthFilter="@{20}" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -139,7 +140,7 @@
                 textViewEnabled="@{stateVM.extension6ValueEnable }"
                 android:hint="请输入"
                 android:text="@={stateVM.extension6Value}"
-                app:inputTypeFilter='@{"numberDecimal"}'
+                app:inputTypeFilter='@{@string/edittext_input_filter_decimal_characters}'
                 app:lengthFilter="@{20}" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -159,7 +160,7 @@
                 textViewEnabled="@{stateVM.extension7ValueEnable }"
                 android:hint="请输入"
                 android:text="@={stateVM.extension7Value}"
-                app:inputTypeFilter='@{"numberDecimal"}'
+                app:inputTypeFilter='@{@string/edittext_input_filter_decimal_characters}'
                 app:lengthFilter="@{20}" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -179,7 +180,7 @@
                 textViewEnabled="@{stateVM.extension8ValueEnable }"
                 android:hint="请输入"
                 android:text="@={stateVM.extension8Value}"
-                app:inputTypeFilter='@{"numberDecimal"}'
+                app:inputTypeFilter='@{@string/edittext_input_filter_decimal_characters}'
                 app:lengthFilter="@{20}" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -199,7 +200,7 @@
                 textViewEnabled="@{stateVM.extension9ValueEnable }"
                 android:hint="请输入"
                 android:text="@={stateVM.extension9Value}"
-                app:inputTypeFilter='@{"numberDecimal"}'
+                app:inputTypeFilter='@{@string/edittext_input_filter_decimal_characters}'
                 app:lengthFilter="@{20}" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -219,7 +220,7 @@
                 textViewEnabled="@{stateVM.extension10ValueEnable }"
                 android:hint="请输入"
                 android:text="@={stateVM.extension10Value}"
-                app:inputTypeFilter='@{"numberDecimal"}'
+                app:inputTypeFilter='@{@string/edittext_input_filter_decimal_characters}'
                 app:lengthFilter="@{20}" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>

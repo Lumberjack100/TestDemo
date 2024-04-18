@@ -21,6 +21,11 @@ enum class MDCommandType(private val commandCode: String) {
     DATA_MASSAGE_MODEL("003"),
 
     /**
+     * 设置开关量
+     */
+    RAIN_STATION("005"),
+
+    /**
      * 工作模式
      */
     WORK_MODE("006"),
@@ -81,26 +86,6 @@ enum class MDCommandType(private val commandCode: String) {
     QUERY_INCLINOMETER_INFO("046"),
 
     /**
-     * 即时采集
-     */
-    INSTANT_COLLEACTOR("110"),
-
-    /**
-     * 恢复出厂设置
-     */
-    RESTORE_FACTORY_SETTING("119"),
-
-    /**
-     * 查询/同步安装位置
-     */
-    INSTALL_LOCATION("916"),
-    /**2.传感器参数配置与查询 */
-    /**
-     * 设置开关量
-     */
-    RAIN_STATION("005"),
-
-    /**
      * 获取采集器配置
      */
     COLLECTOR_CONFIG("100"),
@@ -109,6 +94,16 @@ enum class MDCommandType(private val commandCode: String) {
      * 获取XX采集器YY通道的传感器参数
      */
     COLLECTOR_CHANNEL_SENSOR_PARAMETER("101"),
+
+    /**
+     * 即时采集
+     */
+    INSTANT_COLLEACTOR("110"),
+
+    /**
+     * 恢复出厂设置
+     */
+    RESTORE_FACTORY_SETTING("119"),
 
     /**
      * 设置雨量计精度
@@ -131,6 +126,11 @@ enum class MDCommandType(private val commandCode: String) {
     SET_COLLECTOR_SENSOR("150"),
 
     /**
+     * 设置静力水准高程(单位MM,静力水准采集器特有参数)
+     */
+    STATIC_LEVEL_ELEVATION("159"),
+
+    /**
      * 设置采集器待机时长（单位s）
      */
     COLLECTOR_STANDBY_TIME("160"),
@@ -143,7 +143,7 @@ enum class MDCommandType(private val commandCode: String) {
     /**
      * 设置采集器接入传感器的报警值（单位由传感器类型决定）。
      */
-    COLLECTOR_SENSOR_THRESHOLD("162"),
+    COLLECTOR_SENSOR_THRESHOLD_MULTI("162"),
 
     /**
      * 设置采集器解算频度（单位s）
@@ -161,11 +161,6 @@ enum class MDCommandType(private val commandCode: String) {
     SET_INCLINOMETER_LONG("166"),
 
     /**
-     * 设置静力水准高程(单位MM,静力水准采集器特有参数)
-     */
-    STATIC_LEVEL_ELEVATION("159"),
-
-    /**
      * 设置振弦式传感器修正参数 (模拟量采集器特有参数)
      */
     VIBRATING_SENSOR_PARAMETER("167"),
@@ -173,7 +168,7 @@ enum class MDCommandType(private val commandCode: String) {
     /**
      * 设置采集器接入传感器触发阈值（目前仅适用于墒情采集器）
      */
-    COLLECTOR_SENSOR_THRESHOLD_SOLI("168"),
+    COLLECTOR_SENSOR_THRESHOLD_SINGLE("168"),
 
     /**
      * 设置振弦式传感器安装高程
@@ -189,6 +184,31 @@ enum class MDCommandType(private val commandCode: String) {
      * 设置量水堰初始堰上水头
      */
     SENSOR_WEIR_HEAD("172"),
+
+    /**
+     * 获取服务器地址
+     */
+    SERVER_ADDRESS("200"),
+
+    /**
+     * 设置服务器地址、端口（x，Y，z之间由空格隔开）
+     */
+    SET_SERVER_ADDRESS_PORT("201"),
+
+    /**
+     * 网络链路通信协议查询与设置
+     */
+    NET_LINK_COMMUN_PROTOCOL("202"),
+
+    /**
+     * 设置授权手机号码（最大支持3个，号码之间用逗号隔开）
+     */
+    SET_AUTHORIZE_PHONE("203"),
+
+    /**
+     * 获取授权手机号码
+     */
+    AUTHORIZE_PHONE_NUMBER("204"),
 
     /**
      * DAS发送认证请求
@@ -269,31 +289,6 @@ enum class MDCommandType(private val commandCode: String) {
      * 设置安装高程
      */
     SET_OSMOMETR_NOZZEL_HEIGHT("406"),
-    /**3.数据中心参数配置和查询 */
-    /**
-     * 获取服务器地址
-     */
-    SERVER_ADDRESS("200"),
-
-    /**
-     * 设置服务器地址、端口（x，Y，z之间由空格隔开）
-     */
-    SET_SERVER_ADDRESS_PORT("201"),
-
-    /**
-     * 网络链路通信协议查询与设置
-     */
-    NET_LINK_COMMUN_PROTOCOL("202"),
-
-    /**
-     * 设置授权手机号码（最大支持3个，号码之间用逗号隔开）
-     */
-    SET_AUTHORIZE_PHONE("203"),
-
-    /**
-     * 获取授权手机号码
-     */
-    AUTHORIZE_PHONE_NUMBER("204"),
 
     /**
      * 自动注册平台参数设置
@@ -351,14 +346,19 @@ enum class MDCommandType(private val commandCode: String) {
     QUERY_DATA_CENTER_PARAM("889"),
 
     /**
-     * 设置BHY采集器 灵敏度
+     * 查询/同步安装位置
      */
-    SET_COLLECTOR_SENSITIVITY("923"),
+    INSTALL_LOCATION("916"),
 
     /**
      * 设置最长工作时间，超过时间进入低功耗
      */
     SET_MAXIMUM_WORKING_PERIOD("916x"),
+
+    /**
+     * 设置BHY采集器 灵敏度
+     */
+    SET_COLLECTOR_SENSITIVITY("923"),
 
     /**
      * 自定义心跳包指令

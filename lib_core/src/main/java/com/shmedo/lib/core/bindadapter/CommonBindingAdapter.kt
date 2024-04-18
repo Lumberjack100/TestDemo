@@ -198,16 +198,16 @@ object CommonBindingAdapter {
     fun setLengthFilter(
         editText: AppCompatEditText,
         length: Int? = null,
-        textFilter: String? = ""
+        inputTypeFilter: String? = ""
     ) {
         //如果length为null，则使用-1作为默认值
         val lengthFilter = InputFilter.LengthFilter(length ?: 20)
-        if (textFilter.isNullOrEmpty()) {
+        if (inputTypeFilter.isNullOrEmpty()) {
             editText.filters = arrayOf(lengthFilter)
             return
         }
 
-        when (textFilter) {
+        when (inputTypeFilter) {
             "number" -> {
                 editText.filters = arrayOf(lengthFilter)
                 // 允许输入整数
@@ -223,10 +223,10 @@ object CommonBindingAdapter {
 
             "character" -> editText.filters = arrayOf(lengthFilter, characterFilter)
 
-            else -> {
+            else -> { // 其他自定义的输入过滤
                 val inputFilter = InputFilter { source, start, end, _, _, _ ->
                     for (i in start until end) {
-                        if (!textFilter.contains(source[i].toString())) {
+                        if (!inputTypeFilter.contains(source[i].toString())) {
                             return@InputFilter ""
                         }
                     }

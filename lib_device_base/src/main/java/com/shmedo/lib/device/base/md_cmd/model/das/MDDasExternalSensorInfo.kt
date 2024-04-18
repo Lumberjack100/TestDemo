@@ -26,7 +26,7 @@ data class MDDasExternalSensorInfo(
     var temperatureCoefficientK: String = "",//温度系数K
     var temperatureCoefficientT0: String = "",//初始温度T0
     var sensitivityK: String = "",//灵敏度K
-    var temperatureCoefficientB: String = "",//温度系数b
+    var temperatureCoefficientB: String = "",//温度系数 B
     var referenceValueF: String = "",//基准值F
     var expansionCoefficient: String = "",//膨胀系数(应力计)
 

@@ -458,6 +458,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
             downspeed = mStates.decentralizationSpeed.get(),
             downwaitetime = mStates.decentralizationWaitingTime.get(),
             upspeed = mStates.executiveAgencyInfoWrapper.get().upspeed,
+            pzspeed = mStates.executiveAgencyInfoWrapper.get().pzspeed,
             measpacing = mStates.executiveAgencyInfoWrapper.get().measpacing,
             meaintertime = mStates.executiveAgencyInfoWrapper.get().meaintertime,
             meabaseth = mStates.executiveAgencyInfoWrapper.get().meabaseth,

@@ -10,7 +10,7 @@ enum class IOTSensorType(val code: String, val description: String) {
     /**
      * 振弦传感器
      */
-    VW08("0", "振弦传感器"),
+    VIBRATING_SENSOR("0", "振弦传感器"),
 
     /**
      * 压电式雨量计

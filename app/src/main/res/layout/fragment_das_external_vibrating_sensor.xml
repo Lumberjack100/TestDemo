@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalVibratingSensorFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.device.common.BaseDasExternalVibratingSensorClickProxy" />
 
         <import type="com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType" />
 
@@ -89,7 +89,7 @@
                 <TextView
                     android:id="@+id/btn_confirm"
                     style="@style/SubmitButton_ColorPrimary"
-                    onClickWithDebouncing="@{()->click.onSubmitClick()}"
+                    onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
                     android:layout_marginTop="@dimen/dimen_size_35"
                     android:text="确定" />
 

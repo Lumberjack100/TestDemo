@@ -13,7 +13,7 @@ class DasExternalVibratingSensorViewModel : ViewModel() {
     val isExtension1Support = NonNullObservableField(false)//扩展1
     val isExtension1TipBtnSupport = NonNullObservableField(false)//扩展1
     val extension1Title = NonNullObservableField("")//
-    val extension1Value = NonNullObservableField("")//
+    val extension1Value = NonNullObservableField("0")//
     val extension1ValueEnable = NonNullObservableField(true)//
 
     val isExtension2Support = NonNullObservableField(false)//扩展2

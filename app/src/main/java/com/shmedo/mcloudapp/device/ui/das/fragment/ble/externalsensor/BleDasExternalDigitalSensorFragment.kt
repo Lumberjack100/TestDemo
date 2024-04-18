@@ -1,26 +1,24 @@
-package com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor
+package com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor
 
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
-import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
-import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.lxj.xpopup.XPopup
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasExternalSensorEntity
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
-import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.device.base.md_cmd.model.das.MDDasExternalSensorInfo
+import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
+import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
+import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
@@ -31,10 +29,12 @@ import com.shmedo.mcloudapp.databinding.FragmentDasExternalDigitalSensorBinding
 import com.shmedo.mcloudapp.device.common.BaseDasExternalDigitalSensorClickProxy
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.ble.BaseMDDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasExternalDigitalSensorViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.DasExternalSensorListViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import org.koin.android.ext.android.inject
+import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
@@ -45,11 +45,12 @@ import java.util.Locale
  * @desc: 数字式传感器配置
  *
  */
-class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
+class BleDasExternalDigitalSensorFragment : BaseMDDeviceFragment() {
     private lateinit var binding: FragmentDasExternalDigitalSensorBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: DasExternalDigitalSensorViewModel
-    private lateinit var sensorListViewModel: DasExternalSensorListViewModel<DasExternalSensorInfo>
+    private lateinit var sensorListViewModel: DasExternalSensorListViewModel<MDDasExternalSensorInfo>
+    val mdParseManager: MDParserManager by inject()
 
     private val iotSensorType: IOTSensorType by lazy {
         IOTSensorType.getSensorTypeByCollectorCode(sensorListViewModel.collectorType.get())
@@ -58,11 +59,6 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     private var sensorIndex: Int = -1
     private var sensorAddr = "-1"
 
-    //阵列测斜仪物模型
-    private val modelTypeList = arrayOf("坐标模型", "ADME 模型")
-
-    //子雷达类型
-    private val childRadarTypeList = arrayOf("雷达物位计", "精波雷达")
     private val decimalFormat = DecimalFormat("#.###", DecimalFormatSymbols(Locale.getDefault()))
 
     override fun initViewModel() {
@@ -105,25 +101,25 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         sensorListViewModel.sensorModelMap.keys.filterNot { it == sensorAddr }
             .forEach { usedAddressList.add(it) }
 
-        val externalSensorInfo = if (sensorListViewModel.sensorModelMap.containsKey(sensorAddr))
+        val sensorInfo = if (sensorListViewModel.sensorModelMap.containsKey(sensorAddr))
             sensorListViewModel.sensorModelMap[sensorAddr]!!
         else {
-            DasExternalSensorInfo(
-                addr = "",
-                type = iotSensorType.code,
-                threshold = "",
-                corrval = ""
+            MDDasExternalSensorInfo(
+                sensorAddress = "",
+                sensorType = iotSensorType.code,
+                triggerThreshold = "",
+                correctionValue = ""
             )
         }
-        initSensorInfo(externalSensorInfo)
+        initSensorInfo(sensorInfo)
     }
 
-    private fun initSensorInfo(sensorInfo: DasExternalSensorInfo) {
-        mStates.address.set(sensorInfo.addr)
-        sensorInfo.threshold.toDoubleOrNull()?.let {
+    private fun initSensorInfo(sensorInfo: MDDasExternalSensorInfo) {
+        mStates.address.set(sensorInfo.sensorAddress)
+        sensorInfo.triggerThreshold.toDoubleOrNull()?.let {
             mStates.triggerValue.set(decimalFormat.format(it))
         }
-        sensorInfo.corrval.toDoubleOrNull()?.let {
+        sensorInfo.correctionValue.toDoubleOrNull()?.let {
             mStates.correctValue.set(decimalFormat.format(it))
         }
         try {
@@ -148,47 +144,15 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("测段长(单位:毫米)")
                     decimalFormat.applyPattern("#.#")
-                    sensorInfo.spacing.toDoubleOrNull()?.let {
+                    sensorInfo.measuringSectionLength.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
-                    if (sensorInfo.model_type != IOTConstants.NULL_KEY) {
-                        mStates.isModelSwitchSupport.set(true)
-                        sensorInfo.model_type.toIntOrNull()?.let {
-                            if (it < modelTypeList.size) {
-                                mStates.modelType.set(modelTypeList[it])
-                            }
-                        }
-                        mStates.isExtension2Support.set(true)
-                        mStates.extension2Title.set("解算方式")
-                        mStates.extension2Value.set(if (sensorInfo.datatype == "0") "顶部" else "底部")
-                        mStates.extension2ValueEnable.set(false)
-
-                        mStates.isExtension3Support.set(true)
-                        mStates.extension3Title.set("测量间隔(毫秒)")
-                        mStates.extension3Value.set(sensorInfo.measinval)
-                        mStates.extension3ValueEnable.set(false)
-                    }
                 }
 
-                IOTSensorType.ULTRASONIC_LEVEL_GAUGE //超声波物位计
-                -> {
+                IOTSensorType.ULTRASONIC_LEVEL_GAUGE, //超声波物位计
+                IOTSensorType.RADAR_LEVEL_GAUGE -> {//雷达物位计
                     mStates.triggerTitle.set("触发值(单位:毫米)")
                     mStates.correctTitle.set("安装高程(单位:米)")
-                }
-
-                IOTSensorType.RADAR_LEVEL_GAUGE //雷达物位计
-                -> {
-                    mStates.triggerTitle.set("触发值(单位:毫米)")
-                    mStates.correctTitle.set("安装高程(单位:米)")
-                    if (sensorInfo.child_type != IOTConstants.NULL_KEY) {
-                        mStates.isChildSensorTypeSupport.set(true)
-                        mStates.childSensorTypeTitle.set("雷达类型")
-                        sensorInfo.child_type.toIntOrNull()?.let {
-                            if (it < childRadarTypeList.size) {
-                                mStates.childSensorType.set(childRadarTypeList[it])
-                            }
-                        }
-                    }
                 }
 
                 IOTSensorType.LUYAN_INCLINOMETER //倾角仪
@@ -257,7 +221,7 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("初始值(毫米)")
                     decimalFormat.applyPattern("#.#")
-                    sensorInfo.initval.toDoubleOrNull()?.let {
+                    sensorInfo.initialValue.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
 
@@ -279,14 +243,14 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("安装高程(米)")
                     decimalFormat.applyPattern("#.###")
-                    sensorInfo.tubealti.toDoubleOrNull()?.let {
+                    sensorInfo.installElevation.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
 
                     mStates.isExtension2Support.set(true)
                     mStates.extension2Title.set("绳长(米)")
                     decimalFormat.applyPattern("#.###")
-                    sensorInfo.ropelen.toDoubleOrNull()?.let {
+                    sensorInfo.wireRopeLength.toDoubleOrNull()?.let {
                         mStates.extension2Value.set(decimalFormat.format(it))
                     }
                 }
@@ -305,52 +269,25 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
          * 阵列测斜仪选择物模型
          */
         override fun onModelSwitchClick() {
-            val selectedIndex = modelTypeList.indexOf(mStates.modelType.get())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "", modelTypeList,
-                    null, selectedIndex,
-                    { position, text ->
-                        mStates.modelType.set(text)
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
+
         }
 
         /**
          * 选择子雷达传感器类型
          */
         override fun onChildSensorTypeSwitchClick() {
-            val selectedIndex = childRadarTypeList.indexOf(mStates.childSensorType.get())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "                                                                                                                                                                                                                            ",
-                    childRadarTypeList,
-                    null,
-                    selectedIndex,
-                    { position, text ->
-                        mStates.childSensorType.set(text)
-                    },
-                    0,
-                    R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
+
         }
 
+        /**
+         * 触发阈值提示弹窗
+         */
         override fun onTriggerTipBtnClick() {
 
         }
 
         /**
-         * 修正值提示按钮
+         * 修正值提示弹窗
          */
         override fun onCorrectTipBtnClick() {
             if (iotSensorType == IOTSensorType.WEIR) //量水堰计修正值
@@ -358,7 +295,7 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         }
 
         /**
-         * 扩展1提示按钮
+         * 扩展1提示弹窗
          */
         override fun onExtension1TipBtnClick() {
             if (iotSensorType == IOTSensorType.LUYAN_INCLINOMETER) //倾角仪
@@ -368,7 +305,7 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         }
 
         /**
-         * 扩展2提示按钮
+         * 扩展2提示弹窗
          */
         override fun onExtension2TipBtnClick() {
             if (iotSensorType == IOTSensorType.LUYAN_INCLINOMETER) //倾角仪
@@ -378,7 +315,7 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         }
 
         /**
-         * 扩展3提示按钮
+         * 扩展3提示弹窗
          */
         override fun onExtension3TipBtnClick() {
             if (iotSensorType == IOTSensorType.LUYAN_INCLINOMETER) //倾角仪
@@ -386,19 +323,22 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         }
 
         /**
-         * 扩展4提示按钮
+         * 扩展4提示弹窗
          */
         override fun onExtension4TipBtnClick() {
 
         }
 
         /**
-         * 扩展5提示按钮
+         * 扩展5提示弹窗
          */
         override fun onExtension5TipBtnClick() {
 
         }
 
+        /**
+         * 扩展1 按钮
+         */
         override fun onExtension1ButtonClick() {
             if (iotSensorType == IOTSensorType.STATIC_LEVEL || iotSensorType == IOTSensorType.SEDIMENTATION_METER) { //静力水准/沉降仪初始值重置
                 if (TextUtils.isEmpty(mStates.address.get())) {
@@ -409,6 +349,9 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             }
         }
 
+        /**
+         * 确定按钮
+         */
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
             checkValueIsValidAndUpdateSensor()
@@ -420,26 +363,36 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
      */
     private fun resetInitValue() {
         commandItems.clear()
-
-        val entity = DasExternalSensorEntity().apply {
-            index = sensorIndex.toString()
-            type = iotSensorType.code
-            addr = mStates.address.get()
-            threshold = mStates.triggerValue.get()
-            corrval = mStates.correctValue.get()
-            initval = "FFFFFFFF"
-        }
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.DAS_MD_SET_EXTERNAL_SENSOR,
-            entity.toCommandString()
-        )
+        val command =
+            MDCommandUtil.getCommand(
+                MDCommandType.SENSOR_INITIAL_READING,
+                "${MDCommandUtil.formatStringTwo(iotSensorType.code)}${
+                    MDCommandUtil.formatStringTwo(mStates.address.get())
+                }FFFFFFFF"
+            )
         commandItems.add(command)
 
+        refreshData()
+
         showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(
+        sendMDCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = AppContants.Communication.DELAY_10000_MILLIS
+            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
         )
+    }
+
+    /**
+     * 重置静力水准初始值后 刷新数据
+     */
+    private fun refreshData() {
+        //查询静力水准配置信息
+        val command = MDCommandUtil.getCommand(
+            MDCommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER,
+            "${MDCommandUtil.formatStringTwo(iotSensorType.code)}${
+                MDCommandUtil.formatStringTwo(sensorIndex.toString())
+            }"
+        )
+        commandItems.add(command)
     }
 
     private fun checkValueIsValidAndUpdateSensor() {
@@ -610,19 +563,16 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     }
 
     private fun updateSensorInfo() {
-        val sensorInfo = DasExternalSensorInfo()
-        sensorInfo.type = iotSensorType.code
-        sensorInfo.addr = mStates.address.get()
-        sensorInfo.threshold = mStates.triggerValue.get()
-        sensorInfo.corrval = mStates.correctValue.get()
+        val sensorInfo = MDDasExternalSensorInfo()
+        sensorInfo.sensorType = iotSensorType.code
+        sensorInfo.sensorAddress = mStates.address.get()
+        sensorInfo.triggerThreshold = mStates.triggerValue.get()
+        sensorInfo.correctionValue = mStates.correctValue.get()
 
         when (iotSensorType) {
             IOTSensorType.INCLINOMETER //测斜仪
             -> {
-                sensorInfo.spacing = mStates.extension1Value.get()
-                if (mStates.isModelSwitchSupport.get())
-                    sensorInfo.model_type =
-                        modelTypeList.indexOf(mStates.modelType.get()).toString()
+                sensorInfo.measuringSectionLength = mStates.extension1Value.get()
             }
 
             IOTSensorType.LUYAN_INCLINOMETER //倾角仪
@@ -641,20 +591,18 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             IOTSensorType.STATIC_LEVEL,//静力水准
             IOTSensorType.SEDIMENTATION_METER //沉降仪
             -> {
-                sensorInfo.initval = mStates.extension1Value.get()
+                sensorInfo.initialValue = mStates.extension1Value.get()
             }
 
             IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE //数字式水位计
             -> {
-                sensorInfo.tubealti = mStates.extension1Value.get()
-                sensorInfo.ropelen = mStates.extension2Value.get()
+                sensorInfo.installElevation = mStates.extension1Value.get()
+                sensorInfo.wireRopeLength = mStates.extension2Value.get()
             }
 
             IOTSensorType.RADAR_LEVEL_GAUGE //雷达液(物)位计 设置子雷达传感器型号
             -> {
-                if (mStates.isChildSensorTypeSupport.get())
-                    sensorInfo.child_type =
-                        childRadarTypeList.indexOf(mStates.childSensorType.get()).toString()
+
             }
 
             else -> {}
@@ -664,14 +612,55 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         if (sensorListViewModel.sensorModelMap.containsKey(sensorAddr)) {
             sensorListViewModel.sensorModelMap.remove(sensorAddr)
         }
-        sensorListViewModel.sensorModelMap[sensorInfo.addr] = sensorInfo
+        sensorListViewModel.sensorModelMap[sensorInfo.sensorAddress] = sensorInfo
         sensorListViewModel.updateIsRefreshSensorList(true)
 
         nav().navigateUp()
     }
 
     override fun setResultData(cmdStr: String) {
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.SENSOR_INITIAL_READING -> {//设置量水堰初始读数 171
+                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "量水堰初始读数设置出错"
+                        Timber.e("$errMsg: ${result.message}")
+                        Toaster.show(errMsg)
+                        return
+                    }
 
+                    else -> {
+                        sendMDCommandFromCmdList()
+                    }
+                }
+            }
+
+            MDCommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER -> {//获取XX采集器YY通道的传感器参数 ##101
+                val result = mdParseManager.parse<MDDasExternalSensorInfo>(
+                    cmdStr,
+                    MDCommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "刷新传感器参数出错"
+                        Timber.e("$errMsg: ${result.message}")
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    is MDCommandResult.Success -> {
+                        initSensorInfo(result.data)
+                        sendMDCommandFromCmdList()
+                    }
+                }
+            }
+
+            else -> {
+
+            }
+        }
     }
 
     override fun onResume() {

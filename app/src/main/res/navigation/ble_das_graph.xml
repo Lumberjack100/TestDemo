@@ -106,24 +106,24 @@
 
     <fragment
         android:id="@+id/bleDasExternalDigitalSensorFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalDigitalSensorFragment"
-        android:label="DasExternalDigitalSensorFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor.BleDasExternalDigitalSensorFragment"
+        android:label="BleDasExternalDigitalSensorFragment"
         tools:layout="@layout/fragment_das_external_digital_sensor" />
 
     <fragment
         android:id="@+id/bleDasExternalVibratingSensorFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalVibratingSensorFragment"
-        android:label="DasExternalVibratingSensorFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor.BleDasExternalVibratingSensorFragment"
+        android:label="BleDasExternalVibratingSensorFragment"
         tools:layout="@layout/fragment_das_external_vibrating_sensor" />
 
     <fragment
-        android:id="@+id/dasAdvancedSettingFragment"
+        android:id="@+id/bleDasAdvancedSettingFragment"
         android:name="com.shmedo.mcloudapp.device.ui.das.fragment.DasAdvancedSettingFragment"
-        android:label="DasAdvancedSettingFragment"
+        android:label="BleDasAdvancedSettingFragment"
         tools:layout="@layout/fragment_das_advanced_setting">
 
         <action
-            android:id="@+id/action_dasAdvancedSettingFragment_to_dasAudibleAlarmFragment"
+            android:id="@+id/action_bleDasAdvancedSettingFragment_to_dasAudibleAlarmFragment"
             app:destination="@id/dasAudibleAlarmFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
@@ -138,16 +138,8 @@
         tools:layout="@layout/fragment_das_audible_alarm" />
 
     <action
-        android:id="@+id/action_global_to_dasAdvancedSettingFragment"
-        app:destination="@id/dasAdvancedSettingFragment"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <action
-        android:id="@+id/action_global_to_firmwareUpgradeFragment"
-        app:destination="@id/firmware_upgrade_graph"
+        android:id="@+id/action_global_to_bleDasAdvancedSettingFragment"
+        app:destination="@id/bleDasAdvancedSettingFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

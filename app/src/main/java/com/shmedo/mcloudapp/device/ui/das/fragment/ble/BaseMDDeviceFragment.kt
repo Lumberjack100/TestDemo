@@ -61,6 +61,7 @@ abstract class BaseMDDeviceFragment: BaseFragment()  {
     private var timeoutJob: Job? = null
 
     protected var commandItems = LinkedList<String>()
+    protected var commandDescItems = LinkedList<String>()
 
     @CallSuper
     override fun initViewModel() {
@@ -223,6 +224,7 @@ abstract class BaseMDDeviceFragment: BaseFragment()  {
             dismissLoadingDialog()
         }
         commandItems.clear()
+        commandDescItems.clear()
         refreshLayout?.finish(false)
     }
 
@@ -250,6 +252,7 @@ abstract class BaseMDDeviceFragment: BaseFragment()  {
             dismissLoadingDialog()
         }
         commandItems.clear()
+        commandDescItems.clear()
         refreshLayout?.finish(false)
     }
 

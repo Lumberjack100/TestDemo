@@ -410,6 +410,22 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             showMessageDialog("电机上拉速度数值范围[1,180]!")
             return
         }
+        if(mStates.isPullUpZeroSpeedSupport.get()){
+            if (mStates.pullUpZeroSpeed.get().isEmpty()) {
+                Toaster.show("请输入上拉归零速度!")
+                return
+            }
+            try {
+                val value = mStates.pullUpZeroSpeed.get().toDouble()
+                if (value < 1 || value > 10) {
+                    showMessageDialog("上拉归零速度数值范围[1,10]!")
+                    return
+                }
+            } catch (ex: Exception) {
+                showMessageDialog("上拉归零速度数值范围[1,10]!")
+                return
+            }
+        }
 
         if (mStates.measuringDistance.get().isEmpty()) {
             Toaster.show("请输入测量间距!")

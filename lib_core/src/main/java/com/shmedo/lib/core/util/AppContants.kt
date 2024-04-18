@@ -24,14 +24,18 @@ interface AppContants {
 
             //与设备通讯方式
             const val COMMUNICATION_WAY = "communication_way"
+
             //产品类型
             const val PRODUCT_TYPE = "product_type"
+
             //4G 设备信息
             const val DEVICE_INFO = "device_info"
+
             //蓝牙设备信息
             const val BLE_DEVICE = "ble_device"
             const val SERVER_NUMBER = "server_number"
-            const val FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY = "fragment_data_center_home_result_request_key"
+            const val FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY =
+                "fragment_data_center_home_result_request_key"
             const val REFRESH_DATA_CENTER_STATUS = "refresh_data_center_status"
         }
     }
@@ -45,6 +49,10 @@ interface AppContants {
             const val DELAY_10000_MILLIS = 10000L //发送指令超时时间
             const val DELAY_15000_MILLIS = 15000L //蓝牙连接超时时间
             const val DELAY_20000_MILLIS = 20000L
+            const val DELAY_25000_MILLIS = 25000L
+            const val DELAY_30000_MILLIS = 30000L
+            const val DELAY_40000_MILLIS = 40000L
+            const val DELAY_60000_MILLIS = 60000L
         }
     }
 }

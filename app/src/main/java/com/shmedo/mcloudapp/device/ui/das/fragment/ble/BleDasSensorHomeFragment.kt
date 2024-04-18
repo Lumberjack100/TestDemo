@@ -15,6 +15,7 @@ import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
@@ -25,7 +26,9 @@ import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor.BleDasExternalSensorListFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor.BaseBleDasExternalSensorListFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor.BleDasExternalDigitalSensorListFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor.BleDasExternalVibratingSensorListFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.internalsensor.BleDasDigitalOsmometerFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.internalsensor.BleDasIOSensorFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
@@ -100,14 +103,23 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
                         bleDevice
                     )
                 },
-                BleDasExternalSensorListFragment.newInstance().apply {
-                    arguments = BleDasExternalSensorListFragment.newBundleArguments(
-                        communicateWay,
-                        deviceInfo,
-                        bleDevice,
-                        collectorModel
-                    )
-                }
+                if (collectorModel == "0${IOTSensorType.VIBRATING_SENSOR.code}")
+                    BleDasExternalVibratingSensorListFragment.newInstance().apply {
+                        arguments = BaseBleDasExternalSensorListFragment.newBundleArguments(
+                            communicateWay,
+                            deviceInfo,
+                            bleDevice,
+                            collectorModel
+                        )
+                    } else
+                    BleDasExternalDigitalSensorListFragment.newInstance().apply {
+                        arguments = BaseBleDasExternalSensorListFragment.newBundleArguments(
+                            communicateWay,
+                            deviceInfo,
+                            bleDevice,
+                            collectorModel
+                        )
+                    }
             )
         binding.viewpager.adapter = PageAdapter(this, mFragments)
         binding.viewpager.offscreenPageLimit = tabNames.size

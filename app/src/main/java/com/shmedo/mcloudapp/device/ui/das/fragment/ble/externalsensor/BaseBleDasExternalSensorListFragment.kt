@@ -13,7 +13,6 @@ import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasCollectorEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.das.DasCollectorInfo
@@ -25,7 +24,6 @@ import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
-import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.ext.showMessageDialog
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
@@ -37,21 +35,20 @@ import com.shmedo.mcloudapp.device.model.DASSensorItem
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.model.RVEmptyFooter
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.BaseMDDeviceFragment
-import com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalDigitalSensorFragment
-import com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalVibratingSensorFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasExternalSensorListViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 /**
  * 创建者：gonghe
- * 创建时间：2024/4/17
+ * 创建时间：2024/4/18
  * 描述： TODO
  */
-class BleDasExternalSensorListFragment : BaseMDDeviceFragment() {
+abstract class BaseBleDasExternalSensorListFragment : BaseMDDeviceFragment() {
     private lateinit var binding: FragmentDasExternalSensorListBinding
-    private lateinit var mStates: DasExternalSensorListViewModel<MDDasExternalSensorInfo>
-    private val mdParseManager: MDParserManager by inject()
+    lateinit var mStates: DasExternalSensorListViewModel<MDDasExternalSensorInfo>
+    val mdParseManager: MDParserManager by inject()
+    lateinit var iotSensorType: IOTSensorType
     private var deleteItemIndex = 0
 
     override fun initViewModel() {
@@ -77,14 +74,15 @@ class BleDasExternalSensorListFragment : BaseMDDeviceFragment() {
     override fun initData() {
         super.initData()
         arguments?.let {
-            val collectorModel = it.getString(COLLECTOR_MODEL, "-1")
+            val model = it.getString(COLLECTOR_MODEL, "-1")
             //collectorModel 移除前缀 0
             mStates.collectorType.set(
-                if (collectorModel.startsWith("0") && collectorModel.length > 1) collectorModel.substring(
+                if (model.startsWith("0") && model.length > 1) model.substring(
                     1
-                ) else collectorModel
+                ) else model
             )
-            mStates.isVibratingWireSensor.set(mStates.collectorType.get() == IOTSensorType.VW08.code)
+            mStates.isVibratingWireSensor.set(mStates.collectorType.get() == IOTSensorType.VIBRATING_SENSOR.code)
+            iotSensorType = IOTSensorType.value(mStates.collectorType.get())
         }
     }
 
@@ -125,7 +123,7 @@ class BleDasExternalSensorListFragment : BaseMDDeviceFragment() {
                     R.layout.item_das_sensor -> {
                         val item = getModel<DASSensorItem>()
                         if (!mStates.isVibratingWireSensor.get()) {
-                            val bundle = DasExternalDigitalSensorFragment.newBundleArguments(
+                            val bundle = BleDasExternalDigitalSensorFragment.newBundleArguments(
                                 communicateWay,
                                 deviceInfo,
                                 bleDevice,
@@ -133,26 +131,26 @@ class BleDasExternalSensorListFragment : BaseMDDeviceFragment() {
                                 item.addr
                             )
                             nav().navigate(
-                                R.id.action_dasSensorHomeFragment_to_dasExternalDigitalSensorFragment,
+                                R.id.action_bleDasSensorHomeFragment_to_bleDasExternalDigitalSensorFragment,
                                 bundle
                             )
                         } else {
-                            val bundle = DasExternalVibratingSensorFragment.newBundleArguments(
+                            val bundle = BleDasExternalVibratingSensorFragment.newBundleArguments(
                                 communicateWay,
                                 deviceInfo,
                                 bleDevice,
                                 item.addr
                             )
                             nav().navigate(
-                                R.id.action_dasSensorHomeFragment_to_dasExternalVibratingSensorFragment,
+                                R.id.action_bleDasSensorHomeFragment_to_bleDasExternalVibratingSensorFragment,
                                 bundle
                             )
                         }
                     }
 
-                    else -> {
+                    else -> {//添加传感器
                         if (!mStates.isVibratingWireSensor.get()) {
-                            val bundle = DasExternalDigitalSensorFragment.newBundleArguments(
+                            val bundle = BleDasExternalDigitalSensorFragment.newBundleArguments(
                                 communicateWay,
                                 deviceInfo,
                                 bleDevice,
@@ -160,18 +158,18 @@ class BleDasExternalSensorListFragment : BaseMDDeviceFragment() {
                                 "-1"
                             )
                             nav().navigate(
-                                R.id.action_dasSensorHomeFragment_to_dasExternalDigitalSensorFragment,
+                                R.id.action_bleDasSensorHomeFragment_to_bleDasExternalDigitalSensorFragment,
                                 bundle
                             )
                         } else {
-                            val bundle = DasExternalVibratingSensorFragment.newBundleArguments(
+                            val bundle = BleDasExternalVibratingSensorFragment.newBundleArguments(
                                 communicateWay,
                                 deviceInfo,
                                 bleDevice,
                                 "-1"
                             )
                             nav().navigate(
-                                R.id.action_dasSensorHomeFragment_to_dasExternalVibratingSensorFragment,
+                                R.id.action_bleDasSensorHomeFragment_to_bleDasExternalVibratingSensorFragment,
                                 bundle
                             )
                         }
@@ -213,134 +211,7 @@ class BleDasExternalSensorListFragment : BaseMDDeviceFragment() {
         }
     }
 
-
-    private fun initSaveCommand() {
-        commandItems.clear()
-
-        //设置采集器参数
-        val entity = DasCollectorEntity(
-            type = mStates.collectorType.get(),
-            sensornum = mStates.sensorModelMap.size.toString(),
-        )
-        val command = MDCommandUtil.getCommand(
-            MDCommandType.SET_COLLECTOR_SENSOR,
-            entity.toCommandString()
-        )
-        commandItems.add(command)
-
-        //设置采集器接入的传感器配置信息
-        initExtendSensorConfigInfoCommand()
-
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendMDCommandFromCmdList(
-            isStartTimeoutJob = true,
-            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
-        )
-    }
-
-    /**
-     * 设置采集器接入的传感器配置信息
-     */
-    private fun initExtendSensorConfigInfoCommand() {
-        mStates.sensorModelMap.keys.sortedBy { addr -> addr.toInt() }
-            .forEachIndexed { mIndex, key ->
-                val sensorInfo = mStates.sensorModelMap[key]!!
-//                val entity = DasExternalSensorEntity().apply {
-//                    index = mIndex.toString()
-//                    type = sensorInfo.type
-//                    addr = sensorInfo.addr
-//                    threshold = sensorInfo.threshold
-//                    corrval = sensorInfo.corrval
-//                    when (IOTSensorType.value(sensorInfo.type)) {
-//                        IOTSensorType.KANG_PERCOLATE -> {//基康渗压计
-//                            tubealti = sensorInfo.tubealti
-//                            ropelen = sensorInfo.ropelen
-//                            poly_a = sensorInfo.poly_a
-//                            poly_b = sensorInfo.poly_b
-//                            poly_c = sensorInfo.poly_c
-//                            temp_k = sensorInfo.temp_k
-//                            temp_t0 = sensorInfo.temp_t0
-//                        }
-//
-//                        IOTSensorType.GUDAN_PERCOLATE -> {//葛南渗压计
-//                            tubealti = sensorInfo.tubealti
-//                            ropelen = sensorInfo.ropelen
-//                            sens_k = sensorInfo.sens_k
-//                            temp_b = sensorInfo.temp_b
-//                            temp_t0 = sensorInfo.temp_t0
-//                            referval_f = sensorInfo.referval_f
-//                        }
-//
-//                        IOTSensorType.GUDAN_SOIL_PRESSURE -> {//葛南土压力计
-//                            sens_k = sensorInfo.sens_k
-//                            temp_b = sensorInfo.temp_b
-//                            temp_t0 = sensorInfo.temp_t0
-//                            referval_f = sensorInfo.referval_f
-//                        }
-//
-//                        IOTSensorType.GUDAN_STRESS -> {//葛南应力计
-//                            sens_k = sensorInfo.sens_k
-//                            temp_b = sensorInfo.temp_b
-//                            temp_t0 = sensorInfo.temp_t0
-//                            referval_f = sensorInfo.referval_f
-//                            elastic_mod = sensorInfo.elastic_mod
-//                        }
-//
-//                        IOTSensorType.JUNXING_ZLJ_300T -> {//轴力计
-//                            sens_k = sensorInfo.sens_k
-//                            temp_b = sensorInfo.temp_b
-//                            temp_t0 = sensorInfo.temp_t0
-//                            referval_f = sensorInfo.referval_f
-//                        }
-//
-//                        IOTSensorType.INCLINOMETER -> {//固定测斜仪
-//                            spacing = sensorInfo.spacing
-//                            model_type = sensorInfo.model_type
-//                        }
-//
-//                        IOTSensorType.LUYAN_INCLINOMETER -> {//倾角仪
-//                            initvalx = sensorInfo.initvalx
-//                            initvaly = sensorInfo.initvaly
-//                            initvalz = sensorInfo.initvalz
-//                        }
-//
-//                        IOTSensorType.WEIR -> {//量水堰计
-//                            lsycsds = sensorInfo.lsycsds
-//                            lsyysst = sensorInfo.lsyysst
-//                        }
-//
-//                        IOTSensorType.STATIC_LEVEL,//静力水准
-//                        IOTSensorType.SEDIMENTATION_METER -> {//沉降仪
-//                            initval = sensorInfo.initval
-//                        }
-//
-//                        IOTSensorType.VW08 -> {//MCU 振弦传感器
-//                            sens_k = sensorInfo.sens_k
-//                            temp_b = sensorInfo.temp_b
-//                            temp_t0 = sensorInfo.temp_t0
-//                            referval_f = sensorInfo.referval_f
-//                        }
-//
-//                        IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE,//数字式水位计
-//                        IOTSensorType.WATER_LEVEL_GAUGE -> {//MCU 水位(液位)计
-//                            tubealti = sensorInfo.tubealti
-//                            ropelen = sensorInfo.ropelen
-//                        }
-//
-//                        IOTSensorType.RADAR_LEVEL_GAUGE -> {//雷达液(物)位计 设置子雷达传感器型号
-//                            child_type = sensorInfo.child_type
-//                        }
-//
-//                        else -> {}
-//                    }
-//                }
-//                val command = MDCommandUtil.getCommand(
-//                    MDCommandType.DAS_MD_SET_EXTERNAL_SENSOR,
-//                    entity.toCommandString()
-//                )
-//                commandItems.add(command)
-            }
-    }
+    abstract fun initSaveCommand()
 
     override fun createObserver() {
         super.createObserver()
@@ -431,6 +302,7 @@ class BleDasExternalSensorListFragment : BaseMDDeviceFragment() {
                     }
                 }
             }
+
             MDCommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER -> {//获取XX采集器YY通道的传感器参数 ##101
                 val result = mdParseManager.parse<MDDasExternalSensorInfo>(
                     cmdStr,
@@ -462,8 +334,8 @@ class BleDasExternalSensorListFragment : BaseMDDeviceFragment() {
                 when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "设置采集器参数出错: ${result.message}"
-                        Timber.e(errMsg)
+                        val errMsg = "接入传感器设置出错"
+                        Timber.e("$errMsg: ${result.message}")
                         Toaster.show(errMsg)
                         return
                     }
@@ -523,6 +395,10 @@ class BleDasExternalSensorListFragment : BaseMDDeviceFragment() {
      *  处理获取到的单个传感器参数信息
      */
     private fun processSensorParamsInfo(sensorInfo: MDDasExternalSensorInfo) {
+        if (mStates.sensorModelMap.containsKey(sensorInfo.sensorAddress)) {
+            mStates.sensorModelMap[sensorInfo.sensorAddress] = sensorInfo
+            return
+        }
         mStates.sensorModelMap[sensorInfo.sensorAddress] = sensorInfo
         val item = DASSensorItem(
             isPlugin = true,
@@ -561,7 +437,6 @@ class BleDasExternalSensorListFragment : BaseMDDeviceFragment() {
 
     companion object {
         const val MAX_SENSOR_COUNT = 16
-        fun newInstance() = BleDasExternalSensorListFragment()
         private const val COLLECTOR_MODEL = "collector_model"
         fun newBundleArguments(
             communicateWay: CommunicateWay = NetPlatformConnect,

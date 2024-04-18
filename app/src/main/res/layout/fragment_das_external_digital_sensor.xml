@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalDigitalSensorFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.device.common.BaseDasExternalDigitalSensorClickProxy" />
 
     </data>
 
@@ -327,7 +327,7 @@
         <TextView
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
-            onClickWithDebouncing="@{()->click.onSubmitClick()}"
+            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
             android:layout_marginTop="0dp"
             android:layout_marginBottom="50dp"
             android:text="确定"

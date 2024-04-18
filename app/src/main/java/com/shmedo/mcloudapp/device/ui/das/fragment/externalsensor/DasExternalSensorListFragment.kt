@@ -290,7 +290,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                             initval = sensorInfo.initval
                         }
 
-                        IOTSensorType.VW08 -> {//MCU 振弦传感器
+                        IOTSensorType.VIBRATING_SENSOR -> {//MCU 振弦传感器
                             sens_k = sensorInfo.sens_k
                             temp_b = sensorInfo.temp_b
                             temp_t0 = sensorInfo.temp_t0

@@ -119,7 +119,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
         val decimalFormat = DecimalFormat("#.###")
         val subMonitorStatusList: MutableList<DasSensorSubMonitorStatusItem> = arrayListOf()
         when (sensorType) {
-            IOTSensorType.VW08 //振弦传感器
+            IOTSensorType.VIBRATING_SENSOR //振弦传感器
             -> {
                 val dataList = data.split(",")
                 if (dataList.isNotEmpty()) {
