@@ -15,7 +15,7 @@ import com.shmedo.lib.device.base.md_cmd.utils.MDConstants
 class MDServerAddressInfoParser: MDCommandParser<ServerAddressInfo> {
     override fun parse(result: String): ParseResult<ServerAddressInfo> {
         return try {
-            val values = result.replace("\r\n", "").split(MDConstants.COMMAND_SPLICER_WHITESPACE)
+            val values = result.replace(MDConstants.COMMAND_FOOTER, "").split(MDConstants.COMMAND_SPLICER_WHITESPACE)
             // 子类实现
             ParseResult.Success(parseInstance(values))
         } catch (ex: Exception) {

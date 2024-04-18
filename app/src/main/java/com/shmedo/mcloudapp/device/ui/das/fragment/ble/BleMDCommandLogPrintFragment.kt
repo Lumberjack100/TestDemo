@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui.common
+package com.shmedo.mcloudapp.device.ui.das.fragment.ble
 
 import android.content.ClipData
 import android.content.Intent
@@ -13,7 +13,6 @@ import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.FileIOUtils
-import com.blankj.utilcode.util.IntentUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -29,6 +28,7 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.base.model.DebugCmdLogInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
+import com.shmedo.lib.device.base.md_cmd.utils.MDConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
@@ -36,16 +36,19 @@ import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.databinding.FragmentBleCustomCommandLogPrintBinding
 import com.shmedo.mcloudapp.device.common.BaseCommandLogPrintClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.BleCustomCommandLogPrintViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.UUID
 
-class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
+/**
+ * 创建者：gonghe
+ * 创建时间：2024/4/18
+ * 描述： TODO
+ */
+class BleMDCommandLogPrintFragment : BaseMDDeviceFragment() {
     private lateinit var binding: FragmentBleCustomCommandLogPrintBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: BleCustomCommandLogPrintViewModel
@@ -135,24 +138,9 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         if (mStates.command.get().isEmpty())
             return
 
-        val input = mStates.command.get()
-        val cmdStr = if (input.startsWith("##"))
-            "\$cmd=md_raw&content=$input".plus(
-                "&apikey=${deviceInfo.apikey.ifEmpty { "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9" }}&msgid=${
-                    UUID.randomUUID().toString().substring(30)
-                }"
-            )
-        else if (input.startsWith("\$cmd"))
-            input.plus(
-                "&apikey=${deviceInfo.apikey.ifEmpty { "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9" }}&msgid=${
-                    UUID.randomUUID().toString().substring(30)
-                }"
-            )
-        else
-            input
-
+        val cmdStr = mStates.command.get()
         addLog(cmdStr)
-        sendDebugCommand(cmdStr)
+        sendDebugCommand(cmdStr + MDConstants.COMMAND_FOOTER)
     }
 
     override fun setResultData(cmdStr: String) {
@@ -196,25 +184,6 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
-    /**
-     * 分享日志
-     */
-    private fun shareLogText() {
-        launchWithViewLifecycle {
-            binding.recyclerview.models?.let { logList ->
-                val logContent = StringBuilder()
-                logList.forEach { logInfo ->
-                    (logInfo as DebugCmdLogInfo).apply {
-                        logContent.append(logTime)
-                        logContent.append(" ")
-                        logContent.append(content)
-                        logContent.append("\n")
-                    }
-                }
-                startActivity(IntentUtils.getShareTextIntent(logContent.toString()))
-            }
-        }
-    }
 
     /**
      * 分享日志到文件
@@ -276,5 +245,6 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
 //        val windowInsetsController = WindowCompat.getInsetsController(mActivity.window, mActivity.window.decorView)
 //        windowInsetsController.isAppearanceLightStatusBars = true
     }
+
 
 }

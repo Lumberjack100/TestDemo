@@ -75,7 +75,6 @@ class BleViewModel : BaseViewModel() {
     ) {
         viewModelScope.launch {
             delay(timeMillis)
-
             MedoBleRepository.instance.sendData(cmdStr)
         }
     }

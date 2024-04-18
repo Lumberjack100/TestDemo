@@ -25,7 +25,6 @@ import com.shmedo.mcloudapp.databinding.FragmentDasSensorHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor.BaseBleDasExternalSensorListFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor.BleDasExternalDigitalSensorListFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor.BleDasExternalVibratingSensorListFragment
@@ -90,14 +89,14 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
         val mFragments =
             listOf<Fragment>(
                 BleDasIOSensorFragment.newInstance().apply {
-                    arguments = BaseIOTDeviceFragment.newBundleArguments(
+                    arguments = BaseMDDeviceFragment.newBundleArguments(
                         communicateWay,
                         deviceInfo,
                         bleDevice
                     )
                 },
                 BleDasDigitalOsmometerFragment.newInstance().apply {
-                    arguments = BaseIOTDeviceFragment.newBundleArguments(
+                    arguments = BaseMDDeviceFragment.newBundleArguments(
                         communicateWay,
                         deviceInfo,
                         bleDevice

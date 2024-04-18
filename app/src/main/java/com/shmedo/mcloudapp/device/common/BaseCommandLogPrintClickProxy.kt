@@ -1,0 +1,13 @@
+package com.shmedo.mcloudapp.device.common
+
+/**
+ * 创建者：gonghe
+ * 创建时间：2024/4/18
+ * 描述： TODO
+ */
+open class BaseCommandLogPrintClickProxy: BaseClickProxy() {
+    open fun onDebugModeChooseClick() {}
+
+    open fun onSendClick() {}
+
+}

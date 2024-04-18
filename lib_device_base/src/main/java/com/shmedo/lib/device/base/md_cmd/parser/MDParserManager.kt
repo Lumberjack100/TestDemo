@@ -22,7 +22,7 @@ class MDParserManager private constructor(
         cmdType: MDCommandType = MDCommandType.COMMON_SETTING_COMMAND
     ): MDCommandResult<T> {
 
-        val cmdStr = result.replace("\r\n", "")
+        val cmdStr = result.replace(MDConstants.COMMAND_FOOTER, "")
         //检查响应指令是否包含表示错误的字段
         if (cmdStr.endsWith(MDConstants.ERROR_FLAG)) {
             val reason = extractFailureReason(cmdStr)

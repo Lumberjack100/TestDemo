@@ -118,7 +118,7 @@
 
     <fragment
         android:id="@+id/bleDasAdvancedSettingFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.DasAdvancedSettingFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.ble.BleDasAdvancedSettingFragment"
         android:label="BleDasAdvancedSettingFragment"
         tools:layout="@layout/fragment_das_advanced_setting">
 
@@ -137,6 +137,12 @@
         android:label="DasAudibleAlarmFragment"
         tools:layout="@layout/fragment_das_audible_alarm" />
 
+    <fragment
+        android:id="@+id/bleMDCommandLogPrintFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.ble.BleMDCommandLogPrintFragment"
+        android:label="BleMDCommandLogPrintFragment"
+        tools:layout="@layout/fragment_ble_custom_command_log_print" />
+
     <action
         android:id="@+id/action_global_to_bleDasAdvancedSettingFragment"
         app:destination="@id/bleDasAdvancedSettingFragment"
@@ -148,6 +154,14 @@
     <action
         android:id="@+id/action_global_to_queryDeviceDataFragment"
         app:destination="@id/query_data_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_bleMDCommandLogPrintFragment"
+        app:destination="@id/bleMDCommandLogPrintFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

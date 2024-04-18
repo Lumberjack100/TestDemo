@@ -171,7 +171,7 @@ abstract class BaseMDDeviceFragment: BaseFragment()  {
         command: String
     ) {
         addIOTDeviceLogItem(priority = Log.INFO, data = command, logViewModel.viewModelScope)
-        bleViewModel.sendIOTCommand(command, false, deviceInfo.apikey)
+        bleViewModel.sendMDCommand(command)
     }
 
     /**

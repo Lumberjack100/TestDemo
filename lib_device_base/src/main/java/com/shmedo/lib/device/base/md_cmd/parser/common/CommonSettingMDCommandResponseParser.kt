@@ -3,6 +3,7 @@ package com.shmedo.lib.device.base.md_cmd.parser.common
 import com.shmedo.lib.device.base.iot_cmd.parser.ParseResult
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.device.base.md_cmd.interfaces.MDCommandParser
+import com.shmedo.lib.device.base.md_cmd.utils.MDConstants
 
 /**
  * 创建者：gonghe
@@ -13,7 +14,7 @@ class CommonSettingMDCommandResponseParser: MDCommandParser<String> {
 
     override fun parse(result: String): ParseResult<String> {
         return try {
-            val values = result.replace("\r\n", "")
+            val values = result.replace(MDConstants.COMMAND_FOOTER, "")
             // 子类实现
             ParseResult.Success(values)
         } catch (ex: Exception) {

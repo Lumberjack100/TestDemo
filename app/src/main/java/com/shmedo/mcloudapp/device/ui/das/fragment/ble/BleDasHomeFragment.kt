@@ -28,6 +28,7 @@ import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.device.base.md_cmd.utils.DesUtil
 import com.shmedo.lib.device.base.md_cmd.utils.HexUtils
 import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
+import com.shmedo.lib.device.base.md_cmd.utils.MDConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
@@ -47,7 +48,6 @@ import com.shmedo.mcloudapp.device.model.RunningStatusModule
 import com.shmedo.mcloudapp.device.model.SensorConfigModule
 import com.shmedo.mcloudapp.device.model.TelemetryDataModule
 import com.shmedo.mcloudapp.device.model.TimeCalibrationModule
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.device.viewmodel.state.BleDasHomeFragmentViewModel
@@ -263,7 +263,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
 
             else -> {
                 if (module.configModule.navId != 0) {
-                    val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                    val bundle = BaseMDDeviceFragment.newBundleArguments(
                         communicateWay,
                         deviceInfo,
                         bleDevice
@@ -322,7 +322,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
         val entity = AuthenticationEntity(deviceInfo.deviceToken, "0")
         val command =
             MDCommandUtil.getCommand(MDCommandType.AUTHENTICATION_CONFIG, entity.toCommandString())
-        commandItems.add("\r\n" + command)
+        commandItems.add(MDConstants.COMMAND_FOOTER + command)
 
         Timber.d("设置认证类型指令===%s", command)
         sendMDCommandFromCmdList(isStartTimeoutJob = false)
@@ -347,7 +347,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
                     DesUtil.encrypt(reverseRandomCode.toByteArray() + deskey.toByteArray(), deskey)
                 // 加密后认证码
                 val strEncrypt = HexUtils.bytesToHexString(byteEncrypt!!)!!
-                val command = "##222,${deviceInfo.deviceToken},0,${strEncrypt.uppercase()}\r\n"
+                val command = "##222,${deviceInfo.deviceToken},0,${strEncrypt.uppercase()}${MDConstants.COMMAND_FOOTER}"
                 Timber.d("设备登录验证指令===%s", command)
 
                 commandItems.clear()
@@ -680,7 +680,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
             ConfigModule(SensorConfigModule(navId = R.id.action_bleDasHomeFragment_to_bleDasSensorHomeFragment))
         )
         moduleList.add(
-            ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_dasAdvancedSettingFragment))
+            ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_bleDasAdvancedSettingFragment))
         )
         binding.recyclerview.models = moduleList
     }
