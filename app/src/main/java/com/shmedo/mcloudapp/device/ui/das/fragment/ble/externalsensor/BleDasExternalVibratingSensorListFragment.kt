@@ -4,7 +4,6 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.device.base.md_cmd.enums.SaveConfigMode
 import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
@@ -322,7 +321,7 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
     override fun setResultData(cmdStr: String) {
         when (MDCommandUtil.extractCommandType(cmdStr)) {
             MDCommandType.COLLECTOR_SENSOR_THRESHOLD_MULTI -> {//传感器触发阈值 162
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "传感器触发阈值配置出错"
@@ -348,7 +347,7 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
                     commandDescItems.removeFirst()
                 }
 
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "$commandDesc 配置出错"

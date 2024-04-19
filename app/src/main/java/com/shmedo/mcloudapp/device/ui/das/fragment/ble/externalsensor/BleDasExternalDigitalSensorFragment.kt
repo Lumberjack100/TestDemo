@@ -13,7 +13,6 @@ import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.device.base.md_cmd.model.das.MDDasExternalSensorInfo
 import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
@@ -621,7 +620,7 @@ class BleDasExternalDigitalSensorFragment : BaseMDDeviceFragment() {
     override fun setResultData(cmdStr: String) {
         when (MDCommandUtil.extractCommandType(cmdStr)) {
             MDCommandType.SENSOR_INITIAL_READING -> {//设置量水堰初始读数 171
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "量水堰初始读数设置出错"

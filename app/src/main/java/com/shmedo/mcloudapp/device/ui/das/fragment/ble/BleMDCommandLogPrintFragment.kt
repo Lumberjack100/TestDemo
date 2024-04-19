@@ -172,8 +172,6 @@ class BleMDCommandLogPrintFragment : BaseMDDeviceFragment() {
                 return when (menuItem.itemId) {
                     R.id.action_share -> {
                         //分享
-//                        shareLogText()
-//
                         shareLogToFile()
                         true
                     }

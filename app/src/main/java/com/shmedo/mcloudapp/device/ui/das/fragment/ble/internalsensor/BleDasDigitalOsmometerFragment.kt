@@ -8,7 +8,6 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.device.base.md_cmd.enums.MDOsmometerStatus
 import com.shmedo.lib.device.base.md_cmd.enums.SaveConfigMode
@@ -255,7 +254,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.DIGITAL_OSMOMETER_FUNCTION -> {//开启/关闭数字水位计功能 401
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg =
@@ -273,7 +272,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.SET_OSMOMETER_ADDRESS -> {//设置数字水位计地址 402
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "地址配置错误!"
@@ -289,7 +288,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.SET_OSMOMETER_TRIGGER -> {//设置数字水位计水位报警值 403
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "水位报警值配置错误!"
@@ -305,7 +304,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.SET_OSMOMETR_CORRECT -> {//设置数字水位计水深修正值 404
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "水深修正值配置错误!"
@@ -321,7 +320,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.SET_CORD_LENGTH -> {//设置数字水位计绳长 405
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "绳长配置错误!"
@@ -337,7 +336,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.SET_OSMOMETR_NOZZEL_HEIGHT -> {//设置数字水位计安装高程 406
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "安装高程配置错误!"
@@ -353,7 +352,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.SAVE_CONFIG_INFO -> {//
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "保存出错!"

@@ -120,7 +120,7 @@
         android:id="@+id/bleDasAdvancedSettingFragment"
         android:name="com.shmedo.mcloudapp.device.ui.das.fragment.ble.BleDasAdvancedSettingFragment"
         android:label="BleDasAdvancedSettingFragment"
-        tools:layout="@layout/fragment_das_advanced_setting">
+        tools:layout="@layout/fragment_ble_das_advanced_setting">
 
         <action
             android:id="@+id/action_bleDasAdvancedSettingFragment_to_dasAudibleAlarmFragment"

@@ -20,7 +20,6 @@ import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.md_cmd.assemble.entity.common.RegistrationPlatformEntity
 import com.shmedo.lib.device.base.md_cmd.assemble.entity.common.ServerAddressInfoEntity
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
@@ -500,7 +499,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.NET_LINK_COMMUN_PROTOCOL -> {//设置通讯协议应答
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "通讯协议配置错误!"
@@ -515,7 +514,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
                 }
             }
             MDCommandType.SET_SERVER_ADDRESS_PORT -> {//设置数据服务器地址、端口应答
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置数据中心地址、端口错误!"
@@ -531,7 +530,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.AUTO_REGISTRATION_PLATFORM -> {//MQTT 自动注册设置通选择注册平台时应答
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "平台类型配置错误!"
@@ -546,7 +545,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
                 }
             }
             MDCommandType.SET_AUTO_REGISTRATION_PLATFORM_SERVER_ADDRESS_PORT -> {//MQTT 自动注册设置注册平台地址时应答
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "注册平台地址、端口配置错误!"
@@ -561,7 +560,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
                 }
             }
             MDCommandType.MQTT_KEEP_ALIVE ->{//设置KeepAlive值应答
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "心跳间隔配置错误!"
@@ -576,7 +575,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
                 }
             }
             MDCommandType.SET_AUTO_REGISTRATION_PLATFORM_PARAM ->{//MQTT 自动注册设置参数
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "自动注册平台参数配置错误!"
@@ -591,7 +590,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
                 }
             }
             MDCommandType.SET_MANUAL_REGISTRATION_PLATFORM_PARAM ->{//MQTT 手动注册设置参数
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "手动注册平台参数配置错误!"
@@ -607,7 +606,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.SAVE_CONFIG_INFO -> {//
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "保存参数出错!"

@@ -19,7 +19,6 @@ import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.enums.ServerOne
 import com.shmedo.lib.device.base.iot_cmd.enums.ServerThree
 import com.shmedo.lib.device.base.iot_cmd.enums.ServerTwo
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.device.base.md_cmd.enums.SaveConfigMode
 import com.shmedo.lib.device.base.md_cmd.model.common.DeviceNetStatus
@@ -283,7 +282,7 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.DATA_MASSAGE_MODEL -> {//设置数据通讯方式
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "数据通讯方式配置错误!"
@@ -299,7 +298,7 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.DATA_REPORT_INTERVAL -> {//设置数据上报间隔
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "数据上报间隔配置错误!"
@@ -315,7 +314,7 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.SIX_TARGER_BD_NUMBER -> {//北斗配置
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "北斗目标卡号配置错误!"
@@ -331,7 +330,7 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.SAVE_CONFIG_INFO -> {//
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "保存出错!"

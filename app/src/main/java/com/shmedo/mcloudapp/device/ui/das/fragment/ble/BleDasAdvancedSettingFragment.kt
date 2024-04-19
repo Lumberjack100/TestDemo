@@ -6,7 +6,6 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
@@ -17,7 +16,7 @@ import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showMessage
-import com.shmedo.mcloudapp.databinding.FragmentDasAdvancedSettingBinding
+import com.shmedo.mcloudapp.databinding.FragmentBleDasAdvancedSettingBinding
 import com.shmedo.mcloudapp.device.common.BaseDasAdvancedSettingClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
@@ -30,7 +29,7 @@ import timber.log.Timber
  * 描述： TODO
  */
 class BleDasAdvancedSettingFragment : BaseMDDeviceFragment() {
-    private lateinit var binding: FragmentDasAdvancedSettingBinding
+    private lateinit var binding: FragmentBleDasAdvancedSettingBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private val mdParseManager: MDParserManager by inject()
 
@@ -42,7 +41,7 @@ class BleDasAdvancedSettingFragment : BaseMDDeviceFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_das_advanced_setting,
+            R.layout.fragment_ble_das_advanced_setting,
             BR.toolbarVM,
             toolbarViewModel
         )
@@ -50,7 +49,7 @@ class BleDasAdvancedSettingFragment : BaseMDDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentDasAdvancedSettingBinding
+        binding = getBinding() as FragmentBleDasAdvancedSettingBinding
         binding.llToolbar.toolbar.title = "设置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
@@ -67,6 +66,7 @@ class BleDasAdvancedSettingFragment : BaseMDDeviceFragment() {
         override fun onSyncLocationClick() {
 
         }
+
         override fun onCommandDebugClick() {
             val bundle = BaseMDDeviceFragment.newBundleArguments(
                 communicateWay,
@@ -98,11 +98,11 @@ class BleDasAdvancedSettingFragment : BaseMDDeviceFragment() {
     override fun setResultData(cmdStr: String) {
         when (MDCommandUtil.extractCommandType(cmdStr)) {
             MDCommandType.RESTORE_FACTORY_SETTING -> {
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = StringUtils.getString(R.string.reset_failed) + result.message
-                        Timber.e(errMsg)
+                        val errMsg = StringUtils.getString(R.string.reset_failed)
+                        Timber.e("$errMsg: ${result.message}")
                         Toaster.show(errMsg)
                         return
                     }
@@ -114,6 +114,7 @@ class BleDasAdvancedSettingFragment : BaseMDDeviceFragment() {
                     }
                 }
             }
+
             else -> {}
         }
     }

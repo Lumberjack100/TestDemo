@@ -10,7 +10,6 @@ import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.das.DasCollectorInfo
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
@@ -241,7 +240,7 @@ class BleDasCollectorSettingFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.SET_COLLECTOR_ADDRESS -> {//
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "采集器地址配置错误!"
@@ -257,7 +256,7 @@ class BleDasCollectorSettingFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.COLLECTOR_SOLUTION_FREQUENCY -> {//
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "采集器解算间隔配置错误!"
@@ -273,7 +272,7 @@ class BleDasCollectorSettingFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.COLLECTOR_STANDBY_TIME -> {//
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "采集器待机时长配置错误!"
@@ -289,7 +288,7 @@ class BleDasCollectorSettingFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.COLLECTOR_FREQUENCY -> {//
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "采集器采集间隔配置错误!"
@@ -305,7 +304,7 @@ class BleDasCollectorSettingFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.SET_COLLECTOR_SENSITIVITY -> {//
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "采集器灵敏度配置错误!"
@@ -321,7 +320,7 @@ class BleDasCollectorSettingFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.SAVE_CONFIG_INFO -> {//
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "保存出错!"

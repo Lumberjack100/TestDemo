@@ -11,7 +11,6 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTRainStation
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.md_cmd.enums.MDBreakAlarmStatus
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.device.base.md_cmd.enums.MDRainStation
@@ -233,7 +232,7 @@ class BleDasIOSensorFragment : BaseMDDeviceFragment() {
                     if (breakAlarmStatus == MDBreakAlarmStatus.QUERY) mdParseManager.parse<DasBaseConfigInfo>(
                         cmdStr,
                         MDCommandType.BREAK_ALARM_STATUS
-                    ) else mdParseManager.parse<CommonSettingCmdResult>(cmdStr)
+                    ) else mdParseManager.parse<String>(cmdStr)
 
                 when (result) {
                     is MDCommandResult.Failure -> {
@@ -259,7 +258,7 @@ class BleDasIOSensorFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.RAIN_STATION -> {//开关量传感器   0051：雨量计开启  0052：关闭  0053：断线报警器开启
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg =
@@ -284,7 +283,7 @@ class BleDasIOSensorFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.SETTING_RAIN_PRECISION -> {//设置雨量计精度 ##121
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "雨量计精度配置错误!"
@@ -300,7 +299,7 @@ class BleDasIOSensorFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.SAVE_CONFIG_INFO -> {//
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "保存参数出错!"

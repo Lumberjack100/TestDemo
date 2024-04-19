@@ -14,7 +14,6 @@ import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.md_cmd.assemble.entity.das.AuthenticationEntity
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
@@ -516,7 +515,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.LOW_ENERGY -> {//
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "激活/待机出错!"
@@ -562,7 +561,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.INSTANT_COLLEACTOR -> {//
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "遥测出错!"
@@ -581,7 +580,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.SAVE_CONFIG_INFO -> {//
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "$cmdStr 指令出错!"
@@ -600,7 +599,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
             }
 
             MDCommandType.REBOOT_DEVICE -> {//
-                when (val result = mdParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "重启出错!"
