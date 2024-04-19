@@ -17,6 +17,7 @@ import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.FragmentMainBinding
 import com.shmedo.mcloudapp.user.fragment.MineFragment
 import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 
 class MainFragment : BaseFragment() {
@@ -27,7 +28,7 @@ class MainFragment : BaseFragment() {
 
     override fun initViewModel() {
         mStates = getFragmentScopeViewModel()
-        loginRequestViewModel = getFragmentScopeViewModel()
+        loginRequestViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {

@@ -19,6 +19,7 @@ import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentCompanyHomeBinding
 import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.user.viewmodel.state.CompanyHomeViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class CompanyHomeFragment : BaseFragment() {
     private lateinit var binding: FragmentCompanyHomeBinding
@@ -29,7 +30,7 @@ class CompanyHomeFragment : BaseFragment() {
 
     override fun initViewModel() {
         mStates = getFragmentScopeViewModel()
-        loginRequestViewModel = getFragmentScopeViewModel()
+        loginRequestViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {

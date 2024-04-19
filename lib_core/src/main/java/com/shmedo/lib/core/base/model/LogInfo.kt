@@ -4,7 +4,6 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.UUID
 
 /**
  * 创建者：gonghe
@@ -19,7 +18,7 @@ import java.util.UUID
 @Entity(tableName = "log_info")
 data class LogInfo(
     @PrimaryKey
-    val id: String =  UUID.randomUUID().toString(),
+    val id: String = "",
     @ColumnInfo(name = "session_id") val sessionId: String,
     @ColumnInfo(name = "log_level") val logLevel: Int = LogLevel.DEBUG,
     var data: String = "",//

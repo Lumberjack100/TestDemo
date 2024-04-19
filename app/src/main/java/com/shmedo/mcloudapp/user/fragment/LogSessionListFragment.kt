@@ -24,16 +24,17 @@ import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.FragmentLogSessionListBinding
 import com.shmedo.mcloudapp.user.model.HoverHeaderModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class LogSessionListFragment : BaseFragment() {
     private lateinit var binding: FragmentLogSessionListBinding
     private lateinit var mStates: EmptyViewModel
-    private lateinit var loginViewModel: LogViewModel
+    private lateinit var logViewModel: LogViewModel
 
 
     override fun initViewModel() {
         mStates = getFragmentScopeViewModel()
-        loginViewModel = getFragmentScopeViewModel()
+        logViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -105,7 +106,7 @@ class LogSessionListFragment : BaseFragment() {
 
     private fun loadLogSessionList() {
         launchAndRepeatWithViewLifecycle {
-            loginViewModel.getSessionListByUser(MmkvCacheUtil.getUserName())
+            logViewModel.getSessionListByUser(MmkvCacheUtil.getUserName())
                 ?.let { logSessionList ->
                     if (logSessionList.isEmpty()) {
                         binding.refreshLayout.showEmpty()

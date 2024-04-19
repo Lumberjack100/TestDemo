@@ -16,32 +16,32 @@ import kotlinx.coroutines.withContext
  *
  *
  */
-class LocalDataRepository private constructor() {
+class LoggerRepositoryImp(private val database: AppDatabase) {
 
     //<editor-fold desc="日志会话信息">
-    suspend fun getAllSessionList(): List<SessionInfo>? = withContext(Dispatchers.IO) {
-        AppDatabase.INSTANCE.sessionInfoDao().getAllSessionList()
+    suspend fun getAllSessionList(): List<SessionInfo> = withContext(Dispatchers.IO) {
+        database.sessionInfoDao().getAllSessionList()
     }
 
-    suspend fun getSessionListByUser(userId: String): List<SessionInfo>? =
+    suspend fun getSessionListByUser(userId: String): List<SessionInfo> =
         withContext(Dispatchers.IO) {
-            AppDatabase.INSTANCE.sessionInfoDao().getSessionListByUser(userId)
+            database.sessionInfoDao().getSessionListByUser(userId)
         }
 
     suspend fun getSessionById(id: String): SessionInfo? = withContext(Dispatchers.IO) {
-        AppDatabase.INSTANCE.sessionInfoDao().getSessionById(id)
+        database.sessionInfoDao().getSessionById(id)
     }
 
     suspend fun insertSession(info: SessionInfo) = withContext(Dispatchers.IO) {
-        AppDatabase.INSTANCE.sessionInfoDao().insertSession(info)
+        database.sessionInfoDao().insertSession(info)
     }
 
     suspend fun insertSessionList(list: List<SessionInfo>) = withContext(Dispatchers.IO) {
-        AppDatabase.INSTANCE.sessionInfoDao().insertSessionList(list)
+        database.sessionInfoDao().insertSessionList(list)
     }
 
     suspend fun deleteSessionById(id: String) = withContext(Dispatchers.IO) {
-        AppDatabase.INSTANCE.sessionInfoDao().deleteById(id)
+        database.sessionInfoDao().deleteById(id)
     }
     // </editor-fold>
 
@@ -50,24 +50,24 @@ class LocalDataRepository private constructor() {
     suspend fun getLogListBySessionId(
         sessionId: String,
         level: Int
-    ): List<LogInfo>? = withContext(Dispatchers.IO) {
-        AppDatabase.INSTANCE.logInfoDao().getLogListBySessionId(sessionId, level)
+    ): List<LogInfo> = withContext(Dispatchers.IO) {
+        database.logInfoDao().getLogListBySessionId(sessionId, level)
     }
 
     suspend fun insertLog(info: LogInfo) = withContext(Dispatchers.IO) {
-        AppDatabase.INSTANCE.logInfoDao().insertLog(info)
+        database.logInfoDao().insertLog(info)
     }
 
     suspend fun insertLogList(list: List<LogInfo>) = withContext(Dispatchers.IO) {
-        AppDatabase.INSTANCE.logInfoDao().insertLogList(list)
+        database.logInfoDao().insertLogList(list)
     }
 
     suspend fun deleteLogById(id: String) = withContext(Dispatchers.IO) {
-        AppDatabase.INSTANCE.logInfoDao().deleteById(id)
+        database.logInfoDao().deleteById(id)
     }
 
     suspend fun deleteLogBySessionId(session_id: String) = withContext(Dispatchers.IO) {
-        AppDatabase.INSTANCE.logInfoDao().deleteBySessionId(session_id)
+        database.logInfoDao().deleteBySessionId(session_id)
     }
     // </editor-fold>
 
@@ -78,13 +78,9 @@ class LocalDataRepository private constructor() {
      * 清除历史日志,保留当天的日志
      */
     suspend fun clearHistoryLog() = withContext(Dispatchers.IO) {
-        AppDatabase.INSTANCE.logInfoDao()
+        database.logInfoDao()
             .clearHistoryData(TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")))
-        AppDatabase.INSTANCE.sessionInfoDao()
+        database.sessionInfoDao()
             .clearHistoryData(TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")))
-    }
-
-    companion object {
-        val instance = LocalDataRepository()
     }
 }

@@ -1,7 +1,8 @@
 package com.shmedo.mcloudapp.device.viewmodel.request
 
 import androidx.lifecycle.viewModelScope
-import com.shmedo.lib.core.base.viewmodel.BaseViewModel
+import com.shmedo.lib.core.base.viewmodel.BaseRequestViewModel
+import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.data.repository.remote.NetDataRepository
@@ -27,7 +28,8 @@ import kotlinx.coroutines.withContext
  * 创建时间：2023/9/4
  * 描述： 物联网平台透传指令
  */
-class NetIOTCommandViewModel : BaseViewModel() {
+class NetIOTCommandViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) :
+    BaseRequestViewModel(loggerRepositoryImp) {
     private val _cmdDispatchFlow: MutableSharedFlow<CmdDispatch> = MutableSharedFlow()
     val cmdDispatchFlow = _cmdDispatchFlow.asSharedFlow()
 

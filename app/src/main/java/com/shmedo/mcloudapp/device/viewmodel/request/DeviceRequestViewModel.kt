@@ -7,7 +7,8 @@ import com.shmedo.lib.core.base.model.DeviceDetailInfo
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.model.DeviceStatisticInfo
 import com.shmedo.lib.core.base.model.ProductInfo
-import com.shmedo.lib.core.base.viewmodel.BaseViewModel
+import com.shmedo.lib.core.base.viewmodel.BaseRequestViewModel
+import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.lib.network.response.DataResult
@@ -31,7 +32,9 @@ import timber.log.Timber
  *
  *
  */
-class DeviceRequestViewModel : BaseViewModel() {
+class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) :
+    BaseRequestViewModel(loggerRepositoryImp) {
+
     private val _deviceStatisticInfoResult = MutableResult<DataResult<DeviceStatisticInfo>>()
     val deviceStatisticInfoResult: Result<DataResult<DeviceStatisticInfo>> =
         _deviceStatisticInfoResult

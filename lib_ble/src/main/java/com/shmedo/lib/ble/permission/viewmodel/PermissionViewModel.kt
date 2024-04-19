@@ -34,7 +34,6 @@ package com.shmedo.lib.ble.permission.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.blankj.utilcode.util.Utils
 import com.shmedo.lib.ble.permission.bluetooth.BluetoothStateManager
 import com.shmedo.lib.ble.permission.location.LocationStateManager
 import com.shmedo.lib.ble.permission.util.FeatureNotAvailableReason
@@ -46,10 +45,10 @@ import kotlinx.coroutines.flow.stateIn
 /**
  * Needed for injecting to @Composable functions.
  */
-class PermissionViewModel : ViewModel() {
-    private val bluetoothManager by lazy { BluetoothStateManager(Utils.getApp().applicationContext) }
-    private val locationManager by lazy { LocationStateManager(Utils.getApp().applicationContext) }
-
+class PermissionViewModel(
+    private val bluetoothManager: BluetoothStateManager,
+    private val locationManager: LocationStateManager
+) : ViewModel() {
 
     val bluetoothState = bluetoothManager.bluetoothState()
         .stateIn(

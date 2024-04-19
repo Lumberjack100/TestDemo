@@ -3,7 +3,8 @@ package com.shmedo.mcloudapp.device.viewmodel.request
 import androidx.lifecycle.viewModelScope
 import com.shmedo.lib.ble.communicate.service.MedoBleRepository
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.viewmodel.BaseViewModel
+import com.shmedo.lib.core.base.viewmodel.BaseRequestViewModel
+import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
 import com.shmedo.mcloudapp.device.common.MedoViewState
 import com.shmedo.mcloudapp.device.common.WorkingState
 import kotlinx.coroutines.delay
@@ -23,7 +24,8 @@ import java.util.UUID
  *
  *
  */
-class BleViewModel : BaseViewModel() {
+class BleViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) :
+    BaseRequestViewModel(loggerRepositoryImp) {
     //    private val _state = MutableStateFlow<MedoViewState>(NoDeviceState)
 //    val state = _state.asStateFlow()
     private val _state: MutableSharedFlow<MedoViewState> = MutableSharedFlow()
@@ -65,7 +67,7 @@ class BleViewModel : BaseViewModel() {
                 )
             } else cmdStr
 
-            MedoBleRepository.instance.sendData(command+ "\r\n")
+            MedoBleRepository.instance.sendData(command + "\r\n")
         }
     }
 

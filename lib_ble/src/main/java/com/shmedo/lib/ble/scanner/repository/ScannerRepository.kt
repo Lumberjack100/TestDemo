@@ -18,25 +18,25 @@ import timber.log.Timber
  *
  *
  */
-class ScannerRepository internal constructor() {
+class ScannerRepository internal constructor( private val devicesDataStore: DevicesDataStore) {
     fun getScannerState(): Flow<ScanningState> =
         callbackFlow {
             val scanCallback: ScanCallback = object : ScanCallback() {
                 override fun onScanResult(callbackType: Int, result: ScanResult) {
                     if (result.isConnectable) {
-                        DevicesDataStore.instance.addNewDevice(result)
+                        devicesDataStore.addNewDevice(result)
 
-                        trySend(ScanningState.DevicesDiscovered(DevicesDataStore.instance.devices))
+                        trySend(ScanningState.DevicesDiscovered(devicesDataStore.devices))
                     }
                 }
 
                 override fun onBatchScanResults(results: List<ScanResult>) {
                     val newResults = results.filter { it.isConnectable }
                     newResults.forEach {
-                        DevicesDataStore.instance.addNewDevice(it)
+                        devicesDataStore.addNewDevice(it)
                     }
                     if (newResults.isNotEmpty()) {
-                        trySend(ScanningState.DevicesDiscovered(DevicesDataStore.instance.devices))
+                        trySend(ScanningState.DevicesDiscovered(devicesDataStore.devices))
                     }
                 }
 
@@ -63,10 +63,6 @@ class ScannerRepository internal constructor() {
         }
 
     fun clear() {
-        DevicesDataStore.instance.clear()
-    }
-
-    companion object {
-        val instance = ScannerRepository()
+        devicesDataStore.clear()
     }
 }

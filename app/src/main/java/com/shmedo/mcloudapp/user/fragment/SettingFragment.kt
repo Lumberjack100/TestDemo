@@ -17,18 +17,19 @@ import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.FragmentSettingBinding
 import com.shmedo.mcloudapp.user.viewmodel.state.SettingViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class SettingFragment : BaseFragment() {
     private lateinit var binding: FragmentSettingBinding
     private lateinit var mMessenger: PageMessenger
     private lateinit var mStates: SettingViewModel
-    private lateinit var loginViewModel: LogViewModel
+    private lateinit var logViewModel: LogViewModel
 
 
     override fun initViewModel() {
         mMessenger = getAppViewModel()
         mStates = getFragmentScopeViewModel()
-        loginViewModel = getFragmentScopeViewModel()
+        logViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -68,7 +69,7 @@ class SettingFragment : BaseFragment() {
                 CleanUtils.cleanInternalCache()
                 CleanUtils.cleanExternalCache()
                 //清除历史日志
-                loginViewModel.clearHistoryLog()
+                logViewModel.clearHistoryLog()
                 Toaster.show("清除缓存成功")
             }
         }

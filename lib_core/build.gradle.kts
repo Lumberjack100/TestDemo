@@ -65,7 +65,7 @@ dependencies {
 
     implementation(libs.glide)
 
-// 权限请求框架：https://github.com/getActivity/XXPermissions
+    // 权限请求框架：https://github.com/getActivity/XXPermissions
     implementation(libs.getActivity.xxpermission)
     //Material Dialog
     implementation(libs.bundles.material.dialogs)
@@ -75,6 +75,9 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.utilcodex)
     implementation(libs.mmkv)
+
+    //依赖注入框架
+    implementation(libs.koin.android)
 
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)

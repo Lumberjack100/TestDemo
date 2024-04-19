@@ -33,6 +33,7 @@ import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.BleScannerListViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import timber.log.Timber
 
 class BleScannerListFragment : BaseFragment() {
@@ -61,9 +62,9 @@ class BleScannerListFragment : BaseFragment() {
 
     override fun initViewModel() {
         mStates = getFragmentScopeViewModel()
-        deviceRequestViewModel = getFragmentScopeViewModel()
-        permissionViewModel = getFragmentScopeViewModel()
-        scannerViewModel = getFragmentScopeViewModel()
+        deviceRequestViewModel = getViewModel()
+        permissionViewModel = getViewModel()
+        scannerViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -151,7 +152,11 @@ class BleScannerListFragment : BaseFragment() {
                     }
                     DeviceHomeActivity.start(
                         mActivity,
-                        DeviceInfo(deviceToken = token, productToken = "TEST",productName = "测试设备"),
+                        DeviceInfo(
+                            deviceToken = token,
+                            productToken = "TEST",
+                            productName = "测试设备"
+                        ),
                         discoveredBluetoothDevice,
                         BleConnect
                     )

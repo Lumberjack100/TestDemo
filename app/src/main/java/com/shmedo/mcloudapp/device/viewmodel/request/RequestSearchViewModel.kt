@@ -2,7 +2,8 @@ package com.shmedo.mcloudapp.device.viewmodel.request
 
 
 import com.kunminx.architecture.domain.message.MutableResult
-import com.shmedo.lib.core.base.viewmodel.BaseViewModel
+import com.shmedo.lib.core.base.viewmodel.BaseRequestViewModel
+import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
 import com.shmedo.lib.core.ext.launch
 import com.shmedo.lib.core.util.MmkvCacheUtil
 
@@ -11,7 +12,9 @@ import com.shmedo.lib.core.util.MmkvCacheUtil
  * 时间　:
  * 描述　:
  */
-class RequestSearchViewModel : BaseViewModel() {
+class RequestSearchViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) :
+    BaseRequestViewModel(loggerRepositoryImp) {
+
     //搜索历史词数据
     val historyData: MutableResult<ArrayList<String>> = MutableResult()
 

@@ -61,10 +61,15 @@ class IdleResult<T> : BleManagerResult<T>
 class ConnectingResult<T>(device: BluetoothDevice) : DeviceHolder(device), BleManagerResult<T>
 class ConnectedResult<T>(device: BluetoothDevice) : DeviceHolder(device), BleManagerResult<T>
 class ReadyResult<T>(device: BluetoothDevice) : DeviceHolder(device), BleManagerResult<T>
-class SuccessResult<T>(device: BluetoothDevice, val data: T) : DeviceHolder(device), BleManagerResult<T>
+class SuccessResult<T>(device: BluetoothDevice, val data: T) : DeviceHolder(device),
+    BleManagerResult<T>
 
-class LinkLossResult<T>(device: BluetoothDevice, val data: T?) : DeviceHolder(device), BleManagerResult<T>
-class DisconnectedResult<T>(device: BluetoothDevice) : DeviceHolder(device), BleManagerResult<T>
+class LinkLossResult<T>(device: BluetoothDevice, val data: T?) : DeviceHolder(device),
+    BleManagerResult<T>
+
+class DisconnectedResult<T>(device: BluetoothDevice, val reason: Int = -1) : DeviceHolder(device),
+    BleManagerResult<T>
+
 class MissingServiceResult<T>(device: BluetoothDevice) : DeviceHolder(device), BleManagerResult<T>
 class UnknownErrorResult<T>(device: BluetoothDevice) : DeviceHolder(device), BleManagerResult<T>
 

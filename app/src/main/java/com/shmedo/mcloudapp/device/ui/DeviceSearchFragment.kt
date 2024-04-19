@@ -25,6 +25,7 @@ import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.FragmentDeviceSearchBinding
 import com.shmedo.mcloudapp.device.viewmodel.request.RequestSearchViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 /**
  * 创建者：gonghe
@@ -43,7 +44,7 @@ class DeviceSearchFragment : BaseFragment() {
 
     override fun initViewModel() {
         mStates =  getFragmentScopeViewModel()
-        requestSearchViewModel =  getFragmentScopeViewModel()
+        requestSearchViewModel =  getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {

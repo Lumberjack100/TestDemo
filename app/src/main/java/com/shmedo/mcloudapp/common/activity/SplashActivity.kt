@@ -4,13 +4,16 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
-import androidx.lifecycle.viewModelScope
 import com.amap.api.maps.MapsInitializer
 import com.gyf.immersionbar.ktx.immersionBar
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.core.ext.addSystemLogSession
+import com.shmedo.lib.core.base.model.LogLevel
+import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getAppViewModel
+import com.shmedo.lib.core.ext.getLogItem
+import com.shmedo.lib.core.ext.getSystemLogSession
+import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.MmkvCacheUtil.getPassword
 import com.shmedo.lib.core.util.MmkvCacheUtil.getUserName
 import com.shmedo.lib.core.util.MmkvCacheUtil.isAgreePrivate
@@ -18,23 +21,26 @@ import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.dismissLoadingDialog
+import com.shmedo.mcloudapp.common.utils.LogHelper
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.user.activity.LoginActivity
 import com.shmedo.mcloudapp.user.fragment.PolicyDialog
 import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
 import com.tencent.bugly.crashreport.CrashReport
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class SplashActivity : BaseActivity() {
     private lateinit var mMessenger: PageMessenger
     private lateinit var mStates: EmptyViewModel
     private lateinit var loginRequestViewModel: LoginRequestViewModel
-
+    private lateinit var logViewModel: LogViewModel
 
     override fun initViewModel() {
         mMessenger = getAppViewModel()
         mStates = getActivityScopeViewModel()
-        loginRequestViewModel = getActivityScopeViewModel()
+        loginRequestViewModel = getViewModel()
+        logViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -52,7 +58,14 @@ class SplashActivity : BaseActivity() {
     }
 
     override fun initData() {
-        addSystemLogSession(mStates.viewModelScope)
+        logViewModel.insertSession(getSystemLogSession())
+        logViewModel.insertLog(
+            getLogItem(
+                sessionId = MmkvCacheUtil.getAppLogSessionId(),
+                priority = LogLevel.INFO,
+                data = LogHelper.printDeviceInfo()
+            )
+        )
         if (!isAgreePrivate()) {
             showPrivateDialog()
         } else {

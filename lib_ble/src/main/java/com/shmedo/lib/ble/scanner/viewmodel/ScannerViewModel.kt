@@ -3,7 +3,7 @@ package com.shmedo.lib.ble.scanner.viewmodel
 import android.os.ParcelUuid
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.shmedo.lib.ble.scanner.repository.DevicesScanFilter
+import com.shmedo.lib.ble.scanner.model.DevicesScanFilter
 import com.shmedo.lib.ble.scanner.repository.ScannerRepository
 import com.shmedo.lib.ble.scanner.repository.ScanningState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.stateIn
  */
 private const val FILTER_RSSI = -50 // [dBm]
 
-class ScannerViewModel : ViewModel() {
+class ScannerViewModel(private val scannerRepository: ScannerRepository) : ViewModel() {
     private var uuid: ParcelUuid? = null
 
     private val filterConfig = MutableStateFlow(
@@ -34,12 +34,12 @@ class ScannerViewModel : ViewModel() {
     )
 
     val scannerState = filterConfig
-        .combine(ScannerRepository.instance.getScannerState()) { config, result ->
+        .combine(scannerRepository.getScannerState()) { config, result ->
             when (result) {
                 is ScanningState.DevicesDiscovered -> result.applyFilters(config)
                 else -> result
             }
-        } .stateIn(
+        }.stateIn(
             viewModelScope,
             WhileSubscribed(5000),
             ScanningState.Loading
@@ -72,11 +72,11 @@ class ScannerViewModel : ViewModel() {
     }
 
     fun refresh() {
-        ScannerRepository.instance.clear()
+        scannerRepository.clear()
     }
 
     override fun onCleared() {
         super.onCleared()
-        ScannerRepository.instance.clear()
+        scannerRepository.clear()
     }
 }

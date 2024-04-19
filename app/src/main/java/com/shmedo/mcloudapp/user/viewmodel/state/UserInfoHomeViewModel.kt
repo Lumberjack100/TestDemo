@@ -1,11 +1,12 @@
 package com.shmedo.mcloudapp.user.viewmodel.state
 
+import androidx.lifecycle.ViewModel
 import com.blankj.utilcode.util.ResourceUtils
-import com.shmedo.lib.core.base.viewmodel.BaseViewModel
+import com.shmedo.lib.core.base.viewmodel.BaseRequestViewModel
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
 import com.shmedo.mcloudapp.R
 
-class UserInfoHomeViewModel : BaseViewModel() {
+class UserInfoHomeViewModel : ViewModel() {
 
     val imageUrl = NonNullObservableField("")
 

@@ -5,7 +5,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewModelScope
-import com.shmedo.lib.core.base.viewmodel.BaseViewModel
+import com.shmedo.lib.core.base.viewmodel.BaseRequestViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -41,7 +41,7 @@ inline fun Fragment.launchWithViewLifecycle(
  * @param success 成功回调
  * @param error 失败回调 可不给
  */
-fun <T> BaseViewModel.launch(
+fun <T> BaseRequestViewModel.launch(
     block: () -> T,
     success: (T) -> Unit,
     error: (Throwable) -> Unit = {}

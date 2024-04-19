@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.di
+package com.shmedo.lib.device.base.md_cmd.di
 
 import com.shmedo.lib.device.base.md_cmd.interfaces.MDCommandParser
 import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
@@ -69,6 +69,6 @@ val mdCommandModule = module {
             get<MDDasDigitalPiezometerInfoParser>(),
             get<MDDasExternalSensorInfoParser>()
         )
-        MDParserManager.getInstance(parsers)
+        MDParserManager(parsers)
     }
 }

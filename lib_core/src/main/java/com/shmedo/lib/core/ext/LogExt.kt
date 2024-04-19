@@ -5,83 +5,47 @@ import com.blankj.utilcode.util.TimeUtils
 import com.shmedo.lib.core.base.model.LogInfo
 import com.shmedo.lib.core.base.model.LogLevel
 import com.shmedo.lib.core.base.model.SessionInfo
-import com.shmedo.lib.core.data.repository.LocalDataRepository
 import com.shmedo.lib.core.util.MmkvCacheUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import timber.log.Timber
+import java.util.UUID
 
 /**
  * 创建者：gonghe
  * 创建时间：2023/12/29
  * 描述： TODO
  */
-
-fun addSystemLogSession(scope: CoroutineScope) {
-    scope.launch {
-        val sessionInfo = SessionInfo(
-            key = "V " + AppUtils.getAppVersionName(),
-            name = "系统日志",
-            createBy = MmkvCacheUtil.getUserName(),
-            createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
-            createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
-        )
-        LocalDataRepository.instance.insertSession(sessionInfo)
-        MmkvCacheUtil.setAppLogSessionId(sessionInfo.id)
-    }
+fun getSystemLogSession(): SessionInfo {
+    val session = SessionInfo(
+        id = UUID.randomUUID().toString(),
+        key = "V " + AppUtils.getAppVersionName(),
+        name = "系统日志",
+        createBy = MmkvCacheUtil.getUserName(),
+        createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
+        createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
+    )
+    MmkvCacheUtil.setAppLogSessionId(session.id)
+    return session
 }
 
-fun addSystemLogItem(priority: Int, data: String, scope: CoroutineScope) {
-    scope.launch {
-        val logInfo = LogInfo(
-            sessionId = MmkvCacheUtil.getAppLogSessionId(),
-            logLevel = LogLevel.fromPriority(priority),
-            data = data,
-            createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
-            createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm:ss.SSS")),
-        )
-        LocalDataRepository.instance.insertLog(logInfo)
-    }
+fun getIOTDeviceLogSession(mKey: String, mName: String): SessionInfo {
+    val session = SessionInfo(
+        id = UUID.randomUUID().toString(),
+        key = mKey,
+        name = mName,
+        createBy = MmkvCacheUtil.getUserName(),
+        createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
+        createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
+    )
+    MmkvCacheUtil.setIOTDeviceLogSessionId(session.id)
+    return session
 }
 
-
-fun addIOTDeviceLogSession(mKey: String, mName: String, scope: CoroutineScope) {
-    scope.launch {
-        val sessionInfo = SessionInfo(
-            key = mKey,
-            name = mName,
-            createBy = MmkvCacheUtil.getUserName(),
-            createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
-            createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
-        )
-        LocalDataRepository.instance.insertSession(sessionInfo)
-        MmkvCacheUtil.setIOTDeviceLogSessionId(sessionInfo.id)
-    }
-}
-
-fun addIOTDeviceLogItem(priority: Int, data: String, scope: CoroutineScope) {
-    scope.launch {
-        val logInfo = LogInfo(
-            sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-            logLevel = LogLevel.fromPriority(priority),
-            data = data,
-            createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
-            createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm:ss.SSS")),
-        )
-        LocalDataRepository.instance.insertLog(logInfo)
-    }
-}
-
-
-/**
- * 控制台输出带协程信息的log
- */
-fun logX(any: Any?) {
-    Timber.d(
-        """
-================================
-$any
-${TimeUtils.getNowString()} Thread:${Thread.currentThread().name}
-""".trimIndent()
+fun getLogItem(sessionId: String, priority: Int, data: String): LogInfo {
+    return LogInfo(
+        id = UUID.randomUUID().toString(),
+        sessionId = sessionId,
+        logLevel = LogLevel.fromPriority(priority),
+        data = data,
+        createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
+        createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm:ss.SSS")),
     )
 }

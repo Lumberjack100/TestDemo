@@ -28,6 +28,7 @@ import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentNetDeviceListBinding
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.NetDeviceListViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.text.DecimalFormat
 
 class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
@@ -50,7 +51,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
     override fun initViewModel() {
         mStates =  getFragmentScopeViewModel()
-        deviceRequestViewModel =  getFragmentScopeViewModel()
+        deviceRequestViewModel =  getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {

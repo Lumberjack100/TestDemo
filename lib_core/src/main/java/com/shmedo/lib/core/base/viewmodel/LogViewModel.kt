@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.shmedo.lib.core.base.model.LogInfo
 import com.shmedo.lib.core.base.model.LogLevel
 import com.shmedo.lib.core.base.model.SessionInfo
-import com.shmedo.lib.core.data.repository.LocalDataRepository
+import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
 import kotlinx.coroutines.launch
 
 /**
@@ -13,36 +13,35 @@ import kotlinx.coroutines.launch
  * 创建时间：2023/12/27
  * 描述： TODO
  */
-class LogViewModel : ViewModel() {
+class LogViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) : ViewModel() {
     suspend fun getSessionListByUser(
         userId: String
-    ): List<SessionInfo>? = LocalDataRepository.instance.getSessionListByUser(userId)
+    ): List<SessionInfo> = loggerRepositoryImp.getSessionListByUser(userId)
 
     fun insertSession(info: SessionInfo) = viewModelScope.launch {
-        LocalDataRepository.instance.insertSession(info)
+        loggerRepositoryImp.insertSession(info)
     }
 
     fun deleteSessionById(primaryId: String) = viewModelScope.launch {
-        LocalDataRepository.instance.deleteSessionById(primaryId)
+        loggerRepositoryImp.deleteSessionById(primaryId)
     }
 
     suspend fun getLogListBySessionId(
         sessionId: String, level: Int = LogLevel.DEBUG
-    ): List<LogInfo>? = LocalDataRepository.instance.getLogListBySessionId(sessionId, level)
+    ): List<LogInfo> = loggerRepositoryImp.getLogListBySessionId(sessionId, level)
 
     fun insertLog(info: LogInfo) = viewModelScope.launch {
-        LocalDataRepository.instance.insertLog(info)
+        loggerRepositoryImp.insertLog(info)
     }
 
     fun insertLogList(list: List<LogInfo>) = viewModelScope.launch {
-        LocalDataRepository.instance.insertLogList(list)
+        loggerRepositoryImp.insertLogList(list)
     }
 
     /**
      * 清除历史日志,保留当天的日志
      */
     fun clearHistoryLog() = viewModelScope.launch {
-        LocalDataRepository.instance.clearHistoryLog()
+        loggerRepositoryImp.clearHistoryLog()
     }
-
 }

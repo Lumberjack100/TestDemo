@@ -22,6 +22,7 @@ import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentDeviceSearchResultBinding
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 /**
  * 创建者：gonghe
@@ -44,7 +45,7 @@ class DeviceSearchResultFragment : BaseFragment() {
 
     override fun initViewModel() {
         mStates =  getFragmentScopeViewModel()
-        deviceRequestViewModel =  getFragmentScopeViewModel()
+        deviceRequestViewModel =  getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {

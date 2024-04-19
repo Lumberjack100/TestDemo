@@ -21,6 +21,7 @@ import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceInfoViewModel
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.text.DecimalFormat
 
 class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
@@ -33,7 +34,7 @@ class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
     override fun initViewModel() {
         super.initViewModel()
         mStates = getFragmentScopeViewModel()
-        deviceRequestViewModel = getFragmentScopeViewModel()
+        deviceRequestViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {

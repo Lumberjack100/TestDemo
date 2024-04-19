@@ -41,6 +41,7 @@ import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.user.viewmodel.state.UserInfoHomeViewModel
 import org.json.JSONException
 import org.json.JSONObject
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -54,7 +55,7 @@ class UserInfoHomeFragment : BaseFragment() {
 
     override fun initViewModel() {
         mStates = getFragmentScopeViewModel()
-        loginRequestViewModel = getFragmentScopeViewModel()
+        loginRequestViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {

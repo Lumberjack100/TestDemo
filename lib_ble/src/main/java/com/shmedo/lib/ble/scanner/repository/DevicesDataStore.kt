@@ -31,14 +31,5 @@ internal class DevicesDataStore constructor() {
         devices.clear()
         data.value = devices
     }
-
-    companion object {
-        val instance = DevicesDataStore()
-    }
 }
 
-data class DevicesScanFilter(
-    val filterUuidRequired: Boolean?,
-    val filterNearbyOnly: Boolean,
-    val filterWithNames: Boolean
-)

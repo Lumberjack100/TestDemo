@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.di
+package com.shmedo.lib.device.base.iot_cmd.di
 
 import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
@@ -211,6 +211,6 @@ val iotCommandModule = module {
             get<MRDOPortParamParser>(),
             get<MRDIPortParamParser>(),
         )
-        IOTParserManager.getInstance(parsers)
+        IOTParserManager(parsers)
     }
 }

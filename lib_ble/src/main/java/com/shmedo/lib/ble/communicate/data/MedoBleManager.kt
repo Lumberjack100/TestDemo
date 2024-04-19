@@ -52,7 +52,6 @@ import com.shmedo.lib.ble.communicate.spec.GOCW91200Spec
 import com.shmedo.lib.ble.communicate.spec.MS52SF1Spec
 import com.shmedo.lib.ble.communicate.spec.PacketMerger
 import com.shmedo.lib.ble.communicate.spec.USRSpec
-import com.shmedo.lib.core.ext.addIOTDeviceLogItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
@@ -87,53 +86,35 @@ class MedoBleManager(
         connectionObserver = object : ConnectionObserver {
             override fun onDeviceConnecting(device: BluetoothDevice) {
                 Timber.v("onDeviceConnecting()")
-                addIOTDeviceLogItem(
-                    priority = Log.INFO,
-                    data = "device ${device.address} connecting",
-                    scope
-                )
                 _data.tryEmit(ConnectingResult(device))
             }
 
             override fun onDeviceConnected(device: BluetoothDevice) {
                 Timber.v("onDeviceConnected()")
-                addIOTDeviceLogItem(priority = Log.INFO, data = "device connected", scope)
                 _data.tryEmit(ConnectedResult(device))
             }
 
             override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {
                 Timber.e("onDeviceFailedToConnect(), reason: $reason")
-                addIOTDeviceLogItem(
-                    priority = Log.ERROR,
-                    data = "device failed to connect, reason: $reason",
-                    scope
-                )
                 _data.tryEmit(MissingServiceResult(device))
             }
 
             override fun onDeviceReady(device: BluetoothDevice) {
                 Timber.v("onDeviceReady()")
-                addIOTDeviceLogItem(priority = Log.INFO, data = "device ready", scope)
                 _data.tryEmit(ReadyResult(device))
             }
 
             override fun onDeviceDisconnecting(device: BluetoothDevice) {
                 Timber.w("onDeviceDisconnecting()")
-                addIOTDeviceLogItem(priority = Log.WARN, data = "device disconnecting", scope)
             }
 
             override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {
                 Timber.e("onDeviceDisconnected(), reason: $reason")
-                addIOTDeviceLogItem(
-                    priority = Log.ERROR,
-                    data = "device disconnected, reason: $reason",
-                    scope
-                )
                 _data.tryEmit(
                     when (reason) {
                         ConnectionObserver.REASON_NOT_SUPPORTED -> MissingServiceResult(device)
                         ConnectionObserver.REASON_LINK_LOSS -> LinkLossResult(device, null)
-                        ConnectionObserver.REASON_SUCCESS -> DisconnectedResult(device)
+                        ConnectionObserver.REASON_SUCCESS -> DisconnectedResult(device, reason)
                         else -> UnknownErrorResult(device)
                     }
                 )

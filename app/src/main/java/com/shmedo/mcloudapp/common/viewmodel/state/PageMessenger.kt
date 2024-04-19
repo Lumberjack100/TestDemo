@@ -1,8 +1,8 @@
 package com.shmedo.mcloudapp.common.viewmodel.state
 
+import androidx.lifecycle.ViewModel
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
-import com.shmedo.lib.core.base.viewmodel.BaseViewModel
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
 import com.shmedo.mcloudapp.device.common.MRPortSensorRefreshResult
 
@@ -15,7 +15,7 @@ import com.shmedo.mcloudapp.device.common.MRPortSensorRefreshResult
  *
  *
  */
-class PageMessenger : BaseViewModel(){
+class PageMessenger : ViewModel(){
     //状态栏颜色
     private val _statusBarColor = MutableResult<Int>()
     val statusBarColor: Result<Int> = _statusBarColor

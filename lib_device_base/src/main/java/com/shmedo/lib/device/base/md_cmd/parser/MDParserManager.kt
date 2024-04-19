@@ -11,8 +11,8 @@ import com.shmedo.lib.device.base.md_cmd.utils.MDConstants
  * 创建时间:  2023/9/22 <br/>
  * 描述：    解析器管理器
  */
-class MDParserManager private constructor(
-    parsers: List<MDCommandParser<*>>
+class MDParserManager constructor(
+    private val parsers: List<MDCommandParser<*>>
 ) {
     private val parserMap: Map<MDCommandType, MDCommandParser<*>> =
         parsers.associateBy { it.commandType() }
@@ -56,15 +56,5 @@ class MDParserManager private constructor(
      */
     private fun extractFailureReason(result: String): String {
         return "未知错误"
-    }
-
-    companion object {
-        @Volatile
-        private var INSTANCE: MDParserManager? = null
-
-        fun getInstance(parsers: List<MDCommandParser<*>>): MDParserManager =
-            INSTANCE ?: synchronized(this) {
-                INSTANCE ?: MDParserManager(parsers).also { INSTANCE = it }
-            }
     }
 }

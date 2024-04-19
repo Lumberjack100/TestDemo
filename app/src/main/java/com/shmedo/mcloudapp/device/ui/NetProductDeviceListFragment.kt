@@ -18,6 +18,7 @@ import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentNetProductDeviceListBinding
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class NetProductDeviceListFragment : BaseFragment() {
     private lateinit var binding: FragmentNetProductDeviceListBinding
@@ -29,7 +30,7 @@ class NetProductDeviceListFragment : BaseFragment() {
 
     override fun initViewModel() {
         mStates =  getFragmentScopeViewModel()
-        deviceRequestViewModel = getFragmentScopeViewModel()
+        deviceRequestViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {

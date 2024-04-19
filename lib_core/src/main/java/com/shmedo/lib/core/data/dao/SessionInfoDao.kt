@@ -22,13 +22,13 @@ interface SessionInfoDao {
     fun getSessionListByUserLiveData(userId: String): LiveData<List<SessionInfo>?>
 
     @Query("select * from sessions  where create_by = :userId")
-    suspend fun getSessionListByUser(userId: String): List<SessionInfo>?
+    suspend fun getSessionListByUser(userId: String): List<SessionInfo>
 
     @Query("select * from sessions  where id = :id")
     suspend fun getSessionById(id: String): SessionInfo?
 
     @Query("select * from sessions")
-    suspend fun getAllSessionList(): List<SessionInfo>?
+    suspend fun getAllSessionList(): List<SessionInfo>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSession(record: SessionInfo)

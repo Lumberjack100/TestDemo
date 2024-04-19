@@ -34,6 +34,7 @@ import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.FragmentLogDataBinding
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -42,7 +43,7 @@ import java.util.Locale
 class LogDataFragment : BaseFragment() {
     private lateinit var binding: FragmentLogDataBinding
     private lateinit var mStates: EmptyViewModel
-    private lateinit var loginViewModel: LogViewModel
+    private lateinit var logViewModel: LogViewModel
 
     private var statusBarColor = 0
     private lateinit var sessionInfo: SessionInfo
@@ -52,7 +53,7 @@ class LogDataFragment : BaseFragment() {
 
     override fun initViewModel() {
         mStates = getFragmentScopeViewModel()
-        loginViewModel = getFragmentScopeViewModel()
+        logViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -102,7 +103,7 @@ class LogDataFragment : BaseFragment() {
 
     private fun loadLogList(level: Int = LogLevel.DEBUG) {
         launchWithViewLifecycle {
-            loginViewModel.getLogListBySessionId(
+            logViewModel.getLogListBySessionId(
                 sessionInfo.id,
                 level
             )?.let { logList ->

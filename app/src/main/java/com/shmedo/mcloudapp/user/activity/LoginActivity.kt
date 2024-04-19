@@ -35,6 +35,7 @@ import com.shmedo.mcloudapp.user.model.ContentType
 import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.user.viewmodel.state.LoginViewModel
 import com.tencent.bugly.crashreport.CrashReport
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class LoginActivity : BaseActivity() {
     private lateinit var binding: ActivityLoginBinding
@@ -44,7 +45,7 @@ class LoginActivity : BaseActivity() {
 
     override fun initViewModel() {
         mStates = getActivityScopeViewModel()
-        loginRequestViewModel = getActivityScopeViewModel()
+        loginRequestViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {

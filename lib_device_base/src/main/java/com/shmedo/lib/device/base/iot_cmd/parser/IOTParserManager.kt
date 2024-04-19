@@ -9,8 +9,8 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
  * 创建时间:  2023/9/22 <br/>
  * 描述：    解析器管理器
  */
-class IOTParserManager private constructor(
-    parsers: List<IOTCommandParser<*>>
+class IOTParserManager constructor(
+    private val parsers: List<IOTCommandParser<*>>
 ) {
     private val parserMap: Map<IOTCommandType, IOTCommandParser<*>> =
         parsers.associateBy { it.commandType() }
@@ -60,13 +60,13 @@ class IOTParserManager private constructor(
         }
     }
 
-    companion object {
-        @Volatile
-        private var INSTANCE: IOTParserManager? = null
-
-        fun getInstance(parsers: List<IOTCommandParser<*>>): IOTParserManager =
-            INSTANCE ?: synchronized(this) {
-                INSTANCE ?: IOTParserManager(parsers).also { INSTANCE = it }
-            }
-    }
+//    companion object {
+//        @Volatile
+//        private var INSTANCE: IOTParserManager? = null
+//
+//        fun getInstance(parsers: List<IOTCommandParser<*>>): IOTParserManager =
+//            INSTANCE ?: synchronized(this) {
+//                INSTANCE ?: IOTParserManager(parsers).also { INSTANCE = it }
+//            }
+//    }
 }

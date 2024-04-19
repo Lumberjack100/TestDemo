@@ -29,6 +29,7 @@ import com.shmedo.mcloudapp.device.model.CloudDeviceData
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.QueryDeviceDataViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 
 class QueryDeviceDataFragment : BaseFragment() {
@@ -65,7 +66,7 @@ class QueryDeviceDataFragment : BaseFragment() {
     override fun initViewModel() {
         toolbarViewModel = getFragmentScopeViewModel()
         mHeadStates = getFragmentScopeViewModel()
-        deviceRequestViewModel = getFragmentScopeViewModel()
+        deviceRequestViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {

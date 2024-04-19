@@ -4,7 +4,6 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.UUID
 
 /**
  * 创建者：gonghe
@@ -19,7 +18,7 @@ import java.util.UUID
 @Entity(tableName = "sessions")
 data class SessionInfo(
     @PrimaryKey
-    val id: String = UUID.randomUUID().toString(),
+    val id: String = "",
     var key: String = "",//
     var name: String = "",//
     @ColumnInfo(name = "create_by") var createBy: String = "",//创建人

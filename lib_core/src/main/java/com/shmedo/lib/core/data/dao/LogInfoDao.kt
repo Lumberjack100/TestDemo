@@ -19,7 +19,7 @@ import com.shmedo.lib.core.base.model.LogInfo
 interface LogInfoDao {
 
     @Query("select * from log_info  where session_id = :sessionId and log_level>= :level")
-    suspend fun getLogListBySessionId(sessionId: String, level: Int): List<LogInfo>?
+    suspend fun getLogListBySessionId(sessionId: String, level: Int): List<LogInfo>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLog(record: LogInfo)

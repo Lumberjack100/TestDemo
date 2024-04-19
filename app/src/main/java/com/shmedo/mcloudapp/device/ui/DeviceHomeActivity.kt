@@ -11,8 +11,8 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
-import com.shmedo.lib.core.ext.addIOTDeviceLogSession
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
+import com.shmedo.lib.core.ext.getIOTDeviceLogSession
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.MoshiUtil
@@ -27,6 +27,7 @@ import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.model.TcpConnect
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class DeviceHomeActivity : BaseActivity() {
     private lateinit var binding: ActivityDeviceHomeBinding
@@ -41,7 +42,7 @@ class DeviceHomeActivity : BaseActivity() {
 
     override fun initViewModel() {
         mStates = getActivityScopeViewModel()
-        logViewModel = getActivityScopeViewModel()
+        logViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -61,7 +62,7 @@ class DeviceHomeActivity : BaseActivity() {
         }
         addHistoryList()
         deviceInfo?.let {
-            addIOTDeviceLogSession(it.firmwareVersion, it.deviceToken, lifecycleScope)
+            logViewModel.insertSession(getIOTDeviceLogSession(it.firmwareVersion, it.deviceToken))
         }
         binding.deviceHomeHostFragment.post {
             setGraph()

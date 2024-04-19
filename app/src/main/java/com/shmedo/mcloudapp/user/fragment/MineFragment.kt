@@ -18,24 +18,25 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.nav
 import com.shmedo.mcloudapp.common.ext.showMessage
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
-import com.shmedo.mcloudapp.common.viewmodel.request.ShareRequestViewModel
+import com.shmedo.mcloudapp.common.viewmodel.request.AppUpdateViewModel
 import com.shmedo.mcloudapp.databinding.FragmentMineBinding
 import com.shmedo.mcloudapp.user.activity.LoginActivity
 import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.user.viewmodel.state.MineViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class MineFragment : BaseFragment() {
     private lateinit var binding: FragmentMineBinding
     private lateinit var mStates: MineViewModel
-    private lateinit var shareRequestViewModel: ShareRequestViewModel
+    private lateinit var appUpdateViewModel: AppUpdateViewModel
     private lateinit var loginRequestViewModel: LoginRequestViewModel
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
 
     override fun initViewModel() {
         mStates = getFragmentScopeViewModel()
-        shareRequestViewModel = getFragmentScopeViewModel()
-        loginRequestViewModel = getFragmentScopeViewModel()
+        appUpdateViewModel = getViewModel()
+        loginRequestViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -107,7 +108,7 @@ class MineFragment : BaseFragment() {
          * 版本检查
          */
         fun onVersionCheckClick() {
-            shareRequestViewModel.requestCheckAppVersion(true)
+            appUpdateViewModel.requestCheckAppVersion(true)
         }
 
         fun onSettingClick() {

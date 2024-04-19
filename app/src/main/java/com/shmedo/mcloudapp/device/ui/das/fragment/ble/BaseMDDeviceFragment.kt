@@ -1,9 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.das.fragment.ble
 
 import android.os.Bundle
-import android.util.Log
 import androidx.annotation.CallSuper
-import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.PageRefreshLayout
 import com.hjq.toast.Toaster
@@ -18,13 +16,13 @@ import com.shmedo.lib.ble.communicate.service.base.SuccessResult
 import com.shmedo.lib.ble.communicate.service.base.UnknownErrorResult
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.base.model.LogLevel
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
-import com.shmedo.lib.core.ext.addIOTDeviceLogItem
-import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getAppViewModel
-import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.core.ext.getLogItem
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.ext.dismissLoadingDialog
 import com.shmedo.mcloudapp.common.ext.showLoadingDialog
@@ -39,6 +37,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import timber.log.Timber
 import java.util.LinkedList
 
@@ -47,7 +46,7 @@ import java.util.LinkedList
  * 创建时间：2024/4/11
  * 描述： TODO
  */
-abstract class BaseMDDeviceFragment: BaseFragment()  {
+abstract class BaseMDDeviceFragment : BaseFragment() {
     protected lateinit var mMessenger: PageMessenger
     protected lateinit var bleViewModel: BleViewModel
     protected lateinit var logViewModel: LogViewModel
@@ -66,8 +65,8 @@ abstract class BaseMDDeviceFragment: BaseFragment()  {
     @CallSuper
     override fun initViewModel() {
         mMessenger = getAppViewModel()
-        bleViewModel = getFragmentScopeViewModel()
-        logViewModel = getActivityScopeViewModel()
+        bleViewModel = getViewModel()
+        logViewModel = getViewModel()
     }
 
     @CallSuper
@@ -113,10 +112,12 @@ abstract class BaseMDDeviceFragment: BaseFragment()  {
                     }
 
                     is SuccessResult -> {
-                        addIOTDeviceLogItem(
-                            priority = Log.INFO,
-                            data = state.result.data.response,
-                            logViewModel.viewModelScope
+                        logViewModel.insertLog(
+                            getLogItem(
+                                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
+                                priority = LogLevel.INFO,
+                                data = state.result.data.response,
+                            )
                         )
                         setResultData(state.result.data.response)
                     }
@@ -170,7 +171,14 @@ abstract class BaseMDDeviceFragment: BaseFragment()  {
     protected fun sendDebugCommand(
         command: String
     ) {
-        addIOTDeviceLogItem(priority = Log.INFO, data = command, logViewModel.viewModelScope)
+
+        logViewModel.insertLog(
+            getLogItem(
+                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
+                priority = LogLevel.INFO,
+                data = command,
+            )
+        )
         bleViewModel.sendMDCommand(command)
     }
 
@@ -191,7 +199,13 @@ abstract class BaseMDDeviceFragment: BaseFragment()  {
 
         val command = commandItems.first
         commandItems.removeFirst()
-        addIOTDeviceLogItem(priority = Log.INFO, data = command, logViewModel.viewModelScope)
+        logViewModel.insertLog(
+            getLogItem(
+                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
+                priority = LogLevel.INFO,
+                data = command,
+            )
+        )
 
         bleViewModel.sendMDCommand(command, delaySendMillis)
         if (isStartTimeoutJob)
@@ -238,10 +252,12 @@ abstract class BaseMDDeviceFragment: BaseFragment()  {
         msg: String = ""
     ) {
         Timber.i("${javaClass.simpleName} 发送指令超时")
-        addIOTDeviceLogItem(
-            priority = Log.ERROR,
-            data = "Response TimeOut",
-            logViewModel.viewModelScope
+        logViewModel.insertLog(
+            getLogItem(
+                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
+                priority = LogLevel.ERROR,
+                data = "Response TimeOut"
+            )
         )
 
         timeoutJob?.cancel()

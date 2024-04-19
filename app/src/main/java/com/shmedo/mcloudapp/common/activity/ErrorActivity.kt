@@ -1,17 +1,19 @@
 package com.shmedo.mcloudapp.common.activity
 
 import android.os.Bundle
-import android.util.Log
-import androidx.lifecycle.viewModelScope
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash
 import com.blankj.utilcode.util.ClickUtils
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.core.ext.addSystemLogItem
+import com.shmedo.lib.core.base.model.LogLevel
+import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
+import com.shmedo.lib.core.ext.getLogItem
+import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.ActivityErrorBinding
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 
 /**
@@ -22,10 +24,11 @@ import com.shmedo.mcloudapp.databinding.ActivityErrorBinding
 class ErrorActivity : BaseActivity() {
     private lateinit var binding: ActivityErrorBinding
     private lateinit var mStates: EmptyViewModel
-
+    private lateinit var logViewModel: LogViewModel
 
     override fun initViewModel() {
-        mStates =  getActivityScopeViewModel()
+        mStates = getActivityScopeViewModel()
+        logViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -59,7 +62,13 @@ class ErrorActivity : BaseActivity() {
             }
         }
         CustomActivityOnCrash.getStackTraceFromIntent(intent)?.let {
-            addSystemLogItem(priority = Log.ERROR, data = it, mStates.viewModelScope)
+            logViewModel.insertLog(
+                getLogItem(
+                    sessionId = MmkvCacheUtil.getAppLogSessionId(),
+                    priority = LogLevel.ERROR,
+                    data = it
+                )
+            )
         }
     }
 }
