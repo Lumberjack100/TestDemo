@@ -190,7 +190,7 @@ class SignalView : View {
     }
 
     @SuppressLint("DrawAllocation")
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 //        Log.d("SignalView", "onDraw#$mRectWidth")
         mPaint?.also {

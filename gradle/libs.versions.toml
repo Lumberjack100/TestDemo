@@ -14,13 +14,13 @@
 ## limitations under the License.
 ##
 [versions]
-agp = "8.1.0"
-activityKtx = "1.7.2"
+agp = "8.1.2"
+activityKtx = "1.9.0"
 agentweb = "v5.0.6-androidx"
 appcompat = "1.6.1"
 amap3dmap = "9.8.3"
 baseRecyclerView = "1.5.7"
-compileSdk = "33"
+compileSdk = "34"
 constraintLayout = "2.1.4"
 coroutines = "1.8.0"
 crashreport = "4.1.9.2"
@@ -36,35 +36,34 @@ hmsScan = "2.5.0.300"
 immersionbar = "3.2.2"
 junit = "4.13.2"
 koinAndroid = "3.5.4"
-kotlin = "1.9.10"
+kotlin = "1.9.23"
 keyboardvisibilityevent = "3.0.0-RC3"
-ksp = "1.9.10-1.0.13"
+ksp = "1.9.23-1.0.19"
 leakcanary = "2.12"
-lifecycle = "2.6.2"
+lifecycle = "2.7.0"
 legacyV4 = "1.0.0"
-material = "1.9.0"
+material = "1.11.0"
 materialDialogs = "3.3.0"
 minSdk = "24"
 moshiVersion = "1.15.1"
 mmkv = "1.3.4"
-navigation = "2.6.0"
-nordicsemiBleKtx = "2.6.1"
+navigation = "2.7.7"
+nordicsemiBleKtx = "2.7.1"
 nordicsemiScanner = "1.6.0"
 okhttpVersion = "4.12.0"
 pictureselector = "v3.11.1"
 progressbutton = "2.1.0"
 rangeSeekBar = "v3.0.0"
-recyclerView = "1.3.2"
 rxhttp = "3.2.4"
 tableView = "v0.8.9.4"
 xpopup = "2.9.19"
-room = "2.5.2"
+room = "2.6.1"
 share2 = "0.9.3"
 smoothNavigation = "4.0.0"
 smartRefreshLayout = "2.0.6"
 strictDatabinding = "6.2.0"
 switchbutton = "2.1.0"
-targetSdk = "33"
+targetSdk = "34"
 testExtJunit = "1.1.5"
 timber = "5.0.1"
 toastUtils = "12.5"
@@ -86,7 +85,6 @@ androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fr
 #androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
-#androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "recyclerView" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "testExtJunit" }
 agentweb-core = { module = "com.github.Justson.AgentWeb:agentweb-core", version.ref = "agentweb" }
 amap3dmap = { module = "com.amap.api:3dmap", version.ref = "amap3dmap" }
@@ -132,8 +130,6 @@ rangeSeekBar = { module = "com.github.Jay-Goo:RangeSeekBar", version.ref = "rang
 rxhttp = { module = "com.github.liujingxing.rxhttp:rxhttp", version.ref = "rxhttp" }
 rxhttp-compiler = { module = "com.github.liujingxing.rxhttp:rxhttp-compiler", version.ref = "rxhttp" }
 rxhttp-converter-moshi = { module = "com.github.liujingxing.rxhttp:converter-moshi", version.ref = "rxhttp" }
-scwang90-refresh-layout-kernel = { module = "io.github.scwang90:refresh-layout-kernel", version.ref = "smartRefreshLayout" }
-scwang90-refresh-header-classics = { module = "io.github.scwang90:refresh-header-classics", version.ref = "smartRefreshLayout" }
 share2 = { module = "gdut.bsx:share2", version.ref = "share2" }
 switchbutton-library = { module = "com.kyleduo.switchbutton:library", version.ref = "switchbutton" }
 tableview = { module = "com.github.evrencoskun:TableView", version.ref = "tableView" }
@@ -146,7 +142,6 @@ xuexiangjys-xupdate = { module = "com.github.xuexiangjys:XUpdate", version.ref =
 
 [bundles]
 material-dialogs = ["material-dialogs-lifecycle", "material-dialogs-core", "material-dialogs-datetime", "material-dialogs-bottomsheets"]
-refreshlayout = ["scwang90-refresh-layout-kernel", "scwang90-refresh-header-classics"]
 pictureselector = ["lucksiege-pictureselector", "lucksiege-compress", "lucksiege-camerax"]
 
 [plugins]

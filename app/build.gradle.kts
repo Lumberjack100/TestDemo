@@ -9,8 +9,8 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
 }
 
-val majorVersion = 3
-val minorVersion = 3
+val majorVersion = 4
+val minorVersion = 0
 val patchVersion = 0
 
 /**
@@ -98,7 +98,7 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JavaVersion.VERSION_11.toString()
     }
     buildFeatures {
         viewBinding = true
