@@ -30,7 +30,7 @@ import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.nav
+import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.FragmentLogDataBinding
@@ -106,7 +106,7 @@ class LogDataFragment : BaseFragment() {
             logViewModel.getLogListBySessionId(
                 sessionInfo.id,
                 level
-            )?.let { logList ->
+            ).let { logList ->
                 if (logList.isEmpty()) {
                     binding.refreshLayout.showEmpty()
                 } else {

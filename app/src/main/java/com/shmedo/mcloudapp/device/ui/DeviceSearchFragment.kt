@@ -19,8 +19,8 @@ import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.nav
-import com.shmedo.mcloudapp.common.ext.showMessage
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.FragmentDeviceSearchBinding

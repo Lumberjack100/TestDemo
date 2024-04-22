@@ -1,11 +1,11 @@
-package com.shmedo.mcloudapp.common.ext
+package com.shmedo.mcloudapp.ext
 
 import android.text.Html
 import android.text.Spanned
 import androidx.appcompat.widget.Toolbar
 import com.blankj.utilcode.util.Utils
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.utils.SettingUtil
+import com.shmedo.mcloudapp.utils.SettingUtil
 
 /**
  * 创建者：gonghe

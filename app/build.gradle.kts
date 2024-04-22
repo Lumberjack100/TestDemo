@@ -128,7 +128,7 @@ android {
             applicationIdSuffix = ".v5"
             resValue("string", "app_name", "米易通V5")   // 设置默认的app_name
             buildConfigField("String", "APP_NAME", "\"米易通V5\"")
-            manifestPlaceholders["mapApikey"] = "61b252e0afae07eebf71fd8b519b511c"
+            manifestPlaceholders["mapApikey"] = "dbf444c2ac068b1ed7d7d2a604e37b93"
         }
     }
 
@@ -216,8 +216,6 @@ dependencies {
     //利用了 Android 系统的原生 API 实现了分享功能
     implementation(libs.share2)
 
-    //高德地图导航
-    implementation(libs.amap3dmap)
     //异常处理页面
     implementation(libs.customactivityoncrash)
     //异常信息上报组件
@@ -237,4 +235,8 @@ dependencies {
 
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
+
+    //高德地图导航
+    implementation(libs.amap.a3dmap)
+    implementation(libs.amap.search)
 }

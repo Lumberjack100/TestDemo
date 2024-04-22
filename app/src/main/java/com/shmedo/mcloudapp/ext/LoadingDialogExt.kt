@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.common.ext
+package com.shmedo.mcloudapp.ext
 
 import android.app.Activity
 import androidx.appcompat.app.AppCompatActivity

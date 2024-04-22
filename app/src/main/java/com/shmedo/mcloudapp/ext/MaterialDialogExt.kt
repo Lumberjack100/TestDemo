@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.common.ext
+package com.shmedo.mcloudapp.ext
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -11,7 +11,7 @@ import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.blankj.utilcode.util.ColorUtils
 import com.kongzue.dialogx.dialogs.MessageDialog
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.utils.SettingUtil
+import com.shmedo.mcloudapp.utils.SettingUtil
 
 
 /**

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.common.utils
+package com.shmedo.mcloudapp.utils
 
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide

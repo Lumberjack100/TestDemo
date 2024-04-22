@@ -31,8 +31,8 @@ import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.device.base.md_cmd.utils.MDConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.nav
-import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.databinding.FragmentBleCustomCommandLogPrintBinding
 import com.shmedo.mcloudapp.device.common.BaseCommandLogPrintClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect

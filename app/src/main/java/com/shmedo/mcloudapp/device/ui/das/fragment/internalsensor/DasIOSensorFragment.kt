@@ -23,7 +23,7 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.databinding.FragmentDasIoSensorBinding
 import com.shmedo.mcloudapp.device.common.BaseDasIOSensorClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect

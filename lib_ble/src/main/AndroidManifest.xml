@@ -24,11 +24,9 @@
      to be specified.
     -->
     <uses-permission
-        android:name="android.permission.ACCESS_COARSE_LOCATION"
-        android:maxSdkVersion="30" />
+        android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission
-        android:name="android.permission.ACCESS_FINE_LOCATION"
-        android:maxSdkVersion="30" />
+        android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!--
      On Android 12 new set of Bluetooth permissions were added. BLUETOOTH_SCAN permission is
      needed to scan for Bluetooth LE devices. The "never for location" flag is set, as we are not

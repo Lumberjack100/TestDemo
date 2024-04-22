@@ -10,7 +10,7 @@ import com.shmedo.lib.device.base.md_cmd.model.das.MDDasExternalSensorInfo
 import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showLoadingDialog
 import timber.log.Timber
 
 /**

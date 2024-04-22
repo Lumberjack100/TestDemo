@@ -18,9 +18,9 @@ import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.nav
-import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.common.ext.showMessageDialog
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentQueryDeviceDataBinding
 import com.shmedo.mcloudapp.databinding.ItemDeviceDataBinding

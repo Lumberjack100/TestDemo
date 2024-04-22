@@ -27,8 +27,8 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.activity.BaseActivity
 import com.shmedo.mcloudapp.common.activity.MainActivity
 import com.shmedo.mcloudapp.common.activity.WebviewActivity
-import com.shmedo.mcloudapp.common.ext.dismissLoadingDialog
-import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.dismissLoadingDialog
+import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.widget.MyCountDownTimer
 import com.shmedo.mcloudapp.databinding.ActivityLoginBinding
 import com.shmedo.mcloudapp.user.model.ContentType

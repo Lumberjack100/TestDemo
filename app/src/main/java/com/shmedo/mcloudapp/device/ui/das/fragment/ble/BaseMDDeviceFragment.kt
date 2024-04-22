@@ -24,8 +24,8 @@ import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.dismissLoadingDialog
-import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.dismissLoadingDialog
+import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.device.common.NoDeviceState
@@ -85,8 +85,6 @@ abstract class BaseMDDeviceFragment : BaseFragment() {
             collectBleData()
         }
     }
-
-
     private suspend fun collectBleData() {
         bleViewModel.state.collect { state ->
             Timber.v("${javaClass.simpleName} MedoBle: $state")
@@ -98,46 +96,50 @@ abstract class BaseMDDeviceFragment : BaseFragment() {
                 is WorkingState -> when (state.result) {
                     is IdleResult,
                     is ConnectingResult -> {
+                        addLogItem(LogLevel.INFO, "device ${bleDevice?.address} connecting")
                         showLoadingDialog(StringUtils.getString(R.string.ble_state_connecting))
                     }
 
                     is ConnectedResult -> {
+                        addLogItem(LogLevel.INFO, "device ${bleDevice?.address} connected")
 //                        dismissLoadingDialog()
 //                        onConnectionStateChanged(true)
                     }
 
                     is ReadyResult -> {
+                        addLogItem(LogLevel.INFO, "device ready")
                         onConnectionStateChanged(true)
                         onBleDeviceReady()
                     }
 
                     is SuccessResult -> {
-                        logViewModel.insertLog(
-                            getLogItem(
-                                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                                priority = LogLevel.INFO,
-                                data = state.result.data.response,
-                            )
-                        )
+                        addLogItem(LogLevel.INFO, state.result.data.response)
                         setResultData(state.result.data.response)
                     }
 
                     is DisconnectedResult -> {
+                        addLogItem(
+                            LogLevel.ERROR,
+                            "device disconnected, reason: ${state.result.reason}"
+                        )
                         dismissLoadingDialog()
                         onConnectionStateChanged(false)
                     }
 
                     is LinkLossResult -> {
+                        addLogItem(LogLevel.ERROR, "device link loss")
                         dismissLoadingDialog()
                         onConnectionStateChanged(false)
                     }
 
                     is MissingServiceResult -> {
+                        addLogItem(LogLevel.ERROR, "device missing service")
                         dismissLoadingDialog()
                         onConnectionStateChanged(false)
                     }
 
                     is UnknownErrorResult -> {
+                        addLogItem(LogLevel.ERROR, "device unknown error")
                         dismissLoadingDialog()
                         onConnectionStateChanged(false)
                     }
@@ -145,7 +147,6 @@ abstract class BaseMDDeviceFragment : BaseFragment() {
             }
         }
     }
-
     open fun onConnectionStateChanged(isConnected: Boolean) {
 
     }
@@ -156,14 +157,6 @@ abstract class BaseMDDeviceFragment : BaseFragment() {
 
     abstract fun setResultData(cmdStr: String)
 
-    /**
-     * 保存配置信息，但不会重启设备指令
-     */
-//    protected fun saveConfigInfoNoReboot() {
-//        val command: String = MDCommandUtil
-//            .getCommand(MDCommandType.SAVE_CONFIG_INFO, SaveConfigMode.SAVE_NO_REBOOT.toString())
-//        Timber.d("发送保存配置不重启设备指令===%s", command)
-//    }
 
     /**
      * 发送调试指令
@@ -171,14 +164,7 @@ abstract class BaseMDDeviceFragment : BaseFragment() {
     protected fun sendDebugCommand(
         command: String
     ) {
-
-        logViewModel.insertLog(
-            getLogItem(
-                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                priority = LogLevel.INFO,
-                data = command,
-            )
-        )
+        addLogItem(LogLevel.INFO, command)
         bleViewModel.sendMDCommand(command)
     }
 
@@ -199,13 +185,7 @@ abstract class BaseMDDeviceFragment : BaseFragment() {
 
         val command = commandItems.first
         commandItems.removeFirst()
-        logViewModel.insertLog(
-            getLogItem(
-                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                priority = LogLevel.INFO,
-                data = command,
-            )
-        )
+        addLogItem(LogLevel.INFO, command)
 
         bleViewModel.sendMDCommand(command, delaySendMillis)
         if (isStartTimeoutJob)
@@ -252,24 +232,36 @@ abstract class BaseMDDeviceFragment : BaseFragment() {
         msg: String = ""
     ) {
         Timber.i("${javaClass.simpleName} 发送指令超时")
-        logViewModel.insertLog(
-            getLogItem(
-                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                priority = LogLevel.ERROR,
-                data = "Response TimeOut"
-            )
-        )
+        addLogItem(LogLevel.ERROR, "发送指令超时")
 
-        timeoutJob?.cancel()
         if (isShowMsg) {
             Toaster.show(msg.ifEmpty { "发送指令超时,请稍后尝试" })
         }
         if (isDismissLoadingDialog) {
             dismissLoadingDialog()
         }
+        timeoutJob?.cancel()
         commandItems.clear()
         commandDescItems.clear()
         refreshLayout?.finish(false)
+    }
+
+
+    fun addLogItem(priority: Int, data: String) {
+        logViewModel.insertLog(
+            getLogItem(
+                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
+                priority = priority,
+                data = data
+            )
+        )
+    }
+
+    /**
+     *
+     */
+    override fun isRestrictHiddenMode(): Boolean {
+        return true
     }
 
     override fun onDestroy() {
@@ -289,12 +281,5 @@ abstract class BaseMDDeviceFragment : BaseFragment() {
             putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
-    }
-
-    /**
-     *
-     */
-    override fun isRestrictHiddenMode(): Boolean {
-        return true
     }
 }

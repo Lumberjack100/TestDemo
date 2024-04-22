@@ -19,6 +19,7 @@ activityKtx = "1.9.0"
 agentweb = "v5.0.6-androidx"
 appcompat = "1.6.1"
 amap3dmap = "9.8.3"
+amapSearch = "9.7.0"
 baseRecyclerView = "1.5.7"
 compileSdk = "34"
 constraintLayout = "2.1.4"
@@ -87,7 +88,8 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "testExtJunit" }
 agentweb-core = { module = "com.github.Justson.AgentWeb:agentweb-core", version.ref = "agentweb" }
-amap3dmap = { module = "com.amap.api:3dmap", version.ref = "amap3dmap" }
+amap-a3dmap = { module = "com.amap.api:3dmap", version.ref = "amap3dmap" }
+amap-search = { module = "com.amap.api:search", version.ref = "amapSearch" }
 bugly-crashreport = { module = "com.tencent.bugly:crashreport", version.ref = "crashreport" }
 customactivityoncrash = { module = "cat.ereza:customactivityoncrash", version.ref = "customactivityoncrash" }
 datetime-picker = { module = "com.github.loper7:DateTimePicker", version.ref = "dateTimePicker" }

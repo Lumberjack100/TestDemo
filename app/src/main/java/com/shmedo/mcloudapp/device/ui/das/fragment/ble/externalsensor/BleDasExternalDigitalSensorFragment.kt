@@ -20,10 +20,10 @@ import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.nav
-import com.shmedo.mcloudapp.common.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.common.ext.showLoadingDialog
-import com.shmedo.mcloudapp.common.ext.showMessageDialog
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentDasExternalDigitalSensorBinding
 import com.shmedo.mcloudapp.device.common.BaseDasExternalDigitalSensorClickProxy
 import com.shmedo.mcloudapp.device.model.CommunicateWay

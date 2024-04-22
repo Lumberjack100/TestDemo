@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.common.utils;
+package com.shmedo.mcloudapp.utils;
 
 import android.content.Context;
 import android.widget.ImageView;
@@ -8,7 +8,6 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.luck.picture.lib.engine.ImageEngine;
 import com.luck.picture.lib.utils.ActivityCompatHelper;
-import com.shmedo.mcloudapp.R;
 
 /**
  * @author：luck

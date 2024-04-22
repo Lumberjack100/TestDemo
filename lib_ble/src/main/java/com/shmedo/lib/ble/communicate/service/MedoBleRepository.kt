@@ -38,7 +38,9 @@ import com.shmedo.lib.ble.communicate.data.MedoBleManager
 import com.shmedo.lib.ble.communicate.service.base.BleManagerResult
 import com.shmedo.lib.ble.communicate.service.base.ServiceManager
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -75,7 +77,10 @@ class MedoBleRepository private constructor(
 
         }.launchIn(scope)
 
-        scope.launch {
+        val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+            Timber.e("MedoBle Error", throwable)
+        }
+        scope.launch(Dispatchers.IO + exceptionHandler) {
             Timber.v("MedoBle call connect()")
             manager.connect()
         }

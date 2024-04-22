@@ -1,4 +1,4 @@
-package com.shmedo.lib.core.util
+package com.shmedo.lib.core.util.permission
 
 import android.os.Build
 import com.blankj.utilcode.util.StringUtils

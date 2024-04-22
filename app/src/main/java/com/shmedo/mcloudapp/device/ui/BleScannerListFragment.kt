@@ -22,7 +22,7 @@ import com.shmedo.lib.ble.scanner.viewmodel.ScannerViewModel
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
-import com.shmedo.lib.core.util.PermissionInterceptor
+import com.shmedo.lib.core.util.permission.PermissionInterceptor
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R

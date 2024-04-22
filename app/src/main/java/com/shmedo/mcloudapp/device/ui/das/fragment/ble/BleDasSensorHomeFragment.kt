@@ -19,7 +19,7 @@ import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
-import com.shmedo.mcloudapp.common.ext.nav
+import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentDasSensorHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy

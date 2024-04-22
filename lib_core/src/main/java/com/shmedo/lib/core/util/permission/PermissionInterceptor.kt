@@ -1,4 +1,4 @@
-package com.shmedo.lib.core.util
+package com.shmedo.lib.core.util.permission
 
 import android.app.Activity
 import android.os.Build

@@ -24,8 +24,8 @@ import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.dismissLoadingDialog
-import com.shmedo.mcloudapp.common.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.dismissLoadingDialog
+import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.device.common.CmdResponseResultError
@@ -100,13 +100,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         netIotCommandViewModel.cmdDispatchFlow.collect {
             when (it) {
                 is DispatchFailed -> {
-                    logViewModel.insertLog(
-                        getLogItem(
-                            sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                            priority = LogLevel.ERROR,
-                            data = "DispatchFailed: ${it.errorMsg}"
-                        )
-                    )
+                    addLogItem(LogLevel.ERROR, "DispatchFailed: ${it.errorMsg}")
                     doNetDispatchFailed(it.cmdStr, it.errorMsg)
                 }
 
@@ -115,35 +109,17 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
                 }
 
                 is CmdResponseResultError -> {
-                    logViewModel.insertLog(
-                        getLogItem(
-                            sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                            priority = LogLevel.ERROR,
-                            data = "Response Error: ${it.errorMsg}",
-                        )
-                    )
+                    addLogItem(LogLevel.ERROR, "Response Error: ${it.errorMsg}")
                     doCmdResponseResultError(it.cmdStr, it.errorMsg)
                 }
 
                 is CmdResponseResultTimeOut -> {
-                    logViewModel.insertLog(
-                        getLogItem(
-                            sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                            priority = LogLevel.ERROR,
-                            data = "Response TimeOut",
-                        )
-                    )
+                    addLogItem(LogLevel.ERROR, "Response TimeOut")
                     doCmdResponseResultTimeOut(it.cmdStr, it.errorMsg)
                 }
 
                 is CmdResponseResultSuccess -> {
-                    logViewModel.insertLog(
-                        getLogItem(
-                            sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                            priority = LogLevel.INFO,
-                            data = it.cmdResult.responseContent,
-                        )
-                    )
+                    addLogItem(LogLevel.INFO, it.cmdResult.responseContent)
                     setResultData(it.cmdResult.responseContent)
                 }
 
@@ -163,95 +139,50 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
                 is WorkingState -> when (state.result) {
                     is IdleResult,
                     is ConnectingResult -> {
-                        logViewModel.insertLog(
-                            getLogItem(
-                                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                                priority = LogLevel.INFO,
-                                data = "device ${bleDevice?.address} connecting"
-                            )
-                        )
+                        addLogItem(LogLevel.INFO, "device ${bleDevice?.address} connecting")
                         showLoadingDialog(StringUtils.getString(R.string.ble_state_connecting))
                     }
 
                     is ConnectedResult -> {
-                        logViewModel.insertLog(
-                            getLogItem(
-                                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                                priority = LogLevel.INFO,
-                                data = "device connected"
-                            )
-                        )
+                        addLogItem(LogLevel.INFO, "device ${bleDevice?.address} connected")
 //                        dismissLoadingDialog()
 //                        onConnectionStateChanged(true)
                     }
 
                     is ReadyResult -> {
-                        logViewModel.insertLog(
-                            getLogItem(
-                                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                                priority = LogLevel.INFO,
-                                data = "device ready"
-                            )
-                        )
+                        addLogItem(LogLevel.INFO, "device ready")
                         onConnectionStateChanged(true)
                         onBleDeviceReady()
                     }
 
                     is SuccessResult -> {
-                        logViewModel.insertLog(
-                            getLogItem(
-                                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                                priority = LogLevel.INFO,
-                                data = state.result.data.response,
-                            )
-                        )
+                        addLogItem(LogLevel.INFO, state.result.data.response)
                         setResultData(state.result.data.response)
                     }
 
                     is DisconnectedResult -> {
-                        logViewModel.insertLog(
-                            getLogItem(
-                                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                                priority = LogLevel.ERROR,
-                                data = "device disconnected, reason: ${state.result.reason}"
-                            )
+                        addLogItem(
+                            LogLevel.ERROR,
+                            "device disconnected, reason: ${state.result.reason}"
                         )
                         dismissLoadingDialog()
                         onConnectionStateChanged(false)
                     }
 
                     is LinkLossResult -> {
-                        logViewModel.insertLog(
-                            getLogItem(
-                                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                                priority = LogLevel.ERROR,
-                                data = "device link loss"
-                            )
-                        )
+                        addLogItem(LogLevel.ERROR, "device link loss")
                         dismissLoadingDialog()
                         onConnectionStateChanged(false)
                     }
 
                     is MissingServiceResult -> {
-                        logViewModel.insertLog(
-                            getLogItem(
-                                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                                priority = LogLevel.ERROR,
-                                data = "device missing service"
-                            )
-                        )
+                        addLogItem(LogLevel.ERROR, "device missing service")
                         dismissLoadingDialog()
                         onConnectionStateChanged(false)
                     }
 
                     is UnknownErrorResult -> {
-                        logViewModel.insertLog(
-                            getLogItem(
-                                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                                priority = LogLevel.ERROR,
-                                data = "device unknown error"
-                            )
-                        )
+                        addLogItem(LogLevel.ERROR, "device unknown error")
                         dismissLoadingDialog()
                         onConnectionStateChanged(false)
                     }
@@ -298,13 +229,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     protected fun sendDebugCommand(
         command: String
     ) {
-        logViewModel.insertLog(
-            getLogItem(
-                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                priority = LogLevel.INFO,
-                data = command,
-            )
-        )
+        addLogItem(LogLevel.INFO, command)
         bleViewModel.sendIOTCommand(command, false, deviceInfo.apikey)
     }
 
@@ -325,14 +250,8 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
         val command = commandItems.first
         commandItems.removeFirst()
+        addLogItem(LogLevel.INFO, command)
 
-        logViewModel.insertLog(
-            getLogItem(
-                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                priority = LogLevel.INFO,
-                data = command,
-            )
-        )
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
         } else {
@@ -381,21 +300,33 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         msg: String = ""
     ) {
         Timber.i("${javaClass.simpleName} 发送指令超时")
-        logViewModel.insertLog(
-            getLogItem(
-                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
-                priority = LogLevel.ERROR,
-                data = "Response TimeOut",
-            )
-        )
+        addLogItem(LogLevel.ERROR, "发送指令超时")
         if (isShowMsg) {
             Toaster.show(msg.ifEmpty { "发送指令超时,请稍后尝试" })
         }
         if (isDismissLoadingDialog) {
             dismissLoadingDialog()
         }
+        timeoutJob?.cancel()
         commandItems.clear()
         refreshLayout?.finish(false)
+    }
+
+    fun addLogItem(priority: Int, data: String) {
+        logViewModel.insertLog(
+            getLogItem(
+                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
+                priority = priority,
+                data = data
+            )
+        )
+    }
+
+    /**
+     *
+     */
+    override fun isRestrictHiddenMode(): Boolean {
+        return true
     }
 
     override fun onDestroy() {
@@ -416,12 +347,4 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
-
-    /**
-     *
-     */
-    override fun isRestrictHiddenMode(): Boolean {
-        return true
-    }
-
 }

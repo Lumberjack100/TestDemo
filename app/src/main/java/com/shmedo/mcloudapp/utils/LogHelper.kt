@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.common.utils
+package com.shmedo.mcloudapp.utils
 
 import android.os.Build
 import androidx.lifecycle.Lifecycle

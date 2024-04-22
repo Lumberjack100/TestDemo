@@ -32,32 +32,26 @@
 package com.shmedo.lib.ble.communicate.service
 
 import android.content.Intent
-import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import com.shmedo.lib.ble.communicate.service.base.DEVICE_DATA
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.util.ForegroundNotification
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 
-internal class MedoBleService : LifecycleService() {
-    override fun onCreate() {
-        Timber.v("MedoBleService onCreate")
-        super.onCreate()
-    }
+internal class MedoBleService : BleNotificationService() {
+
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Timber.v("MedoBleService onStartCommand")
         super.onStartCommand(intent, flags, startId)
-        ForegroundNotification.startBleConnectForeground(this)
 
         val device = intent!!.getParcelableExtra<DiscoveredBluetoothDevice>(DEVICE_DATA)!!
         MedoBleRepository.instance.startConnect(device, lifecycleScope)
 
         MedoBleRepository.instance.hasBeenDisconnected.onEach {
             if (it) {
-                Timber.i( "MedoBle call stopSelf" )
+                Timber.i( "MedoBleService call stopSelf" )
                 stopSelf()
             }
         }.launchIn(lifecycleScope)
@@ -65,10 +59,4 @@ internal class MedoBleService : LifecycleService() {
         return START_REDELIVER_INTENT
     }
 
-    override fun onDestroy() {
-        Timber.d("NotificationService onDestroy")
-        ForegroundNotification.cancelNotification(ForegroundNotification.BLE_NOTIFICATION_ID)
-        stopForeground(STOP_FOREGROUND_REMOVE)
-        super.onDestroy()
-    }
 }

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.common.ext
+package com.shmedo.mcloudapp.ext
 
 import android.os.Bundle
 import android.view.View

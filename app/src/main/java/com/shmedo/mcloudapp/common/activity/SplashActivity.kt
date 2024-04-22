@@ -20,13 +20,13 @@ import com.shmedo.lib.core.util.MmkvCacheUtil.isAgreePrivate
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.dismissLoadingDialog
-import com.shmedo.mcloudapp.common.utils.LogHelper
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
+import com.shmedo.mcloudapp.ext.dismissLoadingDialog
 import com.shmedo.mcloudapp.user.activity.LoginActivity
 import com.shmedo.mcloudapp.user.fragment.PolicyDialog
 import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
+import com.shmedo.mcloudapp.utils.LogHelper
 import com.tencent.bugly.crashreport.CrashReport
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -58,6 +58,10 @@ class SplashActivity : BaseActivity() {
     }
 
     override fun initData() {
+        //更新隐私合规状态,需要在初始化地图之前完成
+        MapsInitializer.updatePrivacyShow(this, true, true)
+        //更新同意隐私状态,需要在初始化地图之前完成
+        MapsInitializer.updatePrivacyAgree(this, true)
         logViewModel.insertSession(getSystemLogSession())
         logViewModel.insertLog(
             getLogItem(

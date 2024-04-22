@@ -15,8 +15,8 @@ import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.MCloudUtil
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.ext.nav
-import com.shmedo.mcloudapp.common.ext.showMessage
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.request.AppUpdateViewModel
 import com.shmedo.mcloudapp.databinding.FragmentMineBinding
