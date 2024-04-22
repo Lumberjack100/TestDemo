@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.device.ui.das.fragment.ble
 
 import android.os.Bundle
 import android.view.View
+import androidx.databinding.DataBindingUtil.getBinding
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
@@ -37,12 +38,13 @@ import com.shmedo.mcloudapp.databinding.FragmentBleDasDataCenterHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.DataCenterStatusItem
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.BleDasDataCenterHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
+class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentBleDasDataCenterHomeBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: BleDasDataCenterHomeViewModel
@@ -135,7 +137,7 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
             commandItems.add(command)
 
             showLoadingDialog(StringUtils.getString(R.string.loading))
-            sendMDCommandFromCmdList(isStartTimeoutJob = true)
+            sendCommandFromCmdList(isStartTimeoutJob = true)
         }
     }
 
@@ -211,7 +213,7 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun lazyLoadData() {
@@ -230,7 +232,7 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
             commandItems.add(command)
         }
 
-        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
@@ -250,7 +252,7 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initBaseConfigInfo(result.data)
@@ -273,7 +275,7 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initDataCenterStatus(result.data)
@@ -292,7 +294,7 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -308,7 +310,7 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -324,7 +326,7 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -340,7 +342,7 @@ class BleDasDataCenterHomeFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             Toaster.show("保存成功")
                         }
                     }

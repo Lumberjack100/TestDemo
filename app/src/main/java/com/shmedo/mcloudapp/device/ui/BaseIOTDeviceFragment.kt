@@ -23,9 +23,8 @@ import com.shmedo.lib.core.ext.getLogItem
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.dismissLoadingDialog
-import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.device.common.CmdResponseResultError
@@ -39,6 +38,8 @@ import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.device.viewmodel.request.NetIOTCommandViewModel
+import com.shmedo.mcloudapp.ext.dismissLoadingDialog
+import com.shmedo.mcloudapp.ext.showLoadingDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -67,6 +68,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     private var timeoutJob: Job? = null
 
     protected var commandItems = LinkedList<String>()
+    protected var commandDescItems = LinkedList<String>()
 
     @CallSuper
     override fun initViewModel() {
@@ -96,6 +98,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         }
     }
 
+    //<editor-fold desc="处理 4G 下发指令">
     private suspend fun collectNetData() {
         netIotCommandViewModel.cmdDispatchFlow.collect {
             when (it) {
@@ -128,6 +131,30 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         }
     }
 
+    open fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
+        Toaster.show("指令发送失败: $errorMsg")
+        dismissLoadingDialog()
+        refreshLayout?.finish(false)
+    }
+
+    open fun doNetDispatchSuccess(cmdStr: String) {
+        netIotCommandViewModel.processCmdResult(cmdStr = cmdStr)
+    }
+
+    open fun doCmdResponseResultError(cmdStr: String, errorMsg: String) {
+        Toaster.show("指令响应错误: $errorMsg")
+        dismissLoadingDialog()
+        refreshLayout?.finish(false)
+    }
+
+    open fun doCmdResponseResultTimeOut(cmdStr: String, errorMsg: String) {
+        Toaster.show("指令响应超时")
+        dismissLoadingDialog()
+        refreshLayout?.finish(false)
+    }
+    // </editor-fold>
+
+    //<editor-fold desc="处理蓝牙下发指令">
     private suspend fun collectBleData() {
         bleViewModel.state.collect { state ->
             Timber.v("${javaClass.simpleName} MedoBle: $state")
@@ -191,28 +218,6 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         }
     }
 
-    open fun doNetDispatchFailed(cmdStr: String, errorMsg: String) {
-        Toaster.show("指令发送失败: $errorMsg")
-        dismissLoadingDialog()
-        refreshLayout?.finish(false)
-    }
-
-    open fun doNetDispatchSuccess(cmdStr: String) {
-        netIotCommandViewModel.processCmdResult(cmdStr = cmdStr)
-    }
-
-    open fun doCmdResponseResultError(cmdStr: String, errorMsg: String) {
-        Toaster.show("指令响应错误: $errorMsg")
-        dismissLoadingDialog()
-        refreshLayout?.finish(false)
-    }
-
-    open fun doCmdResponseResultTimeOut(cmdStr: String, errorMsg: String) {
-        Toaster.show("指令响应超时")
-        dismissLoadingDialog()
-        refreshLayout?.finish(false)
-    }
-
     open fun onConnectionStateChanged(isConnected: Boolean) {
 
     }
@@ -220,18 +225,9 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     open fun onBleDeviceReady() {
         dismissLoadingDialog()
     }
+    // </editor-fold>
 
     abstract fun setResultData(cmdStr: String)
-
-    /**
-     * 发送调试指令
-     */
-    protected fun sendDebugCommand(
-        command: String
-    ) {
-        addLogItem(LogLevel.INFO, command)
-        bleViewModel.sendIOTCommand(command, false, deviceInfo.apikey)
-    }
 
     /**
      * 发送指令队列中的第一条指令
@@ -255,7 +251,14 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
         } else {
-            bleViewModel.sendIOTCommand(command, true, deviceInfo.apikey, delaySendMillis)
+            //发送物联网指令
+            if (command.startsWith(IOTConstants.COMMAND_HEADER)) {
+                bleViewModel.sendIOTCommand(command, deviceInfo.apikey, delaySendMillis)
+            } else {
+                //发送MD指令 ##开头
+                bleViewModel.sendMDCommand(command, delaySendMillis)
+            }
+
             if (isStartTimeoutJob)
                 startNearbyCommunicationTimeoutJob(command, timeoutMillis)
         }
@@ -287,6 +290,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             dismissLoadingDialog()
         }
         commandItems.clear()
+        commandDescItems.clear()
         refreshLayout?.finish(false)
     }
 
@@ -309,6 +313,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         }
         timeoutJob?.cancel()
         commandItems.clear()
+        commandDescItems.clear()
         refreshLayout?.finish(false)
     }
 

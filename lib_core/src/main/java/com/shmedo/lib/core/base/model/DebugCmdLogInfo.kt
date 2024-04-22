@@ -1,7 +1,5 @@
 package com.shmedo.lib.core.base.model
 
-import android.os.Parcelable
-
 /**
  * 创建者：gonghe
  * 创建时间：2024/2/29
@@ -10,4 +8,5 @@ import android.os.Parcelable
 data class DebugCmdLogInfo(
     var logTime: String = "",
     var content: String = "",
+    var colorRes: Int = 0
 )

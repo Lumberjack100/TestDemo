@@ -22,7 +22,7 @@ import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentDasDigitalOsmometerBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
-import com.shmedo.mcloudapp.device.ui.das.fragment.ble.BaseMDDeviceFragment
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasDigitalOsmometerViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -35,7 +35,7 @@ import java.util.Locale
  * 创建时间：2024/4/16
  * 描述： TODO
  */
-class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
+class BleDasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasDigitalOsmometerBinding
     private lateinit var mStates: DasDigitalOsmometerViewModel
     private val mdParseManager: MDParserManager by inject()
@@ -105,7 +105,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun initSaveCommand() {
@@ -211,7 +211,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun lazyLoadData() {
@@ -225,7 +225,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
         )
         commandItems.add(command)
         Timber.d("查询数字水位计配置信息===%s", command)
-        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
@@ -245,7 +245,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initDigitalOsmometerInfo(result.data)
@@ -266,7 +266,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -282,7 +282,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -298,7 +298,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -314,7 +314,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -330,7 +330,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -346,7 +346,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -362,7 +362,7 @@ class BleDasDigitalOsmometerFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             Toaster.show("保存成功")
                         }
                     }

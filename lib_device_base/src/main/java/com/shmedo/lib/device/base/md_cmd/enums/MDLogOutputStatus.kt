@@ -8,22 +8,22 @@ package com.shmedo.lib.device.base.md_cmd.enums
  * 描述：   日志输出状态
  */
 enum class MDLogOutputStatus(//打开
-    private val status: Int
+    private val status: String
 ) {
-    CLOSE(0),
+    CLOSE("0"),
 
     //关闭
-    OPEN(1);
+    OPEN("1");
 
-    fun toInt(): Int {
+    override fun toString(): String {
         return status
     }
 
     companion object {
-        fun value(status: Int): MDLogOutputStatus {
+        fun value(status: String): MDLogOutputStatus {
             return when (status) {
-                0 -> CLOSE
-                1 -> OPEN
+                "0" -> CLOSE
+                "1" -> OPEN
                 else -> CLOSE
             }
         }

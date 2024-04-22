@@ -16,7 +16,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.FragmentDasCommunicationInfoBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
-import com.shmedo.mcloudapp.device.ui.das.fragment.ble.BaseMDDeviceFragment
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.mr702.widget.tableview.CommunicationDataTableAdapter
 import com.shmedo.mcloudapp.device.ui.mr702.widget.tableview.model.CommunicationDataCellModel
 import org.koin.android.ext.android.inject
@@ -30,7 +30,7 @@ import java.util.Locale
  * 创建时间：2024/4/15
  * 描述： TODO
  */
-class BleDasCommunicationInfoFragment : BaseMDDeviceFragment() {
+class BleDasCommunicationInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasCommunicationInfoBinding
     private lateinit var mStates: EmptyViewModel
     private val mdParseManager: MDParserManager by inject()
@@ -99,7 +99,7 @@ class BleDasCommunicationInfoFragment : BaseMDDeviceFragment() {
             commandItems.add(command)
         }
 
-        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
@@ -119,7 +119,7 @@ class BleDasCommunicationInfoFragment : BaseMDDeviceFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initDataCenterStatus(result.data)

@@ -28,7 +28,7 @@ import com.shmedo.mcloudapp.databinding.FragmentDasSensorInfoBinding
 import com.shmedo.mcloudapp.databinding.ItemDasSensorStatusBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.DasSensorSubMonitorStatusItem
-import com.shmedo.mcloudapp.device.ui.das.fragment.ble.BaseMDDeviceFragment
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasSensorInfoViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -41,7 +41,7 @@ import java.util.Locale
  * 创建时间：2024/4/15
  * 描述： TODO
  */
-class BleDasSensorInfoFragment : BaseMDDeviceFragment() {
+class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasSensorInfoBinding
     private lateinit var mStates: DasSensorInfoViewModel
     private val mdParseManager: MDParserManager by inject()
@@ -716,7 +716,7 @@ class BleDasSensorInfoFragment : BaseMDDeviceFragment() {
             MDCommandUtil.getCommand(MDCommandType.QUERY_DAS_STATUS_3)
         commandItems.add(command)
 
-        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
@@ -736,7 +736,7 @@ class BleDasSensorInfoFragment : BaseMDDeviceFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         setDeviceStatusTwo(result.data)
@@ -759,7 +759,7 @@ class BleDasSensorInfoFragment : BaseMDDeviceFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         setInclinometerInfo(result.data)
@@ -782,7 +782,7 @@ class BleDasSensorInfoFragment : BaseMDDeviceFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initExternalSensorData(result.data)

@@ -30,10 +30,6 @@ import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.lib.device.base.md_cmd.utils.MDConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentBleDasHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -47,16 +43,21 @@ import com.shmedo.mcloudapp.device.model.RunningStatusModule
 import com.shmedo.mcloudapp.device.model.SensorConfigModule
 import com.shmedo.mcloudapp.device.model.TelemetryDataModule
 import com.shmedo.mcloudapp.device.model.TimeCalibrationModule
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.device.viewmodel.state.BleDasHomeFragmentViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.nio.charset.StandardCharsets
 
-class BleDasHomeFragment : BaseMDDeviceFragment() {
+class BleDasHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentBleDasHomeBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: BleDasHomeFragmentViewModel
@@ -262,7 +263,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
 
             else -> {
                 if (module.configModule.navId != 0) {
-                    val bundle = BaseMDDeviceFragment.newBundleArguments(
+                    val bundle = BaseIOTDeviceFragment.newBundleArguments(
                         communicateWay,
                         deviceInfo,
                         bleDevice
@@ -324,7 +325,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
         commandItems.add(MDConstants.COMMAND_FOOTER + command)
 
         Timber.d("设置认证类型指令===%s", command)
-        sendMDCommandFromCmdList(isStartTimeoutJob = false)
+        sendCommandFromCmdList(isStartTimeoutJob = false)
     }
 
     /**
@@ -351,7 +352,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
 
                 commandItems.clear()
                 commandItems.add(command)
-                sendMDCommandFromCmdList(isStartTimeoutJob = false)
+                sendCommandFromCmdList(isStartTimeoutJob = false)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -369,7 +370,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
         commandItems.add(command)
 
         Timber.d("获取基础配置信息指令===%s", command)
-        sendMDCommandFromCmdList(isStartTimeoutJob = false)
+        sendCommandFromCmdList(isStartTimeoutJob = false)
     }
 
     /**
@@ -383,7 +384,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
         )
         commandItems.add(command)
         Timber.d("打开/关闭设备低功耗模式指令===%s", command)
-        sendMDCommandFromCmdList(isStartTimeoutJob = false)
+        sendCommandFromCmdList(isStartTimeoutJob = false)
     }
 
     private fun doQueryTimeCmd() {
@@ -394,7 +395,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
         commandItems.add(command)
 
         Timber.d("获取设备时间信息指令===%s", command)
-        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun doTelemetryCmd() {
@@ -406,7 +407,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
 
         Timber.d("遥测设备指令===%s", command)
         showLoadingDialog(StringUtils.getString(R.string.cmd_dispatch_loading_tip))
-        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     /**
@@ -423,7 +424,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
 
         Timber.d("发送保存配置重启设备指令===%s", command)
         showLoadingDialog(StringUtils.getString(R.string.cmd_dispatch_loading_tip))
-        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
 
@@ -525,7 +526,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             Toaster.show("激活成功")
                         }
                     }
@@ -550,7 +551,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                         mCommandResponseStates.isResponseLoading.set(false)
                         mCommandResponseStates.isResponseSuccess.set(true)
                         mCommandResponseStates.isCalibratingSuccess.set(false)
@@ -571,7 +572,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             PopTip.show("遥测成功!").setMarginBottom(ConvertUtils.dp2px(300f))
                                 .autoDismiss(2000).iconSuccess()
                         }
@@ -590,7 +591,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             if (cmdStr.contains("0191"))
                                 Toaster.show("设备即将重启!")
                         }
@@ -609,7 +610,7 @@ class BleDasHomeFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             Toaster.show("设备即将重启!")
                         }
                     }

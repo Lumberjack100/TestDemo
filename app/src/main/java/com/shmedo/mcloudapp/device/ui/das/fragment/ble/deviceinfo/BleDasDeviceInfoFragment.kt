@@ -18,14 +18,14 @@ import com.shmedo.lib.core.util.AppContants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
-import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentDasDeviceInfoBinding
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.DasSensorHomeFragment
-import com.shmedo.mcloudapp.device.ui.das.fragment.ble.BaseMDDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasDeviceInfoViewModel
+import com.shmedo.mcloudapp.ext.nav
 
 class BleDasDeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentDasDeviceInfoBinding
@@ -73,7 +73,7 @@ class BleDasDeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     }
 
     private fun initViewPager() {
-        val bundle = BaseMDDeviceFragment.newBundleArguments(
+        val bundle = BaseIOTDeviceFragment.newBundleArguments(
             communicateWay,
             deviceInfo,
             bleDevice

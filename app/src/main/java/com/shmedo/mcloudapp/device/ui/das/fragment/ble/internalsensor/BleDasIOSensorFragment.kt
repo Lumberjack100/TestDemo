@@ -26,7 +26,7 @@ import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.databinding.FragmentDasIoSensorBinding
 import com.shmedo.mcloudapp.device.common.BaseDasIOSensorClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
-import com.shmedo.mcloudapp.device.ui.das.fragment.ble.BaseMDDeviceFragment
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasIOSensorViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -39,7 +39,7 @@ import java.util.Locale
  * 创建时间：2024/4/15
  * 描述： TODO
  */
-class BleDasIOSensorFragment : BaseMDDeviceFragment() {
+class BleDasIOSensorFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasIoSensorBinding
     private lateinit var mStates: DasIOSensorViewModel
     private val mdParseManager: MDParserManager by inject()
@@ -151,7 +151,7 @@ class BleDasIOSensorFragment : BaseMDDeviceFragment() {
         )
         commandItems.add(command)
         Timber.d("设置开关量指令==%s", command)
-        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun queryOrSetBreakAlarmState(value: String) {
@@ -162,7 +162,7 @@ class BleDasIOSensorFragment : BaseMDDeviceFragment() {
         )
         commandItems.add(command)
         Timber.d("查询/设置断线报警器指令==%s", command)
-        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun setRainPrecision() {
@@ -182,7 +182,7 @@ class BleDasIOSensorFragment : BaseMDDeviceFragment() {
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun lazyLoadData() {
@@ -199,7 +199,7 @@ class BleDasIOSensorFragment : BaseMDDeviceFragment() {
         Timber.d("获取基础配置信息指令===%s", command)
         commandItems.add(command)
 
-        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
@@ -219,7 +219,7 @@ class BleDasIOSensorFragment : BaseMDDeviceFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initIOStatus(result.data)
@@ -245,7 +245,7 @@ class BleDasIOSensorFragment : BaseMDDeviceFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         if (breakAlarmStatus == MDBreakAlarmStatus.QUERY) {
@@ -271,7 +271,7 @@ class BleDasIOSensorFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList() {
+                        sendCommandFromCmdList() {
                             if (cmdStr.contains("0053")) {
                                 //查询断线报警器状态
                                 breakAlarmStatus = MDBreakAlarmStatus.QUERY
@@ -293,7 +293,7 @@ class BleDasIOSensorFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -309,7 +309,7 @@ class BleDasIOSensorFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             Toaster.show("保存成功")
                         }
                     }

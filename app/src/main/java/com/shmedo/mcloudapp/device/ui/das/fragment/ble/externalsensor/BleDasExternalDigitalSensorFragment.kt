@@ -20,18 +20,18 @@ import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentDasExternalDigitalSensorBinding
 import com.shmedo.mcloudapp.device.common.BaseDasExternalDigitalSensorClickProxy
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
-import com.shmedo.mcloudapp.device.ui.das.fragment.ble.BaseMDDeviceFragment
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasExternalDigitalSensorViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.DasExternalSensorListViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -44,7 +44,7 @@ import java.util.Locale
  * @desc: 数字式传感器配置
  *
  */
-class BleDasExternalDigitalSensorFragment : BaseMDDeviceFragment() {
+class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasExternalDigitalSensorBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: DasExternalDigitalSensorViewModel
@@ -374,7 +374,7 @@ class BleDasExternalDigitalSensorFragment : BaseMDDeviceFragment() {
         refreshData()
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendMDCommandFromCmdList(
+        sendCommandFromCmdList(
             isStartTimeoutJob = true,
             timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
         )
@@ -630,7 +630,7 @@ class BleDasExternalDigitalSensorFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -651,7 +651,7 @@ class BleDasExternalDigitalSensorFragment : BaseMDDeviceFragment() {
 
                     is MDCommandResult.Success -> {
                         initSensorInfo(result.data)
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }

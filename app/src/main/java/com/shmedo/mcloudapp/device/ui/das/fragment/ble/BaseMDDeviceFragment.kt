@@ -24,8 +24,6 @@ import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.dismissLoadingDialog
-import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.device.common.NoDeviceState
@@ -33,6 +31,8 @@ import com.shmedo.mcloudapp.device.common.WorkingState
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.viewmodel.request.BleViewModel
+import com.shmedo.mcloudapp.ext.dismissLoadingDialog
+import com.shmedo.mcloudapp.ext.showLoadingDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -46,6 +46,7 @@ import java.util.LinkedList
  * 创建时间：2024/4/11
  * 描述： TODO
  */
+@Deprecated("use BaseIOTDeviceFragment instead")
 abstract class BaseMDDeviceFragment : BaseFragment() {
     protected lateinit var mMessenger: PageMessenger
     protected lateinit var bleViewModel: BleViewModel

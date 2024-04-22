@@ -31,23 +31,24 @@ import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessage
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentBleDasDataCenterParamBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.BleDasDataCenterParamViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
+class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentBleDasDataCenterParamBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: BleDasDataCenterParamViewModel
@@ -217,7 +218,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
         commandItems.add(command)
         Timber.d("关闭数据服务器%s指令===%s", statusItem.centerid.toString(), command)
         showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun initSaveCommand() {
@@ -421,7 +422,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendMDCommandFromCmdList(
+        sendCommandFromCmdList(
             isStartTimeoutJob = true,
             timeoutMillis = AppContants.Communication.DELAY_20000_MILLIS
         )
@@ -447,7 +448,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
         commandItems.add(command)
         Timber.d("查询数据中心%s的参数===%s", statusItem.centerid.toString(), command)
 
-        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
@@ -467,7 +468,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
 //                        initDataCenterParam(result.data)
@@ -490,7 +491,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initDataCenterParam(result.data)
@@ -509,7 +510,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -524,7 +525,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -540,7 +541,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -555,7 +556,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -570,7 +571,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -585,7 +586,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -600,7 +601,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -616,7 +617,7 @@ class BleDasDataCenterParamFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             Toaster.show("保存成功")
                         }
                     }

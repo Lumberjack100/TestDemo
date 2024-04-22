@@ -32,6 +32,8 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentBleDasAdvancedSettingBinding
 import com.shmedo.mcloudapp.device.common.BaseDasAdvancedSettingClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.ui.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.dialog.SyncInstallationLocationPopupView
 import com.shmedo.mcloudapp.device.viewmodel.request.LocationViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.DasAdvancedSettingViewModel
@@ -56,7 +58,7 @@ import java.util.Locale
  * 创建时间：2024/4/18
  * 描述： TODO
  */
-class BleDasAdvancedSettingFragment : BaseMDDeviceFragment(),
+class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment(),
     GeocodeSearch.OnGeocodeSearchListener {
     private lateinit var binding: FragmentBleDasAdvancedSettingBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
@@ -150,12 +152,13 @@ class BleDasAdvancedSettingFragment : BaseMDDeviceFragment(),
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            val bundle = BaseMDDeviceFragment.newBundleArguments(
+            val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
                 communicateWay,
                 deviceInfo,
-                bleDevice
+                bleDevice,
+                false
             )
-            nav().navigate(R.id.action_global_to_bleMDCommandLogPrintFragment, bundle)
+            nav().navigate(R.id.action_global_to_commandDebug, bundle)
         }
 
         override fun onResetClick() {
@@ -168,7 +171,7 @@ class BleDasAdvancedSettingFragment : BaseMDDeviceFragment(),
                 val command = MDCommandUtil.getCommand(MDCommandType.RESTORE_FACTORY_SETTING)
                 commandItems.add(command)
                 showLoadingDialog(StringUtils.getString(R.string.processing))
-                sendMDCommandFromCmdList(isStartTimeoutJob = true)
+                sendCommandFromCmdList(isStartTimeoutJob = true)
             }, "取消")
         }
 
@@ -201,7 +204,7 @@ class BleDasAdvancedSettingFragment : BaseMDDeviceFragment(),
                     )
                     commandItems.add(command)
                     showLoadingDialog(StringUtils.getString(R.string.processing))
-                    sendMDCommandFromCmdList(isStartTimeoutJob = true)
+                    sendCommandFromCmdList(isStartTimeoutJob = true)
                 }
             })
         XPopup.Builder(context)
@@ -230,7 +233,7 @@ class BleDasAdvancedSettingFragment : BaseMDDeviceFragment(),
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             Toaster.show("同步安装位置成功")
                         }
                     }
@@ -248,7 +251,7 @@ class BleDasAdvancedSettingFragment : BaseMDDeviceFragment(),
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             Toaster.show(StringUtils.getString(R.string.device_reset_tip))
                         }
                     }

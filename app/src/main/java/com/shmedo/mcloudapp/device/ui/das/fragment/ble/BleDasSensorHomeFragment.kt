@@ -19,18 +19,19 @@ import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
-import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentDasSensorHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor.BaseBleDasExternalSensorListFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor.BleDasExternalDigitalSensorListFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor.BleDasExternalVibratingSensorListFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.internalsensor.BleDasDigitalOsmometerFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.internalsensor.BleDasIOSensorFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
 
 /**
  * 创建者：gonghe
@@ -89,14 +90,14 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
         val mFragments =
             listOf<Fragment>(
                 BleDasIOSensorFragment.newInstance().apply {
-                    arguments = BaseMDDeviceFragment.newBundleArguments(
+                    arguments = BaseIOTDeviceFragment.newBundleArguments(
                         communicateWay,
                         deviceInfo,
                         bleDevice
                     )
                 },
                 BleDasDigitalOsmometerFragment.newInstance().apply {
-                    arguments = BaseMDDeviceFragment.newBundleArguments(
+                    arguments = BaseIOTDeviceFragment.newBundleArguments(
                         communicateWay,
                         deviceInfo,
                         bleDevice

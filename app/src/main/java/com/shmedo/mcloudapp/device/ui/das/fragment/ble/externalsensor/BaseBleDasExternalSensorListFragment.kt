@@ -33,7 +33,7 @@ import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.DASSensorItem
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.model.RVEmptyFooter
-import com.shmedo.mcloudapp.device.ui.das.fragment.ble.BaseMDDeviceFragment
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasExternalSensorListViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -43,7 +43,7 @@ import timber.log.Timber
  * 创建时间：2024/4/18
  * 描述： TODO
  */
-abstract class BaseBleDasExternalSensorListFragment : BaseMDDeviceFragment() {
+abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasExternalSensorListBinding
     lateinit var mStates: DasExternalSensorListViewModel<MDDasExternalSensorInfo>
     val mdParseManager: MDParserManager by inject()
@@ -249,7 +249,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseMDDeviceFragment() {
         )
         commandItems.add(command)
         Timber.d("查询采集器配置信息===%s", command)
-        sendMDCommandFromCmdList(
+        sendCommandFromCmdList(
             isStartTimeoutJob = true,
             timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
         )
@@ -277,7 +277,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseMDDeviceFragment() {
             )
         }
 
-        sendMDCommandFromCmdList()
+        sendCommandFromCmdList()
     }
 
     override fun setResultData(cmdStr: String) {
@@ -320,7 +320,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseMDDeviceFragment() {
                     is MDCommandResult.Success -> {
                         //处理此通道的传感器配置参数
                         processSensorParamsInfo(result.data)
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                             updateFooter()
                             mStates.isSubmitBtnVisible.set(mStates.sensorModelMap.isNotEmpty())
@@ -340,7 +340,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList {}
+                        sendCommandFromCmdList {}
                     }
                 }
             }
@@ -356,7 +356,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseMDDeviceFragment() {
                     }
 
                     else -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             Toaster.show("保存成功")
                         }
                     }

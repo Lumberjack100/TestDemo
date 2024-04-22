@@ -26,29 +26,40 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DebugCmdLogInfo
+import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
+import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.device.base.md_cmd.enums.MDLogOutputStatus
+import com.shmedo.lib.device.base.md_cmd.enums.MDWorkModel
+import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
+import com.shmedo.lib.device.base.md_cmd.utils.MDConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.databinding.FragmentBleCustomCommandLogPrintBinding
 import com.shmedo.mcloudapp.device.common.BaseCommandLogPrintClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.model.CommunicateWay
+import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.BleCustomCommandLogPrintViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.UUID
 
 class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentBleCustomCommandLogPrintBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: BleCustomCommandLogPrintViewModel
+    private var isIotCmd = true
 
     private val debugModelList: MutableList<String> =
         arrayListOf("关", "debug模式", "info模式")
@@ -77,11 +88,13 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         addMenu()
         binding.toolbar.title = "指令调试"
         binding.toolbar.setNavigationOnClickListener { v: View? ->
+            closeDebugMode()
             //mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
+                closeDebugMode()
                 //mMessenger.requestStatusBarColor(R.color.colorPrimary)
                 nav().navigateUp()
             }
@@ -97,6 +110,9 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        arguments?.let {
+            isIotCmd = it.getBoolean(IOT_CMD)
+        }
         mStates.debugMode.set(debugModelList[0])
     }
 
@@ -111,11 +127,21 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
                 .asBottomList(
                     "", debugModelList.toTypedArray(),
                     null, selectedIndex,
-                    { _, text ->
+                    { position, text ->
                         mStates.debugMode.set(text)
-                        showLoadingDialog(StringUtils.getString(R.string.loading))
-//                        queryAlarmData(alarmTypeList.indexOf(text).toString())
+                        when (position) {
+                            0 -> {//关
+                                closeDebugMode()
+                            }
 
+                            1 -> {//debug模式
+                                setDebugMode()
+                            }
+
+                            2 -> {//info模式
+                                setInfoMode()
+                            }
+                        }
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -137,37 +163,116 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
 
         val input = mStates.command.get()
         val cmdStr = if (input.startsWith("##"))
-            "\$cmd=md_raw&content=$input".plus(
-                "&apikey=${deviceInfo.apikey.ifEmpty { "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9" }}&msgid=${
-                    UUID.randomUUID().toString().substring(30)
-                }"
-            )
-        else if (input.startsWith("\$cmd"))
-            input.plus(
-                "&apikey=${deviceInfo.apikey.ifEmpty { "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9" }}&msgid=${
-                    UUID.randomUUID().toString().substring(30)
-                }"
-            )
+            input.plus(MDConstants.COMMAND_FOOTER)
         else
             input
 
-        addLog(cmdStr)
-        sendDebugCommand(cmdStr)
+        commandItems.clear()
+        commandItems.add(cmdStr)
+        addLog(input)
+        sendCommandFromCmdList()
+    }
+
+    private fun closeDebugMode() {
+        commandItems.clear()
+        if (!isIotCmd) {
+            var command = MDCommandUtil.getCommand(
+                MDCommandType.LOG_OUTPUT_STATUS,
+                MDLogOutputStatus.CLOSE.toString()
+            )
+            addLog(command)
+            commandItems.add(command)
+
+            command = MDCommandUtil.getCommand(
+                MDCommandType.WORK_MODE,
+                MDWorkModel.WORK.toString()
+            )
+            addLog(command)
+            commandItems.add(command)
+        } else {
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.SET_LOG_OUTPUT_MODE_LEVEL,
+                "level=off&type=bt"
+            )
+            addLog(command)
+            commandItems.add(command)
+        }
+        sendCommandFromCmdList()
+    }
+
+    private fun setDebugMode() {
+        commandItems.clear()
+        if (!isIotCmd) {
+            var command = MDCommandUtil.getCommand(
+                MDCommandType.LOG_OUTPUT_STATUS,
+                MDLogOutputStatus.OPEN.toString()
+            )
+            addLog(command)
+            commandItems.add(command)
+
+            command = MDCommandUtil.getCommand(
+                MDCommandType.WORK_MODE,
+                MDWorkModel.DEBUG.toString()
+            )
+            addLog(command)
+            commandItems.add(command)
+        } else {
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.SET_LOG_OUTPUT_MODE_LEVEL,
+                "level=debug&type=bt"
+            )
+            addLog(command)
+            commandItems.add(command)
+        }
+        sendCommandFromCmdList()
+    }
+
+    private fun setInfoMode() {
+        commandItems.clear()
+        if (!isIotCmd) {
+            var command = MDCommandUtil.getCommand(
+                MDCommandType.LOG_OUTPUT_STATUS,
+                MDLogOutputStatus.OPEN.toString()
+            )
+            addLog(command)
+            commandItems.add(command)
+
+            command = MDCommandUtil.getCommand(
+                MDCommandType.WORK_MODE,
+                MDWorkModel.INFO.toString()
+            )
+            addLog(command)
+            commandItems.add(command)
+        } else {
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.SET_LOG_OUTPUT_MODE_LEVEL,
+                "level=info&type=bt"
+            )
+            addLog(command)
+            commandItems.add(command)
+        }
+        sendCommandFromCmdList()
     }
 
     override fun setResultData(cmdStr: String) {
-        addLog(cmdStr)
+        addLog(cmdStr,ColorUtils.getColor(R.color.colorPrimaryDark))
+        sendCommandFromCmdList()
     }
 
-    private fun addLog(cmdStr: String) {
+    private fun addLog(
+        cmdStr: String,
+        colorRes: Int = ColorUtils.getColor(R.color.title_text_color)
+    ) {
         val logInfo = DebugCmdLogInfo(
             logTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm:ss.SSS")),
-            content = cmdStr
+            content = cmdStr.replace(MDConstants.COMMAND_FOOTER, ""),
+            colorRes = colorRes
         )
         binding.recyclerview.bindingAdapter.apply {
             mutable.add(logInfo)
             notifyItemInserted(itemCount)
         }
+        binding.recyclerview.scrollToPosition(binding.recyclerview.bindingAdapter.itemCount - 1)
     }
 
     private fun addMenu() {
@@ -184,8 +289,6 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
                 return when (menuItem.itemId) {
                     R.id.action_share -> {
                         //分享
-//                        shareLogText()
-//
                         shareLogToFile()
                         true
                     }
@@ -277,4 +380,25 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
 //        windowInsetsController.isAppearanceLightStatusBars = true
     }
 
+    override fun onDestroy() {
+        closeDebugMode()
+        super.onDestroy()
+    }
+
+    companion object {
+        private const val IOT_CMD = "com.shmedo.mcloudapp.iot.IOT_CMD"
+        fun newBundleArguments(
+            communicateWay: CommunicateWay = NetPlatformConnect,
+            deviceInfo: DeviceInfo,
+            bleDevice: DiscoveredBluetoothDevice? = null,
+            isIotCmd: Boolean = true,
+            statusBarColor: Int = R.color.white
+        ): Bundle = Bundle().apply {
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
+            putBoolean(IOT_CMD, isIotCmd)
+            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+        }
+    }
 }

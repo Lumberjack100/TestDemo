@@ -17,9 +17,10 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentDasBaseInfoBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
-import com.shmedo.mcloudapp.device.ui.das.fragment.ble.BaseMDDeviceFragment
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasBaseInfoViewModel
 import org.koin.android.ext.android.inject
+import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -30,7 +31,7 @@ import java.util.Locale
  * 创建时间：2024/4/15
  * 描述： TODO
  */
-class BleDasBaseInfoFragment : BaseMDDeviceFragment() {
+class BleDasBaseInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasBaseInfoBinding
     private lateinit var mStates: DasBaseInfoViewModel
     private val mdParseManager: MDParserManager by inject()
@@ -140,7 +141,7 @@ class BleDasBaseInfoFragment : BaseMDDeviceFragment() {
             MDCommandUtil.getCommand(MDCommandType.QUERY_DAS_STATUS_2)
         commandItems.add(command)
 
-        sendMDCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
@@ -160,7 +161,7 @@ class BleDasBaseInfoFragment : BaseMDDeviceFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initDeviceStatusOne(result.data)
@@ -183,7 +184,7 @@ class BleDasBaseInfoFragment : BaseMDDeviceFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         mStates.wrapBaseInfo.get().apply {
@@ -209,7 +210,7 @@ class BleDasBaseInfoFragment : BaseMDDeviceFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         initOperatorInformation(result.data)
@@ -232,7 +233,7 @@ class BleDasBaseInfoFragment : BaseMDDeviceFragment() {
                     }
 
                     is MDCommandResult.Success -> {
-                        sendMDCommandFromCmdList {
+                        sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
                         setDeviceStatusTwo(result.data)

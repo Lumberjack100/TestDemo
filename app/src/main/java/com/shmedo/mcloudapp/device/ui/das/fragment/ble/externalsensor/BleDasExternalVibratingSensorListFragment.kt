@@ -37,7 +37,7 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
         )
         commandItems.add(command)
         showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendMDCommandFromCmdList(
+        sendCommandFromCmdList(
             isStartTimeoutJob = true,
             timeoutMillis = AppContants.Communication.DELAY_40000_MILLIS
         )
@@ -335,7 +335,7 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
                             commandDescItems.first
                         }
                         Timber.d("设置$commandDesc")
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -361,7 +361,7 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
                             commandDescItems.first
                         }
                         Timber.d("设置$commandDesc")
-                        sendMDCommandFromCmdList()
+                        sendCommandFromCmdList()
                     }
                 }
             }

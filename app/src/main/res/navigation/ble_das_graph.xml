@@ -7,6 +7,7 @@
 
     <include app:graph="@navigation/query_data_graph" />
     <include app:graph="@navigation/firmware_upgrade_graph" />
+    <include app:graph="@navigation/ble_command_debug_graph" />
 
     <fragment
         android:id="@+id/bleDasHomeFragment"
@@ -137,12 +138,6 @@
         android:label="DasAudibleAlarmFragment"
         tools:layout="@layout/fragment_das_audible_alarm" />
 
-    <fragment
-        android:id="@+id/bleMDCommandLogPrintFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.ble.BleMDCommandLogPrintFragment"
-        android:label="BleMDCommandLogPrintFragment"
-        tools:layout="@layout/fragment_ble_custom_command_log_print" />
-
     <action
         android:id="@+id/action_global_to_bleDasAdvancedSettingFragment"
         app:destination="@id/bleDasAdvancedSettingFragment"
@@ -160,8 +155,8 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_bleMDCommandLogPrintFragment"
-        app:destination="@id/bleMDCommandLogPrintFragment"
+        android:id="@+id/action_global_to_commandDebug"
+        app:destination="@id/ble_command_debug_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

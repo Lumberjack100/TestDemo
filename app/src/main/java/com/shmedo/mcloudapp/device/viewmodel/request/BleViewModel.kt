@@ -5,6 +5,7 @@ import com.shmedo.lib.ble.communicate.service.MedoBleRepository
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.viewmodel.BaseRequestViewModel
 import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
+import com.shmedo.lib.device.base.md_cmd.utils.MDConstants
 import com.shmedo.mcloudapp.device.common.MedoViewState
 import com.shmedo.mcloudapp.device.common.WorkingState
 import kotlinx.coroutines.delay
@@ -53,13 +54,12 @@ class BleViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) :
 
     fun sendIOTCommand(
         cmdStr: String,
-        needApiKey: Boolean = false,
         apiKey: String = "",
         timeMillis: Long = 0
     ) {
         viewModelScope.launch {
             delay(timeMillis)
-            val command = if (needApiKey) {
+            val command = if (!cmdStr.contains("&apikey=")) {
                 cmdStr.plus(
                     "&apikey=${apiKey.ifEmpty { "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9" }}&msgid=${
                         UUID.randomUUID().toString().substring(30)
@@ -67,7 +67,7 @@ class BleViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) :
                 )
             } else cmdStr
 
-            MedoBleRepository.instance.sendData(command + "\r\n")
+            MedoBleRepository.instance.sendData(command + MDConstants.COMMAND_FOOTER)
         }
     }
 
@@ -77,7 +77,10 @@ class BleViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) :
     ) {
         viewModelScope.launch {
             delay(timeMillis)
-            MedoBleRepository.instance.sendData(cmdStr)
+            val command = if (!cmdStr.endsWith(MDConstants.COMMAND_FOOTER)) {
+                cmdStr.plus(MDConstants.COMMAND_FOOTER)
+            } else cmdStr
+            MedoBleRepository.instance.sendData(command)
         }
     }
 }
