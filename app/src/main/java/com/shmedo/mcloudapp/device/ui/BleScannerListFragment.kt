@@ -22,6 +22,7 @@ import com.shmedo.lib.ble.scanner.viewmodel.ScannerViewModel
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.permission.PermissionInterceptor
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
@@ -219,7 +220,7 @@ class BleScannerListFragment : BaseFragment() {
         binding.refreshLayout.autoRefresh()
     }
 
-    private fun refreshScan() = launchAndRepeatWithViewLifecycle {
+    private fun refreshScan() = launchWithViewLifecycle {
         scannerViewModel.refresh()
         delay(3000)
         binding.refreshLayout.finish()

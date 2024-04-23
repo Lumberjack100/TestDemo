@@ -355,7 +355,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                 sendCommandFromCmdList(isStartTimeoutJob = false)
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 
@@ -645,7 +645,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             mStates.collectorModel.set(info.collectorModel)
             mStates.isActivated.set(MDLowEnergyModel.value(info.activeStatus) == MDLowEnergyModel.ACTIVATE)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

@@ -404,7 +404,7 @@ class BleDasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                 installElevation = mStates.installElevation.get()
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

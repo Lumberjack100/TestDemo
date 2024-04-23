@@ -11,6 +11,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 
 /**
  * 创建者：gonghe
@@ -29,8 +31,9 @@ inline fun Fragment.launchAndRepeatWithViewLifecycle(
 }
 
 inline fun Fragment.launchWithViewLifecycle(
+    context: CoroutineContext = EmptyCoroutineContext,
     crossinline block: suspend CoroutineScope.() -> Unit
-): Job = viewLifecycleOwner.lifecycleScope.launch {
+): Job = viewLifecycleOwner.lifecycleScope.launch(context = context) {
     block()
 }
 

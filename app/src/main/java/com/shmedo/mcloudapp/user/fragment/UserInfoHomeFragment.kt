@@ -168,7 +168,7 @@ class UserInfoHomeFragment : BaseFragment() {
                 if (mStates.email.get().isNotEmpty())
                     jsonObjectRequest.put("email", mStates.email.get())
             } catch (e: JSONException) {
-                e.printStackTrace()
+                Timber.e(e)
             }
             showLoadingDialog("处理中...")
             loginRequestViewModel.requestUpdateUserInfo(jsonObjectRequest.toString())
@@ -188,7 +188,7 @@ class UserInfoHomeFragment : BaseFragment() {
             jsonObjectRequest.put("content", fileContent)
             jsonObjectRequest.put("extension", "png")
         } catch (e: JSONException) {
-            e.printStackTrace()
+            Timber.e(e)
         }
         showLoadingDialog("正在上传...")
         loginRequestViewModel.uploadUserAvatar(jsonObjectRequest.toString())
@@ -223,7 +223,7 @@ class UserInfoHomeFragment : BaseFragment() {
                 result = Base64.encodeToString(bitmapBytes, Base64.NO_WRAP)
             }
         } catch (e: IOException) {
-            e.printStackTrace()
+            Timber.e(e)
         } finally {
             try {
                 if (outputStream != null) {
@@ -231,7 +231,7 @@ class UserInfoHomeFragment : BaseFragment() {
                     outputStream.close()
                 }
             } catch (e: IOException) {
-                e.printStackTrace()
+                Timber.e(e)
             }
         }
         return result

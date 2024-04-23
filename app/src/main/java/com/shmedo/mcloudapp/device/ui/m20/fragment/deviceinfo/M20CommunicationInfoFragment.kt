@@ -20,6 +20,7 @@ import com.shmedo.mcloudapp.device.ui.mr702.widget.tableview.CommunicationDataTa
 import com.shmedo.mcloudapp.device.ui.mr702.widget.tableview.model.CommunicationDataCellModel
 import com.shmedo.mcloudapp.device.viewmodel.state.M20CommunicationInfoViewModel
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 class M20CommunicationInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentM20CommunicationInfoBinding
@@ -112,7 +113,7 @@ class M20CommunicationInfoFragment : BaseIOTDeviceFragment() {
                 getCellDataList(commonCurrentStateInfo)
             )
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

@@ -252,7 +252,7 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
                 mStates.isSupportDumpMInTime.set(false)
 
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

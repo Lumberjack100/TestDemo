@@ -322,7 +322,7 @@ class DasAudibleAlarmFragment : BaseIOTDeviceFragment() {
             mStates.showTime.set(audibleAlarm.showtime)
             mStates.showGap.set(audibleAlarm.showgap)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

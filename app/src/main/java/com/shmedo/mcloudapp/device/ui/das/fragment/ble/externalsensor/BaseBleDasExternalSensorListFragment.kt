@@ -386,7 +386,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             queryExtendSensorConfigInfo(collectorInfo.sensornum.toInt())
         } catch (e: Exception) {
             cancelNearbyCommunicationTimeoutJob()
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

@@ -68,7 +68,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             try {
                 jsonObjectRequest.put("companyID", companyID)
             } catch (e: JSONException) {
-                e.printStackTrace()
+                Timber.e(e)
             }
             val data: DeviceStatisticInfo =
                 NetDataRepository.instance.getDeviceStatByCompanyID(
@@ -103,7 +103,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                 jsonObjectRequest.put("pageSize", 100)
                 jsonObjectRequest.put("currentPage", 1)
             } catch (e: JSONException) {
-                e.printStackTrace()
+                Timber.e(e)
             }
             val data: PageList<ProductInfo> =
                 NetDataRepository.instance.getUserCompanyProductList(jsonObjectRequest.toString()) { error: Throwable ->
@@ -174,7 +174,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                 jsonObjectRequest.put("currentPage", currentPage)
                 jsonObjectRequest.put("pageSize", pageSize)
             } catch (e: JSONException) {
-                e.printStackTrace()
+                Timber.e(e)
             }
             val data: PageList<DeviceInfo> =
                 NetDataRepository.instance.queryDeviceList(
@@ -214,7 +214,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             try {
                 jsonObjectRequest.put("deviceToken", deviceToken)
             } catch (e: JSONException) {
-                e.printStackTrace()
+                Timber.e(e)
             }
             val data: DeviceDetailInfo =
                 NetDataRepository.instance.getDeviceDetailInfo(jsonObjectRequest.toString()) { error: Throwable ->
@@ -246,7 +246,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
         try {
             jsonObjectRequest.put("deviceToken", deviceToken)
         } catch (e: JSONException) {
-            e.printStackTrace()
+            Timber.e(e)
         }
         return NetDataRepository.instance.getDeviceDetailInfo(jsonObjectRequest.toString(), onCatch)
     }
@@ -261,7 +261,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             jsonObjectRequest.put("backupID", backupID)
             jsonObjectRequest.put("deviceID", deviceID)
         } catch (e: JSONException) {
-            e.printStackTrace()
+            Timber.e(e)
         }
         return NetDataRepository.instance.applyBackup(jsonObjectRequest.toString(), onCatch)
     }
@@ -293,7 +293,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                 jsonObjectRequest.put("currentPage", currentPage)
                 jsonObjectRequest.put("pageSize", pageSize)
             } catch (e: JSONException) {
-                e.printStackTrace()
+                Timber.e(e)
             }
             val data: PageList<CloudDeviceData> =
                 NetDataRepository.instance.queryCloudDataExWithPage(
@@ -348,7 +348,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                 jsonObjectRequest.put("currentPage", currentPage)
                 jsonObjectRequest.put("pageSize", pageSize)
             } catch (e: JSONException) {
-                e.printStackTrace()
+                Timber.e(e)
             }
             val data: PageList<FirmWareInfo> =
                 NetDataRepository.instance.queryFirmwareListByProductIDWithPage(
@@ -388,7 +388,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             jsonObjectRequest.put("deviceToken", deviceToken)
             jsonObjectRequest.put("firmwareID", firmwareID)
         } catch (e: JSONException) {
-            e.printStackTrace()
+            Timber.e(e)
         }
         return NetDataRepository.instance.applyFirmwareUpgrade(
             jsonObjectRequest.toString(),

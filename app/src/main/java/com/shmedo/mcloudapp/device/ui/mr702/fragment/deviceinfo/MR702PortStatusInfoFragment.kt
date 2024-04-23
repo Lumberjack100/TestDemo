@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinfo
 
 import android.os.Bundle
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
@@ -34,6 +33,7 @@ import com.shmedo.mcloudapp.device.model.RVEmptyHeader
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceInfoViewModel
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 import java.text.DecimalFormat
 
 class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
@@ -212,7 +212,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                     addHeader(RVEmptyHeader(), animation = true)
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 
@@ -329,7 +329,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                     addHeader(RVEmptyHeader(), animation = true)
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

@@ -28,10 +28,6 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessage
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port2Binding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -44,6 +40,12 @@ import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.MR702SensorSelectionPopupView
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port2ViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
+import com.shmedo.mcloudapp.ext.showMessageDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -503,7 +505,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
             mStates.collectorAddress.set(collectionParam.colladdr)
             mStates.delayDuration.set(collectionParam.powerontimes)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 
@@ -514,12 +516,12 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
             mStates.checkBit.set(checkBitList[serialPortParam.parity.toInt()])
             mStates.stopBit.set(stopBitList[serialPortParam.stopbit.toInt()])
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 
     private fun initSensorData(content: String) {
-        launchWithViewLifecycle {
+        launchWithViewLifecycle(Dispatchers.IO) {
             try {
                 val sensorStatusList = MoshiUtil.fromJson<List<MRSensorStatus>>(content)
                     ?: return@launchWithViewLifecycle
@@ -537,8 +539,10 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                             ?: listOf()
                     )
                 }
-                binding.rv.models = list
-                updateFooter()
+                withContext(Dispatchers.Main) {
+                    binding.rv.models = list
+                    updateFooter()
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }

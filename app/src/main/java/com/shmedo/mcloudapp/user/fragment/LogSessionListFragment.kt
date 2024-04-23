@@ -15,14 +15,14 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.model.SessionInfo
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.FragmentLogSessionListBinding
+import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.user.model.HoverHeaderModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -105,9 +105,9 @@ class LogSessionListFragment : BaseFragment() {
     }
 
     private fun loadLogSessionList() {
-        launchAndRepeatWithViewLifecycle {
+        launchWithViewLifecycle {
             logViewModel.getSessionListByUser(MmkvCacheUtil.getUserName())
-                ?.let { logSessionList ->
+                .let { logSessionList ->
                     if (logSessionList.isEmpty()) {
                         binding.refreshLayout.showEmpty()
                     } else {
@@ -121,8 +121,6 @@ class LogSessionListFragment : BaseFragment() {
                             groupList.addAll(value)
                         }
                         binding.recyclerview.models = groupList
-
-
                     }
                 }
         }

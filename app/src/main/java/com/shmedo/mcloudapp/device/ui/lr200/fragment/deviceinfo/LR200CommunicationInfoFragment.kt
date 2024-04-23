@@ -20,6 +20,7 @@ import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.mr702.widget.tableview.CommunicationDataTableAdapter
 import com.shmedo.mcloudapp.device.ui.mr702.widget.tableview.model.CommunicationDataCellModel
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 class LR200CommunicationInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentLr200CommunicationInfoBinding
@@ -111,7 +112,7 @@ class LR200CommunicationInfoFragment : BaseIOTDeviceFragment() {
                 getCellDataList(commonCurrentStateInfo)
             )
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

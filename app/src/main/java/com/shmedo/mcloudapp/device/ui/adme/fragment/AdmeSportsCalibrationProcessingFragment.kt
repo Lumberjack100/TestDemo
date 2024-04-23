@@ -330,7 +330,7 @@ class AdmeSportsCalibrationProcessingFragment : BaseIOTDeviceFragment() {
             mStates.isDataProcessing.set(info.dpswitch == "1")
             mStates.accumulatedDifference.set(info.accudiff)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

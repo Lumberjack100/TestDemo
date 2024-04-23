@@ -18,6 +18,7 @@ import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.LR200BaseInfoViewModel
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 class LR200BaseInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentLr200BaseInfoBinding
@@ -98,7 +99,7 @@ class LR200BaseInfoFragment : BaseIOTDeviceFragment() {
             val commonCurrentStateInfo = MoshiUtil.fromJson<CommonCurrentStateInfo>(content) ?: return
             mStates.wrapStateInfo.set(commonCurrentStateInfo)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

@@ -21,6 +21,7 @@ import com.shmedo.mcloudapp.device.viewmodel.state.MR702EquipmentOperationViewMo
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
+import timber.log.Timber
 
 /**
  * 创建者：gonghe
@@ -142,7 +143,7 @@ class MR702ParamImportPopupView(context: Context) : CenterPopupView(context) {
         try {
             jsonObjectRequest.put("deviceToken", deviceToken)
         } catch (e: JSONException) {
-            e.printStackTrace()
+            Timber.e(e)
         }
         return NetDataRepository.instance.getDeviceDetailInfo(jsonObjectRequest.toString()) { error: Throwable ->
             Toaster.show(error.errorMsg)
@@ -160,7 +161,7 @@ class MR702ParamImportPopupView(context: Context) : CenterPopupView(context) {
             jsonObjectRequest.put("currentPage", currentPage)
             jsonObjectRequest.put("pageSize", pageSize)
         } catch (e: JSONException) {
-            e.printStackTrace()
+            Timber.e(e)
         }
         return NetDataRepository.instance.queryDeviceBackupListWithPage(jsonObjectRequest.toString()) { error: Throwable ->
             val responseStatus = ResponseStatus()

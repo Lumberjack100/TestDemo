@@ -16,7 +16,6 @@ import com.shmedo.lib.core.base.model.AppConfigInfo
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
@@ -29,9 +28,6 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorAddParamBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.common.MRRS485Port1
@@ -45,7 +41,12 @@ import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port1SensorAddParamViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessageDialog
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -409,7 +410,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
     /**
      * 更新传感器配置信息
      */
-    private fun updateSensorModeConfig() {
+    private suspend fun updateSensorModeConfig() {
         try {
             if (!mStates.isCustomSensor.get())
                 return
@@ -419,21 +420,23 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
             mInterfaceHomeViewModel.sensorModelMap[mStates.curSensorModel.sensorType] =
                 mStates.curSensorModel
 
-            val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
-            val jsonStr = localAppConfigInfo.configPara.replace("\\", "")
-            MoshiUtil.fromJson<AppConfigContent>(jsonStr)
-                ?.let { appConfigContent: AppConfigContent ->
-                    appConfigContent.mr702.first { it.portName == "485port1" }.sensors =
-                        mInterfaceHomeViewModel.portSensorModelListMap["485port1"]!!
-                    //将 " 转换为 \"
-                    localAppConfigInfo.configPara =
-                        MoshiUtil.toJson(appConfigContent).replace("\"", "\\\"")
-                    localAppConfigInfo.lastTime = TimeUtils.getNowString()
-                    //Timber.d("configPara = ${localAppConfigInfo.configPara}")
-                    MmkvCacheUtil.setAppConfigInfo(localAppConfigInfo)
-                }
+            withContext(Dispatchers.IO) {
+                val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
+                val jsonStr = localAppConfigInfo.configPara.replace("\\", "")
+                MoshiUtil.fromJson<AppConfigContent>(jsonStr)
+                    ?.let { appConfigContent: AppConfigContent ->
+                        appConfigContent.mr702.first { it.portName == "485port1" }.sensors =
+                            mInterfaceHomeViewModel.portSensorModelListMap["485port1"]!!
+                        //将 " 转换为 \"
+                        localAppConfigInfo.configPara =
+                            MoshiUtil.toJson(appConfigContent).replace("\"", "\\\"")
+                        localAppConfigInfo.lastTime = TimeUtils.getNowString()
+                        //Timber.d("configPara = ${localAppConfigInfo.configPara}")
+                        MmkvCacheUtil.setAppConfigInfo(localAppConfigInfo)
+                    }
+            }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

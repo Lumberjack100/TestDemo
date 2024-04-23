@@ -129,7 +129,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                         binding.seekBarDownSlowStopInterval.rightSeekBar.progress
                     )
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Timber.e(e)
                 }
             }
         }
@@ -171,7 +171,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                         )
                     }
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Timber.e(e)
                 }
             }
         }
@@ -206,7 +206,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                         binding.seekBarPullUpSlowStopInterval.rightSeekBar.progress
                     )
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Timber.e(e)
                 }
             }
         }
@@ -240,7 +240,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                         rightProgress
                     )
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Timber.e(e)
                 }
             }
         }
@@ -782,7 +782,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                 rightProgress3
             )
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

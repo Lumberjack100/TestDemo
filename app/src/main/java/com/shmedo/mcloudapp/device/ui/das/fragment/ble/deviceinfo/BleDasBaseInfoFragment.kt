@@ -282,7 +282,7 @@ class BleDasBaseInfoFragment : BaseIOTDeviceFragment() {
                 it * 2 - 113
             } ?: -113)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 
@@ -323,7 +323,7 @@ class BleDasBaseInfoFragment : BaseIOTDeviceFragment() {
                 decimalFormat.format(it)
             } ?: "")
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
 
         //温湿度状态
@@ -345,7 +345,7 @@ class BleDasBaseInfoFragment : BaseIOTDeviceFragment() {
                 decimalFormat.format(it)
             } ?: "")
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

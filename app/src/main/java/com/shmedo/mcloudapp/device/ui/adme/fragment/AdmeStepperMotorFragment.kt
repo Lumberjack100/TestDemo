@@ -265,7 +265,7 @@ class AdmeStepperMotorFragment : BaseIOTDeviceFragment() {
             mStates.movementSpeed.set(info.movspeed)
             mStates.motorTorque.set(info.movesm)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

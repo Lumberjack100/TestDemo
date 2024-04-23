@@ -27,6 +27,7 @@ import com.shmedo.mcloudapp.device.ui.mr702.widget.tableview.CommunicationDataTa
 import com.shmedo.mcloudapp.device.ui.mr702.widget.tableview.model.CommunicationDataCellModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceInfoViewModel
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 import java.text.DecimalFormat
 
 class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
@@ -141,7 +142,7 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
                 getCellDataList(communicationData)
             )
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 
@@ -325,7 +326,7 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
             }
             binding.rvRunningData.models = list
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

@@ -223,7 +223,7 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
             mStates.rainResolution.set(rainGaugeParam.rainaccuracy)
             mStates.debounceCoefficient.set(rainGaugeParam.rainelim)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

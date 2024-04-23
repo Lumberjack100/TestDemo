@@ -349,7 +349,7 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
             mStates.downConstant.set(decimalFormat.format(info.downconstant.toDouble()))
             mStates.downFilterCoefficient.set(decimalFormat.format(info.downfilter.toDouble()))
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

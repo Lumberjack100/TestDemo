@@ -754,7 +754,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
             mStates.decentralizationSpeed.set(info.downspeed)
             mStates.decentralizationWaitingTime.set(info.downwaitetime)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

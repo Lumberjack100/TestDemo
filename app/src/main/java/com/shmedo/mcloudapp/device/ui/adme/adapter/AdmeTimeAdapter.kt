@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.AdmeTimeItem
+import timber.log.Timber
 
 /**
  * 供选择、编辑的图片、视频列表
@@ -38,7 +39,7 @@ class AdmeTimeAdapter(context: Context, result: List<AdmeTimeItem>) :
                 notifyItemRangeChanged(position, data.size)
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

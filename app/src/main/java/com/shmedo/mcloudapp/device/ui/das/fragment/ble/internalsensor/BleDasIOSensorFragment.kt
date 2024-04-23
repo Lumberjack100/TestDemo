@@ -344,7 +344,7 @@ class BleDasIOSensorFragment : BaseIOTDeviceFragment() {
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

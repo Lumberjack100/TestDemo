@@ -12,11 +12,13 @@ import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.activity.WebviewActivity
-import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.FragmentSettingBinding
+import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.user.viewmodel.state.SettingViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class SettingFragment : BaseFragment() {
@@ -65,9 +67,11 @@ class SettingFragment : BaseFragment() {
          */
         fun onClearLogClick() {
             launchWithViewLifecycle {
-                //清除缓存
-                CleanUtils.cleanInternalCache()
-                CleanUtils.cleanExternalCache()
+                withContext(Dispatchers.IO) {
+                    //清除缓存
+                    CleanUtils.cleanInternalCache()
+                    CleanUtils.cleanExternalCache()
+                }
                 //清除历史日志
                 logViewModel.clearHistoryLog()
                 Toaster.show("清除缓存成功")

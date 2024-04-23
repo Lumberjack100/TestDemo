@@ -239,7 +239,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                 mStates.brakePadOpenCloseCount.set(currentStateInfo.brakepadnum)
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 
@@ -296,7 +296,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                 "8" -> mStates.motorInfo.set("周期等待")
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

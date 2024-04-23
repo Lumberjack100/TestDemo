@@ -20,6 +20,7 @@ import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasBaseInfoViewModel
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 import java.text.DecimalFormat
 
 class DasBaseInfoFragment : BaseIOTDeviceFragment() {
@@ -176,7 +177,7 @@ class DasBaseInfoFragment : BaseIOTDeviceFragment() {
                 it * 2 - 113
             } ?: -113)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 
@@ -193,7 +194,7 @@ class DasBaseInfoFragment : BaseIOTDeviceFragment() {
             mStates.solarpwr.set(decimalFormat.format(info.solar.solarpwr))
             mStates.loadpwr.set(decimalFormat.format(info.solar.loadpwr))
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 
@@ -212,7 +213,7 @@ class DasBaseInfoFragment : BaseIOTDeviceFragment() {
             mStates.outthTemp.set(decimalFormat.format(info.outth.temp))
             mStates.outthHumi.set(decimalFormat.format(info.outth.humi))
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

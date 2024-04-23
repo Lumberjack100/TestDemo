@@ -259,7 +259,7 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

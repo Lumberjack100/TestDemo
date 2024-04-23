@@ -340,7 +340,7 @@ class AdmeThresholdFragment : BaseIOTDeviceFragment() {
                 mStates.antifreezeDistance.set(info.antifdis)
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

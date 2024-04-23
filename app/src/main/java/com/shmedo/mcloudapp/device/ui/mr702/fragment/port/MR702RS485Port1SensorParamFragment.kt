@@ -17,7 +17,6 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MoshiUtil
@@ -32,9 +31,6 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorParamBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.common.MRRS485Port1
@@ -45,7 +41,12 @@ import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port1SensorParamViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessageDialog
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -448,8 +449,9 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     private fun initParamData(content: String) {
         launchWithViewLifecycle {
             try {
-                val sensorParamWrapper = MoshiUtil.fromJson<MRRS485Port1SensorParamWrapper>(content)
-                    ?: return@launchWithViewLifecycle
+                val sensorParamWrapper = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<MRRS485Port1SensorParamWrapper>(content)
+                } ?: return@launchWithViewLifecycle
                 if (sensorItem.modelFieldList.isEmpty() && selectedFieldIndex == 0) {
                     tabList.clear()
                     for (i in 0..sensorParamWrapper.indexnum.toInt()) {
@@ -480,7 +482,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                     mStates.ngateval.set(sensorParam.ngateval)
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.e(e)
             }
         }
     }

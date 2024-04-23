@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 /**
  * 创建者：gonghe
@@ -62,7 +63,7 @@ class NetIOTCommandViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                     QueryCmdResultParam(if (otherMsgIDList.isEmpty()) msgIDList else otherMsgIDList)
                 pollForCommandResult(cmdStr = cmdStr, jsonParam = MoshiUtil.toJson(parameter))
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.e(e)
                 // 错误处理
                 _cmdDispatchFlow.emit(
                     CmdResponseResultError(

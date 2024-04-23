@@ -18,7 +18,6 @@ import com.shmedo.lib.core.base.model.AppConfigInfo
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
@@ -26,7 +25,6 @@ import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
-import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentMr702PortHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -37,6 +35,10 @@ import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.MR702PortSelectionPartShadowPopupView
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentMr702PortHomeBinding
@@ -193,9 +195,12 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             try {
                 val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
                 val jsonStr = localAppConfigInfo.configPara.replace("\\", "")
-//            Timber.d("configPara = $jsonStr")
-                val appConfigContent: AppConfigContent =
-                    MoshiUtil.fromJson(jsonStr) ?: return@launchWithViewLifecycle
+                //Timber.d("configPara = $jsonStr")
+                // 在IO线程中解析JSON
+                val appConfigContent: AppConfigContent = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson(jsonStr)
+                } ?: return@launchWithViewLifecycle
+
                 appConfigContent.mr702.forEach { mPort ->
                     mStates.portSensorModelListMap[mPort.portName] = mPort.sensors.toMutableList()
                     mPort.sensors.forEach { model ->
@@ -204,7 +209,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                 }
                 mStates.appConfigContent = appConfigContent
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.e(e)
             }
         }
     }

@@ -50,6 +50,9 @@ import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.BleCustomCommandLogPrintViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -255,7 +258,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
-        addLog(cmdStr,ColorUtils.getColor(R.color.colorPrimaryDark))
+        addLog(cmdStr, ColorUtils.getColor(R.color.colorPrimaryDark))
         sendCommandFromCmdList()
     }
 
@@ -345,9 +348,22 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
                     )
                 }.txt"
                 val file = File(Utils.getApp().cacheDir.path, fileName)
-                if (FileIOUtils.writeFileFromString(file, logContent.toString())) {
-                    // 分享文件
-                    shareFile(file)
+                try {
+                    // 在IO线程进行文件写入操作
+                    withContext(Dispatchers.IO) {
+                        if (FileIOUtils.writeFileFromString(file, logContent.toString())) {
+                            // 切换回主线程进行文件分享
+                            withContext(Dispatchers.Main) {
+                                shareFile(file)
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    Timber.e(e)
+                    // 异常处理，显示错误信息等
+                    withContext(Dispatchers.Main) {
+                        Toaster.show("Error sharing file: ${e.localizedMessage}")
+                    }
                 }
             }
         }
@@ -369,7 +385,6 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
             clipData = clip
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         }
-
         startActivity(Intent.createChooser(shareIntent, "分享到"))
     }
 

@@ -505,7 +505,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
             queryExtendSensorConfigInfo(collectorInfo.sensornum.toInt())
         } catch (e: Exception) {
             cancelNearbyCommunicationTimeoutJob()
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

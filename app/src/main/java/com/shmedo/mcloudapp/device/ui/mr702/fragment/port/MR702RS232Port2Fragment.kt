@@ -271,7 +271,7 @@ class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
             mStates.checkBit.set(checkBitList[sensorParam.parity.toInt()])
             mStates.stopBit.set(stopBitList[sensorParam.stopbit.toInt()])
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

@@ -263,7 +263,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
                 mStates.installElevation.set(decimalFormat.format(it))
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

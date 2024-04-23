@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
+import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
@@ -25,7 +26,7 @@ import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
-import com.shmedo.mcloudapp.device.model.TcpConnect
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -70,7 +71,7 @@ class DeviceHomeActivity : BaseActivity() {
     }
 
     private fun addHistoryList() {
-        lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.Default) {
             deviceInfo?.let {
                 val historyList = arrayListOf<String>()
                 historyList.addAll(MmkvCacheUtil.getSearchHistoryData())
@@ -86,109 +87,29 @@ class DeviceHomeActivity : BaseActivity() {
     }
 
     private fun setGraph() {
+        val bundle = BaseIOTDeviceFragment.newBundleArguments(
+            communicateWay,
+            deviceInfo!!,
+            bleDevice
+        )
+        val navController = findNavController(R.id.device_home_host_fragment)
         when (productType) {
-            ProductType.ADME -> {
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                    communicateWay,
-                    deviceInfo!!,
-                    bleDevice
-                )
-                findNavController(R.id.device_home_host_fragment)
-                    .setGraph(R.navigation.adme_graph, bundle)
+            ProductType.ADME -> navController.setGraph(R.navigation.adme_graph, bundle)
+            ProductType.DAS, ProductType.BHY -> {
+                val graphId =
+                    if (communicateWay == BleConnect) R.navigation.ble_das_graph else R.navigation.das_graph
+                navController.setGraph(graphId, bundle)
             }
-
-            ProductType.DAS,
-            ProductType.BHY
-            -> {
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                    communicateWay,
-                    deviceInfo!!,
-                    bleDevice
-                )
-                if (communicateWay == BleConnect) {
-                    findNavController(R.id.device_home_host_fragment)
-                        .setGraph(R.navigation.ble_das_graph, bundle)
-                } else {
-                    findNavController(R.id.device_home_host_fragment)
-                        .setGraph(R.navigation.das_graph, bundle)
-                }
-            }
-
-            ProductType.E40 -> {
-
-            }
-
-            ProductType.HAC -> {
-
-            }
-
-            ProductType.LR200 -> {
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                    communicateWay,
-                    deviceInfo!!,
-                    bleDevice
-                )
-                findNavController(R.id.device_home_host_fragment)
-                    .setGraph(R.navigation.lr200_graph, bundle)
-            }
-
-            ProductType.M20 -> {
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                    communicateWay,
-                    deviceInfo!!,
-                    bleDevice
-                )
-                findNavController(R.id.device_home_host_fragment)
-                    .setGraph(R.navigation.m20_graph, bundle)
-            }
-
-            ProductType.MR702 -> {
-                val bundle =
-                    BaseIOTDeviceFragment.newBundleArguments(
-                        communicateWay,
-                        deviceInfo!!,
-                        bleDevice
-                    )
-                findNavController(R.id.device_home_host_fragment)
-                    .setGraph(R.navigation.mr702_graph, bundle)
-            }
-
-            ProductType.RN20 -> {
-
-            }
-
-            ProductType.VMS -> {
-
-            }
-
-            ProductType.TEST_DEVICE -> {
-                val bundle =
-                    BaseIOTDeviceFragment.newBundleArguments(
-                        communicateWay,
-                        deviceInfo!!,
-                        bleDevice
-                    )
-                findNavController(R.id.device_home_host_fragment)
-                    .setGraph(R.navigation.test_device_graph, bundle)
-            }
+            ProductType.LR200 -> navController.setGraph(R.navigation.lr200_graph, bundle)
+            ProductType.M20 -> navController.setGraph(R.navigation.m20_graph, bundle)
+            ProductType.MR702 -> navController.setGraph(R.navigation.mr702_graph, bundle)
+            ProductType.TEST_DEVICE -> navController.setGraph(
+                R.navigation.test_device_graph,
+                bundle
+            )
 
             else -> {
-                when (communicateWay) {
-                    NetPlatformConnect -> {
 
-                    }
-
-                    BleConnect -> {
-
-                    }
-
-                    TcpConnect -> {
-
-                    }
-
-                    else -> {
-                    }
-                }
             }
         }
     }
@@ -205,7 +126,7 @@ class DeviceHomeActivity : BaseActivity() {
             if (type == ProductType.UnKnown) {
                 type = ProductType.valueBySuffix(deviceInfo.deviceToken)
                 if (type == ProductType.UnKnown) {
-                    Toaster.show("暂不支持此设备类型!")
+                    Toaster.show(StringUtils.getString(R.string.unsupported_device_type))
                     return
                 }
             }

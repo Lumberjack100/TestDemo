@@ -18,6 +18,7 @@ import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.M20SensorInfoViewModel
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 class M20SensorInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentM20SensorInfoBinding
@@ -103,7 +104,7 @@ class M20SensorInfoFragment : BaseIOTDeviceFragment() {
             mStates.memsAxisX.set(commonCurrentStateInfo.y_Angle)
             mStates.memsAxisZ.set(commonCurrentStateInfo.z_Angle)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

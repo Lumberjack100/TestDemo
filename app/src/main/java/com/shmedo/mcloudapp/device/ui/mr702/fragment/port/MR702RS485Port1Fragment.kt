@@ -23,10 +23,6 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessage
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1Binding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -39,6 +35,12 @@ import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.MR702SensorSelectionPopupView
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port1ViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
+import com.shmedo.mcloudapp.ext.showMessageDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -355,16 +357,16 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
             mStates.noResponseTimes.set(collectionParam.noresp)
             mStates.delayDuration.set(collectionParam.powerontimes)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 
     private fun initSensorData(content: String) {
         launchWithViewLifecycle {
             try {
-                val sensorStatusList =
+                val sensorStatusList = withContext(Dispatchers.IO) {
                     MoshiUtil.fromJson<List<MRSensorStatus>>(content)
-                        ?: return@launchWithViewLifecycle
+                } ?: return@launchWithViewLifecycle
                 val list = sensorStatusList.map { sensorStatus ->
                     val strs = sensorStatus.model.split("_").toTypedArray()
                     MRSensorItem(
@@ -381,7 +383,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                 binding.rv.models = list
                 updateFooter()
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.e(e)
             }
         }
     }

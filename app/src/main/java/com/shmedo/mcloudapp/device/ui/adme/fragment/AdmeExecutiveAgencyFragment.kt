@@ -738,7 +738,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
                 decimalFormat.format(it)
             } ?: "")
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

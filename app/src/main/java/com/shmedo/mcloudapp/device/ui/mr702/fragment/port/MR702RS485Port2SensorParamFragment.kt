@@ -279,7 +279,7 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
             mStates.lowerLimit.set(sensorParam.lowlimit)
             mStates.correctValue.set(sensorParam.corrvalue)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

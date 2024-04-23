@@ -125,7 +125,7 @@ class MR702DIPortFragment : BaseIOTDeviceFragment() {
 
             binding.rv.models = list
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

@@ -29,6 +29,7 @@ import com.shmedo.mcloudapp.device.model.DasSensorSubMonitorStatusItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasSensorInfoViewModel
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 import java.text.DecimalFormat
 
 class DasSensorInfoFragment : BaseIOTDeviceFragment() {
@@ -792,7 +793,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 
@@ -806,7 +807,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
             mStates.isExternalSensorVisible.set(true)
             binding.rvSensor.models = dataList
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

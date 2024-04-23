@@ -23,6 +23,7 @@ import com.shmedo.mcloudapp.device.model.MRRunningDataItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.M20BaseInfoViewModel
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 import java.text.DecimalFormat
 
 class M20BaseInfoFragment : BaseIOTDeviceFragment() {
@@ -173,7 +174,7 @@ class M20BaseInfoFragment : BaseIOTDeviceFragment() {
                 )
             )
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 
@@ -204,7 +205,7 @@ class M20BaseInfoFragment : BaseIOTDeviceFragment() {
             if (list.isNotEmpty())
                 mStates.isRunningDataVisible.set(true)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

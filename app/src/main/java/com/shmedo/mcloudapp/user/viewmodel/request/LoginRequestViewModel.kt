@@ -24,6 +24,7 @@ import com.shmedo.mcloudapp.data.repository.remote.NetDataRepository
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
+import timber.log.Timber
 
 /**
  * 创建者：gonghe
@@ -66,7 +67,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             try {
                 jsonObjectRequest.put("phone", mobile)
             } catch (e: JSONException) {
-                e.printStackTrace()
+                Timber.e(e)
             }
             val data: String =
                 NetDataRepository.instance.sendSmsCode(jsonObjectRequest.toString()) { error: Throwable ->
@@ -168,7 +169,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             jsonObjectRequest.put("account", mAccount)
             jsonObjectRequest.put("password", mPassword)
         } catch (e: JSONException) {
-            e.printStackTrace()
+            Timber.e(e)
         }
         return NetDataRepository.instance.loginByAccount(jsonObjectRequest.toString()) { error: Throwable ->
             error.printStackTrace()
@@ -194,7 +195,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             jsonObjectRequest.put("phone", phone)
             jsonObjectRequest.put("code", code)
         } catch (e: JSONException) {
-            e.printStackTrace()
+            Timber.e(e)
         }
         return NetDataRepository.instance.loginByPhone(jsonObjectRequest.toString()) { error: Throwable ->
             error.printStackTrace()
@@ -238,7 +239,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             jsonObjectRequest.put("companyID", companyID)
             jsonObjectRequest.put("userID", userID)
         } catch (e: JSONException) {
-            e.printStackTrace()
+            Timber.e(e)
         }
 
         return NetDataRepository.instance.queryUserByID(jsonObjectRequest.toString()) { error: Throwable ->
@@ -265,7 +266,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             jsonObjectRequest.put("companyID", companyID)
             jsonObjectRequest.put("serviceName", "iot")
         } catch (e: JSONException) {
-            e.printStackTrace()
+            Timber.e(e)
         }
 
         return NetDataRepository.instance.queryAllPermissionInService(jsonObjectRequest.toString()) { error: Throwable ->
@@ -349,7 +350,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
                 jsonObjectRequest.put("companyID", companyID)
                 jsonObjectRequest.put("userID", userID)
             } catch (e: JSONException) {
-                e.printStackTrace()
+                Timber.e(e)
             }
             val userWrapperInfo: UserWrapperInfo =
                 NetDataRepository.instance.queryUserByID(jsonObjectRequest.toString()) { error: Throwable ->
@@ -389,7 +390,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             try {
                 jsonObjectRequest.put("companyID", companyID)
             } catch (e: JSONException) {
-                e.printStackTrace()
+                Timber.e(e)
             }
 
             val companyInfo: CompanyInfo =
@@ -454,7 +455,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
                 //更新本地配置
                 MmkvCacheUtil.setAppConfigInfo(remoteAppConfigInfo)
             } catch (e: Exception) {
-                e.printStackTrace()
+                Timber.e(e)
                 val msg =
                     "call loadExternalConfig() error: ${e.localizedMessage}" //这里的msg是网络请求的错误信息
                 addLogItem(

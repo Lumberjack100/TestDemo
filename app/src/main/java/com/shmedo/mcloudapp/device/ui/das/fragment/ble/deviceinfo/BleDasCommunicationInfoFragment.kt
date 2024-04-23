@@ -151,7 +151,7 @@ class BleDasCommunicationInfoFragment : BaseIOTDeviceFragment() {
                 )
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

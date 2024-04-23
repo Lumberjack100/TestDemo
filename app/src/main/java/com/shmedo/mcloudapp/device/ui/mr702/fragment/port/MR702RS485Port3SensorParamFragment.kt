@@ -479,7 +479,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
                 }
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

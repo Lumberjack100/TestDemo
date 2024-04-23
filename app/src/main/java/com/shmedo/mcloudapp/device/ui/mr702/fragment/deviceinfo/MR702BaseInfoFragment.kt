@@ -5,7 +5,7 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRDeviceInfoEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRBaseInfo
@@ -22,6 +22,7 @@ import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceInfoViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
+import timber.log.Timber
 import java.text.DecimalFormat
 
 class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
@@ -60,12 +61,13 @@ class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
-        launchAndRepeatWithViewLifecycle {
+        launchWithViewLifecycle {
             if (communicateWay is BleConnect)
-                return@launchAndRepeatWithViewLifecycle
+                return@launchWithViewLifecycle
+
             val deviceDetailInfo =
                 deviceRequestViewModel.getDeviceDetailInfo(deviceInfo.deviceToken) { error: Throwable ->
-                } ?: return@launchAndRepeatWithViewLifecycle
+                } ?: return@launchWithViewLifecycle
 
             mStates.wrapBaseInfo.get().apply {
                 regcode = deviceDetailInfo.deviceInfo.productKey
@@ -147,7 +149,7 @@ class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
             }
             mStates.wrapBaseInfo.notifyChange()
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

@@ -17,10 +17,6 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentDasHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -43,6 +39,10 @@ import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.TimeCalibrationPopup
 import com.shmedo.mcloudapp.device.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.CommonDeviceHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -53,6 +53,8 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var mCommandResponseStates: CommandResponseViewModel
     private val iotParseManager: IOTParserManager by inject()
 
+    //声明一个long类型变量：用于存放上一点击“返回键”的时刻
+    private var mExitTime: Long = 0
 
     override fun initViewModel() {
         super.initViewModel()
@@ -366,6 +368,11 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        //大于2000ms则认为是误操作，使用Toast进行提示
+        if (System.currentTimeMillis() - mExitTime > 2000) {
+            mExitTime= System.currentTimeMillis()
+        }
+        mExitTime= System.currentTimeMillis()
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME -> {
                 val result = iotParseManager.parse<String>(
