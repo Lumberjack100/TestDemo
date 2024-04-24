@@ -58,7 +58,7 @@
                         android:layout_marginStart="@dimen/dimen_size_10"
                         android:text="基本信息"
                         android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_17"
+                        android:textSize="@dimen/text_size_16"
                         android:textStyle="bold" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -135,7 +135,7 @@
                         android:layout_marginStart="@dimen/dimen_size_10"
                         android:text="测站节点信息"
                         android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_17"
+                        android:textSize="@dimen/text_size_16"
                         android:textStyle="bold" />
 
                     <androidx.recyclerview.widget.RecyclerView

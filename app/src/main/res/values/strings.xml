@@ -83,6 +83,7 @@
     <string name="loading">加载中…</string>
     <string name="processing">处理中…</string>
     <string name="edittext_input_filter_decimal_characters">+-.0123456789eE</string>
+    <string name="lora_station_node_edittext_input_filter">0123456789QWERTZUIOPASDFGHJKLYXCVBNM</string>
 
     <!-- USB Serial 通信 -->
     <string name="any_characters">数据格式: 任意字符</string>

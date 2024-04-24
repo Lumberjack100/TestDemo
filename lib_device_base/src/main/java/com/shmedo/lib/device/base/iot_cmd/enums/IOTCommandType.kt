@@ -885,12 +885,24 @@ enum class IOTCommandType(private val value: String) {
      */
     MD_SET_TERMINAL_ID("md_setcqterminalid"),
 
+    /**
+     * 终端ID删除
+     */
+    MD_DEL_TERMINAL_ID("md_delcqterminalid"),
+
     MD_GET_LORA_CTRL("md_getcqloractrl"),
 
     /**
      *  Lora通讯参数设置
      */
     MD_SET_LORA_CTRL("md_setcqloractrl"),
+
+    MD_GET_RADIO_CTRL("md_getcqradioctrl"),
+
+    /**
+     *  电台参数设置
+     */
+    MD_SET_RADIO_CTRL("md_setcqradioctrl"),
 
     /**
      * 自定义心跳包

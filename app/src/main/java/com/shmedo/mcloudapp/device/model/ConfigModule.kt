@@ -81,6 +81,13 @@ class AdvancedSettingsModule(
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
+class LoraConfigModule(
+    name: String = "LORA设置",
+    desc: String = "传感器LORA电台设置",
+    resID: Int = R.drawable.ic_device_sensor_config,
+    navId: Int = 0,
+) : DeviceFunctionModule(name, desc, resID, navId)
+
 //<editor-fold desc="ADME 功能模块">
 class BasicConfigModule(
     name: String = "基础配置",

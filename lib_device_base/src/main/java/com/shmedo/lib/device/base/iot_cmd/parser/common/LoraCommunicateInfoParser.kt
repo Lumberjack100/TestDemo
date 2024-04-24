@@ -9,19 +9,19 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.LoraCommunicateInfo
  * 创建时间：2024/4/24
  * 描述： Lora通讯参数信息
  */
-class LoraCommunicateInfoParser: IOTCommandParser<LoraCommunicateInfo> {
+class LoraCommunicateInfoParser : IOTCommandParser<LoraCommunicateInfo> {
 
-        override fun parseInstance(keyValueMap: Map<String, String>): LoraCommunicateInfo {
-            return LoraCommunicateInfo().apply {
-                airbaud = keyValueMap.getOrDefault("airbaud", airbaud)
-                chl = keyValueMap.getOrDefault("chl", chl)
-                outpwr = keyValueMap.getOrDefault("outpwr", outpwr)
-                netid = keyValueMap.getOrDefault("netid", netid)
-                localid = keyValueMap.getOrDefault("localid", localid)
-                dstid = keyValueMap.getOrDefault("dstid", dstid)
-            }
+    override fun parseInstance(keyValueMap: Map<String, String>): LoraCommunicateInfo {
+        return LoraCommunicateInfo().apply {
+            airbaud = keyValueMap.getOrDefault("airbaud", airbaud)
+            chl = keyValueMap.getOrDefault("chl", chl)
+            outpwr = keyValueMap.getOrDefault("outpwr", outpwr)
+            netid = keyValueMap.getOrDefault("netid", netid)
+            localid = keyValueMap.getOrDefault("localid", localid)
+            dstid = keyValueMap.getOrDefault("dstid", dstid)
         }
+    }
 
-        override fun commandType(): IOTCommandType = IOTCommandType.MD_GET_LORA_CTRL
+    override fun commandType(): IOTCommandType = IOTCommandType.MD_GET_LORA_CTRL
 
 }

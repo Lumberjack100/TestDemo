@@ -43,9 +43,9 @@ import timber.log.Timber
 
 abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentUniversalDeviceHomeBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mHeadStates: CommonDeviceHomeViewModel
-    private lateinit var mCommandResponseStates: CommandResponseViewModel
+    protected lateinit var toolbarViewModel: ToolbarViewModel
+    protected lateinit var mHeadStates: CommonDeviceHomeViewModel
+    protected lateinit var mCommandResponseStates: CommandResponseViewModel
     protected val iotParseManager: IOTParserManager by inject()
 
     override fun initViewModel() {

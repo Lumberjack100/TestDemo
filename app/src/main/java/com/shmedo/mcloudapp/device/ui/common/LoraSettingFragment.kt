@@ -10,22 +10,32 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
+import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.LoraCommunicateEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.common.LoraCommunicateInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentLoraSettingBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.model.CommunicateWay
+import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.LoraSettingViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -35,7 +45,9 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: LoraSettingViewModel
     private val iotParseManager: IOTParserManager by inject()
 
-    private val loraChannelList by lazy { Utils.getApp().resources.getStringArray(R.array.lora_channel) }
+    private var productType = ProductType.UnKnown
+
+    private val loraReceiveChannelList by lazy { Utils.getApp().resources.getStringArray(R.array.lora_receive_channel) }
     private val transmitPowerList: List<String> = (5..20).map { it.toString() }
     private val airSpeedList: List<String> = (1..6).map { it.toString() }
     private val networkNumberList: List<String> = (1..10).map { it.toString() }
@@ -72,6 +84,15 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
         initRefresh()
     }
 
+    override fun initData() {
+        super.initData()
+        arguments?.let {
+            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
+        }
+        mStates.isTargetAddressSupport.set(productType != ProductType.COLLECTOR_G_0)
+        resetParams()
+    }
+
     private fun initRefresh() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
@@ -85,15 +106,18 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
     }
 
     inner class ClickProxy : BaseClickProxy() {
+        /**
+         * 选择收发频率
+         */
         fun onChannelChooseClick() {
-            val selectedIndex = loraChannelList.indexOf(mStates.channel.get())
+            val selectedIndex = loraReceiveChannelList.indexOf(mStates.channel.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", loraChannelList,
+                    "", loraReceiveChannelList,
                     null, selectedIndex,
                     { position, text ->
                         mStates.channel.set(text)
@@ -102,6 +126,9 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
+        /**
+         * 选择发射功率
+         */
         fun onTransmitPowerChooseClick() {
             val selectedIndex = transmitPowerList.indexOf(mStates.transmitPower.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -119,8 +146,11 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
+        /**
+         * 选择空中速率
+         */
         fun onAirSpeedChooseClick() {
-            val selectedIndex = airSpeedList.indexOf(mStates.channel.get())
+            val selectedIndex = airSpeedList.indexOf(mStates.airSpeed.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
@@ -130,12 +160,15 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
                     "", airSpeedList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
-                        mStates.channel.set(text)
+                        mStates.airSpeed.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
         }
 
+        /**
+         * 选择网络号
+         */
         fun onNetworkNumberChooseClick() {
             val selectedIndex = networkNumberList.indexOf(mStates.networkNumber.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -153,6 +186,9 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
+        /**
+         * 选择本机地址
+         */
         fun onLocalAddressChooseClick() {
             val selectedIndex = localAddressList.indexOf(mStates.localAddress.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -170,6 +206,9 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
+        /**
+         * 选择目标地址
+         */
         fun onTargetAddressChooseClick() {
             val selectedIndex = targetAddressList.indexOf(mStates.targetAddress.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -187,8 +226,11 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
+        /**
+         * 恢复默认配置
+         */
         fun onResetClick() {
-
+            resetParams()
         }
 
         override fun onSubmitButtonClick() {
@@ -201,8 +243,33 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initSaveCommand() {
+    private fun resetParams() {
+        mStates.channel.set(loraReceiveChannelList[10])//信道 [0~19] 载波频率以410Mhz为起始，间隔1Mhz，进行信道划分，共划分30个信道，默认10
+        mStates.transmitPower.set(transmitPowerList[transmitPowerList.lastIndex])//[5~20] 默认20
+        mStates.airSpeed.set(airSpeedList[2])//空中速率  [1~6] 默认3
+        mStates.networkNumber.set(networkNumberList[0])//网络号 [1~10] 默认1
+        mStates.localAddress.set(if (productType == ProductType.COLLECTOR_G_0) localAddressList[0] else localAddressList[1])//本机地址 [1~20] 网关默认1,监测设备默认2
+        mStates.targetAddress.set(if (productType == ProductType.COLLECTOR_G_0) targetAddressList[1] else targetAddressList[0])//目标地址 [1~20] 网关默认2,监测设备默认1
+    }
 
+    private fun initSaveCommand() {
+        commandItems.clear()
+        val entity = LoraCommunicateEntity(
+            chl = loraReceiveChannelList.indexOf(mStates.channel.get()).toString(),
+            outpwr = mStates.transmitPower.get(),
+            airbaud = mStates.airSpeed.get(),
+            netid = mStates.networkNumber.get(),
+            localid = mStates.localAddress.get(),
+            dstid = if (mStates.isTargetAddressSupport.get()) mStates.targetAddress.get() else IOTConstants.NULL_KEY
+        )
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_SET_LORA_CTRL,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun lazyLoadData() {
@@ -242,6 +309,24 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            IOTCommandType.MD_SET_LORA_CTRL -> {//
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "设置参数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("保存成功")
+                        }
+                    }
+                }
+            }
+
             else -> {}
         }
     }
@@ -249,10 +334,10 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
     private fun initParamData(info: LoraCommunicateInfo) {
         try {
             mStates.channel.set(
-                if (info.chl.toInt() in loraChannelList.indices) {
-                    loraChannelList[info.chl.toInt()]
+                if (info.chl.toInt() in loraReceiveChannelList.indices) {
+                    loraReceiveChannelList[info.chl.toInt()]
                 } else {
-                    loraChannelList[0]
+                    loraReceiveChannelList[10]
                 }
             )
             mStates.transmitPower.set(info.outpwr)
@@ -269,5 +354,21 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    companion object {
+        fun newBundleArguments(
+            type: ProductType = ProductType.UnKnown,
+            communicateWay: CommunicateWay = NetPlatformConnect,
+            deviceInfo: DeviceInfo,
+            bleDevice: DiscoveredBluetoothDevice? = null,
+            statusBarColor: Int = R.color.white
+        ): Bundle = Bundle().apply {
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+        }
     }
 }

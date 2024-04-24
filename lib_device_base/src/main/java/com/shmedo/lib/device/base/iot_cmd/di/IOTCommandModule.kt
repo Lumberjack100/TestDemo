@@ -29,6 +29,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.common.DataCenterStatusParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DeviceCurrentStateParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DeviceCurrentStateParser2
 import com.shmedo.lib.device.base.iot_cmd.parser.common.LoraCommunicateInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.common.RadioCommunicateInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.TelemetryDataParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.TerminalIdInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.TimeCalibrationDataParser
@@ -145,6 +146,7 @@ val iotCommandModule = module {
     factory { MRDIPortParamParser() }
     factory { TerminalIdInfoParser() }
     factory { LoraCommunicateInfoParser() }
+    factory { RadioCommunicateInfoParser() }
 
 
     // 提供 IOTParseManager 的实例
@@ -216,7 +218,8 @@ val iotCommandModule = module {
             get<MRDOPortParamParser>(),
             get<MRDIPortParamParser>(),
             get<TerminalIdInfoParser>(),
-            get<LoraCommunicateInfoParser>()
+            get<LoraCommunicateInfoParser>(),
+            get<RadioCommunicateInfoParser>()
         )
         IOTParserManager(parsers)
     }
