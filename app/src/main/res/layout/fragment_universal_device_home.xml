@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.common.UniversalDeviceHomeFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.device.common.BaseClickProxy" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,7 +45,7 @@
             app:vm="@{stateVM}" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview"
+            android:id="@+id/rv_module"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:padding="@dimen/dimen_size_15"

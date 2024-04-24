@@ -231,7 +231,7 @@
                             android:id="@+id/tv_device_abnormal_diagnosis"
                             style="@style/Common_ClickableItem_ValueStyle"
                             rightArrowVisible="@{!stateVM.deviceNormal}"
-                            android:text="@{stateVM.deviceAbnormalDiagnosis}"
+                            android:text='@{stateVM.deviceNormal?"正常":"异常"}'
                             android:textColor="@{stateVM.deviceNormal?@color/text_color_3AD094:@color/red}"
                             android:textSize="15sp"
                             tools:drawableEndCompat="@drawable/icon_arrow_right"

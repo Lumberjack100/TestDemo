@@ -5,9 +5,9 @@
     android:id="@+id/adme_graph"
     app:startDestination="@id/admeHomeFragment">
 
-    <include app:graph="@navigation/query_data_graph" />
-    <include app:graph="@navigation/firmware_upgrade_graph" />
-    <include app:graph="@navigation/data_center_graph" />
+    <include app:graph="@navigation/include_query_data_graph" />
+    <include app:graph="@navigation/include_firmware_upgrade_graph" />
+    <include app:graph="@navigation/include_data_center_graph" />
 
     <fragment
         android:id="@+id/admeHomeFragment"

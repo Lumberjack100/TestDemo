@@ -94,15 +94,27 @@ class DeviceHomeActivity : BaseActivity() {
         )
         val navController = findNavController(R.id.device_home_host_fragment)
         when (productType) {
-            ProductType.ADME -> navController.setGraph(R.navigation.adme_graph, bundle)
-            ProductType.DAS, ProductType.BHY -> {
+            ProductType.COLLECTOR_G_0 -> {
+                navController.setGraph(
+                    R.navigation.gw100_graph,
+                    bundle
+                )
+            }
+
+            ProductType.M_A_1, ProductType.ADME -> navController.setGraph(R.navigation.adme_graph, bundle)
+            ProductType.COLLECTOR_R_1, ProductType.DAS, ProductType.BHY -> {
                 val graphId =
                     if (communicateWay == BleConnect) R.navigation.ble_das_graph else R.navigation.das_graph
                 navController.setGraph(graphId, bundle)
             }
+
             ProductType.LR200 -> navController.setGraph(R.navigation.lr200_graph, bundle)
-            ProductType.M20 -> navController.setGraph(R.navigation.m20_graph, bundle)
-            ProductType.MR702 -> navController.setGraph(R.navigation.mr702_graph, bundle)
+            ProductType.GNSS_M_1,ProductType.GNSS_M_2, ProductType.M20 -> navController.setGraph(R.navigation.m20_graph, bundle)
+            ProductType.COLLECTOR_R_2, ProductType.MR702 -> navController.setGraph(
+                R.navigation.mr702_graph,
+                bundle
+            )
+
             ProductType.TEST_DEVICE -> navController.setGraph(
                 R.navigation.test_device_graph,
                 bundle
@@ -121,13 +133,18 @@ class DeviceHomeActivity : BaseActivity() {
             bleDevice: DiscoveredBluetoothDevice? = null,
             communicateWay: CommunicateWay = NetPlatformConnect
         ) {
-            var type: ProductType = ProductType.valueByPrefix(deviceInfo.productToken.uppercase())
-            //双重判断设备产品类型，先根据设备产品标识判断所属产品类型，若未判断出再根据 SN 号判断，若还未判断出来，提示不支持
+            //根据设备 SN 用新的产品规则判断所属产品类型
+            var type: ProductType = ProductType.valueByNewSuffix(deviceInfo.deviceToken)
             if (type == ProductType.UnKnown) {
-                type = ProductType.valueBySuffix(deviceInfo.deviceToken)
+                //根据设备产品标识判断所属产品类型
+                type = ProductType.valueByPrefix(deviceInfo.productToken.uppercase())
                 if (type == ProductType.UnKnown) {
-                    Toaster.show(StringUtils.getString(R.string.unsupported_device_type))
-                    return
+                    ///根据设备 SN 用旧的产品规则判断所属产品类型
+                    type = ProductType.valueByOldSuffix(deviceInfo.deviceToken)
+                    if (type == ProductType.UnKnown) {
+                        Toaster.show(StringUtils.getString(R.string.unsupported_device_type))
+                        return
+                    }
                 }
             }
             val intent = Intent(context, DeviceHomeActivity::class.java).apply {

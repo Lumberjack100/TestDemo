@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
+import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -16,10 +17,6 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentUniversalDeviceHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -28,6 +25,7 @@ import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.model.RebootModule
+import com.shmedo.mcloudapp.device.model.RestoreFactoryModule
 import com.shmedo.mcloudapp.device.model.TelemetryDataModule
 import com.shmedo.mcloudapp.device.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
@@ -36,6 +34,10 @@ import com.shmedo.mcloudapp.device.ui.mr702.fragment.dialog.TimeCalibrationPopup
 import com.shmedo.mcloudapp.device.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.CommonDeviceHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -66,20 +68,32 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
         binding.llToolbar.toolbar.setNavigationOnClickListener {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             if (bleViewModel.isConnected()) {
-                showMessage(StringUtils.getString(R.string.disconnect_device_warn), "温馨提示", "确定", {
-                    bleViewModel.disconnect()
-                    mActivity.finish()
-                }, "取消")
+                showMessage(
+                    StringUtils.getString(R.string.disconnect_device_warn),
+                    "温馨提示",
+                    "确定",
+                    {
+                        bleViewModel.disconnect()
+                        mActivity.finish()
+                    },
+                    "取消"
+                )
             } else
                 mActivity.finish()
         }
         registerOnBackPressedDispatcher {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             if (bleViewModel.isConnected()) {
-                showMessage(StringUtils.getString(R.string.disconnect_device_warn), "温馨提示", "确定", {
-                    bleViewModel.disconnect()
-                    mActivity.finish()
-                }, "取消")
+                showMessage(
+                    StringUtils.getString(R.string.disconnect_device_warn),
+                    "温馨提示",
+                    "确定",
+                    {
+                        bleViewModel.disconnect()
+                        mActivity.finish()
+                    },
+                    "取消"
+                )
             } else
                 mActivity.finish()
         }
@@ -87,7 +101,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initModuleAdapter() {
-        binding.recyclerview.setup { rv ->
+        binding.rvModule.setup { rv ->
             rv.addItemDecoration(
                 MyGridSpacingItemDecoration(
                     2,
@@ -105,9 +119,9 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        mHeadStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
-        mHeadStates.deviceToken.set(deviceInfo.deviceToken)
         mHeadStates.productName.set(deviceInfo.productName)
+        mHeadStates.deviceToken.set(deviceInfo.deviceToken)
+        mHeadStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
         mHeadStates.firmwareVersion.set(deviceInfo.firmwareVersion)
 
         when (communicateWay) {
@@ -133,14 +147,20 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun onConnectionStateChanged(isConnected: Boolean) {
+        mHeadStates.isConnected.set(isConnected)
+        mHeadStates.isDeviceStateTagHighLight.set(isConnected)
         if (isConnected) {
-            mHeadStates.isDeviceStateTagHighLight.set(true)
             mHeadStates.deviceStateTagText.set("已连接")
             mHeadStates.connectOperateText.set("断开连接")
         } else {
-            mHeadStates.isDeviceStateTagHighLight.set(false)
             mHeadStates.deviceStateTagText.set("未连接")
             mHeadStates.connectOperateText.set("蓝牙连接")
+        }
+        //刷新模块状态
+        binding.rvModule.models?.forEach {
+            if (it is ConfigModule) {
+                it.configModule.refreshStatus(isConnected)
+            }
         }
     }
 
@@ -156,9 +176,15 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
 
         override fun onConnectOperateClick() {
             if (bleViewModel.isConnected()) {
-                showMessage(StringUtils.getString(R.string.disconnect_device_warn), "温馨提示", "确定", {
-                    bleViewModel.disconnect()
-                }, "取消")
+                showMessage(
+                    StringUtils.getString(R.string.disconnect_device_warn),
+                    "温馨提示",
+                    "确定",
+                    {
+                        bleViewModel.disconnect()
+                    },
+                    "取消"
+                )
             } else {
                 bleViewModel.launch(bleDevice!!)
             }
@@ -203,6 +229,12 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
                 }, "取消")
             }
 
+            is RestoreFactoryModule -> {//恢复出厂
+                showMessage("确定恢复出厂设置吗？", "温馨提示", "确定", {
+                    restoreFactory()
+                }, "取消")
+            }
+
             else -> {
                 processOtherItemClick(module.configModule)
             }
@@ -223,6 +255,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
                         "time=${TimeUtils.getNowString()}"
                     )
                     commandItems.add(command)
+                    showLoadingDialog(StringUtils.getString(R.string.processing))
                     sendCommandFromCmdList(isStartTimeoutJob = true)
                 }
             })
@@ -256,6 +289,18 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     private fun reboot() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(IOTCommandType.REBOOT)
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 恢复出厂
+     */
+    private fun restoreFactory() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(IOTCommandType.RESET)
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
@@ -352,7 +397,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_TERMINAL_TIME -> {
+            IOTCommandType.QUERY_TERMINAL_TIME -> {//查询终端时间
                 val result = iotParseManager.parse<String>(
                     cmdStr,
                     IOTCommandType.QUERY_TERMINAL_TIME
@@ -378,7 +423,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.SET_TERMINAL_TIME -> {
+            IOTCommandType.SET_TERMINAL_TIME -> {//设置终端时间
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
@@ -394,11 +439,12 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
                         mCommandResponseStates.isResponseLoading.set(false)
                         mCommandResponseStates.isResponseSuccess.set(true)
                         mCommandResponseStates.isCalibratingSuccess.set(true)
+                        mCommandResponseStates.deviceTime.set(mCommandResponseStates.systemTime.get())
                     }
                 }
             }
 
-            IOTCommandType.QUERY_SAMPLE -> {
+            IOTCommandType.QUERY_SAMPLE -> {//召测
                 val result = iotParseManager.parse<String>(
                     cmdStr,
                     IOTCommandType.QUERY_SAMPLE
@@ -426,7 +472,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.REBOOT -> {
+            IOTCommandType.REBOOT -> {//重启设备
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
@@ -439,6 +485,24 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show(StringUtils.getString(R.string.device_reboot_tip))
+                        }
+                    }
+                }
+            }
+
+            IOTCommandType.RESET -> {//恢复出厂设置
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = StringUtils.getString(R.string.reset_failed) + result.message
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show(StringUtils.getString(R.string.device_reset_tip))
                         }
                     }
                 }

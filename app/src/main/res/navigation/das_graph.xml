@@ -5,8 +5,8 @@
     android:id="@+id/das_graph"
     app:startDestination="@id/dasHomeFragment">
 
-    <include app:graph="@navigation/query_data_graph" />
-    <include app:graph="@navigation/firmware_upgrade_graph" />
+    <include app:graph="@navigation/include_query_data_graph" />
+    <include app:graph="@navigation/include_firmware_upgrade_graph" />
 
     <fragment
         android:id="@+id/dasHomeFragment"

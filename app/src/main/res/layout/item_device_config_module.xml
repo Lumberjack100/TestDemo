@@ -31,6 +31,7 @@
                 imageResId="@{m.configModule.iconResId}"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:tint="@{m.configModule.connected ? @color/colorPrimary : @color/sub_title_text_color}"
                 tools:src="@drawable/ic_device_current_state" />
 
             <TextView
@@ -41,7 +42,7 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="@{m.configModule.name}"
-                android:textColor="@color/title_text_color"
+                android:textColor="@{m.configModule.connected ? @color/title_text_color : @color/sub_title_text_color}"
                 android:textSize="17sp"
                 android:textStyle="bold"
                 tools:text="关于设备" />
@@ -59,6 +60,5 @@
                 tools:text="配置测斜仪工作模式" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
-
     </androidx.cardview.widget.CardView>
 </layout>

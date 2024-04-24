@@ -1,4 +1,4 @@
-package com.shmedo.lib.device.base.iot_cmd.model
+package com.shmedo.lib.device.base.iot_cmd.model.common
 
 import com.shmedo.lib.device.base.iot_cmd.model.m20.SensorErrnoBean
 import com.squareup.moshi.Json

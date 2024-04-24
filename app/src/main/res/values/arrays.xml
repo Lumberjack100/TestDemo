@@ -325,4 +325,33 @@
     </string-array>
     <!-- ADME end-->
 
+    <!-- LORA-->
+    <!-- 收发频点-->
+    <string-array name="lora_channel">
+        <item>410.00MHz</item>
+        <item>411.00MHz</item>
+        <item>412.00MHz</item>
+        <item>413.00MHz</item>
+        <item>414.00MHz</item>
+        <item>415.00MHz</item>
+        <item>416.00MHz</item>
+        <item>417.00MHz</item>
+        <item>418.00MHz</item>
+        <item>419.00MHz</item>
+        <item>420.00MHz</item>
+        <item>421.00MHz</item>
+        <item>422.00MHz</item>
+        <item>423.00MHz</item>
+        <item>424.00MHz</item>
+        <item>425.00MHz</item>
+        <item>426.00MHz</item>
+        <item>427.00MHz</item>
+        <item>428.00MHz</item>
+        <item>429.00MHz</item>
+    </string-array>
+
+
+    <!-- LORA end-->
+
+
 </resources>

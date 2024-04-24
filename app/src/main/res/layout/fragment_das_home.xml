@@ -45,7 +45,7 @@
             app:vm="@{stateVM}" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview"
+            android:id="@+id/rv_module"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:padding="@dimen/dimen_size_15"

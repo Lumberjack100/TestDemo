@@ -25,6 +25,6 @@ class TestDeviceHomeFragment : UniversalDeviceHomeFragment() {
             )
         )
 
-        binding.recyclerview.models = moduleList
+        binding.rvModule.models = moduleList
     }
 }

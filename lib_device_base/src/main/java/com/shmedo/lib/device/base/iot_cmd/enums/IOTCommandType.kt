@@ -28,9 +28,19 @@ enum class IOTCommandType(private val value: String) {
     QUERY_DEVICE_EX_STATUS("md_getExstatus"),
 
     /**
+     * 获取设备自检信息
+     */
+    MD_GET_DEVICE_STATUS("md_getdevicesta"),
+
+    /**
      * 重启设备
      */
     REBOOT("reboot"),
+
+    /**
+     * 恢复出厂设置
+     */
+    RESET("md_reset"),
 
     /**
      * 参数导出(上传)
@@ -101,11 +111,6 @@ enum class IOTCommandType(private val value: String) {
      * 固件升级
      */
     MD_UPGRADE("md_upgrade"),
-
-    /**
-     * 恢复出厂设置
-     */
-    RESET("md_reset"),
 
     /**
      * 保存配置参数
@@ -642,6 +647,7 @@ enum class IOTCommandType(private val value: String) {
      * 获取E40 的 RTK
      */
     E40_MD_GET_RTK("md_getrtk"),
+
     /**
      * 设置E40 的 RTK
      */
@@ -651,6 +657,7 @@ enum class IOTCommandType(private val value: String) {
      * 获取E40 的 CORS 服务参数
      */
     E40_MD_GET_CORS("md_getntrip"),
+
     /**
      * 设置E40 的 CORS 服务参数
      */
@@ -660,6 +667,7 @@ enum class IOTCommandType(private val value: String) {
      * 获取E40 的板卡解算参数
      */
     E40_MD_GET_BOARDSOLUTION("md_getembedams"),
+
     /**
      * 设置E40 的板卡解算参数
      */
@@ -669,6 +677,7 @@ enum class IOTCommandType(private val value: String) {
      * 获取E40 的有线网络配置置参数
      */
     E40_MD_GET_ETHERNET("md_geteth0"),
+
     /**
      * 设置E40 的有线网络配置置参数
      */
@@ -678,6 +687,7 @@ enum class IOTCommandType(private val value: String) {
      * 获取E40 的串口配置置参数
      */
     E40_MD_GET_DB_GUART("md_getdbguart"),
+
     /**
      * 设置E40 的串口配置置参数
      */
@@ -687,6 +697,7 @@ enum class IOTCommandType(private val value: String) {
      * 获取E40 的GPS工作参数
      */
     E40_MD_GET_GPS_PARAM("md_getgpsparam"),
+
     /**
      * 设置E40 的GPS工作参数
      */
@@ -696,6 +707,7 @@ enum class IOTCommandType(private val value: String) {
      * 获取E40 的基站位置信息
      */
     E40_MD_GET_BASE_POSITION("md_getbaseposition"),
+
     /**
      * 设置E40 的基站位置信息
      */
@@ -705,6 +717,7 @@ enum class IOTCommandType(private val value: String) {
      * 获取E40 NMEA输出内容及输出频率
      */
     E40_MD_GET_NMEA_TIME("md_getnmeatime"),
+
     /**
      * 设置E40 NMEA输出内容及输出频率
      */
@@ -861,6 +874,23 @@ enum class IOTCommandType(private val value: String) {
      * 语音播报
      */
     MD_BROADCAST("broadcast"),
+
+    /**
+     * 获取终端ID
+     */
+    MD_GET_TERMINAL_ID("md_getcqterminalid"),
+
+    /**
+     * 终端ID设置
+     */
+    MD_SET_TERMINAL_ID("md_setcqterminalid"),
+
+    MD_GET_LORA_CTRL("md_getcqloractrl"),
+
+    /**
+     *  Lora通讯参数设置
+     */
+    MD_SET_LORA_CTRL("md_setcqloractrl"),
 
     /**
      * 自定义心跳包

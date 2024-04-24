@@ -136,9 +136,9 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        mStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
-        mStates.deviceToken.set(deviceInfo.deviceToken)
         mStates.productName.set(deviceInfo.productName)
+        mStates.deviceToken.set(deviceInfo.deviceToken)
+        mStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
         mStates.firmwareVersion.set(deviceInfo.firmwareVersion)
 
         mStates.isDeviceStateTagHighLight.set(false)
@@ -152,12 +152,12 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun onConnectionStateChanged(isConnected: Boolean) {
+        mStates.isConnected.set(isConnected)
+        mStates.isDeviceStateTagHighLight.set(isConnected)
         if (isConnected) {
-            mStates.isDeviceStateTagHighLight.set(true)
             mStates.deviceStateTagText.set("已连接")
             mStates.connectOperateText.set("断开连接")
         } else {
-            mStates.isDeviceStateTagHighLight.set(false)
             mStates.deviceStateTagText.set("未连接")
             mStates.connectOperateText.set("蓝牙连接")
         }
@@ -291,6 +291,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
 //                        "time=${TimeUtils.getNowString()}"
 //                    )
 //                    commandItems.add(command)
+//                    showLoadingDialog(StringUtils.getString(R.string.processing))
 //                    sendCommandFromCmdList(isStartTimeoutJob = true)
                 }
             })

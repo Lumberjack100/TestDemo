@@ -18,14 +18,14 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.databinding.FragmentAdmeCurrentStateBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeCurrentStateViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -173,13 +173,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
             mStates.signal.set(String.format("%sdBm", currentStateInfo.scsq))
             mStates.signalValue.set(currentStateInfo.scsq.toInt())
 
-            if (currentStateInfo.abndiasis == "0") {
-                mStates.deviceNormal.set(true)
-                mStates.deviceAbnormalDiagnosis.set("正常")
-            } else {
-                mStates.deviceNormal.set(false)
-                mStates.deviceAbnormalDiagnosis.set("异常")
-            }
+            mStates.deviceNormal.set(currentStateInfo.abndiasis == "0")
             when (currentStateInfo.testway) {
                 "0" -> mStates.workMode.set("常规测量模式")
                 "1" -> mStates.workMode.set("特定点位模式")

@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_size_30"
                     android:layout_marginTop="@dimen/dimen_size_5"
-                    android:text="@{stateVM.deviceTime}"
+                    android:text="@{stateVM.systemTime}"
                     android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_16"
                     android:textStyle="bold"

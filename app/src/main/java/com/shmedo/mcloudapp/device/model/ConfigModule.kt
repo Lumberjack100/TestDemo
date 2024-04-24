@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.device.model
 
+import androidx.databinding.BaseObservable
 import com.shmedo.mcloudapp.R
 
 /**
@@ -16,7 +17,13 @@ sealed class DeviceFunctionModule(
     val desc: String = "",
     val iconResId: Int = 0,
     val navId: Int = 0,
-)
+    var isConnected: Boolean = true
+) : BaseObservable() {
+    fun refreshStatus(state: Boolean) {
+        this.isConnected = state
+        notifyChange()
+    }
+}
 
 class CommonModule(
     name: String = "",
@@ -49,6 +56,13 @@ class TelemetryDataModule(
 class RebootModule(
     name: String = "重启",
     desc: String = "重新启动当前设备",
+    resID: Int = R.drawable.ic_device_reboot,
+    navId: Int = 0,
+) : DeviceFunctionModule(name, desc, resID, navId)
+
+class RestoreFactoryModule(
+    name: String = "恢复出厂",
+    desc: String = "设备恢复到出厂设置",
     resID: Int = R.drawable.ic_device_reboot,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)

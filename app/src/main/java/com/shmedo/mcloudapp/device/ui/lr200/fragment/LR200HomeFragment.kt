@@ -41,7 +41,7 @@ class LR200HomeFragment : UniversalDeviceHomeFragment() {
         moduleList.add(
             ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_dasAdvancedSettingFragment))
         )
-        binding.recyclerview.models = moduleList
+        binding.rvModule.models = moduleList
     }
 
     override fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {

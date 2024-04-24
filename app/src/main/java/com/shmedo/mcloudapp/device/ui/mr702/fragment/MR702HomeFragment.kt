@@ -20,10 +20,6 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702HomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -43,6 +39,10 @@ import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702HomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -124,9 +124,9 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        mHeadStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
-        mHeadStates.deviceToken.set(deviceInfo.deviceToken)
         mHeadStates.productName.set(deviceInfo.productName)
+        mHeadStates.deviceToken.set(deviceInfo.deviceToken)
+        mHeadStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
         mHeadStates.firmwareVersion.set(deviceInfo.firmwareVersion)
 
         when (communicateWay) {
@@ -151,14 +151,20 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun onConnectionStateChanged(isConnected: Boolean) {
+        mHeadStates.isConnected.set(isConnected)
+        mHeadStates.isDeviceStateTagHighLight.set(isConnected)
         if (isConnected) {
-            mHeadStates.isDeviceStateTagHighLight.set(true)
             mHeadStates.deviceStateTagText.set("已连接")
             mHeadStates.connectOperateText.set("断开连接")
         } else {
-            mHeadStates.isDeviceStateTagHighLight.set(false)
             mHeadStates.deviceStateTagText.set("未连接")
             mHeadStates.connectOperateText.set("蓝牙连接")
+        }
+        //刷新模块状态
+        binding.rvModule.models?.forEach {
+            if (it is ConfigModule) {
+                it.configModule.refreshStatus(isConnected)
+            }
         }
     }
 

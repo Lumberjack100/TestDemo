@@ -5,9 +5,9 @@
     android:id="@+id/ble_das_graph"
     app:startDestination="@id/bleDasHomeFragment">
 
-    <include app:graph="@navigation/query_data_graph" />
-    <include app:graph="@navigation/firmware_upgrade_graph" />
-    <include app:graph="@navigation/ble_command_debug_graph" />
+    <include app:graph="@navigation/include_query_data_graph" />
+    <include app:graph="@navigation/include_firmware_upgrade_graph" />
+    <include app:graph="@navigation/include_ble_command_debug_graph" />
 
     <fragment
         android:id="@+id/bleDasHomeFragment"

@@ -18,7 +18,6 @@ class AdmeCurrentStateViewModel : ViewModel() {
     val signalValue = NonNullObservableField(0)
 
     val deviceNormal = NonNullObservableField(false)
-    val deviceAbnormalDiagnosis = NonNullObservableField("")
     val workMode = NonNullObservableField("")
     val ctrInputVoltage = NonNullObservableField("")
     val driverInputVoltage = NonNullObservableField("")

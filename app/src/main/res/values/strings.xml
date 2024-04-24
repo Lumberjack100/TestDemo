@@ -106,9 +106,8 @@
     <string name="water_level3_hint">请输入0~100000之间数值</string>
     <string name="alarm_play_time_hint">请输入10~300之间数值</string>
     <string name="alarm_play_gap_hint">请输入5~300之间数值</string>
-
-
-
+    <string name="button_save_text">保存</string>
+    <string name="button_reset_text">恢复默认配置</string>
 
 
 </resources>

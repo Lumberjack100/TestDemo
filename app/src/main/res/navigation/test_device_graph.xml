@@ -5,10 +5,10 @@
     android:id="@+id/test_device_graph"
     app:startDestination="@id/testDeviceHomeFragment">
 
-    <include app:graph="@navigation/query_data_graph" />
-    <include app:graph="@navigation/firmware_upgrade_graph" />
-    <include app:graph="@navigation/data_center_graph" />
-    <include app:graph="@navigation/ble_command_debug_graph" />
+    <include app:graph="@navigation/include_query_data_graph" />
+    <include app:graph="@navigation/include_firmware_upgrade_graph" />
+    <include app:graph="@navigation/include_data_center_graph" />
+    <include app:graph="@navigation/include_ble_command_debug_graph" />
 
     <fragment
         android:id="@+id/testDeviceHomeFragment"

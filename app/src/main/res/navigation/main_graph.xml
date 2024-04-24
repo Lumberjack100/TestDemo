@@ -5,7 +5,7 @@
     android:id="@+id/main_graph"
     app:startDestination="@id/mainFragment">
 
-    <include app:graph="@navigation/log_session_graph" />
+    <include app:graph="@navigation/include_log_session_graph" />
 
     <fragment
         android:id="@+id/mainFragment"

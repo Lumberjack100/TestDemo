@@ -5,15 +5,15 @@
     android:id="@+id/m20_graph"
     app:startDestination="@id/m20HomeFragment">
 
-    <include app:graph="@navigation/query_data_graph" />
-    <include app:graph="@navigation/firmware_upgrade_graph" />
-    <include app:graph="@navigation/data_center_graph" />
+    <include app:graph="@navigation/include_query_data_graph" />
+    <include app:graph="@navigation/include_firmware_upgrade_graph" />
+    <include app:graph="@navigation/include_data_center_graph" />
 
     <fragment
         android:id="@+id/m20HomeFragment"
         android:name="com.shmedo.mcloudapp.device.ui.m20.fragment.M20HomeFragment"
         android:label="M20HomeFragment"
-        tools:layout="@layout/fragment_m20_home">
+        tools:layout="@layout/fragment_universal_device_home">
 
         <action
             android:id="@+id/action_m20HomeFragment_to_m20DeviceInfoFragment"

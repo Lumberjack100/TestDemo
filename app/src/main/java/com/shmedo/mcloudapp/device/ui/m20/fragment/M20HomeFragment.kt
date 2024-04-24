@@ -9,9 +9,6 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.ConfigModule
@@ -23,6 +20,9 @@ import com.shmedo.mcloudapp.device.model.SetupWizard
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.device.ui.common.UniversalDeviceHomeFragment
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
 import timber.log.Timber
 
 /**
@@ -51,7 +51,7 @@ class M20HomeFragment : UniversalDeviceHomeFragment() {
         )
         moduleList.add(ConfigModule(AdvancedSettingsModule(navId = R.id.action_m20HomeFragment_to_m20AdvancedSettingFragment)))
 
-        binding.recyclerview.models = moduleList
+        binding.rvModule.models = moduleList
     }
 
     override fun processOtherItemClick(configModule: DeviceFunctionModule) {

@@ -27,7 +27,10 @@ import com.shmedo.lib.device.base.iot_cmd.parser.common.CommonSettingIOTCommandR
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DataCenterInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DataCenterStatusParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DeviceCurrentStateParser
+import com.shmedo.lib.device.base.iot_cmd.parser.common.DeviceCurrentStateParser2
+import com.shmedo.lib.device.base.iot_cmd.parser.common.LoraCommunicateInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.TelemetryDataParser
+import com.shmedo.lib.device.base.iot_cmd.parser.common.TerminalIdInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.TimeCalibrationDataParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.WorkModeParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.AudibleAlarmParser
@@ -116,9 +119,9 @@ val iotCommandModule = module {
     factory { DasTemperatureAndHumidityStatusInfoParser() }
     factory { DasSensorStatusParser() }
     factory { DasInternalSensorStatusParser() }
-
     factory { M20BaseInfoParser() }
     factory { DeviceCurrentStateParser() }
+    factory { DeviceCurrentStateParser2() }
     factory { MRWirelessNetParser() }
     factory { MRWiredNetParser() }
     factory { MRReportMethodParser() }
@@ -140,6 +143,8 @@ val iotCommandModule = module {
     factory { MRRainGaugeParamParser() }
     factory { MRDOPortParamParser() }
     factory { MRDIPortParamParser() }
+    factory { TerminalIdInfoParser() }
+    factory { LoraCommunicateInfoParser() }
 
 
     // 提供 IOTParseManager 的实例
@@ -186,9 +191,9 @@ val iotCommandModule = module {
             get<DasTemperatureAndHumidityStatusInfoParser>(),
             get<DasSensorStatusParser>(),
             get<DasInternalSensorStatusParser>(),
-
             get<M20BaseInfoParser>(),
             get<DeviceCurrentStateParser>(),
+            get<DeviceCurrentStateParser2>(),
             get<MRWirelessNetParser>(),
             get<MRWiredNetParser>(),
             get<MRReportMethodParser>(),
@@ -210,6 +215,8 @@ val iotCommandModule = module {
             get<MRRainGaugeParamParser>(),
             get<MRDOPortParamParser>(),
             get<MRDIPortParamParser>(),
+            get<TerminalIdInfoParser>(),
+            get<LoraCommunicateInfoParser>()
         )
         IOTParserManager(parsers)
     }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="com.shmedo.mcloudapp.device.model.DeviceBaseInfoItem" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/item"
+        style="@style/DeviceCurrentState_SingleItem_Style"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:maxLines="1"
+            android:text="@{m.name}"
+            tools:text="设备SN" />
+
+        <TextView
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            android:text="@{m.value}"
+            tools:text="modo-1819929190" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

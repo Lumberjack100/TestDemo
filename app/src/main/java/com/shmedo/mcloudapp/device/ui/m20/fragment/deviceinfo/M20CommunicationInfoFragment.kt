@@ -7,7 +7,7 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.CommonCurrentStateInfo
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil

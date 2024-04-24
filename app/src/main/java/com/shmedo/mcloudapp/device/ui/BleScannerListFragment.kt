@@ -24,6 +24,7 @@ import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.permission.PermissionInterceptor
+import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -102,7 +103,7 @@ class BleScannerListFragment : BaseFragment() {
 
     override fun createObserver() {
         launchAndRepeatWithViewLifecycle {
-            permissionViewModel.bluetoothState.collectLatest { state ->
+            permissionViewModel.bluetoothState.collect { state ->
                 Timber.d("bluetoothState: $state")
                 when (state) {
                     is NotAvailable -> {
@@ -147,20 +148,21 @@ class BleScannerListFragment : BaseFragment() {
                     return@observe
                 }
                 discoveredBluetoothDevice!!.name?.let { token ->
-                    if (!token.startsWith("MD-TEST")) {//MD-TEST
-                        Toaster.show("获取设备信息失败!${dataResult.responseStatus.errorMessage}")
+                    if (token.endsWith(ProductType.COLLECTOR_G_0.newSuffix)) {
+                        DeviceHomeActivity.start(
+                            mActivity,
+                            DeviceInfo(
+                                productName = ProductType.COLLECTOR_G_0.productName,
+                                deviceToken = token,
+                                deviceName = "MD-GW100",
+                            ),
+                            discoveredBluetoothDevice,
+                            BleConnect
+                        )
                         return@observe
                     }
-                    DeviceHomeActivity.start(
-                        mActivity,
-                        DeviceInfo(
-                            deviceToken = token,
-                            productToken = "TEST",
-                            productName = "测试设备"
-                        ),
-                        discoveredBluetoothDevice,
-                        BleConnect
-                    )
+                    Toaster.show("获取设备信息失败!${dataResult.responseStatus.errorMessage}")
+                    return@observe
                 }
                 return@observe
             }

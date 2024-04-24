@@ -5,7 +5,8 @@ import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
 import com.shmedo.mcloudapp.R
 
 open class CommonDeviceHomeViewModel : ViewModel() {
-    val productResId = NonNullObservableField(R.drawable.ic_device_logo_def)
+    val productLightResId = NonNullObservableField(R.drawable.ic_device_logo_def)
+    val productGrayResId = NonNullObservableField(R.drawable.ic_device_logo_def)
 
     val productName = NonNullObservableField("")
     val deviceName = NonNullObservableField("")
@@ -15,6 +16,7 @@ open class CommonDeviceHomeViewModel : ViewModel() {
     val isDeviceStateTagHighLight = NonNullObservableField(true)
     val deviceStateTagText = NonNullObservableField("在线")
 
+    val isConnected = NonNullObservableField(true)
     val isConnectOperateVisible = NonNullObservableField(false)
     val connectOperateText = NonNullObservableField("蓝牙连接")
 

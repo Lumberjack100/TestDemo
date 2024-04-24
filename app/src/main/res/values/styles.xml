@@ -56,7 +56,7 @@
     <style name="Common_GroupName_Style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">44dp</item>
-        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingStart">16dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">@color/title_text_color</item>
         <item name="android:textSize">@dimen/text_size_16</item>
@@ -70,8 +70,8 @@
         <item name="android:layout_height">50dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:background">@color/white</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
     </style>
     <!-- 通用编辑项单条目中 EditText 样式 -->
     <style name="Common_EditItem_EditText_Style">
@@ -95,8 +95,8 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:background">@color/white</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
     </style>
     <!-- 通用选择项单条目中 Title TextView 样式 -->
     <style name="Common_ClickableItem_TitleStyle">
@@ -136,13 +136,28 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="ResetButton_ColorPrimary" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">46dp</item>
+        <item name="android:layout_marginStart">15dp</item>
+        <item name="android:layout_marginEnd">15dp</item>
+        <item name="android:layout_marginTop">25dp</item>
+        <item name="android:layout_marginBottom">25dp</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:background">@drawable/reset_button_with_corner</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <!--通用开关项单条目样式 SwitchButton 样式-->
     <style name="SwitchButton_LayoutStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">50dp</item>
         <item name="android:background">@color/white</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
     </style>
     <!--通用开关项单条目中 Title TextView 样式-->
     <style name="SwitchButton_TitleStyle">
@@ -171,8 +186,8 @@
         <item name="android:background">@color/main_bg_gray</item>
         <item name="android:paddingTop">10dp</item>
         <item name="android:paddingBottom">10dp</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
         <item name="android:textColor">@color/sub_title_text_color</item>
         <item name="android:textSize">15sp</item>
     </style>
@@ -184,8 +199,8 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:background">@color/white</item>
         <item name="android:orientation">horizontal</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
     </style>
 
     <!--设备运行状态单条项目标题样式-->
@@ -213,8 +228,8 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">40dp</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
     </style>
     <!--MR702 终端参数页面单条项目中 EditText 样式-->
     <style name="MR702_Terminal_Param_EditText_Style">
