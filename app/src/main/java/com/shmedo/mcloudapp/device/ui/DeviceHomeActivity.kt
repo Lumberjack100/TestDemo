@@ -101,7 +101,11 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
-            ProductType.M_A_1, ProductType.ADME -> navController.setGraph(R.navigation.adme_graph, bundle)
+            ProductType.M_A_1, ProductType.ADME -> navController.setGraph(
+                R.navigation.adme_graph,
+                bundle
+            )
+
             ProductType.COLLECTOR_R_1, ProductType.DAS, ProductType.BHY -> {
                 val graphId =
                     if (communicateWay == BleConnect) R.navigation.ble_das_graph else R.navigation.das_graph
@@ -109,7 +113,12 @@ class DeviceHomeActivity : BaseActivity() {
             }
 
             ProductType.LR200 -> navController.setGraph(R.navigation.lr200_graph, bundle)
-            ProductType.GNSS_M_1,ProductType.GNSS_M_2, ProductType.M20 -> navController.setGraph(R.navigation.m20_graph, bundle)
+            ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> navController.setGraph(
+                R.navigation.m20s_graph,
+                bundle
+            )
+
+            ProductType.M20 -> navController.setGraph(R.navigation.m20_graph, bundle)
             ProductType.COLLECTOR_R_2, ProductType.MR702 -> navController.setGraph(
                 R.navigation.mr702_graph,
                 bundle

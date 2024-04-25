@@ -24,10 +24,10 @@ import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecorati
 import com.shmedo.mcloudapp.databinding.FragmentMr702HomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
-import com.shmedo.mcloudapp.device.model.CommonModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DataCenterModule
 import com.shmedo.mcloudapp.device.model.DeviceOperationModule
+import com.shmedo.mcloudapp.device.model.FirmwareUpgradeModule
 import com.shmedo.mcloudapp.device.model.MR702PortConfigModule
 import com.shmedo.mcloudapp.device.model.MR702TerminalParameterModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
@@ -422,10 +422,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             ConfigModule(NetworkCommunicationModule(navId = R.id.action_mR702HomeFragment_to_mR702NetworkCommunicationFragment)),
             ConfigModule(RebootModule()),
             ConfigModule(
-                CommonModule(
-                    name = "固件升级",
-                    desc = "固件升级",
-                    resID = R.drawable.ic_basic_config,
+                FirmwareUpgradeModule(
                     navId = R.id.action_global_to_firmwareUpgradeFragment
                 )
             )

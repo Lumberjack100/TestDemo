@@ -96,14 +96,12 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_device_logo"
                 imageResId="@{vm.isConnected()?vm.productLightResId:vm.productGrayResId}"
-                android:layout_width="110dp"
-                android:layout_height="wrap_content"
-                android:minHeight="80dp"
-                android:scaleType="centerCrop"
+                android:layout_width="80dp"
+                android:layout_height="60dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/ic_device_logo_def" />
+                tools:src="@drawable/device_logo_gateway" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="0dp"

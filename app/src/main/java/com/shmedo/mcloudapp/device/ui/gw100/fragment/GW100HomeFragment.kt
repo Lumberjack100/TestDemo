@@ -35,8 +35,8 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
     override fun initData() {
         super.initData()
         toolbarViewModel.toolbarIvActionVisible.set(false)
-        mHeadStates.productLightResId.set(R.drawable.ic_device_logo_def)
-        mHeadStates.productGrayResId.set(R.drawable.ic_device_logo_def)
+        mHeadStates.productLightResId.set(R.drawable.device_logo_gateway)
+        mHeadStates.productGrayResId.set(R.drawable.device_logo_gateway_gray)
         mHeadStates.isPlatformConnectionStateVisible.set(false)
     }
 
@@ -45,19 +45,22 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
         moduleList.add(
             ConfigModule(
                 RunningStatusModule(
+                    resID = R.drawable.ic_module_current_state,
                     navId = R.id.action_gW100HomeFragment_to_gW100BaseInfoFragment
                 )
             )
         )
         moduleList.add(
-            ConfigModule(TimeCalibrationModule())
+            ConfigModule(TimeCalibrationModule(
+                resID = R.drawable.ic_module_terminal_time
+            ))
         )
         moduleList.add(
             ConfigModule(
                 CommonModule(
                     name = "网关设置",
                     desc = "GNSS电台网关设置",
-                    resID = R.drawable.ic_device_data_center,
+                    resID = R.drawable.ic_module_gateway,
                     navId = R.id.action_gW100HomeFragment_to_gW100GatewaySettingsFragment
                 )
             )
@@ -65,15 +68,20 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
         moduleList.add(
             ConfigModule(
                 LoraConfigModule(
+                    resID = R.drawable.ic_module_lora,
                     navId = R.id.action_global_to_loraSettingFragment
                 )
             )
         )
         moduleList.add(
-            ConfigModule(RebootModule())
+            ConfigModule(RebootModule(
+                resID = R.drawable.ic_module_reboot
+            ))
         )
         moduleList.add(
-            ConfigModule(RestoreFactoryModule())
+            ConfigModule(RestoreFactoryModule(
+                resID = R.drawable.ic_module_reset
+            ))
         )
         binding.rvModule.models = moduleList
     }

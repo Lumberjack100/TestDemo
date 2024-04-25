@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui.gw100.fragment
+package com.shmedo.mcloudapp.device.ui.m20s.fragment
 
 import android.os.Bundle
 import android.view.View
@@ -20,29 +20,27 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentGw100GatewaySettingsBinding
+import com.shmedo.mcloudapp.databinding.FragmentM20sRadioSettingBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.GW100GatewaySettingsViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.M20SRadioSettingViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class GW100GatewaySettingsFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentGw100GatewaySettingsBinding
+class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentM20sRadioSettingBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: GW100GatewaySettingsViewModel
+    private lateinit var mStates: M20SRadioSettingViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private val radioReceiveChannelList by lazy { Utils.getApp().resources.getStringArray(R.array.radio_receive_channel) }
     private val transmitPowerList: List<String> = (0..22).map { it.toString() }
     private val airSpeedList: List<String> = (0..2).map { it.toString() }
-
 
     override fun initViewModel() {
         super.initViewModel()
@@ -52,7 +50,7 @@ class GW100GatewaySettingsFragment : BaseIOTDeviceFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_gw100_gateway_settings,
+            R.layout.fragment_m20s_radio_setting,
             BR.stateVM,
             mStates
         )
@@ -61,8 +59,8 @@ class GW100GatewaySettingsFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentGw100GatewaySettingsBinding
-        binding.llToolbar.toolbar.title = "网关设置"
+        binding = getBinding() as FragmentM20sRadioSettingBinding
+        binding.llToolbar.toolbar.title = "电台设置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
@@ -92,6 +90,26 @@ class GW100GatewaySettingsFragment : BaseIOTDeviceFragment() {
     }
 
     inner class ClickProxy : BaseClickProxy() {
+        /**
+         * 选择RTCM数据频点
+         */
+        fun onRTCMDataChannelChooseClick() {
+            val selectedIndex = radioReceiveChannelList.indexOf(mStates.rtcmChannel.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "", radioReceiveChannelList,
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.rtcmChannel.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
         /**
          * 选择接收频点
          */
@@ -190,89 +208,27 @@ class GW100GatewaySettingsFragment : BaseIOTDeviceFragment() {
     }
 
     private fun resetParams() {
-        mStates.receiveChannel.set(radioReceiveChannelList[6])//载波频率以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 自组网网关：接收默认6，发送默认13 M20S：接收默认13，发送默认6
-        mStates.sendChannel.set(radioReceiveChannelList[13])//自组网网关：接收默认6，发送默认13
+        mStates.rtcmChannel.set(radioReceiveChannelList[0])//RTCM数据频点以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 默认0
+        mStates.receiveChannel.set(radioReceiveChannelList[13])//载波频率以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 自组网网关：接收默认6，发送默认13 M20S：接收默认13，发送默认6
+        mStates.sendChannel.set(radioReceiveChannelList[6])//自组网网关：接收默认6，发送默认13
         mStates.transmitPower.set(transmitPowerList[transmitPowerList.lastIndex])//发射功率 [0~22] 默认22
         mStates.airSpeed.set(airSpeedList[1])//空中速率  [0~2] 默认1
-
-        mStates.telemetryStationNode1.set("")
-        mStates.telemetryStationNode2.set("")
-        mStates.telemetryStationNode3.set("")
-        mStates.telemetryStationNode4.set("")
-        mStates.telemetryStationNode5.set("")
-        mStates.telemetryStationNode6.set("")
-        mStates.telemetryStationNode7.set("")
-        mStates.telemetryStationNode8.set("")
-        mStates.telemetryStationNode9.set("")
-        mStates.telemetryStationNode10.set("")
     }
 
     private fun initSaveCommand() {
-        if (mStates.telemetryStationNode1.get().isEmpty()) {
-            showMessageDialog("请输入测站 1 编号!")
-            return
-        }
-        if (mStates.telemetryStationNode2.get().isEmpty()) {
-            showMessageDialog("请输入测站 2 编号!")
-            return
-        }
-        if (mStates.telemetryStationNode3.get().isEmpty()) {
-            showMessageDialog("请输入测站 3 编号!")
-            return
-        }
-        if (mStates.telemetryStationNode4.get().isEmpty()) {
-            showMessageDialog("请输入测站 4 编号!")
-            return
-        }
-        if (mStates.telemetryStationNode5.get().isEmpty()) {
-            showMessageDialog("请输入测站 5 编号!")
-            return
-        }
-        if (mStates.telemetryStationNode6.get().isEmpty()) {
-            showMessageDialog("请输入测站 6 编号!")
-            return
-        }
-        if (mStates.telemetryStationNode7.get().isEmpty()) {
-            showMessageDialog("请输入测站 7 编号!")
-            return
-        }
-        if (mStates.telemetryStationNode8.get().isEmpty()) {
-            showMessageDialog("请输入测站 8 编号!")
-            return
-        }
-        if (mStates.telemetryStationNode9.get().isEmpty()) {
-            showMessageDialog("请输入测站 9 编号!")
-            return
-        }
-        if (mStates.telemetryStationNode10.get().isEmpty()) {
-            showMessageDialog("请输入测站 10 编号!")
-            return
-        }
         commandItems.clear()
         val entity = RadioCommunicateEntity(
+            bcchl = radioReceiveChannelList.indexOf(mStates.rtcmChannel.get()).toString(),
             rxchl = radioReceiveChannelList.indexOf(mStates.receiveChannel.get()).toString(),
             txchl = radioReceiveChannelList.indexOf(mStates.sendChannel.get()).toString(),
             outpwr = mStates.transmitPower.get(),
             airbaud = mStates.airSpeed.get(),
         )
-        var command = IOTCommandUtil.getCommand(
+        val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_SET_RADIO_CTRL,
             entity.toCommandString()
         )
         commandItems.add(command)
-
-        command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_DEL_TERMINAL_ID,
-            "type=0"
-        )
-        commandItems.add(command)
-
-        command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_TERMINAL_ID,
-            "id=${mStates.telemetryStationNode1.get()},${mStates.telemetryStationNode2.get()},${mStates.telemetryStationNode3.get()},${mStates.telemetryStationNode4.get()},${mStates.telemetryStationNode5.get()},${mStates.telemetryStationNode6.get()},${mStates.telemetryStationNode7.get()},${mStates.telemetryStationNode8.get()},${mStates.telemetryStationNode9.get()},${mStates.telemetryStationNode10.get()}"
-        )
-        commandItems.add(command)
-
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -283,13 +239,8 @@ class GW100GatewaySettingsFragment : BaseIOTDeviceFragment() {
 
     private fun queryData() {
         commandItems.clear()
-        var command = IOTCommandUtil.getCommand(
+        val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_GET_RADIO_CTRL
-        )
-        commandItems.add(command)
-
-        command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_TERMINAL_ID
         )
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -319,67 +270,11 @@ class GW100GatewaySettingsFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_GET_TERMINAL_ID -> {
-                val result = iotParseManager.parse<String>(
-                    cmdStr,
-                    IOTCommandType.MD_GET_TERMINAL_ID
-                )
-                when (result) {
-                    is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "查询测站节点信息出错: ${result.message}"
-                        Toaster.show(errMsg)
-                        return
-                    }
-
-                    is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        initTerminalIds(result.data)
-                    }
-                }
-            }
-
             IOTCommandType.MD_SET_RADIO_CTRL -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置电台参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("保存成功")
-                        }
-                    }
-                }
-            }
-            IOTCommandType.MD_DEL_TERMINAL_ID -> {//
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "删除终端 ID 出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("保存成功")
-                        }
-                    }
-                }
-            }
-            IOTCommandType.MD_SET_TERMINAL_ID -> {//
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "设置终端 ID 出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
                         return
@@ -399,107 +294,30 @@ class GW100GatewaySettingsFragment : BaseIOTDeviceFragment() {
 
     private fun initRadioData(info: RadioCommunicateInfo) {
         try {
+            mStates.rtcmChannel.set(
+                if (info.bcchl.toInt() in radioReceiveChannelList.indices) {
+                    radioReceiveChannelList[info.bcchl.toInt()]
+                } else {
+                    radioReceiveChannelList[0]
+                }
+            )
             mStates.receiveChannel.set(
                 if (info.rxchl.toInt() in radioReceiveChannelList.indices) {
                     radioReceiveChannelList[info.rxchl.toInt()]
                 } else {
-                    radioReceiveChannelList[6]
+                    radioReceiveChannelList[13]
                 }
             )
             mStates.sendChannel.set(
                 if (info.txchl.toInt() in radioReceiveChannelList.indices) {
                     radioReceiveChannelList[info.txchl.toInt()]
                 } else {
-                    radioReceiveChannelList[13]
+                    radioReceiveChannelList[6]
                 }
             )
             mStates.transmitPower.set(info.outpwr)
             mStates.airSpeed.set(info.airbaud)
 
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
-    }
-
-    private fun initTerminalIds(content: String) {
-        if (content.isEmpty())
-            return
-
-        try {
-            //用逗号分割
-            val terminalIds = content.split(",")
-
-            mStates.telemetryStationNode1.set(
-                if (terminalIds.isNotEmpty()) {
-                    terminalIds[0]
-                } else {
-                    ""
-                }
-            )
-            mStates.telemetryStationNode2.set(
-                if (terminalIds.size > 1) {
-                    terminalIds[1]
-                } else {
-                    ""
-                }
-            )
-            mStates.telemetryStationNode3.set(
-                if (terminalIds.size > 2) {
-                    terminalIds[2]
-                } else {
-                    ""
-                }
-            )
-            mStates.telemetryStationNode4.set(
-                if (terminalIds.size > 3) {
-                    terminalIds[3]
-                } else {
-                    ""
-                }
-            )
-            mStates.telemetryStationNode5.set(
-                if (terminalIds.size > 4) {
-                    terminalIds[4]
-                } else {
-                    ""
-                }
-            )
-
-            mStates.telemetryStationNode6.set(
-                if (terminalIds.size > 5) {
-                    terminalIds[5]
-                } else {
-                    ""
-                }
-            )
-            mStates.telemetryStationNode7.set(
-                if (terminalIds.size > 6) {
-                    terminalIds[6]
-                } else {
-                    ""
-                }
-            )
-            mStates.telemetryStationNode8.set(
-                if (terminalIds.size > 7) {
-                    terminalIds[7]
-                } else {
-                    ""
-                }
-            )
-            mStates.telemetryStationNode9.set(
-                if (terminalIds.size > 8) {
-                    terminalIds[8]
-                } else {
-                    ""
-                }
-            )
-            mStates.telemetryStationNode10.set(
-                if (terminalIds.size > 9) {
-                    terminalIds[9]
-                } else {
-                    ""
-                }
-            )
         } catch (e: Exception) {
             Timber.e(e)
         }

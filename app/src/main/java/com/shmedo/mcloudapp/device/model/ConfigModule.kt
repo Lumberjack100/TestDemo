@@ -53,6 +53,13 @@ class TelemetryDataModule(
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
+class WorkModeModule(
+    name: String = "工作模式",
+    desc: String = "GNSS模式设置",
+    resID: Int = R.drawable.ic_device_reboot,
+    navId: Int = 0,
+) : DeviceFunctionModule(name, desc, resID, navId)
+
 class RebootModule(
     name: String = "重启",
     desc: String = "重新启动当前设备",
@@ -78,6 +85,13 @@ class AdvancedSettingsModule(
     name: String = "设置",
     desc: String = "高级设置",
     resID: Int = R.drawable.ic_device_setting,
+    navId: Int = 0,
+) : DeviceFunctionModule(name, desc, resID, navId)
+
+class FirmwareUpgradeModule(
+    name: String = "固件升级",
+    desc: String = "选择固件升级系统",
+    resID: Int = R.drawable.ic_module_firmware_upgrade,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 

@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.device.ui.common
 
 import android.os.Bundle
 import android.view.View
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -13,7 +12,7 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.scwang.smart.refresh.layout.constant.RefreshState
 import com.shmedo.lib.core.base.model.UserInfo
-import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -23,11 +22,6 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.dismissLoadingDialog
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.databinding.FragmentFirmwareUpgradeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.FirmWareInfo
@@ -35,7 +29,13 @@ import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.FirmwareUpgradeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.dismissLoadingDialog
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import timber.log.Timber
 
 /**
@@ -46,13 +46,21 @@ import timber.log.Timber
  */
 class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentFirmwareUpgradeBinding by lazy { getBinding() as FragmentFirmwareUpgradeBinding }
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: FirmwareUpgradeViewModel by viewModels()
-    private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: FirmwareUpgradeViewModel
+    private lateinit var deviceRequestViewModel: DeviceRequestViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
     private val firmwareStatusList: MutableList<String> = arrayListOf("全部", "测试", "运营")
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+        deviceRequestViewModel = getViewModel()
+    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_firmware_upgrade, BR.stateVM, mStates)
