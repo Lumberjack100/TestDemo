@@ -249,7 +249,6 @@
                         textViewEnabled="@{stateVM.extension3ValueEnable }"
                         android:hint="请输入"
                         android:text="@={stateVM.extension3Value}"
-                        app:inputTypeFilter='@{"numberDecimal"}'
                         app:lengthFilter="@{10}" />
 
                     <ImageView

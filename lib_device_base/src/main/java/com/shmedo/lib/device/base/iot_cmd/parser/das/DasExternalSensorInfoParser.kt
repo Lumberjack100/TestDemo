@@ -42,6 +42,7 @@ class DasExternalSensorInfoParser : IOTCommandParser<DasExternalSensorInfo> {
             measinval = keyValueMap.getOrDefault("measinval", IOTConstants.NULL_KEY)
             model_type = keyValueMap.getOrDefault("model_type", IOTConstants.NULL_KEY)
             initval = keyValueMap.getOrDefault("initval", IOTConstants.NULL_KEY)
+            caddr = keyValueMap.getOrDefault("caddr", IOTConstants.NULL_KEY)
         }
     }
 

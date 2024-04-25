@@ -167,22 +167,26 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     mStates.isExtension3Support.set(true)
                     mStates.extension3Title.set("多项式系数A")
                     mStates.extension3Value.set(
-                        sensorInfo.poly_a.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.poly_a.toDoubleOrNull()?.toString() ?: ""
+                    )
 
                     mStates.isExtension4Support.set(true)
                     mStates.extension4Title.set("多项式系数B")
                     mStates.extension4Value.set(
-                        sensorInfo.poly_b.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.poly_b.toDoubleOrNull()?.toString() ?: ""
+                    )
 
                     mStates.isExtension5Support.set(true)
                     mStates.extension5Title.set("多项式系数C")
                     mStates.extension5Value.set(
-                        sensorInfo.poly_c.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.poly_c.toDoubleOrNull()?.toString() ?: ""
+                    )
 
                     mStates.isExtension6Support.set(true)
                     mStates.extension6Title.set("温度系数K")
                     mStates.extension6Value.set(
-                        sensorInfo.temp_k.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.temp_k.toDoubleOrNull()?.toString() ?: ""
+                    )
 
                     //初始温度，精确到小数点后两位
                     mStates.isExtension7Support.set(true)
@@ -234,17 +238,20 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     mStates.isExtension3Support.set(true)
                     mStates.extension3Title.set("灵敏度K")
                     mStates.extension3Value.set(
-                        sensorInfo.sens_k.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.sens_k.toDoubleOrNull()?.toString() ?: ""
+                    )
 
                     mStates.isExtension4Support.set(true)
                     mStates.extension4Title.set("温修系数B")
                     mStates.extension4Value.set(
-                        sensorInfo.temp_b.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.temp_b.toDoubleOrNull()?.toString() ?: ""
+                    )
 
                     mStates.isExtension5Support.set(true)
                     mStates.extension5Title.set("基准值F0")
                     mStates.extension5Value.set(
-                        sensorInfo.referval_f.toDoubleOrNull()?.toString() ?: "0")
+                        sensorInfo.referval_f.toDoubleOrNull()?.toString() ?: "0"
+                    )
 
                     //初始温度，精确到小数点后两位
                     mStates.isExtension6Support.set(true)
@@ -297,17 +304,20 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     mStates.isExtension3Support.set(true)
                     mStates.extension3Title.set("灵敏度K")
                     mStates.extension3Value.set(
-                        sensorInfo.sens_k.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.sens_k.toDoubleOrNull()?.toString() ?: ""
+                    )
 
                     mStates.isExtension4Support.set(true)
                     mStates.extension4Title.set("温修系数B")
                     mStates.extension4Value.set(
-                        sensorInfo.temp_b.toDoubleOrNull()?.toString() ?: "0")
+                        sensorInfo.temp_b.toDoubleOrNull()?.toString() ?: "0"
+                    )
 
                     mStates.isExtension5Support.set(true)
                     mStates.extension5Title.set("基准值F0")
                     mStates.extension5Value.set(
-                        sensorInfo.referval_f.toDoubleOrNull()?.toString() ?: "0")
+                        sensorInfo.referval_f.toDoubleOrNull()?.toString() ?: "0"
+                    )
 
                     //初始温度，精确到小数点后两位
                     mStates.isExtension6Support.set(true)
@@ -346,17 +356,20 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     mStates.isExtension3Support.set(true)
                     mStates.extension3Title.set("灵敏度K")
                     mStates.extension3Value.set(
-                        sensorInfo.sens_k.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.sens_k.toDoubleOrNull()?.toString() ?: ""
+                    )
 
                     mStates.isExtension4Support.set(true)
                     mStates.extension4Title.set("温修系数B")
                     mStates.extension4Value.set(
-                        sensorInfo.temp_b.toDoubleOrNull()?.toString() ?: "0")
+                        sensorInfo.temp_b.toDoubleOrNull()?.toString() ?: "0"
+                    )
 
                     mStates.isExtension5Support.set(true)
                     mStates.extension5Title.set("基准值F0")
                     mStates.extension5Value.set(
-                        sensorInfo.referval_f.toDoubleOrNull()?.toString() ?: "0")
+                        sensorInfo.referval_f.toDoubleOrNull()?.toString() ?: "0"
+                    )
 
                     //初始温度，精确到小数点后两位
                     mStates.isExtension6Support.set(true)
@@ -376,7 +389,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     mStates.isExtension10Support.set(false)
                 }
 
-                IOTSensorType.VIBRATING_SENSOR//MCU 振弦传感器
+                IOTSensorType.VIBRATING_SENSOR//MCU_振弦传感器
                 -> {
                     mStates.sensorTypeName.set(MCU_PREFIX + IOTSensorType.VIBRATING_SENSOR.description)
 
@@ -384,17 +397,20 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                         mStates.isExtension1Support.set(true)
                         mStates.extension1Title.set("灵敏度K")
                         mStates.extension1Value.set(
-                            sensorInfo.sens_k.toDoubleOrNull()?.toString() ?: "")
+                            sensorInfo.sens_k.toDoubleOrNull()?.toString() ?: ""
+                        )
 
                         mStates.isExtension2Support.set(true)
                         mStates.extension2Title.set("温修系数B")
                         mStates.extension2Value.set(
-                            sensorInfo.temp_b.toDoubleOrNull()?.toString() ?: "0")
+                            sensorInfo.temp_b.toDoubleOrNull()?.toString() ?: "0"
+                        )
 
                         mStates.isExtension3Support.set(true)
                         mStates.extension3Title.set("基准值F0")
                         mStates.extension3Value.set(
-                            sensorInfo.referval_f.toDoubleOrNull()?.toString() ?: "0")
+                            sensorInfo.referval_f.toDoubleOrNull()?.toString() ?: "0"
+                        )
 
                         //初始温度，精确到小数点后两位
                         mStates.isExtension4Support.set(true)
@@ -410,7 +426,12 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                         mStates.isExtension3Support.set(false)
                         mStates.isExtension4Support.set(false)
                     }
-                    mStates.isExtension5Support.set(false)
+
+                    mStates.isExtension5Support.set(sensorInfo.caddr != IOTConstants.NULL_KEY)
+                    mStates.extension5Title.set("测站编码")
+                    mStates.extension5Value.set(if (mStates.isExtension5Support.get()) sensorInfo.caddr else IOTConstants.NULL_KEY)
+
+                    //mStates.isExtension5Support.set(false)
                     mStates.isExtension6Support.set(false)
                     mStates.isExtension7Support.set(false)
                     mStates.isExtension8Support.set(false)
@@ -418,15 +439,17 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     mStates.isExtension10Support.set(false)
                 }
 
-                IOTSensorType.WEIR//MCU 量水堰计
+                IOTSensorType.WEIR//MCU_量水堰计
                 -> {
                     mStates.sensorTypeName.set(MCU_PREFIX + IOTSensorType.WEIR.description)
 
+                    mStates.isExtension3Support.set(sensorInfo.caddr != IOTConstants.NULL_KEY)
+                    mStates.extension3Title.set("测站编码")
+                    mStates.extension3Value.set(if (mStates.isExtension3Support.get()) sensorInfo.caddr else IOTConstants.NULL_KEY)
+
                     mStates.isExtension1Support.set(false)
                     mStates.isExtension2Support.set(false)
-                    mStates.isExtension3Support.set(false)
-                    mStates.isExtension4Support.set(false)
-                    mStates.isExtension3Support.set(false)
+                    //mStates.isExtension3Support.set(false)
                     mStates.isExtension4Support.set(false)
                     mStates.isExtension5Support.set(false)
                     mStates.isExtension6Support.set(false)
@@ -919,8 +942,19 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                         return
                     }
                 }
+                if (mStates.isExtension5Support.get() && mStates.extension5Value.get().isEmpty()) {
+                    showMessageDialog("请输入测站编码")
+                    return
+                }
             }
 
+            IOTSensorType.WEIR//MCU 量水堰计
+            -> {
+                if (mStates.isExtension3Support.get() && mStates.extension3Value.get().isEmpty()) {
+                    showMessageDialog("请输入测站编码")
+                    return
+                }
+            }
             IOTSensorType.WATER_LEVEL_GAUGE//MCU 水位(液位)计
             -> {
                 if (mStates.extension1Value.get().isEmpty()) {
@@ -1028,6 +1062,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     sensorInfo.referval_f = IOTConstants.NULL_KEY
                     sensorInfo.temp_t0 = IOTConstants.NULL_KEY
                 }
+                sensorInfo.caddr = mStates.extension5Value.get()
             }
 
             IOTSensorType.WEIR//MCU 量水堰计
@@ -1036,6 +1071,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                 sensorInfo.corrval = IOTConstants.NULL_KEY
                 sensorInfo.lsycsds = IOTConstants.NULL_KEY
                 sensorInfo.lsyysst = IOTConstants.NULL_KEY
+                sensorInfo.caddr = mStates.extension3Value.get()
             }
 
             IOTSensorType.WATER_LEVEL_GAUGE//MCU 水位(液位)计

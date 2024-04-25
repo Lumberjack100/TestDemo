@@ -232,21 +232,34 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     mStates.correctTitle.set("修正值(单位:毫米)")
                     mStates.isCorrectTipBtnSupport.set(true)
 
-                    mStates.isExtension1Support.set(true)
-                    mStates.isExtension1TipBtnSupport.set(true)
+                    mStates.isExtension1Support.set(sensorInfo.lsycsds != IOTConstants.NULL_KEY)
+                    mStates.isExtension1TipBtnSupport.set(sensorInfo.lsycsds != IOTConstants.NULL_KEY)
                     mStates.extension1Title.set("初始读数(毫米)")
-                    decimalFormat.applyPattern("#.#")
-                    sensorInfo.lsycsds.toDoubleOrNull()?.let {
-                        mStates.extension1Value.set(decimalFormat.format(it))
+                    if (mStates.isExtension1Support.get()) {
+                        decimalFormat.applyPattern("#.#")
+                        sensorInfo.lsycsds.toDoubleOrNull()?.let {
+                            mStates.extension1Value.set(decimalFormat.format(it))
+                        }
+                    } else {
+                        mStates.extension1Value.set(IOTConstants.NULL_KEY)
                     }
 
-                    mStates.isExtension2Support.set(true)
-                    mStates.isExtension2TipBtnSupport.set(true)
+                    mStates.isExtension2Support.set(sensorInfo.lsyysst != IOTConstants.NULL_KEY)
+                    mStates.isExtension2TipBtnSupport.set(sensorInfo.lsyysst != IOTConstants.NULL_KEY)
                     mStates.extension2Title.set("初始堰上水头(毫米)")
-                    decimalFormat.applyPattern("#.#")
-                    sensorInfo.lsyysst.toDoubleOrNull()?.let {
-                        mStates.extension2Value.set(decimalFormat.format(it))
+                    if (mStates.isExtension2Support.get()) {
+                        decimalFormat.applyPattern("#.#")
+                        sensorInfo.lsyysst.toDoubleOrNull()?.let {
+                            mStates.extension2Value.set(decimalFormat.format(it))
+                        }
+                    } else {
+                        mStates.extension2Value.set(IOTConstants.NULL_KEY)
                     }
+
+                    mStates.isExtension3Support.set(sensorInfo.caddr != IOTConstants.NULL_KEY)
+                    mStates.isExtension3TipBtnSupport.set(false)
+                    mStates.extension3Title.set("测站编码")
+                    mStates.extension3Value.set(if (mStates.isExtension3Support.get()) sensorInfo.caddr else IOTConstants.NULL_KEY)
                 }
 
                 IOTSensorType.STATIC_LEVEL,//静力水准
@@ -542,25 +555,32 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.WEIR //量水堰计
             -> {
-                if (mStates.extension1Value.get().isEmpty()) {
-                    showMessageDialog("请输入初始读数!")
-                    return
+                if (mStates.isExtension1Support.get()){
+                    if (mStates.extension1Value.get().isEmpty()) {
+                        showMessageDialog("请输入初始读数!")
+                        return
+                    }
+                    try {
+                        val value = mStates.extension1Value.get().toDouble()
+                    } catch (ex: Exception) {
+                        showMessageDialog("请输入正确的初始读数!")
+                        return
+                    }
                 }
-                try {
-                    val value = mStates.extension1Value.get().toDouble()
-                } catch (ex: Exception) {
-                    showMessageDialog("请输入正确的初始读数!")
-                    return
+                if (mStates.isExtension2Support.get()){
+                    if (mStates.extension2Value.get().isEmpty()) {
+                        showMessageDialog("请输入初始堰上水头!")
+                        return
+                    }
+                    try {
+                        val value = mStates.extension2Value.get().toDouble()
+                    } catch (ex: Exception) {
+                        showMessageDialog("请输入正确的初始堰上水头!")
+                        return
+                    }
                 }
-
-                if (mStates.extension2Value.get().isEmpty()) {
-                    showMessageDialog("请输入初始堰上水头!")
-                    return
-                }
-                try {
-                    val value = mStates.extension2Value.get().toDouble()
-                } catch (ex: Exception) {
-                    showMessageDialog("请输入正确的初始堰上水头!")
+                if (mStates.isExtension3Support.get() && mStates.extension3Value.get().isEmpty()) {
+                    showMessageDialog("请输入测站编码!")
                     return
                 }
             }
@@ -637,6 +657,7 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             -> {
                 sensorInfo.lsycsds = mStates.extension1Value.get()
                 sensorInfo.lsyysst = mStates.extension2Value.get()
+                sensorInfo.caddr = mStates.extension3Value.get()
             }
 
             IOTSensorType.STATIC_LEVEL,//静力水准

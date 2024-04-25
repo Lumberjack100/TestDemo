@@ -12,7 +12,7 @@ import android.text.style.ClickableSpan
 import android.view.Gravity
 import android.view.View
 import androidx.fragment.app.viewModels
-import com.amap.api.maps.MapsInitializer
+import com.amap.api.location.AMapLocationClient
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.StringUtils
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -76,14 +76,14 @@ class PolicyDialog : BaseVmDbDialogFragment() {
     inner class ClickProxy {
         fun agree() {
             //更新同意隐私状态,需要在初始化地图之前完成
-            MapsInitializer.updatePrivacyAgree(mActivity, true)
+            AMapLocationClient.updatePrivacyAgree(mActivity, true)
             setAgreePrivate(true)
             mMessenger.updateIsAgreePolicy(true)
             dismiss()
         }
 
         fun disAgree() {
-            MapsInitializer.updatePrivacyAgree(mActivity, false)
+            AMapLocationClient.updatePrivacyAgree(mActivity, false)
             setAgreePrivate(false)
             Process.killProcess(Process.myPid())
         }

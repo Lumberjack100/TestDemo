@@ -47,4 +47,7 @@ data class DasExternalSensorInfo(
     var measinval: String = "",// 测量间隔
     var model_type: String = "",// 模型切换 0:坐标模型  1: ADME 模型
     var initval: String = "", // 初始值
+
+    var caddr: String = "",//测点编码
+
 ) : Parcelable

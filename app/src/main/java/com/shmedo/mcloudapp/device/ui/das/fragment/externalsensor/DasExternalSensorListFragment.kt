@@ -23,10 +23,6 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessage
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentDasExternalSensorListBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -35,6 +31,10 @@ import com.shmedo.mcloudapp.device.model.DASSensorItem
 import com.shmedo.mcloudapp.device.model.RVEmptyFooter
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasExternalSensorListViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -283,6 +283,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                         IOTSensorType.WEIR -> {//量水堰计
                             lsycsds = sensorInfo.lsycsds
                             lsyysst = sensorInfo.lsyysst
+                            caddr = sensorInfo.caddr
                         }
 
                         IOTSensorType.STATIC_LEVEL,//静力水准
@@ -290,15 +291,16 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                             initval = sensorInfo.initval
                         }
 
-                        IOTSensorType.VIBRATING_SENSOR -> {//MCU 振弦传感器
+                        IOTSensorType.VIBRATING_SENSOR -> {//MCU_振弦传感器
                             sens_k = sensorInfo.sens_k
                             temp_b = sensorInfo.temp_b
                             temp_t0 = sensorInfo.temp_t0
                             referval_f = sensorInfo.referval_f
+                            caddr = sensorInfo.caddr
                         }
 
                         IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE,//数字式水位计
-                        IOTSensorType.WATER_LEVEL_GAUGE -> {//MCU 水位(液位)计
+                        IOTSensorType.WATER_LEVEL_GAUGE -> {//MCU_水位(液位)计
                             tubealti = sensorInfo.tubealti
                             ropelen = sensorInfo.ropelen
                         }

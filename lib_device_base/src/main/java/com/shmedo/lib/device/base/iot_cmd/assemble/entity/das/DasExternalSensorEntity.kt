@@ -46,6 +46,8 @@ data class DasExternalSensorEntity(
     var measinval: String = IOTConstants.NULL_KEY,// 测量间隔
     var model_type: String = IOTConstants.NULL_KEY,// 模型切换 0:坐标模型  1: ADME 模型
     var initval: String = IOTConstants.NULL_KEY, // 初始值
+
+    var caddr: String = IOTConstants.NULL_KEY,//测点编码
 ) {
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)

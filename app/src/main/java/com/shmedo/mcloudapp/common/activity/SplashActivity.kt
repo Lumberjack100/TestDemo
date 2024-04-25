@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
-import com.amap.api.maps.MapsInitializer
+import com.amap.api.location.AMapLocationClient
 import com.gyf.immersionbar.ktx.immersionBar
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.model.LogLevel
@@ -59,9 +59,9 @@ class SplashActivity : BaseActivity() {
 
     override fun initData() {
         //更新隐私合规状态,需要在初始化地图之前完成
-        MapsInitializer.updatePrivacyShow(this, true, true)
+        AMapLocationClient.updatePrivacyShow(this, true, true)
         //更新同意隐私状态,需要在初始化地图之前完成
-        MapsInitializer.updatePrivacyAgree(this, true)
+        AMapLocationClient.updatePrivacyAgree(this, true)
         logViewModel.insertSession(getSystemLogSession())
         logViewModel.insertLog(
             getLogItem(
@@ -109,7 +109,7 @@ class SplashActivity : BaseActivity() {
 
     private fun showPrivateDialog() {
         //更新隐私合规状态,需要在初始化地图之前完成
-        MapsInitializer.updatePrivacyShow(this, true, true)
+        AMapLocationClient.updatePrivacyShow(this, true, true)
         val privacyTipDialog = PolicyDialog()
         privacyTipDialog.show(supportFragmentManager, "dialog")
     }

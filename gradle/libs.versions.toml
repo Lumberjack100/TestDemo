@@ -18,7 +18,7 @@ agp = "8.1.2"
 activityKtx = "1.9.0"
 agentweb = "v5.0.6-androidx"
 appcompat = "1.6.1"
-amap3dmap = "9.8.3"
+amapLocation = "6.4.3"
 amapSearch = "9.7.0"
 baseRecyclerView = "1.5.7"
 compileSdk = "34"
@@ -61,7 +61,6 @@ xpopup = "2.9.19"
 room = "2.6.1"
 share2 = "0.9.3"
 smoothNavigation = "4.0.0"
-smartRefreshLayout = "2.0.6"
 strictDatabinding = "6.2.0"
 switchbutton = "2.1.0"
 targetSdk = "34"
@@ -88,14 +87,14 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "testExtJunit" }
 agentweb-core = { module = "com.github.Justson.AgentWeb:agentweb-core", version.ref = "agentweb" }
-amap-a3dmap = { module = "com.amap.api:3dmap", version.ref = "amap3dmap" }
+amap-location = { module = "com.amap.api:location", version.ref = "amapLocation" }
 amap-search = { module = "com.amap.api:search", version.ref = "amapSearch" }
 bugly-crashreport = { module = "com.tencent.bugly:crashreport", version.ref = "crashreport" }
 customactivityoncrash = { module = "cat.ereza:customactivityoncrash", version.ref = "customactivityoncrash" }
 datetime-picker = { module = "com.github.loper7:DateTimePicker", version.ref = "dateTimePicker" }
 dialogx = { module = "com.kongzue.dialogx:DialogX", version.ref = "dialogX" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
-getActivity-logcat = { module = "com.github.getActivity:Logcat", version.ref = "getActivityLogcat" }
+#getActivity-logcat = { module = "com.github.getActivity:Logcat", version.ref = "getActivityLogcat" }
 getActivity-xxpermission = { module = "com.github.getActivity:XXPermissions", version.ref = "xxPermission" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 hms-scan = { module = "com.huawei.hms:scan", version.ref = "hmsScan" }
@@ -105,12 +104,12 @@ junit = { module = "junit:junit", version.ref = "junit" }
 keyboardvisibilityevent = { module = "net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent", version.ref = "keyboardvisibilityevent" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
-kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
-kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+#kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+#kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kunminx-unpeek-livedata = { module = "com.kunminx.arch:unpeek-livedata", version.ref = "unpeekLivedata" }
 kunminx-smooth-navigation = { module = "com.kunminx.arch:smooth-navigation", version.ref = "smoothNavigation" }
 kunminx-strict-databinding = { module = "com.github.KunMinX.Strict-DataBinding:strict_databinding", version.ref = "strictDatabinding" }
-leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
+#leakcanary-android = { module = "com.squareup.leakcanary:leakcanary-android", version.ref = "leakcanary" }
 liangjingkanji-brv = { module = "com.github.liangjingkanji:BRV", version.ref = "baseRecyclerView" }
 lucksiege-pictureselector = { module = "io.github.lucksiege:pictureselector", version.ref = "pictureselector" }
 lucksiege-compress = { module = "io.github.lucksiege:compress", version.ref = "pictureselector" }

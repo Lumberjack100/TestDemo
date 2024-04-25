@@ -236,7 +236,7 @@ dependencies {
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
 
-    //高德地图导航
-    implementation(libs.amap.a3dmap)
+    //高德地图
+    implementation(libs.amap.location)
     implementation(libs.amap.search)
 }

@@ -79,7 +79,6 @@
                 textViewEnabled="@{stateVM.extension3ValueEnable }"
                 android:hint="请输入"
                 android:text="@={stateVM.extension3Value}"
-                app:inputTypeFilter='@{@string/edittext_input_filter_decimal_characters}'
                 app:lengthFilter="@{20}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -100,7 +99,6 @@
                 textViewEnabled="@{stateVM.extension4ValueEnable }"
                 android:hint="请输入"
                 android:text="@={stateVM.extension4Value}"
-                app:inputTypeFilter='@{@string/edittext_input_filter_decimal_characters}'
                 app:lengthFilter="@{20}" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -120,7 +118,6 @@
                 textViewEnabled="@{stateVM.extension5ValueEnable }"
                 android:hint="请输入"
                 android:text="@={stateVM.extension5Value}"
-                app:inputTypeFilter='@{@string/edittext_input_filter_decimal_characters}'
                 app:lengthFilter="@{20}" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -140,7 +137,6 @@
                 textViewEnabled="@{stateVM.extension6ValueEnable }"
                 android:hint="请输入"
                 android:text="@={stateVM.extension6Value}"
-                app:inputTypeFilter='@{@string/edittext_input_filter_decimal_characters}'
                 app:lengthFilter="@{20}" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -160,7 +156,6 @@
                 textViewEnabled="@{stateVM.extension7ValueEnable }"
                 android:hint="请输入"
                 android:text="@={stateVM.extension7Value}"
-                app:inputTypeFilter='@{@string/edittext_input_filter_decimal_characters}'
                 app:lengthFilter="@{20}" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -180,7 +175,6 @@
                 textViewEnabled="@{stateVM.extension8ValueEnable }"
                 android:hint="请输入"
                 android:text="@={stateVM.extension8Value}"
-                app:inputTypeFilter='@{@string/edittext_input_filter_decimal_characters}'
                 app:lengthFilter="@{20}" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -200,7 +194,6 @@
                 textViewEnabled="@{stateVM.extension9ValueEnable }"
                 android:hint="请输入"
                 android:text="@={stateVM.extension9Value}"
-                app:inputTypeFilter='@{@string/edittext_input_filter_decimal_characters}'
                 app:lengthFilter="@{20}" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -220,7 +213,6 @@
                 textViewEnabled="@{stateVM.extension10ValueEnable }"
                 android:hint="请输入"
                 android:text="@={stateVM.extension10Value}"
-                app:inputTypeFilter='@{@string/edittext_input_filter_decimal_characters}'
                 app:lengthFilter="@{20}" />
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>
