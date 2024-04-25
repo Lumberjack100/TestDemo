@@ -27,10 +27,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:maxLines="1"
+            android:layout_marginStart="@dimen/dimen_size_5"
+            android:maxLines="2"
             android:text="@{m.num1}"
             android:textColor="@color/colorPrimary"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="bold"
             tools:text="32.5%" />
 
@@ -39,17 +40,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginStart="@dimen/dimen_size_5"
             android:layout_marginTop="@dimen/dimen_size_4"
-            android:text="@{m.num2}"
             android:maxLines="2"
+            android:text="@{m.num2}"
             android:textColor="@color/colorPrimary"
-            android:textSize="15sp"
+            android:textSize="14sp"
             tools:text="已用5.2GB/16GB" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginStart="@dimen/dimen_size_5"
             android:layout_marginTop="@dimen/dimen_size_4"
             android:text="@{m.name}"
             android:textColor="@color/text_color_666666"

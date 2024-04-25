@@ -107,6 +107,10 @@ class M20CommunicationInfoFragment : BaseIOTDeviceFragment() {
                 MoshiUtil.fromJson<CommonCurrentStateInfo>(content) ?: return
             mStates.wrapStateInfo.set(commonCurrentStateInfo)
 
+            mStates.amsState.set(
+                if (commonCurrentStateInfo.dataCenter4 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter4 == 1) "在线" else "离线"
+            )
+
             tableAdapter.setAllItems(
                 getColumnHeaderList(),
                 getRowHeaderList(),

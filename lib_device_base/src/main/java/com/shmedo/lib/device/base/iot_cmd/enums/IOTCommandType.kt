@@ -904,6 +904,12 @@ enum class IOTCommandType(private val value: String) {
      */
     MD_SET_RADIO_CTRL("md_setcqradioctrl"),
 
+
+    /**
+     *  GNSS-RTK模式配置
+     */
+    MD_CFG_RTK("md_cfgrtkparam"),
+
     /**
      * 自定义心跳包
      */

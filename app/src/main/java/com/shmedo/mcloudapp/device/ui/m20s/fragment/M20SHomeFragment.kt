@@ -41,6 +41,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
         mHeadStates.productLightResId.set(R.drawable.device_logo_m20)
         mHeadStates.productGrayResId.set(R.drawable.device_logo_m20_gray)
         mHeadStates.isPlatformConnectionStateVisible.set(false)
+        mHeadStates.deviceName.set(if (deviceInfo.deviceToken.endsWith(ProductType.GNSS_M_1.newSuffix)) "M20 (单北斗)" else "M20 (全星座)")
     }
 
     override fun updateConfigModuleData() {
@@ -49,7 +50,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
             ConfigModule(
                 RunningStatusModule(
                     resID = R.drawable.ic_module_current_state,
-                    navId = R.id.action_m20SHomeFragment_to_m20DeviceInfoFragment
+                    navId = R.id.action_m20SHomeFragment_to_m20SDeviceInfoFragment
                 )
             )
         )
@@ -94,7 +95,8 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
                     name = "卫星通信",
                     desc = "卫星通信终端设置",
                     resID = R.drawable.ic_module_satellite_communications,
-                    navId = 0
+                    navId = 0,
+                    isSupport = false
                 )
             )
         )

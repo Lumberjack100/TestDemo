@@ -49,7 +49,37 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="SIM卡号(ICCID)" />
+                        android:text="设备IMEI" />
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        android:text="@{stateVM.wrapStateInfo.IMEI}"
+                        tools:text="4343434" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="设备IMSI" />
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        android:text="@{stateVM.wrapStateInfo.IMSI}"
+                        tools:text="4343434" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="设备ICCID" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
@@ -64,12 +94,12 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="IMEI号" />
+                        android:text="硬件版本" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text="@{stateVM.wrapStateInfo.IMEI}"
-                        tools:text="4343434" />
+                        android:text="@{stateVM.wrapStateInfo.hw_version}"
+                        tools:text="1212" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -94,12 +124,12 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="设备位置" />
+                        android:text="工作模式" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text="@{stateVM.wrapStateInfo.location}"
-                        tools:text="终端遥控测试机" />
+                        android:text='@{stateVM.wrapStateInfo.workMode=="1"?"基站":"移动站"}'
+                        tools:text="1212" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -109,13 +139,12 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="内部电源电压" />
+                        android:text="设备状态" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.wrapStateInfo.inner_power_volt+" V"}'
-                        app:bind_voltage_color='@{stateVM.wrapStateInfo.inner_power_volt+""}'
-                        tools:text="1" />
+                        app:bind_errno="@{stateVM.isDeviceNormal}"
+                        tools:text="正常" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -125,7 +154,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="外接电源电压" />
+                        android:text="电源电压" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
@@ -134,18 +163,6 @@
                         tools:text="2" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/dimen_size_10"
-                    android:layout_marginStart="@dimen/dimen_size_10"
-                    android:drawablePadding="-80dp"
-                    android:text="太阳能控制器"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_17"
-                    android:textStyle="bold"
-                    app:drawableStartCompat="@drawable/ic_mr702_device_info_serial_port_status" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
@@ -163,135 +180,6 @@
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/DeviceCurrentState_SingleItem_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <TextView
-                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="蓄电池电压" />
-
-                    <TextView
-                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.wrapStateInfo.battery_volt+" V"}'
-                        app:bind_voltage_color='@{stateVM.wrapStateInfo.battery_volt+""}'
-                        tools:text="2" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/DeviceCurrentState_SingleItem_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <TextView
-                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="近12小时补充功率" />
-
-                    <TextView
-                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.wrapStateInfo.supply_power+" W"}'
-                        tools:text="2" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/DeviceCurrentState_SingleItem_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <TextView
-                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="近12小时消耗功率" />
-
-                    <TextView
-                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.wrapStateInfo.consume_power+" W"}'
-                        tools:text="2" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/dimen_size_10"
-                    android:layout_marginStart="@dimen/dimen_size_10"
-                    android:drawablePadding="-80dp"
-                    android:text="机箱内部温湿度"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_17"
-                    android:textStyle="bold"
-                    app:drawableStartCompat="@drawable/ic_mr702_device_info_serial_port_status" />
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/DeviceCurrentState_SingleItem_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <TextView
-                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="温度" />
-
-                    <TextView
-                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.wrapStateInfo.temp+" ℃"}'
-                        tools:text="2" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/DeviceCurrentState_SingleItem_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <TextView
-                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="湿度" />
-
-                    <TextView
-                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.wrapStateInfo.humidity+" %"}'
-                        tools:text="2" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="@dimen/dimen_size_10"
-                    android:layout_marginStart="@dimen/dimen_size_10"
-                    android:drawablePadding="-80dp"
-                    android:text="机箱外部温湿度"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_17"
-                    android:textStyle="bold"
-                    app:drawableStartCompat="@drawable/ic_mr702_device_info_serial_port_status" />
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/DeviceCurrentState_SingleItem_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <TextView
-                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="温度" />
-
-                    <TextView
-                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.wrapStateInfo.temp_out+" ℃"}'
-                        tools:text="2" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/DeviceCurrentState_SingleItem_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <TextView
-                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="湿度" />
-
-                    <TextView
-                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.wrapStateInfo.humidity_out+" %"}'
-                        tools:text="2" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <TextView
                     visible="@{stateVM.isRunningDataVisible}"

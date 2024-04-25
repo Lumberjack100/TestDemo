@@ -6,4 +6,6 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo
 
 class M20CommunicationInfoViewModel : ViewModel() {
     val wrapStateInfo = NonNullObservableField(CommonCurrentStateInfo())
+
+    val amsState = NonNullObservableField("")
 }

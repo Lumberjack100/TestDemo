@@ -6,7 +6,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo
 
 class M20BaseInfoViewModel : ViewModel() {
     val wrapStateInfo = NonNullObservableField(CommonCurrentStateInfo())
-
+    val isDeviceNormal = NonNullObservableField("1")
     val isRunningDataVisible = NonNullObservableField(false)
 
 }

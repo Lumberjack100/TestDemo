@@ -31,7 +31,7 @@
                 imageResId="@{m.configModule.iconResId}"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:tint="@{m.configModule.connected ? @color/colorPrimary : @color/sub_title_text_color}"
+                android:tint="@{m.configModule.isSupport&amp;&amp;m.configModule.connected ? @color/colorPrimary : @color/sub_title_text_color}"
                 tools:src="@drawable/ic_device_current_state" />
 
             <TextView
@@ -42,7 +42,7 @@
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:text="@{m.configModule.name}"
-                android:textColor="@{m.configModule.connected ? @color/title_text_color : @color/sub_title_text_color}"
+                android:textColor="@{m.configModule.isSupport&amp;&amp;m.configModule.connected ? @color/title_text_color : @color/sub_title_text_color}"
                 android:textSize="17sp"
                 android:textStyle="bold"
                 tools:text="关于设备" />

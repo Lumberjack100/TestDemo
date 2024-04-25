@@ -51,7 +51,7 @@ object IOTDeviceBindingAdapter {
             }
 
             else -> {
-                view.text = "未接入"
+                view.text = "异常"
                 view.setTextColor(ColorUtils.getColor(R.color.device_offline_platform))
             }
         }

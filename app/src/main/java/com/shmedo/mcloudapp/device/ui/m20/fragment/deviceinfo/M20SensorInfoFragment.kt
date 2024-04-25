@@ -103,6 +103,21 @@ class M20SensorInfoFragment : BaseIOTDeviceFragment() {
             mStates.memsAxisY.set(commonCurrentStateInfo.x_Angle)
             mStates.memsAxisX.set(commonCurrentStateInfo.y_Angle)
             mStates.memsAxisZ.set(commonCurrentStateInfo.z_Angle)
+
+            //"self_check": "GPS:1,eMMC:1,4g:1,RTC:1,solar485:0,G-Sensor:1,BT:1,GNSS:1,QMC:0,SHT21:1,product_time:20240411"
+            //解析 self_check,根据逗号分隔，取出各个传感器的状态
+            val selfCheck = commonCurrentStateInfo.self_check
+            val selfCheckArray = selfCheck.split(",")
+            //查找 MEMS 并设置状态
+            for (item in selfCheckArray) {
+                val sensor = item.split(":")
+                when (sensor[0].uppercase()) {
+                    "G-SENSOR" -> {
+                        mStates.memsErrNo.set(sensor[1])
+                    }
+                }
+            }
+
         } catch (e: Exception) {
             Timber.e(e)
         }

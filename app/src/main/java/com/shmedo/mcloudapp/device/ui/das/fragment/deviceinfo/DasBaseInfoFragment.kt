@@ -168,7 +168,6 @@ class DasBaseInfoFragment : BaseIOTDeviceFragment() {
             }
             mStates.wrapBaseInfo.notifyChange()
 
-//            mStates.signal.set(String.format("%sdBm", baseInfo.csq))
             mStates.signal.set(baseInfo.csq.toIntOrNull()?.let {
                 (it * 2 - 113).toString() + "dBm"
             } ?: "--dBm"

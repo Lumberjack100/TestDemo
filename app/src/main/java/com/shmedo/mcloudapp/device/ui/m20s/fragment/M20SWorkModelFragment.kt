@@ -10,9 +10,10 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.RtkParamEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.device.base.iot_cmd.model.common.LoraCommunicateInfo
+import com.shmedo.lib.device.base.iot_cmd.model.common.RtkParamInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
@@ -26,6 +27,8 @@ import com.shmedo.mcloudapp.device.viewmodel.state.M20SWorkModelViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -36,7 +39,6 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
     private val modelList = arrayListOf("基准站", "移动站")
-    private val frequencyPowerList: List<String> = (5..20).map { "${it}s" }
 
     override fun initViewModel() {
         super.initViewModel()
@@ -107,26 +109,6 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
         }
 
         /**
-         * 选择频率
-         */
-        fun onFrequencyChooseClick() {
-            val selectedIndex = frequencyPowerList.indexOf(mStates.frequency.get())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "", frequencyPowerList.toTypedArray(),
-                    null, selectedIndex,
-                    { position, text ->
-                        mStates.frequency.set(text)
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
-        }
-
-        /**
          * 恢复默认配置
          */
         fun onResetClick() {
@@ -144,14 +126,38 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
     }
 
     private fun resetParams() {
-        mStates.model.set(modelList[0])//默认基准站
-        mStates.frequency.set(frequencyPowerList[0])//默认5
-
+        mStates.model.set(modelList[1])//默认移动站
+        mStates.frequency.set("5")//默认5
     }
 
     private fun initSaveCommand() {
+        if (mStates.frequency.get().isEmpty()) {
+            showMessageDialog("请输入频率!")
+            return
+        }
+        try {
+            val value = mStates.frequency.get().toDouble()
+            if (value < 0 || value > 60) {
+                showMessageDialog("频率数值范围[0,255]!")
+                return
+            }
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的频率!")
+            return
+        }
+        val entity = RtkParamEntity(
+            mode = (modelList.indexOf(mStates.model.get()) + 1).toString(),
+            obs = mStates.frequency.get()
+        )
         commandItems.clear()
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_CFG_RTK,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
 
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun lazyLoadData() {
@@ -161,7 +167,8 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_DEVICE_STATUS
+            IOTCommandType.MD_CFG_RTK,
+            "method=0"
         )
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -169,15 +176,19 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_LORA_CTRL -> {
-                val result = iotParseManager.parse<LoraCommunicateInfo>(
-                    cmdStr,
-                    IOTCommandType.MD_GET_LORA_CTRL
-                )
+            IOTCommandType.MD_CFG_RTK -> {
+                val result = if (cmdStr.contains("method=0"))
+                    iotParseManager.parse<RtkParamInfo>(
+                        cmdStr,
+                        IOTCommandType.MD_CFG_RTK
+                    )
+                else iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "查询信息出错: ${result.message}"
+                        val errMsg =
+                            if (cmdStr.contains("method=0")) "查询信息出错: ${result.message}" else "设置参数出错: ${result.message}"
+                        Timber.e(errMsg)
                         Toaster.show(errMsg)
                         return
                     }
@@ -186,23 +197,9 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        initParamData(result.data)
-                    }
-                }
-            }
-
-            IOTCommandType.MD_SET_LORA_CTRL -> {//
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "设置参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
+                        if (cmdStr.contains("method=0")) {
+                            initParamData(result.data as RtkParamInfo)
+                        } else {
                             Toaster.show("保存成功")
                         }
                     }
@@ -213,10 +210,15 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initParamData(info: LoraCommunicateInfo) {
+    private fun initParamData(info: RtkParamInfo) {
         try {
-
-
+            info.mode.toIntOrNull() ?.let {
+                if (it < 1 || it > modelList.size) {
+                    return
+                }
+                mStates.model.set(modelList[it - 1])
+            }
+            mStates.frequency.set(info.obs)
         } catch (e: Exception) {
             Timber.e(e)
         }

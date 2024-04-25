@@ -36,13 +36,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.location.LocationManager
+import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
 import com.shmedo.lib.ble.permission.util.Available
+import com.shmedo.lib.ble.permission.util.BluetoothPermissionUtil
 import com.shmedo.lib.ble.permission.util.FeatureNotAvailableReason
 import com.shmedo.lib.ble.permission.util.FeatureState
 import com.shmedo.lib.ble.permission.util.LocalDataProvider
 import com.shmedo.lib.ble.permission.util.NotAvailable
-import com.shmedo.lib.ble.permission.util.BluetoothPermissionUtil
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 
@@ -63,7 +64,7 @@ class LocationStateManager constructor(private val context: Context) {
             addAction(LocationManager.MODE_CHANGED_ACTION)
             addAction(REFRESH_PERMISSIONS)
         }
-        context.registerReceiver(locationStateChangeHandler, filter)
+        ContextCompat.registerReceiver(context, locationStateChangeHandler, filter, ContextCompat.RECEIVER_EXPORTED)
         awaitClose {
             context.unregisterReceiver(locationStateChangeHandler)
         }

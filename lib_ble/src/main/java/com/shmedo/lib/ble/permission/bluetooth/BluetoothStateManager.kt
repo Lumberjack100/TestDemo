@@ -36,6 +36,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import androidx.core.content.ContextCompat
 import com.shmedo.lib.ble.permission.util.Available
 import com.shmedo.lib.ble.permission.util.BluetoothPermissionUtil
 import com.shmedo.lib.ble.permission.util.FeatureNotAvailableReason
@@ -62,7 +63,7 @@ class BluetoothStateManager constructor(private val context: Context) {
             addAction(BluetoothAdapter.ACTION_STATE_CHANGED)
             addAction(REFRESH_PERMISSIONS)
         }
-        context.registerReceiver(bluetoothStateChangeHandler, filter)
+        ContextCompat.registerReceiver(context, bluetoothStateChangeHandler, filter, ContextCompat.RECEIVER_EXPORTED)
         awaitClose {
             context.unregisterReceiver(bluetoothStateChangeHandler)
         }

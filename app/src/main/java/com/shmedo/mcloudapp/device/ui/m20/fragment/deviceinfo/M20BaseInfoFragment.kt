@@ -123,87 +123,115 @@ class M20BaseInfoFragment : BaseIOTDeviceFragment() {
                 MoshiUtil.fromJson<CommonCurrentStateInfo>(content) ?: return
 
             initRunningData(commonCurrentStateInfo)
+            mStates.wrapStateInfo.set(commonCurrentStateInfo)
+            mStates.wrapStateInfo.get().apply {
+                inner_power_volt = commonCurrentStateInfo.inner_power_volt.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: "--"
+                ext_power_volt = commonCurrentStateInfo.ext_power_volt.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: "--"
+                solar_volt = commonCurrentStateInfo.solar_volt.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: "--"
+                battery_volt = commonCurrentStateInfo.battery_volt.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: "--"
+                supply_power = commonCurrentStateInfo.supply_power.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: "--"
+                consume_power = commonCurrentStateInfo.consume_power.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: "--"
+                temp = commonCurrentStateInfo.temp.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: "--"
+                humidity = commonCurrentStateInfo.humidity.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: "--"
+                temp_out = commonCurrentStateInfo.temp_out.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: "--"
+                humidity_out = commonCurrentStateInfo.humidity_out.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: "--"
+            }
+            mStates.wrapStateInfo.notifyChange()
 
-            mStates.wrapStateInfo.set(
-                CommonCurrentStateInfo(
-                    sN = commonCurrentStateInfo.sN,
-                    cCID = commonCurrentStateInfo.cCID,
-                    iMEI = commonCurrentStateInfo.iMEI,
-                    sw_version = commonCurrentStateInfo.sw_version,
-                    location = commonCurrentStateInfo.location,
-                    inner_power_volt = commonCurrentStateInfo.inner_power_volt.toDoubleOrNull()
-                        ?.let {
-                            decimalFormat.format(it)
-                        } ?: "--",
-                    ext_power_volt = commonCurrentStateInfo.ext_power_volt.toDoubleOrNull()
-                        ?.let {
-                            decimalFormat.format(it)
-                        } ?: "--",
-                    solar_volt = commonCurrentStateInfo.solar_volt.toDoubleOrNull()
-                        ?.let {
-                            decimalFormat.format(it)
-                        } ?: "--",
-                    battery_volt = commonCurrentStateInfo.battery_volt.toDoubleOrNull()
-                        ?.let {
-                            decimalFormat.format(it)
-                        } ?: "--",
-                    supply_power = commonCurrentStateInfo.supply_power.toDoubleOrNull()
-                        ?.let {
-                            decimalFormat.format(it)
-                        } ?: "--",
-                    consume_power = commonCurrentStateInfo.consume_power.toDoubleOrNull()
-                        ?.let {
-                            decimalFormat.format(it)
-                        } ?: "--",
-                    temp = commonCurrentStateInfo.temp.toDoubleOrNull()
-                        ?.let {
-                            decimalFormat.format(it)
-                        } ?: "--",
-                    humidity = commonCurrentStateInfo.humidity.toDoubleOrNull()
-                        ?.let {
-                            decimalFormat.format(it)
-                        } ?: "--",
-                    temp_out = commonCurrentStateInfo.temp_out.toDoubleOrNull()
-                        ?.let {
-                            decimalFormat.format(it)
-                        } ?: "--",
-                    humidity_out = commonCurrentStateInfo.humidity_out.toDoubleOrNull()
-                        ?.let {
-                            decimalFormat.format(it)
-                        } ?: "--",
-                )
-            )
+            checkDeviceNormal(commonCurrentStateInfo.self_check)
         } catch (e: Exception) {
             Timber.e(e)
         }
+    }
+
+    private fun checkDeviceNormal(selfCheck: String) {
+        //"self_check": "GPS:1,eMMC:1,4g:1,RTC:1,solar485:0,G-Sensor:1,BT:1,GNSS:1,QMC:0,SHT21:1,product_time:20240411"
+        //解析 self_check,根据逗号分隔，取出各个传感器的状态
+        val selfCheckArray = selfCheck.split(",")
+        for (item in selfCheckArray) {
+            val sensor = item.split(":")
+            when (sensor[0].uppercase()) {
+                "BT" -> {//0：关闭或异常 1：正常未连接 2：正常已连接
+                    if (sensor[1] == "0") {
+                        mStates.isDeviceNormal.set("0")
+                        break
+                    }
+                }
+
+                "PRODUCT_TIME" -> {
+
+                }
+
+                else -> {
+                    if (sensor[1] == "0") {
+                        mStates.isDeviceNormal.set("0")
+                        break
+                    }
+                }
+            }
+        }
+
+        mStates.isDeviceNormal.set("1")
     }
 
     private fun initRunningData(commonCurrentStateInfo: CommonCurrentStateInfo) {
         val decimalFormat = DecimalFormat("#.#")
         try {
             val list = mutableListOf<MRRunningDataItem>()
-            if (commonCurrentStateInfo.onlinetime.isNotEmpty() && commonCurrentStateInfo.onlinetime != "--") {
+            if (commonCurrentStateInfo.worktime.isNotEmpty() && commonCurrentStateInfo.worktime != "--") {
                 list.add(
                     MRRunningDataItem(
-                        "在线时长(小时)",
-                        decimalFormat.format(commonCurrentStateInfo.onlinetime.toDouble() / 3600)
+                        "运行时间(小时)",
+                        decimalFormat.format(commonCurrentStateInfo.worktime.toDouble() / 3600)
                     )
                 )
             }
 
-            if (commonCurrentStateInfo.eMMCFree.isNotEmpty() && commonCurrentStateInfo.eMMCFree != "--") {
-                list.add(
-                    MRRunningDataItem(
-                        "存储状态",
-                        "",
-                        "已用${commonCurrentStateInfo.eMMCFree}"
+            if (commonCurrentStateInfo.emmc_storage.isNotEmpty() && commonCurrentStateInfo.emmc_storage != "--") {
+                val storages = commonCurrentStateInfo.emmc_storage.split(",")
+                if (storages.size == 2)
+                    list.add(
+                        MRRunningDataItem(
+                            "存储状态",
+                            "${storages[0]}/${storages[1]}",
+
+                        )
                     )
-                )
             }
             binding.rvRunningData.models = list
-
             if (list.isNotEmpty())
                 mStates.isRunningDataVisible.set(true)
+
         } catch (e: Exception) {
             Timber.e(e)
         }

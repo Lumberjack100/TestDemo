@@ -41,12 +41,27 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="倾角MEMS状态" />
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        app:bind_errno="@{stateVM.memsErrNo}"
+                        tools:text="正常" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/DeviceCurrentState_SingleItem_Style"
                     visible='@{ stateVM.memsAxisX != "--"}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="X轴角度(°)" />
+                        android:text="X轴角度值(°)" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
@@ -62,7 +77,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="Y轴角度(°)" />
+                        android:text="Y轴角度值(°)" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
@@ -78,7 +93,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="Z轴角度(°)" />
+                        android:text="Z轴角度值(°)" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"

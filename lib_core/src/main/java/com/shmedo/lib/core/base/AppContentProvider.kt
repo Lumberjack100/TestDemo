@@ -7,9 +7,10 @@ import android.content.IntentFilter
 import android.database.Cursor
 import android.net.ConnectivityManager
 import android.net.Uri
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.shmedo.lib.core.util.AppLifeObserver
 import com.shmedo.lib.core.network.manager.NetworkStateReceive
+import com.shmedo.lib.core.util.AppLifeObserver
 import com.tencent.mmkv.MMKV
 
 /**
@@ -33,10 +34,7 @@ class AppContentProvider : ContentProvider() {
 
     private fun install(application: Application) {
         mNetworkStateReceive = NetworkStateReceive()
-        application.registerReceiver(
-            mNetworkStateReceive,
-            IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        )
+        ContextCompat.registerReceiver(application, mNetworkStateReceive, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION), ContextCompat.RECEIVER_EXPORTED)
         if (watchAppLife)
             ProcessLifecycleOwner.get().lifecycle.addObserver(AppLifeObserver)
 

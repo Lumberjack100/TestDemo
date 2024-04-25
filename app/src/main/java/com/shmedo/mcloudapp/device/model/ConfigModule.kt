@@ -17,8 +17,10 @@ sealed class DeviceFunctionModule(
     val desc: String = "",
     val iconResId: Int = 0,
     val navId: Int = 0,
-    var isConnected: Boolean = true
+    var isConnected: Boolean = true,
+    var isSupport: Boolean = true
 ) : BaseObservable() {
+
     fun refreshStatus(state: Boolean) {
         this.isConnected = state
         notifyChange()
@@ -30,7 +32,8 @@ class CommonModule(
     desc: String = "",
     resID: Int = R.drawable.ic_device_current_state,
     navId: Int = 0,
-) : DeviceFunctionModule(name, desc, resID, navId)
+    isSupport: Boolean = true
+) : DeviceFunctionModule(name, desc, resID, navId, isSupport)
 
 class RunningStatusModule(
     name: String = "状态",

@@ -23,10 +23,8 @@
      Since Android 10 ACCESS_FINE_LOCATION is required and for that, the COARSE one also needs
      to be specified.
     -->
-    <uses-permission
-        android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission
-        android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!--
      On Android 12 new set of Bluetooth permissions were added. BLUETOOTH_SCAN permission is
      needed to scan for Bluetooth LE devices. The "never for location" flag is set, as we are not
@@ -49,7 +47,12 @@
 
 
     <application>
-        <service android:name="com.shmedo.lib.ble.communicate.service.MedoBleService" />
+
+        <service
+            android:name="com.shmedo.lib.ble.communicate.service.MedoBleService"
+            android:foregroundServiceType="connectedDevice"
+            android:exported="false" />
+
     </application>
 
 </manifest>
