@@ -219,7 +219,6 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-
             else -> {}
         }
     }

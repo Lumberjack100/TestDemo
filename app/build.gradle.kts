@@ -9,7 +9,7 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
 }
 
-val majorVersion = 4
+val majorVersion = 5
 val minorVersion = 0
 val patchVersion = 0
 

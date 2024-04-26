@@ -209,17 +209,51 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
             }
 
             is DataCenterModule -> {
-                val bundle = UniversalDataCenterHomeFragment.newBundleArguments(
-                    4,
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().navigate(
-                    configModule.navId,
-                    bundle
-                )
+                when (productType) {
+                    ProductType.U_D_1,//水位
+                    ProductType.U_D_2 -> {//泥位
+                        nav().navigate(
+                            configModule.navId,
+                            UniversalDataCenterHomeFragment.newBundleArguments(
+                                centerNum = 2,
+                                productType,
+                                communicateWay,
+                                deviceInfo,
+                                bleDevice
+                            )
+                        )
+                    }
+
+                    ProductType.U_I_1 -> {//倾斜仪
+                        nav().navigate(
+                            configModule.navId,
+                            UniversalDataCenterHomeFragment.newBundleArguments(
+                                centerNum = 3,
+                                productType,
+                                communicateWay,
+                                deviceInfo,
+                                bleDevice
+                            )
+                        )
+                    }
+
+                    ProductType.U_R_1 -> {//雨量计
+                        nav().navigate(
+                            configModule.navId,
+                            UniversalDataCenterHomeFragment.newBundleArguments(
+                                centerNum = 3,
+                                productType,
+                                communicateWay,
+                                deviceInfo,
+                                bleDevice
+                            )
+                        )
+                    }
+
+                    else -> {
+
+                    }
+                }
             }
 
             is CommandDebugConfigModule -> {

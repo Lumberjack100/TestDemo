@@ -46,20 +46,58 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerView"
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="@dimen/dimen_size_16"
-                android:layout_marginTop="160dp"
-                android:layout_marginEnd="@dimen/dimen_size_16"
-                android:clipToPadding="false"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:itemCount="4"
-                tools:listitem="@layout/data_center_status_item" />
+                android:layout_height="wrap_content">
 
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="160dp" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:layout_marginHorizontal="@dimen/dimen_size_10"
+                        android:layout_marginBottom="@dimen/dimen_size_10"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            android:text="上报间隔(分钟)"
+                            tools:textColor="@color/title_text_color" />
+
+                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            android:hint="请输入"
+                            android:text=""
+                            app:inputTypeFilter='@{"number"}'
+                            app:lengthFilter="@{4}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginHorizontal="@dimen/dimen_size_10"
+                        android:clipToPadding="false"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:itemCount="4"
+                        tools:listitem="@layout/data_center_status_item" />
+
+                    <TextView
+                        android:id="@+id/btn_confirm"
+                        style="@style/SubmitButton_ColorPrimary"
+                        onClickWithDebouncing=""
+                        android:text="保存" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

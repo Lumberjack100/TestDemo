@@ -312,7 +312,10 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
 
     private fun initParamData(info: MudLevelMeterSensorInfo) {
         try {
-            mStates.installHeight.set(info.height)
+            decimalFormat.applyPattern("#.###")
+            info.height.toDoubleOrNull()?.let {
+                mStates.installHeight.set(decimalFormat.format(it))
+            }
             mStates.measureInterval.set(info.gap)
             mStates.averageTimes.set(info.times)
             mStates.triggerCaptureLevel.set(info.level)

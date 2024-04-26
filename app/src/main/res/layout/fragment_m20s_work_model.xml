@@ -68,7 +68,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.model}"
-                            tools:text="410.00MHz" />
+                            tools:text="基准站" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
