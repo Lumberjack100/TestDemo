@@ -16,27 +16,27 @@ object LogLevel {
     /**
      * Level used just for debugging purposes. It has the lowest importance level.
      */
-    const val DEBUG = 0
+    private const val DEBUG = 0
 
     /**
      * Log entries with minor importance.
      */
-    const val VERBOSE = 1
+    private const val VERBOSE = 1
 
     /**
      * Default logging level for important entries.
      */
-    const val INFO = 2
+    private const val INFO = 2
 
     /**
      * Log entries with high importance.
      */
-    const val WARNING = 3
+    private const val WARNING = 3
 
     /**
      * Log entries with very high importance, like errors.
      */
-    const val ERROR = 4
+    private const val ERROR = 4
 
     /**
      * The Log [LogLevel] and [android.util.Log] are not compatible.
@@ -50,7 +50,7 @@ object LogLevel {
      */
     fun fromPriority(priority: Int): Int {
         return when (priority) {
-            Log.VERBOSE -> LogLevel.VERBOSE
+            Log.VERBOSE -> VERBOSE
             Log.DEBUG -> DEBUG
             Log.INFO -> INFO
             Log.WARN -> WARNING
@@ -61,11 +61,11 @@ object LogLevel {
 
     fun getTag(level: Int): String {
         return when (level) {
-            VERBOSE -> "V"
-            DEBUG -> "D"
-            INFO -> "I"
-            WARNING -> "W"
-            ERROR, Log.ASSERT -> "E"
+            Log.VERBOSE -> "V"
+            Log.DEBUG -> "D"
+            Log.INFO -> "I"
+            Log.WARN -> "W"
+            Log.ERROR, Log.ASSERT -> "E"
             else -> ""    // In case the Level was used, for example APPLICATION.
         }
     }

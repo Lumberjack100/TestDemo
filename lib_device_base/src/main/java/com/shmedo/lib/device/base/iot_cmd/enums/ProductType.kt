@@ -40,26 +40,6 @@ enum class ProductType(
         description = "对应MR-702"
     ),
 
-    //GNSS产品线 M(一体机)
-    GNSS_M_1(
-        "",
-        newSuffix = "GM1",
-        productName = "测地形GNSS接收机",
-        description = "单北斗,对应UM960版本"
-    ),
-    GNSS_M_2(
-        "",
-        newSuffix = "GM2",
-        productName = "测地形GNSS接收机",
-        description = "单北斗,对应UM960版本"
-    ),
-    GNSS_M_3(
-        "",
-        newSuffix = "GM3",
-        productName = "测地形GNSS接收机",
-        description = "单北斗,对应UM960版本"
-    ),
-
     //GNSS产品线 E(分体机)
     GNSS_E_1(
         "",
@@ -80,6 +60,27 @@ enum class ProductType(
         description = "基站接收机,应E50 Pro"
     ),
 
+    //GNSS产品线 M(一体机)
+    GNSS_M_1(
+        "",
+        newSuffix = "GM1",
+        productName = "测地形GNSS接收机",
+        description = "单北斗,对应UM960版本"
+    ),
+    GNSS_M_2(
+        "",
+        newSuffix = "GM2",
+        productName = "测地形GNSS接收机",
+        description = "全星座,对应UM960D版本"
+    ),
+    GNSS_M_3(
+        "",
+        newSuffix = "GM3",
+        productName = "测地形GNSS接收机",
+        description = "自供电版,待立项"
+    ),
+
+
     //GNSS产品线 T(抗干扰)
     GNSS_T_1(
         "",
@@ -88,12 +89,18 @@ enum class ProductType(
         description = "对应当前GT600"
     ),
 
-    //SINGLE(单传感器产品线)  V(VMS)
-    SINGLE_V_1(
+    //M(机电产品线) A(自动测斜仪)
+    M_A_1(
         "",
-        newSuffix = "SV1",
-        productName = "振弦式采集仪",
-        description = "对应VMS"
+        newSuffix = "MA1",
+        productName = "基坑自动测斜仪",
+        description = "AC50,基坑自动测斜仪"
+    ),
+    M_A_2(
+        "",
+        newSuffix = "MA2",
+        productName = "水电站深层测斜仪",
+        description = "BC10,水电站深层测斜仪"
     ),
 
     //SINGLE(单传感器产品线) A(倾角计)
@@ -116,30 +123,22 @@ enum class ProductType(
         description = "三轴,对应MD-QJ390P"
     ),
 
-    //INTEGRATION(一体化传感器产品线) I(倾斜仪)
-    INTEGRATION_I_1(
+    //SINGLE(单传感器产品线)  V(VMS)
+    SINGLE_V_1(
         "",
-        newSuffix = "UI1",
-        productName = "倾斜仪",
-        description = "三轴,对应BHY-3S"
-    ),
-
-    //INTEGRATION(一体化传感器产品线) R(雨量计)
-    INTEGRATION_R_1(
-        "",
-        newSuffix = "UR1",
-        productName = "雨量计",
+        newSuffix = "SV1",
+        productName = "振弦式采集仪",
         description = ""
     ),
 
     //INTEGRATION(一体化传感器产品线) D(雷达计)
-    INTEGRATION_D_1(
+    U_D_1(
         "",
         newSuffix = "UD1",
         productName = "雷达计",
         description = "水位,对应MD-DR030"
     ),
-    INTEGRATION_D_2(
+    U_D_2(
         "",
         newSuffix = "UD2",
         productName = "雷达计",
@@ -147,26 +146,29 @@ enum class ProductType(
     ),
 
     //INTEGRATION(一体化传感器产品线) L(裂缝计)
-    INTEGRATION_L_1(
+    U_L_1(
         "",
         newSuffix = "UL1",
         productName = "裂缝计",
         description = ""
     ),
 
-    //M(机电产品线) A(自动测斜仪)
-    M_A_1(
+    //INTEGRATION(一体化传感器产品线) I(倾斜仪)
+    U_I_1(
         "",
-        newSuffix = "MA1",
-        productName = "基坑自动测斜仪",
-        description = "AC50,基坑自动测斜仪"
+        newSuffix = "UI1",
+        productName = "倾斜仪",
+        description = "三轴,对应BHY-3S"
     ),
-    M_A_2(
+
+    //INTEGRATION(一体化传感器产品线) R(雨量计)
+    U_R_1(
         "",
-        newSuffix = "MA2",
-        productName = "水电站深层测斜仪",
-        description = "BC10,水电站深层测斜仪"
+        newSuffix = "UR1",
+        productName = "雨量计",
+        description = ""
     ),
+
 
     ADME("ADME", oldSuffix = "T", productName = "自动化测斜机器人"),
     BHY("BHY", oldSuffix = "H", productName = "崩滑仪"),

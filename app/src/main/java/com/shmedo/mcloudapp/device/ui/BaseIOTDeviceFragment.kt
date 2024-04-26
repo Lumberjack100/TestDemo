@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.device.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.annotation.CallSuper
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.PageRefreshLayout
@@ -16,7 +17,6 @@ import com.shmedo.lib.ble.communicate.service.base.SuccessResult
 import com.shmedo.lib.ble.communicate.service.base.UnknownErrorResult
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
-import com.shmedo.lib.core.base.model.LogLevel
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.ext.getLogItem
@@ -103,7 +103,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         netIotCommandViewModel.cmdDispatchFlow.collect {
             when (it) {
                 is DispatchFailed -> {
-                    addLogItem(LogLevel.ERROR, "DispatchFailed: ${it.errorMsg}")
+                    addLogItem(Log.ERROR, "DispatchFailed: ${it.errorMsg}")
                     doNetDispatchFailed(it.cmdStr, it.errorMsg)
                 }
 
@@ -112,17 +112,17 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
                 }
 
                 is CmdResponseResultError -> {
-                    addLogItem(LogLevel.ERROR, "Response Error: ${it.errorMsg}")
+                    addLogItem(Log.ERROR, "Response Error: ${it.errorMsg}")
                     doCmdResponseResultError(it.cmdStr, it.errorMsg)
                 }
 
                 is CmdResponseResultTimeOut -> {
-                    addLogItem(LogLevel.ERROR, "Response TimeOut")
+                    addLogItem(Log.ERROR, "Response TimeOut")
                     doCmdResponseResultTimeOut(it.cmdStr, it.errorMsg)
                 }
 
                 is CmdResponseResultSuccess -> {
-                    addLogItem(LogLevel.INFO, it.cmdResult.responseContent)
+                    addLogItem(Log.INFO, it.cmdResult.responseContent)
                     setResultData(it.cmdResult.responseContent)
                 }
 
@@ -166,30 +166,30 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
                 is WorkingState -> when (state.result) {
                     is IdleResult,
                     is ConnectingResult -> {
-                        addLogItem(LogLevel.INFO, "device ${bleDevice?.address} connecting")
+                        addLogItem(Log.INFO, "device ${bleDevice?.address} connecting")
                         showLoadingDialog(StringUtils.getString(R.string.ble_state_connecting))
                     }
 
                     is ConnectedResult -> {
-                        addLogItem(LogLevel.INFO, "device ${bleDevice?.address} connected")
+                        addLogItem(Log.INFO, "device ${bleDevice?.address} connected")
 //                        dismissLoadingDialog()
 //                        onConnectionStateChanged(true)
                     }
 
                     is ReadyResult -> {
-                        addLogItem(LogLevel.INFO, "device ready")
+                        addLogItem(Log.INFO, "device ready")
                         onConnectionStateChanged(true)
                         onBleDeviceReady()
                     }
 
                     is SuccessResult -> {
-                        addLogItem(LogLevel.INFO, state.result.data.response)
+                        addLogItem(Log.INFO, state.result.data.response)
                         setResultData(state.result.data.response)
                     }
 
                     is DisconnectedResult -> {
                         addLogItem(
-                            LogLevel.ERROR,
+                            Log.ERROR,
                             "device disconnected, reason: ${state.result.reason}"
                         )
                         dismissLoadingDialog()
@@ -197,19 +197,19 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
                     }
 
                     is LinkLossResult -> {
-                        addLogItem(LogLevel.ERROR, "device link loss")
+                        addLogItem(Log.ERROR, "device link loss")
                         dismissLoadingDialog()
                         onConnectionStateChanged(false)
                     }
 
                     is MissingServiceResult -> {
-                        addLogItem(LogLevel.ERROR, "device missing service")
+                        addLogItem(Log.ERROR, "device missing service")
                         dismissLoadingDialog()
                         onConnectionStateChanged(false)
                     }
 
                     is UnknownErrorResult -> {
-                        addLogItem(LogLevel.ERROR, "device unknown error")
+                        addLogItem(Log.ERROR, "device unknown error")
                         dismissLoadingDialog()
                         onConnectionStateChanged(false)
                     }
@@ -246,7 +246,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
         val command = commandItems.first
         commandItems.removeFirst()
-        addLogItem(LogLevel.INFO, command)
+        addLogItem(Log.INFO, command)
 
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
@@ -304,7 +304,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         msg: String = ""
     ) {
         Timber.i("${javaClass.simpleName} 发送指令超时")
-        addLogItem(LogLevel.ERROR, "发送指令超时")
+        addLogItem(Log.ERROR, "发送指令超时")
         if (isShowMsg) {
             Toaster.show(msg.ifEmpty { "发送指令超时,请稍后尝试" })
         }

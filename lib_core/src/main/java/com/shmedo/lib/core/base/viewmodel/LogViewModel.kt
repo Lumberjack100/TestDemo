@@ -1,9 +1,9 @@
 package com.shmedo.lib.core.base.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.shmedo.lib.core.base.model.LogInfo
-import com.shmedo.lib.core.base.model.LogLevel
 import com.shmedo.lib.core.base.model.SessionInfo
 import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
 import kotlinx.coroutines.launch
@@ -27,7 +27,7 @@ class LogViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) : ViewM
     }
 
     suspend fun getLogListBySessionId(
-        sessionId: String, level: Int = LogLevel.DEBUG
+        sessionId: String, level: Int = Log.DEBUG
     ): List<LogInfo> = loggerRepositoryImp.getLogListBySessionId(sessionId, level)
 
     fun insertLog(info: LogInfo) = viewModelScope.launch {

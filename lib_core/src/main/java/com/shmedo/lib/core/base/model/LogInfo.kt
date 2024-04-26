@@ -1,6 +1,7 @@
 package com.shmedo.lib.core.base.model
 
 import android.os.Parcelable
+import android.util.Log
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -20,7 +21,7 @@ data class LogInfo(
     @PrimaryKey
     val id: String = "",
     @ColumnInfo(name = "session_id") val sessionId: String,
-    @ColumnInfo(name = "log_level") val logLevel: Int = LogLevel.DEBUG,
+    @ColumnInfo(name = "log_level") val logLevel: Int = Log.DEBUG,
     var data: String = "",//
     @ColumnInfo(name = "create_date") var createDate: String,//
     @ColumnInfo(name = "create_time") var createTime: String,//

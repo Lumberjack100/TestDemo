@@ -196,7 +196,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
 
             decimalFormat.applyPattern("#.#")
             mStates.deviceMileage.set(currentStateInfo.runmileage.toDoubleOrNull()?.let {
-                decimalFormat.format(it / 10) + "m"
+                decimalFormat.format(it / 100) + "m"
             } ?: "--m")
             mStates.nextMeasureTime.set(currentStateInfo.nexttime.toULongOrNull()?.let {
                 if (it > 0u) {

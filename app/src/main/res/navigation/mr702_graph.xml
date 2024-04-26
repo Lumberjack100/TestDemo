@@ -6,8 +6,8 @@
     app:startDestination="@id/mR702HomeFragment">
 
     <include app:graph="@navigation/include_query_data_graph" />
-    <include app:graph="@navigation/include_firmware_upgrade_graph" />
     <include app:graph="@navigation/include_data_center_graph" />
+    <include app:graph="@navigation/include_firmware_upgrade_graph" />
     <include app:graph="@navigation/include_ble_command_debug_graph" />
 
     <fragment

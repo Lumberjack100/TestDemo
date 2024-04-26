@@ -64,7 +64,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="雨量值(mm)" />
+                        android:text="雨量值(毫米)" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"

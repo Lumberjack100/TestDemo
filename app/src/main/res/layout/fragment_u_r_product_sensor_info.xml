@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.URProductSensorInfoViewModel" />
+
+    </data>
+
+    <com.drake.brv.PageRefreshLayout
+        android:id="@+id/refreshLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/main_bg_gray">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/dimen_size_10"
+                    android:layout_marginStart="@dimen/dimen_size_10"
+                    android:drawablePadding="-80dp"
+                    android:text="雨量计"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_17"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/ic_mr702_device_info_serial_port_status" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="雨量传感器状态" />
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        app:bind_errno="@{stateVM.rainErrNo}"
+                        tools:text="正常" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="24小时雨量值(毫米)" />
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        android:text='@{stateVM.rain24h }'
+                        tools:text="2" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.core.widget.NestedScrollView>
+    </com.drake.brv.PageRefreshLayout>
+</layout>

@@ -890,20 +890,45 @@ enum class IOTCommandType(private val value: String) {
      */
     MD_DEL_TERMINAL_ID("md_delcqterminalid"),
 
-    MD_GET_LORA_CTRL("md_getcqloractrl"),
-
     /**
      *  Lora通讯参数设置
      */
+    MD_GET_LORA_CTRL("md_getcqloractrl"),
     MD_SET_LORA_CTRL("md_setcqloractrl"),
 
-    MD_GET_RADIO_CTRL("md_getcqradioctrl"),
-
     /**
-     *  电台参数设置
+     * 电台参数设置
      */
+    MD_GET_RADIO_CTRL("md_getcqradioctrl"),
     MD_SET_RADIO_CTRL("md_setcqradioctrl"),
 
+    /**
+     * 预警广播参数配置
+     */
+    MD_GET_ALRAM_CTRL("md_getcqalarmctrl"),
+    MD_SET_ALRAM_CTRL("md_setcqalarmctrl"),
+
+    /**
+     * 预警广播触发值配置
+     */
+    MD_GET_ALRAM_TRIGGER_VALUE("md_getcqgateval"),
+    MD_SET_ALRAM_TRIGGER_VALUE("md_setcqgateval"),
+
+    /**
+     * 预警广播上报间隔配置
+     */
+    MD_GET_ALRAM_REPORT_INTERVAL("md_getcqreptgap"),
+    MD_SET_ALRAM_REPORT_INTERVAL("md_setcqreptgap"),
+
+    /**
+     * 预警广播测试
+     */
+    MD_TEST_ALRAM("md_testbroadcast"),
+
+    /**
+     * 配置参数初始值指令
+     */
+    MD_SET_SENSOR_INITIAL("md_cfginitval"),
 
     /**
      *  GNSS-RTK模式配置

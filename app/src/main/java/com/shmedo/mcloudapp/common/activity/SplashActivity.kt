@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
+import android.util.Log
 import com.amap.api.location.AMapLocationClient
 import com.gyf.immersionbar.ktx.immersionBar
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.core.base.model.LogLevel
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getAppViewModel
@@ -66,7 +66,7 @@ class SplashActivity : BaseActivity() {
         logViewModel.insertLog(
             getLogItem(
                 sessionId = MmkvCacheUtil.getAppLogSessionId(),
-                priority = LogLevel.INFO,
+                priority = Log.INFO,
                 data = LogHelper.printDeviceInfo()
             )
         )

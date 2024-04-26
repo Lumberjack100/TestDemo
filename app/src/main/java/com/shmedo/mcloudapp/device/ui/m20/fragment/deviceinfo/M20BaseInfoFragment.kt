@@ -25,12 +25,14 @@ import com.shmedo.mcloudapp.device.viewmodel.state.M20BaseInfoViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 
 class M20BaseInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentM20BaseInfoBinding
     private lateinit var mStates: M20BaseInfoViewModel
     private val iotParseManager: IOTParserManager by inject()
-
+    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
     override fun initViewModel() {
         super.initViewModel()
@@ -205,7 +207,6 @@ class M20BaseInfoFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initRunningData(commonCurrentStateInfo: CommonCurrentStateInfo) {
-        val decimalFormat = DecimalFormat("#.#")
         try {
             val list = mutableListOf<MRRunningDataItem>()
             if (commonCurrentStateInfo.worktime.isNotEmpty() && commonCurrentStateInfo.worktime != "--") {
@@ -219,14 +220,22 @@ class M20BaseInfoFragment : BaseIOTDeviceFragment() {
 
             if (commonCurrentStateInfo.emmc_storage.isNotEmpty() && commonCurrentStateInfo.emmc_storage != "--") {
                 val storages = commonCurrentStateInfo.emmc_storage.split(",")
-                if (storages.size == 2)
+                if (storages.size == 2) {
+                    val free = storages[0].toDoubleOrNull()?.let {
+                        decimalFormat.format(it)
+                    } ?: ""
+
+                    val total = storages[1].toDoubleOrNull()?.let {
+                        decimalFormat.format(it)
+                    } ?: ""
+
                     list.add(
                         MRRunningDataItem(
                             "存储状态",
-                            "${storages[0]}/${storages[1]}",
-
-                        )
+                            "${free}/${total}",
+                            )
                     )
+                }
             }
             binding.rvRunningData.models = list
             if (list.isNotEmpty())

@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.user.fragment
 import android.content.ClipData
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -30,10 +31,10 @@ import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.FragmentLogDataBinding
+import com.shmedo.mcloudapp.ext.nav
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
 import java.text.SimpleDateFormat
@@ -101,7 +102,7 @@ class LogDataFragment : BaseFragment() {
         loadLogList()
     }
 
-    private fun loadLogList(level: Int = LogLevel.DEBUG) {
+    private fun loadLogList(level: Int = Log.DEBUG) {
         launchWithViewLifecycle {
             logViewModel.getLogListBySessionId(
                 sessionInfo.id,

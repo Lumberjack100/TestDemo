@@ -5,11 +5,12 @@ import com.hjq.toast.Toaster
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.device.model.CommonModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DeviceFunctionModule
@@ -19,7 +20,7 @@ import com.shmedo.mcloudapp.device.model.RestoreFactoryModule
 import com.shmedo.mcloudapp.device.model.RunningStatusModule
 import com.shmedo.mcloudapp.device.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.ui.common.LoraSettingFragment
+import com.shmedo.mcloudapp.device.ui.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.device.ui.common.UniversalDeviceHomeFragment
 import com.shmedo.mcloudapp.ext.nav
 import kotlinx.coroutines.Dispatchers
@@ -51,9 +52,11 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
             )
         )
         moduleList.add(
-            ConfigModule(TimeCalibrationModule(
-                resID = R.drawable.ic_module_terminal_time
-            ))
+            ConfigModule(
+                TimeCalibrationModule(
+                    resID = R.drawable.ic_module_terminal_time
+                )
+            )
         )
         moduleList.add(
             ConfigModule(
@@ -74,15 +77,26 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
             )
         )
         moduleList.add(
-            ConfigModule(RebootModule(
-                resID = R.drawable.ic_module_reboot
-            ))
+            ConfigModule(
+                RebootModule(
+                    resID = R.drawable.ic_module_reboot
+                )
+            )
         )
         moduleList.add(
-            ConfigModule(RestoreFactoryModule(
-                resID = R.drawable.ic_module_reset
-            ))
+            ConfigModule(
+                RestoreFactoryModule(
+                    resID = R.drawable.ic_module_reset
+                )
+            )
         )
+        if (communicateWay is BleConnect) {
+            moduleList.add(
+                ConfigModule(
+                    CommandDebugConfigModule()
+                )
+            )
+        }
         binding.rvModule.models = moduleList
     }
 
@@ -107,8 +121,8 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
     override fun processOtherItemClick(configModule: DeviceFunctionModule) {
         when (configModule) {
             is LoraConfigModule -> {//LORA设置
-                val bundle = LoraSettingFragment.newBundleArguments(
-                    ProductType.COLLECTOR_G_0,
+                val bundle = UniversalDeviceHomeFragment.newBundleArguments(
+                    productType,
                     communicateWay,
                     deviceInfo,
                     bleDevice
@@ -118,7 +132,15 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
                     bundle
                 )
             }
-
+            is CommandDebugConfigModule -> {
+                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice,
+                    true
+                )
+                nav().navigate(configModule.navId, bundle)
+            }
             else -> {
                 if (configModule.navId != 0) {
                     val bundle = BaseIOTDeviceFragment.newBundleArguments(

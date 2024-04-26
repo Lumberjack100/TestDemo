@@ -9,10 +9,8 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.RadioCommunicateInfo
  * 创建时间：2024/4/24
  * 描述： TODO
  */
-class RadioCommunicateInfoParser: IOTCommandParser<RadioCommunicateInfo>
-{
-    override fun parseInstance(keyValueMap: Map<String, String>): RadioCommunicateInfo
-    {
+class RadioCommunicateInfoParser : IOTCommandParser<RadioCommunicateInfo> {
+    override fun parseInstance(keyValueMap: Map<String, String>): RadioCommunicateInfo {
         return RadioCommunicateInfo().apply {
             airbaud = keyValueMap.getOrDefault("airbaud", airbaud)
             rxchl = keyValueMap.getOrDefault("rxchl", rxchl)

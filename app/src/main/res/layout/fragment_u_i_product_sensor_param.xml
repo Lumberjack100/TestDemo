@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.UIProductSensorParamViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.device.ui.u_product.fragment.UIProductSensorParamFragment.ClickProxy" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray">
+
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:vm="@{toolbarVM}" />
+
+        <com.drake.brv.PageRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_reset"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/dimen_size_25">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_LayoutStyle"
+                        onClickWithDebouncing="@{()->click.onMeasureIntervalClick()}"
+                        android:layout_marginTop="@dimen/dimen_size_1"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable }">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="测量间隔(毫秒)" />
+
+                        <TextView
+                            style="@style/Common_ClickableItem_ValueStyle"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:drawableEnd="@drawable/ic_arrow_down"
+                            android:text="@{stateVM.measureInterval}"
+                            tools:text="10" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_LayoutStyle"
+                        onClickWithDebouncing="@{()->click.onAverageTimesClick()}"
+                        android:layout_marginTop="@dimen/dimen_size_1"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable }">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="平均次数" />
+
+                        <TextView
+                            style="@style/Common_ClickableItem_ValueStyle"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:drawableEnd="@drawable/ic_arrow_down"
+                            android:text="@{stateVM.averageTimes}"
+                            tools:text="10" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <TextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            enabledTextColor="@{@color/colorPrimary}"
+                            onClickWithDebouncing="@{()->click.onSetInitialValueClick()}"
+                            textViewEnabled="false"
+                            android:text="更新倾角初值"
+                            android:textStyle="bold"
+                            tools:textColor="@color/colorPrimary" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.core.widget.NestedScrollView>
+        </com.drake.brv.PageRefreshLayout>
+
+        <TextView
+            android:id="@+id/btn_reset"
+            style="@style/ResetButton_ColorPrimary"
+            onClickWithDebouncing="@{()->click.onResetClick()}"
+            visible="@{stateVM.isEditable }"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="35dp"
+            android:text="@string/button_reset_text"
+            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/refreshLayout" />
+
+        <TextView
+            android:id="@+id/btn_confirm"
+            style="@style/SubmitButton_ColorPrimary"
+            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+            visible="@{stateVM.isEditable }"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="55dp"
+            android:text="@string/button_save_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_reset" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

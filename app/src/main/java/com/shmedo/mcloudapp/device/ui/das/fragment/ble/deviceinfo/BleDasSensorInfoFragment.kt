@@ -153,7 +153,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "雨量(mm)",
+                            "雨量(毫米)",
                             dataList[0].toDoubleOrNull()?.let {
                                 decimalFormat.format(it)
                             } ?: "--"
@@ -168,7 +168,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "裂缝值(mm)",
+                            "裂缝值(毫米)",
                             dataList[0].toDoubleOrNull()?.let {
                                 decimalFormat.format(it)
                             } ?: "--"
@@ -208,7 +208,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "X轴(mm)",
+                            "X轴(毫米)",
                             dataList[0].toDoubleOrNull()?.let {
                                 decimalFormat.format(it)
                             } ?: "--"
@@ -218,7 +218,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "Y轴(mm)",
+                            "Y轴(毫米)",
                             dataList[1].toDoubleOrNull()?.let {
                                 decimalFormat.format(it)
                             } ?: "--"
@@ -234,7 +234,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "空高值(mm)",
+                            "空高值(毫米)",
                             dataList[0].toDoubleOrNull()?.let {
                                 decimalFormat.format(it)
                             } ?: "--"
@@ -324,7 +324,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "液位值(mm)",
+                            "液位值(毫米)",
                             dataList[0].toDoubleOrNull()?.let {
                                 decimalFormat.format(it)
                             } ?: "--"
@@ -348,7 +348,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "沉降值(mm)",
+                            "沉降值(毫米)",
                             dataList[0].toDoubleOrNull()?.let {
                                 decimalFormat.format(it)
                             } ?: "--"
@@ -433,7 +433,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "水深(mm)",
+                            "水深(毫米)",
                             dataList[0].toDoubleOrNull()?.let {
                                 decimalFormat.format(it)
                             } ?: "--"

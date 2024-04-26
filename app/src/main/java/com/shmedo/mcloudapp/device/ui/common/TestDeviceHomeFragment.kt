@@ -1,9 +1,11 @@
 package com.shmedo.mcloudapp.device.ui.common
 
 import com.drake.brv.utils.models
-import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.device.model.CommonModule
+import com.shmedo.mcloudapp.device.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
+import com.shmedo.mcloudapp.device.model.DeviceFunctionModule
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ext.nav
 
 /**
  * 创建者：gonghe
@@ -16,15 +18,38 @@ class TestDeviceHomeFragment : UniversalDeviceHomeFragment() {
         val moduleList = arrayListOf<ConfigModule>()
         moduleList.add(
             ConfigModule(
-                CommonModule(
-                    "指令调试",
-                    "调试日志输出",
-                    R.drawable.ic_device_running_info,
-                    navId = R.id.action_global_to_commandDebug
-                )
+                CommandDebugConfigModule()
             )
         )
 
         binding.rvModule.models = moduleList
+    }
+
+    override fun processOtherItemClick(configModule: DeviceFunctionModule) {
+        when (configModule) {
+            is CommandDebugConfigModule -> {
+                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice,
+                    true
+                )
+                nav().navigate(configModule.navId, bundle)
+            }
+
+            else -> {
+                if (configModule.navId != 0) {
+                    val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                        communicateWay,
+                        deviceInfo,
+                        bleDevice
+                    )
+                    nav().navigate(
+                        configModule.navId,
+                        bundle
+                    )
+                }
+            }
+        }
     }
 }

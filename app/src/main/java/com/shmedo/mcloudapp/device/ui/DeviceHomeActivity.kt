@@ -26,6 +26,7 @@ import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
+import com.shmedo.mcloudapp.device.ui.common.UniversalDeviceHomeFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -97,7 +98,12 @@ class DeviceHomeActivity : BaseActivity() {
             ProductType.COLLECTOR_G_0 -> {
                 navController.setGraph(
                     R.navigation.gw100_graph,
-                    bundle
+                    UniversalDeviceHomeFragment.newBundleArguments(
+                        productType,
+                        communicateWay,
+                        deviceInfo!!,
+                        bleDevice
+                    )
                 )
             }
 
@@ -112,22 +118,70 @@ class DeviceHomeActivity : BaseActivity() {
                 navController.setGraph(graphId, bundle)
             }
 
-            ProductType.LR200 -> navController.setGraph(R.navigation.lr200_graph, bundle)
-            ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> navController.setGraph(
-                R.navigation.m20s_graph,
-                bundle
-            )
+            ProductType.LR200 -> {
+                navController.setGraph(
+                    R.navigation.lr200_graph,
+                    UniversalDeviceHomeFragment.newBundleArguments(
+                        productType,
+                        communicateWay,
+                        deviceInfo!!,
+                        bleDevice
+                    )
+                )
+            }
 
-            ProductType.M20 -> navController.setGraph(R.navigation.m20_graph, bundle)
+            ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {
+                navController.setGraph(
+                    R.navigation.m20s_graph,
+                    UniversalDeviceHomeFragment.newBundleArguments(
+                        productType,
+                        communicateWay,
+                        deviceInfo!!,
+                        bleDevice
+                    )
+                )
+            }
+
+            ProductType.M20 -> {
+                navController.setGraph(
+                    R.navigation.m20_graph,
+                    UniversalDeviceHomeFragment.newBundleArguments(
+                        productType,
+                        communicateWay,
+                        deviceInfo!!,
+                        bleDevice
+                    )
+                )
+            }
+
             ProductType.COLLECTOR_R_2, ProductType.MR702 -> navController.setGraph(
                 R.navigation.mr702_graph,
                 bundle
             )
 
-            ProductType.TEST_DEVICE -> navController.setGraph(
-                R.navigation.test_device_graph,
-                bundle
-            )
+            ProductType.U_D_1, ProductType.U_D_2, ProductType.U_I_1, ProductType.U_R_1 -> {
+                navController.setGraph(
+                    R.navigation.u_product_graph,
+                    UniversalDeviceHomeFragment.newBundleArguments(
+                        productType,
+                        communicateWay,
+                        deviceInfo!!,
+                        bleDevice
+                    )
+                )
+            }
+
+            ProductType.TEST_DEVICE -> {
+                navController.setGraph(
+                    R.navigation.test_device_graph,
+                    UniversalDeviceHomeFragment.newBundleArguments(
+                        ProductType.TEST_DEVICE,
+                        communicateWay,
+                        deviceInfo!!,
+                        bleDevice
+                    )
+                )
+            }
 
             else -> {
 

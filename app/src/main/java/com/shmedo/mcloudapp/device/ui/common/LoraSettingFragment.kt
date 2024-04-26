@@ -10,8 +10,6 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.LoraCommunicateEntity
@@ -28,8 +26,6 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentLoraSettingBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
-import com.shmedo.mcloudapp.device.model.CommunicateWay
-import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.LoraSettingViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
@@ -354,21 +350,5 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
-    }
-
-    companion object {
-        fun newBundleArguments(
-            type: ProductType = ProductType.UnKnown,
-            communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: DeviceInfo,
-            bleDevice: DiscoveredBluetoothDevice? = null,
-            statusBarColor: Int = R.color.white
-        ): Bundle = Bundle().apply {
-            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
-        }
     }
 }

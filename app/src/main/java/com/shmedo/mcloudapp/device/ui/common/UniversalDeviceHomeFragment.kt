@@ -9,8 +9,12 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
+import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
@@ -21,6 +25,7 @@ import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecorati
 import com.shmedo.mcloudapp.databinding.FragmentUniversalDeviceHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
@@ -47,6 +52,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     protected lateinit var mHeadStates: CommonDeviceHomeViewModel
     protected lateinit var mCommandResponseStates: CommandResponseViewModel
     protected val iotParseManager: IOTParserManager by inject()
+    protected var productType = ProductType.UnKnown
 
     override fun initViewModel() {
         super.initViewModel()
@@ -119,6 +125,10 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        arguments?.let {
+            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
+        }
+
         mHeadStates.productName.set(deviceInfo.productName)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
         mHeadStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
@@ -538,5 +548,21 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    companion object {
+        fun newBundleArguments(
+            type: ProductType = ProductType.UnKnown,
+            communicateWay: CommunicateWay = NetPlatformConnect,
+            deviceInfo: DeviceInfo,
+            bleDevice: DiscoveredBluetoothDevice? = null,
+            statusBarColor: Int = R.color.white
+        ): Bundle = Bundle().apply {
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+        }
     }
 }

@@ -8,5 +8,4 @@ class M20SensorInfoViewModel : ViewModel() {
     val memsAxisX = NonNullObservableField("")//X 轴角度
     val memsAxisY = NonNullObservableField("")//Y 轴角度
     val memsAxisZ = NonNullObservableField("")//Z 轴角度
-
 }

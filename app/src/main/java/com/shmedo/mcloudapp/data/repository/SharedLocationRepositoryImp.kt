@@ -1,11 +1,11 @@
 package com.shmedo.mcloudapp.data.repository
 
+import android.util.Log
 import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
 import com.amap.api.location.AMapLocationListener
 import com.blankj.utilcode.util.Utils
-import com.shmedo.lib.core.base.model.LogLevel
 import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
 import com.shmedo.lib.core.ext.getLogItem
 import com.shmedo.lib.core.util.MmkvCacheUtil
@@ -127,7 +127,7 @@ class SharedLocationRepositoryImp(private val loggerRepositoryImp: LoggerReposit
     }
 
     // 统一日志记录逻辑
-    private fun logAndRecord(message: String, level: Int = LogLevel.INFO) {
+    private fun logAndRecord(message: String, level: Int = Log.INFO) {
         Timber.i(message)
         managerScope.launch {
             loggerRepositoryImp.insertLog(

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/alarm_setting_graph"
+    app:startDestination="@id/alarmSettingFragment">
+
+    <fragment
+        android:id="@+id/alarmSettingFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.common.AlarmSettingFragment"
+        android:label="AlarmSettingFragment"
+        tools:layout="@layout/fragment_alarm_setting" />
+
+</navigation>

@@ -1,15 +1,12 @@
 package com.shmedo.mcloudapp.device.ui.m20s.fragment
 
-import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
-import com.hjq.toast.Toaster
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.device.model.AlarmConfigModule
 import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.device.model.CommonModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DataCenterModule
@@ -18,21 +15,18 @@ import com.shmedo.mcloudapp.device.model.FirmwareUpgradeModule
 import com.shmedo.mcloudapp.device.model.RebootModule
 import com.shmedo.mcloudapp.device.model.RestoreFactoryModule
 import com.shmedo.mcloudapp.device.model.RunningStatusModule
-import com.shmedo.mcloudapp.device.model.SetupWizard
 import com.shmedo.mcloudapp.device.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.device.model.WorkModeModule
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.ui.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.device.ui.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.device.ui.common.UniversalDeviceHomeFragment
 import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessage
-import timber.log.Timber
 
 /**
  * 创建者:   gonghe <br></br>
  * 创建时间:  2020/8/27 <br></br>
- * 描述：   配置主页
+ * 描述：  M20S 配置主页
  */
 class M20SHomeFragment : UniversalDeviceHomeFragment() {
     override fun initData() {
@@ -81,11 +75,8 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
         )
         moduleList.add(
             ConfigModule(
-                CommonModule(
-                    name = "报警设置",
-                    desc = "报警功能设置",
-                    resID = R.drawable.ic_module_alarm,
-                    navId = 0
+                AlarmConfigModule(
+                    navId = R.id.action_global_to_alarmSettingFragment
                 )
             )
         )
@@ -119,34 +110,26 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
             ConfigModule(
                 FirmwareUpgradeModule(
                     resID = R.drawable.ic_module_firmware_upgrade,
-                    navId = R.id.action_global_to_firmwareUpgradeFragment
+                    navId = R.id.action_global_to_firmwareUpgradeFragment,
+                    isSupport = false
                 )
             )
         )
-
+        if (communicateWay is BleConnect) {
+            moduleList.add(
+                ConfigModule(
+                    CommandDebugConfigModule()
+                )
+            )
+        }
         binding.rvModule.models = moduleList
     }
 
     override fun processOtherItemClick(configModule: DeviceFunctionModule) {
         when (configModule) {
-            is SetupWizard -> {
-                if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
-                    Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                    return
-                }
-                showMessage("确定进行水平初始化吗？", "温馨提示", "确定", {
-                    commandItems.clear()
-                    val command = IOTCommandUtil.getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL)
-                    commandItems.add(command)
-                    showLoadingDialog(StringUtils.getString(R.string.processing))
-                    sendCommandFromCmdList(isStartTimeoutJob = true)
-                }, "取消")
-            }
-
-            is DataCenterModule -> {
-                val bundle = UniversalDataCenterHomeFragment.newBundleArguments(
-                    4,
-                    ProductType.GNSS_M_1,
+            is AlarmConfigModule -> {
+                val bundle = UniversalDeviceHomeFragment.newBundleArguments(
+                    productType,
                     communicateWay,
                     deviceInfo,
                     bleDevice
@@ -155,6 +138,30 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
                     configModule.navId,
                     bundle
                 )
+            }
+
+            is DataCenterModule -> {
+                val bundle = UniversalDataCenterHomeFragment.newBundleArguments(
+                    4,
+                    productType,
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
+                nav().navigate(
+                    configModule.navId,
+                    bundle
+                )
+            }
+
+            is CommandDebugConfigModule -> {
+                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice,
+                    true
+                )
+                nav().navigate(configModule.navId, bundle)
             }
 
             else -> {
@@ -175,24 +182,6 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
 
     override fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {
         when (commandType) {
-            IOTCommandType.M20_MD_LEVEL_INITIAL -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "水平初始化失败:" + result.message
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("初始化完成")
-                        }
-                    }
-                }
-            }
-
             else -> {
 
             }

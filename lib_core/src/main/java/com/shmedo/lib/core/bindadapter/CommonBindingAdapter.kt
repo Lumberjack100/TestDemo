@@ -20,6 +20,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.text.InputFilter
 import android.text.InputType
+import android.util.Log
 import android.util.Pair
 import android.util.SparseIntArray
 import android.view.View
@@ -43,11 +44,11 @@ object CommonBindingAdapter {
     private val mColors = SparseIntArray()
 
     init {
-        mColors.put(LogLevel.DEBUG, -0xff6322)
-        mColors.put(LogLevel.VERBOSE, -0x474faa)
-        mColors.put(LogLevel.INFO, Color.BLACK)
-        mColors.put(LogLevel.WARNING, -0x2886da)
-        mColors.put(LogLevel.ERROR, Color.RED)
+        mColors.put(LogLevel.fromPriority(Log.DEBUG), -0xff6322)
+        mColors.put(LogLevel.fromPriority(Log.VERBOSE), -0x474faa)
+        mColors.put(LogLevel.fromPriority(Log.INFO), Color.BLACK)
+        mColors.put(LogLevel.fromPriority(Log.WARN), -0x2886da)
+        mColors.put(LogLevel.fromPriority(Log.ERROR), Color.RED)
     }
 
     private val characterFilter = InputFilter { source, start, end, _, _, _ ->
@@ -156,20 +157,20 @@ object CommonBindingAdapter {
     @JvmStatic
     @BindingAdapter(value = ["logLevelTag"], requireAll = false)
     fun setLogTextTag(textView: TextView, level: Int) {
-        textView.setTextColor(mColors[level])
+        textView.setTextColor(mColors[LogLevel.fromPriority(level)])
         when (level) {
-            LogLevel.DEBUG -> textView.text = "D"
-            LogLevel.VERBOSE -> textView.text = "V"
-            LogLevel.INFO -> textView.text = "I"
-            LogLevel.WARNING -> textView.text = "W"
-            LogLevel.ERROR -> textView.text = "E"
+            Log.DEBUG -> textView.text = "D"
+            Log.VERBOSE -> textView.text = "V"
+            Log.INFO -> textView.text = "I"
+            Log.WARN -> textView.text = "W"
+            Log.ERROR -> textView.text = "E"
         }
     }
 
     @JvmStatic
     @BindingAdapter(value = ["logLevelColor"], requireAll = false)
     fun setLogTextColor(textView: TextView, level: Int) {
-        textView.setTextColor(mColors[level])
+        textView.setTextColor(mColors[LogLevel.fromPriority(level)])
     }
 
     @JvmStatic

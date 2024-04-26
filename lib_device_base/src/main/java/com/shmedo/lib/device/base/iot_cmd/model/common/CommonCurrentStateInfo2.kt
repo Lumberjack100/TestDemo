@@ -17,7 +17,7 @@ data class CommonCurrentStateInfo2(
     var rttVersion: String = "", //RTT操作系统版本 4.1.0
     var hardwareVersion: String = "", //硬件版本 V10
     var firmwareVersion: String = "", //固件版本 1.0.0_M19
-    var signal: String = "", //4G信号强度
+    var signal: Int = 0, //4G信号强度
     @Json(name = "4g")
     var _4g: String = "", //状态  OK/FAIL  OK，状态正常；FAIL，状态异常
     var scl: String = "", //倾角加速度状态 OK/FAIL
@@ -56,7 +56,7 @@ data class CommonCurrentStateInfo2(
     var insideHum: String = "", //内部湿度
     var height: String = "", //安装高度
     var ldValue: String = "", //雷达测量值
-    var uptime: String = "", //设备本次运行时间
+    var uptime: String = "--", //设备本次运行时间
     var mag: String = "", //磁力方向
     var ccid: String = "", //CCID
     var imei: String = "", //IMEI

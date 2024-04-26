@@ -3,7 +3,6 @@ package com.shmedo.lib.core.ext
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.shmedo.lib.core.base.model.LogInfo
-import com.shmedo.lib.core.base.model.LogLevel
 import com.shmedo.lib.core.base.model.SessionInfo
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import java.util.UUID
@@ -43,7 +42,7 @@ fun getLogItem(sessionId: String, priority: Int, data: String): LogInfo {
     return LogInfo(
         id = UUID.randomUUID().toString(),
         sessionId = sessionId,
-        logLevel = LogLevel.fromPriority(priority),
+        logLevel = priority,
         data = data,
         createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
         createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm:ss.SSS")),

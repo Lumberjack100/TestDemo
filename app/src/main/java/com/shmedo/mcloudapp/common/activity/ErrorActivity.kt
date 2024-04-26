@@ -1,10 +1,10 @@
 package com.shmedo.mcloudapp.common.activity
 
 import android.os.Bundle
+import android.util.Log
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash
 import com.blankj.utilcode.util.ClickUtils
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.core.base.model.LogLevel
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getLogItem
@@ -65,7 +65,7 @@ class ErrorActivity : BaseActivity() {
             logViewModel.insertLog(
                 getLogItem(
                     sessionId = MmkvCacheUtil.getAppLogSessionId(),
-                    priority = LogLevel.ERROR,
+                    priority = Log.ERROR,
                     data = it
                 )
             )
