@@ -156,7 +156,10 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
                 when (productType) {
                     ProductType.U_D_1,//水位
                     ProductType.U_D_2 -> {//泥位
-
+                        nav().navigate(
+                            R.id.action_uProductHomeFragment_to_uDProductSensorParamFragment,
+                            bundle
+                        )
                     }
 
                     ProductType.U_I_1 -> {//倾斜仪

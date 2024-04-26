@@ -167,7 +167,7 @@
 
                         <TextView
                             style="@style/Common_EditItem_EditText_Style"
-                            android:hint=""
+                            android:hint="请输入"
                             android:text='@{stateVM.volume+""}'
                             android:textColor="@color/colorPrimary"
                             tools:text="10" />

@@ -200,7 +200,7 @@
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
-                            android:hint=""
+                            android:hint="请输入"
                             android:text="@={stateVM.firstAlarmDisplacementThreshold}"
                             app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{10}" />
@@ -218,7 +218,7 @@
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
-                            android:hint=""
+                            android:hint="请输入"
                             android:text="@={stateVM.secondAlarmDisplacementThreshold}"
                             app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{10}" />
@@ -236,7 +236,7 @@
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
-                            android:hint=""
+                            android:hint="请输入"
                             android:text="@={stateVM.thirdAlarmDisplacementThreshold}"
                             app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{10}" />
@@ -254,7 +254,7 @@
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
-                            android:hint=""
+                            android:hint="请输入"
                             android:text="@={stateVM.fourthAlarmDisplacementThreshold}"
                             app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{10}" />
@@ -276,7 +276,7 @@
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
-                            android:hint=""
+                            android:hint="请输入"
                             android:text="@={stateVM.firstAlarmReportInterval}"
                             app:inputTypeFilter='@{"number"}'
                             app:lengthFilter="@{4}" />
@@ -294,7 +294,7 @@
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
-                            android:hint=""
+                            android:hint="请输入"
                             android:text="@={stateVM.secondAlarmReportInterval}"
                             app:inputTypeFilter='@{"number"}'
                             app:lengthFilter="@{4}" />
@@ -312,7 +312,7 @@
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
-                            android:hint=""
+                            android:hint="请输入"
                             android:text="@={stateVM.thirdAlarmReportInterval}"
                             app:inputTypeFilter='@{"number"}'
                             app:lengthFilter="@{4}" />
@@ -330,7 +330,7 @@
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
-                            android:hint=""
+                            android:hint="请输入"
                             android:text="@={stateVM.fourthAlarmReportInterval}"
                             app:inputTypeFilter='@{"number"}'
                             app:lengthFilter="@{4}" />

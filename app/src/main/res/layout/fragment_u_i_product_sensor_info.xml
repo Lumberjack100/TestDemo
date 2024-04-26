@@ -61,7 +61,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="X轴初始角度值(度)" />
+                        android:text="X轴初始角度值(°)" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
@@ -77,7 +77,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="Y轴初始角度值(度)" />
+                        android:text="Y轴初始角度值(°)" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
@@ -92,7 +92,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="Z轴初始角度值(度)" />
+                        android:text="Z轴初始角度值(°)" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
@@ -107,7 +107,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="X轴当前角度值(度)" />
+                        android:text="X轴当前角度值(°)" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
@@ -122,7 +122,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="Y轴当前角度值(度)" />
+                        android:text="Y轴当前角度值(°)" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
@@ -137,7 +137,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="Z轴当前角度值(度)" />
+                        android:text="Z轴当前角度值(°)" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"

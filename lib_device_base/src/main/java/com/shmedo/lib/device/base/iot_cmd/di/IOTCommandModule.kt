@@ -32,6 +32,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.common.DataCenterStatusParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DeviceCurrentStateParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DeviceCurrentStateParser2
 import com.shmedo.lib.device.base.iot_cmd.parser.common.LoraCommunicateInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.common.MudLevelMeterSensorInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.RadioCommunicateInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.RtkParamInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.TelemetryDataParser
@@ -155,6 +156,7 @@ val iotCommandModule = module {
     factory { AlarmMonitorPointInfoParser() }
     factory { AlarmTriggerValueInfoParser() }
     factory { AlarmReportIntervalInfoParser() }
+    factory { MudLevelMeterSensorInfoParser() }
 
 
     // 提供 IOTParseManager 的实例
@@ -231,7 +233,8 @@ val iotCommandModule = module {
             get<RtkParamInfoParser>(),
             get<AlarmMonitorPointInfoParser>(),
             get<AlarmTriggerValueInfoParser>(),
-            get<AlarmReportIntervalInfoParser>()
+            get<AlarmReportIntervalInfoParser>(),
+            get<MudLevelMeterSensorInfoParser>()
         )
         IOTParserManager(parsers)
     }

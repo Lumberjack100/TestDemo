@@ -27,8 +27,8 @@
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
-            android:id="@+id/action_uProductHomeFragment_to_uRProductSensorParamFragment"
-            app:destination="@id/uRProductSensorParamFragment"
+            android:id="@+id/action_uProductHomeFragment_to_uDProductSensorParamFragment"
+            app:destination="@id/uDProductSensorParamFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
@@ -42,6 +42,15 @@
             app:popEnterAnim="@anim/activity_close_enter"
             app:popExitAnim="@anim/activity_close_exit" />
 
+        <action
+            android:id="@+id/action_uProductHomeFragment_to_uRProductSensorParamFragment"
+            app:destination="@id/uRProductSensorParamFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+
     </fragment>
 
     <fragment
@@ -49,18 +58,21 @@
         android:name="com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.UProductDeviceInfoFragment"
         android:label="UProductDeviceInfoFragment"
         tools:layout="@layout/fragment_m20_device_info" />
-
     <fragment
-        android:id="@+id/uRProductSensorParamFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.u_product.fragment.URProductSensorParamFragment"
-        android:label="URProductSensorParamFragment"
+        android:id="@+id/uDProductSensorParamFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.u_product.fragment.UDProductSensorParamFragment"
+        android:label="UDProductSensorParamFragment"
         tools:layout="@layout/fragment_u_d_product_sensor_param" />
-
     <fragment
         android:id="@+id/uIProductSensorParamFragment"
         android:name="com.shmedo.mcloudapp.device.ui.u_product.fragment.UIProductSensorParamFragment"
         android:label="UIProductSensorParamFragment"
         tools:layout="@layout/fragment_u_i_product_sensor_param" />
+    <fragment
+        android:id="@+id/uRProductSensorParamFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.u_product.fragment.URProductSensorParamFragment"
+        android:label="URProductSensorParamFragment"
+        tools:layout="@layout/fragment_u_d_product_sensor_param" />
 
     <action
         android:id="@+id/action_global_to_queryDeviceDataFragment"

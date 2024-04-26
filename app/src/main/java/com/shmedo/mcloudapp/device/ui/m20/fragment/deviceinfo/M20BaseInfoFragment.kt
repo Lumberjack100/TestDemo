@@ -219,7 +219,7 @@ class M20BaseInfoFragment : BaseIOTDeviceFragment() {
             }
 
             if (commonCurrentStateInfo.emmc_storage.isNotEmpty() && commonCurrentStateInfo.emmc_storage != "--") {
-                val storages = commonCurrentStateInfo.emmc_storage.split(",")
+                val storages = commonCurrentStateInfo.emmc_storage.replace("MB", "").split(",")
                 if (storages.size == 2) {
                     val free = storages[0].toDoubleOrNull()?.let {
                         decimalFormat.format(it)
@@ -232,8 +232,8 @@ class M20BaseInfoFragment : BaseIOTDeviceFragment() {
                     list.add(
                         MRRunningDataItem(
                             "存储状态",
-                            "${free}/${total}",
-                            )
+                            "${free}/${total}MB",
+                        )
                     )
                 }
             }

@@ -931,6 +931,12 @@ enum class IOTCommandType(private val value: String) {
     MD_SET_SENSOR_INITIAL("md_cfginitval"),
 
     /**
+     * 泥位计配置
+     */
+    MD_GET_MUD_LEVEL_METER_SENSOR("md_getsense"),
+    MD_SET_MUD_LEVEL_METER_SENSOR("md_setsense"),
+
+    /**
      *  GNSS-RTK模式配置
      */
     MD_CFG_RTK("md_cfgrtkparam"),
