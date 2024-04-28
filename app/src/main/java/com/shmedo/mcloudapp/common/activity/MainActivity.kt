@@ -7,18 +7,23 @@ import androidx.activity.OnBackPressedCallback
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
+import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.common.model.CustomActivityResult
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
+import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.ActivityMainBinding
+import com.shmedo.mcloudapp.ext.nav
 
 class MainActivity : BaseActivity() {
     private lateinit var binding: ActivityMainBinding
+    private lateinit var mMessenger: PageMessenger
     private lateinit var mStates: EmptyViewModel
 
 
     override fun initViewModel() {
+        mMessenger = getAppViewModel()
         mStates = getActivityScopeViewModel()
     }
 
@@ -52,6 +57,11 @@ class MainActivity : BaseActivity() {
                 }
             }
         })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        mMessenger.dispatchActivityResult(CustomActivityResult(requestCode, resultCode, data))
     }
 
     companion object {

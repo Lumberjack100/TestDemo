@@ -24,6 +24,7 @@ private const val FILTER_RSSI = -50 // [dBm]
 
 class ScannerViewModel(private val scannerRepository: ScannerRepository) : ViewModel() {
     private var uuid: ParcelUuid? = null
+    private var deviceName: String = ""
 
     private val filterConfig = MutableStateFlow(
         DevicesScanFilter(
@@ -33,8 +34,8 @@ class ScannerViewModel(private val scannerRepository: ScannerRepository) : ViewM
         )
     )
 
-    val scannerState = filterConfig
-        .combine(scannerRepository.getScannerState()) { config, result ->
+    val scannerState = scannerRepository.getScannerState()
+        .combine(filterConfig) { result, config ->
             when (result) {
                 is ScanningState.DevicesDiscovered -> result.applyFilters(config)
                 else -> result
@@ -57,7 +58,9 @@ class ScannerViewModel(private val scannerRepository: ScannerRepository) : ViewM
                         it.scanResult?.scanRecord?.serviceUuids?.contains(uuid) == true
             }
             .filter { !config.filterNearbyOnly || it.highestRssi >= FILTER_RSSI }
-            .filter { !config.filterWithNames || it.hadName }
+            .filter {
+                !config.filterWithNames || (it.hadName && (it.name?.contains(deviceName) ?: true))
+            }
         )
 
     fun setFilterUuid(uuid: ParcelUuid?) {
@@ -69,6 +72,11 @@ class ScannerViewModel(private val scannerRepository: ScannerRepository) : ViewM
 
     fun setFilter(config: DevicesScanFilter) {
         this.filterConfig.value = config
+    }
+
+    fun setFilterName(name: String = "") {
+        this.deviceName = name
+        filterConfig.value = filterConfig.value.copy()
     }
 
     fun refresh() {

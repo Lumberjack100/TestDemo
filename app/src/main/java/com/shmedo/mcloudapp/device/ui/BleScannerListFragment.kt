@@ -140,6 +140,10 @@ class BleScannerListFragment : BaseFragment() {
                 }
             }
         }
+        mStates.keyWords.observe(viewLifecycleOwner) { keyword ->
+            Timber.i("keyWords 触发")
+            scannerViewModel.setFilterName(keyword)
+        }
         deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
                 if (discoveredBluetoothDevice!!.name.isNullOrEmpty()) {
@@ -172,18 +176,6 @@ class BleScannerListFragment : BaseFragment() {
                 BleConnect
             )
         }
-        mStates.keyWords.observe(viewLifecycleOwner) { keyword ->
-            Timber.i("keyWords 触发")
-            if (keyword.isEmpty()) {
-                binding.recyclerviewDevice.models = scanResultList
-                return@observe
-            }
-            val filterList = scanResultList.filter {
-                it.name?.contains(keyword, ignoreCase = true) == true
-            }
-//            binding.recyclerviewDevice.setDifferModels(filterList, false)
-            binding.recyclerviewDevice.models = filterList
-        }
     }
 
     private suspend fun processScanResult() {
@@ -199,9 +191,7 @@ class BleScannerListFragment : BaseFragment() {
 
                 is ScanningState.DevicesDiscovered -> {
                     Timber.i("scannerViewModel.state: DevicesDiscovered=${state.devices.size}")
-                    scanResultList.clear()
-                    scanResultList.addAll(state.devices)
-                    mStates.keyWords.value = mStates.keyWords.value
+                    binding.recyclerviewDevice.models = state.devices
                 }
             }
         }

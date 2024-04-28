@@ -1,8 +1,10 @@
 package com.shmedo.mcloudapp.common.fragment
 
 import android.Manifest
+import android.app.Activity
 import android.graphics.Typeface
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.Gravity
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -11,24 +13,36 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.XXPermissions
+import com.hjq.toast.Toaster
+import com.huawei.hms.hmsscankit.ScanUtil
+import com.huawei.hms.ml.scan.HmsScan
+import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.enums.PopupAnimation
 import com.shmedo.lib.core.base.model.UserInfo
+import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.permission.PermissionInterceptor
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
+import com.shmedo.mcloudapp.common.model.CustomActivityResult
+import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.FragmentDeviceManageHomeBinding
 import com.shmedo.mcloudapp.device.ui.BleScannerListFragment
 import com.shmedo.mcloudapp.device.ui.NetDeviceListFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DeviceManageHomeViewModel
 import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.showMessageDialog
+import com.shmedo.mcloudapp.utils.PermissionHelper
+import com.shmedo.mcloudapp.utils.PermissionHelper.REQUEST_CODE_SCAN
+import timber.log.Timber
 
 class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentDeviceManageHomeBinding
+    private lateinit var mMessenger: PageMessenger
     private lateinit var mStates: DeviceManageHomeViewModel
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
@@ -37,10 +51,10 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     private val activeSize: Float = 18f
     private val normalSize: Float = 16f
     private val tabs = arrayOf("4G", "蓝牙")
-    private val moreChooseList =
-        arrayListOf("扫一扫", "查询数据")//"扫一扫", "WIFI 设备", "USB 设备", "查询数据"
+    private val moreChooseList = arrayListOf("查询数据")//"扫一扫", "WIFI 设备", "USB 设备", "查询数据"
 
     override fun initViewModel() {
+        mMessenger = getAppViewModel()
         mStates = getFragmentScopeViewModel()
     }
 
@@ -59,7 +73,19 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     }
 
     override fun createObserver() {
-
+        mMessenger.activityResultDispatcher.observe(
+            viewLifecycleOwner
+        ) { result: CustomActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK && result.requestCode == REQUEST_CODE_SCAN && result.data != null) {
+                val obj: HmsScan? = result.data.getParcelableExtra<HmsScan>(ScanUtil.RESULT)
+                if (obj == null) {
+                    Toaster.show("扫码结果为空")
+                    return@observe
+                }
+                Timber.d("扫码结果：${obj.originalValue}")
+                scanResult(obj.originalValue)
+            }
+        }
     }
 
     private fun initViewPager() {
@@ -101,6 +127,14 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
             typeface = Typeface.DEFAULT_BOLD
             setTextColor(activeColor)
         }
+        if (tab.position == 0) {
+            moreChooseList.clear()
+            moreChooseList.add("查询数据")
+        } else {
+            moreChooseList.clear()
+            moreChooseList.add("扫码连接")
+            moreChooseList.add("查询数据")
+        }
     }
 
     override fun onTabUnselected(tab: TabLayout.Tab) {
@@ -135,14 +169,12 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
                     moreChooseList.toTypedArray(),
                     null
                 ) { position, text ->
-                    when (position) {
-                        0 -> {
-                            // 扫一扫
+                    when (text) {
+                        "扫码连接" -> {
                             requestPermissionForBluetooth()
                         }
 
-                        1 -> {
-                            // 查询数据
+                        "查询数据" -> {
                             nav().navigate(R.id.action_global_to_queryDeviceDataFragment)
                         }
                     }
@@ -171,7 +203,75 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
                     if (!allGranted) {
                         return
                     }
+                    // 扫一扫
+                    val options = HmsScanAnalyzerOptions.Creator().setErrorCheck(true)
+                        .setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE)
+                        .create()
+                    ScanUtil.startScan(
+                        mActivity,
+                        PermissionHelper.REQUEST_CODE_SCAN,
+                        options
+                    )
                 }
             })
+    }
+
+    /**
+     * https://cloud.shmedo.cn/mcloudapp/device?sn=189150L
+     * @param result
+     */
+    private fun scanResult(result: String) {
+        var result = result
+        if (TextUtils.isEmpty(result)) {
+            showMessageDialog("请扫描正确的设备二维码")
+            return
+        }
+        if (result.contains("MEDO")) {
+            if (result.contains("=")) {
+                result = result.substring(result.indexOf("=") + 1)
+            }
+            parseOldDeviceCode(result)
+        } else if (result.startsWith("https://cloud.shmedo.cn/mcloudapp/device")) {
+            parseNewDeviceCode(result)
+        } else {
+            showMessageDialog("请扫描正确的设备二维码")
+            return
+        }
+    }
+
+    /**
+     * 处理老设备条码规则，例如：MEDO,189150L,DAS
+     */
+    private fun parseOldDeviceCode(barCode: String) {
+        val localData = barCode.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+            .toTypedArray()
+        if (localData.size != 3) {
+            showMessageDialog("请扫描正确的设备二维码")
+            return
+        }
+        if (TextUtils.isEmpty(localData[1])) {
+            showMessageDialog("请扫描正确的设备二维码")
+            return
+        }
+//        MCloudApp.setCurDeviceToken(localData[1].replace("MD-", ""))
+//        processStartScan()
+    }
+
+    /**
+     * 处理新设备条码规则，例如：https://cloud.shmedo.cn/mcloudapp/device?sn=189150L
+     */
+    private fun parseNewDeviceCode(barCode: String) {
+        val localData = barCode.split("=".toRegex()).dropLastWhile { it.isEmpty() }
+            .toTypedArray()
+        if (localData.size != 2) {
+            showMessageDialog("请扫描正确的设备二维码")
+            return
+        }
+        if (TextUtils.isEmpty(localData[1])) {
+            showMessageDialog("请扫描正确的设备二维码")
+            return
+        }
+//        MCloudApp.setCurDeviceToken(localData[1].replace("MD-", ""))
+//        processStartScan()
     }
 }

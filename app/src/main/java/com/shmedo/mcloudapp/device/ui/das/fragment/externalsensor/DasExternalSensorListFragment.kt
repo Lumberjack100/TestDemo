@@ -103,8 +103,8 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 communicateWay,
                                 deviceInfo,
                                 bleDevice,
-                                modelPosition,
-                                item.addr
+                                index = modelPosition,
+                                sensorAddr = item.addr
                             )
                             nav().navigate(
                                 R.id.action_dasSensorHomeFragment_to_dasExternalDigitalSensorFragment,
@@ -115,7 +115,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 communicateWay,
                                 deviceInfo,
                                 bleDevice,
-                                item.addr
+                                sensorChannel = item.addr
                             )
                             nav().navigate(
                                 R.id.action_dasSensorHomeFragment_to_dasExternalVibratingSensorFragment,
@@ -124,14 +124,14 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                         }
                     }
 
-                    else -> {
+                    else -> {//新增传感器
                         if (!mStates.isVibratingWireSensor.get()) {
                             val bundle = DasExternalDigitalSensorFragment.newBundleArguments(
                                 communicateWay,
                                 deviceInfo,
                                 bleDevice,
-                                -1,
-                                "-1"
+                                index = -1,
+                                sensorAddr = "-1"
                             )
                             nav().navigate(
                                 R.id.action_dasSensorHomeFragment_to_dasExternalDigitalSensorFragment,
@@ -142,7 +142,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 communicateWay,
                                 deviceInfo,
                                 bleDevice,
-                                "-1"
+                                sensorChannel = "-1"
                             )
                             nav().navigate(
                                 R.id.action_dasSensorHomeFragment_to_dasExternalVibratingSensorFragment,

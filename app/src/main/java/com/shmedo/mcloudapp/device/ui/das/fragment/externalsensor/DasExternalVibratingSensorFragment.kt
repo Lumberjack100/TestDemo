@@ -393,7 +393,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                 -> {
                     mStates.sensorTypeName.set(MCU_PREFIX + IOTSensorType.VIBRATING_SENSOR.description)
 
-                    if (sensorChannel != "-1" && sensorInfo.sens_k != IOTConstants.NULL_KEY) {
+                    if (sensorInfo.sens_k != IOTConstants.NULL_KEY) {
                         mStates.isExtension1Support.set(true)
                         mStates.extension1Title.set("灵敏度K")
                         mStates.extension1Value.set(
@@ -897,7 +897,8 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
 
             IOTSensorType.VIBRATING_SENSOR//MCU 振弦传感器
             -> {
-                if (sensorChannel != "-1" && sensorInfo.sens_k != IOTConstants.NULL_KEY) {
+
+                if (sensorInfo.sens_k != IOTConstants.NULL_KEY) {
                     if (mStates.extension1Value.get().isEmpty()) {
                         showMessageDialog("请输入灵敏度K")
                         return
@@ -955,6 +956,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     return
                 }
             }
+
             IOTSensorType.WATER_LEVEL_GAUGE//MCU 水位(液位)计
             -> {
                 if (mStates.extension1Value.get().isEmpty()) {
@@ -1051,7 +1053,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
             -> {
                 sensorInfo.threshold = IOTConstants.NULL_KEY
                 sensorInfo.corrval = IOTConstants.NULL_KEY
-                if (sensorChannel != "-1" && sensorInfo.sens_k != IOTConstants.NULL_KEY) {
+                if (sensorInfo.sens_k != IOTConstants.NULL_KEY) {
                     sensorInfo.sens_k = mStates.extension1Value.get()
                     sensorInfo.temp_b = mStates.extension2Value.get()
                     sensorInfo.referval_f = mStates.extension3Value.get()

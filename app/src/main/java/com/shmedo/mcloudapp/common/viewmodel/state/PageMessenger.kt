@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
+import com.shmedo.mcloudapp.common.model.CustomActivityResult
 import com.shmedo.mcloudapp.device.common.MRPortSensorRefreshResult
 
 /**
@@ -28,6 +29,10 @@ class PageMessenger : ViewModel(){
     private val _isAgreePolicy = MutableResult<Boolean>()
     val isAgreePolicy: Result<Boolean> = _isAgreePolicy
 
+    //
+    private val _activityResultDispatcher = MutableResult<CustomActivityResult>()
+    val activityResultDispatcher: Result<CustomActivityResult> = _activityResultDispatcher
+
     //ADME 设备模式 0：设备配置模式，1：自动检测模式，2：异常保护模式
     val admeDeviceMode = NonNullObservableField("0")
 
@@ -37,6 +42,10 @@ class PageMessenger : ViewModel(){
 
     fun updateIsAgreePolicy(open: Boolean) {
         _isAgreePolicy.postValue(open)
+    }
+
+    fun dispatchActivityResult(result: CustomActivityResult) {
+        _activityResultDispatcher.postValue(result)
     }
 
     fun requestMR702Rs485PortSensorRefresh(port: MRPortSensorRefreshResult) {

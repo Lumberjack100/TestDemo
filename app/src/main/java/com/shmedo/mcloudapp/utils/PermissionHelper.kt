@@ -20,7 +20,8 @@ import com.shmedo.mcloudapp.ext.showMessage
  * 描述：     TODO
  */
 object PermissionHelper {
-
+    const val REQUEST_CODE_SCAN = 0x1008
+    
     val foregroundLocationPermissions: Array<String>
         get() {
             return arrayOf(
