@@ -13,6 +13,8 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
+import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.md_cmd.assemble.entity.das.AuthenticationEntity
@@ -53,6 +55,8 @@ import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessage
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.debounce
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.nio.charset.StandardCharsets
@@ -63,6 +67,8 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: BleDasHomeFragmentViewModel
     private lateinit var mCommandResponseStates: CommandResponseViewModel
     private val mdParseManager: MDParserManager by inject()
+
+    private val lastCommunicationTime = MutableStateFlow(System.currentTimeMillis())
 
 
     override fun initViewModel() {
@@ -246,6 +252,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                     )
                 }
             }
+
             is SensorConfigModule -> {//传感器配置
                 if (module.configModule.navId != 0) {
                     val bundle = BleDasSensorHomeFragment.newBundleArguments(
@@ -304,6 +311,11 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             .show()
     }
 
+    override fun createObserver() {
+        super.createObserver()
+        setupHeartbeat()
+    }
+
     override fun lazyLoadData() {
         if (communicateWay is BleConnect) {
             bleViewModel.launch(bleDevice!!)
@@ -323,7 +335,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         val entity = AuthenticationEntity(deviceInfo.deviceToken, "0")
         val command =
             MDCommandUtil.getCommand(MDCommandType.AUTHENTICATION_CONFIG, entity.toCommandString())
-        commandItems.add(MDConstants.COMMAND_FOOTER + command)
+        commandItems.add(command)
 
         Timber.d("设置认证类型指令===%s", command)
         sendCommandFromCmdList(isStartTimeoutJob = false)
@@ -348,7 +360,8 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                     DesUtil.encrypt(reverseRandomCode.toByteArray() + deskey.toByteArray(), deskey)
                 // 加密后认证码
                 val strEncrypt = HexUtils.bytesToHexString(byteEncrypt!!)!!
-                val command = "##222,${deviceInfo.deviceToken},0,${strEncrypt.uppercase()}${MDConstants.COMMAND_FOOTER}"
+                val command =
+                    "##222,${deviceInfo.deviceToken},0,${strEncrypt.uppercase()}${MDConstants.COMMAND_FOOTER}"
                 Timber.d("设备登录验证指令===%s", command)
 
                 commandItems.clear()
@@ -451,6 +464,8 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        updateLastCommunicationTime()
+
         when (MDCommandUtil.extractCommandType(cmdStr)) {
             MDCommandType.AUTHENTICATION_CONFIG -> {
                 val result = mdParseManager.parse<AuthenticationInfo>(
@@ -684,6 +699,36 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_bleDasAdvancedSettingFragment))
         )
         binding.recyclerview.models = moduleList
+    }
+
+
+    // 检查是否超时
+    private fun isNearbyCommunicationTimeout(lastUpdateTime: Long): Boolean {
+        return (System.currentTimeMillis() - lastUpdateTime) >= AppContants.Communication.DELAY_10000_MILLIS
+    }
+
+    // 更新最后通信时间
+    private fun updateLastCommunicationTime() {
+        lastCommunicationTime.value = System.currentTimeMillis()
+    }
+
+    // 设置心跳检查
+    private fun setupHeartbeat() {
+        launchWithViewLifecycle {
+            lastCommunicationTime
+                .debounce(AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
+                .collect { lastUpdateTime ->
+                    val updateTime = TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
+                    Timber.d("startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
+                    // 仅当设备连接并且需要发送心跳时，才发送心跳包
+                    if (mStates.isConnected.get() && isNearbyCommunicationTimeout(lastUpdateTime)) {
+                        Timber.d("bingo startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
+                        val command = MDCommandUtil.getCommand(MDCommandType.HEARTBEAT)
+                        Timber.d("发送心跳包指令: $command")
+                        sendHeartbeatCommand(command)
+                    }
+                }
+        }
     }
 
     override fun onResume() {

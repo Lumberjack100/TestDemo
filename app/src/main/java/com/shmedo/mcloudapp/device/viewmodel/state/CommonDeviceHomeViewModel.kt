@@ -16,7 +16,7 @@ open class CommonDeviceHomeViewModel : ViewModel() {
     val isDeviceStateTagHighLight = NonNullObservableField(true)
     val deviceStateTagText = NonNullObservableField("在线")
 
-    val isConnected = NonNullObservableField(true)
+    val isConnected = NonNullObservableField(false)
     val isConnectOperateVisible = NonNullObservableField(false)
     val connectOperateText = NonNullObservableField("蓝牙连接")
 

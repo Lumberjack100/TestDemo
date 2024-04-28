@@ -229,6 +229,10 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     abstract fun setResultData(cmdStr: String)
 
+    protected fun sendHeartbeatCommand(command: String) {
+        bleViewModel.sendMDCommand(command, 0)
+    }
+
     /**
      * 发送指令队列中的第一条指令
      */
