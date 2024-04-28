@@ -63,7 +63,7 @@ class ScannerViewModel(private val scannerRepository: ScannerRepository) : ViewM
     fun setFilterUuid(uuid: ParcelUuid?) {
         this.uuid = uuid
         if (uuid == null) {
-            filterConfig.value = filterConfig.value.copy(filterUuidRequired = null)
+            filterConfig.value = filterConfig.value.copy(filterUuidRequired = false)
         }
     }
 

@@ -55,7 +55,8 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/ic_add_more" />
+                        android:src="@drawable/ic_add_more"
+                        onClickWithDebouncing="@{()->click.onMoreChooseClick()}"/>
 
                 </RelativeLayout>
 
@@ -77,5 +78,4 @@
         </androidx.viewpager2.widget.ViewPager2>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 </layout>

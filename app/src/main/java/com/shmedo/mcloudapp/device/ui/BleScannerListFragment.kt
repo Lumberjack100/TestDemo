@@ -34,7 +34,6 @@ import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.BleScannerListViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import timber.log.Timber
 
@@ -50,7 +49,7 @@ class BleScannerListFragment : BaseFragment() {
 
 
     /**
-     * 定位需要进行检测的权限数组
+     * 需要进行检测的权限数组
      */
     private val needPermissions by lazy {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S)
@@ -188,7 +187,7 @@ class BleScannerListFragment : BaseFragment() {
     }
 
     private suspend fun processScanResult() {
-        scannerViewModel.scannerState.collectLatest { state ->
+        scannerViewModel.scannerState.collect { state ->
             when (state) {
                 ScanningState.Loading -> {
                     Timber.i("scannerViewModel.state: Loading")
@@ -241,10 +240,10 @@ class BleScannerListFragment : BaseFragment() {
                     grantedPermissions: MutableList<String>,
                     allGranted: Boolean
                 ) {
-                    permissionViewModel.refreshBluetoothPermission()
                     if (!allGranted) {
                         return
                     }
+                    permissionViewModel.refreshBluetoothPermission()
                 }
             })
     }

@@ -18,9 +18,6 @@ import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentQueryDeviceDataBinding
 import com.shmedo.mcloudapp.databinding.ItemDeviceDataBinding
@@ -29,6 +26,9 @@ import com.shmedo.mcloudapp.device.model.CloudDeviceData
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.QueryDeviceDataViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 
@@ -60,7 +60,6 @@ class QueryDeviceDataFragment : BaseFragment() {
         TimeUtils.millis2String(TimeUtils.getNowMills(), "yyyy-MM-dd HH:mm:ss")
 
     private var statusBarColor = 0
-    private var keyWord: String = ""
 
 
     override fun initViewModel() {
@@ -93,6 +92,11 @@ class QueryDeviceDataFragment : BaseFragment() {
     private fun initRefresh() {
         PageRefreshLayout.startIndex = 1
         binding.refreshLayout.onRefresh {
+            if (mHeadStates.sn.get().isEmpty()) {
+                binding.refreshLayout.finishRefresh(false)
+                showMessageDialog("请输入 SN 号")
+                return@onRefresh
+            }
             refreshData()
         }
     }
@@ -123,10 +127,10 @@ class QueryDeviceDataFragment : BaseFragment() {
 
     override fun initData() {
         arguments?.let {
-            keyWord = it.getString(AppContants.Extras.DEVICE_SEARCH_KEYWORD, "")
+            val keyWord = it.getString(AppContants.Extras.DEVICE_SEARCH_KEYWORD, "")
             statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
+            mHeadStates.sn.set(keyWord)
         }
-        mHeadStates.sn.set(keyWord)
         mHeadStates.platformType.set(platformList[0])
         mHeadStates.dataType.set(dataTypeList[0])
         mHeadStates.periodDate.set(periodDateList[0])
@@ -150,7 +154,8 @@ class QueryDeviceDataFragment : BaseFragment() {
     }
 
     override fun lazyLoadData() {
-        binding.refreshLayout.autoRefresh()
+        if (mHeadStates.sn.get().isNotEmpty())
+            binding.refreshLayout.autoRefresh()
     }
 
     inner class ClickProxy : BaseClickProxy() {
