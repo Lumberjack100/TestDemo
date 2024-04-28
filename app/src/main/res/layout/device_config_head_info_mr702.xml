@@ -64,12 +64,12 @@
 
             <TextView
                 android:id="@+id/tv_device_connect_operate"
+                onClickWithDebouncing="@{()->click.onConnectOperateClick()}"
                 visible="@{vm.isConnectOperateVisible}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableStart="@{!vm.isDeviceStateTagHighLight()?@drawable/ic_ble_connect:@drawable/ic_ble_disconnect}"
                 android:drawablePadding="@dimen/dimen_size_4"
-                onClickWithDebouncing="@{()->click.onConnectOperateClick()}"
                 android:text="@{vm.connectOperateText}"
                 android:textColor="@{!vm.isDeviceStateTagHighLight()?@color/connect_ble_foreground:@color/disconnect_ble_foreground}"
                 android:textSize="@dimen/text_size_12"
@@ -95,12 +95,14 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_device_logo"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
+                imageResId="@{vm.productLogoResId}"
+                android:layout_width="60dp"
+                android:layout_height="40dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_mr702"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/ic_mr702" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="0dp"

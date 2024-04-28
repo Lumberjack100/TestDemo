@@ -7,6 +7,8 @@ import com.shmedo.mcloudapp.R
 open class CommonDeviceHomeViewModel : ViewModel() {
     val productLightResId = NonNullObservableField(R.drawable.ic_device_logo_def)
     val productGrayResId = NonNullObservableField(R.drawable.ic_device_logo_def)
+    val productLogoResId = NonNullObservableField(R.drawable.ic_device_logo_def)
+
 
     val productName = NonNullObservableField("")
     val deviceName = NonNullObservableField("")

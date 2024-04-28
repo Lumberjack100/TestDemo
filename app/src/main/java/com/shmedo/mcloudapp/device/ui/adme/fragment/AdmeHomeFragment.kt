@@ -131,7 +131,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-//        mHeadStates.productResId.set(R.drawable.ic_adme)
+        mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
         mHeadStates.productName.set(deviceInfo.productName)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
         mHeadStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
@@ -166,9 +166,11 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
         if (isConnected) {
             mHeadStates.deviceStateTagText.set("已连接")
             mHeadStates.connectOperateText.set("断开连接")
+            mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
         } else {
             mHeadStates.deviceStateTagText.set("未连接")
             mHeadStates.connectOperateText.set("蓝牙连接")
+            mHeadStates.productLogoResId.set(mHeadStates.productGrayResId.get())
         }
         //刷新模块状态
         binding.rvModule.models?.forEach {
