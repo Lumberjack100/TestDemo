@@ -95,7 +95,7 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
             centerNum = it.getInt(CENTER_NUM)
             productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
         }
-        mStates.isSupportedReportInterval.set(productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2)
+        mStates.isSupportedReportInterval.set(productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2|| productType == ProductType.U_I_1|| productType == ProductType.U_R_1)
         binding.recyclerView.bindingAdapter.models = getAdapterData()
     }
 
