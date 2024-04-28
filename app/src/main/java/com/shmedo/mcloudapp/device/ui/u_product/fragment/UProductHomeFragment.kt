@@ -32,28 +32,26 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
     override fun initData() {
         super.initData()
         toolbarViewModel.toolbarIvActionVisible.set(true)
+        mHeadStates.isPlatformConnectionStateVisible.set(false)
         when (productType) {
             ProductType.U_D_1,//水位
             ProductType.U_D_2 -> {//泥位
                 mHeadStates.productLightResId.set(R.drawable.device_logo_niweiji)
                 mHeadStates.productGrayResId.set(R.drawable.device_logo_niweiji_gray)
-                mHeadStates.isPlatformConnectionStateVisible.set(false)
             }
 
             ProductType.U_I_1 -> {//倾斜仪
                 mHeadStates.productLightResId.set(R.drawable.device_logo_qingxieyi)
                 mHeadStates.productGrayResId.set(R.drawable.device_logo_qingxieyi_gray)
-                mHeadStates.isPlatformConnectionStateVisible.set(false)
             }
 
             ProductType.U_R_1 -> {//雨量计
                 mHeadStates.productLightResId.set(R.drawable.device_logo_rain_gauge)
                 mHeadStates.productGrayResId.set(R.drawable.device_logo_rain_gauge_gray)
-                mHeadStates.isPlatformConnectionStateVisible.set(false)
             }
 
             else -> {
-                mHeadStates.isPlatformConnectionStateVisible.set(false)
+
             }
         }
 //        mHeadStates.deviceName.set(if (deviceInfo.deviceToken.endsWith(ProductType.GNSS_M_1.newSuffix)) "M20 (单北斗)" else "M20 (全星座)")

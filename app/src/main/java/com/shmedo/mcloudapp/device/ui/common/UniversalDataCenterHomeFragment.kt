@@ -6,6 +6,7 @@ import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
+import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.setup
@@ -16,6 +17,7 @@ import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.CenterNumberEntity
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasDataReportEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.enums.ServerFive
@@ -23,15 +25,14 @@ import com.shmedo.lib.device.base.iot_cmd.enums.ServerFour
 import com.shmedo.lib.device.base.iot_cmd.enums.ServerOne
 import com.shmedo.lib.device.base.iot_cmd.enums.ServerThree
 import com.shmedo.lib.device.base.iot_cmd.enums.ServerTwo
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.common.DataCenterStatus
+import com.shmedo.lib.device.base.iot_cmd.model.das.DasDataReportInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentUniversalDataCenterHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -41,28 +42,36 @@ import com.shmedo.mcloudapp.device.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.UniversalDataCenterHomeViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUniversalDataCenterHomeBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: UniversalDataCenterHomeViewModel
     private val iotParseManager: IOTParserManager by inject()
-    private var centerNum = 0;//数据中心数量
+    private var centerNum = 0//数据中心数量
     private var productType = ProductType.UnKnown
 
     override fun initViewModel() {
         super.initViewModel()
         toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_universal_data_center_home,
-            BR.toolbarVM,
-            toolbarViewModel
+            BR.stateVM,
+            mStates
         )
-            .addBindingParam(BR.click, BaseClickProxy())
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -86,6 +95,7 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
             centerNum = it.getInt(CENTER_NUM)
             productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
         }
+        mStates.isSupportedReportInterval.set(productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2)
         binding.recyclerView.bindingAdapter.models = getAdapterData()
     }
 
@@ -146,6 +156,36 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    inner class ClickProxy : BaseClickProxy() {
+        override fun onSubmitButtonClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            initSaveCommand()
+        }
+    }
+
+    private fun initSaveCommand() {
+        if (mStates.reportInterval.get().isEmpty()) {
+            showMessageDialog("请输入上报时间间隔!")
+            return
+        }
+        commandItems.clear()
+        val entity = DasDataReportEntity(
+            report_intv = mStates.reportInterval.get()
+        )
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_SET_DATA_REPORT_TIME,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
     }
@@ -153,6 +193,11 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
 
+        //获取上报时间信息
+        if (mStates.isSupportedReportInterval.get()) {
+            val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_REPORT_TIME)
+            commandItems.add(command)
+        }
         for (i in 1..centerNum) {
             val entity = CenterNumberEntity(i.toString())
             val command =
@@ -165,6 +210,28 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DATA_REPORT_TIME -> {
+                val result = iotParseManager.parse<DasDataReportInfo>(
+                    cmdStr,
+                    IOTCommandType.MD_GET_DATA_REPORT_TIME
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "查询数据上报时间出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initDataReportTime(result.data)
+                    }
+                }
+            }
 
             IOTCommandType.MD_GET_DATA_CENTER_STATUS -> {
                 val result = iotParseManager.parse<DataCenterStatus>(
@@ -189,8 +256,30 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            IOTCommandType.MD_SET_DATA_REPORT_TIME -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "上报参数设置出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("保存成功")
+                        }
+                    }
+                }
+            }
+
             else -> {}
         }
+    }
+
+    private fun initDataReportTime(dataReportInfo: DasDataReportInfo) {
+        mStates.reportInterval.set(dataReportInfo.report_intv)
     }
 
     private fun initDataCenterStatus(dataCenterStatus: DataCenterStatus) {

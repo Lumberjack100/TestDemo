@@ -121,7 +121,7 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
          * 清空雨量值
          */
         fun onRainValueClearClick() {
-
+            Toaster.show("正在开发中...")
         }
 
         /**

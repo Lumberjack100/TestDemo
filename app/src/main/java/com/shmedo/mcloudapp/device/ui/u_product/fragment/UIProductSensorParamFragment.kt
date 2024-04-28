@@ -6,7 +6,6 @@ import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
@@ -29,9 +28,6 @@ import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
 
 /**
  * @author：gonghe
@@ -44,10 +40,9 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: UIProductSensorParamViewModel
     private val iotParseManager: IOTParserManager by inject()
-    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
-    private val measureIntervalList by lazy { Utils.getApp().resources.getStringArray(R.array.rain_value) }
-    private val averageTimesList by lazy { Utils.getApp().resources.getStringArray(R.array.rain_value) }
+    private val measureIntervalList = arrayListOf("1", "2", "5", "10")
+    private val averageTimesList = arrayListOf("2", "3", "5", "10")
 
 
     override fun initViewModel() {
@@ -106,7 +101,7 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", measureIntervalList,
+                    "",measureIntervalList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.measureInterval.set(text)
@@ -123,7 +118,7 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", averageTimesList,
+                    "", averageTimesList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.averageTimes.set(text)
@@ -133,7 +128,7 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
         }
 
         /**
-         *
+         * 设置倾角初始值
          */
         fun onSetInitialValueClick() {
             commandItems.clear()
@@ -165,8 +160,8 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun resetParams() {
-        mStates.measureInterval.set(measureIntervalList[0])
-        mStates.averageTimes.set(averageTimesList[0])
+        mStates.measureInterval.set(measureIntervalList[0])//测量间隔：1s、2s、5s、10s；默认为1s，当前置灰不可配置
+        mStates.averageTimes.set(averageTimesList[2])
     }
 
     private fun initSaveCommand() {
@@ -205,7 +200,7 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "设置倾角初值出错: ${result.message}"
+                        val errMsg = "更新倾角初始值出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
                         return
@@ -213,7 +208,7 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            Toaster.show("更新倾角初始值成功")
                         }
                     }
                 }

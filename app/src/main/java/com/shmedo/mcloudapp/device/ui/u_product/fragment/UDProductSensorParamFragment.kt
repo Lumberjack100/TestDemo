@@ -48,10 +48,11 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
     private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
-    private val measureIntervalList = arrayListOf("5", "10", "15", "20", "30")
-    private val averageTimesList = arrayListOf("1", "2", "3", "4", "5")
-    private val triggerCaptureLevelList = arrayListOf("低", "中", "高")
-    private val imageResolutionList = arrayListOf("1920x1080", "1280x720", "640x480", "320x240")
+    private val measureIntervalList = arrayListOf("1", "2", "5", "10")
+    private val averageTimesList = arrayListOf("2", "3", "5", "10")
+    private val triggerCaptureLevelList =
+        arrayListOf("无触发", "一级报警", "二级报警", "三级报警", "四级报警")
+    private val imageResolutionList = arrayListOf("640x480", "1920x1080", "2560x1920")
 
     override fun initViewModel() {
         super.initViewModel()
@@ -141,11 +142,14 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
+        /**
+         * 设置雷达初始值
+         */
         fun onSetInitialValueClick() {
             commandItems.clear()
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_SET_SENSOR_INITIAL,
-                "method=1&type=0"
+                "method=1&type=2"
             )
             commandItems.add(command)
 
@@ -211,10 +215,10 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun resetParams() {
-        mStates.measureInterval.set(measureIntervalList[0])
-        mStates.averageTimes.set(averageTimesList[0])
-        mStates.triggerCaptureLevel.set(triggerCaptureLevelList[0])
-        mStates.imageResolution.set(imageResolutionList[0])
+        mStates.measureInterval.set(measureIntervalList[0])//测量间隔：1s、2s、5s、10s；默认为1s，当前置灰不可配置
+        mStates.averageTimes.set(averageTimesList[2])
+        mStates.triggerCaptureLevel.set(triggerCaptureLevelList[triggerCaptureLevelList.lastIndex])
+        mStates.imageResolution.set(imageResolutionList[1])
     }
 
     private fun initSaveCommand() {
@@ -232,9 +236,9 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
 
         val entity = MudLevelMeterSensorEntity(
             height = mStates.installHeight.get(),
-            gap = mStates.measureInterval.get(),
-            times = mStates.averageTimes.get(),
-            level = mStates.triggerCaptureLevel.get(),
+            //gap = mStates.measureInterval.get(),  当前置灰不可配置
+            //times = mStates.averageTimes.get(),  当前置灰不可配置
+            level = triggerCaptureLevelList.indexOf(mStates.triggerCaptureLevel.get()).toString(),
             pixx = mStates.imageResolution.get().split("x")[0],
             pixy = mStates.imageResolution.get().split("x")[1]
         )
@@ -305,6 +309,23 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            IOTCommandType.MD_SET_SENSOR_INITIAL -> {//设置开关量传感器
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "更新雷达初始值出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("更新雷达初始值成功")
+                        }
+                    }
+                }
+            }
 
             else -> {}
         }
@@ -312,13 +333,13 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
 
     private fun initParamData(info: MudLevelMeterSensorInfo) {
         try {
-            decimalFormat.applyPattern("#.###")
+            decimalFormat.applyPattern("#.##")
             info.height.toDoubleOrNull()?.let {
                 mStates.installHeight.set(decimalFormat.format(it))
             }
             mStates.measureInterval.set(info.gap)
             mStates.averageTimes.set(info.times)
-            mStates.triggerCaptureLevel.set(info.level)
+            mStates.triggerCaptureLevel.set(if (info.level.toInt() < triggerCaptureLevelList.size) triggerCaptureLevelList[info.level.toInt()] else triggerCaptureLevelList.last())
             mStates.imageResolution.set("${info.pixx}x${info.pixy}")
 
         } catch (e: Exception) {

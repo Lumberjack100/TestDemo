@@ -44,6 +44,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.das.DasBaseInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasBdTerminalInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasCollectorInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasDataCenterStatusParser
+import com.shmedo.lib.device.base.iot_cmd.parser.das.DasDataReportInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasDigitalPiezometerInfoParserr
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasExternalSensorInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasIOSensorInfoParser
@@ -114,6 +115,7 @@ val iotCommandModule = module {
     factory { DasBaseInfoParser() }
     factory { DasCollectorInfoParser() }
     factory { DasReportInfoParser() }
+    factory { DasDataReportInfoParser() }
     factory { DasBdTerminalInfoParser() }
     factory { DasIOSensorInfoParser() }
     factory { DasDigitalPiezometerInfoParserr() }
@@ -192,6 +194,7 @@ val iotCommandModule = module {
             get<DasBaseInfoParser>(),
             get<DasCollectorInfoParser>(),
             get<DasReportInfoParser>(),
+            get<DasDataReportInfoParser>(),
             get<DasBdTerminalInfoParser>(),
             get<DasIOSensorInfoParser>(),
             get<DasDigitalPiezometerInfoParserr>(),
