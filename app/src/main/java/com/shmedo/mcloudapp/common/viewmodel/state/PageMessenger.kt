@@ -33,6 +33,9 @@ class PageMessenger : ViewModel(){
     private val _activityResultDispatcher = MutableResult<CustomActivityResult>()
     val activityResultDispatcher: Result<CustomActivityResult> = _activityResultDispatcher
 
+    private val _scanSNResult = MutableResult<String>()
+    val scanSNResult: Result<String> = _scanSNResult
+
     //ADME 设备模式 0：设备配置模式，1：自动检测模式，2：异常保护模式
     val admeDeviceMode = NonNullObservableField("0")
 
@@ -46,6 +49,10 @@ class PageMessenger : ViewModel(){
 
     fun dispatchActivityResult(result: CustomActivityResult) {
         _activityResultDispatcher.postValue(result)
+    }
+
+    fun dispatchScanSNResult(sn: String) {
+        _scanSNResult.postValue(sn)
     }
 
     fun requestMR702Rs485PortSensorRefresh(port: MRPortSensorRefreshResult) {

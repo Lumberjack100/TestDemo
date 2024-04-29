@@ -20,6 +20,7 @@ import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.ble.scanner.repository.ScanningState
 import com.shmedo.lib.ble.scanner.viewmodel.ScannerViewModel
 import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
@@ -29,24 +30,31 @@ import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
+import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.FragmentBleScannerListBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.BleScannerListViewModel
+import com.shmedo.mcloudapp.ext.dismissLoadingDialog
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import timber.log.Timber
 
 class BleScannerListFragment : BaseFragment() {
     private lateinit var binding: FragmentBleScannerListBinding
+    private lateinit var mMessenger: PageMessenger
     private lateinit var mStates: BleScannerListViewModel
     private lateinit var deviceRequestViewModel: DeviceRequestViewModel
     private lateinit var permissionViewModel: PermissionViewModel
     private lateinit var scannerViewModel: ScannerViewModel
 
-    private val scanResultList = mutableListOf<DiscoveredBluetoothDevice>()
     private var discoveredBluetoothDevice: DiscoveredBluetoothDevice? = null
-
+    private var isFilterNameByScanning = false//是否通过扫描设备二维码来过滤查找设备
+    private var scanSearchDeviceTimeoutJob: Job? = null
 
     /**
      * 需要进行检测的权限数组
@@ -62,6 +70,7 @@ class BleScannerListFragment : BaseFragment() {
     }
 
     override fun initViewModel() {
+        mMessenger = getAppViewModel()
         mStates = getFragmentScopeViewModel()
         deviceRequestViewModel = getViewModel()
         permissionViewModel = getViewModel()
@@ -144,6 +153,14 @@ class BleScannerListFragment : BaseFragment() {
             Timber.i("keyWords 触发")
             scannerViewModel.setFilterName(keyword)
         }
+        mMessenger.scanSNResult.observe(viewLifecycleOwner) { sn ->
+            if (sn.isNullOrEmpty()) {
+                return@observe
+            }
+            isFilterNameByScanning = true
+            mStates.keyWords.value = sn
+            startScanningSearchDeviceTimeoutJob()
+        }
         deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
                 if (discoveredBluetoothDevice!!.name.isNullOrEmpty()) {
@@ -192,6 +209,17 @@ class BleScannerListFragment : BaseFragment() {
                 is ScanningState.DevicesDiscovered -> {
                     Timber.i("scannerViewModel.state: DevicesDiscovered=${state.devices.size}")
                     binding.recyclerviewDevice.models = state.devices
+
+                    if (isFilterNameByScanning) {
+                        if (state.devices.isNotEmpty()) {
+                            stopScanningSearchDeviceTimeoutJob()
+                            discoveredBluetoothDevice = state.devices[0]
+                            discoveredBluetoothDevice!!.name?.replaceFirst(Regex("^MD-?"), "")
+                                ?.let { deviceToken ->
+                                    deviceRequestViewModel.getDeviceDetailInfo(deviceToken)
+                                }
+                        }
+                    }
                 }
             }
         }
@@ -213,7 +241,7 @@ class BleScannerListFragment : BaseFragment() {
 
     private fun refreshScan() = launchWithViewLifecycle {
         scannerViewModel.refresh()
-        delay(3000)
+        delay(1000)
         binding.refreshLayout.finish()
     }
 
@@ -236,6 +264,29 @@ class BleScannerListFragment : BaseFragment() {
                     permissionViewModel.refreshBluetoothPermission()
                 }
             })
+    }
+
+    private fun startScanningSearchDeviceTimeoutJob() {
+        scanSearchDeviceTimeoutJob?.cancel()
+        scanSearchDeviceTimeoutJob = launchWithViewLifecycle {
+            withContext(Dispatchers.Main) {
+                showLoadingDialog("正在搜索设备 ${mStates.keyWords.value}...")
+            }
+            delay(10000)
+            withContext(Dispatchers.Main) {
+                dismissLoadingDialog()
+                Toaster.show("未搜索到设备 ${mStates.keyWords.value}")
+                isFilterNameByScanning = false
+                mStates.keyWords.value = ""
+            }
+        }
+    }
+
+    private fun stopScanningSearchDeviceTimeoutJob() {
+        isFilterNameByScanning = false
+        mStates.keyWords.value = ""
+        scanSearchDeviceTimeoutJob?.cancel()
+        dismissLoadingDialog()
     }
 
     companion object {

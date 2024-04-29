@@ -70,13 +70,13 @@ class ScannerViewModel(private val scannerRepository: ScannerRepository) : ViewM
         }
     }
 
-    fun setFilter(config: DevicesScanFilter) {
-        this.filterConfig.value = config
-    }
-
     fun setFilterName(name: String = "") {
         this.deviceName = name
-        filterConfig.value = filterConfig.value.copy()
+        filterConfig.value = filterConfig.value.copy(filterWithNames = true)
+    }
+
+    fun setFilter(config: DevicesScanFilter) {
+        this.filterConfig.value = config
     }
 
     fun refresh() {

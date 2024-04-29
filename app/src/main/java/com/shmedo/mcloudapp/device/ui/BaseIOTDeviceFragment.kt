@@ -276,6 +276,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         timeMillis: Long = AppContants.Communication.DELAY_10000_MILLIS
     ) {
         // 启动一个新的协程作为超时Job
+        timeoutJob?.cancel()
         timeoutJob = launchWithViewLifecycle {
             delay(timeMillis) // 延迟 timeMillis 秒后，提示超时
             withContext(Dispatchers.Main) {

@@ -20,10 +20,8 @@ import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.enums.PopupAnimation
-import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.permission.PermissionInterceptor
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -44,7 +42,6 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     private lateinit var binding: FragmentDeviceManageHomeBinding
     private lateinit var mMessenger: PageMessenger
     private lateinit var mStates: DeviceManageHomeViewModel
-    private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
     private val activeColor: Int = ColorUtils.getColor(R.color.title_text_color)
     private val normalColor: Int = ColorUtils.getColor(R.color.text_color_666666)
@@ -68,9 +65,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
         initViewPager()
     }
 
-    override fun initData() {
-
-    }
+    override fun initData() {}
 
     override fun createObserver() {
         mMessenger.activityResultDispatcher.observe(
@@ -253,8 +248,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
             showMessageDialog("请扫描正确的设备二维码")
             return
         }
-//        MCloudApp.setCurDeviceToken(localData[1].replace("MD-", ""))
-//        processStartScan()
+        mMessenger.dispatchScanSNResult(localData[1])
     }
 
     /**
@@ -271,7 +265,6 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
             showMessageDialog("请扫描正确的设备二维码")
             return
         }
-//        MCloudApp.setCurDeviceToken(localData[1].replace("MD-", ""))
-//        processStartScan()
+        mMessenger.dispatchScanSNResult(localData[1])
     }
 }
