@@ -75,7 +75,7 @@ class UIProductSensorInfoFragment : BaseIOTDeviceFragment() {
     private fun queryInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS,"limittime=40")
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }

@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants" />
+
         <variable
             name="stateVM"
             type="com.shmedo.mcloudapp.device.viewmodel.state.UDProductSensorInfoViewModel" />
@@ -71,7 +73,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
-                    visible='@{ stateVM.installHeight != "--"}'
+                    visible='@{ stateVM.installHeight != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -87,7 +89,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
-                    visible='@{ stateVM.radarMeasureValue != "--"}'
+                    visible='@{ stateVM.radarMeasureValue != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView

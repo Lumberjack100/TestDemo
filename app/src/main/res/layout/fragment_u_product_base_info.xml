@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants" />
+
         <variable
             name="stateVM"
             type="com.shmedo.mcloudapp.device.viewmodel.state.UProductBaseInfoViewModel" />
@@ -64,6 +66,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.wrapStateInfo.imsi != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -79,6 +82,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.wrapStateInfo.ccid != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -94,6 +98,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.wrapStateInfo.hardwareVersion != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -109,6 +114,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.wrapStateInfo.firmwareVersion != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -147,6 +153,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.wrapStateInfo.extPowerVolt != IOTConstants.NULL_KEY}'
                     android:layout_marginTop="1dp"
                     android:background="@drawable/layer_common_click_item_with_divider">
 

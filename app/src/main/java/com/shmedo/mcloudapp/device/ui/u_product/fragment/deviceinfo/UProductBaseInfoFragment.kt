@@ -16,6 +16,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
@@ -96,7 +97,7 @@ class UProductBaseInfoFragment : BaseIOTDeviceFragment() {
     private fun queryBaseInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "limittime=40")
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -156,20 +157,64 @@ class UProductBaseInfoFragment : BaseIOTDeviceFragment() {
     private fun checkDeviceIsNormal(currentStateInfo: CommonCurrentStateInfo2) {
         deviceAbnormalList.clear()
         //lora LORA模块
-        if (!currentStateInfo.lora.uppercase().contains("OK")) {
+        if (currentStateInfo.lora != IOTConstants.NULL_KEY && !currentStateInfo.lora.uppercase()
+                .contains("OK")
+        ) {
             deviceAbnormalList.add("LORA 模块异常")
         }
         //bt 蓝牙模块
-        if (!currentStateInfo.bt.uppercase().contains("OK")) {
+        if (currentStateInfo.bt != IOTConstants.NULL_KEY && !currentStateInfo.bt.uppercase()
+                .contains("OK")
+        ) {
             deviceAbnormalList.add("蓝牙模块异常")
         }
+        //ld 雷达状态
+        if (currentStateInfo.ld != IOTConstants.NULL_KEY && !currentStateInfo.ld.uppercase()
+                .contains("OK")
+        ) {
+            deviceAbnormalList.add("雷达模块异常")
+        }
+        //cam相机状态
+        if (currentStateInfo.cam != IOTConstants.NULL_KEY && !currentStateInfo.cam.uppercase()
+                .contains("OK")
+        ) {
+            deviceAbnormalList.add("相机模块异常")
+        }
         //radio 电台模块
-        if (!currentStateInfo.radio.uppercase().contains("OK")) {
+        if (currentStateInfo.radio != IOTConstants.NULL_KEY && !currentStateInfo.radio.uppercase()
+                .contains("OK")
+        ) {
             deviceAbnormalList.add("电台模块异常")
         }
+        //battery 电池状态
+        if (currentStateInfo.battery != IOTConstants.NULL_KEY && !currentStateInfo.battery.uppercase()
+                .contains("OK")
+        ) {
+            deviceAbnormalList.add("电池异常")
+        }
+        //simCard sim卡状态
+        if (currentStateInfo.simCard != IOTConstants.NULL_KEY && !currentStateInfo.simCard.uppercase()
+                .contains("OK")
+        ) {
+            deviceAbnormalList.add("SIM 卡异常")
+        }
         //flash
-        if (!currentStateInfo.flash.uppercase().contains("OK")) {
+        if (currentStateInfo.flash != IOTConstants.NULL_KEY && !currentStateInfo.flash.uppercase()
+                .contains("OK")
+        ) {
             deviceAbnormalList.add("FLASH 异常")
+        }
+        //fram FRAM状态
+        if (currentStateInfo.fram != IOTConstants.NULL_KEY && !currentStateInfo.fram.uppercase()
+                .contains("OK")
+        ) {
+            deviceAbnormalList.add("FRAM 异常")
+        }
+        //rtc RTC状态
+        if (currentStateInfo.rtc != IOTConstants.NULL_KEY && !currentStateInfo.rtc.uppercase()
+                .contains("OK")
+        ) {
+            deviceAbnormalList.add("RTC 异常")
         }
         mStates.deviceNormal.set(deviceAbnormalList.isEmpty())
     }
@@ -177,14 +222,34 @@ class UProductBaseInfoFragment : BaseIOTDeviceFragment() {
     private fun initRunningData(commonCurrentStateInfo: CommonCurrentStateInfo2) {
         try {
             val list = mutableListOf<MRRunningDataItem>()
-            if (commonCurrentStateInfo.uptime.isNotEmpty() && commonCurrentStateInfo.uptime != "--") {
+            if (commonCurrentStateInfo.worktime.isNotEmpty() && commonCurrentStateInfo.worktime != IOTConstants.NULL_KEY) {
                 list.add(
                     MRRunningDataItem(
                         "运行时间(小时)",
-                        decimalFormat.format(commonCurrentStateInfo.uptime.toDouble() / 3600)
+                        decimalFormat.format(commonCurrentStateInfo.worktime.toDouble() / 3600)
                     )
                 )
             }
+            if (commonCurrentStateInfo.emmcStorage != IOTConstants.NULL_KEY && commonCurrentStateInfo.emmcFree != IOTConstants.NULL_KEY
+                && commonCurrentStateInfo.emmcStorage.isNotEmpty() && commonCurrentStateInfo.emmcFree.isNotEmpty()
+            ) {
+                val free = commonCurrentStateInfo.emmcFree.replace("MB", "").toDoubleOrNull()?.let {
+                    decimalFormat.format(it)
+                } ?: ""
+
+                val total =
+                    commonCurrentStateInfo.emmcStorage.replace("MB", "").toDoubleOrNull()?.let {
+                        decimalFormat.format(it)
+                    } ?: ""
+
+                list.add(
+                    MRRunningDataItem(
+                        "存储状态",
+                        "${free}/${total}MB",
+                    )
+                )
+            }
+
             binding.rvRunningData.models = list
             if (list.isNotEmpty())
                 mStates.isRunningDataVisible.set(true)

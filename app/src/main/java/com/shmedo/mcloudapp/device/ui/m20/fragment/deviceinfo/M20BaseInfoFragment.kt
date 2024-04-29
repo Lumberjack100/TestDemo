@@ -14,6 +14,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
@@ -130,43 +131,43 @@ class M20BaseInfoFragment : BaseIOTDeviceFragment() {
                 inner_power_volt = commonCurrentStateInfo.inner_power_volt.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
-                    } ?: "--"
+                    } ?: IOTConstants.NULL_KEY
                 ext_power_volt = commonCurrentStateInfo.ext_power_volt.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
-                    } ?: "--"
+                    } ?: IOTConstants.NULL_KEY
                 solar_volt = commonCurrentStateInfo.solar_volt.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
-                    } ?: "--"
+                    } ?: IOTConstants.NULL_KEY
                 battery_volt = commonCurrentStateInfo.battery_volt.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
-                    } ?: "--"
+                    } ?: IOTConstants.NULL_KEY
                 supply_power = commonCurrentStateInfo.supply_power.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
-                    } ?: "--"
+                    } ?: IOTConstants.NULL_KEY
                 consume_power = commonCurrentStateInfo.consume_power.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
-                    } ?: "--"
+                    } ?: IOTConstants.NULL_KEY
                 temp = commonCurrentStateInfo.temp.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
-                    } ?: "--"
+                    } ?: IOTConstants.NULL_KEY
                 humidity = commonCurrentStateInfo.humidity.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
-                    } ?: "--"
+                    } ?: IOTConstants.NULL_KEY
                 temp_out = commonCurrentStateInfo.temp_out.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
-                    } ?: "--"
+                    } ?: IOTConstants.NULL_KEY
                 humidity_out = commonCurrentStateInfo.humidity_out.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
-                    } ?: "--"
+                    } ?: IOTConstants.NULL_KEY
             }
             mStates.wrapStateInfo.notifyChange()
 
@@ -209,7 +210,7 @@ class M20BaseInfoFragment : BaseIOTDeviceFragment() {
     private fun initRunningData(commonCurrentStateInfo: CommonCurrentStateInfo) {
         try {
             val list = mutableListOf<MRRunningDataItem>()
-            if (commonCurrentStateInfo.worktime.isNotEmpty() && commonCurrentStateInfo.worktime != "--") {
+            if (commonCurrentStateInfo.worktime.isNotEmpty() && commonCurrentStateInfo.worktime != IOTConstants.NULL_KEY) {
                 list.add(
                     MRRunningDataItem(
                         "运行时间(小时)",
@@ -218,7 +219,7 @@ class M20BaseInfoFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-            if (commonCurrentStateInfo.emmc_storage.isNotEmpty() && commonCurrentStateInfo.emmc_storage != "--") {
+            if (commonCurrentStateInfo.emmc_storage.isNotEmpty() && commonCurrentStateInfo.emmc_storage !=IOTConstants.NULL_KEY) {
                 val storages = commonCurrentStateInfo.emmc_storage.replace("MB", "").split(",")
                 if (storages.size == 2) {
                     val free = storages[0].toDoubleOrNull()?.let {

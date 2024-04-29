@@ -12,6 +12,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentUDProductSensorInfoBinding
@@ -75,7 +76,7 @@ class UDProductSensorInfoFragment : BaseIOTDeviceFragment() {
     private fun queryInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "limittime=40")
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -121,9 +122,28 @@ class UDProductSensorInfoFragment : BaseIOTDeviceFragment() {
                     return@launchWithViewLifecycle
                 }
                 val info = commonCurrentStateInfoList[0]
-
-//                mStates.memsInitialAxisX.set(decimalFormat.format(info.x_Angle))
-
+                mStates.cameraErrNo.set(
+                    if (info.cam != IOTConstants.NULL_KEY && info.cam.uppercase()
+                            .contains("OK")
+                    ) "1" else "0"
+                )
+                mStates.radarErrNo.set(
+                    if (info.ld != IOTConstants.NULL_KEY && info.ld.uppercase()
+                            .contains("OK")
+                    ) "1" else "0"
+                )
+                mStates.installHeight.set(
+                    info.height.toDoubleOrNull()
+                        ?.let {
+                            decimalFormat.format(it)
+                        } ?: "--"
+                )
+                mStates.radarMeasureValue.set(
+                    info.ldValue.toDoubleOrNull()
+                        ?.let {
+                            decimalFormat.format(it)
+                        } ?: "--"
+                )
             } catch (e: Exception) {
                 Timber.e(e)
             }

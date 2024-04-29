@@ -87,7 +87,7 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
     private fun queryInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS,"limittime=40")
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -136,7 +136,7 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
                 mStates.wrapStateInfo.set(info)
                 mStates.wrapStateInfo.notifyChange()
 
-                val centerStatus = info.datacenterStatus.split(",")
+                val centerStatus = info.dataCenterStatus.split(",")
                 tableAdapter.setAllItems(
                     getColumnHeaderList(centerStatus),
                     getRowHeaderList(),
