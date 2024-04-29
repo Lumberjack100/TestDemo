@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants" />
+
         <variable
             name="stateVM"
             type="com.shmedo.mcloudapp.device.viewmodel.state.UIProductSensorInfoViewModel" />
@@ -56,7 +58,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
-                    visible='@{ stateVM.memsInitialAxisX != "--"}'
+                    visible='@{ stateVM.memsInitialAxisX != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -72,7 +74,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
-                    visible='@{ stateVM.memsInitialAxisY != "--"}'
+                    visible='@{ stateVM.memsInitialAxisY != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -87,7 +89,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
-                    visible='@{ stateVM.memsInitialAxisZ != "--"}'
+                    visible='@{ stateVM.memsInitialAxisZ != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -102,7 +104,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
-                    visible='@{ stateVM.memsAxisXCurrent != "--"}'
+                    visible='@{ stateVM.memsAxisXCurrent != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -117,7 +119,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
-                    visible='@{ stateVM.memsAxisYCurrent != "--"}'
+                    visible='@{ stateVM.memsAxisYCurrent != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -132,7 +134,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
-                    visible='@{ stateVM.memsAxisZCurrent != "--"}'
+                    visible='@{ stateVM.memsAxisZCurrent != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -147,7 +149,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
-                    visible='@{ stateVM.memsAxisXAcceleration != "--"}'
+                    visible='@{ stateVM.memsAxisXAcceleration != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -162,7 +164,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
-                    visible='@{ stateVM.memsAxisYAcceleration != "--"}'
+                    visible='@{ stateVM.memsAxisYAcceleration != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -177,7 +179,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
-                    visible='@{ stateVM.memsAxisZAcceleration != "--"}'
+                    visible='@{ stateVM.memsAxisZAcceleration != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -188,6 +190,22 @@
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.memsAxisZAcceleration }'
                         tools:text="2" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.runTime != IOTConstants.NULL_KEY}'
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="连续运行时间" />
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        app:bind_errno="@{stateVM.runTime}"
+                        tools:text="正常" />
+
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
             </androidx.appcompat.widget.LinearLayoutCompat>

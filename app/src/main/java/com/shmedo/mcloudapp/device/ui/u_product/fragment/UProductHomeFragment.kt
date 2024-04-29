@@ -54,7 +54,6 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
 
             }
         }
-//        mHeadStates.deviceName.set(if (deviceInfo.deviceToken.endsWith(ProductType.GNSS_M_1.newSuffix)) "M20 (单北斗)" else "M20 (全星座)")
     }
 
     override fun updateConfigModuleData() {
@@ -211,9 +210,9 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
                     ProductType.U_D_1,//水位
                     ProductType.U_D_2 -> {//泥位
                         nav().navigate(
-                            configModule.navId,
+                            R.id.action_uProductHomeFragment_to_uDProductDataCenterHomeFragment,
                             UniversalDataCenterHomeFragment.newBundleArguments(
-                                centerNum = 2,
+                                centerNum = 3,
                                 productType,
                                 communicateWay,
                                 deviceInfo,

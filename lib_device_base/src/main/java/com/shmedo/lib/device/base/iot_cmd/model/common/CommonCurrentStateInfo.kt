@@ -82,6 +82,7 @@ data class CommonCurrentStateInfo(
     var sN: String = IOTConstants.NULL_KEY, //设备SN号
     @Json(name = "eMMC Free")
     var eMMCFree: String = IOTConstants.NULL_KEY, //存储状态
+    var emmc_storage: String = IOTConstants.NULL_KEY,//emmc存储
     var dataCenter1: Int = 0, //数据中心1
     var dataCenter2: Int = 0, //数据中心2
     var dataCenter3: Int = 0, //数据中心3
@@ -91,5 +92,8 @@ data class CommonCurrentStateInfo(
     var self_check: String = IOTConstants.NULL_KEY,//设备自检
     var workMode: String = IOTConstants.NULL_KEY, //工作模式 1:固定站  2:移动站
     var worktime: String = IOTConstants.NULL_KEY,//运行时间
-    var emmc_storage: String = IOTConstants.NULL_KEY,//emmc存储
+    var memsstatus: String = IOTConstants.NULL_KEY,//MEMS状态
+    var initAngle: String = IOTConstants.NULL_KEY,//x、y、z初始角度
+    var angle: String = IOTConstants.NULL_KEY,//x、y、z 当前角度
+    var acc: String = IOTConstants.NULL_KEY,//x、y、z 加速度
 )

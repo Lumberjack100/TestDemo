@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
-import com.blankj.utilcode.util.StringUtils
-import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
@@ -206,8 +204,8 @@ class DeviceHomeActivity : BaseActivity() {
                     ///根据设备 SN 用旧的产品规则判断所属产品类型
                     type = ProductType.valueByOldSuffix(deviceInfo.deviceToken)
                     if (type == ProductType.UnKnown) {
-                        Toaster.show(StringUtils.getString(R.string.unsupported_device_type))
-                        return
+                        type = ProductType.TEST_DEVICE
+//                        return
                     }
                 }
             }

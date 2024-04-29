@@ -62,7 +62,8 @@ data class CommonCurrentStateInfo2(
     var ccid: String = IOTConstants.NULL_KEY, //CCID
     var imei: String = IOTConstants.NULL_KEY, //IMEI
     var imsi: String = IOTConstants.NULL_KEY, //IMSI
-    var dataCenterStatus: String = IOTConstants.NULL_KEY, //数据中心状态 [0,1,1]
+    var dataCenterStatus: String = IOTConstants.NULL_KEY, //数据中心连接状态 [0,1,1]
+    var dataCenterUseSta: String = IOTConstants.NULL_KEY, //数据中心启用状态 [0,1,1]
     var starSearchNum: String = IOTConstants.NULL_KEY, //搜星数
     var location: String = IOTConstants.NULL_KEY, //坐标 12135.648003E, 3112.752093N
     var worktime: String = IOTConstants.NULL_KEY,//运行时间

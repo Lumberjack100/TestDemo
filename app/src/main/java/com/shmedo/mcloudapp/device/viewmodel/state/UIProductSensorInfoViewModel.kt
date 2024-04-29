@@ -32,4 +32,7 @@ class UIProductSensorInfoViewModel : ViewModel() {
 
     //Z 轴加速度
     val memsAxisZAcceleration = NonNullObservableField("")
+
+    //连续运行时间
+    val runTime = NonNullObservableField("")
 }

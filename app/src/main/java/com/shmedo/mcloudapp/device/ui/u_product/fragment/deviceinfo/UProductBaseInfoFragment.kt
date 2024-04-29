@@ -222,7 +222,7 @@ class UProductBaseInfoFragment : BaseIOTDeviceFragment() {
     private fun initRunningData(commonCurrentStateInfo: CommonCurrentStateInfo2) {
         try {
             val list = mutableListOf<MRRunningDataItem>()
-            if (commonCurrentStateInfo.worktime.isNotEmpty() && commonCurrentStateInfo.worktime != IOTConstants.NULL_KEY) {
+            if (commonCurrentStateInfo.worktime != IOTConstants.NULL_KEY && commonCurrentStateInfo.worktime.isNotEmpty()) {
                 list.add(
                     MRRunningDataItem(
                         "运行时间(小时)",
