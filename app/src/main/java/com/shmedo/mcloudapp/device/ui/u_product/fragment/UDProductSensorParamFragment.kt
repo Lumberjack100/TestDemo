@@ -238,7 +238,7 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
             height = mStates.installHeight.get(),
             //gap = mStates.measureInterval.get(),  当前置灰不可配置
             //times = mStates.averageTimes.get(),  当前置灰不可配置
-            level = triggerCaptureLevelList.indexOf(mStates.triggerCaptureLevel.get()).toString(),
+            capture_level = triggerCaptureLevelList.indexOf(mStates.triggerCaptureLevel.get()).toString(),
             pixx = mStates.imageResolution.get().split("x")[0],
             pixy = mStates.imageResolution.get().split("x")[1]
         )
@@ -339,7 +339,7 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
             }
             mStates.measureInterval.set(info.gap)
             mStates.averageTimes.set(info.times)
-            mStates.triggerCaptureLevel.set(if (info.level.toInt() < triggerCaptureLevelList.size) triggerCaptureLevelList[info.level.toInt()] else triggerCaptureLevelList.last())
+            mStates.triggerCaptureLevel.set(if (info.capture_level.toInt() < triggerCaptureLevelList.size) triggerCaptureLevelList[info.capture_level.toInt()] else triggerCaptureLevelList.last())
             mStates.imageResolution.set("${info.pixx}x${info.pixy}")
 
         } catch (e: Exception) {

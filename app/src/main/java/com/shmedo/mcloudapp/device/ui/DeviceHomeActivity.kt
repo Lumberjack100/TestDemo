@@ -13,7 +13,6 @@ import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
-import com.shmedo.lib.core.ext.getIOTDeviceLogSession
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.MoshiUtil
@@ -64,7 +63,7 @@ class DeviceHomeActivity : BaseActivity() {
         }
         addHistoryList()
         deviceInfo?.let {
-            logViewModel.insertSession(getIOTDeviceLogSession(it.firmwareVersion, it.deviceToken))
+            logViewModel.insertIOTDeviceLogSession(it.firmwareVersion, it.deviceToken)
         }
         binding.deviceHomeHostFragment.post {
             setGraph()

@@ -4,16 +4,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
-import android.util.Log
 import com.amap.api.location.AMapLocationClient
 import com.gyf.immersionbar.ktx.immersionBar
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getAppViewModel
-import com.shmedo.lib.core.ext.getLogItem
-import com.shmedo.lib.core.ext.getSystemLogSession
-import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.MmkvCacheUtil.getPassword
 import com.shmedo.lib.core.util.MmkvCacheUtil.getUserName
 import com.shmedo.lib.core.util.MmkvCacheUtil.isAgreePrivate
@@ -26,7 +22,6 @@ import com.shmedo.mcloudapp.ext.dismissLoadingDialog
 import com.shmedo.mcloudapp.user.activity.LoginActivity
 import com.shmedo.mcloudapp.user.fragment.PolicyDialog
 import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
-import com.shmedo.mcloudapp.utils.LogHelper
 import com.tencent.bugly.crashreport.CrashReport
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -62,14 +57,7 @@ class SplashActivity : BaseActivity() {
         AMapLocationClient.updatePrivacyShow(this, true, true)
         //更新同意隐私状态,需要在初始化地图之前完成
         AMapLocationClient.updatePrivacyAgree(this, true)
-        logViewModel.insertSession(getSystemLogSession())
-        logViewModel.insertLog(
-            getLogItem(
-                sessionId = MmkvCacheUtil.getAppLogSessionId(),
-                priority = Log.INFO,
-                data = LogHelper.printDeviceInfo()
-            )
-        )
+        logViewModel.insertSystemLogSession()
         if (!isAgreePrivate()) {
             showPrivateDialog()
         } else {

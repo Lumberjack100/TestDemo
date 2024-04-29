@@ -18,17 +18,22 @@ import com.shmedo.lib.core.base.model.SessionInfo
  */
 @Dao
 interface SessionInfoDao {
-    @Query("select * from sessions  where create_by = :userId")
-    fun getSessionListByUserLiveData(userId: String): LiveData<List<SessionInfo>?>
+    @Query("select * from sessions  where create_by = :account")
+    fun getSessionListByUserLiveData(account: String): LiveData<List<SessionInfo>?>
 
-    @Query("select * from sessions  where create_by = :userId")
-    suspend fun getSessionListByUser(userId: String): List<SessionInfo>
+    @Query("select * from sessions  where create_by = :account")
+    suspend fun getSessionListByUser(account: String): List<SessionInfo>
+
+    //查询当前用户下当天内 name 相同的会话
+    @Query("select * from sessions  where create_by = :account and name = :name and create_date = :createDate")
+    suspend fun getSessionByUserAndName(
+        account: String,
+        name: String,
+        createDate: String
+    ):  List<SessionInfo>
 
     @Query("select * from sessions  where id = :id")
     suspend fun getSessionById(id: String): SessionInfo?
-
-    @Query("select * from sessions")
-    suspend fun getAllSessionList(): List<SessionInfo>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSession(record: SessionInfo)

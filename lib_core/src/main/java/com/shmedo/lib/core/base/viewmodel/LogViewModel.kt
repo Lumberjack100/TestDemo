@@ -3,9 +3,15 @@ package com.shmedo.lib.core.base.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.blankj.utilcode.util.TimeUtils
 import com.shmedo.lib.core.base.model.LogInfo
 import com.shmedo.lib.core.base.model.SessionInfo
 import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
+import com.shmedo.lib.core.ext.getIOTDeviceLogSession
+import com.shmedo.lib.core.ext.getLogItem
+import com.shmedo.lib.core.ext.getSystemLogSession
+import com.shmedo.lib.core.util.LogHelper
+import com.shmedo.lib.core.util.MmkvCacheUtil
 import kotlinx.coroutines.launch
 
 /**
@@ -18,13 +24,50 @@ class LogViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) : ViewM
         userId: String
     ): List<SessionInfo> = loggerRepositoryImp.getSessionListByUser(userId)
 
-    fun insertSession(info: SessionInfo) = viewModelScope.launch {
-        loggerRepositoryImp.insertSession(info)
+    /**
+     * 插入会话信息,并返回 sessionId
+     * 如果当前用户下当天内 name 相同的会话不存在,则插入，否则不插入，并
+     */
+    fun insertSystemLogSession() = viewModelScope.launch {
+        val sessionList = loggerRepositoryImp.getSessionByUserAndName(
+            MmkvCacheUtil.getUserName(),
+            "系统日志",
+            TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd"))
+        )
+        if (sessionList.isEmpty()) {
+            val newSession = getSystemLogSession()
+            loggerRepositoryImp.insertSession(newSession)
+            loggerRepositoryImp.insertLog(
+                getLogItem(
+                    sessionId = MmkvCacheUtil.getAppLogSessionId(),
+                    priority = Log.INFO,
+                    data = LogHelper.printDeviceInfo()
+                )
+            )
+        } else {
+            MmkvCacheUtil.setAppLogSessionId(sessionList[0].id)
+        }
     }
 
-    fun deleteSessionById(primaryId: String) = viewModelScope.launch {
-        loggerRepositoryImp.deleteSessionById(primaryId)
-    }
+    /**
+     * 插入会话信息,并返回 sessionId
+     * 如果当前用户下当天内 name 相同的会话不存在,则插入，否则不插入，并
+     */
+    fun insertIOTDeviceLogSession(mKey: String, mName: String) =
+        viewModelScope.launch {
+            val sessionList = loggerRepositoryImp.getSessionByUserAndName(
+                MmkvCacheUtil.getUserName(),
+                mName,
+                TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd"))
+            )
+            if (sessionList.isEmpty()) {
+                val newSession = getIOTDeviceLogSession(mKey, mName)
+                loggerRepositoryImp.insertSession(newSession)
+            } else {
+                MmkvCacheUtil.setIOTDeviceLogSessionId(sessionList[0].id)
+            }
+        }
+
 
     suspend fun getLogListBySessionId(
         sessionId: String, level: Int = Log.DEBUG

@@ -14,7 +14,7 @@ data class MudLevelMeterSensorEntity(
     val height: String = "", //安装高度
     val gap: String = IOTConstants.NULL_KEY, //测量间隔  雷达测量间隔时间(ms)
     val times: String = IOTConstants.NULL_KEY, //平均次数  数据平均次数
-    val level: String = IOTConstants.NULL_KEY, //能够触发拍照的级别
+    val capture_level: String = IOTConstants.NULL_KEY, //能够触发拍照的级别
     val pixx: String = IOTConstants.NULL_KEY, //图片水平分辨率
     val pixy: String = IOTConstants.NULL_KEY, //图片垂直分辨率
 ) {

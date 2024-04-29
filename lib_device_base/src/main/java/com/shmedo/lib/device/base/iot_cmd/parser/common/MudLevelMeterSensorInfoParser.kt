@@ -15,7 +15,7 @@ class MudLevelMeterSensorInfoParser: IOTCommandParser<MudLevelMeterSensorInfo> {
             height = keyValueMap.getOrDefault("height", height)
             gap = keyValueMap.getOrDefault("gap", gap)
             times = keyValueMap.getOrDefault("times", times)
-            level = keyValueMap.getOrDefault("level", level)
+            capture_level = keyValueMap.getOrDefault("capture_level", capture_level)
             pixx = keyValueMap.getOrDefault("pixx", pixx)
             pixy = keyValueMap.getOrDefault("pixy", pixy)
         }

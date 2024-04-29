@@ -19,14 +19,19 @@ import kotlinx.coroutines.withContext
 class LoggerRepositoryImp(private val database: AppDatabase) {
 
     //<editor-fold desc="日志会话信息">
-    suspend fun getAllSessionList(): List<SessionInfo> = withContext(Dispatchers.IO) {
-        database.sessionInfoDao().getAllSessionList()
-    }
-
-    suspend fun getSessionListByUser(userId: String): List<SessionInfo> =
+    suspend fun getSessionListByUser(account: String): List<SessionInfo> =
         withContext(Dispatchers.IO) {
-            database.sessionInfoDao().getSessionListByUser(userId)
+            database.sessionInfoDao().getSessionListByUser(account)
         }
+
+    //查询当前用户下当天内 name 相同的会话
+    suspend fun getSessionByUserAndName(
+        account: String,
+        name: String,
+        createDate: String
+    ): List<SessionInfo> = withContext(Dispatchers.IO) {
+        database.sessionInfoDao().getSessionByUserAndName(account, name, createDate)
+    }
 
     suspend fun getSessionById(id: String): SessionInfo? = withContext(Dispatchers.IO) {
         database.sessionInfoDao().getSessionById(id)
@@ -60,14 +65,6 @@ class LoggerRepositoryImp(private val database: AppDatabase) {
 
     suspend fun insertLogList(list: List<LogInfo>) = withContext(Dispatchers.IO) {
         database.logInfoDao().insertLogList(list)
-    }
-
-    suspend fun deleteLogById(id: String) = withContext(Dispatchers.IO) {
-        database.logInfoDao().deleteById(id)
-    }
-
-    suspend fun deleteLogBySessionId(session_id: String) = withContext(Dispatchers.IO) {
-        database.logInfoDao().deleteBySessionId(session_id)
     }
     // </editor-fold>
 
