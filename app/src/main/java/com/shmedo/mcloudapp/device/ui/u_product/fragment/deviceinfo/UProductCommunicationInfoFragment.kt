@@ -87,7 +87,7 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
     private fun queryInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS,"limittime=40")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS)
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }

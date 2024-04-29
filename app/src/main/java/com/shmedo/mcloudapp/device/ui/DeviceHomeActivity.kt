@@ -112,7 +112,7 @@ class DeviceHomeActivity : BaseActivity() {
             )
 
             //ProductType.U_I_1, ProductType.U_R_1
-            ProductType.U_I_1, ProductType.U_R_1, ProductType.COLLECTOR_R_1, ProductType.DAS, ProductType.BHY -> {
+            ProductType.U_R_1, ProductType.COLLECTOR_R_1, ProductType.DAS, ProductType.BHY -> {
                 val graphId =
                     if (communicateWay == BleConnect) R.navigation.ble_das_graph else R.navigation.das_graph
                 navController.setGraph(graphId, bundle)
@@ -160,7 +160,7 @@ class DeviceHomeActivity : BaseActivity() {
             )
 
             //, ProductType.U_I_1, ProductType.U_R_1
-            ProductType.U_D_1, ProductType.U_D_2 -> {
+            ProductType.U_D_1, ProductType.U_D_2, ProductType.U_I_1 -> {
                 navController.setGraph(
                     R.navigation.u_product_graph,
                     UniversalDeviceHomeFragment.newBundleArguments(

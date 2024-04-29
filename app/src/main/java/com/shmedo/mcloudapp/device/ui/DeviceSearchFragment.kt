@@ -1,10 +1,12 @@
 package com.shmedo.mcloudapp.device.ui
 
 import android.os.Bundle
+import android.text.InputFilter
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
@@ -19,12 +21,12 @@ import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.FragmentDeviceSearchBinding
 import com.shmedo.mcloudapp.device.viewmodel.request.RequestSearchViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.showMessage
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 /**
@@ -40,11 +42,18 @@ class DeviceSearchFragment : BaseFragment() {
     private lateinit var binding: FragmentDeviceSearchBinding
     private lateinit var mStates: EmptyViewModel
     private lateinit var requestSearchViewModel: RequestSearchViewModel
-
+    private val deviceSNFilter = InputFilter { source, start, end, _, _, _ ->
+        for (i in start until end) {
+            if (!"-0123456789QWERTZUIOPASDFGHJKLYXCVBNM".contains(source[i].toString())) {
+                return@InputFilter ""
+            }
+        }
+        null
+    }
 
     override fun initViewModel() {
-        mStates =  getFragmentScopeViewModel()
-        requestSearchViewModel =  getViewModel()
+        mStates = getFragmentScopeViewModel()
+        requestSearchViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -108,9 +117,11 @@ class DeviceSearchFragment : BaseFragment() {
                 val menuItem = menu.findItem(R.id.action_search)
                 (menuItem?.actionView as SearchView).let { searchView ->
                     searchView.run {
-                        maxWidth = Integer.MAX_VALUE
-                        onActionViewExpanded()
+                        val searchEditText =
+                            findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
+                        searchEditText.filters = arrayOf(deviceSNFilter)
                         queryHint = "输入设备 SN 关键字搜索"
+                        onActionViewExpanded()
                         setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                             //SearchView的监听
                             override fun onQueryTextSubmit(query: String?): Boolean {

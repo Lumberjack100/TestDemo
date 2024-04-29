@@ -66,4 +66,7 @@ data class CommonCurrentStateInfo2(
     var starSearchNum: String = IOTConstants.NULL_KEY, //搜星数
     var location: String = IOTConstants.NULL_KEY, //坐标 12135.648003E, 3112.752093N
     var worktime: String = IOTConstants.NULL_KEY,//运行时间
+    var pixx: String = IOTConstants.NULL_KEY,//图片水平分辨率
+    var pixy: String = IOTConstants.NULL_KEY,//图片垂直分辨率
+    var capture_level: String = IOTConstants.NULL_KEY,//触发抓拍级别
 )

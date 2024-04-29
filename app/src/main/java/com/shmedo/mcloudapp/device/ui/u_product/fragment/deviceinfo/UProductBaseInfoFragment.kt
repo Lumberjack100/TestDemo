@@ -38,7 +38,7 @@ class UProductBaseInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUProductBaseInfoBinding
     private lateinit var mStates: UProductBaseInfoViewModel
     private val iotParseManager: IOTParserManager by inject()
-    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
+    private val decimalFormat = DecimalFormat("#.###", DecimalFormatSymbols(Locale.getDefault()))
     private val deviceAbnormalList: ArrayList<String> = ArrayList()
 
     override fun initViewModel() {
@@ -97,7 +97,7 @@ class UProductBaseInfoFragment : BaseIOTDeviceFragment() {
     private fun queryBaseInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "limittime=40")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS)
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -233,6 +233,7 @@ class UProductBaseInfoFragment : BaseIOTDeviceFragment() {
             if (commonCurrentStateInfo.emmcStorage != IOTConstants.NULL_KEY && commonCurrentStateInfo.emmcFree != IOTConstants.NULL_KEY
                 && commonCurrentStateInfo.emmcStorage.isNotEmpty() && commonCurrentStateInfo.emmcFree.isNotEmpty()
             ) {
+                decimalFormat.applyPattern("#.#")
                 val free = commonCurrentStateInfo.emmcFree.replace("MB", "").toDoubleOrNull()?.let {
                     decimalFormat.format(it)
                 } ?: ""

@@ -120,7 +120,7 @@ class M20BaseInfoFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initStatusInfo(content: String) {
-        val decimalFormat = DecimalFormat("#.###")
+        decimalFormat.applyPattern("#.###")
         try {
             val commonCurrentStateInfo =
                 MoshiUtil.fromJson<CommonCurrentStateInfo>(content) ?: return
@@ -222,6 +222,7 @@ class M20BaseInfoFragment : BaseIOTDeviceFragment() {
             if (commonCurrentStateInfo.emmc_storage.isNotEmpty() && commonCurrentStateInfo.emmc_storage !=IOTConstants.NULL_KEY) {
                 val storages = commonCurrentStateInfo.emmc_storage.replace("MB", "").split(",")
                 if (storages.size == 2) {
+                    decimalFormat.applyPattern("#.#")
                     val free = storages[0].toDoubleOrNull()?.let {
                         decimalFormat.format(it)
                     } ?: ""

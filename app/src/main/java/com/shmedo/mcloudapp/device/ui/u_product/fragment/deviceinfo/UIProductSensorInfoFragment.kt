@@ -36,7 +36,7 @@ class UIProductSensorInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUIProductSensorInfoBinding
     private lateinit var mStates: UIProductSensorInfoViewModel
     private val iotParseManager: IOTParserManager by inject()
-    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
+    private val decimalFormat = DecimalFormat("#.###", DecimalFormatSymbols(Locale.getDefault()))
 
 
     override fun initViewModel() {
@@ -75,7 +75,7 @@ class UIProductSensorInfoFragment : BaseIOTDeviceFragment() {
     private fun queryInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS,"limittime=40")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS)
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -121,8 +121,9 @@ class UIProductSensorInfoFragment : BaseIOTDeviceFragment() {
                     return@launchWithViewLifecycle
                 }
                 val info = commonCurrentStateInfoList[0]
+                decimalFormat.applyPattern("#.###")
 
-//                mStates.memsInitialAxisX.set(decimalFormat.format(info.x_Angle))
+
 
             } catch (e: Exception) {
                 Timber.e(e)

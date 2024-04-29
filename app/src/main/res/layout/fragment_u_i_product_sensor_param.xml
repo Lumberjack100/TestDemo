@@ -49,14 +49,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
+                    android:paddingTop="1dp"
                     android:paddingBottom="@dimen/dimen_size_25">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onMeasureIntervalClick()}"
-                        android:layout_marginTop="@dimen/dimen_size_1"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{!stateVM.isEditable }">
+                        visible="@{!stateVM.isEditable }"
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -74,9 +74,9 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onAverageTimesClick()}"
+                        visible="@{!stateVM.isEditable }"
                         android:layout_marginTop="@dimen/dimen_size_1"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{!stateVM.isEditable }">
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"

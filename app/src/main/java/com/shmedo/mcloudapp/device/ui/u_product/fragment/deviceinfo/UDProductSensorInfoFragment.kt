@@ -37,7 +37,7 @@ class UDProductSensorInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUDProductSensorInfoBinding
     private lateinit var mStates: UDProductSensorInfoViewModel
     private val iotParseManager: IOTParserManager by inject()
-    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
+    private val decimalFormat = DecimalFormat("#.###", DecimalFormatSymbols(Locale.getDefault()))
 
 
     override fun initViewModel() {
@@ -76,7 +76,7 @@ class UDProductSensorInfoFragment : BaseIOTDeviceFragment() {
     private fun queryInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "limittime=40")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS)
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -122,6 +122,7 @@ class UDProductSensorInfoFragment : BaseIOTDeviceFragment() {
                     return@launchWithViewLifecycle
                 }
                 val info = commonCurrentStateInfoList[0]
+                decimalFormat.applyPattern("#.###")
                 mStates.cameraErrNo.set(
                     if (info.cam != IOTConstants.NULL_KEY && info.cam.uppercase()
                             .contains("OK")

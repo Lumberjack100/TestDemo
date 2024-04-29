@@ -10,10 +10,12 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
+import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.MudLevelMeterSensorEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.device.base.iot_cmd.model.common.MudLevelMeterSensorInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
@@ -29,6 +31,8 @@ import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessageDialog
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -46,7 +50,7 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: UDProductSensorParamViewModel
     private val iotParseManager: IOTParserManager by inject()
-    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
+    private val decimalFormat = DecimalFormat("#.###", DecimalFormatSymbols(Locale.getDefault()))
 
     private val measureIntervalList = arrayListOf("1", "2", "5", "10")
     private val averageTimesList = arrayListOf("2", "3", "5", "10")
@@ -238,7 +242,8 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
             height = mStates.installHeight.get(),
             //gap = mStates.measureInterval.get(),  当前置灰不可配置
             //times = mStates.averageTimes.get(),  当前置灰不可配置
-            capture_level = triggerCaptureLevelList.indexOf(mStates.triggerCaptureLevel.get()).toString(),
+            capture_level = triggerCaptureLevelList.indexOf(mStates.triggerCaptureLevel.get())
+                .toString(),
             pixx = mStates.imageResolution.get().split("x")[0],
             pixy = mStates.imageResolution.get().split("x")[1]
         )
@@ -260,7 +265,7 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_MUD_LEVEL_METER_SENSOR
+            IOTCommandType.MD_GET_DEVICE_STATUS
         )
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -268,10 +273,10 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_MUD_LEVEL_METER_SENSOR -> {//
-                val result = iotParseManager.parse<MudLevelMeterSensorInfo>(
+            IOTCommandType.MD_GET_DEVICE_STATUS -> {//
+                val result = iotParseManager.parse<String>(
                     cmdStr,
-                    IOTCommandType.MD_GET_MUD_LEVEL_METER_SENSOR
+                    IOTCommandType.MD_GET_DEVICE_STATUS
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -331,19 +336,29 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initParamData(info: MudLevelMeterSensorInfo) {
-        try {
-            decimalFormat.applyPattern("#.##")
-            info.height.toDoubleOrNull()?.let {
-                mStates.installHeight.set(decimalFormat.format(it))
-            }
-            mStates.measureInterval.set(info.gap)
-            mStates.averageTimes.set(info.times)
-            mStates.triggerCaptureLevel.set(if (info.capture_level.toInt() < triggerCaptureLevelList.size) triggerCaptureLevelList[info.capture_level.toInt()] else triggerCaptureLevelList.last())
-            mStates.imageResolution.set("${info.pixx}x${info.pixy}")
+    private fun initParamData(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val commonCurrentStateInfoList = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<List<CommonCurrentStateInfo2>>(content)
+                } ?: return@launchWithViewLifecycle
 
-        } catch (e: Exception) {
-            Timber.e(e)
+                if (commonCurrentStateInfoList.isEmpty()) {
+                    Toaster.show("数据为空")
+                    return@launchWithViewLifecycle
+                }
+                val info = commonCurrentStateInfoList[0]
+                info.height.toDoubleOrNull()?.let {
+                    mStates.installHeight.set(decimalFormat.format(it))
+                }
+                //mStates.measureInterval.set(info.gap)
+                //mStates.averageTimes.set(info.times)
+                mStates.triggerCaptureLevel.set(if (info.capture_level.toInt() < triggerCaptureLevelList.size) triggerCaptureLevelList[info.capture_level.toInt()] else triggerCaptureLevelList.last())
+                mStates.imageResolution.set("${info.pixx}x${info.pixy}")
+
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }
     }
 
