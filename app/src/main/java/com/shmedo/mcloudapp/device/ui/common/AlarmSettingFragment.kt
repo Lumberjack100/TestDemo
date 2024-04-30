@@ -12,7 +12,6 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.AlarmMonitorPointEntity
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.AlarmReportIntervalEntity
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.AlarmTriggerValueEntity
@@ -56,7 +55,6 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: AlarmSettingViewModel
     private val iotParseManager: IOTParserManager by inject()
 
-    private var productType = ProductType.UnKnown
     private val monitorPointList: List<String> = (1..15).map { it.toString() }
     private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
@@ -92,9 +90,6 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        arguments?.let {
-            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
-        }
         resetParams()
     }
 

@@ -260,6 +260,7 @@ class AdmeHomeFragment : BaseIOTDeviceFragment() {
             else -> {
                 if (module.configModule.navId != 0) {
                     val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                        productType,
                         communicateWay,
                         deviceInfo,
                         bleDevice

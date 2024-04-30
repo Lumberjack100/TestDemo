@@ -40,6 +40,7 @@ class TestDeviceHomeFragment : UniversalDeviceHomeFragment() {
             else -> {
                 if (configModule.navId != 0) {
                     val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                        productType,
                         communicateWay,
                         deviceInfo,
                         bleDevice

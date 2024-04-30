@@ -128,7 +128,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
     override fun processOtherItemClick(configModule: DeviceFunctionModule) {
         when (configModule) {
             is AlarmConfigModule -> {
-                val bundle = UniversalDeviceHomeFragment.newBundleArguments(
+                val bundle = BaseIOTDeviceFragment.newBundleArguments(
                     productType,
                     communicateWay,
                     deviceInfo,
@@ -167,6 +167,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
             else -> {
                 if (configModule.navId != 0) {
                     val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                        productType,
                         communicateWay,
                         deviceInfo,
                         bleDevice

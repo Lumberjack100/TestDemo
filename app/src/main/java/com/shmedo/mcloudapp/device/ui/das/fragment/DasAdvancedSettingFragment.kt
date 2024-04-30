@@ -61,6 +61,7 @@ class DasAdvancedSettingFragment : BaseIOTDeviceFragment() {
     inner class ClickProxy : BaseDasAdvancedSettingClickProxy() {
         override fun onFirmWareSelectClick() {
             val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                productType,
                 communicateWay,
                 deviceInfo,
                 bleDevice
@@ -84,6 +85,7 @@ class DasAdvancedSettingFragment : BaseIOTDeviceFragment() {
 
         override fun onAudibleAlarmClick() {
             val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                productType,
                 communicateWay,
                 deviceInfo,
                 bleDevice

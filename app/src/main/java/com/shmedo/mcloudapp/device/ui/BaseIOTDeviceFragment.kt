@@ -23,6 +23,7 @@ import com.shmedo.lib.core.ext.getLogItem
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
@@ -61,12 +62,12 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     protected var refreshLayout: PageRefreshLayout? = null
 
+    protected var productType = ProductType.UnKnown
     protected var statusBarColor = 0
     protected var communicateWay: CommunicateWay = NetPlatformConnect
     protected lateinit var deviceInfo: DeviceInfo
     protected var bleDevice: DiscoveredBluetoothDevice? = null
     private var timeoutJob: Job? = null
-
     protected var commandItems = LinkedList<String>()
     protected var commandDescItems = LinkedList<String>()
 
@@ -81,6 +82,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     @CallSuper
     override fun initData() {
         arguments?.let {
+            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
             communicateWay = it.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
             deviceInfo = it.getParcelable(AppContants.Extras.DEVICE_INFO)!!
             bleDevice = it.getParcelable(AppContants.Extras.BLE_DEVICE)
@@ -346,11 +348,13 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     companion object {
         fun newBundleArguments(
+            type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
             deviceInfo: DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
             putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
             putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
             putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)

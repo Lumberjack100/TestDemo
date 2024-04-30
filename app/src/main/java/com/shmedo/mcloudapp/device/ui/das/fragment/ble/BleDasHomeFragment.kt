@@ -227,6 +227,19 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             return
         }
         when (module.configModule) {
+            is RunningStatusModule -> {
+                val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                    productType,
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
+                nav().navigate(
+                    module.configModule.navId,
+                    bundle
+                )
+            }
+
             is TimeCalibrationModule -> {//时间校准
                 doQueryTimeCmd()
                 mCommandResponseStates.isResponseLoading.set(true)
@@ -261,10 +274,11 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             is SensorConfigModule -> {//传感器配置
                 if (module.configModule.navId != 0) {
                     val bundle = BleDasSensorHomeFragment.newBundleArguments(
+                        mStates.collectorModel.get(),
+                        productType,
                         communicateWay,
                         deviceInfo,
                         bleDevice,
-                        mStates.collectorModel.get()
                     )
                     nav().navigate(
                         module.configModule.navId,
@@ -276,6 +290,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             else -> {
                 if (module.configModule.navId != 0) {
                     val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                        productType,
                         communicateWay,
                         deviceInfo,
                         bleDevice

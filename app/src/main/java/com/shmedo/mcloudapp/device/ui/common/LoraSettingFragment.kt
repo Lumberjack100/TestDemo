@@ -11,7 +11,6 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.LoraCommunicateEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
@@ -40,8 +39,6 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: LoraSettingViewModel
     private val iotParseManager: IOTParserManager by inject()
-
-    private var productType = ProductType.UnKnown
 
     private val loraReceiveChannelList by lazy { Utils.getApp().resources.getStringArray(R.array.lora_receive_channel) }
     private val transmitPowerList: List<String> = (5..20).map { it.toString() }
@@ -82,9 +79,6 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        arguments?.let {
-            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
-        }
         mStates.isTargetAddressSupport.set(productType != ProductType.COLLECTOR_G_0)
         resetParams()
     }

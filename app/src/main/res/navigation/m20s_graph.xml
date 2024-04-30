@@ -47,7 +47,7 @@
         android:id="@+id/m20SDeviceInfoFragment"
         android:name="com.shmedo.mcloudapp.device.ui.m20s.fragment.deviceinfo.M20SDeviceInfoFragment"
         android:label="M20SDeviceInfoFragment"
-        tools:layout="@layout/fragment_m20_device_info" />
+        tools:layout="@layout/fragment_base_running_device_info" />
 
     <fragment
         android:id="@+id/m20SWorkModelFragment"

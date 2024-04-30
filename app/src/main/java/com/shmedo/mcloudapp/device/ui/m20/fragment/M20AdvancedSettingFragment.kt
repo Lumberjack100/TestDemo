@@ -70,6 +70,7 @@ class M20AdvancedSettingFragment : BaseIOTDeviceFragment() {
     inner class ClickProxy : BaseClickProxy() {
         fun onFirmWareSelectClick() {
             val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                productType,
                 communicateWay,
                 deviceInfo,
                 bleDevice

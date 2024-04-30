@@ -16,7 +16,6 @@ import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
@@ -52,7 +51,6 @@ class UDProductDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: UniversalDataCenterHomeViewModel
     private val iotParseManager: IOTParserManager by inject()
     private var centerNum = 0//数据中心数量
-    private var productType = ProductType.UnKnown
 
     override fun initViewModel() {
         super.initViewModel()
@@ -89,7 +87,6 @@ class UDProductDataCenterHomeFragment : BaseIOTDeviceFragment() {
         super.initData()
         arguments?.let {
             centerNum = it.getInt(UniversalDataCenterHomeFragment.CENTER_NUM)
-            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
         }
         mStates.isSupportedReportInterval.set(false)
         binding.recyclerView.bindingAdapter.models = getAdapterData()

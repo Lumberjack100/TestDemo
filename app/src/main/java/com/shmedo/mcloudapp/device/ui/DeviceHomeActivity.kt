@@ -85,7 +85,8 @@ class DeviceHomeActivity : BaseActivity() {
     }
 
     private fun setGraph() {
-        val bundle = BaseIOTDeviceFragment.newBundleArguments(
+        val bundle2 = BaseIOTDeviceFragment.newBundleArguments(
+            productType,
             communicateWay,
             deviceInfo!!,
             bleDevice
@@ -95,90 +96,59 @@ class DeviceHomeActivity : BaseActivity() {
             ProductType.COLLECTOR_G_0 -> {
                 navController.setGraph(
                     R.navigation.gw100_graph,
-                    UniversalDeviceHomeFragment.newBundleArguments(
-                        productType,
-                        communicateWay,
-                        deviceInfo!!,
-                        bleDevice
-                    )
+                    bundle2
                 )
             }
 
             ProductType.M_A_1, ProductType.ADME -> navController.setGraph(
                 R.navigation.adme_graph,
-                bundle
+                bundle2
             )
 
-            //ProductType.U_I_1, ProductType.U_R_1
             ProductType.U_R_1, ProductType.COLLECTOR_R_1, ProductType.DAS, ProductType.BHY -> {
-                val graphId =
-                    if (communicateWay == BleConnect) R.navigation.ble_das_graph else R.navigation.das_graph
-                navController.setGraph(graphId, bundle)
+                val graphId = if (communicateWay == BleConnect) R.navigation.ble_das_graph else R.navigation.das_graph
+                navController.setGraph(
+                    graphId,bundle2
+                )
             }
 
             ProductType.LR200 -> {
                 navController.setGraph(
                     R.navigation.lr200_graph,
-                    UniversalDeviceHomeFragment.newBundleArguments(
-                        productType,
-                        communicateWay,
-                        deviceInfo!!,
-                        bleDevice
-                    )
+                    bundle2
                 )
             }
 
             ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {
                 navController.setGraph(
                     R.navigation.m20s_graph,
-                    UniversalDeviceHomeFragment.newBundleArguments(
-                        productType,
-                        communicateWay,
-                        deviceInfo!!,
-                        bleDevice
-                    )
+                    bundle2
                 )
             }
 
             ProductType.M20 -> {
                 navController.setGraph(
                     R.navigation.m20_graph,
-                    UniversalDeviceHomeFragment.newBundleArguments(
-                        productType,
-                        communicateWay,
-                        deviceInfo!!,
-                        bleDevice
-                    )
+                    bundle2
                 )
             }
 
             ProductType.COLLECTOR_R_2, ProductType.MR702 -> navController.setGraph(
                 R.navigation.mr702_graph,
-                bundle
+                bundle2
             )
 
-            //, ProductType.U_I_1, ProductType.U_R_1
             ProductType.U_D_1, ProductType.U_D_2, ProductType.U_I_1 -> {
                 navController.setGraph(
                     R.navigation.u_product_graph,
-                    UniversalDeviceHomeFragment.newBundleArguments(
-                        productType,
-                        communicateWay,
-                        deviceInfo!!,
-                        bleDevice
-                    )
+                    bundle2
                 )
             }
 
             ProductType.TEST_DEVICE -> {
                 navController.setGraph(
                     R.navigation.test_device_graph,
-                    UniversalDeviceHomeFragment.newBundleArguments(
-                        ProductType.TEST_DEVICE,
-                        communicateWay,
-                        deviceInfo!!,
-                        bleDevice
-                    )
+                    bundle2
                 )
             }
 

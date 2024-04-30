@@ -16,6 +16,7 @@ import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
+import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
@@ -42,11 +43,12 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     private lateinit var binding: FragmentDasSensorHomeBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
 
+    private var collectorModel = "-1"
+    private var productType = ProductType.UnKnown
     private var statusBarColor = 0
     private var communicateWay: CommunicateWay = NetPlatformConnect
     private lateinit var deviceInfo: DeviceInfo
     private var bleDevice: DiscoveredBluetoothDevice? = null
-    private var collectorModel = "-1"
 
     private val tabNames = arrayListOf<String>("开关量", "数字式水位计", "扩展传感器")
 
@@ -77,11 +79,12 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
 
     override fun initData() {
         arguments?.let {
+            collectorModel = it.getString(COLLECTOR_MODEL, "-1")
+            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
             communicateWay = it.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
             deviceInfo = it.getParcelable(AppContants.Extras.DEVICE_INFO)!!
             bleDevice = it.getParcelable(AppContants.Extras.BLE_DEVICE)
             statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
-            collectorModel = it.getString(COLLECTOR_MODEL, "-1")
         }
         initViewPager()
     }
@@ -91,6 +94,7 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
             listOf<Fragment>(
                 BleDasIOSensorFragment.newInstance().apply {
                     arguments = BaseIOTDeviceFragment.newBundleArguments(
+                        productType,
                         communicateWay,
                         deviceInfo,
                         bleDevice
@@ -98,6 +102,7 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
                 },
                 BleDasDigitalOsmometerFragment.newInstance().apply {
                     arguments = BaseIOTDeviceFragment.newBundleArguments(
+                        productType,
                         communicateWay,
                         deviceInfo,
                         bleDevice
@@ -172,22 +177,24 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
 
     companion object {
         private val activeColor: Int = ColorUtils.getColor(R.color.colorPrimary)
-        private val normalColor: Int = ColorUtils.getColor(R.color.title_text_color)
+        private val normalColor: Int = ColorUtils.getColor(R.color.text_color_666666)
         private const val activeSize: Float = 17f
         private const val normalSize: Float = 15f
 
         private const val COLLECTOR_MODEL = "collector_model"
         fun newBundleArguments(
+            collectorModel: String,
+            type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
             deviceInfo: DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
-            collectorModel: String,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
+            putString(COLLECTOR_MODEL, collectorModel)
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
             putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
             putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
             putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putString(COLLECTOR_MODEL, collectorModel)
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }

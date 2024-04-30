@@ -109,6 +109,7 @@ class AdmeAdvancedSettingFragment : BaseIOTDeviceFragment() {
 
         fun onFirmWareSelectClick() {
             val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                productType,
                 communicateWay,
                 deviceInfo,
                 bleDevice

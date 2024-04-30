@@ -63,7 +63,7 @@
         android:id="@+id/uProductDeviceInfoFragment"
         android:name="com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.UProductDeviceInfoFragment"
         android:label="UProductDeviceInfoFragment"
-        tools:layout="@layout/fragment_m20_device_info" />
+        tools:layout="@layout/fragment_base_running_device_info" />
     <fragment
         android:id="@+id/uDProductSensorParamFragment"
         android:name="com.shmedo.mcloudapp.device.ui.u_product.fragment.UDProductSensorParamFragment"

@@ -90,6 +90,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
         }
         if (module.configModule.navId != 0) {
             val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                productType,
                 communicateWay,
                 deviceInfo,
                 bleDevice

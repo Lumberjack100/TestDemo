@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui.das.fragment
+package com.shmedo.mcloudapp.device.ui.common
 
 import android.graphics.Typeface
 import android.os.Bundle
@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.CallSuper
 import androidx.fragment.app.Fragment
 import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
@@ -20,44 +21,41 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
-import com.shmedo.mcloudapp.databinding.FragmentDasSensorHomeBinding
-import com.shmedo.mcloudapp.device.common.BaseClickProxy
+import com.shmedo.mcloudapp.databinding.FragmentBaseRunningDeviceInfoBinding
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalSensorListFragment
-import com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor.DasDigitalOsmometerFragment
-import com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor.DasIOSensorFragment
-import com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor.DasMCUAddressFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.BaseRunningDeviceInfoViewModel
 import com.shmedo.mcloudapp.ext.nav
 
-class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
-    private lateinit var binding: FragmentDasSensorHomeBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
+/**
+ * 创建者：gonghe
+ * 创建时间：2024/4/30
+ * 描述： TODO
+ */
+abstract class BaseRunningDeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
+    private lateinit var binding: FragmentBaseRunningDeviceInfoBinding
+    protected lateinit var mStates: BaseRunningDeviceInfoViewModel
 
-    private var productType = ProductType.UnKnown
-    private var statusBarColor = 0
-    private var communicateWay: CommunicateWay = NetPlatformConnect
-    private lateinit var deviceInfo: DeviceInfo
-    private var bleDevice: DiscoveredBluetoothDevice? = null
+    protected var productType = ProductType.UnKnown
+    protected var statusBarColor = 0
+    protected var communicateWay: CommunicateWay = NetPlatformConnect
+    protected lateinit var deviceInfo: DeviceInfo
+    protected var bleDevice: DiscoveredBluetoothDevice? = null
 
-    private val tabNames = arrayListOf<String>("开关量", "数字式水位计", "扩展传感器")
-
+    protected val tabs = mutableListOf("基本信息", "通讯状态", "传感器")
 
     override fun initViewModel() {
-        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_das_sensor_home, BR.toolbarVM, toolbarViewModel)
-            .addBindingParam(BR.click, BaseClickProxy())
+        return DataBindingConfig(R.layout.fragment_base_running_device_info, BR.stateVM, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentDasSensorHomeBinding
-        binding.llToolbar.toolbar.title = "传感器配置"
-        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
+        binding = getBinding() as FragmentBaseRunningDeviceInfoBinding
+        binding.toolbar.title = "状态信息"
+        binding.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
@@ -69,6 +67,7 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         })
     }
 
+    @CallSuper
     override fun initData() {
         arguments?.let {
             productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
@@ -77,43 +76,22 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             bleDevice = it.getParcelable(AppContants.Extras.BLE_DEVICE)
             statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
         }
-        if (deviceInfo.productName.contains("MR701")) {
-            tabNames.add(2, "MCU地址")
-        }
+        mStates.productName.set(deviceInfo.productName)
+        mStates.productType.set("型号：${deviceInfo.deviceName}")
         initViewPager()
     }
 
     private fun initViewPager() {
-        val bundle = BaseIOTDeviceFragment.newBundleArguments(
-            productType,
-            communicateWay,
-            deviceInfo,
-            bleDevice
-        )
-        val mFragments =
-            listOf<Fragment>(
-                DasIOSensorFragment.newInstance().apply {
-                    arguments = bundle
-                },
-                DasDigitalOsmometerFragment.newInstance().apply {
-                    arguments = bundle
-                },
-                DasMCUAddressFragment.newInstance().apply {
-                    arguments = bundle
-                },
-                DasExternalSensorListFragment.newInstance().apply {
-                    arguments = bundle
-                }
-            )
+        val mFragments = initTabFragment()
         binding.viewpager.adapter = PageAdapter(this, mFragments)
-        binding.viewpager.offscreenPageLimit = tabNames.size
+        binding.viewpager.offscreenPageLimit = mFragments.size
         binding.viewpager.isUserInputEnabled = false
         binding.tabs.addOnTabSelectedListener(this)
 
         TabLayoutMediator(binding.tabs, binding.viewpager) { tab, position ->
             val textView = TextView(requireContext())
 
-            textView.text = tabNames[position]
+            textView.text = tabs[position]
             if (position == 0) { // 第一个为默认选中
                 textView.textSize = activeSize
                 textView.typeface = Typeface.DEFAULT_BOLD
@@ -149,9 +127,12 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
     override fun onTabReselected(tab: TabLayout.Tab) {}
 
+    abstract fun initTabFragment(): List<Fragment>
+
+
     override fun onResume() {
         super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
+        initImmersionBar(binding.toolbar)
     }
 
     companion object {

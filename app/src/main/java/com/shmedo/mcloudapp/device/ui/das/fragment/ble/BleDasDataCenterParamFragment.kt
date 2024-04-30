@@ -54,7 +54,6 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: BleDasDataCenterParamViewModel
     private val mdParseManager: MDParserManager by inject()
 
-    private var productType = ProductType.UnKnown
     private lateinit var statusItem: DataCenterStatusItem
 
     private val transferProtocolList by lazy { Utils.getApp().resources.getStringArray(R.array.register_protocol) }
@@ -106,7 +105,6 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         arguments?.let {
-            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
             statusItem = it.getParcelable(AppContants.Extras.SERVER_NUMBER)!!
         }
         mStates.centerName.set(statusItem.name)
