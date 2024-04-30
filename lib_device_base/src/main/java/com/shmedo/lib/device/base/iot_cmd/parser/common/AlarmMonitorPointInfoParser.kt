@@ -25,5 +25,5 @@ class AlarmMonitorPointInfoParser: IOTCommandParser<AlarmMonitorPointInfo> {
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.MD_GET_ALRAM_CTRL
+    override fun commandType(): IOTCommandType = IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL
 }

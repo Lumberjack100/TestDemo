@@ -201,7 +201,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
-                            android:text="@={stateVM.firstAlarmDisplacementThreshold}"
+                            android:text="@={stateVM.firstAlarmThreshold}"
                             app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{10}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -219,7 +219,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
-                            android:text="@={stateVM.secondAlarmDisplacementThreshold}"
+                            android:text="@={stateVM.secondAlarmThreshold}"
                             app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{10}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -237,7 +237,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
-                            android:text="@={stateVM.thirdAlarmDisplacementThreshold}"
+                            android:text="@={stateVM.thirdAlarmThreshold}"
                             app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{10}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -255,7 +255,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
-                            android:text="@={stateVM.fourthAlarmDisplacementThreshold}"
+                            android:text="@={stateVM.fourthAlarmThreshold}"
                             app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{10}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>

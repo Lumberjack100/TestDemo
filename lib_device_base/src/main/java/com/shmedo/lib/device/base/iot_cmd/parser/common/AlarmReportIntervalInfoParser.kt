@@ -23,5 +23,5 @@ class AlarmReportIntervalInfoParser : IOTCommandParser<AlarmReportIntervalInfo> 
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.MD_GET_ALRAM_REPORT_INTERVAL
+    override fun commandType(): IOTCommandType = IOTCommandType.MD_GET_ALRAM_BROADCAST_REPORT_INTERVAL
 }

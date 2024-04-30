@@ -11,7 +11,7 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class AlarmMonitorPointEntity(
-    val sw: String = "", //报警开关  0 关闭 1 开启 默认 0
+    val sw: String = IOTConstants.NULL_KEY, //报警开关  0 关闭 1 开启 默认 0   仅仅 m20S 设备支持这个字段
     val alarm_send_min_gap: String = IOTConstants.NULL_KEY,//最短发送间隔
     val alarm_resend_cnt: String = IOTConstants.NULL_KEY,//发送重复次数  默认3
     val alarm_resend_gap: String = IOTConstants.NULL_KEY,//重发间隔  默认5秒

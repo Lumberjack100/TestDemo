@@ -23,5 +23,5 @@ class AlarmTriggerValueInfoParser: IOTCommandParser<AlarmTriggerValueInfo> {
         }
     }
 
-override fun commandType(): IOTCommandType = IOTCommandType.MD_GET_ALRAM_TRIGGER_VALUE
+override fun commandType(): IOTCommandType = IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE
 }

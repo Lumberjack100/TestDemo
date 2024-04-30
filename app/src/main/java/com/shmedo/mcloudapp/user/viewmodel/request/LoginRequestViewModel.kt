@@ -13,13 +13,13 @@ import com.shmedo.lib.core.base.model.UserPermissionInfo
 import com.shmedo.lib.core.base.model.UserWrapperInfo
 import com.shmedo.lib.core.base.viewmodel.BaseRequestViewModel
 import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
-import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.lib.network.response.ResponseStatus
 import com.shmedo.lib.network.response.ResultSource
 import com.shmedo.lib.network.util.BaseURL
+import com.shmedo.mcloudapp.BuildConfig
 import com.shmedo.mcloudapp.data.repository.remote.NetDataRepository
 import kotlinx.coroutines.launch
 import org.json.JSONException
@@ -469,8 +469,8 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
 
     private suspend fun appConfigLogin(): String? {
         val jsonObjectRequest = JSONObject()//接口请求参数
-        jsonObjectRequest.put("appKey", AppContants.AMS_APP_KEY)
-        jsonObjectRequest.put("appSecret", AppContants.AMS_APP_SECRET)
+        jsonObjectRequest.put("appKey", BuildConfig.AMS_APP_KEY)
+        jsonObjectRequest.put("appSecret", BuildConfig.AMS_APP_SECRET)
         jsonObjectRequest.put("account", MmkvCacheUtil.getUserName())
         jsonObjectRequest.put("password", MmkvCacheUtil.getPassword())
         return NetDataRepository.instance.appConfigLogin(jsonObjectRequest.toString()) { error: Throwable ->

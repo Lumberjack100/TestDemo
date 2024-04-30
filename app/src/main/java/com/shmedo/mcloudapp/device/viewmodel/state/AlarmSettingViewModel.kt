@@ -19,14 +19,14 @@ class AlarmSettingViewModel : ViewModel() {
     //四级报警语音编号  [1~255] 默认 1
     val fourthAlarmVoice = NonNullObservableField("1")
 
-    //一级报警位移阈值 默认40
-    val firstAlarmDisplacementThreshold = NonNullObservableField("40")
-    //二级报警位移阈值 默认20
-    val secondAlarmDisplacementThreshold = NonNullObservableField("20")
-    //三级报警位移阈值 默认10
-    val thirdAlarmDisplacementThreshold = NonNullObservableField("10")
-    //四级报警位移阈值 默认5
-    val fourthAlarmDisplacementThreshold = NonNullObservableField("5")
+    //一级报警阈值 默认40
+    val firstAlarmThreshold = NonNullObservableField("40")
+    //二级报警阈值 默认20
+    val secondAlarmThreshold = NonNullObservableField("20")
+    //三级报警阈值 默认10
+    val thirdAlarmThreshold = NonNullObservableField("10")
+    //四级报警阈值 默认5
+    val fourthAlarmThreshold = NonNullObservableField("5")
 
     //一级报警上报间隔 默认60,单位s
     val firstAlarmReportInterval = NonNullObservableField("60")
