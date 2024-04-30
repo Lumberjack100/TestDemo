@@ -26,7 +26,6 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.enums.PopupAnimation
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DebugCmdLogInfo
 import com.shmedo.lib.core.base.model.DeviceInfo
@@ -127,7 +126,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         } else {
             cmdTypeList.addAll(listOf("物联网自定义指令", "米度透传指令"))
         }
-        mStates.command.set(cmdTypeList[0])
+        mStates.command.set("\$cmd=")
     }
 
     inner class ClickProxy : BaseCommandLogPrintClickProxy() {
@@ -167,7 +166,6 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .isDarkTheme(false)
-                .popupAnimation(PopupAnimation.TranslateFromRight) //NoAnimation表示禁用动画
                 .atView(binding.ivSwitchCmdType)  // 依附于所点击的View，内部会自动判断在上方或者下方显示
                 .asAttachList(
                     cmdTypeList.toTypedArray(),

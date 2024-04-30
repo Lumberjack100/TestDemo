@@ -85,8 +85,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:layout_marginEnd="@dimen/dimen_size_5"
+                android:layout_marginEnd="@dimen/dimen_size_8"
                 android:layout_marginBottom="@dimen/dimen_size_5"
+                android:padding="@dimen/dimen_size_5"
                 android:src="@drawable/ic_switch_adme_config_model" />
 
             <com.google.android.material.textfield.TextInputEditText
@@ -112,8 +113,7 @@
                 android:layout_width="60dp"
                 android:layout_height="30dp"
                 android:layout_gravity="bottom"
-                android:layout_marginHorizontal="@dimen/dimen_size_8"
-                android:layout_marginBottom="@dimen/dimen_size_5"
+                android:layout_marginStart="@dimen/dimen_size_8"
                 android:gravity="center"
                 android:text="发送"
                 android:textColor="@color/white"
