@@ -23,47 +23,45 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="13dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"
+            android:layout_margin="@dimen/dimen_size_10"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/tv_device_state_flag"
+                android:layout_width="wrap_content"
+                android:layout_height="16dp"
+                android:layout_marginBottom="@dimen/dimen_size_8"
+                android:background="@{m.onlineStatus?@drawable/bg_device_online_state_flag2:@drawable/bg_device_offline_state_flag2}"
+                android:gravity="center"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="@{m.onlineStatus?@string/device_online:@string/device_offline}"
+                android:textColor="@{m.onlineStatus?@color/device_online_foreground:@color/device_offline_foreground}"
+                android:textSize="@dimen/text_size_10"
+                tools:background="@drawable/bg_device_offline_state_flag"
+                tools:text="在线"
+                tools:textColor="@color/device_offline_foreground" />
+
+            <TextView
+                android:id="@+id/tv_device_sn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="start"
+                android:maxLines="2"
+                android:text="@{m.deviceToken}"
+                android:textColor="@{m.onlineStatus?@color/title_text_color:@color/text_color_b3b3b3}"
+                android:textSize="@dimen/text_size_14"
+                android:textStyle="bold"
+                tools:text="19D95B"
+                tools:textColor="@color/title_text_color" />
+
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="15dp"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:id="@+id/tv_device_sn"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ellipsize="end"
-                    android:gravity="left"
-                    android:singleLine="true"
-                    android:text="@{m.deviceToken}"
-                    android:textColor="@{m.onlineStatus?@color/title_text_color:@color/text_color_b3b3b3}"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    tools:text="19D95B"
-                    tools:textColor="@color/title_text_color" />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_signal"
-                    android:layout_width="15dp"
-                    android:layout_height="13dp"
-                    android:layout_marginStart="10dp"
-                    android:src="@{m.onlineStatus?@drawable/ic_device_signal_three:@drawable/ic_device_signal_offline}"
-                    tools:src="@drawable/ic_signal_default" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center_vertical">
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:gravity="center_vertical"
+                android:visibility="gone">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_battery"
@@ -79,73 +77,44 @@
                     android:layout_marginStart="7dp"
                     android:text="100%"
                     android:textColor="@color/sub_title_text_color"
-                    android:textSize="16sp" />
+                    android:textSize="@dimen/text_size_14" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="13dp"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:layout_marginBottom="@dimen/dimen_size_10"
                 android:background="@color/divider_line_bg2" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="15dp"
                 android:gravity="center_vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
-                    android:text="类型"
+                    android:text="类型:"
                     android:textColor="@color/sub_title_text_color"
-                    android:textSize="13sp" />
+                    android:textSize="@dimen/text_size_13" />
 
                 <TextView
                     android:id="@+id/tv_device_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="@dimen/dimen_size_8"
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:text="@{m.productName}"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="13sp"
-                    tools:text="智能声光报警器专业监测设备" />
+                    android:textColor="@{m.onlineStatus?@color/title_text_color:@color/text_color_b3b3b3}"
+                    android:textSize="@dimen/text_size_13"
+                    tools:text="智能声光报警器专业监测设备"
+                    tools:textColor="@color/title_text_color" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="15dp"
-                android:gravity="center_vertical"
-                android:visibility="gone">
-
-                <TextView
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:text="传感器"
-                    android:textColor="@color/sub_title_text_color"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:id="@+id/tv_sensor_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="13sp"
-                    tools:text="物位计 x1" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
         </androidx.appcompat.widget.LinearLayoutCompat>
-
     </androidx.cardview.widget.CardView>
 </layout>

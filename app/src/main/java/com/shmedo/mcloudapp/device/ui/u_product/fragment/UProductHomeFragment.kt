@@ -32,7 +32,7 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
     override fun initData() {
         super.initData()
         toolbarViewModel.toolbarIvActionVisible.set(true)
-        mHeadStates.isPlatformConnectionStateVisible.set(false)
+        mHeadStates.isIOTPlatformStateVisible.set(false)
         when (productType) {
             ProductType.U_D_1,//水位
             ProductType.U_D_2 -> {//泥位

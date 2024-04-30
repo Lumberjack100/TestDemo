@@ -53,8 +53,6 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var mCommandResponseStates: CommandResponseViewModel
     private val iotParseManager: IOTParserManager by inject()
 
-    //声明一个long类型变量：用于存放上一点击“返回键”的时刻
-    private var mExitTime: Long = 0
 
     override fun initViewModel() {
         super.initViewModel()
@@ -128,7 +126,7 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
                 mHeadStates.isDeviceStateTagHighLight.set(deviceInfo.onlineStatus)
                 mHeadStates.deviceStateTagText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
                 mHeadStates.isConnectOperateVisible.set(false)
-                mHeadStates.isPlatformConnectionStateVisible.set(false)
+                mHeadStates.isIOTPlatformStateVisible.set(false)
             }
 
             BleConnect -> {
@@ -136,8 +134,8 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
                 mHeadStates.deviceStateTagText.set("未连接")
                 mHeadStates.isConnectOperateVisible.set(true)
                 mHeadStates.connectOperateText.set("蓝牙连接")
-                mHeadStates.isPlatformConnectionStateVisible.set(true)
-                mHeadStates.platformConnectionStateText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
+                mHeadStates.isIOTPlatformStateVisible.set(true)
+                mHeadStates.iotPlatformStateText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
             }
 
             else -> {}
@@ -380,11 +378,6 @@ class DasHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
-        //大于2000ms则认为是误操作，使用Toast进行提示
-        if (System.currentTimeMillis() - mExitTime > 2000) {
-            mExitTime= System.currentTimeMillis()
-        }
-        mExitTime= System.currentTimeMillis()
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME -> {
                 val result = iotParseManager.parse<String>(

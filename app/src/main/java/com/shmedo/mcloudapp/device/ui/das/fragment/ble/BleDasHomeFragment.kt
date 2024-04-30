@@ -154,8 +154,8 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         mStates.deviceStateTagText.set("未连接")
         mStates.isConnectOperateVisible.set(true)
         mStates.connectOperateText.set("蓝牙连接")
-        mStates.isPlatformConnectionStateVisible.set(true)
-        mStates.platformConnectionStateText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
+        mStates.isIOTPlatformStateVisible.set(true)
+        mStates.iotPlatformStateText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
 
         updateConfigModuleData()
     }

@@ -38,7 +38,7 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
         toolbarViewModel.toolbarIvActionVisible.set(false)
         mHeadStates.productLightResId.set(R.drawable.device_logo_gateway)
         mHeadStates.productGrayResId.set(R.drawable.device_logo_gateway_gray)
-        mHeadStates.isPlatformConnectionStateVisible.set(false)
+        mHeadStates.isIOTPlatformStateVisible.set(false)
     }
 
     override fun updateConfigModuleData() {

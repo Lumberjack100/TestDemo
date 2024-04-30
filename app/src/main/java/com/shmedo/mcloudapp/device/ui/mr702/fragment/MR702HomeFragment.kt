@@ -137,7 +137,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 mHeadStates.isDeviceStateTagHighLight.set(deviceInfo.onlineStatus)
                 mHeadStates.deviceStateTagText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
                 mHeadStates.isConnectOperateVisible.set(false)
-                mHeadStates.isPlatformConnectionStateVisible.set(false)
+                mHeadStates.isIOTPlatformStateVisible.set(false)
             }
 
             BleConnect -> {
@@ -145,8 +145,8 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 mHeadStates.deviceStateTagText.set("未连接")
                 mHeadStates.isConnectOperateVisible.set(true)
                 mHeadStates.connectOperateText.set("蓝牙连接")
-                mHeadStates.isPlatformConnectionStateVisible.set(true)
-                mHeadStates.platformConnectionStateText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
+                mHeadStates.isIOTPlatformStateVisible.set(true)
+                mHeadStates.iotPlatformStateText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
             }
 
             else -> {}
