@@ -100,6 +100,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                         val item = getModel<MRSensorItem>()
                         val bundle = MR702RS485Port1SensorParamFragment.newBundleArguments(
                             item,
+                            productType,
                             communicateWay,
                             deviceInfo,
                             bleDevice
@@ -136,6 +137,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                             modelToken = sensorModel.modelToken,
                             modelFieldList = sensorModel.modelFieldList.map { it.fieldName }
                         ),
+                        productType,
                         communicateWay,
                         deviceInfo,
                         bleDevice

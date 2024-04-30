@@ -74,9 +74,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:padding="@dimen/dimen_size_6"
+            android:paddingHorizontal="@dimen/dimen_size_12"
+            android:paddingVertical="@dimen/dimen_size_10"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recyclerview">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_switch_cmd_type"
+                onClickWithDebouncing="@{()->click.onSwitchCmdTypeClick()}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginEnd="@dimen/dimen_size_5"
+                android:layout_marginBottom="@dimen/dimen_size_5"
+                android:src="@drawable/ic_switch_adme_config_model" />
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_custom_command"
@@ -101,7 +112,8 @@
                 android:layout_width="60dp"
                 android:layout_height="30dp"
                 android:layout_gravity="bottom"
-                android:layout_marginStart="8dp"
+                android:layout_marginHorizontal="@dimen/dimen_size_8"
+                android:layout_marginBottom="@dimen/dimen_size_5"
                 android:gravity="center"
                 android:text="发送"
                 android:textColor="@color/white"

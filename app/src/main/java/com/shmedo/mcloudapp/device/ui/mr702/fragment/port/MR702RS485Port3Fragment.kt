@@ -17,7 +17,6 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port3Binding
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -25,6 +24,7 @@ import com.shmedo.mcloudapp.device.model.MRSensorItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port3ViewModel
+import com.shmedo.mcloudapp.ext.nav
 import org.koin.android.ext.android.inject
 
 class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
@@ -76,6 +76,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
             R.id.item.onClick {
                 val bundle = MR702RS485Port3SensorParamFragment.newBundleArguments(
                     modelPosition + 1,
+                    productType,
                     communicateWay,
                     deviceInfo,
                     bleDevice

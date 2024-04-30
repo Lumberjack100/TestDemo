@@ -20,7 +20,6 @@ import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.CenterNumberEntity
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasBdTerminalEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.enums.ServerOne
 import com.shmedo.lib.device.base.iot_cmd.enums.ServerThree
 import com.shmedo.lib.device.base.iot_cmd.enums.ServerTwo
@@ -32,11 +31,6 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessage
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentDasDataCenterHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -46,6 +40,11 @@ import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.common.DataCenterParamFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasSensorHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -113,7 +112,7 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 val item = getModel<DataCenterStatusItem>()
                 val bundle = DataCenterParamFragment.newBundleArguments(
                     item,
-                    ProductType.DAS,
+                    productType,
                     communicateWay,
                     deviceInfo,
                     bleDevice

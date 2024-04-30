@@ -15,9 +15,12 @@ import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.core.util.AppContants.Extras.Companion.SENSOR_ADDR
+import com.shmedo.lib.core.util.AppContants.Extras.Companion.SENSOR_INDEX
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasExternalSensorEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
+import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
@@ -702,22 +705,22 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     }
 
     companion object {
-        private const val SENSOR_INDEX = "sensor_index"
-        private const val SENSOR_ADDR = "sensor_addr"
 
         fun newBundleArguments(
+            index: Int,
+            sensorAddr: String,
+            type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
             deviceInfo: DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
-            index: Int,
-            sensorAddr: String,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
+            putInt(AppContants.Extras.SENSOR_INDEX, index)
+            putString(AppContants.Extras.SENSOR_ADDR, sensorAddr)
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
             putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
             putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
             putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(SENSOR_INDEX, index)
-            putString(SENSOR_ADDR, sensorAddr)
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }

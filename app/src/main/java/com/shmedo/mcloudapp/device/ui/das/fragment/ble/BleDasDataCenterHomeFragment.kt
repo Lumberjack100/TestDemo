@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.device.ui.das.fragment.ble
 
 import android.os.Bundle
 import android.view.View
-import androidx.databinding.DataBindingUtil.getBinding
 import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
@@ -16,7 +15,6 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.enums.ServerOne
 import com.shmedo.lib.device.base.iot_cmd.enums.ServerThree
 import com.shmedo.lib.device.base.iot_cmd.enums.ServerTwo
@@ -29,10 +27,6 @@ import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentBleDasDataCenterHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -41,6 +35,10 @@ import com.shmedo.mcloudapp.device.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.BleDasDataCenterHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -108,7 +106,7 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 val item = getModel<DataCenterStatusItem>()
                 val bundle = BleDasDataCenterParamFragment.newBundleArguments(
                     item,
-                    ProductType.DAS,
+                    productType,
                     communicateWay,
                     deviceInfo,
                     bleDevice

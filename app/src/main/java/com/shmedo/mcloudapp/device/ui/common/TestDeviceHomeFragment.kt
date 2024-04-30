@@ -29,10 +29,11 @@ class TestDeviceHomeFragment : UniversalDeviceHomeFragment() {
         when (configModule) {
             is CommandDebugConfigModule -> {
                 val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+                    true,
+                    productType,
                     communicateWay,
                     deviceInfo,
-                    bleDevice,
-                    true
+                    bleDevice
                 )
                 nav().navigate(configModule.navId, bundle)
             }

@@ -29,9 +29,18 @@ interface AppContants {
 
             //蓝牙设备信息
             const val BLE_DEVICE = "ble_device"
+
             const val SERVER_NUMBER = "server_number"
+
+            const val SENSOR_CHANNEL = "sensor_channel"
+
+            const val SENSOR_INDEX = "sensor_index"
+
+            const val SENSOR_ADDR = "sensor_addr"
+
             const val FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY =
                 "fragment_data_center_home_result_request_key"
+
             const val REFRESH_DATA_CENTER_STATUS = "refresh_data_center_status"
         }
     }

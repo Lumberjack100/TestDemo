@@ -8,6 +8,8 @@ package com.shmedo.mcloudapp.device.common
 open class BaseCommandLogPrintClickProxy: BaseClickProxy() {
     open fun onDebugModeChooseClick() {}
 
+    open fun onSwitchCmdTypeClick() {}
+
     open fun onSendClick() {}
 
 }

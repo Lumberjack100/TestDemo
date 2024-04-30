@@ -111,18 +111,20 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
                 if (collectorModel == "0${IOTSensorType.VIBRATING_SENSOR.code}")
                     BleDasExternalVibratingSensorListFragment.newInstance().apply {
                         arguments = BaseBleDasExternalSensorListFragment.newBundleArguments(
+                            collectorModel,
+                            productType,
                             communicateWay,
                             deviceInfo,
                             bleDevice,
-                            collectorModel
                         )
                     } else
                     BleDasExternalDigitalSensorListFragment.newInstance().apply {
                         arguments = BaseBleDasExternalSensorListFragment.newBundleArguments(
+                            collectorModel,
+                            productType,
                             communicateWay,
                             deviceInfo,
                             bleDevice,
-                            collectorModel
                         )
                     }
             )
@@ -181,7 +183,7 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
         private const val activeSize: Float = 17f
         private const val normalSize: Float = 15f
 
-        private const val COLLECTOR_MODEL = "collector_model"
+        const val COLLECTOR_MODEL = "collector_model"
         fun newBundleArguments(
             collectorModel: String,
             type: ProductType = ProductType.UnKnown,

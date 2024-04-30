@@ -7,26 +7,22 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.core.util.AppContants.Extras.Companion.SENSOR_CHANNEL
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.device.base.md_cmd.model.das.MDDasExternalSensorInfo
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentDasExternalVibratingSensorBinding
 import com.shmedo.mcloudapp.device.common.BaseDasExternalVibratingSensorClickProxy
-import com.shmedo.mcloudapp.device.model.CommunicateWay
-import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.viewmodel.state.DasExternalSensorListViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.DasExternalVibratingSensorViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
@@ -847,20 +843,5 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
 
     companion object {
         private const val MCU_PREFIX = "MCU_"
-        private const val SENSOR_CHANNEL = "sensor_channel"
-
-        fun newBundleArguments(
-            communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: DeviceInfo,
-            bleDevice: DiscoveredBluetoothDevice? = null,
-            sensorChannel: String,
-            statusBarColor: Int = R.color.white
-        ): Bundle = Bundle().apply {
-            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putString(SENSOR_CHANNEL, sensorChannel)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
-        }
     }
 }

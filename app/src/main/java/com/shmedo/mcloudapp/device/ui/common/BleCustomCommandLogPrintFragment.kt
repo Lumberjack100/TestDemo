@@ -26,6 +26,7 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.enums.PopupAnimation
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DebugCmdLogInfo
 import com.shmedo.lib.core.base.model.DeviceInfo
@@ -33,6 +34,7 @@ import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.device.base.md_cmd.enums.MDLogOutputStatus
@@ -66,6 +68,8 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
 
     private val debugModelList: MutableList<String> =
         arrayListOf("关", "debug模式", "info模式")
+
+    private val cmdTypeList = mutableListOf<String>()
 
 
     override fun initViewModel() {
@@ -117,6 +121,13 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
             isIotCmd = it.getBoolean(IOT_CMD)
         }
         mStates.debugMode.set(debugModelList[0])
+        cmdTypeList.clear()
+        if (communicateWay is BleConnect) {
+            cmdTypeList.addAll(listOf("物联网自定义指令", "##指令", "米度透传指令"))
+        } else {
+            cmdTypeList.addAll(listOf("物联网自定义指令", "米度透传指令"))
+        }
+        mStates.command.set(cmdTypeList[0])
     }
 
     inner class ClickProxy : BaseCommandLogPrintClickProxy() {
@@ -147,6 +158,35 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
                         }
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
+                .show()
+        }
+
+        override fun onSwitchCmdTypeClick() {
+            XPopup.Builder(context)
+                .hasShadowBg(false)
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .isDarkTheme(false)
+                .popupAnimation(PopupAnimation.TranslateFromRight) //NoAnimation表示禁用动画
+                .atView(binding.ivSwitchCmdType)  // 依附于所点击的View，内部会自动判断在上方或者下方显示
+                .asAttachList(
+                    cmdTypeList.toTypedArray(),
+                    null
+                ) { position, text ->
+                    when (text) {
+                        "米度透传指令" -> {
+                            mStates.command.set("\$cmd=md_raw&content=")
+                        }
+
+                        "物联网自定义指令" -> {
+                            mStates.command.set("\$cmd=")
+                        }
+
+                        "##指令" -> {
+                            mStates.command.set("##")
+                        }
+                    }
+                }
                 .show()
         }
 
@@ -403,16 +443,18 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
     companion object {
         private const val IOT_CMD = "com.shmedo.mcloudapp.iot.IOT_CMD"
         fun newBundleArguments(
+            isIotCmd: Boolean = true,
+            type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
             deviceInfo: DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
-            isIotCmd: Boolean = true,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
+            putBoolean(IOT_CMD, isIotCmd)
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
             putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
             putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
             putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putBoolean(IOT_CMD, isIotCmd)
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }

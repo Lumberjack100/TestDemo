@@ -259,11 +259,12 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             is CollectorConfigModule -> {//采集器配置
                 if (module.configModule.navId != 0) {
                     val bundle = BleDasCollectorSettingFragment.newBundleArguments(
+                        mStates.collectorModel.get(),
+                        productType,
                         communicateWay,
                         deviceInfo,
                         bleDevice,
-                        mStates.collectorModel.get()
-                    )
+                        )
                     nav().navigate(
                         module.configModule.navId,
                         bundle

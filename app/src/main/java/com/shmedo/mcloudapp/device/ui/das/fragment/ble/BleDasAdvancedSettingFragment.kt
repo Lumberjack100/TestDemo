@@ -153,10 +153,11 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment(),
                 return
             }
             val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+                false,
+                productType,
                 communicateWay,
                 deviceInfo,
-                bleDevice,
-                false
+                bleDevice
             )
             nav().navigate(R.id.action_global_to_commandDebug, bundle)
         }

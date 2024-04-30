@@ -10,6 +10,7 @@ import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.model.das.DasCollectorInfo
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
@@ -369,16 +370,18 @@ class BleDasCollectorSettingFragment : BaseIOTDeviceFragment() {
     companion object {
         private const val COLLECTOR_MODEL = "collector_model"
         fun newBundleArguments(
+            collectorModel: String,
+            type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
             deviceInfo: DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
-            collectorModel: String,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
+            putString(BleDasSensorHomeFragment.COLLECTOR_MODEL, collectorModel)
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
             putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
             putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
             putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putString(COLLECTOR_MODEL, collectorModel)
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
