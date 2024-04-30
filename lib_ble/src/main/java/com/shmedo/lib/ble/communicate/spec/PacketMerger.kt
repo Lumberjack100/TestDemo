@@ -19,18 +19,24 @@ class PacketMerger : DataMerger {
         if (lastPacket == null)
             return false
 
-        Timber.e("merge: length=%s bytes;content: %s", lastPacket.size, String(lastPacket, Charsets.UTF_8))
-//        Timber.e("merge: length=%s bytes;content: %s", lastPacket?.size ?: 0, lastPacket?.let { it.asList().toString() } ?: "Null")
-
+        Timber.e(
+            "lastPacket: length=%s;content: %s",
+            lastPacket.size,
+            String(lastPacket, Charsets.UTF_8)
+        )
+        Timber.e(
+            "lastPacket bytes: length=%s;content: %s",
+            lastPacket.size,
+            lastPacket.asList().toString()
+        )
         output.write(lastPacket)
 
-        //每条响应命令结尾以&&(物联网指令)或\r\n(##指令)作为分隔符
         val mergeDataPacket = output.toByteArray()
 
         //每条响应命令结尾以&&(物联网指令)或\r\n(##指令)作为分隔符
-        return  if(mergeDataPacket.size < 2)  false
+        return if (mergeDataPacket.size < 2) false
         else
-            (mergeDataPacket[mergeDataPacket.size - 1].toInt() == 38 && mergeDataPacket[mergeDataPacket.size - 2].toInt() == 38)
-                    || (mergeDataPacket[mergeDataPacket.size - 1].toInt() == 10 && mergeDataPacket[mergeDataPacket.size - 2].toInt() == 13)
+            (mergeDataPacket[mergeDataPacket.size - 2].toInt() == 38 && mergeDataPacket[mergeDataPacket.size - 1].toInt() == 38)
+                    || (mergeDataPacket[mergeDataPacket.size - 2].toInt() == 13 && mergeDataPacket[mergeDataPacket.size - 1].toInt() == 10)
     }
 }

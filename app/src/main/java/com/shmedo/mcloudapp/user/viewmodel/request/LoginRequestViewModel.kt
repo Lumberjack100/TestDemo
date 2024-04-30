@@ -21,6 +21,7 @@ import com.shmedo.lib.network.response.ResultSource
 import com.shmedo.lib.network.util.BaseURL
 import com.shmedo.mcloudapp.BuildConfig
 import com.shmedo.mcloudapp.data.repository.remote.NetDataRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
@@ -428,7 +429,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
      * 加载外部配置
      */
     fun loadExternalConfig() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.Default) {
             try {
                 if (MmkvCacheUtil.getAppConfigInfo() == null) {
                     val originalConfigJson = ResourceUtils.readAssets2String("app_config.json")

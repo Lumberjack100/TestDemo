@@ -9,25 +9,30 @@ import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.permission.PermissionInterceptor
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
+import com.shmedo.mcloudapp.common.viewmodel.request.AppUpdateViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.FragmentMainBinding
 import com.shmedo.mcloudapp.user.fragment.MineFragment
 import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
+import kotlinx.coroutines.delay
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 
 class MainFragment : BaseFragment() {
     private lateinit var binding: FragmentMainBinding
     private lateinit var mStates: EmptyViewModel
+    private lateinit var appUpdateViewModel: AppUpdateViewModel
     private lateinit var loginRequestViewModel: LoginRequestViewModel
 
 
     override fun initViewModel() {
         mStates = getFragmentScopeViewModel()
+        appUpdateViewModel = getViewModel()
         loginRequestViewModel = getViewModel()
     }
 
@@ -87,6 +92,10 @@ class MainFragment : BaseFragment() {
         requestPermission()
         //加载外部配置
         loginRequestViewModel.loadExternalConfig()
+        launchWithViewLifecycle {
+            delay(1500)
+            appUpdateViewModel.requestCheckAppVersion(false)
+        }
     }
 
     /**
