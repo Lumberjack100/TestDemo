@@ -127,6 +127,8 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
             cmdTypeList.addAll(listOf("物联网自定义指令", "米度透传指令"))
         }
         mStates.command.set("\$cmd=")
+        //etCustomCommand 移除焦点
+        binding.etCustomCommand.clearFocus()
     }
 
     inner class ClickProxy : BaseCommandLogPrintClickProxy() {
@@ -184,6 +186,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
                             mStates.command.set("##")
                         }
                     }
+                    binding.etCustomCommand.clearFocus()
                 }
                 .show()
         }
