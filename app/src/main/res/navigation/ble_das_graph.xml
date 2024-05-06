@@ -52,7 +52,7 @@
         android:id="@+id/bleDasDeviceInfoFragment"
         android:name="com.shmedo.mcloudapp.device.ui.das.fragment.ble.deviceinfo.BleDasDeviceInfoFragment"
         android:label="BleDasDeviceInfoFragment"
-        tools:layout="@layout/fragment_das_device_info" />
+        tools:layout="@layout/fragment_base_running_device_info" />
 
     <fragment
         android:id="@+id/bleDasCollectorSettingFragment"

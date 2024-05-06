@@ -7,7 +7,7 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.M20SensorInfoViewModel" />
+            type="com.shmedo.mcloudapp.device.viewmodel.state.LR200SensorInfoViewModel" />
 
     </data>
 

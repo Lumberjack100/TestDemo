@@ -155,12 +155,15 @@ class MedoBleManager(
     }
 
     override fun isRequiredServiceSupported(gatt: BluetoothGatt): Boolean {
+        //ESP32ASpec、MS52SF1Spec SERVICE_UUID 相同，但是写特征值不同
         gatt.getService(ESP32ASpec.ESP32_SERVICE_UUID)?.run {
             notifyCharacteristic = getCharacteristic(
                 ESP32ASpec.ESP32_NOTIFY_CHARACTERISTIC_UUID
             )
             writeCharacteristic = getCharacteristic(
                 ESP32ASpec.ESP32_WRITABLE_CHARACTERISTIC_UUID
+            ) ?: getCharacteristic(
+                MS52SF1Spec.MS52SF1_WRITABLE_CHARACTERISTIC_UUID
             )
         }
         gatt.getService(ESP32BSpec.ESP32B_SERVICE_UUID)?.run {
@@ -195,14 +198,6 @@ class MedoBleManager(
                 USRSpec.USR_WRITABLE_CHARACTERISTIC_UUID
             )
         }
-        gatt.getService(MS52SF1Spec.MS52SF1_SERVICE_UUID)?.run {
-            notifyCharacteristic = getCharacteristic(
-                MS52SF1Spec.MS52SF1_NOTIFY_CHARACTERISTIC_UUID
-            )
-            writeCharacteristic = getCharacteristic(
-                MS52SF1Spec.MS52SF1_WRITABLE_CHARACTERISTIC_UUID
-            )
-        }
 
         var writeRequest = false
         var writeCommand = false
@@ -215,6 +210,7 @@ class MedoBleManager(
 
         val supported =
             notifyCharacteristic != null && writeCharacteristic != null && (writeRequest || writeCommand)
+
         return supported
     }
 

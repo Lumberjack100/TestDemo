@@ -4,20 +4,22 @@ import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DataCenterModule
 import com.shmedo.mcloudapp.device.model.DeviceFunctionModule
+import com.shmedo.mcloudapp.device.model.FirmwareUpgradeModule
 import com.shmedo.mcloudapp.device.model.RebootModule
+import com.shmedo.mcloudapp.device.model.RestoreFactoryModule
 import com.shmedo.mcloudapp.device.model.RunningStatusModule
 import com.shmedo.mcloudapp.device.model.SetupWizard
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.ui.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.device.ui.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.device.ui.common.UniversalDeviceHomeFragment
 import com.shmedo.mcloudapp.ext.nav
@@ -36,20 +38,42 @@ class M20HomeFragment : UniversalDeviceHomeFragment() {
         moduleList.add(
             ConfigModule(
                 RunningStatusModule(
-                    "关于设备",
-                    "设备基本信息、运行数据",
-                    R.drawable.ic_device_running_info,
+                    resID = R.drawable.ic_module_current_state,
                     navId = R.id.action_m20HomeFragment_to_m20DeviceInfoFragment
                 )
             )
         )
         moduleList.add(ConfigModule(SetupWizard(name = "水平初始化")))
-        moduleList.add(ConfigModule(DataCenterModule(navId = R.id.action_global_universalDataCenterHomeFragment)))
-
         moduleList.add(
-            ConfigModule(RebootModule())
+            ConfigModule(
+                DataCenterModule(
+                    resID = R.drawable.ic_module_datacenter,
+                    navId = R.id.action_global_universalDataCenterHomeFragment
+                )
+            )
         )
-        moduleList.add(ConfigModule(AdvancedSettingsModule(navId = R.id.action_m20HomeFragment_to_m20AdvancedSettingFragment)))
+        moduleList.add(
+            ConfigModule(RebootModule(resID = R.drawable.ic_module_reboot))
+        )
+        moduleList.add(
+            ConfigModule(RestoreFactoryModule(resID = R.drawable.ic_module_reset))
+        )
+        moduleList.add(
+            ConfigModule(
+                FirmwareUpgradeModule(
+                    resID = R.drawable.ic_module_firmware_upgrade,
+                    navId = R.id.action_global_to_firmwareUpgradeFragment,
+                    isSupport = false
+                )
+            )
+        )
+        if (communicateWay is BleConnect) {
+            moduleList.add(
+                ConfigModule(
+                    CommandDebugConfigModule()
+                )
+            )
+        }
 
         binding.rvModule.models = moduleList
     }
@@ -73,7 +97,7 @@ class M20HomeFragment : UniversalDeviceHomeFragment() {
             is DataCenterModule -> {
                 val bundle = UniversalDataCenterHomeFragment.newBundleArguments(
                     4,
-                    ProductType.M20,
+                    productType,
                     communicateWay,
                     deviceInfo,
                     bleDevice
@@ -82,6 +106,17 @@ class M20HomeFragment : UniversalDeviceHomeFragment() {
                     configModule.navId,
                     bundle
                 )
+            }
+
+            is CommandDebugConfigModule -> {
+                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+                    true,
+                    productType,
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
+                nav().navigate(configModule.navId, bundle)
             }
 
             else -> {
