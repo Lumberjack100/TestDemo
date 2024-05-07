@@ -1,12 +1,14 @@
 package com.shmedo.lib.device.base.iot_cmd.model.common
 
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
+
 /**
  * 创建者：gonghe
  * 创建时间：2024/4/24
  * 描述： 报警监控点信息
  */
 data class AlarmMonitorPointInfo(
-    var sw: String = "", //报警开关  0 关闭 1 开启 默认 0    仅仅 m20S 设备支持这个字段
+    var sw: String = IOTConstants.NULL_KEY, //报警开关  0 关闭 1 开启 默认 0    仅仅 m20S 设备支持这个字段
     var alarm_send_min_gap: String = "",//最短发送间隔
     var alarm_resend_cnt: String = "",//发送重复次数  默认3
     var alarm_resend_gap: String = "",//重发间隔  默认5秒

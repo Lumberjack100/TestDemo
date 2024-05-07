@@ -121,7 +121,15 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
          * 清空雨量值
          */
         fun onRainValueClearClick() {
-            Toaster.show("正在开发中...")
+            commandItems.clear()
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_SENSOR_INITIAL,
+                "method=1&type=0"
+            )
+            commandItems.add(command)
+
+            showLoadingDialog(StringUtils.getString(R.string.processing))
+            sendCommandFromCmdList(isStartTimeoutJob = true)
         }
 
         /**
@@ -217,7 +225,23 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
                     }
                 }
             }
+            IOTCommandType.MD_SET_SENSOR_INITIAL -> {//设置开关量传感器
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "雨量值清零出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
 
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("雨量值清零成功")
+                        }
+                    }
+                }
+            }
 
             else -> {}
         }

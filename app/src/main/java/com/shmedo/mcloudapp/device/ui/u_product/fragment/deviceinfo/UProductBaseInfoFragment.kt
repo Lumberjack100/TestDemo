@@ -26,6 +26,7 @@ import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.MRRunningDataItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.UProductBaseInfoViewModel
+import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -48,6 +49,7 @@ class UProductBaseInfoFragment : BaseIOTDeviceFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_u_product_base_info, BR.stateVM, mStates)
+            .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -156,66 +158,7 @@ class UProductBaseInfoFragment : BaseIOTDeviceFragment() {
 
     private fun checkDeviceIsNormal(currentStateInfo: CommonCurrentStateInfo2) {
         deviceAbnormalList.clear()
-        //lora LORA模块
-        if (currentStateInfo.lora != IOTConstants.NULL_KEY && !currentStateInfo.lora.uppercase()
-                .contains("OK")
-        ) {
-            deviceAbnormalList.add("LORA 模块异常")
-        }
-        //bt 蓝牙模块
-        if (currentStateInfo.bt != IOTConstants.NULL_KEY && !currentStateInfo.bt.uppercase()
-                .contains("OK")
-        ) {
-            deviceAbnormalList.add("蓝牙模块异常")
-        }
-        //ld 雷达状态
-        if (currentStateInfo.ld != IOTConstants.NULL_KEY && !currentStateInfo.ld.uppercase()
-                .contains("OK")
-        ) {
-            deviceAbnormalList.add("雷达模块异常")
-        }
-        //cam相机状态
-        if (currentStateInfo.cam != IOTConstants.NULL_KEY && !currentStateInfo.cam.uppercase()
-                .contains("OK")
-        ) {
-            deviceAbnormalList.add("相机模块异常")
-        }
-        //radio 电台模块
-        if (currentStateInfo.radio != IOTConstants.NULL_KEY && !currentStateInfo.radio.uppercase()
-                .contains("OK")
-        ) {
-            deviceAbnormalList.add("电台模块异常")
-        }
-        //battery 电池状态
-        if (currentStateInfo.battery != IOTConstants.NULL_KEY && !currentStateInfo.battery.uppercase()
-                .contains("OK")
-        ) {
-            deviceAbnormalList.add("电池异常")
-        }
-        //simCard sim卡状态
-        if (currentStateInfo.simCard != IOTConstants.NULL_KEY && !currentStateInfo.simCard.uppercase()
-                .contains("OK")
-        ) {
-            deviceAbnormalList.add("SIM 卡异常")
-        }
-        //flash
-        if (currentStateInfo.flash != IOTConstants.NULL_KEY && !currentStateInfo.flash.uppercase()
-                .contains("OK")
-        ) {
-            deviceAbnormalList.add("FLASH 异常")
-        }
-        //fram FRAM状态
-        if (currentStateInfo.fram != IOTConstants.NULL_KEY && !currentStateInfo.fram.uppercase()
-                .contains("OK")
-        ) {
-            deviceAbnormalList.add("FRAM 异常")
-        }
-        //rtc RTC状态
-        if (currentStateInfo.rtc != IOTConstants.NULL_KEY && !currentStateInfo.rtc.uppercase()
-                .contains("OK")
-        ) {
-            deviceAbnormalList.add("RTC 异常")
-        }
+        deviceAbnormalList.addAll(DeviceStatusHelper.checkDeviceAbnormal(currentStateInfo))
         mStates.deviceNormal.set(deviceAbnormalList.isEmpty())
     }
 

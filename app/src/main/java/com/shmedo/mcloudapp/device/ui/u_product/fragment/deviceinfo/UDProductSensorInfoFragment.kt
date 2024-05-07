@@ -137,13 +137,13 @@ class UDProductSensorInfoFragment : BaseIOTDeviceFragment() {
                     info.height.toDoubleOrNull()
                         ?.let {
                             decimalFormat.format(it)
-                        } ?: "--"
+                        } ?: IOTConstants.NULL_KEY
                 )
                 mStates.radarMeasureValue.set(
                     info.ldValue.toDoubleOrNull()
                         ?.let {
                             decimalFormat.format(it)
-                        } ?: "--"
+                        } ?: IOTConstants.NULL_KEY
                 )
             } catch (e: Exception) {
                 Timber.e(e)

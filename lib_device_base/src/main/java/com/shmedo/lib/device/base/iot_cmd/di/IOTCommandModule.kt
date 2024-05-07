@@ -25,6 +25,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeVoltageConfigInfoParse
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeWorkModeInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.AlarmMonitorPointInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.AlarmReportIntervalInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.common.AlarmSwitchInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.AlarmTriggerValueInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.CommonSettingIOTCommandResponseParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DataCenterInfoParser
@@ -155,6 +156,7 @@ val iotCommandModule = module {
     factory { LoraCommunicateInfoParser() }
     factory { RadioCommunicateInfoParser() }
     factory { RtkParamInfoParser() }
+    factory { AlarmSwitchInfoParser() }
     factory { AlarmMonitorPointInfoParser() }
     factory { AlarmTriggerValueInfoParser() }
     factory { AlarmReportIntervalInfoParser() }
@@ -234,6 +236,7 @@ val iotCommandModule = module {
             get<LoraCommunicateInfoParser>(),
             get<RadioCommunicateInfoParser>(),
             get<RtkParamInfoParser>(),
+            get<AlarmSwitchInfoParser>(),
             get<AlarmMonitorPointInfoParser>(),
             get<AlarmTriggerValueInfoParser>(),
             get<AlarmReportIntervalInfoParser>(),

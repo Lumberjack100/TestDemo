@@ -135,12 +135,16 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
                     return@launchWithViewLifecycle
                 }
                 val info = commonCurrentStateInfoList[0]
-                val centerStatus = info.dataCenterStatus.split(",")
-                tableAdapter.setAllItems(
-                    getColumnHeaderList(centerStatus),
-                    getRowHeaderList(),
-                    getCellDataList(centerStatus)
-                )
+                if (info.dataCenterUseSta != IOTConstants.NULL_KEY && info.dataCenterStatus != IOTConstants.NULL_KEY && info.dataCenterUseSta.isNotEmpty() && info.dataCenterStatus.isNotEmpty()) {
+                    //根据逗号分隔
+                    val enableStatusList = info.dataCenterUseSta.split(",")
+                    val onlineStatusList = info.dataCenterStatus.split(",")
+                    tableAdapter.setAllItems(
+                        getColumnHeaderList(enableStatusList),
+                        getRowHeaderList(),
+                        getCellDataList(enableStatusList, onlineStatusList)
+                    )
+                }
 
                 if (info.csq != IOTConstants.NULL_KEY) {
                     mStates.signal.set(info.csq.toIntOrNull()?.let {
@@ -173,6 +177,7 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
                             it * 2 - 113
                     } ?: -113)
                 }
+
             } catch (e: Exception) {
                 Timber.e(e)
             }
@@ -194,8 +199,11 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
         )
     }
 
-    private fun getCellDataList(centerStatusList: List<String>): MutableList<MutableList<CommunicationDataCellModel>> {
-        if (centerStatusList.isEmpty()) {
+    private fun getCellDataList(
+        enableStatusList: List<String>,
+        onlineStatusList: List<String>
+    ): MutableList<MutableList<CommunicationDataCellModel>> {
+        if (enableStatusList.isEmpty()) {
             return arrayListOf()
         }
         val cellDataList: MutableList<MutableList<CommunicationDataCellModel>> = arrayListOf()
@@ -203,11 +211,11 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
             val columnCellDataList = arrayListOf<CommunicationDataCellModel>()
             when (headerText.mData) {
                 "数据状态" -> {
-                    for (i in 0..<centerStatusList.size.coerceAtMost(centerNum)) {
+                    for (i in 0..<enableStatusList.size.coerceAtMost(centerNum)) {
                         columnCellDataList.add(
                             CommunicationDataCellModel(
-                                mData = if (centerStatusList[i] == "0") "未开启" else if (centerStatusList[i] == "1") "在线" else "离线",
-                                textColorResId = if (centerStatusList[i] == "1") R.color.device_online_platform else R.color.device_offline_platform
+                                mData = if (enableStatusList[i] == "0") "未开启" else if (onlineStatusList[i] == "1") "在线" else "离线",
+                                textColorResId = if (enableStatusList[i] == "1" && onlineStatusList[i] == "1") R.color.device_online_platform else R.color.device_offline_platform
                             )
                         )
                     }

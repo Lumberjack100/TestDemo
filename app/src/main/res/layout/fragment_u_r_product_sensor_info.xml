@@ -98,8 +98,8 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        app:bind_errno="@{stateVM.runTime}"
-                        tools:text="正常" />
+                        android:text="@{stateVM.runTime}"
+                        tools:text="" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>

@@ -19,6 +19,7 @@ import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.model.common.AlarmMonitorPointInfo
 import com.shmedo.lib.device.base.iot_cmd.model.common.AlarmReportIntervalInfo
+import com.shmedo.lib.device.base.iot_cmd.model.common.AlarmSwitchInfo
 import com.shmedo.lib.device.base.iot_cmd.model.common.AlarmTriggerValueInfo
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
@@ -543,6 +544,14 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
 
     private fun queryData() {
         commandItems.clear()
+
+        if (productType != ProductType.GNSS_M_1 && productType != ProductType.GNSS_M_2) {
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.MD_GET_ALRAM_BROADCAST_SWITCH
+            )
+            commandItems.add(command)
+        }
+
         var command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL
         )
@@ -563,6 +572,28 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_ALRAM_BROADCAST_SWITCH -> {
+                val result = iotParseManager.parse<AlarmSwitchInfo>(
+                    cmdStr,
+                    IOTCommandType.MD_GET_ALRAM_BROADCAST_SWITCH
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "查询启用状态出错: ${result.message}"
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initEnableAlarmData(result.data)
+                    }
+                }
+            }
+
             IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL -> {
                 val result = iotParseManager.parse<AlarmMonitorPointInfo>(
                     cmdStr,
@@ -726,16 +757,24 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initAlarmMonitorPointData(info: AlarmMonitorPointInfo) {
+    private fun initEnableAlarmData(info: AlarmSwitchInfo) {
         try {
             mStates.isOpened.set(info.sw == "1")
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
+
+    private fun initAlarmMonitorPointData(info: AlarmMonitorPointInfo) {
+        try {
+            if (info.sw != IOTConstants.NULL_KEY)
+                mStates.isOpened.set(info.sw == "1")
             mStates.monitorPoint.set(info.monitorpoint)
             mStates.broadcastTimes.set(info.cnt)
             mStates.firstAlarmVoice.set(info.level1)
             mStates.secondAlarmVoice.set(info.level2)
             mStates.thirdAlarmVoice.set(info.level3)
             mStates.fourthAlarmVoice.set(info.level4)
-
         } catch (e: Exception) {
             Timber.e(e)
         }

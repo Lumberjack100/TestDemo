@@ -9,6 +9,8 @@ import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
  */
 class DataCenterParamViewModel: BaseDataCenterParamViewModel() {
     val isDataProtocolVisible = NonNullObservableField(false)
+    val isRigisterVisible = NonNullObservableField(false)
+
 
     /**
      * SL651 水文协议特有配置参数

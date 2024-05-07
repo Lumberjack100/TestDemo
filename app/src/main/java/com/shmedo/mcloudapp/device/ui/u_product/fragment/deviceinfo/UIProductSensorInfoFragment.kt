@@ -8,7 +8,7 @@ import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo
+import com.shmedo.lib.device.base.iot_cmd.model.u_product.URCurrentStateInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
@@ -113,98 +113,106 @@ class UIProductSensorInfoFragment : BaseIOTDeviceFragment() {
     private fun initStatusInfo(content: String) {
         launchWithViewLifecycle {
             try {
-                val commonCurrentStateInfoList = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<List<CommonCurrentStateInfo>>(content)
+                val urCurrentStateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<URCurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
 
-                if (commonCurrentStateInfoList.isEmpty()) {
-                    Toaster.show("数据为空")
+                val uRSensorInfoList = urCurrentStateInfo.attach_data
+                if (uRSensorInfoList.isNullOrEmpty()) {
                     return@launchWithViewLifecycle
                 }
-                val info = commonCurrentStateInfoList[0]
-                mStates.memsErrNo.set(info.memsstatus)
+                uRSensorInfoList.forEach { info ->
+                    when (info.key) {
+                        "memsstatus" -> {
+                            mStates.memsErrNo.set(info.value)
+                        }
 
-                if (info.initAngle == IOTConstants.NULL_KEY) {
-                    mStates.memsInitialAxisX.set(IOTConstants.NULL_KEY)
-                    mStates.memsInitialAxisY.set(IOTConstants.NULL_KEY)
-                    mStates.memsInitialAxisZ.set(IOTConstants.NULL_KEY)
-                } else {
-                    //根据逗号分隔
-                    val initAngle = info.initAngle.split(",")
-                    if (initAngle.isNotEmpty())
-                        mStates.memsInitialAxisX.set(initAngle[0].toDoubleOrNull()
-                            ?.let {
-                                decimalFormat.format(it)
+                        "initAngle"->{
+                            if (info.value == IOTConstants.NULL_KEY) {
+                                mStates.memsInitialAxisX.set(IOTConstants.NULL_KEY)
+                                mStates.memsInitialAxisY.set(IOTConstants.NULL_KEY)
+                                mStates.memsInitialAxisZ.set(IOTConstants.NULL_KEY)
+                            } else {
+                                //根据逗号分隔
+                                val initAngle = info.value.split(",")
+                                if (initAngle.isNotEmpty())
+                                    mStates.memsInitialAxisX.set(initAngle[0].toDoubleOrNull()
+                                        ?.let {
+                                            decimalFormat.format(it)
+                                        } ?: IOTConstants.NULL_KEY)
+                                if (initAngle.size > 1)
+                                    mStates.memsInitialAxisY.set(initAngle[1].toDoubleOrNull()
+                                        ?.let {
+                                            decimalFormat.format(it)
+                                        } ?: IOTConstants.NULL_KEY)
+                                if (initAngle.size > 2)
+                                    mStates.memsInitialAxisZ.set(initAngle[2].toDoubleOrNull()
+                                        ?.let {
+                                            decimalFormat.format(it)
+                                        } ?: IOTConstants.NULL_KEY)
+                            }
+                        }
+                        "angle"->{
+                            if (info.value == IOTConstants.NULL_KEY) {
+                                mStates.memsAxisXCurrent.set(IOTConstants.NULL_KEY)
+                                mStates.memsAxisYCurrent.set(IOTConstants.NULL_KEY)
+                                mStates.memsAxisZCurrent.set(IOTConstants.NULL_KEY)
+                            } else {
+                                val angle = info.value.split(",")
+                                if (angle.isNotEmpty())
+                                    mStates.memsAxisXCurrent.set(angle[0].toDoubleOrNull()
+                                        ?.let {
+                                            decimalFormat.format(it)
+                                        } ?: IOTConstants.NULL_KEY)
+                                if (angle.size > 1)
+                                    mStates.memsAxisYCurrent.set(angle[1].toDoubleOrNull()
+                                        ?.let {
+                                            decimalFormat.format(it)
+                                        } ?: IOTConstants.NULL_KEY)
+                                if (angle.size > 2)
+                                    mStates.memsAxisZCurrent.set(angle[2].toDoubleOrNull()
+                                        ?.let {
+                                            decimalFormat.format(it)
+                                        } ?: IOTConstants.NULL_KEY)
+                            }
+                        }
+
+                        "acc"->{
+                            if (info.value == IOTConstants.NULL_KEY) {
+                                mStates.memsAxisXAcceleration.set(IOTConstants.NULL_KEY)
+                                mStates.memsAxisYAcceleration.set(IOTConstants.NULL_KEY)
+                                mStates.memsAxisZAcceleration.set(IOTConstants.NULL_KEY)
+                            } else {
+                                val acc = info.value.split(",")
+                                if (acc.isNotEmpty())
+                                    mStates.memsAxisXAcceleration.set(acc[0].toDoubleOrNull()
+                                        ?.let {
+                                            decimalFormat.format(it)
+                                        } ?: IOTConstants.NULL_KEY)
+                                if (acc.size > 1)
+                                    mStates.memsAxisYAcceleration.set(acc[1].toDoubleOrNull()
+                                        ?.let {
+                                            decimalFormat.format(it)
+                                        } ?: IOTConstants.NULL_KEY)
+                                if (acc.size > 2)
+                                    mStates.memsAxisZAcceleration.set(acc[2].toDoubleOrNull()
+                                        ?.let {
+                                            decimalFormat.format(it)
+                                        } ?: IOTConstants.NULL_KEY)
+                            }
+                        }
+
+                        "worktime" -> {
+                            mStates.runTime.set(info.value.toIntOrNull()?.let {
+                                val day = it / (24 * 60 * 60)
+                                val hour = (it % (24 * 60 * 60)) / (60 * 60)
+                                val minute = (it % (60 * 60)) / 60
+                                "${day}天${hour}时${minute}分"
                             } ?: IOTConstants.NULL_KEY)
-                    if (initAngle.size > 1)
-                        mStates.memsInitialAxisY.set(initAngle[1].toDoubleOrNull()
-                            ?.let {
-                                decimalFormat.format(it)
-                            } ?: IOTConstants.NULL_KEY)
-                    if (initAngle.size > 2)
-                        mStates.memsInitialAxisZ.set(initAngle[2].toDoubleOrNull()
-                            ?.let {
-                                decimalFormat.format(it)
-                            } ?: IOTConstants.NULL_KEY)
-                }
-                if (info.angle == IOTConstants.NULL_KEY) {
-                    mStates.memsAxisXCurrent.set(IOTConstants.NULL_KEY)
-                    mStates.memsAxisYCurrent.set(IOTConstants.NULL_KEY)
-                    mStates.memsAxisZCurrent.set(IOTConstants.NULL_KEY)
-                } else {
-                    val angle = info.angle.split(",")
-                    if (angle.isNotEmpty())
-                        mStates.memsAxisXCurrent.set(angle[0].toDoubleOrNull()
-                            ?.let {
-                                decimalFormat.format(it)
-                            } ?: IOTConstants.NULL_KEY)
-                    if (angle.size > 1)
-                        mStates.memsAxisYCurrent.set(angle[1].toDoubleOrNull()
-                            ?.let {
-                                decimalFormat.format(it)
-                            } ?: IOTConstants.NULL_KEY)
-                    if (angle.size > 2)
-                        mStates.memsAxisZCurrent.set(angle[2].toDoubleOrNull()
-                            ?.let {
-                                decimalFormat.format(it)
-                            } ?: IOTConstants.NULL_KEY)
+                        }
+                    }
                 }
 
-
-                if (info.acc == IOTConstants.NULL_KEY) {
-                    mStates.memsAxisXAcceleration.set(IOTConstants.NULL_KEY)
-                    mStates.memsAxisYAcceleration.set(IOTConstants.NULL_KEY)
-                    mStates.memsAxisZAcceleration.set(IOTConstants.NULL_KEY)
-                } else {
-                    val acc = info.acc.split(",")
-                    if (acc.isNotEmpty())
-                        mStates.memsAxisXAcceleration.set(acc[0].toDoubleOrNull()
-                            ?.let {
-                                decimalFormat.format(it)
-                            } ?: IOTConstants.NULL_KEY)
-                    if (acc.size > 1)
-                        mStates.memsAxisYAcceleration.set(acc[1].toDoubleOrNull()
-                            ?.let {
-                                decimalFormat.format(it)
-                            } ?: IOTConstants.NULL_KEY)
-                    if (acc.size > 2)
-                        mStates.memsAxisZAcceleration.set(acc[2].toDoubleOrNull()
-                            ?.let {
-                                decimalFormat.format(it)
-                            } ?: IOTConstants.NULL_KEY)
-                }
-
-                if (info.worktime == IOTConstants.NULL_KEY) {
-                    mStates.runTime.set(IOTConstants.NULL_KEY)
-                } else {
-                    //秒转换为天时分
-                    mStates.runTime.set(info.worktime.toIntOrNull()?.let {
-                        val day = it / (24 * 60 * 60)
-                        val hour = (it % (24 * 60 * 60)) / (60 * 60)
-                        val minute = (it % (60 * 60)) / 60
-                        "${day}天${hour}时${minute}分"
-                    } ?: IOTConstants.NULL_KEY)
-                }
             } catch (e: Exception) {
                 Timber.e(e)
             }

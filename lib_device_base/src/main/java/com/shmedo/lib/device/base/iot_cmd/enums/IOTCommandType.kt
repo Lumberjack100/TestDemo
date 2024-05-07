@@ -905,7 +905,9 @@ enum class IOTCommandType(private val value: String) {
     /**
      * 预警报警开关（仅适用于监测设备）
      */
+    MD_GET_ALRAM_BROADCAST_SWITCH("md_getcqbroadcastswitch"),
     MD_SET_ALRAM_BROADCAST_SWITCH("md_setcqbroadcastswitch"),
+
 
     /**
      * 预警广播参数配置
