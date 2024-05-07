@@ -16,6 +16,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentUProductCommunicationInfoBinding
@@ -134,15 +135,44 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
                     return@launchWithViewLifecycle
                 }
                 val info = commonCurrentStateInfoList[0]
-                mStates.wrapStateInfo.set(info)
-                mStates.wrapStateInfo.notifyChange()
-
                 val centerStatus = info.dataCenterStatus.split(",")
                 tableAdapter.setAllItems(
                     getColumnHeaderList(centerStatus),
                     getRowHeaderList(),
                     getCellDataList(centerStatus)
                 )
+
+                if (info.csq != IOTConstants.NULL_KEY) {
+                    mStates.signal.set(info.csq.toIntOrNull()?.let {
+                        if (it < 0)
+                            it.toString() + "dBm"
+                        else
+                            (it * 2 - 113).toString() + "dBm"
+                    } ?: "--dBm"
+                    )
+                    mStates.signalValue.set(info.csq.toIntOrNull()?.let {
+                        if (it < 0)
+                            it
+                        else
+                            it * 2 - 113
+                    } ?: -113)
+                }
+
+                if (info.signal != IOTConstants.NULL_KEY) {
+                    mStates.signal.set(info.signal.toIntOrNull()?.let {
+                        if (it < 0)
+                            it.toString() + "dBm"
+                        else
+                            (it * 2 - 113).toString() + "dBm"
+                    } ?: "--dBm"
+                    )
+                    mStates.signalValue.set(info.signal.toIntOrNull()?.let {
+                        if (it < 0)
+                            it
+                        else
+                            it * 2 - 113
+                    } ?: -113)
+                }
             } catch (e: Exception) {
                 Timber.e(e)
             }
@@ -207,6 +237,7 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
             putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
+
         fun newInstance() = UProductCommunicationInfoFragment()
     }
 }

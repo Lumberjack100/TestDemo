@@ -36,7 +36,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.wrapStateInfo.starNum+""}'
+                        android:text='@{stateVM.starNum+""}'
                         tools:text="34" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -67,7 +67,7 @@
                     <TextView
                         android:id="@+id/tv_4g_signal_strength"
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.wrapStateInfo._4g_signal+" dBm"}'
+                        android:text="@{stateVM.signal}"
                         tools:text="-51dBm" />
 
                     <com.shmedo.mcloudapp.common.widget.SignalView
@@ -75,7 +75,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="22dp"
                         android:layout_marginStart="10dp"
-                        app:bind_signal_value="@{stateVM.wrapStateInfo._4g_signal}"
+                        app:bind_signal_value="@{stateVM.signalValue}"
                         app:connected="true"
                         app:primary_color="@color/text_color_cccccc"
                         app:shadow_color="@color/text_color_3AD094"

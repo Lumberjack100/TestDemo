@@ -20,7 +20,6 @@ import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasBaseInfoViewModel
 import org.koin.android.ext.android.inject
-import org.koin.java.KoinJavaComponent.inject
 import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -275,11 +274,17 @@ class BleDasBaseInfoFragment : BaseIOTDeviceFragment() {
             mStates.wrapBaseInfo.notifyChange()
 
             mStates.signal.set(info.gprsSignal.toIntOrNull()?.let {
-                (it * 2 - 113).toString() + "dBm"
+                if (it < 0)
+                    it.toString() + "dBm"
+                else
+                    (it * 2 - 113).toString() + "dBm"
             } ?: "--dBm"
             )
             mStates.signalValue.set(info.gprsSignal.toIntOrNull()?.let {
-                it * 2 - 113
+                if (it < 0)
+                    it
+                else
+                    it * 2 - 113
             } ?: -113)
         } catch (e: Exception) {
             Timber.e(e)

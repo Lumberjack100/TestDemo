@@ -18,7 +18,8 @@ data class CommonCurrentStateInfo2(
     var rttVersion: String = IOTConstants.NULL_KEY, //RTT操作系统版本 4.1.0
     var hardwareVersion: String = IOTConstants.NULL_KEY, //硬件版本 V10
     var firmwareVersion: String = IOTConstants.NULL_KEY, //固件版本 1.0.0_M19
-    var signal: Int = 0, //4G信号强度
+    var signal: String = IOTConstants.NULL_KEY, //4G信号强度
+    var csq: String = IOTConstants.NULL_KEY, //4G信号强度
     @Json(name = "4g")
     var _4g: String = IOTConstants.NULL_KEY, //状态  OK/FAIL  OK，状态正常；FAIL，状态异常
     var scl: String = IOTConstants.NULL_KEY, //倾角加速度状态 OK/FAIL

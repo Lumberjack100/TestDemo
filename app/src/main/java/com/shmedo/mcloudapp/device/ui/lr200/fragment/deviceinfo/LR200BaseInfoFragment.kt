@@ -94,10 +94,26 @@ class LR200BaseInfoFragment : BaseIOTDeviceFragment() {
             else -> {}
         }
     }
+
     private fun initStatusInfo(content: String) {
         try {
-            val commonCurrentStateInfo = MoshiUtil.fromJson<CommonCurrentStateInfo>(content) ?: return
+            val commonCurrentStateInfo =
+                MoshiUtil.fromJson<CommonCurrentStateInfo>(content) ?: return
             mStates.wrapStateInfo.set(commonCurrentStateInfo)
+            mStates.wrapStateInfo.notifyChange()
+
+            mStates.signal.set(commonCurrentStateInfo._4g_signal.let {
+                if (it < 0)
+                    it.toString() + "dBm"
+                else
+                    (it * 2 - 113).toString() + "dBm"
+            })
+            mStates.signalValue.set(commonCurrentStateInfo._4g_signal.let {
+                if (it < 0)
+                    it
+                else
+                    it * 2 - 113
+            })
         } catch (e: Exception) {
             Timber.e(e)
         }

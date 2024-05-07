@@ -64,7 +64,7 @@ class UProductBaseInfoFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
-//            queryBaseInfo()
+            queryBaseInfo()
         }
     }
 
@@ -88,7 +88,7 @@ class UProductBaseInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun lazyLoadData() {
-//        binding.refreshLayout.autoRefresh()
+        binding.refreshLayout.autoRefresh()
     }
 
     /**

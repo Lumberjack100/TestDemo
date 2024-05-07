@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants" />
 
         <variable
             name="stateVM"
@@ -28,6 +29,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.signal != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -37,7 +39,7 @@
                     <TextView
                         android:id="@+id/tv_4g_signal_strength"
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.wrapStateInfo.signal+" dBm"}'
+                        android:text="@{stateVM.signal}"
                         tools:text="-51dBm" />
 
                     <com.shmedo.mcloudapp.common.widget.SignalView
@@ -45,7 +47,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="22dp"
                         android:layout_marginStart="10dp"
-                        app:bind_signal_value="@{stateVM.wrapStateInfo.signal}"
+                        app:bind_signal_value="@{stateVM.signalValue}"
                         app:connected="true"
                         app:primary_color="@color/text_color_cccccc"
                         app:shadow_color="@color/text_color_3AD094"
