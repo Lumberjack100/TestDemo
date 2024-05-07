@@ -363,7 +363,7 @@ enum class MDCommandType(private val commandCode: String) {
     /**
      * 自定义心跳包指令
      */
-    HEARTBEAT("888"),
+    HEART_BEAT("888"),
 
     /**
      * 长度不够指令头最低长度要求

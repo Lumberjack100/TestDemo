@@ -55,7 +55,6 @@ import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessage
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -67,9 +66,6 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: BleDasHomeFragmentViewModel
     private lateinit var mCommandResponseStates: CommandResponseViewModel
     private val mdParseManager: MDParserManager by inject()
-
-    private val lastCommunicationTime = MutableStateFlow(System.currentTimeMillis())
-
 
     override fun initViewModel() {
         super.initViewModel()
@@ -722,17 +718,6 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         binding.recyclerview.models = moduleList
     }
 
-
-    // 检查是否超时
-    private fun isNearbyCommunicationTimeout(lastUpdateTime: Long): Boolean {
-        return (System.currentTimeMillis() - lastUpdateTime) >= AppContants.Communication.DELAY_10000_MILLIS
-    }
-
-    // 更新最后通信时间
-    private fun updateLastCommunicationTime() {
-        lastCommunicationTime.value = System.currentTimeMillis()
-    }
-
     // 设置心跳检查
     private fun setupHeartbeat() {
         launchWithViewLifecycle {
@@ -744,9 +729,9 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                     // 仅当设备连接并且需要发送心跳时，才发送心跳包
                     if (mStates.isConnected.get() && isNearbyCommunicationTimeout(lastUpdateTime)) {
                         Timber.d("bingo startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
-                        val command = MDCommandUtil.getCommand(MDCommandType.HEARTBEAT)
+                        val command = MDCommandUtil.getCommand(MDCommandType.HEART_BEAT)
                         Timber.d("发送心跳包指令: $command")
-                        sendHeartbeatCommand(command)
+                        sendHeartbeatMDCommand(command)
                     }
                 }
         }

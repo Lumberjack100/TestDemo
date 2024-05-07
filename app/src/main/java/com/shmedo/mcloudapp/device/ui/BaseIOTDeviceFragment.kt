@@ -44,6 +44,7 @@ import com.shmedo.mcloudapp.ext.showLoadingDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import timber.log.Timber
@@ -70,6 +71,18 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     private var timeoutJob: Job? = null
     protected var commandItems = LinkedList<String>()
     protected var commandDescItems = LinkedList<String>()
+
+    protected val lastCommunicationTime = MutableStateFlow(System.currentTimeMillis())
+
+    // 检查是否超时
+    protected fun isNearbyCommunicationTimeout(lastUpdateTime: Long): Boolean {
+        return (System.currentTimeMillis() - lastUpdateTime) >= AppContants.Communication.DELAY_10000_MILLIS
+    }
+
+    // 更新最后通信时间
+    protected fun updateLastCommunicationTime() {
+        lastCommunicationTime.value = System.currentTimeMillis()
+    }
 
     @CallSuper
     override fun initViewModel() {
@@ -231,8 +244,12 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     abstract fun setResultData(cmdStr: String)
 
-    protected fun sendHeartbeatCommand(command: String) {
+    protected fun sendHeartbeatMDCommand(command: String) {
         bleViewModel.sendMDCommand(command, 0)
+    }
+
+    protected fun sendHeartbeatIOTCommand(command: String) {
+        bleViewModel.sendIOTCommand(command, deviceInfo.apikey, 0)
     }
 
     /**

@@ -1,8 +1,12 @@
 package com.shmedo.mcloudapp.device.ui.u_product.fragment
 
+import com.blankj.utilcode.util.TimeUtils
 import com.drake.brv.utils.models
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
+import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.AlarmConfigModule
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -22,6 +26,8 @@ import com.shmedo.mcloudapp.device.ui.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.device.ui.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.device.ui.common.UniversalDeviceHomeFragment
 import com.shmedo.mcloudapp.ext.nav
+import kotlinx.coroutines.flow.debounce
+import timber.log.Timber
 
 /**
  * 创建者：gonghe
@@ -29,6 +35,7 @@ import com.shmedo.mcloudapp.ext.nav
  * 描述： INTEGRATION(一体化传感器产品线)
  */
 class UProductHomeFragment : UniversalDeviceHomeFragment() {
+
     override fun initData() {
         super.initData()
         toolbarViewModel.toolbarIvActionVisible.set(true)
@@ -45,7 +52,7 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
                 mHeadStates.productGrayResId.set(R.drawable.device_logo_qingxieyi_gray)
             }
 
-            ProductType.U_R_1 -> {//雨量计
+            ProductType.U_R_1 -> {//一体化雨量计
                 mHeadStates.productLightResId.set(R.drawable.device_logo_rain_gauge)
                 mHeadStates.productGrayResId.set(R.drawable.device_logo_rain_gauge_gray)
             }
@@ -167,7 +174,7 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
                         )
                     }
 
-                    ProductType.U_R_1 -> {//雨量计
+                    ProductType.U_R_1 -> {//一体化雨量计
                         nav().navigate(
                             R.id.action_uProductHomeFragment_to_uRProductSensorParamFragment,
                             bundle
@@ -235,7 +242,7 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
                         )
                     }
 
-                    ProductType.U_R_1 -> {//雨量计
+                    ProductType.U_R_1 -> {//一体化雨量计
                         nav().navigate(
                             configModule.navId,
                             UniversalDataCenterHomeFragment.newBundleArguments(
@@ -279,6 +286,30 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
                     )
                 }
             }
+        }
+    }
+
+    override fun createObserver() {
+        super.createObserver()
+        setupHeartbeat()
+    }
+
+    // 设置心跳检查
+    private fun setupHeartbeat() {
+        launchWithViewLifecycle {
+            lastCommunicationTime
+                .debounce(AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
+                .collect { lastUpdateTime ->
+                    val updateTime = TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
+                    Timber.d("startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
+                    // 仅当设备连接并且需要发送心跳时，才发送心跳包
+                    if (mHeadStates.isConnected.get() && isNearbyCommunicationTimeout(lastUpdateTime)) {
+                        Timber.d("bingo startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
+                        val command = IOTCommandUtil.getCommand(IOTCommandType.HEART_BEAT)
+                        Timber.d("发送心跳包指令: $command")
+                        sendHeartbeatIOTCommand(command)
+                    }
+                }
         }
     }
 

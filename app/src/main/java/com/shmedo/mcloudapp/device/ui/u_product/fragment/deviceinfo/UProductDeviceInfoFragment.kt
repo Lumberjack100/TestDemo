@@ -46,7 +46,7 @@ class UProductDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
                     }
                 }
 
-                ProductType.U_R_1 -> {//雨量计
+                ProductType.U_R_1 -> {//一体化雨量计
                     URProductSensorInfoFragment.newInstance().apply {
                         arguments = bundle
                     }

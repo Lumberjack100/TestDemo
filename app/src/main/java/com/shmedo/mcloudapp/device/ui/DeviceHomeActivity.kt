@@ -23,7 +23,6 @@ import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
-import com.shmedo.mcloudapp.device.ui.common.UniversalDeviceHomeFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -105,7 +104,7 @@ class DeviceHomeActivity : BaseActivity() {
                 bundle2
             )
 
-            ProductType.U_R_1, ProductType.COLLECTOR_R_1, ProductType.DAS, ProductType.BHY -> {
+             ProductType.COLLECTOR_R_1, ProductType.DAS, ProductType.BHY -> {
                 val graphId = if (communicateWay == BleConnect) R.navigation.ble_das_graph else R.navigation.das_graph
                 navController.setGraph(
                     graphId,bundle2
@@ -138,7 +137,7 @@ class DeviceHomeActivity : BaseActivity() {
                 bundle2
             )
 
-            ProductType.U_D_1, ProductType.U_D_2, ProductType.U_I_1 -> {
+            ProductType.U_D_1, ProductType.U_D_2, ProductType.U_I_1,ProductType.U_R_1 -> {
                 navController.setGraph(
                     R.navigation.u_product_graph,
                     bundle2

@@ -949,7 +949,7 @@ enum class IOTCommandType(private val value: String) {
     /**
      * 自定义心跳包
      */
-    HEART_BEAT("HeartBeatData"),
+    HEART_BEAT("ble_keepalive"),
 
     /**
      * 长度不够指令头最低长度要求
