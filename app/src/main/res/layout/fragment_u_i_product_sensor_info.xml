@@ -105,6 +105,7 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     visible='@{ stateVM.memsAxisXCurrent != IOTConstants.NULL_KEY}'
+                    android:layout_marginTop="@dimen/dimen_size_10"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -150,6 +151,7 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     visible='@{ stateVM.memsAxisXAcceleration != IOTConstants.NULL_KEY}'
+                    android:layout_marginTop="@dimen/dimen_size_10"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -195,6 +197,7 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     visible='@{ stateVM.runTime != IOTConstants.NULL_KEY}'
+                    android:layout_marginTop="@dimen/dimen_size_10"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView

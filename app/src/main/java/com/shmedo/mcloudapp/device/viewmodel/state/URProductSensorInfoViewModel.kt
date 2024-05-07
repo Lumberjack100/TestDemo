@@ -9,4 +9,10 @@ class URProductSensorInfoViewModel : ViewModel() {
 
     //24小时雨量值
     val rain24h = NonNullObservableField("")
+
+    //电池电压
+    val batPowerVoltage = NonNullObservableField("")
+
+    //连续运行时间
+    val runTime = NonNullObservableField("")
 }

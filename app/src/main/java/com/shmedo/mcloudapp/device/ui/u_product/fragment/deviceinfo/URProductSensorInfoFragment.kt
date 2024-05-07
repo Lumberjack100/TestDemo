@@ -8,10 +8,11 @@ import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo2
+import com.shmedo.lib.device.base.iot_cmd.model.u_product.URCurrentStateInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentURProductSensorInfoBinding
@@ -36,7 +37,7 @@ class URProductSensorInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentURProductSensorInfoBinding
     private lateinit var mStates: URProductSensorInfoViewModel
     private val iotParseManager: IOTParserManager by inject()
-    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
+    private val decimalFormat = DecimalFormat("#.###", DecimalFormatSymbols(Locale.getDefault()))
 
     override fun initViewModel() {
         super.initViewModel()
@@ -74,22 +75,22 @@ class URProductSensorInfoFragment : BaseIOTDeviceFragment() {
     private fun queryInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_DEVICE_STATUS -> {
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
                 val result = iotParseManager.parse<String>(
                     cmdStr,
-                    IOTCommandType.MD_GET_DEVICE_STATUS
+                    IOTCommandType.QUERY_DEVICE_STATUS
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "查询传感器信息出错: ${result.message}"
+                        val errMsg = "查询信息出错: ${result.message}"
                         Toaster.show(errMsg)
                         return
                     }
@@ -111,17 +112,37 @@ class URProductSensorInfoFragment : BaseIOTDeviceFragment() {
     private fun initStatusInfo(content: String) {
         launchWithViewLifecycle {
             try {
-                val commonCurrentStateInfoList = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<List<CommonCurrentStateInfo2>>(content)
+                val urCurrentStateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<URCurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
+                mStates.batPowerVoltage.set(urCurrentStateInfo.ext_power_volt.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: IOTConstants.NULL_KEY)
 
-                if (commonCurrentStateInfoList.isEmpty()) {
-                    Toaster.show("数据为空")
+                val uRSensorInfoList = urCurrentStateInfo.attach_data
+                if (uRSensorInfoList.isNullOrEmpty()) {
                     return@launchWithViewLifecycle
                 }
-                val info = commonCurrentStateInfoList[0]
-                decimalFormat.applyPattern("#.###")
+                uRSensorInfoList.forEach { info ->
+                    when (info.key) {
+                        "dayRain" -> {//24小时雨量值
+                            mStates.rain24h.set(info.value.toDoubleOrNull()
+                                ?.let {
+                                    decimalFormat.format(it)
+                                } ?: IOTConstants.NULL_KEY)
+                        }
 
+                        "worktime" -> {
+                            mStates.runTime.set(info.value.toIntOrNull()?.let {
+                                val day = it / (24 * 60 * 60)
+                                val hour = (it % (24 * 60 * 60)) / (60 * 60)
+                                val minute = (it % (60 * 60)) / 60
+                                "${day}天${hour}时${minute}分"
+                            } ?: IOTConstants.NULL_KEY)
+                        }
+                    }
+                }
             } catch (e: Exception) {
                 Timber.e(e)
             }

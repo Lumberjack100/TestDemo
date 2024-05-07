@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants" />
+
         <variable
             name="stateVM"
             type="com.shmedo.mcloudapp.device.viewmodel.state.URProductSensorInfoViewModel" />
@@ -66,6 +68,38 @@
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.rain24h }'
                         tools:text="2" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.batPowerVoltage != IOTConstants.NULL_KEY}'
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="电源电压" />
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        android:text='@{stateVM.batPowerVoltage+" V"}'
+                        app:bind_voltage_color='@{stateVM.batPowerVoltage+""}'
+                        tools:text="2" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.runTime != IOTConstants.NULL_KEY}'
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="连续运行时间" />
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        app:bind_errno="@{stateVM.runTime}"
+                        tools:text="正常" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>
