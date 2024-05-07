@@ -223,19 +223,6 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             return
         }
         when (module.configModule) {
-            is RunningStatusModule -> {
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().navigate(
-                    module.configModule.navId,
-                    bundle
-                )
-            }
-
             is TimeCalibrationModule -> {//时间校准
                 doQueryTimeCmd()
                 mCommandResponseStates.isResponseLoading.set(true)

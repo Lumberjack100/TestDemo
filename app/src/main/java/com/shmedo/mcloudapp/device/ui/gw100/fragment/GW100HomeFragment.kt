@@ -120,18 +120,6 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
 
     override fun processOtherItemClick(configModule: DeviceFunctionModule) {
         when (configModule) {
-            is LoraConfigModule -> {//LORA设置
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().navigate(
-                    R.id.action_global_to_loraSettingFragment,
-                    bundle
-                )
-            }
             is CommandDebugConfigModule -> {
                 val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
                     true,

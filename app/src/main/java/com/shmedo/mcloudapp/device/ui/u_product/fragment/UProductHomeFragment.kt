@@ -138,19 +138,6 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
 
     override fun processOtherItemClick(configModule: DeviceFunctionModule) {
         when (configModule) {
-            is RunningStatusModule -> {
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().navigate(
-                    configModule.navId,
-                    bundle
-                )
-            }
-
             is SensorConfigModule -> {
                 val bundle = BaseIOTDeviceFragment.newBundleArguments(
                     productType,
@@ -185,32 +172,6 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
 
                     }
                 }
-            }
-
-            is LoraConfigModule -> {//LORA设置
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().navigate(
-                    R.id.action_global_to_loraSettingFragment,
-                    bundle
-                )
-            }
-
-            is AlarmConfigModule -> {
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().navigate(
-                    configModule.navId,
-                    bundle
-                )
             }
 
             is DataCenterModule -> {

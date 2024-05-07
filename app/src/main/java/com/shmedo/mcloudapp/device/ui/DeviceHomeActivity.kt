@@ -144,12 +144,20 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
+            ProductType.LB20S -> {
+                navController.setGraph(
+                    R.navigation.lb20s_graph,
+                    bundle2
+                )
+            }
+
             ProductType.TEST_DEVICE -> {
                 navController.setGraph(
                     R.navigation.test_device_graph,
                     bundle2
                 )
             }
+
 
             else -> {
 

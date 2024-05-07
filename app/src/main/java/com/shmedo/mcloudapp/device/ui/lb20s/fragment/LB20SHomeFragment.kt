@@ -1,22 +1,21 @@
-package com.shmedo.mcloudapp.device.ui.m20s.fragment
+package com.shmedo.mcloudapp.device.ui.lb20s.fragment
 
 import com.drake.brv.utils.models
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.AlarmConfigModule
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommandDebugConfigModule
-import com.shmedo.mcloudapp.device.model.CommonModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DataCenterModule
 import com.shmedo.mcloudapp.device.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.device.model.FirmwareUpgradeModule
+import com.shmedo.mcloudapp.device.model.LoraConfigModule
 import com.shmedo.mcloudapp.device.model.RebootModule
 import com.shmedo.mcloudapp.device.model.RestoreFactoryModule
 import com.shmedo.mcloudapp.device.model.RunningStatusModule
+import com.shmedo.mcloudapp.device.model.SensorConfigModule
 import com.shmedo.mcloudapp.device.model.TimeCalibrationModule
-import com.shmedo.mcloudapp.device.model.WorkModeModule
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.device.ui.common.UniversalDataCenterHomeFragment
@@ -24,18 +23,17 @@ import com.shmedo.mcloudapp.device.ui.common.UniversalDeviceHomeFragment
 import com.shmedo.mcloudapp.ext.nav
 
 /**
- * 创建者:   gonghe <br></br>
- * 创建时间:  2020/8/27 <br></br>
- * 描述：  M20S 配置主页
+ * 创建者：gonghe
+ * 创建时间：2024/5/7
+ * 描述： 无线预警广播(江苏赛立科技有限公司)
  */
-class M20SHomeFragment : UniversalDeviceHomeFragment() {
+class LB20SHomeFragment : UniversalDeviceHomeFragment(){
     override fun initData() {
         super.initData()
-        toolbarViewModel.toolbarIvActionVisible.set(true)
-        mHeadStates.productLightResId.set(R.drawable.device_logo_m20)
-        mHeadStates.productGrayResId.set(R.drawable.device_logo_m20_gray)
+        toolbarViewModel.toolbarIvActionVisible.set(false)
+        mHeadStates.productLightResId.set(R.drawable.device_logo_gateway)
+        mHeadStates.productGrayResId.set(R.drawable.device_logo_gateway_gray)
         mHeadStates.isIOTPlatformStateVisible.set(false)
-        mHeadStates.deviceName.set(if (deviceInfo.deviceToken.endsWith(ProductType.GNSS_M_1.newSuffix)) "M20 (单北斗)" else "M20 (全星座)")
     }
 
     override fun updateConfigModuleData() {
@@ -44,7 +42,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
             ConfigModule(
                 RunningStatusModule(
                     resID = R.drawable.ic_module_current_state,
-                    navId = R.id.action_m20SHomeFragment_to_m20SDeviceInfoFragment
+                    navId = R.id.action_uProductHomeFragment_to_uProductDeviceInfoFragment
                 )
             )
         )
@@ -57,19 +55,16 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
         )
         moduleList.add(
             ConfigModule(
-                WorkModeModule(
-                    resID = R.drawable.ic_module_work_model,
-                    navId = R.id.action_m20SHomeFragment_to_m20SWorkModelFragment
+                SensorConfigModule(
+                    navId = 0
                 )
             )
         )
         moduleList.add(
             ConfigModule(
-                CommonModule(
-                    name = "电台设置",
-                    desc = "RTCM电台设置",
-                    resID = R.drawable.ic_module_radio_setting,
-                    navId = R.id.action_m20SHomeFragment_to_m20SRadioSettingFragment
+                LoraConfigModule(
+                    resID = R.drawable.ic_module_lora,
+                    navId = R.id.action_global_to_loraSettingFragment
                 )
             )
         )
@@ -77,17 +72,6 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
             ConfigModule(
                 AlarmConfigModule(
                     navId = R.id.action_global_to_alarmSettingFragment
-                )
-            )
-        )
-        moduleList.add(
-            ConfigModule(
-                CommonModule(
-                    name = "卫星通信",
-                    desc = "卫星通信终端设置",
-                    resID = R.drawable.ic_module_satellite_communications,
-                    navId = 0,
-                    isSupport = false
                 )
             )
         )
@@ -110,8 +94,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
             ConfigModule(
                 FirmwareUpgradeModule(
                     resID = R.drawable.ic_module_firmware_upgrade,
-                    navId = R.id.action_global_to_firmwareUpgradeFragment,
-                    isSupport = false
+                    navId = R.id.action_global_to_firmwareUpgradeFragment
                 )
             )
         )
@@ -122,6 +105,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
                 )
             )
         }
+
         binding.rvModule.models = moduleList
     }
 
@@ -129,7 +113,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
         when (configModule) {
             is DataCenterModule -> {
                 val bundle = UniversalDataCenterHomeFragment.newBundleArguments(
-                    4,
+                    3,
                     productType,
                     communicateWay,
                     deviceInfo,
