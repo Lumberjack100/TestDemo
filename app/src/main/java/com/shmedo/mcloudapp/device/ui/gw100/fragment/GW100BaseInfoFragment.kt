@@ -27,6 +27,7 @@ import com.shmedo.mcloudapp.device.viewmodel.state.GW100BaseInfoViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -189,22 +190,7 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
 
     private fun checkDeviceIsNormal(currentStateInfo: CommonCurrentStateInfo2) {
         deviceAbnormalList.clear()
-        //lora LORA模块
-        if (!currentStateInfo.lora.uppercase().contains("OK")) {
-            deviceAbnormalList.add("LORA 模块异常")
-        }
-        //bt 蓝牙模块
-        if (!currentStateInfo.bt.uppercase().contains("OK")) {
-            deviceAbnormalList.add("蓝牙模块异常")
-        }
-        //radio 电台模块
-        if (!currentStateInfo.radio.uppercase().contains("OK")) {
-            deviceAbnormalList.add("电台模块异常")
-        }
-        //flash
-        if (!currentStateInfo.flash.uppercase().contains("OK")) {
-            deviceAbnormalList.add("FLASH 异常")
-        }
+        deviceAbnormalList.addAll(DeviceStatusHelper.checkDeviceAbnormal(currentStateInfo))
         mStates.deviceNormal.set(deviceAbnormalList.isEmpty())
     }
 
