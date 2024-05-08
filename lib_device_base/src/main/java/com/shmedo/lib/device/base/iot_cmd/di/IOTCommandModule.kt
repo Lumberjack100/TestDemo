@@ -55,6 +55,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.das.DasSensorStatusParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasSolarStatusInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasTemperatureAndHumidityStatusInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.McuAddressInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.hac.HacMotionStateParser
 import com.shmedo.lib.device.base.iot_cmd.parser.m20.M20BaseInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDIPortParamParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDOPortParamParser
@@ -113,6 +114,9 @@ val iotCommandModule = module {
     factory { AdmeWorkModeInfoParser() }
     factory { AdmeCalibrationProcessingInfoParser() }
     factory { AdmeAndNegativeTestExceptionHandlingInfoParser() }
+    factory { HacMotionStateParser() }
+
+
     factory { DasBaseInfoParser() }
     factory { DasCollectorInfoParser() }
     factory { DasReportInfoParser() }
@@ -193,6 +197,9 @@ val iotCommandModule = module {
             get<AdmeWorkModeInfoParser>(),
             get<AdmeCalibrationProcessingInfoParser>(),
             get<AdmeAndNegativeTestExceptionHandlingInfoParser>(),
+            get<HacMotionStateParser>(),
+
+
             get<DasBaseInfoParser>(),
             get<DasCollectorInfoParser>(),
             get<DasReportInfoParser>(),

@@ -123,7 +123,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
         mHeadStates.productName.set(deviceInfo.productName)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
         mHeadStates.deviceName.set(if (deviceInfo.deviceName == deviceInfo.deviceToken) deviceInfo.productToken else deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
-        mHeadStates.firmwareVersion.set(deviceInfo.firmwareVersion)
+        mHeadStates.firmwareVersion.set(deviceInfo.firmwareVersion.ifEmpty { "--" })
         mHeadStates.isRunningStateVisible.set(false)
         mHeadStates.isPlatformsVisible.set(false)
 
@@ -193,6 +193,10 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
             } else {
                 bleViewModel.launch(bleDevice!!)
             }
+        }
+
+        override fun onAdmeModeChooseClick() {
+            chooseAdmeMode()
         }
     }
 
@@ -313,9 +317,16 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun lazyLoadData() {
-        if (communicateWay is BleConnect) {
+        //4G 模式下，直接查询设备工作模式
+        if (communicateWay is NetPlatformConnect) {
+            onNetPlatformReady()
+        } else {
             bleViewModel.launch(bleDevice!!)
         }
+    }
+
+    protected open fun onNetPlatformReady() {
+
     }
 
     override fun onBleDeviceReady() {
@@ -514,6 +525,24 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            IOTCommandType.MD_SAVE_CONFIG_PARAM -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "保存出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("保存成功")
+                        }
+                    }
+                }
+            }
+
             else -> {
                 processOtherCmdResult(
                     IOTCommandUtil.extractCommandType(cmdStr),
@@ -524,6 +553,8 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     }
 
     protected abstract fun updateConfigModuleData()
+
+    protected open fun chooseAdmeMode() {}
 
     protected open fun processOtherItemClick(configModule: DeviceFunctionModule) {
         if (configModule.navId != 0) {

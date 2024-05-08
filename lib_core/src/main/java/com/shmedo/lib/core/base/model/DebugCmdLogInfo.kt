@@ -8,5 +8,6 @@ package com.shmedo.lib.core.base.model
 data class DebugCmdLogInfo(
     var logTime: String = "",
     var content: String = "",
-    var colorRes: Int = 0
+    var colorRes: Int = 0,
+    var byteCount: Int = 0
 )

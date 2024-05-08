@@ -299,18 +299,19 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
-        addLog(cmdStr, ColorUtils.getColor(R.color.colorPrimaryDark))
+        addLog(cmdStr, ColorUtils.getColor(R.color.receive_data_color))
         sendCommandFromCmdList()
     }
 
     private fun addLog(
         cmdStr: String,
-        colorRes: Int = ColorUtils.getColor(R.color.title_text_color)
+        colorRes: Int = ColorUtils.getColor(R.color.send_data_color)
     ) {
         val logInfo = DebugCmdLogInfo(
             logTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm:ss.SSS")),
             content = cmdStr.replace(MDConstants.COMMAND_FOOTER, ""),
-            colorRes = colorRes
+            colorRes = colorRes,
+            byteCount = cmdStr.length
         )
         binding.recyclerview.bindingAdapter.apply {
             mutable.add(logInfo)

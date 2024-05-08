@@ -104,6 +104,11 @@ class DeviceHomeActivity : BaseActivity() {
                 bundle2
             )
 
+            ProductType.HAC -> navController.setGraph(
+                R.navigation.adme_hac_graph,
+                bundle2
+            )
+
              ProductType.COLLECTOR_R_1, ProductType.DAS, ProductType.BHY -> {
                 val graphId = if (communicateWay == BleConnect) R.navigation.ble_das_graph else R.navigation.das_graph
                 navController.setGraph(

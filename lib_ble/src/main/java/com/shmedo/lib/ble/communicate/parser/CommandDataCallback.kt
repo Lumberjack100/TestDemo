@@ -29,25 +29,20 @@ abstract class CommandDataCallback : ProfileReadResponse(), CommandCallback {
                 data.size(),
                 cmdContent
             )
-            if (cmdContent.contains("$$")) {
+            if (cmdContent.contains("\$\$")) {
                 val tempCmdList = cmdContent.split("\r\n".toRegex()).filter { it.isNotEmpty() }
                 if (tempCmdList.isNotEmpty()) {
-//                    val cmdList = mutableListOf<String>()
-                    tempCmdList.forEach { it ->
+                    tempCmdList.forEach { tempCmd ->
                         Timber.v(
                             "接收数据(拆分后): length=%s bytes;content: %s",
-                            it.toByteArray().size,
-                            it
+                            tempCmd.toByteArray().size,
+                            tempCmd
                         )
-                        var cmd = it
+                        var cmd = tempCmd
                         val index = cmd.lastIndexOf("\$\$")
-                        if (index != -1) {
-                            cmd = cmd.substring(index)
-                        }
-//                        cmdList.add(cmd)
+                        if (index != -1) cmd = cmd.substring(index)
                         onResponseReceived(device, cmdResult = cmd)
                     }
-//                    onResponseReceived(device, cmdResultList = cmdList)
                 }
             } else if (cmdContent.contains("\$cmd")) {
                 val index = cmdContent.lastIndexOf("\$cmd")

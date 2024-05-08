@@ -24,6 +24,10 @@ open class BaseClickProxy {
 
     }
 
+    open fun onAdmeModeChooseClick() {
+
+    }
+
     open fun onSubmitButtonClick() {
 
     }

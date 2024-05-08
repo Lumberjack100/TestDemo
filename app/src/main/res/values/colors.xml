@@ -99,4 +99,7 @@
     <color name="mr702_port_tab_checked_text_color">#FFFFFFFF</color>
     <color name="mr702_port_tab_unchecked_text_color">#65A2CD</color>
 
+    <color name="receive_data_color">#ff088c32</color>
+    <color name="send_data_color">#ff2d78e7</color>
+
 </resources>

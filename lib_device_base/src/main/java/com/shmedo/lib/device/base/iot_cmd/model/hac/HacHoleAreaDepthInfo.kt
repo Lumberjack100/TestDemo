@@ -8,10 +8,9 @@ import com.squareup.moshi.JsonClass
  * 描述：     孔号、区号、孔深对应实体类
  */
 @JsonClass(generateAdapter = true)
-class HacHoleAreaDepthInfo(
+data class HacHoleAreaDepthInfo(
     var holeno: String = "", //孔号
     var areano: String = "",//区号
     var holedepth: String = "", // 孔深
     var measdepth: String = "" // 孔深
-
 )

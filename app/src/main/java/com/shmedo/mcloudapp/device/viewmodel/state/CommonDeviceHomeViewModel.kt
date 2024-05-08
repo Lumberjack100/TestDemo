@@ -12,7 +12,7 @@ open class CommonDeviceHomeViewModel : ViewModel() {
     val productName = NonNullObservableField("")
     val deviceName = NonNullObservableField("")
     val deviceToken = NonNullObservableField("")
-    val firmwareVersion = NonNullObservableField("")
+    val firmwareVersion = NonNullObservableField("--")
 
     val isDeviceStateTagHighLight = NonNullObservableField(true)
     val deviceStateTagText = NonNullObservableField("在线")
@@ -24,7 +24,7 @@ open class CommonDeviceHomeViewModel : ViewModel() {
     //运行状态
     val isRunningStateVisible = NonNullObservableField(false)
     val isRunningStateNormal = NonNullObservableField(false)
-    val runningStateText = NonNullObservableField("")
+    val runningStateText = NonNullObservableField("--")
 
     //米度物联网平台在线状态
     val isIOTPlatformStateVisible = NonNullObservableField(false)
@@ -33,4 +33,7 @@ open class CommonDeviceHomeViewModel : ViewModel() {
     //已连接的平台
     val isPlatformsVisible = NonNullObservableField(false)
 
+    //ADME模式选择
+    val isAdmeModeChooseViewVisible = NonNullObservableField(false)
+    val admeModeText = NonNullObservableField("设备配置模式")
 }

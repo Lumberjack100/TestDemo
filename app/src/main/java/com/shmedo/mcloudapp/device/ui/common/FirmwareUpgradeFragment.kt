@@ -15,7 +15,9 @@ import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.FirmWareEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
@@ -24,6 +26,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentFirmwareUpgradeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
+import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.FirmWareInfo
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
@@ -95,7 +98,11 @@ class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
             R.id.item.onClick {
                 val firmWareInfo = getModel<FirmWareInfo>()
                 showMessage("确定下载升级此固件吗？", "温馨提示", "确定", {
-                    applyFirmwareUpgrade(firmWareInfo.id)
+                    if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                        Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                        return@showMessage
+                    }
+                    applyFirmwareUpgrade(firmWareInfo)
                 }, "取消")
             }
         }
@@ -165,27 +172,42 @@ class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
         )
     }
 
-    private fun applyFirmwareUpgrade(firmwareID: Int) {
+    private fun applyFirmwareUpgrade(firmWareInfo: FirmWareInfo) {
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+
         launchWithViewLifecycle {
-            showLoadingDialog(StringUtils.getString(R.string.processing))
-            val msgID = deviceRequestViewModel.applyFirmwareUpgrade(
-                deviceToken = deviceInfo.deviceToken,
-                firmwareID = firmwareID,
-            ) { error: Throwable ->
-                dismissLoadingDialog()
-                Toaster.show("升级失败：${error.message}")
-            } ?: return@launchWithViewLifecycle
-            netIotCommandViewModel.processCmdResult("", arrayListOf(msgID))
+            if (communicateWay is BleConnect) {
+                val entity = FirmWareEntity(
+                    url = firmWareInfo.absolutePath,
+                    size = firmWareInfo.fwSize.toString(),
+                    md5 = firmWareInfo.fwMd5
+                )
+                commandItems.clear()
+                val command = IOTCommandUtil.getCommand(
+                    IOTCommandType.MD_UPGRADE,
+                    entity.toCommandString()
+                )
+                commandItems.add(command)
+                sendCommandFromCmdList(isStartTimeoutJob = true)
+
+            } else {
+                val msgID = deviceRequestViewModel.applyFirmwareUpgrade(
+                    deviceToken = deviceInfo.deviceToken,
+                    firmwareID = firmWareInfo.id,
+                ) { error: Throwable ->
+                    dismissLoadingDialog()
+                    Toaster.show("升级失败：${error.message}")
+                } ?: return@launchWithViewLifecycle
+
+                netIotCommandViewModel.processCmdResult("", arrayListOf(msgID))
+            }
         }
     }
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_UPGRADE -> {
-                val result = iotParseManager.parse<String>(
-                    cmdStr,
-                    IOTCommandType.MD_UPGRADE
-                )
+                val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
@@ -196,8 +218,9 @@ class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        Toaster.show("设备即将进行固件升级，请稍后查看升级结果")
+                        sendCommandFromCmdList {
+                            Toaster.show("设备即将进行固件升级，请稍后查看升级结果")
+                        }
                     }
                 }
             }

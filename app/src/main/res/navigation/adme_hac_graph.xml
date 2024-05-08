@@ -2,30 +2,23 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/adme_graph"
-    app:startDestination="@id/admeHomeFragment">
+    android:id="@+id/adme_hac_graph"
+    app:startDestination="@id/admeHacHomeFragment">
 
     <include app:graph="@navigation/include_query_data_graph" />
     <include app:graph="@navigation/include_firmware_upgrade_graph" />
     <include app:graph="@navigation/include_data_center_graph" />
+    <include app:graph="@navigation/include_ble_command_debug_graph" />
 
     <fragment
-        android:id="@+id/admeHomeFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeHomeFragment"
-        android:label="AdmeHomeFragment"
+        android:id="@+id/admeHacHomeFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacHomeFragment"
+        android:label="AdmeHacHomeFragment"
         tools:layout="@layout/fragment_universal_device_home">
 
         <action
-            android:id="@+id/action_admeHomeFragment_to_admeCurrentStateFragment"
-            app:destination="@id/admeCurrentStateFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_admeHomeFragment_to_admeBasicParamConfigFragment"
-            app:destination="@id/admeBasicParamConfigFragment"
+            android:id="@+id/action_admeHacHomeFragment_to_admeHacCurrentStateFragment"
+            app:destination="@id/admeHacCurrentStateFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
@@ -34,16 +27,10 @@
     </fragment>
 
     <fragment
-        android:id="@+id/admeCurrentStateFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeCurrentStateFragment"
-        android:label="AdmeCurrentStateFragment"
-        tools:layout="@layout/fragment_adme_current_state" />
-
-    <fragment
-        android:id="@+id/admeBasicParamConfigFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeBasicParamConfigFragment"
-        android:label="AdmeBasicParamConfigFragment"
-        tools:layout="@layout/fragment_adme_basic_param_config" />
+        android:id="@+id/admeHacCurrentStateFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacCurrentStateFragment"
+        android:label="AdmeHacCurrentStateFragment"
+        tools:layout="@layout/fragment_adme_hac_current_state" />
 
     <fragment
         android:id="@+id/admeAdvancedConfigurationFragment"
@@ -235,6 +222,14 @@
     <action
         android:id="@+id/action_global_universalDataCenterHomeFragment"
         app:destination="@id/data_center_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_commandDebug"
+        app:destination="@id/ble_command_debug_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

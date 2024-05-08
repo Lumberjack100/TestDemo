@@ -169,7 +169,7 @@ enum class ProductType(
         description = ""
     ),
 
-
+    HAC("ADME_HAC10", oldSuffix = "T", productName = "半自动化测斜机器人"),
     ADME("ADME", oldSuffix = "T", productName = "自动化测斜机器人"),
     BHY("BHY", oldSuffix = "H", productName = "崩滑仪"),
     DAS("DAS", oldSuffix = "L", productName = "智能采集器"),

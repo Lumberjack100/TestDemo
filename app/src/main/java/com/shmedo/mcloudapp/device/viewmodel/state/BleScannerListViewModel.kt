@@ -9,5 +9,5 @@ class BleScannerListViewModel : ViewModel() {
     val bluetoothDisabled = NonNullObservableField(false)
     val bluetoothMissPermission = NonNullObservableField(false)
 
-    val keyWords = MutableLiveData<String>("")
+    val keyWords = MutableLiveData<String>("MD")
 }
