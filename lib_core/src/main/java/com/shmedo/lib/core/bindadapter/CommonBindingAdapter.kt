@@ -24,9 +24,9 @@ import android.util.Log
 import android.util.Pair
 import android.util.SparseIntArray
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.databinding.BindingAdapter
 import com.blankj.utilcode.util.ClickUtils
@@ -197,7 +197,7 @@ object CommonBindingAdapter {
         requireAll = false
     )
     fun setLengthFilter(
-        editText: AppCompatEditText,
+        editText: EditText,
         length: Int? = null,
         inputTypeFilter: String? = ""
     ) {

@@ -20,7 +20,6 @@ import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.IOTRegexContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeMeasuringHoleDepthEntity
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.hac.HacMeasuringHoleDepthInfoEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.AdmeModuleErrorType
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -61,9 +60,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     private val holeAreaDepthInfoArrayList = ArrayList<HacHoleAreaDepthInfo>()
 
     private var safeDistance: String = "" //安全距离补偿
-    private var lastMotionDistance: String = "" //上次停止时运动距离
-    private var continueDistanceGoal: Double = 0.0 //继续运动时的目标距离
-    private var repeatPollNum = 0 //当查询电机脉冲数重复超过一定次数时，判定电机停止
 
     private var autoMeasuringHoleDepthBottomDialog: AdmeHacAutoMeasuringHoleDepthBottomDialog? =
         null
@@ -156,7 +152,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         mStates.isAutoMode.set(true) //默认自动测量模式
         mStates.measureWay.set(measureWayList[0])//自动测孔深
         mStates.motionType.set(motionTypeList[0])//上拉
-        mStates.decentralizedEnable.set(true)//进入页面默认自动测孔深，需要打开堵转检测使能
         loadAutoLastHistoryData()
     }
 
@@ -433,37 +428,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    /**
-     * 继续电机运动
-     */
-    private fun continueMotorMotion() {
-        try {
-            val distanceTotalGoal = abs(mStates.distanceGoal.get().toDouble())
-            val distanceDiff =
-                abs(mStates.motionDistance.get().toDouble()) - abs(lastMotionDistance.toDouble())
-            //已达到设定运动目标
-            if (distanceTotalGoal - distanceDiff <= 0) {
-                mStates.isExitButtonVisible.set(true)
-                Toaster.show("无法继续电机运动操作")
-                return
-            }
-            continueDistanceGoal = distanceTotalGoal - distanceDiff
-            val entity = AdmeMeasuringHoleDepthEntity(
-                movementway = if (mStates.motionType.get() == motionTypeList[0]) "0" else "1",
-                movedistance = continueDistanceGoal.toString()
-            )
-            commandItems.clear()
-            val command = IOTCommandUtil.getCommand(
-                IOTCommandType.ADME_MD_SET_MEASURING_HOLEDEPTH,
-                entity.toCommandString()
-            )
-            commandItems.add(command)
-            sendCommandFromCmdList(isStartTimeoutJob = true)
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
-    }
-
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
     }
@@ -653,8 +617,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     AdmeHacAutoMeasuringHoleDepthBottomDialog.OnDialogFragmentClickListener {
                     override fun onCloseClick() {
                         autoMeasuringHoleDepthBottomDialog = null
-                        lastMotionDistance = ""
-                        safeDistance = ""
                         //蓝牙未断开时先发送停止电机指令
                         if (bleViewModel.isConnected()) {
                             stopMotorMotion()
@@ -672,8 +634,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
                     override fun onExitClick() {
                         autoMeasuringHoleDepthBottomDialog = null
-                        lastMotionDistance = ""
-                        safeDistance = ""
                         dismiss()
                     }
                 })
@@ -686,28 +646,19 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         //数据运行弹框已经显示了
         if (manualMeasuringHoleDepthBottomDialog != null && manualMeasuringHoleDepthBottomDialog!!.isVisible) {
             Timber.d(
-                "Continue Motion: lastDistance=%s,curDistance=%s,curPulse=%s,continueDistanceGoal=%s",
-                lastMotionDistance,
+                "Continue Motion:curDistance=%s,curPulse=%s",
                 mStates.motionDistance.get(),
-                mStates.motionPulse.get(),
-                continueDistanceGoal,
+                mStates.motionPulse.get()
             )
             getMotorMotionData(800)
             return
         }
-        Timber.d(
-            "start Motion: lastDistance=%s,totalDistanceGoal=%s",
-            lastMotionDistance,
-            mStates.distanceGoal.get()
-        )
         manualMeasuringHoleDepthBottomDialog =
             AdmeHacManualMeasuringHoleDepthBottomDialog.newInstance().apply {
                 setOnDialogFragmentClickListener(object :
                     AdmeHacManualMeasuringHoleDepthBottomDialog.OnDialogFragmentClickListener {
                     override fun onCloseClick() {
                         manualMeasuringHoleDepthBottomDialog = null
-                        lastMotionDistance = ""
-                        safeDistance = ""
                         //蓝牙未断开时先发送停止电机指令
                         if (bleViewModel.isConnected()) {
                             stopMotorMotion()
@@ -741,8 +692,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
                     override fun onExitClick() {
                         manualMeasuringHoleDepthBottomDialog = null
-                        lastMotionDistance = ""
-                        safeDistance = ""
                         dismiss()
                     }
                 })
@@ -753,9 +702,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
     private fun updateMotorMotionDistance(motorMotionDistanceInfo: HacMotorMotionDistanceInfo) {
         try {
-            if (lastMotionDistance.isEmpty())
-                lastMotionDistance = motorMotionDistanceInfo.realmovedistance
-
             if (safeDistance.isEmpty())
                 safeDistance = motorMotionDistanceInfo.realholedepth
 
@@ -777,10 +723,20 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
      * 实时刷新脉冲和运动距离
      */
     private fun updateMotionData(motorMotionDistanceInfo: HacMotorMotionDistanceInfo) {
+        //异常码 99 表示上拉到管口，测量结束，停止轮询脉冲数并发送停止电机运动指令
+        if (motorMotionDistanceInfo.abndiasis.contains("99")) {
+            mStates.isStopAction.set(true)
+            stopMotorMotion()
+            return
+        }
         try {
             mStates.motionPulse.set(motorMotionDistanceInfo.pulsenumber)
             mStates.motionDistance.set(motorMotionDistanceInfo.realmovedistance)
-            if (motorMotionDistanceInfo.abndiasis != "0" && motorMotionDistanceInfo.abndiasis != "99") {
+            //CTR 工作异常
+            if (motorMotionDistanceInfo.abndiasis != "0" && !motorMotionDistanceInfo.abndiasis.contains(
+                    "99"
+                )
+            ) {
                 //列出异常原因
                 val stringBuilder = StringBuilder()
                 val codes = motorMotionDistanceInfo.abndiasis.split("|")
@@ -797,17 +753,39 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 }
                 mStates.isMotorInfoNormal.set(false)
                 mStates.motorInfo.set(stringBuilder.toString())
-            }else{
+            } else {
                 mStates.isMotorInfoNormal.set(true)
                 mStates.motorInfo.set("正常")
             }
-
             //继续轮询电机脉冲数据
             getMotorMotionData(800)
+
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
     }
+
+    /**
+     * 继续电机运动
+     */
+    private fun continueMotorMotion() {
+        try {
+            commandItems.clear()
+            val entity = HacMeasuringHoleDepthInfoEntity(
+                model = "1",
+                movementway = if (mStates.motionType.get() == motionTypeList[0]) "0" else "1",
+            )
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.ADME_HAC_MD_SET_HOLE_MEASURE_PARAM,
+                entity.toCommandString()
+            )
+            commandItems.add(command)
+            sendCommandFromCmdList(isStartTimeoutJob = true)
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+    }
+
 
     override fun onResume() {
         super.onResume()
