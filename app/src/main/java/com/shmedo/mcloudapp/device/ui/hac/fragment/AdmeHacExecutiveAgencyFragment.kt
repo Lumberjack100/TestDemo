@@ -1,17 +1,12 @@
 package com.shmedo.mcloudapp.device.ui.hac.fragment
 
-import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
-import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.Utils
-import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -27,13 +22,10 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentAdmeExecutiveAgencyBinding
 import com.shmedo.mcloudapp.device.common.BaseAdmeExecutiveAgencyClickProxy
-import com.shmedo.mcloudapp.device.model.AdmeTimeItem
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.ui.adme.adapter.AdmeTimeAdapter
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeExecutiveAgencyViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
@@ -44,7 +36,6 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
-import java.util.Date
 import java.util.Locale
 
 /**
@@ -58,18 +49,8 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: AdmeExecutiveAgencyViewModel
     private val iotParseManager: IOTParserManager by inject()
 
-    private val measureMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_method) }
     private val settlementMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_settlement_method) }
     private val dataResponseTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_data_response_type) }
-    private val measIntervalPerRoundList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_interval_per_rounds) }
-
-    private val mData: MutableList<AdmeTimeItem> = ArrayList()
-    private val mAdapter: AdmeTimeAdapter by lazy {
-        AdmeTimeAdapter(
-            requireContext(),
-            mData
-        )
-    }
 
     private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
@@ -105,7 +86,6 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
         toolbarViewModel.toolbarTvActionText.set("取消")
         initRefresh()
-        initTimeAdapter()
     }
 
     private fun initRefresh() {
@@ -120,52 +100,11 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initTimeAdapter() {
-        binding.rv.setup { }
-        binding.rv.apply {
-            addItemDecoration(
-                RecycleViewDivider(
-                    LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(8f), ColorUtils.getColor(
-                        R.color.transparent
-                    )
-                )
-            )
-            adapter = mAdapter
-            mAdapter.itemMax = 8
-            mAdapter.setOnItemClickListener(object : AdmeTimeAdapter.OnItemClickListener {
-                override fun onItemClick(v: View?, position: Int) {
-
-                }
-
-                override fun addItem() {
-                    showTimePickerDialog()
-                }
-            })
-        }
-    }
-
-    private fun showTimePickerDialog() {
-        TimePickerDialog(context, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-            val time = String.format(Locale.getDefault(), "%02d:00:00", hourOfDay)
-            for (item in mAdapter.data) {
-                if (item.time.contains(time)) {
-                    Toaster.show("不能设置重复时间点!")
-                    return@OnTimeSetListener
-                }
-            }
-            mAdapter.data.add(AdmeTimeItem(time))
-            mAdapter.notifyItemInserted(mAdapter.data.size)
-        }, 0, 0, true).show()
-
-    }
-
     override fun initData() {
         super.initData()
         mStates.measureMethod.set(0)
-        mStates.measureMethodText.set(measureMethodList[0])
         mStates.dataSettlementMethod.set(settlementMethodList[1])
         mStates.dataResponse.set(dataResponseTypeList[0])
-        mStates.measurementIntervalPerRound.set(measIntervalPerRoundList[0])
     }
 
     private fun setEditable(editable: Boolean) {
@@ -181,29 +120,6 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
 
         override fun onToolbarTvClick() {
             setEditable(false)
-        }
-
-        /**
-         * 测量方式
-         */
-        override fun onMeasureMethodClick() {
-            val selectedIndex = measureMethodList.indexOf(mStates.measureMethodText.get())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "", measureMethodList,
-                    null, selectedIndex,
-                    { position, text ->
-                        mStates.measureMethodText.set(text)
-                        mStates.measureMethod.set(
-                            position
-                        )
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
         }
 
         /**
@@ -246,27 +162,6 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        /**
-         * 每轮测量间隔
-         */
-        override fun onMeasIntervalPerRoundsClick() {
-            val selectedIndex =
-                measIntervalPerRoundList.indexOf(mStates.measurementIntervalPerRound.get())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "", measIntervalPerRoundList,
-                    null, selectedIndex,
-                    { position, text ->
-                        mStates.measurementIntervalPerRound.set(text)
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
-        }
-
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
             if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
@@ -278,44 +173,6 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initSaveCommand() {
-        if (mStates.measureMethod.get() == 0) {
-            if (mStates.waitingIntervalPerRound.get().isEmpty()) {
-                showMessageDialog("请输入每轮等待时间!")
-                return
-            }
-            try {
-                val value = mStates.waitingIntervalPerRound.get().toDouble()
-                if (value < 1) {
-                    showMessageDialog("请输入正确的每轮等待时间!")
-                    return
-                }
-            } catch (ex: Exception) {
-                showMessageDialog("请输入正确的每轮等待时间!")
-                return
-            }
-        }
-
-        if (mStates.measureMethod.get() == 2) {
-            if (mStates.intervalDays.get().isEmpty()) {
-                showMessageDialog("请输入间隔时间!")
-                return
-            }
-            try {
-                val value = mStates.intervalDays.get().toDouble()
-                if (value < 0) {
-                    showMessageDialog("请输入正确的间隔时间!")
-                    return
-                }
-            } catch (ex: Exception) {
-                showMessageDialog("请输入正确的间隔时间!")
-                return
-            }
-            if (mAdapter.data.size < 1) {
-                showMessageDialog("请设置测量时间点!")
-                return
-            }
-        }
-
         if (mStates.dataReadingInterval.get().isEmpty()) {
             showMessageDialog("请输入数据读取间隔!")
             return
@@ -343,17 +200,6 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             }
         } catch (ex: Exception) {
             Toaster.show("请输入正确的测量补偿时间!")
-            return
-        }
-
-        if (mStates.inclinometerTubeHoleDepth.get().isEmpty()) {
-            Toaster.show("请输入测斜管孔深!")
-            return
-        }
-        try {
-            val value = mStates.inclinometerTubeHoleDepth.get().toDouble()
-        } catch (ex: Exception) {
-            showMessageDialog("请输入正确的测斜管孔深!")
             return
         }
 
@@ -463,17 +309,6 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             return
         }
 
-        if (mStates.measuringReferenceDepth.get().isEmpty()) {
-            Toaster.show("请输入测量基准深度!")
-            return
-        }
-        try {
-            val value = mStates.measuringReferenceDepth.get().toDouble()
-        } catch (ex: Exception) {
-            showMessageDialog("请输入正确的测量基准深度!")
-            return
-        }
-
         if (mStates.intervalCompensation.get().isEmpty()) {
             Toaster.show("请输入管口安全距离!")
             return
@@ -534,19 +369,16 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             return
         }
         val entity = AdmeExecutiveAgencyInfoEntity(
-            meastype = mStates.measureMethod.get().toString(),
+            meastype =  IOTConstants.NULL_KEY,
             datatype = if (mStates.dataSettlementMethod.get() == settlementMethodList[0]) "0" else "1",
             datareply = if (mStates.dataResponse.get() == dataResponseTypeList[0]) "0" else "1",
-            roundwaitetime = mStates.waitingIntervalPerRound.get(),
-            roundmeasinval = mStates.measurementIntervalPerRound.get(),
-            invalday = mStates.intervalDays.get(),
-            roundmeasstart = if (mStates.measureMethod.get() == 2)
-                mAdapter.data.joinToString("|") { it.time.substring(0, 2) }
-            else
-                mStates.startTimePerRound.get(),
+            roundwaitetime =  IOTConstants.NULL_KEY,
+            roundmeasinval = IOTConstants.NULL_KEY,
+            invalday = IOTConstants.NULL_KEY,
+            roundmeasstart = IOTConstants.NULL_KEY,
             datainval = mStates.dataReadingInterval.get(),
             compensatetime = mStates.measurementCompensationTime.get(),
-            interdeep = mStates.inclinometerTubeHoleDepth.get(),
+            interdeep =  IOTConstants.NULL_KEY,
             driveaddress = mStates.motorDriveAddress.get(),
             downspeed = mStates.decentralizationSpeed.get(),
             downwaitetime = mStates.decentralizationWaitingTime.get(),
@@ -554,12 +386,7 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             pzspeed = mStates.pullUpZeroSpeed.get(),
             measpacing = mStates.measuringDistance.get(),
             meaintertime = mStates.measurementIntervalTime.get(),
-            meabaseth = mStates.measuringReferenceDepth.get(),
-//            dwonblocked = "0",
-//            untimenum = "0",
-//            detectiontime = "0",
-//            detectionstart = "0",
-//            detectionend = "0",
+            meabaseth =  IOTConstants.NULL_KEY,
             interval_compensation = mStates.intervalCompensation.get(),
             bottom_safe_distance = mStates.bottomSafetyDistance.get(),
             interval_fitting = mStates.intervalFitting.get(),
@@ -568,7 +395,7 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
 
         commandItems.clear()
         var command = IOTCommandUtil.getCommand(
-            IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY,
+            IOTCommandType.ADME_HAC_MD_SET_EXECUTIVE_AGENCY,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -620,7 +447,7 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY -> {
+            IOTCommandType.ADME_HAC_MD_SET_EXECUTIVE_AGENCY -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
@@ -666,48 +493,12 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
     private fun initParamData(info: AdmeExecutiveAgencyInfo) {
         mStates.wrapInfo.set(info)
         mStates.wrapInfo.notifyChange()
+
         try {
-            mStates.measureMethodText.set(if (info.meastype == "0") measureMethodList[0] else measureMethodList[1])
-            mStates.measureMethod.set(info.meastype.toInt())
             mStates.dataSettlementMethod.set(if (info.datatype == "0") settlementMethodList[0] else settlementMethodList[1])
             mStates.dataResponse.set(if (info.datareply == "0") dataResponseTypeList[0] else dataResponseTypeList[1])
-            mStates.waitingIntervalPerRound.set(info.roundwaitetime)
-            mStates.measurementIntervalPerRound.set(info.roundmeasinval)
-            mStates.modifiedDate.set(info.updatedate.toLongOrNull()
-                ?.let {
-                    TimeUtils.date2String(
-                        Date(it * 1000),
-                        "yyyy-MM-dd"
-                    )
-                } ?: ""
-            )
-            mStates.intervalDays.set(info.invalday)
-            mStates.startTimePerRound.set(info.roundmeasstart)
-            info.roundmeasstart.split("|").let { times ->
-                mAdapter.data.clear()
-                times.forEach { time ->
-                    if (time.isNotEmpty()) {
-                        mAdapter.data.add(
-                            AdmeTimeItem(
-                                String.format(
-                                    Locale.getDefault(),
-                                    "%02d:00:00",
-                                    time.toInt()
-                                )
-                            )
-                        )
-                    }
-                }
-                mAdapter.notifyDataSetChanged()
-            }
             mStates.dataReadingInterval.set(info.datainval)
             mStates.measurementCompensationTime.set(info.compensatetime)
-
-            decimalFormat.applyPattern("#.##")
-            mStates.inclinometerTubeHoleDepth.set(info.interdeep.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-
             mStates.motorDriveAddress.set(info.driveaddress)
             mStates.decentralizationSpeed.set(info.downspeed)
             mStates.decentralizationWaitingTime.set(info.downwaitetime)
@@ -718,12 +509,7 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             mStates.measuringDistance.set(info.measpacing.toDoubleOrNull()?.let {
                 decimalFormat.format(it)
             } ?: "")
-
             mStates.measurementIntervalTime.set(info.meaintertime)
-            decimalFormat.applyPattern("#.##")
-            mStates.measuringReferenceDepth.set(info.meabaseth.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
 
             decimalFormat.applyPattern("#.###")
             mStates.intervalCompensation.set(info.interval_compensation.toDoubleOrNull()?.let {

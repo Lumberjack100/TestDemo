@@ -2,18 +2,21 @@ package com.shmedo.mcloudapp.device.viewmodel.state
 
 import androidx.lifecycle.ViewModel
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
-import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeLockedRotorDetectionInfo
 
-class AdmeMeasuringHoleDepthViewModel : ViewModel() {
-    val lockedRotorDetectionInfoWrapper = NonNullObservableField(AdmeLockedRotorDetectionInfo())
-    val isClearMotionDataVisible = NonNullObservableField(false)
+class AdmeHacMeasuringHoleDepthViewModel : ViewModel() {
+
     val isEditable = NonNullObservableField(true)
     val isAutoMode = NonNullObservableField(true)
-    val measureWay = NonNullObservableField("")//测量方式
     val decentralizedEnable = NonNullObservableField(true)//进入页面默认自动测孔深，需要打开堵转检测使能
-    val positiveAndNegativeTest = NonNullObservableField(false)//正反测使能
 
-    val speed = NonNullObservableField("")//下放速度(r/min)
+    val runButtonText = NonNullObservableField("启动")//孔号
+
+    val address = NonNullObservableField("")//MAC 地址
+    val holeno = NonNullObservableField("")//孔号
+    val areano = NonNullObservableField("")//区号
+    val downSpeed = NonNullObservableField("")//下放速度(r/min)
+    val speed = NonNullObservableField("")//速度(r/min)
+    val measureWay = NonNullObservableField("")//测量方式
 
     //自动测孔深
     val realHoleDepth = NonNullObservableField("")// 实测孔深
@@ -30,4 +33,6 @@ class AdmeMeasuringHoleDepthViewModel : ViewModel() {
     val motionPulse = NonNullObservableField("0")
     val motionDistance = NonNullObservableField("0")
 
+    val isMotorInfoNormal = NonNullObservableField(true)
+    val motorInfo = NonNullObservableField("正常")
 }
