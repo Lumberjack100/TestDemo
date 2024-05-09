@@ -1,7 +1,6 @@
-package com.shmedo.mcloudapp.device.ui.adme.fragment
+package com.shmedo.mcloudapp.device.ui.hac.fragment
 
 import android.app.TimePickerDialog
-import android.app.TimePickerDialog.OnTimeSetListener
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -48,7 +47,12 @@ import java.text.DecimalFormatSymbols
 import java.util.Date
 import java.util.Locale
 
-class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
+/**
+ * 创建者：gonghe
+ * 创建时间：2024/5/9
+ * 描述： TODO
+ */
+class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentAdmeExecutiveAgencyBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: AdmeExecutiveAgencyViewModel
@@ -141,7 +145,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
     }
 
     private fun showTimePickerDialog() {
-        TimePickerDialog(context, OnTimeSetListener { view, hourOfDay, minute ->
+        TimePickerDialog(context, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
             val time = String.format(Locale.getDefault(), "%02d:00:00", hourOfDay)
             for (item in mAdapter.data) {
                 if (item.time.contains(time)) {
@@ -583,7 +587,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY
+            IOTCommandType.ADME_HAC_MD_GET_EXECUTIVE_AGENCY
         )
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -591,10 +595,10 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY -> {
+            IOTCommandType.ADME_HAC_MD_GET_EXECUTIVE_AGENCY -> {
                 val result = iotParseManager.parse<AdmeExecutiveAgencyInfo>(
                     cmdStr,
-                    IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY
+                    IOTCommandType.ADME_HAC_MD_GET_EXECUTIVE_AGENCY
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {

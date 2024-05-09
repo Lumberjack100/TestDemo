@@ -8,6 +8,5 @@ class M20CommunicationInfoViewModel : ViewModel() {
     val amsState = NonNullObservableField("")
 
     //4G信号强度
-    val signal = NonNullObservableField("")
     val signalValue = NonNullObservableField(0)
 }

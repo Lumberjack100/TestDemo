@@ -116,15 +116,8 @@ class M20CommunicationInfoFragment : BaseIOTDeviceFragment() {
             mStates.amsState.set(
                 if (commonCurrentStateInfo.dataCenter4 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter4 == 1) "在线" else "离线"
             )
-            mStates.signal.set(commonCurrentStateInfo._4g_signal.let {
-                if (it < 0)
-                    it.toString() + "dBm"
-                else
-                    (it * 2 - 113).toString() + "dBm"
-            } ?: "--dBm"
-            )
             mStates.signalValue.set(commonCurrentStateInfo._4g_signal.let {
-                if (it < 0)
+                if (it <= 0)
                     it
                 else
                     it * 2 - 113

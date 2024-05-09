@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants" />
+
         <variable
             name="toolbarVM"
             type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
@@ -15,7 +17,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeExecutiveAgencyFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.device.common.BaseAdmeExecutiveAgencyClickProxy" />
 
     </data>
 
@@ -54,6 +56,7 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onMeasureMethodClick()}"
+                        visible='@{ stateVM.wrapInfo.meastype != IOTConstants.NULL_KEY}'
                         android:layout_marginTop="@dimen/dimen_size_1"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
@@ -74,6 +77,7 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onDataSettlementMethodClick()}"
+                        visible='@{ stateVM.wrapInfo.datatype != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
@@ -94,6 +98,7 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onDataResponseClick()}"
+                        visible='@{ stateVM.wrapInfo.datareply != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
@@ -113,7 +118,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
-                        visible='@{stateVM.measureMethod == 0}'
+                        visible='@{stateVM.wrapInfo.roundwaitetime != IOTConstants.NULL_KEY &amp;&amp;stateVM.measureMethod == 0}'
                         android:background="@drawable/layer_common_click_item_with_divider"
                         tools:visibility="visible">
 
@@ -134,7 +139,7 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onMeasIntervalPerRoundsClick()}"
-                        visible='@{stateVM.measureMethod == 1}'
+                        visible='@{stateVM.wrapInfo.roundmeasinval != IOTConstants.NULL_KEY &amp;&amp;stateVM.measureMethod == 1}'
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
@@ -154,7 +159,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
-                        visible='@{stateVM.measureMethod == 2}'
+                        visible='@{stateVM.wrapInfo.updatedate != IOTConstants.NULL_KEY &amp;&amp;stateVM.measureMethod == 2}'
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
@@ -173,7 +178,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
-                        visible='@{stateVM.measureMethod == 2}'
+                        visible='@{stateVM.wrapInfo.invalday != IOTConstants.NULL_KEY &amp;&amp;stateVM.measureMethod == 2}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
@@ -192,7 +197,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
-                        visible='@{stateVM.measureMethod == 2}'
+                        visible='@{stateVM.wrapInfo.roundmeasstart != IOTConstants.NULL_KEY &amp;&amp;stateVM.measureMethod == 2}'
                         android:enabled="@{stateVM.isEditable }">
 
                         <TextView
@@ -205,7 +210,7 @@
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rv"
-                        visible='@{stateVM.measureMethod == 2}'
+                        visible='@{stateVM.wrapInfo.roundmeasstart != IOTConstants.NULL_KEY &amp;&amp;stateVM.measureMethod == 2}'
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@color/white"
@@ -221,6 +226,7 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
                         android:layout_marginTop="0.5dp"
+                        visible='@{ stateVM.wrapInfo.datainval != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
@@ -239,6 +245,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
+                        visible='@{ stateVM.wrapInfo.compensatetime != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
@@ -257,6 +264,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
+                        visible='@{ stateVM.wrapInfo.interdeep != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
@@ -276,6 +284,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
+                        visible='@{ stateVM.wrapInfo.driveaddress != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
@@ -295,6 +304,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
+                        visible='@{ stateVM.wrapInfo.downspeed != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
@@ -314,6 +324,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
+                        visible='@{ stateVM.wrapInfo.downwaitetime != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
@@ -333,6 +344,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
+                        visible='@{ stateVM.wrapInfo.upspeed != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
@@ -352,7 +364,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
-                        visible="@{stateVM.isPullUpZeroSpeedSupport}"
+                        visible='@{ stateVM.wrapInfo.pzspeed != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
@@ -372,6 +384,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
+                        visible='@{ stateVM.wrapInfo.measpacing != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
@@ -390,6 +403,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
+                        visible='@{ stateVM.wrapInfo.meaintertime != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
@@ -408,6 +422,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
+                        visible='@{ stateVM.wrapInfo.meabaseth != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
@@ -426,6 +441,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
+                        visible='@{ stateVM.wrapInfo.interval_compensation != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
@@ -444,6 +460,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
+                        visible='@{ stateVM.wrapInfo.bottom_safe_distance != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
@@ -463,6 +480,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
+                        visible='@{ stateVM.wrapInfo.interval_fitting != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
@@ -482,6 +500,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
+                        visible='@{ stateVM.wrapInfo.point_offset != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
@@ -506,7 +525,7 @@
         <TextView
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
-            onClickWithDebouncing="@{()->click.onSubmitClick()}"
+            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
             visible="@{stateVM.isEditable }"
             android:layout_marginTop="0dp"
             android:layout_marginBottom="15dp"

@@ -3,8 +3,9 @@ package com.shmedo.mcloudapp.device.ui.hac.fragment
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
+import com.shmedo.lib.device.base.iot_cmd.enums.AdmeCTRMotionState
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeMotionState
+import com.shmedo.lib.device.base.iot_cmd.model.hac.HacMotionState
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
@@ -43,7 +44,7 @@ class AdmeHacHomeFragment : UniversalDeviceHomeFragment() {
             ConfigModule(
                 RunningStatusModule(
                     resID = R.drawable.ic_module_current_state,
-                    navId = R.id.action_admeHacHomeFragment_to_admeHacCurrentStateFragment
+                    navId = R.id.action_admeHacHomeFragment_to_admeCurrentStateFragment
                 )
             )
         )
@@ -145,7 +146,7 @@ class AdmeHacHomeFragment : UniversalDeviceHomeFragment() {
     override fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {
         when (commandType) {
             IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE -> {//获取ADME的运行状态
-                val result = iotParseManager.parse<AdmeMotionState>(
+                val result = iotParseManager.parse<HacMotionState>(
                     cmdStr,
                     IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE
                 )
@@ -177,18 +178,14 @@ class AdmeHacHomeFragment : UniversalDeviceHomeFragment() {
     /**
      * 刷新电机运动状态
      */
-    private fun updateMotionState(admeMotionState: AdmeMotionState) {
-        when (admeMotionState.motionstate) {
-            "0" -> mHeadStates.runningStateText.set("管口停止")
-            "1" -> mHeadStates.runningStateText.set("管底停止")
-            "2" -> mHeadStates.runningStateText.set("管口测量")
-            "3" -> mHeadStates.runningStateText.set("管口测试")
-            "4" -> mHeadStates.runningStateText.set("上拉测量")
-            "5" -> mHeadStates.runningStateText.set("上拉测试")
-            "6" -> mHeadStates.runningStateText.set("下放测量")
-            "7" -> mHeadStates.runningStateText.set("下放测试")
-            "8" -> mHeadStates.runningStateText.set("防冻下放完成")
-            else -> mHeadStates.runningStateText.set("未知状态:${admeMotionState.motionstate}")
+    private fun updateMotionState(hacMotionState: HacMotionState) {
+        AdmeCTRMotionState.valueByCode(hacMotionState.motorinfo).let {state->
+            mHeadStates.runningStateText.set(state.simpleDesc)
+            if(state.code=="8"||state.code=="9")
+                mMessenger.admeDeviceMode.set("0")
+            else
+                mMessenger.admeDeviceMode.set("1")
+
         }
     }
 }

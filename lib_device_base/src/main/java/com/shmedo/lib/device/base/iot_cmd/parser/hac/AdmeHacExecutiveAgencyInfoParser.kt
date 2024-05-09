@@ -1,4 +1,4 @@
-package com.shmedo.lib.device.base.iot_cmd.parser.adme
+package com.shmedo.lib.device.base.iot_cmd.parser.hac
 
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
@@ -14,7 +14,7 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
  *
  *
  */
-class AdmeExecutiveAgencyInfoParser : IOTCommandParser<AdmeExecutiveAgencyInfo> {
+class AdmeHacExecutiveAgencyInfoParser : IOTCommandParser<AdmeExecutiveAgencyInfo> {
     override fun parseInstance(keyValueMap: Map<String, String>): AdmeExecutiveAgencyInfo {
         return AdmeExecutiveAgencyInfo().apply {
             meastype = keyValueMap.getOrDefault("meastype", IOTConstants.NULL_KEY)
@@ -48,5 +48,5 @@ class AdmeExecutiveAgencyInfoParser : IOTCommandParser<AdmeExecutiveAgencyInfo> 
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.ADME_MD_GET_EXECUTIVE_AGENCY
+    override fun commandType(): IOTCommandType = IOTCommandType.ADME_HAC_MD_GET_EXECUTIVE_AGENCY
 }

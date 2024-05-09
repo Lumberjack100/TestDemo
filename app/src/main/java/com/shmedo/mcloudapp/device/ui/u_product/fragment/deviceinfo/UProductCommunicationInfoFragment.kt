@@ -147,15 +147,8 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
                 }
 
                 if (info.csq != IOTConstants.NULL_KEY) {
-                    mStates.signal.set(info.csq.toIntOrNull()?.let {
-                        if (it < 0)
-                            it.toString() + "dBm"
-                        else
-                            (it * 2 - 113).toString() + "dBm"
-                    } ?: "--dBm"
-                    )
                     mStates.signalValue.set(info.csq.toIntOrNull()?.let {
-                        if (it < 0)
+                        if (it <= 0)
                             it
                         else
                             it * 2 - 113
@@ -163,15 +156,8 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
                 }
 
                 if (info.signal != IOTConstants.NULL_KEY) {
-                    mStates.signal.set(info.signal.toIntOrNull()?.let {
-                        if (it < 0)
-                            it.toString() + "dBm"
-                        else
-                            (it * 2 - 113).toString() + "dBm"
-                    } ?: "--dBm"
-                    )
                     mStates.signalValue.set(info.signal.toIntOrNull()?.let {
-                        if (it < 0)
+                        if (it <= 0)
                             it
                         else
                             it * 2 - 113

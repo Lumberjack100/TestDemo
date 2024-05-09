@@ -102,14 +102,8 @@ class LR200BaseInfoFragment : BaseIOTDeviceFragment() {
             mStates.wrapStateInfo.set(commonCurrentStateInfo)
             mStates.wrapStateInfo.notifyChange()
 
-            mStates.signal.set(commonCurrentStateInfo._4g_signal.let {
-                if (it < 0)
-                    it.toString() + "dBm"
-                else
-                    (it * 2 - 113).toString() + "dBm"
-            })
             mStates.signalValue.set(commonCurrentStateInfo._4g_signal.let {
-                if (it < 0)
+                if (it <= 0)
                     it
                 else
                     it * 2 - 113

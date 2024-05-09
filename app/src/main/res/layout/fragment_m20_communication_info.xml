@@ -67,7 +67,7 @@
                     <TextView
                         android:id="@+id/tv_4g_signal_strength"
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text="@{stateVM.signal}"
+                        android:text='@{stateVM.signalValue==0?"--dBm":stateVM.signalValue+"dBm" }'
                         tools:text="-51dBm" />
 
                     <com.shmedo.mcloudapp.common.widget.SignalView

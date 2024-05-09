@@ -104,7 +104,7 @@ class DeviceHomeActivity : BaseActivity() {
                 bundle2
             )
 
-            ProductType.HAC -> navController.setGraph(
+            ProductType.ADME_HAC -> navController.setGraph(
                 R.navigation.adme_hac_graph,
                 bundle2
             )

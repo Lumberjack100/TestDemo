@@ -17,20 +17,19 @@
         tools:layout="@layout/fragment_universal_device_home">
 
         <action
-            android:id="@+id/action_admeHacHomeFragment_to_admeHacCurrentStateFragment"
-            app:destination="@id/admeHacCurrentStateFragment"
+            android:id="@+id/action_admeHacHomeFragment_to_admeCurrentStateFragment"
+            app:destination="@id/admeCurrentStateFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
             app:popExitAnim="@anim/activity_close_exit" />
-
     </fragment>
 
     <fragment
-        android:id="@+id/admeHacCurrentStateFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacCurrentStateFragment"
-        android:label="AdmeHacCurrentStateFragment"
-        tools:layout="@layout/fragment_adme_hac_current_state" />
+        android:id="@+id/admeCurrentStateFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeCurrentStateFragment"
+        android:label="AdmeCurrentStateFragment"
+        tools:layout="@layout/fragment_adme_current_state" />
 
     <fragment
         android:id="@+id/admeAdvancedConfigurationFragment"
@@ -55,16 +54,8 @@
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
-            android:id="@+id/action_admeAdvancedConfigurationFragment_to_admeExecutiveAgencyFragment"
-            app:destination="@id/admeExecutiveAgencyFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_admeAdvancedConfigurationFragment_to_admeStepperMotorFragment"
-            app:destination="@id/admeStepperMotorFragment"
+            android:id="@+id/action_admeAdvancedConfigurationFragment_to_admeHacExecutiveAgencyFragment"
+            app:destination="@id/admeHacExecutiveAgencyFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
@@ -73,14 +64,6 @@
         <action
             android:id="@+id/action_admeAdvancedConfigurationFragment_to_admeLockedRotorDetectionFragment"
             app:destination="@id/admeLockedRotorDetectionFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_admeAdvancedConfigurationFragment_to_admeGuideGrooveCalibrationFragment"
-            app:destination="@id/admeGuideGrooveCalibrationFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
@@ -103,8 +86,8 @@
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
-            android:id="@+id/action_admeAdvancedConfigurationFragment_to_admeSportsCalibrationProcessingFragment"
-            app:destination="@id/admeSportsCalibrationProcessingFragment"
+            android:id="@+id/action_admeAdvancedConfigurationFragment_to_admeHacAlarmSettingFragment"
+            app:destination="@id/admeHacAlarmSettingFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
@@ -125,28 +108,16 @@
         tools:layout="@layout/fragment_adme_inclinometer" />
 
     <fragment
-        android:id="@+id/admeExecutiveAgencyFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeExecutiveAgencyFragment"
-        android:label="AdmeExecutiveAgencyFragment"
+        android:id="@+id/admeHacExecutiveAgencyFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacExecutiveAgencyFragment"
+        android:label="AdmeHacExecutiveAgencyFragment"
         tools:layout="@layout/fragment_adme_executive_agency" />
-
-    <fragment
-        android:id="@+id/admeStepperMotorFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeStepperMotorFragment"
-        android:label="AdmeStepperMotorFragment"
-        tools:layout="@layout/fragment_adme_stepper_motor" />
 
     <fragment
         android:id="@+id/admeLockedRotorDetectionFragment"
         android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeLockedRotorDetectionFragment"
         android:label="AdmeLockedRotorDetectionFragment"
         tools:layout="@layout/fragment_adme_locked_rotor_detection" />
-
-    <fragment
-        android:id="@+id/admeGuideGrooveCalibrationFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeGuideGrooveCalibrationFragment"
-        android:label="AdmeGuideGrooveCalibrationFragment"
-        tools:layout="@layout/fragment_adme_guide_groove_calibration" />
 
     <fragment
         android:id="@+id/admeIntelligentControlFragment"
@@ -161,6 +132,12 @@
         tools:layout="@layout/fragment_adme_threshold" />
 
     <fragment
+        android:id="@+id/admeHacAlarmSettingFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacAlarmSettingFragment"
+        android:label="AdmeHacAlarmSettingFragment"
+        tools:layout="@layout/fragment_adme_hac_alarm_setting" />
+
+    <fragment
         android:id="@+id/admeMeasuringHoleDepthFragment"
         android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeMeasuringHoleDepthFragment"
         android:label="AdmeMeasuringHoleDepthFragment"
@@ -171,13 +148,6 @@
         android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeAdvancedSettingFragment"
         android:label="AdmeAdvancedSettingFragment"
         tools:layout="@layout/fragment_adme_advanced_setting" />
-
-
-    <fragment
-        android:id="@+id/admeSportsCalibrationProcessingFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeSportsCalibrationProcessingFragment"
-        android:label="AdmeSportsCalibrationProcessingFragment"
-        tools:layout="@layout/fragment_adme_sports_calibration_processing" />
 
     <action
         android:id="@+id/action_global_to_admeMeasuringHoleDepthFragment"
@@ -234,4 +204,5 @@
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
+
 </navigation>

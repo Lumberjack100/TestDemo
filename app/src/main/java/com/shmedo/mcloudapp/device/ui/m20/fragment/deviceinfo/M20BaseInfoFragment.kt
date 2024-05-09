@@ -128,43 +128,43 @@ class M20BaseInfoFragment : BaseIOTDeviceFragment() {
             initRunningData(commonCurrentStateInfo)
             mStates.wrapStateInfo.set(commonCurrentStateInfo)
             mStates.wrapStateInfo.get().apply {
-                inner_power_volt = commonCurrentStateInfo.inner_power_volt.toDoubleOrNull()
+                inner_power_volt = inner_power_volt.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
                     } ?: IOTConstants.NULL_KEY
-                ext_power_volt = commonCurrentStateInfo.ext_power_volt.toDoubleOrNull()
+                ext_power_volt = ext_power_volt.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
                     } ?: IOTConstants.NULL_KEY
-                solar_volt = commonCurrentStateInfo.solar_volt.toDoubleOrNull()
+                solar_volt = solar_volt.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
                     } ?: IOTConstants.NULL_KEY
-                battery_volt = commonCurrentStateInfo.battery_volt.toDoubleOrNull()
+                battery_volt = battery_volt.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
                     } ?: IOTConstants.NULL_KEY
-                supply_power = commonCurrentStateInfo.supply_power.toDoubleOrNull()
+                supply_power = supply_power.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
                     } ?: IOTConstants.NULL_KEY
-                consume_power = commonCurrentStateInfo.consume_power.toDoubleOrNull()
+                consume_power = consume_power.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
                     } ?: IOTConstants.NULL_KEY
-                temp = commonCurrentStateInfo.temp.toDoubleOrNull()
+                temp = temp.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
                     } ?: IOTConstants.NULL_KEY
-                humidity = commonCurrentStateInfo.humidity.toDoubleOrNull()
+                humidity = humidity.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
                     } ?: IOTConstants.NULL_KEY
-                temp_out = commonCurrentStateInfo.temp_out.toDoubleOrNull()
+                temp_out = temp_out.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
                     } ?: IOTConstants.NULL_KEY
-                humidity_out = commonCurrentStateInfo.humidity_out.toDoubleOrNull()
+                humidity_out = humidity_out.toDoubleOrNull()
                     ?.let {
                         decimalFormat.format(it)
                     } ?: IOTConstants.NULL_KEY

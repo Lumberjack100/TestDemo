@@ -132,7 +132,7 @@ object IOTDeviceBindingAdapter {
     @BindingAdapter("bind_signal_value")
     fun setSignalLevelBydBmValue(view: SignalView, value: Int) {
         when (value) {
-            -113, 85 -> view.setSignalLevel(0)
+            -113, 0, 85 -> view.setSignalLevel(0)
             in -110..-96 -> {
                 view.setSignalLevel(1)
                 view.setLevelColor(ColorUtils.getColor(R.color.orange))

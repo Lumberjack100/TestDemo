@@ -6,7 +6,6 @@ import com.shmedo.lib.device.base.iot_cmd.model.das.DasBaseInfo
 
 class DasBaseInfoViewModel : ViewModel() {
     val wrapBaseInfo = NonNullObservableField(DasBaseInfo())
-    val signal = NonNullObservableField("")
     val signalValue = NonNullObservableField(0)
 
     val errNo = NonNullObservableField("0")//错误码

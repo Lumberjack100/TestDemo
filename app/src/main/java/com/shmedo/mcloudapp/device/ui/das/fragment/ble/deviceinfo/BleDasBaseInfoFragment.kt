@@ -273,15 +273,8 @@ class BleDasBaseInfoFragment : BaseIOTDeviceFragment() {
             }
             mStates.wrapBaseInfo.notifyChange()
 
-            mStates.signal.set(info.gprsSignal.toIntOrNull()?.let {
-                if (it < 0)
-                    it.toString() + "dBm"
-                else
-                    (it * 2 - 113).toString() + "dBm"
-            } ?: "--dBm"
-            )
             mStates.signalValue.set(info.gprsSignal.toIntOrNull()?.let {
-                if (it < 0)
+                if (it <= 0)
                     it
                 else
                     it * 2 - 113

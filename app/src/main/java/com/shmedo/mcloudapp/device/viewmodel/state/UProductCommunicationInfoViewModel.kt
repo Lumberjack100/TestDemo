@@ -5,6 +5,5 @@ import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
 
 class UProductCommunicationInfoViewModel : ViewModel() {
     //4G信号强度
-    val signal = NonNullObservableField("")
     val signalValue = NonNullObservableField(0)
 }
