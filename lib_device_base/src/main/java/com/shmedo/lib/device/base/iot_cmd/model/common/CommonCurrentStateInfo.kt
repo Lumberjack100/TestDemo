@@ -42,15 +42,15 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class CommonCurrentStateInfo(
-    var ext_power_volt: String = IOTConstants.NULL_KEY, //外接电源电压
-    var inner_power_volt: String = IOTConstants.NULL_KEY, //内部电源电压
-    var temp: String = IOTConstants.NULL_KEY, //设备内部环境温度，单位摄氏度
+    var ext_power_volt: String = IOTConstants.NULL_KEY, //设备输入端电压，单位V
+    var inner_power_volt: String = IOTConstants.NULL_KEY, //设备内部电压，单位V
+    var temp: String = IOTConstants.NULL_KEY, //设备内部环境温度，单位 ℃
     var humidity: String = IOTConstants.NULL_KEY, //设备内部湿度，单位 RH%
-    var temp_out: String = IOTConstants.NULL_KEY, //设备外部环境温度，单位摄氏度
+    var temp_out: String = IOTConstants.NULL_KEY, //设备外部环境温度，单位 ℃
     var humidity_out: String = IOTConstants.NULL_KEY, //设备外部环境湿度，单位RH%
     @Json(name = "4g_signal")
-    var _4g_signal: Int = 0, //4g信号强度
-    var bd_signal: Double = 0.0, //北斗信号强度
+    var _4g_signal: Int = 0, //4g信号强度（dBm），dBm=2*CSQ值-113，数值99表示无信号
+    var bd_signal: Double = 0.0, //北斗信号强度，参数预留，默认99值；数值99表示无信号
     var hw_version: String = IOTConstants.NULL_KEY, //硬件版本
     var sw_version: String = IOTConstants.NULL_KEY, //固件版本
     var location: String = IOTConstants.NULL_KEY, //设备位置-经纬度，经度在前,纬度在后。E表示东经，W表示西经，N表示北纬，S表示南纬。
@@ -65,19 +65,30 @@ data class CommonCurrentStateInfo(
     var battery_current: String = IOTConstants.NULL_KEY,
     var mag: String = IOTConstants.NULL_KEY,
     @Json(name = "IMEI")
-    var iMEI: String = IOTConstants.NULL_KEY, //IMEI卡号
+    var iMEI: String = IOTConstants.NULL_KEY, //设备4G通信模块的IMEI号
     @Json(name = "IMSI")
     var iMSI: String = IOTConstants.NULL_KEY, //
     @Json(name = "CCID")
-    var cCID: String = IOTConstants.NULL_KEY, //物联网卡号
+    var cCID: String = IOTConstants.NULL_KEY, //设备内置物联网卡的ICCID号
     var work_current: String = IOTConstants.NULL_KEY, //设备工作电流，单位A
-    var volt_percent: String = IOTConstants.NULL_KEY,
+    var volt_percent: String = IOTConstants.NULL_KEY,//电池电量，单位%
+
     @Json(name = "X_Angle")
-    var x_Angle: String = IOTConstants.NULL_KEY, //X倾角
+    var x_Angle: String = IOTConstants.NULL_KEY, //倾角计X轴角度，单位°
     @Json(name = "Y_Angle")
-    var y_Angle: String = IOTConstants.NULL_KEY, //Y倾角
+    var y_Angle: String = IOTConstants.NULL_KEY, //倾角计Y轴角度，单位°
     @Json(name = "Z_Angle")
-    var z_Angle: String = IOTConstants.NULL_KEY, //Z倾角
+    var z_Angle: String = IOTConstants.NULL_KEY, //倾角计Z轴角度，单位°
+
+    @Json(name = "LF_range")
+    var lF_range: String = IOTConstants.NULL_KEY, //拉绳量程，单位mm
+    @Json(name = "LF_initial")
+    var lF_initial: String = IOTConstants.NULL_KEY, //拉绳长度初始值，单位mm，默认0
+    @Json(name = "LF_current")
+    var lF_current: String = IOTConstants.NULL_KEY, //拉绳长度实时测量值，单位mm
+    @Json(name = "LF_Cumulative")
+    var lF_Cumulative: String = IOTConstants.NULL_KEY, //拉绳长度累计变化量，单位mm
+
     @Json(name = "SN")
     var sN: String = IOTConstants.NULL_KEY, //设备SN号
     @Json(name = "eMMC Free")

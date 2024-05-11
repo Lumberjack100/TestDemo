@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.LR200ZeroValueCalibrationViewModel" />
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/popup_head"
+            layout="@layout/cmd_response_dialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:layout_marginBottom="@dimen/dimen_size_25" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_size_20">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                visible="@{!stateVM.isResponseLoading&amp;&amp;stateVM.isResponseSuccess}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_calibration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/mr702_time_circle_bg"
+                    android:gravity="center"
+                    android:text='@{stateVM.isCalibratingSuccess?"校准\n成功":"立即\n校准"}'
+                    android:textColor='@{stateVM.isCalibratingSuccess?@color/colorPrimary:@color/title_text_color}'
+                    android:textSize="@dimen/text_size_22"
+                    android:textStyle="bold"
+                    tools:text="立即\n校准"
+                    tools:textColor="@color/title_text_color" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_15"
+                    android:layout_marginTop="@dimen/dimen_size_5"
+                    android:drawablePadding="5dp"
+                    android:text="系统零位预设值"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="@dimen/text_size_14"
+                    app:drawableLeftCompat="@drawable/ic_dispatch_cmd_response_small_circle" />
+
+                <TextView
+                    android:id="@+id/tv_device_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_30"
+                    android:layout_marginTop="@dimen/dimen_size_5"
+                    android:text="@{stateVM.zeroValue}"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_16"
+                    android:textStyle="bold"
+                    tools:text="10.475mm" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="@dimen/dimen_size_12"
+                    android:layout_marginBottom="@dimen/dimen_size_12"
+                    android:background="@color/divider_line_bg" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_15"
+                    android:drawablePadding="5dp"
+                    android:text="实时零位测量值"
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="@dimen/text_size_14"
+                    app:drawableLeftCompat="@drawable/ic_dispatch_cmd_response_small_circle" />
+
+                <TextView
+                    android:id="@+id/tv_system_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_size_30"
+                    android:layout_marginTop="@dimen/dimen_size_5"
+                    android:text="@{stateVM.zeroValueMeasured}"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_16"
+                    android:textStyle="bold"
+                    tools:text="10.667mm" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <include
+                android:id="@+id/queryCmdResponseResultLoadingView"
+                layout="@layout/query_cmd_response_result_loading_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                app:visible="@{stateVM.isResponseLoading}"
+                tools:visibility="gone" />
+
+            <include
+                android:id="@+id/queryCmdResponseResultFailed"
+                layout="@layout/query_cmd_response_result_failed"
+                stateVM="@{stateVM}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_15"
+                android:layout_marginEnd="@dimen/dimen_size_15"
+                app:visible="@{!stateVM.isResponseLoading &amp;&amp;!stateVM.isResponseSuccess}"
+                tools:visibility="gone" />
+
+        </FrameLayout>
+
+        <include
+            android:id="@+id/popup_footer"
+            layout="@layout/cmd_response_dialog_footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:visible="@{!stateVM.isResponseSuccess}" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

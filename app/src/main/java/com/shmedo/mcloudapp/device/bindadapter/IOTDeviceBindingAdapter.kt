@@ -25,17 +25,17 @@ object IOTDeviceBindingAdapter {
             }
 
             "1" -> {
-                view.text = "在线"
+                view.text = "已连接"
                 view.setTextColor(ColorUtils.getColor(R.color.device_online_platform))
             }
 
             "2" -> {
-                view.text = "离线"
+                view.text = "未连接"
                 view.setTextColor(ColorUtils.getColor(R.color.device_offline_platform))
             }
 
             else -> {
-                view.text = "离线"
+                view.text = "未连接"
                 view.setTextColor(ColorUtils.getColor(R.color.device_offline_platform))
             }
         }
@@ -132,7 +132,7 @@ object IOTDeviceBindingAdapter {
     @BindingAdapter("bind_signal_value")
     fun setSignalLevelBydBmValue(view: SignalView, value: Int) {
         when (value) {
-            -113, 0, 85 -> view.setSignalLevel(0)
+            -113, 0, 99 -> view.setSignalLevel(0)
             in -110..-96 -> {
                 view.setSignalLevel(1)
                 view.setLevelColor(ColorUtils.getColor(R.color.orange))

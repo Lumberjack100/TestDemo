@@ -39,22 +39,28 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
     override fun initData() {
         super.initData()
         toolbarViewModel.toolbarIvActionVisible.set(true)
-        mHeadStates.isIOTPlatformStateVisible.set(false)
         when (productType) {
             ProductType.U_D_1,//水位
             ProductType.U_D_2 -> {//泥位
                 mHeadStates.productLightResId.set(R.drawable.device_logo_niweiji)
                 mHeadStates.productGrayResId.set(R.drawable.device_logo_niweiji_gray)
+                mHeadStates.isIOTPlatformStateVisible.set(false)
             }
 
             ProductType.U_I_1 -> {//倾斜仪
                 mHeadStates.productLightResId.set(R.drawable.device_logo_qingxieyi)
                 mHeadStates.productGrayResId.set(R.drawable.device_logo_qingxieyi_gray)
+                mHeadStates.isIOTPlatformStateVisible.set(false)
             }
 
             ProductType.U_R_1 -> {//一体化雨量计
                 mHeadStates.productLightResId.set(R.drawable.device_logo_rain_gauge)
                 mHeadStates.productGrayResId.set(R.drawable.device_logo_rain_gauge_gray)
+                mHeadStates.isIOTPlatformStateVisible.set(false)
+            }
+
+            ProductType.LR200 -> {//米度一体式裂缝计
+                mHeadStates.deviceName.set("BHY-3-LR200")
             }
 
             else -> {
@@ -139,87 +145,72 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
     override fun processOtherItemClick(configModule: DeviceFunctionModule) {
         when (configModule) {
             is SensorConfigModule -> {
+                var navId = configModule.navId
+                when (productType) {
+                    ProductType.U_D_1,//水位
+                    ProductType.U_D_2 -> {//泥位
+                        navId = R.id.action_uProductHomeFragment_to_uDProductSensorParamFragment
+                    }
+
+                    ProductType.U_I_1 -> {//倾斜仪
+                        navId = R.id.action_uProductHomeFragment_to_uIProductSensorParamFragment
+                    }
+
+                    ProductType.U_R_1 -> {//一体化雨量计
+                        navId = R.id.action_uProductHomeFragment_to_uRProductSensorParamFragment
+                    }
+
+                    ProductType.LR200 -> {//米度一体式裂缝计
+                        navId = R.id.action_uProductHomeFragment_to_lR200SensorParamFragment
+                    }
+
+                    else -> {
+
+                    }
+                }
                 val bundle = BaseIOTDeviceFragment.newBundleArguments(
                     productType,
                     communicateWay,
                     deviceInfo,
                     bleDevice
                 )
-                when (productType) {
-                    ProductType.U_D_1,//水位
-                    ProductType.U_D_2 -> {//泥位
-                        nav().navigate(
-                            R.id.action_uProductHomeFragment_to_uDProductSensorParamFragment,
-                            bundle
-                        )
-                    }
-
-                    ProductType.U_I_1 -> {//倾斜仪
-                        nav().navigate(
-                            R.id.action_uProductHomeFragment_to_uIProductSensorParamFragment,
-                            bundle
-                        )
-                    }
-
-                    ProductType.U_R_1 -> {//一体化雨量计
-                        nav().navigate(
-                            R.id.action_uProductHomeFragment_to_uRProductSensorParamFragment,
-                            bundle
-                        )
-                    }
-
-                    else -> {
-
-                    }
-                }
+                nav().navigate(navId, bundle)
             }
 
             is DataCenterModule -> {
+                var navId = configModule.navId
+                var centerNum = 3
                 when (productType) {
                     ProductType.U_D_1,//水位
                     ProductType.U_D_2 -> {//泥位
-                        nav().navigate(
-                            R.id.action_uProductHomeFragment_to_uDProductDataCenterHomeFragment,
-                            UniversalDataCenterHomeFragment.newBundleArguments(
-                                centerNum = 3,
-                                productType,
-                                communicateWay,
-                                deviceInfo,
-                                bleDevice
-                            )
-                        )
+                        navId = R.id.action_uProductHomeFragment_to_uDProductDataCenterHomeFragment
+                        centerNum = 3
                     }
 
-                    ProductType.U_I_1 -> {//倾斜仪
-                        nav().navigate(
-                            configModule.navId,
-                            UniversalDataCenterHomeFragment.newBundleArguments(
-                                centerNum = 3,
-                                productType,
-                                communicateWay,
-                                deviceInfo,
-                                bleDevice
-                            )
-                        )
+                    ProductType.U_I_1,//倾斜仪
+                    ProductType.U_R_1 //一体化雨量计
+                    -> {
+                        centerNum = 3
                     }
 
-                    ProductType.U_R_1 -> {//一体化雨量计
-                        nav().navigate(
-                            configModule.navId,
-                            UniversalDataCenterHomeFragment.newBundleArguments(
-                                centerNum = 3,
-                                productType,
-                                communicateWay,
-                                deviceInfo,
-                                bleDevice
-                            )
-                        )
+                    ProductType.LR200 -> {//米度一体式裂缝计
+                        centerNum = 4
                     }
 
                     else -> {
 
                     }
                 }
+                nav().navigate(
+                    navId,
+                    UniversalDataCenterHomeFragment.newBundleArguments(
+                        centerNum,
+                        productType,
+                        communicateWay,
+                        deviceInfo,
+                        bleDevice
+                    )
+                )
             }
 
             is CommandDebugConfigModule -> {

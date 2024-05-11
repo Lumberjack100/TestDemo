@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui.lr200.fragment.deviceinfo
+package com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo
 
 import android.os.Bundle
 import com.blankj.utilcode.util.StringUtils
@@ -11,19 +11,24 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentLr200BaseInfoBinding
+import com.shmedo.mcloudapp.databinding.FragmentLr200SensorInfoBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.LR200BaseInfoViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.LR200SensorInfoViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
 
-class LR200BaseInfoFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentLr200BaseInfoBinding
-    private lateinit var mStates: LR200BaseInfoViewModel
+class LR200SensorInfoFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentLr200SensorInfoBinding
+    private lateinit var mStates: LR200SensorInfoViewModel
     private val iotParseManager: IOTParserManager by inject()
+    private val decimalFormat = DecimalFormat("#.##", DecimalFormatSymbols(Locale.getDefault()))
 
     override fun initViewModel() {
         super.initViewModel()
@@ -31,23 +36,23 @@ class LR200BaseInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_lr200_base_info, BR.stateVM, mStates)
+        return DataBindingConfig(R.layout.fragment_lr200_sensor_info, BR.stateVM, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentLr200BaseInfoBinding
+        binding = getBinding() as FragmentLr200SensorInfoBinding
+        refreshLayout = binding.refreshLayout
         initRefresh()
     }
 
     private fun initRefresh() {
-        refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
             if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
-            queryBaseInfo()
+            queryInfo()
         }
     }
 
@@ -58,7 +63,7 @@ class LR200BaseInfoFragment : BaseIOTDeviceFragment() {
     /**
      * 获取设备的基本信息
      */
-    private fun queryBaseInfo() {
+    private fun queryInfo() {
         commandItems.clear()
 
         val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
@@ -76,7 +81,7 @@ class LR200BaseInfoFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "查询基本信息出错: ${result.message}"
+                        val errMsg = "查询传感器状态出错: ${result.message}"
                         Toaster.show(errMsg)
                         return
                     }
@@ -100,20 +105,40 @@ class LR200BaseInfoFragment : BaseIOTDeviceFragment() {
             val commonCurrentStateInfo =
                 MoshiUtil.fromJson<CommonCurrentStateInfo>(content) ?: return
             mStates.wrapStateInfo.set(commonCurrentStateInfo)
-            mStates.wrapStateInfo.notifyChange()
+            mStates.wrapStateInfo.get().apply {
+                x_Angle = x_Angle.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: IOTConstants.NULL_KEY
+                y_Angle = y_Angle.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: IOTConstants.NULL_KEY
+                z_Angle = z_Angle.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: IOTConstants.NULL_KEY
 
-            mStates.signalValue.set(commonCurrentStateInfo._4g_signal.let {
-                if (it <= 0)
-                    it
-                else
-                    it * 2 - 113
-            })
+                lF_initial = lF_initial.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: IOTConstants.NULL_KEY
+                lF_current = lF_current.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: IOTConstants.NULL_KEY
+                lF_Cumulative = lF_Cumulative.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: IOTConstants.NULL_KEY
+            }
+            mStates.wrapStateInfo.notifyChange()
         } catch (e: Exception) {
             Timber.e(e)
         }
     }
 
     companion object {
-        fun newInstance() = LR200BaseInfoFragment()
+        fun newInstance() = LR200SensorInfoFragment()
     }
 }

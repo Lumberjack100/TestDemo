@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.LR200InitialValueViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.device.ui.u_product.fragment.LR200InitialValueFragment.ClickProxy" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray">
+
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:vm="@{toolbarVM}" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ll_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_1"
+            android:background="@color/white"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/auto_init"
+                onClickWithDebouncing="@{(textView)->click.onModeCheckedChanged(textView)}"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_marginStart="@dimen/dimen_size_16"
+                android:drawableStart="@{stateVM.isAutoInit?@drawable/ic_radio_checked:@drawable/ic_radio_uncheck}"
+                android:drawablePadding="@dimen/dimen_size_6"
+                android:gravity="center_vertical"
+                android:text="自动初始化"
+                android:textColor="@{stateVM.isAutoInit?@color/title_text_color:@color/sub_title_text_color}"
+                android:textSize="@dimen/text_size_16"
+                tools:drawableStart="@drawable/ic_radio_checked" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.8dp"
+                android:layout_marginHorizontal="@dimen/dimen_size_16"
+                android:background="@color/divider_line_bg" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                style="@style/Common_EditItem_LayoutStyle"
+                android:background="@drawable/layer_common_click_item_with_divider">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/manual_init"
+                    onClickWithDebouncing="@{(textView)->click.onModeCheckedChanged(textView)}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:drawableStart="@{!stateVM.isAutoInit?@drawable/ic_radio_checked:@drawable/ic_radio_uncheck}"
+                    android:drawablePadding="@dimen/dimen_size_6"
+                    android:gravity="center_vertical"
+                    android:text="手动初始化(毫米)"
+                    android:textColor="@{!stateVM.isAutoInit?@color/title_text_color:@color/sub_title_text_color}"
+                    android:textSize="@dimen/text_size_16"
+                    tools:drawableStart="@drawable/ic_radio_checked" />
+
+                <com.shmedo.mcloudapp.common.widget.ClearEditText
+                    style="@style/Common_EditItem_EditText_Style"
+                    textViewEnabled="@{!stateVM.isAutoInit }"
+                    android:hint="请输入"
+                    android:text='@={stateVM.initValue}'
+                    app:inputTypeFilter='@{"numberDecimal"}'
+                    app:lengthFilter="@{10}" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <TextView
+            android:id="@+id/btn_confirm"
+            style="@style/SubmitButton_ColorPrimary"
+            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="50dp"
+            android:text="保存"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

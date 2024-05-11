@@ -12,6 +12,7 @@ import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
@@ -89,7 +90,10 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
     private fun queryInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS)
+        val command =
+            if (productType == ProductType.LR200) IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS) else IOTCommandUtil.getCommand(
+                IOTCommandType.MD_GET_DEVICE_STATUS
+            )
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -114,7 +118,30 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
                             binding.refreshLayout.finish()
                         }
                         val content: String = result.data
-                        initStatusInfo(content)
+                        initStatusInfo1(content)
+                    }
+                }
+            }
+
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
+                val result = iotParseManager.parse<String>(
+                    cmdStr,
+                    IOTCommandType.QUERY_DEVICE_STATUS
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "查询通讯状态出错: ${result.message}"
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        val content: String = result.data
+                        initStatusInfo2(content)
                     }
                 }
             }
@@ -123,7 +150,7 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initStatusInfo(content: String) {
+    private fun initStatusInfo1(content: String) {
         launchWithViewLifecycle {
             try {
                 val commonCurrentStateInfoList = withContext(Dispatchers.IO) {
@@ -170,6 +197,41 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    private fun initStatusInfo2(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val info = MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
+                    ?: return@launchWithViewLifecycle
+
+                //根据逗号分隔
+                val enableStatusList = ArrayList<String>()
+                val onlineStatusList = ArrayList<String>()
+                for (i in 1..centerNum)
+                    enableStatusList.add("1")
+
+                onlineStatusList.add(if (info.dataCenter1 == 1) "1" else "0")
+                onlineStatusList.add(if (info.dataCenter2 == 1) "1" else "0")
+                onlineStatusList.add(if (info.dataCenter3 == 1) "1" else "0")
+                onlineStatusList.add(if (info.dataCenter4 == 1) "1" else "0")
+
+                tableAdapter.setAllItems(
+                    getColumnHeaderList(enableStatusList),
+                    getRowHeaderList(),
+                    getCellDataList(enableStatusList, onlineStatusList)
+                )
+
+                mStates.signalValue.set(info._4g_signal.let {
+                    if (it <= 0)
+                        it
+                    else
+                        it * 2 - 113
+                } ?: -113)
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
+    }
+
     private fun getColumnHeaderList(centerStatusList: List<String>): ArrayList<CommunicationDataCellModel> {
         val columnHeaderList = arrayListOf<CommunicationDataCellModel>()
         for (i in 1..centerStatusList.size.coerceAtMost(centerNum)) {
@@ -200,7 +262,7 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
                     for (i in 0..<enableStatusList.size.coerceAtMost(centerNum)) {
                         columnCellDataList.add(
                             CommunicationDataCellModel(
-                                mData = if (enableStatusList[i] == "0") "未开启" else if (onlineStatusList[i] == "1") "在线" else "离线",
+                                mData = if (enableStatusList[i] == "0") "未开启" else if (onlineStatusList[i] == "1") "已连接" else "未连接",
                                 textColorResId = if (enableStatusList[i] == "1" && onlineStatusList[i] == "1") R.color.device_online_platform else R.color.device_offline_platform
                             )
                         )

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <import type="com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants" />
 
         <variable
@@ -90,6 +91,7 @@
                         tools:text="123344" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
+
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     visible='@{ stateVM.wrapStateInfo.hw_version != IOTConstants.NULL_KEY}'
@@ -121,8 +123,10 @@
                         tools:text="1212" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
+
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.wrapStateInfo.location != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -138,37 +142,40 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.wrapStateInfo.lF_range != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="内部电压" />
+                        android:text="测量范围" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.wrapStateInfo.inner_power_volt+"V"}'
-                        app:bind_voltage_color='@{stateVM.wrapStateInfo.inner_power_volt+""}'
+                        android:text='@{stateVM.wrapStateInfo.lF_range+"mm"}'
+                        tools:text="2000m" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.wrapStateInfo.volt_percent != IOTConstants.NULL_KEY}'
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="电池电量" />
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        android:text='@{stateVM.wrapStateInfo.volt_percent}'
+                        app:bind_voltage_color='@{stateVM.wrapStateInfo.volt_percent+""}'
                         tools:text="1" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
+
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
-                    visible='@{ stateVM.wrapStateInfo.ext_power_volt != IOTConstants.NULL_KEY}'
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <TextView
-                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="电源电压" />
-
-                    <TextView
-                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.wrapStateInfo.ext_power_volt+" V"}'
-                        app:bind_voltage_color='@{stateVM.wrapStateInfo.ext_power_volt+""}'
-                        tools:text="2" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.wrapStateInfo.temp != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -184,6 +191,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.wrapStateInfo.humidity != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -199,6 +207,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.wrapStateInfo.temp_out != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -214,6 +223,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.wrapStateInfo.humidity_out != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -254,6 +264,23 @@
                         app:signal_maximum="4"
                         app:spacing="1"
                         app:unit_width="8" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.wrapStateInfo.self_check != IOTConstants.NULL_KEY}'
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="LoRa功能" />
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        android:text='@{stateVM.isLoRaExist?"有":"无"}'
+                        android:textColor="@{stateVM.isLoRaExist?@color/text_color_3AD094:@color/red}"
+                        tools:text="有" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>

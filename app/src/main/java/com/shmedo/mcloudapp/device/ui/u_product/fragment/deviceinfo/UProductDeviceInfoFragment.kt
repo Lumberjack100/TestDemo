@@ -18,13 +18,24 @@ class UProductDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
             deviceInfo,
             bleDevice
         )
+        val centerNum = if (productType == ProductType.LR200) 4 else 3
         return listOf<Fragment>(
-            UProductBaseInfoFragment.newInstance().apply {
-                arguments = bundle
+            when (productType) {
+                ProductType.LR200 -> {//米度一体式裂缝计
+                    LR200BaseInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                }
+
+                else -> {
+                    UProductBaseInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                }
             },
             UProductCommunicationInfoFragment.newInstance().apply {
                 arguments = UProductCommunicationInfoFragment.newBundleArguments(
-                    3,
+                    centerNum,
                     productType,
                     communicateWay,
                     deviceInfo,
@@ -51,6 +62,13 @@ class UProductDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
                         arguments = bundle
                     }
                 }
+
+                ProductType.LR200 -> {//米度一体式裂缝计
+                    LR200SensorInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                }
+
 
                 else -> URProductSensorInfoFragment.newInstance().apply {
                     arguments = bundle

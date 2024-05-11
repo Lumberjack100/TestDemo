@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants" />
+
         <variable
             name="stateVM"
             type="com.shmedo.mcloudapp.device.viewmodel.state.LR200SensorInfoViewModel" />
@@ -41,7 +43,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
-                    visible='@{ stateVM.memsAxisX != "--"}'
+                    visible='@{ stateVM.wrapStateInfo.x_Angle != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -50,14 +52,14 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.memsAxisX }'
+                        android:text='@{stateVM.wrapStateInfo.x_Angle }'
                         tools:text="2" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
-                    visible='@{ stateVM.memsAxisY != "--"}'
+                    visible='@{ stateVM.wrapStateInfo.y_Angle != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -66,14 +68,14 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.memsAxisY }'
+                        android:text='@{stateVM.wrapStateInfo.y_Angle  }'
                         tools:text="2" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
-                    visible='@{ stateVM.memsAxisZ != "--"}'
+                    visible='@{ stateVM.wrapStateInfo.z_Angle != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -82,9 +84,68 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.memsAxisZ }'
+                        android:text='@{stateVM.wrapStateInfo.z_Angle }'
                         tools:text="2" />
 
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <TextView
+                    visible='@{ stateVM.wrapStateInfo.lF_initial != IOTConstants.NULL_KEY}'
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/dimen_size_10"
+                    android:layout_marginStart="@dimen/dimen_size_10"
+                    android:drawablePadding="-80dp"
+                    android:text="裂缝计"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_17"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/ic_mr702_device_info_serial_port_status" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.wrapStateInfo.lF_initial != IOTConstants.NULL_KEY}'
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="初始测量值(mm)" />
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        android:text='@{stateVM.wrapStateInfo.lF_initial }'
+                        tools:text="2" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.wrapStateInfo.lF_current != IOTConstants.NULL_KEY}'
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="实时测量值(mm)" />
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        android:text='@{stateVM.wrapStateInfo.lF_current }'
+                        tools:text="2" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.wrapStateInfo.lF_Cumulative != IOTConstants.NULL_KEY}'
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="累计变化量(mm)" />
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        android:text='@{stateVM.wrapStateInfo.lF_Cumulative }'
+                        tools:text="2" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
             </androidx.appcompat.widget.LinearLayoutCompat>

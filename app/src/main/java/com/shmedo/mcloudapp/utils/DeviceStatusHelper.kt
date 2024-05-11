@@ -27,7 +27,7 @@ object DeviceStatusHelper {
         if (currentStateInfo.lora != IOTConstants.NULL_KEY && !currentStateInfo.lora.uppercase()
                 .contains("OK")
         ) {
-            deviceAbnormalList.add("LORA 状态异常")
+            deviceAbnormalList.add("LoRa 状态异常")
         }
         //bt 蓝牙模块
         if (currentStateInfo.bt != IOTConstants.NULL_KEY && !currentStateInfo.bt.uppercase()

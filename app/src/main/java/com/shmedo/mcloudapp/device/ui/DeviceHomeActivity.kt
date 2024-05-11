@@ -92,7 +92,7 @@ class DeviceHomeActivity : BaseActivity() {
         )
         val navController = findNavController(R.id.device_home_host_fragment)
         when (productType) {
-            ProductType.COLLECTOR_G_0 -> {
+            ProductType.COLLECTOR_G_0 -> {//自组网报警网关
                 navController.setGraph(
                     R.navigation.gw100_graph,
                     bundle2
@@ -109,17 +109,11 @@ class DeviceHomeActivity : BaseActivity() {
                 bundle2
             )
 
-             ProductType.COLLECTOR_R_1, ProductType.DAS, ProductType.BHY -> {
-                val graphId = if (communicateWay == BleConnect) R.navigation.ble_das_graph else R.navigation.das_graph
+            ProductType.COLLECTOR_R_1, ProductType.DAS, ProductType.BHY -> {
+                val graphId =
+                    if (communicateWay == BleConnect) R.navigation.ble_das_graph else R.navigation.das_graph
                 navController.setGraph(
-                    graphId,bundle2
-                )
-            }
-
-            ProductType.LR200 -> {
-                navController.setGraph(
-                    R.navigation.lr200_graph,
-                    bundle2
+                    graphId, bundle2
                 )
             }
 
@@ -142,7 +136,7 @@ class DeviceHomeActivity : BaseActivity() {
                 bundle2
             )
 
-            ProductType.U_D_1, ProductType.U_D_2, ProductType.U_I_1,ProductType.U_R_1 -> {
+            ProductType.LR200, ProductType.U_D_1, ProductType.U_D_2, ProductType.U_I_1, ProductType.U_R_1 -> {
                 navController.setGraph(
                     R.navigation.u_product_graph,
                     bundle2

@@ -173,7 +173,7 @@ enum class ProductType(
     ADME("ADME", oldSuffix = "T", productName = "自动化测斜机器人"),
     BHY("BHY", oldSuffix = "H", productName = "崩滑仪"),
     DAS("DAS", oldSuffix = "L", productName = "智能采集器"),
-    LR200("LR200", oldSuffix = "Z", productName = "一体式裂缝计"),
+    LR200("LR200", oldSuffix = "Z", productName = "米度一体式裂缝计"),
     M20("M20", oldSuffix = "V", productName = "M20-GNSS"),
     MR702("MR702", oldSuffix = "A", productName = "水利遥测终端机"),
     RN20("RN20", oldSuffix = "Y", productName = "轴力计"),

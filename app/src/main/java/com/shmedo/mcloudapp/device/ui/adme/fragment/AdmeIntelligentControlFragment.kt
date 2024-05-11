@@ -26,16 +26,16 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.databinding.FragmentAdmeIntelligentControlBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeIntelligentControlViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -445,7 +445,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
+                        //cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询正反测使能状态出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
@@ -471,7 +471,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
+                        //cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询正反测异常智能处理使能状态出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
@@ -497,7 +497,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
+                        //cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询低功耗使能状态出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
@@ -523,7 +523,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
+                        //cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询拟人运动使能状态出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
@@ -549,7 +549,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
+                        //cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询刹车片控制方式出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
@@ -575,7 +575,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
+                        //cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询电机电源使能状态出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)

@@ -60,6 +60,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.hac.HacMeasuringHoleDepthInfoPa
 import com.shmedo.lib.device.base.iot_cmd.parser.hac.HacMotionStateParser
 import com.shmedo.lib.device.base.iot_cmd.parser.hac.HacMotorMotionDistanceInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.hac.HacWarningValueParser
+import com.shmedo.lib.device.base.iot_cmd.parser.lr200.LR200ZeroValueParser
 import com.shmedo.lib.device.base.iot_cmd.parser.m20.M20BaseInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDIPortParamParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDOPortParamParser
@@ -172,6 +173,7 @@ val iotCommandModule = module {
     factory { AlarmTriggerValueInfoParser() }
     factory { AlarmReportIntervalInfoParser() }
     factory { MudLevelMeterSensorInfoParser() }
+    factory { LR200ZeroValueParser() }
 
 
     // 提供 IOTParseManager 的实例
@@ -257,7 +259,8 @@ val iotCommandModule = module {
             get<AlarmMonitorPointInfoParser>(),
             get<AlarmTriggerValueInfoParser>(),
             get<AlarmReportIntervalInfoParser>(),
-            get<MudLevelMeterSensorInfoParser>()
+            get<MudLevelMeterSensorInfoParser>(),
+            get<LR200ZeroValueParser>(),
         )
         IOTParserManager(parsers)
     }

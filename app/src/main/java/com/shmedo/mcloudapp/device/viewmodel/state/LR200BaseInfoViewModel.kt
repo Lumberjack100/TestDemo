@@ -7,5 +7,6 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo
 class LR200BaseInfoViewModel : ViewModel() {
     val wrapStateInfo = NonNullObservableField(CommonCurrentStateInfo())
 
+    val isLoRaExist = NonNullObservableField(true)
     val signalValue = NonNullObservableField(0)
 }
