@@ -6,6 +6,7 @@
     app:startDestination="@id/dasHomeFragment">
 
     <include app:graph="@navigation/include_query_data_graph" />
+    <include app:graph="@navigation/include_common_running_device_info_graph" />
     <include app:graph="@navigation/include_firmware_upgrade_graph" />
 
     <fragment
@@ -14,13 +15,6 @@
         android:label="DasHomeFragment"
         tools:layout="@layout/fragment_universal_device_home">
 
-        <action
-            android:id="@+id/action_dasHomeFragment_to_dasDeviceInfoFragment"
-            app:destination="@id/dasDeviceInfoFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
         <action
             android:id="@+id/action_dasHomeFragment_to_dasCollectorSettingFragment"
             app:destination="@id/dasCollectorSettingFragment"
@@ -53,11 +47,7 @@
             app:popEnterAnim="@anim/activity_close_enter"
             app:popExitAnim="@anim/activity_close_exit" />
     </fragment>
-    <fragment
-        android:id="@+id/dasDeviceInfoFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.deviceinfo.DasDeviceInfoFragment"
-        android:label="DasDeviceInfoFragment"
-        tools:layout="@layout/fragment_base_running_device_info" />
+
     <fragment
         android:id="@+id/dasCollectorSettingFragment"
         android:name="com.shmedo.mcloudapp.device.ui.das.fragment.DasCollectorSettingFragment"
@@ -155,7 +145,13 @@
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
-
+    <action
+        android:id="@+id/action_global_to_commonRunningDeviceInfoFragment"
+        app:destination="@id/common_running_device_info_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
     <action
         android:id="@+id/action_global_to_firmwareUpgradeFragment"
         app:destination="@id/firmware_upgrade_graph"

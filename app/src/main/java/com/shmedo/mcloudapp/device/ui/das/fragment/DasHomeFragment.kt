@@ -34,7 +34,7 @@ class DasHomeFragment : UniversalDeviceHomeFragment() {
                     "关于设备",
                     "设备基本信息、运行数据",
                     R.drawable.ic_device_running_info,
-                    navId = R.id.action_dasHomeFragment_to_dasDeviceInfoFragment
+                    navId = R.id.action_global_to_commonRunningDeviceInfoFragment
                 )
             )
         )
