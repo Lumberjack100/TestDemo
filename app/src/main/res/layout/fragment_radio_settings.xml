@@ -162,7 +162,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode1}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
-                            app:lengthFilter="@{10}" />
+                            app:lengthFilter="@{16}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -180,7 +180,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode2}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
-                            app:lengthFilter="@{10}" />
+                            app:lengthFilter="@{16}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -198,7 +198,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode3}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
-                            app:lengthFilter="@{10}" />
+                            app:lengthFilter="@{16}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -216,7 +216,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode4}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
-                            app:lengthFilter="@{10}" />
+                            app:lengthFilter="@{16}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -233,7 +233,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode5}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
-                            app:lengthFilter="@{10}" />
+                            app:lengthFilter="@{16}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -250,7 +250,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode6}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
-                            app:lengthFilter="@{10}" />
+                            app:lengthFilter="@{16}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -267,7 +267,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode7}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
-                            app:lengthFilter="@{10}" />
+                            app:lengthFilter="@{16}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -284,7 +284,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode8}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
-                            app:lengthFilter="@{10}" />
+                            app:lengthFilter="@{16}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -301,7 +301,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode9}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
-                            app:lengthFilter="@{10}" />
+                            app:lengthFilter="@{16}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -318,7 +318,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode10}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
-                            app:lengthFilter="@{10}" />
+                            app:lengthFilter="@{16}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>

@@ -6,6 +6,7 @@
     app:startDestination="@id/lB20SHomeFragment">
 
     <include app:graph="@navigation/include_query_data_graph" />
+    <include app:graph="@navigation/include_common_running_device_info_graph" />
     <include app:graph="@navigation/include_data_center_graph" />
     <include app:graph="@navigation/include_lora_graph" />
     <include app:graph="@navigation/include_firmware_upgrade_graph" />
@@ -18,14 +19,6 @@
         tools:layout="@layout/fragment_universal_device_home">
 
         <action
-            android:id="@+id/action_uProductHomeFragment_to_uProductDeviceInfoFragment"
-            app:destination="@id/uProductDeviceInfoFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
             android:id="@+id/action_uProductHomeFragment_to_lB20SAdHocNetworkSettingsFragment"
             app:destination="@id/lB20SAdHocNetworkSettingsFragment"
             app:enterAnim="@anim/activity_open_enter"
@@ -34,12 +27,6 @@
             app:popExitAnim="@anim/activity_close_exit" />
 
     </fragment>
-
-    <fragment
-        android:id="@+id/uProductDeviceInfoFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.UProductDeviceInfoFragment"
-        android:label="UProductDeviceInfoFragment"
-        tools:layout="@layout/fragment_base_running_device_info" />
 
     <fragment
         android:id="@+id/lB20SAdHocNetworkSettingsFragment"
@@ -76,6 +63,14 @@
         android:name="com.shmedo.mcloudapp.device.ui.lb20s.fragment.LB20SCustomAlarmTestFragment"
         android:label="LB20SCustomAlarmTestFragment"
         tools:layout="@layout/fragment_lb20s_custom_alarm_test" />
+
+    <action
+        android:id="@+id/action_global_to_commonRunningDeviceInfoFragment"
+        app:destination="@id/common_running_device_info_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
 
     <action
         android:id="@+id/action_global_to_radioSettingsFragment"

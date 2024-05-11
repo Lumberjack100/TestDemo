@@ -247,11 +247,6 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
                 showTimeCalibrationPopup()
             }
 
-            IOTCommandType.SET_TERMINAL_TIME -> {
-                mCommandResponseStates.isResponseLoading.set(true)
-                mCommandResponseStates.isResponseSuccess.set(false)
-            }
-
             else -> {}
         }
     }
@@ -259,7 +254,6 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
     override fun doCmdResponseResultError(cmdStr: String, errorMsg: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME,
-            IOTCommandType.SET_TERMINAL_TIME,
             -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
@@ -275,7 +269,6 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
     override fun doCmdResponseResultTimeOut(cmdStr: String, errorMsg: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME,
-            IOTCommandType.SET_TERMINAL_TIME,
             -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
@@ -297,7 +290,6 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
         super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, false, msg)
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME,
-            IOTCommandType.SET_TERMINAL_TIME,
             -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
