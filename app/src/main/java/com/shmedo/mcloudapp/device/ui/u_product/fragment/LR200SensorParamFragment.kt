@@ -95,10 +95,7 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
             )
             commandItems.add(command)
 
-            if (communicateWay is BleConnect) {
-                mCommandResponseStates.isResponseLoading.set(true)
-                showZeroValueCalibrationPopup()
-            }
+            showLoadingDialog(StringUtils.getString(R.string.loading))
             sendCommandFromCmdList(isStartTimeoutJob = true)
         }
 
@@ -149,70 +146,6 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
             .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
             .asCustom(popupView)
             .show()
-    }
-
-    override fun doNetDispatchSuccess(cmdStr: String) {
-        super.doNetDispatchSuccess(cmdStr)
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_SAMPLE -> {
-                mCommandResponseStates.isResponseLoading.set(true)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                showZeroValueCalibrationPopup()
-            }
-
-            else -> {}
-        }
-    }
-
-    override fun doCmdResponseResultError(cmdStr: String, errorMsg: String) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_SAMPLE,
-            IOTCommandType.MD_GET_LF_ZERO_VALUE -> {
-                mCommandResponseStates.isResponseLoading.set(false)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set(errorMsg)
-            }
-
-            else -> {
-                super.doCmdResponseResultError(cmdStr, errorMsg)
-            }
-        }
-    }
-
-    override fun doCmdResponseResultTimeOut(cmdStr: String, errorMsg: String) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_SAMPLE,
-            IOTCommandType.MD_GET_LF_ZERO_VALUE -> {
-                mCommandResponseStates.isResponseLoading.set(false)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set("指令响应超时")
-            }
-
-            else -> {
-                super.doCmdResponseResultTimeOut(cmdStr, errorMsg)
-            }
-        }
-    }
-
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowMsg: Boolean,
-        msg: String
-    ) {
-        super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, false, msg)
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_SAMPLE,
-            IOTCommandType.MD_GET_LF_ZERO_VALUE -> {
-                mCommandResponseStates.isResponseLoading.set(false)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set("指令响应超时")
-            }
-
-            else -> {
-
-            }
-        }
     }
 
     override fun setResultData(cmdStr: String) {

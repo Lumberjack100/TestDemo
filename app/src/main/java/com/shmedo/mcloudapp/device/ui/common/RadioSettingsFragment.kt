@@ -13,6 +13,7 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.RadioCommunicateEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.common.RadioCommunicateInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
@@ -39,9 +40,9 @@ class RadioSettingsFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: RadioSettingsViewModel
     private val iotParseManager: IOTParserManager by inject()
 
-    private val radioChannelList by lazy { Utils.getApp().resources.getStringArray(R.array.radio_receive_channel) }
+    private var radioChannelList: List<String> = emptyList()
     private val transmitPowerList: List<String> = (0..22).map { it.toString() }//发射功率
-    private val airSpeedList: List<String> = (0..2).map { it.toString() }//空中速率
+    private val airSpeedList: List<String> = arrayListOf("0", "1", "2")//空中速率
 
 
     override fun initViewModel() {
@@ -62,7 +63,7 @@ class RadioSettingsFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentRadioSettingsBinding
-        binding.llToolbar.toolbar.title = "网关设置"
+        binding.llToolbar.toolbar.title = "电台设置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
@@ -76,6 +77,11 @@ class RadioSettingsFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        radioChannelList = if (productType == ProductType.LB20S)
+            Utils.getApp().resources.getStringArray(R.array.radio_alarm_broadcast_channel).toList()
+        else
+            Utils.getApp().resources.getStringArray(R.array.radio_channel).toList()
+
         resetParams()
     }
 
@@ -103,7 +109,7 @@ class RadioSettingsFragment : BaseIOTDeviceFragment() {
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", radioChannelList,
+                    "", radioChannelList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.receiveChannel.set(text)
@@ -123,7 +129,7 @@ class RadioSettingsFragment : BaseIOTDeviceFragment() {
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", radioChannelList,
+                    "", radioChannelList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.sendChannel.set(text)
@@ -190,10 +196,36 @@ class RadioSettingsFragment : BaseIOTDeviceFragment() {
     }
 
     private fun resetParams() {
-        mStates.receiveChannel.set(radioChannelList[6])//载波频率以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 自组网网关：接收默认6，发送默认13 M20S：接收默认13，发送默认6
-        mStates.sendChannel.set(radioChannelList[13])//自组网网关：接收默认6，发送默认13
-        mStates.transmitPower.set(transmitPowerList[transmitPowerList.lastIndex])//发射功率 [0~22] 默认22
-        mStates.airSpeed.set(airSpeedList[1])//空中速率  [0~2] 默认1
+        when (productType) {
+            ProductType.COLLECTOR_G_0 -> {//自组网网关 载波频率以 450.15Mhz 为起始，间隔 1Mhz，进行信道划分，共划分 20 个信道
+                //发送默认 13 即 463.15MHz
+                mStates.sendChannel.set(radioChannelList[13])
+                //接收默认 6 即 456.15MHz
+                mStates.receiveChannel.set(radioChannelList[6])
+            }
+
+            ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {//M20S 载波频率以 450.15Mhz 为起始，间隔 1Mhz，进行信道划分，共划分 20 个信道
+                //发送默认 6 即 456.15MHz
+                mStates.sendChannel.set(radioChannelList[6])
+                //接收默认 13 即 463.15MHz
+                mStates.receiveChannel.set(radioChannelList[13])
+            }
+
+            ProductType.LB20S -> {//LB20S 载波频率以 451.125 为起始，间隔 1Mhz，进行信道划分，共划分 30 个信道
+                //发送默认 10 即 461.125MHz
+                mStates.sendChannel.set(radioChannelList[10])
+                //接收默认 20 即 471.125MHz
+                mStates.receiveChannel.set(radioChannelList[20])
+            }
+
+            else -> {
+
+            }
+        }
+        //发射功率 [0~22] 默认22
+        mStates.transmitPower.set(transmitPowerList[transmitPowerList.lastIndex])
+        //空中速率  [0~2] 默认1
+        mStates.airSpeed.set(airSpeedList[1])
 
         mStates.telemetryStationNode1.set("")
         mStates.telemetryStationNode2.set("")
@@ -255,22 +287,34 @@ class RadioSettingsFragment : BaseIOTDeviceFragment() {
             outpwr = mStates.transmitPower.get(),
             airbaud = mStates.airSpeed.get(),
         )
-        var command = IOTCommandUtil.getCommand(
+        //devicetype  添加且赋值为1时，表示配置自组网网关
+        var command = if (productType == ProductType.LB20S) IOTCommandUtil.getCommand(
+            IOTCommandType.MD_SET_RADIO_CTRL,
+            "${entity.toCommandString()}&devicetype=1"
+        ) else IOTCommandUtil.getCommand(
             IOTCommandType.MD_SET_RADIO_CTRL,
             entity.toCommandString()
         )
         commandItems.add(command)
 
-        command = IOTCommandUtil.getCommand(
+        command = if (productType == ProductType.LB20S) IOTCommandUtil.getCommand(
             IOTCommandType.MD_DEL_TERMINAL_ID,
-            "type=0"
-        )
+            "type=0&devicetype=1"
+        ) else
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_DEL_TERMINAL_ID,
+                "type=0"
+            )
         commandItems.add(command)
 
-        command = IOTCommandUtil.getCommand(
+        command = if (productType == ProductType.LB20S) IOTCommandUtil.getCommand(
             IOTCommandType.MD_SET_TERMINAL_ID,
-            "id=${mStates.telemetryStationNode1.get()},${mStates.telemetryStationNode2.get()},${mStates.telemetryStationNode3.get()},${mStates.telemetryStationNode4.get()},${mStates.telemetryStationNode5.get()},${mStates.telemetryStationNode6.get()},${mStates.telemetryStationNode7.get()},${mStates.telemetryStationNode8.get()},${mStates.telemetryStationNode9.get()},${mStates.telemetryStationNode10.get()}"
-        )
+            "id=${mStates.telemetryStationNode1.get()},${mStates.telemetryStationNode2.get()},${mStates.telemetryStationNode3.get()},${mStates.telemetryStationNode4.get()},${mStates.telemetryStationNode5.get()},${mStates.telemetryStationNode6.get()},${mStates.telemetryStationNode7.get()},${mStates.telemetryStationNode8.get()},${mStates.telemetryStationNode9.get()},${mStates.telemetryStationNode10.get()}&devicetype=1"
+        ) else
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_TERMINAL_ID,
+                "id=${mStates.telemetryStationNode1.get()},${mStates.telemetryStationNode2.get()},${mStates.telemetryStationNode3.get()},${mStates.telemetryStationNode4.get()},${mStates.telemetryStationNode5.get()},${mStates.telemetryStationNode6.get()},${mStates.telemetryStationNode7.get()},${mStates.telemetryStationNode8.get()},${mStates.telemetryStationNode9.get()},${mStates.telemetryStationNode10.get()}"
+            )
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
@@ -283,12 +327,18 @@ class RadioSettingsFragment : BaseIOTDeviceFragment() {
 
     private fun queryData() {
         commandItems.clear()
-        var command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_RADIO_CTRL
-        )
+        //devicetype  添加且赋值为1时，表示配置自组网网关
+        var command = if (productType == ProductType.LB20S) IOTCommandUtil.getCommand(
+            IOTCommandType.MD_GET_RADIO_CTRL, "devicetype=1"
+        ) else
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MD_GET_RADIO_CTRL
+            )
         commandItems.add(command)
 
-        command = IOTCommandUtil.getCommand(
+        command = if (productType == ProductType.LB20S) IOTCommandUtil.getCommand(
+            IOTCommandType.MD_GET_TERMINAL_ID, "type=1"
+        ) else IOTCommandUtil.getCommand(
             IOTCommandType.MD_GET_TERMINAL_ID
         )
         commandItems.add(command)
@@ -358,6 +408,7 @@ class RadioSettingsFragment : BaseIOTDeviceFragment() {
                     }
                 }
             }
+
             IOTCommandType.MD_DEL_TERMINAL_ID -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
@@ -375,6 +426,7 @@ class RadioSettingsFragment : BaseIOTDeviceFragment() {
                     }
                 }
             }
+
             IOTCommandType.MD_SET_TERMINAL_ID -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
@@ -500,6 +552,17 @@ class RadioSettingsFragment : BaseIOTDeviceFragment() {
                     ""
                 }
             )
+
+            mStates.telemetryStationNodeBack1.set(mStates.telemetryStationNode1.get())
+            mStates.telemetryStationNodeBack2.set(mStates.telemetryStationNode2.get())
+            mStates.telemetryStationNodeBack3.set(mStates.telemetryStationNode3.get())
+            mStates.telemetryStationNodeBack4.set(mStates.telemetryStationNode4.get())
+            mStates.telemetryStationNodeBack5.set(mStates.telemetryStationNode5.get())
+            mStates.telemetryStationNodeBack6.set(mStates.telemetryStationNode6.get())
+            mStates.telemetryStationNodeBack7.set(mStates.telemetryStationNode7.get())
+            mStates.telemetryStationNodeBack8.set(mStates.telemetryStationNode8.get())
+            mStates.telemetryStationNodeBack9.set(mStates.telemetryStationNode9.get())
+            mStates.telemetryStationNodeBack10.set(mStates.telemetryStationNode10.get())
         } catch (e: Exception) {
             Timber.e(e)
         }

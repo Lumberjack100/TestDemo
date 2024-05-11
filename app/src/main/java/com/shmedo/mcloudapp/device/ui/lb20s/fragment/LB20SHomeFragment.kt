@@ -48,7 +48,7 @@ class LB20SHomeFragment : UniversalDeviceHomeFragment() {
             ConfigModule(
                 RunningStatusModule(
                     resID = R.drawable.ic_module_current_state,
-                    navId = R.id.action_uProductHomeFragment_to_uProductDeviceInfoFragment
+                    navId = R.id.action_global_to_commonRunningDeviceInfoFragment
                 )
             )
         )

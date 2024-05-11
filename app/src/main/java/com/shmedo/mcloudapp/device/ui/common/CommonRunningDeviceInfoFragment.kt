@@ -1,16 +1,22 @@
-package com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo
+package com.shmedo.mcloudapp.device.ui.common
 
 import androidx.fragment.app.Fragment
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.ui.common.BaseRunningDeviceInfoFragment
+import com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.LR200BaseInfoFragment
+import com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.LR200SensorInfoFragment
+import com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.UDProductSensorInfoFragment
+import com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.UIProductSensorInfoFragment
+import com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.UProductBaseInfoFragment
+import com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.UProductCommunicationInfoFragment
+import com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.URProductSensorInfoFragment
 
 /**
  * 创建者：gonghe
- * 创建时间：2024/4/25
+ * 创建时间：2024/5/11
  * 描述： TODO
  */
-class UProductDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
+class CommonRunningDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
     override fun initTabFragment(): List<Fragment> {
         val bundle = BaseIOTDeviceFragment.newBundleArguments(
             productType,
