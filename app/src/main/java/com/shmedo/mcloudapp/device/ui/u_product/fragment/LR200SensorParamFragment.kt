@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.device.ui.u_product.fragment
 
 import android.os.Bundle
 import android.view.View
+import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -27,9 +28,7 @@ import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
+
 /**
  * @author：gonghe
  * @time: 2024/5/11
@@ -42,7 +41,6 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: LR200SensorParamViewModel
     private lateinit var mCommandResponseStates: LR200ZeroValueCalibrationViewModel
     private val iotParseManager: IOTParserManager by inject()
-    private val decimalFormat = DecimalFormat("#.###", DecimalFormatSymbols(Locale.getDefault()))
 
     override fun initViewModel() {
         super.initViewModel()
@@ -79,6 +77,11 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
          * 零位校准
          */
         fun onZeroCalibrationClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
             commandItems.clear()
             //先发送遥测指令
             var command = IOTCommandUtil.getCommand(
@@ -103,6 +106,11 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
          * 初始化
          */
         fun onSetInitialValueClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
             val bundle = BaseIOTDeviceFragment.newBundleArguments(
                 productType,
                 communicateWay,
@@ -143,6 +151,69 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
             .show()
     }
 
+    override fun doNetDispatchSuccess(cmdStr: String) {
+        super.doNetDispatchSuccess(cmdStr)
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.QUERY_SAMPLE -> {
+                mCommandResponseStates.isResponseLoading.set(true)
+                mCommandResponseStates.isResponseSuccess.set(false)
+                showZeroValueCalibrationPopup()
+            }
+
+            else -> {}
+        }
+    }
+
+    override fun doCmdResponseResultError(cmdStr: String, errorMsg: String) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.QUERY_SAMPLE,
+            IOTCommandType.MD_GET_LF_ZERO_VALUE -> {
+                mCommandResponseStates.isResponseLoading.set(false)
+                mCommandResponseStates.isResponseSuccess.set(false)
+                mCommandResponseStates.responseContent.set(errorMsg)
+            }
+
+            else -> {
+                super.doCmdResponseResultError(cmdStr, errorMsg)
+            }
+        }
+    }
+
+    override fun doCmdResponseResultTimeOut(cmdStr: String, errorMsg: String) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.QUERY_SAMPLE,
+            IOTCommandType.MD_GET_LF_ZERO_VALUE -> {
+                mCommandResponseStates.isResponseLoading.set(false)
+                mCommandResponseStates.isResponseSuccess.set(false)
+                mCommandResponseStates.responseContent.set("指令响应超时")
+            }
+
+            else -> {
+                super.doCmdResponseResultTimeOut(cmdStr, errorMsg)
+            }
+        }
+    }
+
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowMsg: Boolean,
+        msg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, false, msg)
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.QUERY_SAMPLE,
+            IOTCommandType.MD_GET_LF_ZERO_VALUE -> {
+                mCommandResponseStates.isResponseLoading.set(false)
+                mCommandResponseStates.isResponseSuccess.set(false)
+                mCommandResponseStates.responseContent.set("指令响应超时")
+            }
+
+            else -> {
+
+            }
+        }
+    }
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {

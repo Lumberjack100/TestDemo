@@ -63,7 +63,6 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUniversalDeviceHomeBinding
-        toolbarViewModel.toolbarIvActionVisible.set(true)
         binding.llToolbar.toolbar.title = "设备配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
@@ -119,6 +118,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        toolbarViewModel.toolbarIvActionVisible.set(true)
         mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
         mHeadStates.productName.set(deviceInfo.productName)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
@@ -207,16 +207,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
         }
         when (module.configModule) {
             is TimeCalibrationModule -> {//时间校准
-                commandItems.clear()
-                val command =
-                    IOTCommandUtil.getCommand(IOTCommandType.QUERY_TERMINAL_TIME)
-                commandItems.add(command)
-
-                if (communicateWay is BleConnect) {
-                    mCommandResponseStates.isResponseLoading.set(true)
-                    showTimeCalibrationPopup()
-                }
-                sendCommandFromCmdList(isStartTimeoutJob = true)
+                queryTerminalTime()
             }
 
             is TelemetryDataModule -> {//召测
@@ -290,6 +281,22 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
             .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
             .asCustom(popupView)
             .show()
+    }
+
+    /**
+     * 查询终端时间
+     */
+    private fun queryTerminalTime() {
+        commandItems.clear()
+        val command =
+            IOTCommandUtil.getCommand(IOTCommandType.QUERY_TERMINAL_TIME)
+        commandItems.add(command)
+
+        if (communicateWay is BleConnect) {
+            mCommandResponseStates.isResponseLoading.set(true)
+            showTimeCalibrationPopup()
+        }
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     /**

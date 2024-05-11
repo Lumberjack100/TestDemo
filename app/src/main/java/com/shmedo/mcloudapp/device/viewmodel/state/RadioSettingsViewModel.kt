@@ -3,7 +3,7 @@ package com.shmedo.mcloudapp.device.viewmodel.state
 import androidx.lifecycle.ViewModel
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
 
-class GW100GatewaySettingsViewModel : ViewModel() {
+class RadioSettingsViewModel : ViewModel() {
     val isEditable = NonNullObservableField(true)
 
     val receiveChannel = NonNullObservableField("")//报警接收频点

@@ -150,6 +150,11 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
          * 设置雷达初始值
          */
         fun onSetInitialValueClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
             commandItems.clear()
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_SET_SENSOR_INITIAL,

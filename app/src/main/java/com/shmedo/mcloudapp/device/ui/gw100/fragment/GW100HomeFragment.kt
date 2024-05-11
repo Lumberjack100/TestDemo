@@ -38,6 +38,7 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
         toolbarViewModel.toolbarIvActionVisible.set(false)
         mHeadStates.productLightResId.set(R.drawable.device_logo_gateway)
         mHeadStates.productGrayResId.set(R.drawable.device_logo_gateway_gray)
+        mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
         mHeadStates.isIOTPlatformStateVisible.set(false)
     }
 
@@ -64,7 +65,7 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
                     name = "网关设置",
                     desc = "GNSS电台网关设置",
                     resID = R.drawable.ic_module_gateway,
-                    navId = R.id.action_gW100HomeFragment_to_gW100GatewaySettingsFragment
+                    navId = R.id.action_gW100HomeFragment_to_radioSettingsFragment
                 )
             )
         )
