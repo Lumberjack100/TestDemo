@@ -8,7 +8,6 @@
     <include app:graph="@navigation/include_query_data_graph" />
     <include app:graph="@navigation/include_data_center_graph" />
     <include app:graph="@navigation/include_lora_graph" />
-    <include app:graph="@navigation/include_alarm_setting_graph" />
     <include app:graph="@navigation/include_firmware_upgrade_graph" />
     <include app:graph="@navigation/include_ble_command_debug_graph" />
 
@@ -26,6 +25,14 @@
             app:popEnterAnim="@anim/activity_close_enter"
             app:popExitAnim="@anim/activity_close_exit" />
 
+        <action
+            android:id="@+id/action_uProductHomeFragment_to_lB20SAdHocNetworkSettingsFragment"
+            app:destination="@id/lB20SAdHocNetworkSettingsFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
     </fragment>
 
     <fragment
@@ -34,6 +41,66 @@
         android:label="UProductDeviceInfoFragment"
         tools:layout="@layout/fragment_base_running_device_info" />
 
+    <fragment
+        android:id="@+id/lB20SAdHocNetworkSettingsFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.lb20s.fragment.LB20SAdHocNetworkSettingsFragment"
+        android:label="LB20SAdHocNetworkSettingsFragment"
+        tools:layout="@layout/fragment_lb20s_ad_hoc_network_settings" />
+
+    <fragment
+        android:id="@+id/radioSettingsFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.common.RadioSettingsFragment"
+        android:label="RadioSettingsFragment"
+        tools:layout="@layout/fragment_radio_settings" />
+
+    <fragment
+        android:id="@+id/lB20SAlarmTestFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.lb20s.fragment.LB20SAlarmTestFragment"
+        android:label="LB20SAlarmTestFragment"
+        tools:layout="@layout/fragment_lb20s_alarm_test">
+        <action
+            android:id="@+id/action_lB20SAlarmTestFragment_to_lB20SCustomAlarmTestFragment"
+            app:destination="@id/lB20SCustomAlarmTestFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+    </fragment>
+    <fragment
+        android:id="@+id/lB20SVolumeSettingsFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.lb20s.fragment.LB20SVolumeSettingsFragment"
+        android:label="LB20SVolumeSettingsFragment"
+        tools:layout="@layout/fragment_lb20s_volume_settings" />
+    <fragment
+        android:id="@+id/lB20SCustomAlarmTestFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.lb20s.fragment.LB20SCustomAlarmTestFragment"
+        android:label="LB20SCustomAlarmTestFragment"
+        tools:layout="@layout/fragment_lb20s_custom_alarm_test" />
+
+    <action
+        android:id="@+id/action_global_to_radioSettingsFragment"
+        app:destination="@id/radioSettingsFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_lB20SAlarmTestFragment"
+        app:destination="@id/lB20SAlarmTestFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_lB20SVolumeSettingsFragment"
+        app:destination="@id/lB20SVolumeSettingsFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
     <action
         android:id="@+id/action_global_to_queryDeviceDataFragment"
         app:destination="@id/query_data_graph"
@@ -41,6 +108,7 @@
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
+
     <action
         android:id="@+id/action_global_universalDataCenterHomeFragment"
         app:destination="@id/data_center_graph"
@@ -58,13 +126,6 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_alarmSettingFragment"
-        app:destination="@id/alarm_setting_graph"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-    <action
         android:id="@+id/action_global_to_firmwareUpgradeFragment"
         app:destination="@id/firmware_upgrade_graph"
         app:enterAnim="@anim/activity_open_enter"
@@ -79,4 +140,7 @@
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
+
+
+
 </navigation>

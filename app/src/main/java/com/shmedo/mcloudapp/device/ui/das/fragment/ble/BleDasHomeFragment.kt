@@ -224,7 +224,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         }
         when (module.configModule) {
             is TimeCalibrationModule -> {//时间校准
-                doQueryTimeCmd()
+                queryTerminalTime()
                 mCommandResponseStates.isResponseLoading.set(true)
                 showTimeCalibrationPopup()
             }
@@ -405,7 +405,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = false)
     }
 
-    private fun doQueryTimeCmd() {
+    private fun queryTerminalTime() {
         commandItems.clear()
 
         val command =

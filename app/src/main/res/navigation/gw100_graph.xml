@@ -23,8 +23,8 @@
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
-            android:id="@+id/action_gW100HomeFragment_to_gW100GatewaySettingsFragment"
-            app:destination="@id/gW100GatewaySettingsFragment"
+            android:id="@+id/action_gW100HomeFragment_to_radioSettingsFragment"
+            app:destination="@id/radioSettingsFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
@@ -39,10 +39,10 @@
         tools:layout="@layout/fragment_gw100_base_info" />
 
     <fragment
-        android:id="@+id/gW100GatewaySettingsFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.gw100.fragment.GW100GatewaySettingsFragment"
-        android:label="GW100GatewaySettingsFragment"
-        tools:layout="@layout/fragment_gw100_gateway_settings" />
+        android:id="@+id/radioSettingsFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.common.RadioSettingsFragment"
+        android:label="RadioSettingsFragment"
+        tools:layout="@layout/fragment_radio_settings" />
 
     <action
         android:id="@+id/action_global_to_loraSettingFragment"

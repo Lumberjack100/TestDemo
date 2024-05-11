@@ -1,38 +1,44 @@
 package com.shmedo.mcloudapp.device.ui.lb20s.fragment
 
+import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
+import com.hjq.toast.Toaster
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.device.model.AlarmConfigModule
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommandDebugConfigModule
+import com.shmedo.mcloudapp.device.model.CommonModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DataCenterModule
 import com.shmedo.mcloudapp.device.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.device.model.FirmwareUpgradeModule
-import com.shmedo.mcloudapp.device.model.LoraConfigModule
+import com.shmedo.mcloudapp.device.model.OneClickSilenceModule
 import com.shmedo.mcloudapp.device.model.RebootModule
-import com.shmedo.mcloudapp.device.model.RestoreFactoryModule
 import com.shmedo.mcloudapp.device.model.RunningStatusModule
-import com.shmedo.mcloudapp.device.model.SensorConfigModule
 import com.shmedo.mcloudapp.device.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.device.ui.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.device.ui.common.UniversalDeviceHomeFragment
 import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
+import timber.log.Timber
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/5/7
  * 描述： 无线预警广播(江苏赛立科技有限公司)
  */
-class LB20SHomeFragment : UniversalDeviceHomeFragment(){
+class LB20SHomeFragment : UniversalDeviceHomeFragment() {
     override fun initData() {
         super.initData()
-        toolbarViewModel.toolbarIvActionVisible.set(false)
-        mHeadStates.productLightResId.set(R.drawable.device_logo_gateway)
-        mHeadStates.productGrayResId.set(R.drawable.device_logo_gateway_gray)
+//        mHeadStates.productLightResId.set(R.drawable.device_logo_gateway)
+//        mHeadStates.productGrayResId.set(R.drawable.device_logo_gateway_gray)
+//        mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
         mHeadStates.isIOTPlatformStateVisible.set(false)
     }
 
@@ -55,23 +61,11 @@ class LB20SHomeFragment : UniversalDeviceHomeFragment(){
         )
         moduleList.add(
             ConfigModule(
-                SensorConfigModule(
-                    navId = 0
-                )
-            )
-        )
-        moduleList.add(
-            ConfigModule(
-                LoraConfigModule(
-                    resID = R.drawable.ic_module_lora,
-                    navId = R.id.action_global_to_loraSettingFragment
-                )
-            )
-        )
-        moduleList.add(
-            ConfigModule(
-                AlarmConfigModule(
-                    navId = R.id.action_global_to_alarmSettingFragment
+                CommonModule(
+                    name = "自组网设置",
+                    desc = "传感器LoRa电台设置",
+                    resID = R.drawable.ic_basic_config,
+                    navId = R.id.action_uProductHomeFragment_to_lB20SAdHocNetworkSettingsFragment
                 )
             )
         )
@@ -85,10 +79,30 @@ class LB20SHomeFragment : UniversalDeviceHomeFragment(){
             )
         )
         moduleList.add(
-            ConfigModule(RebootModule(resID = R.drawable.ic_module_reboot))
+            ConfigModule(
+                CommonModule(
+                    name = "报警测试",
+                    desc = "报警功能测试",
+                    resID = R.drawable.ic_basic_config,
+                    navId = R.id.action_global_to_lB20SAlarmTestFragment
+                )
+            )
         )
         moduleList.add(
-            ConfigModule(RestoreFactoryModule(resID = R.drawable.ic_module_reset))
+            ConfigModule(OneClickSilenceModule())
+        )
+        moduleList.add(
+            ConfigModule(
+                CommonModule(
+                    name = "音量调节",
+                    desc = "设置语音音量大小",
+                    resID = R.drawable.ic_basic_config,
+                    navId = R.id.action_global_to_lB20SVolumeSettingsFragment
+                )
+            )
+        )
+        moduleList.add(
+            ConfigModule(RebootModule(resID = R.drawable.ic_module_reboot))
         )
         moduleList.add(
             ConfigModule(
@@ -125,6 +139,18 @@ class LB20SHomeFragment : UniversalDeviceHomeFragment(){
                 )
             }
 
+            is OneClickSilenceModule -> {
+                showMessage("是否立即关闭语音播报？", "温馨提示", "确定", {
+                    commandItems.clear()
+                    val command =
+                        IOTCommandUtil.getCommand(IOTCommandType.MD_SET_VOICE_BROADCAST_VOLUME_OFF)
+                    commandItems.add(command)
+
+                    showLoadingDialog(StringUtils.getString(R.string.processing))
+                    sendCommandFromCmdList(isStartTimeoutJob = true)
+                }, "取消")
+            }
+
             is CommandDebugConfigModule -> {
                 val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
                     true,
@@ -155,6 +181,24 @@ class LB20SHomeFragment : UniversalDeviceHomeFragment(){
 
     override fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {
         when (commandType) {
+            IOTCommandType.MD_SET_VOICE_BROADCAST_VOLUME_OFF -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "关闭语音播报失败:" + result.message
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("已关闭语音播报")
+                        }
+                    }
+                }
+            }
+
             else -> {
 
             }

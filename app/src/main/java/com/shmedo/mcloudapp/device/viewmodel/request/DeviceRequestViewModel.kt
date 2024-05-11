@@ -95,7 +95,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     /**
      * 分页查询产品列表
      */
-    fun getProductList(isHasListSuperInfoPermission: Boolean = false) {
+    fun getProductList(companyID: Int, isHasListSuperInfoPermission: Boolean = false) {
         viewModelScope.launch {
             val jsonObjectRequest = JSONObject()
             jsonObjectRequest.put("pageSize", 100)

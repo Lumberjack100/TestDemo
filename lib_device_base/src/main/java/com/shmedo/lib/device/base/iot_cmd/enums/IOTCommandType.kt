@@ -955,9 +955,19 @@ enum class IOTCommandType(private val value: String) {
     MD_SET_LF_INITIAL_VALUE("md_setlfinitial"),
 
     /**
-     *  GNSS-RTK模式配置
+     * GNSS-RTK模式配置
      */
     MD_CFG_RTK("md_cfgrtkparam"),
+
+    /**
+     * 关闭语音播报
+     */
+    MD_SET_VOICE_BROADCAST_VOLUME_OFF("volumeoff"),
+
+    /**
+     * 设置语音播报音量
+     */
+    MD_SET_VOICE_BROADCAST_VOLUME("volume"),
 
     /**
      * 自定义心跳包

@@ -38,7 +38,6 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
 
     override fun initData() {
         super.initData()
-        toolbarViewModel.toolbarIvActionVisible.set(true)
         when (productType) {
             ProductType.U_D_1,//水位
             ProductType.U_D_2 -> {//泥位
@@ -67,6 +66,7 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
 
             }
         }
+        mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
     }
 
     override fun updateConfigModuleData() {

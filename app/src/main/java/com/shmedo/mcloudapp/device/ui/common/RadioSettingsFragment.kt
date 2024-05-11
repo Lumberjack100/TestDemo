@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui.gw100.fragment
+package com.shmedo.mcloudapp.device.ui.common
 
 import android.os.Bundle
 import android.view.View
@@ -20,11 +20,11 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentGw100GatewaySettingsBinding
+import com.shmedo.mcloudapp.databinding.FragmentRadioSettingsBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.GW100GatewaySettingsViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.RadioSettingsViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
@@ -33,15 +33,15 @@ import com.shmedo.mcloudapp.ext.showMessageDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class GW100GatewaySettingsFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentGw100GatewaySettingsBinding
+class RadioSettingsFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentRadioSettingsBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: GW100GatewaySettingsViewModel
+    private lateinit var mStates: RadioSettingsViewModel
     private val iotParseManager: IOTParserManager by inject()
 
-    private val radioReceiveChannelList by lazy { Utils.getApp().resources.getStringArray(R.array.radio_receive_channel) }
-    private val transmitPowerList: List<String> = (0..22).map { it.toString() }
-    private val airSpeedList: List<String> = (0..2).map { it.toString() }
+    private val radioChannelList by lazy { Utils.getApp().resources.getStringArray(R.array.radio_receive_channel) }
+    private val transmitPowerList: List<String> = (0..22).map { it.toString() }//发射功率
+    private val airSpeedList: List<String> = (0..2).map { it.toString() }//空中速率
 
 
     override fun initViewModel() {
@@ -52,7 +52,7 @@ class GW100GatewaySettingsFragment : BaseIOTDeviceFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_gw100_gateway_settings,
+            R.layout.fragment_radio_settings,
             BR.stateVM,
             mStates
         )
@@ -61,7 +61,7 @@ class GW100GatewaySettingsFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentGw100GatewaySettingsBinding
+        binding = getBinding() as FragmentRadioSettingsBinding
         binding.llToolbar.toolbar.title = "网关设置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
@@ -96,14 +96,14 @@ class GW100GatewaySettingsFragment : BaseIOTDeviceFragment() {
          * 选择接收频点
          */
         fun onReceiveChannelChooseClick() {
-            val selectedIndex = radioReceiveChannelList.indexOf(mStates.receiveChannel.get())
+            val selectedIndex = radioChannelList.indexOf(mStates.receiveChannel.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", radioReceiveChannelList,
+                    "", radioChannelList,
                     null, selectedIndex,
                     { position, text ->
                         mStates.receiveChannel.set(text)
@@ -116,14 +116,14 @@ class GW100GatewaySettingsFragment : BaseIOTDeviceFragment() {
          * 选择发送频点
          */
         fun onSendChannelChooseClick() {
-            val selectedIndex = radioReceiveChannelList.indexOf(mStates.sendChannel.get())
+            val selectedIndex = radioChannelList.indexOf(mStates.sendChannel.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", radioReceiveChannelList,
+                    "", radioChannelList,
                     null, selectedIndex,
                     { position, text ->
                         mStates.sendChannel.set(text)
@@ -190,8 +190,8 @@ class GW100GatewaySettingsFragment : BaseIOTDeviceFragment() {
     }
 
     private fun resetParams() {
-        mStates.receiveChannel.set(radioReceiveChannelList[6])//载波频率以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 自组网网关：接收默认6，发送默认13 M20S：接收默认13，发送默认6
-        mStates.sendChannel.set(radioReceiveChannelList[13])//自组网网关：接收默认6，发送默认13
+        mStates.receiveChannel.set(radioChannelList[6])//载波频率以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 自组网网关：接收默认6，发送默认13 M20S：接收默认13，发送默认6
+        mStates.sendChannel.set(radioChannelList[13])//自组网网关：接收默认6，发送默认13
         mStates.transmitPower.set(transmitPowerList[transmitPowerList.lastIndex])//发射功率 [0~22] 默认22
         mStates.airSpeed.set(airSpeedList[1])//空中速率  [0~2] 默认1
 
@@ -250,8 +250,8 @@ class GW100GatewaySettingsFragment : BaseIOTDeviceFragment() {
         }
         commandItems.clear()
         val entity = RadioCommunicateEntity(
-            rxchl = radioReceiveChannelList.indexOf(mStates.receiveChannel.get()).toString(),
-            txchl = radioReceiveChannelList.indexOf(mStates.sendChannel.get()).toString(),
+            rxchl = radioChannelList.indexOf(mStates.receiveChannel.get()).toString(),
+            txchl = radioChannelList.indexOf(mStates.sendChannel.get()).toString(),
             outpwr = mStates.transmitPower.get(),
             airbaud = mStates.airSpeed.get(),
         )
@@ -400,17 +400,17 @@ class GW100GatewaySettingsFragment : BaseIOTDeviceFragment() {
     private fun initRadioData(info: RadioCommunicateInfo) {
         try {
             mStates.receiveChannel.set(
-                if (info.rxchl.toInt() in radioReceiveChannelList.indices) {
-                    radioReceiveChannelList[info.rxchl.toInt()]
+                if (info.rxchl.toInt() in radioChannelList.indices) {
+                    radioChannelList[info.rxchl.toInt()]
                 } else {
-                    radioReceiveChannelList[6]
+                    radioChannelList[6]
                 }
             )
             mStates.sendChannel.set(
-                if (info.txchl.toInt() in radioReceiveChannelList.indices) {
-                    radioReceiveChannelList[info.txchl.toInt()]
+                if (info.txchl.toInt() in radioChannelList.indices) {
+                    radioChannelList[info.txchl.toInt()]
                 } else {
-                    radioReceiveChannelList[13]
+                    radioChannelList[13]
                 }
             )
             mStates.transmitPower.set(info.outpwr)

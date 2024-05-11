@@ -21,9 +21,9 @@ import com.shmedo.mcloudapp.ext.nav
 class DasHomeFragment : UniversalDeviceHomeFragment() {
     override fun initData() {
         super.initData()
-        toolbarViewModel.toolbarIvActionVisible.set(true)
         mHeadStates.productLightResId.set(R.drawable.device_logo_qingxieyi)
         mHeadStates.productGrayResId.set(R.drawable.device_logo_qingxieyi_gray)
+        mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
     }
 
     override fun updateConfigModuleData() {

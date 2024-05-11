@@ -216,3 +216,10 @@ class ManualPhotoTakingModule(
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 // </editor-fold>
+
+class OneClickSilenceModule(
+    name: String = "一键消音",
+    desc: String = "立即停止语音播报",
+    resID: Int = R.drawable.ic_parameter_export,
+    navId: Int = 0,
+) : DeviceFunctionModule(name, desc, resID, navId)
