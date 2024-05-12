@@ -2,10 +2,14 @@ package com.shmedo.mcloudapp.device.ui.common
 
 import androidx.fragment.app.Fragment
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
+import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.ble.deviceinfo.BleDasBaseInfoFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.ble.deviceinfo.BleDasCommunicationInfoFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.ble.deviceinfo.BleDasSensorInfoFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.deviceinfo.DasBaseInfoFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.deviceinfo.DasCommunicationInfoFragment
-import com.shmedo.mcloudapp.device.ui.das.fragment.deviceinfo.DasSensorInfoFragment
+import com.shmedo.mcloudapp.device.ui.lb20s.fragment.deviceinfo.LB20SBaseInfoFragment
 import com.shmedo.mcloudapp.device.ui.m20.fragment.deviceinfo.M20BaseInfoFragment
 import com.shmedo.mcloudapp.device.ui.m20.fragment.deviceinfo.M20CommunicationInfoFragment
 import com.shmedo.mcloudapp.device.ui.m20.fragment.deviceinfo.M20SensorInfoFragment
@@ -159,17 +163,28 @@ class CommonRunningDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
 
             ProductType.DAS -> {//M20
                 fragmentList.add(
-                    DasBaseInfoFragment.newInstance().apply {
+                    if (communicateWay is BleConnect) BleDasBaseInfoFragment.newInstance().apply {
                         arguments = bundle
                     }
+                    else DasBaseInfoFragment.newInstance().apply { arguments = bundle }
                 )
                 fragmentList.add(
-                    DasCommunicationInfoFragment.newInstance().apply {
+                    if (communicateWay is BleConnect) BleDasCommunicationInfoFragment.newInstance()
+                        .apply {
+                            arguments = bundle
+                        } else DasCommunicationInfoFragment.newInstance()
+                        .apply { arguments = bundle }
+                )
+                fragmentList.add(
+                    if (communicateWay is BleConnect) BleDasSensorInfoFragment.newInstance().apply {
                         arguments = bundle
-                    }
+                    } else UDProductSensorInfoFragment.newInstance().apply { arguments = bundle }
                 )
+            }
+
+            ProductType.LB20S -> {//预警广播
                 fragmentList.add(
-                    DasSensorInfoFragment.newInstance().apply {
+                    LB20SBaseInfoFragment.newInstance().apply {
                         arguments = bundle
                     }
                 )
