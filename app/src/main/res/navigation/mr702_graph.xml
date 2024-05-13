@@ -60,9 +60,9 @@
 
     <fragment
         android:id="@+id/mR702DeviceInfoFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinfo.MR702DeviceInfoFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinfo.MR702DeviceStatusInfoParentFragment"
         android:label="MR702DeviceInfoFragment"
-        tools:layout="@layout/fragment_base_running_device_info" />
+        tools:layout="@layout/fragment_base_device_status_info_parent" />
 
     <fragment
         android:id="@+id/mR702DataCenterHomeFragment"

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo
+package com.shmedo.mcloudapp.device.ui.common
 
 import android.os.Bundle
 import com.blankj.utilcode.util.StringUtils
@@ -21,22 +21,22 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentUProductCommunicationInfoBinding
+import com.shmedo.mcloudapp.databinding.FragmentCommonCommunicationInfoBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.mr702.widget.tableview.CommunicationDataTableAdapter
 import com.shmedo.mcloudapp.device.ui.mr702.widget.tableview.model.CommunicationDataCellModel
-import com.shmedo.mcloudapp.device.viewmodel.state.UProductCommunicationInfoViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.CommonCommunicationInfoViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentUProductCommunicationInfoBinding
-    private lateinit var mStates: UProductCommunicationInfoViewModel
+class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentCommonCommunicationInfoBinding
+    private lateinit var mStates: CommonCommunicationInfoViewModel
     private val iotParseManager: IOTParserManager by inject()
     private val tableAdapter: CommunicationDataTableAdapter by lazy { CommunicationDataTableAdapter() }
     private var centerNum = 0//数据中心数量
@@ -48,14 +48,14 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_u_product_communication_info,
+            R.layout.fragment_common_communication_info,
             BR.stateVM,
             mStates
         )
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentUProductCommunicationInfoBinding
+        binding = getBinding() as FragmentCommonCommunicationInfoBinding
         refreshLayout = binding.refreshLayout
         initRefresh()
         initCommunicateDataTableView()
@@ -334,6 +334,6 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
 
-        fun newInstance() = UProductCommunicationInfoFragment()
+        fun newInstance() = CommonCommunicationInfoFragment()
     }
 }

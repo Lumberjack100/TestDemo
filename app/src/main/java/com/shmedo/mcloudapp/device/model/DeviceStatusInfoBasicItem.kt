@@ -10,7 +10,6 @@ import androidx.databinding.BaseObservable
 data class DeviceStatusInfoBasicItem(
     val name: String = "",
     var value: String = "",
-    var signalValue: Int = 0,
     var colorRes: Int = 0,
 ) : BaseObservable() {
 

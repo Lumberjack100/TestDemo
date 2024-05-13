@@ -15,12 +15,13 @@
         android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/main_bg_gray"
         android:gravity="center_vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/dimen_size_5"
+            android:layout_marginVertical="@dimen/dimen_size_10"
             android:layout_marginStart="@dimen/dimen_size_10"
             android:drawablePadding="-80dp"
             android:singleLine="true"

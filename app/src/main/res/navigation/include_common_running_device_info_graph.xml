@@ -7,8 +7,8 @@
 
     <fragment
         android:id="@+id/commonRunningDeviceInfoFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.common.CommonRunningDeviceInfoFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.common.CommonDeviceStatusInfoParentFragment"
         android:label="CommonRunningDeviceInfoFragment"
-        tools:layout="@layout/fragment_base_running_device_info" />
+        tools:layout="@layout/fragment_base_device_status_info_parent" />
 
 </navigation>

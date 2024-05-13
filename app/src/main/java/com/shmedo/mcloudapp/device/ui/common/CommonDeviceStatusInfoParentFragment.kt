@@ -19,7 +19,6 @@ import com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.LR200SensorI
 import com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.UDProductSensorInfoFragment
 import com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.UIProductSensorInfoFragment
 import com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.UProductBaseInfoFragment
-import com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.UProductCommunicationInfoFragment
 import com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.URProductSensorInfoFragment
 
 /**
@@ -27,7 +26,7 @@ import com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.URProductSen
  * 创建时间：2024/5/11
  * 描述： TODO
  */
-class CommonRunningDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
+class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment() {
     override fun initData() {
         super.initData()
         mStates.productType.set(if (productType == ProductType.GNSS_M_1) "型号：M20 (单北斗)" else if (productType == ProductType.GNSS_M_2) "型号：M20 (全星座)" else "型号：${deviceInfo.deviceName}")
@@ -49,8 +48,8 @@ class CommonRunningDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
                     }
                 )
                 fragmentList.add(
-                    UProductCommunicationInfoFragment.newInstance().apply {
-                        arguments = UProductCommunicationInfoFragment.newBundleArguments(
+                    CommonCommunicationInfoFragment.newInstance().apply {
+                        arguments = CommonCommunicationInfoFragment.newBundleArguments(
                             centerNum = 4,
                             productType,
                             communicateWay,
@@ -75,8 +74,8 @@ class CommonRunningDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
                     }
                 )
                 fragmentList.add(
-                    UProductCommunicationInfoFragment.newInstance().apply {
-                        arguments = UProductCommunicationInfoFragment.newBundleArguments(
+                    CommonCommunicationInfoFragment.newInstance().apply {
+                        arguments = CommonCommunicationInfoFragment.newBundleArguments(
                             centerNum = 3,
                             productType,
                             communicateWay,
@@ -100,8 +99,8 @@ class CommonRunningDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
                     }
                 )
                 fragmentList.add(
-                    UProductCommunicationInfoFragment.newInstance().apply {
-                        arguments = UProductCommunicationInfoFragment.newBundleArguments(
+                    CommonCommunicationInfoFragment.newInstance().apply {
+                        arguments = CommonCommunicationInfoFragment.newBundleArguments(
                             centerNum = 3,
                             productType,
                             communicateWay,
@@ -125,8 +124,8 @@ class CommonRunningDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
                     }
                 )
                 fragmentList.add(
-                    UProductCommunicationInfoFragment.newInstance().apply {
-                        arguments = UProductCommunicationInfoFragment.newBundleArguments(
+                    CommonCommunicationInfoFragment.newInstance().apply {
+                        arguments = CommonCommunicationInfoFragment.newBundleArguments(
                             centerNum = 3,
                             productType,
                             communicateWay,
@@ -189,8 +188,8 @@ class CommonRunningDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
                     }
                 )
                 fragmentList.add(
-                    UProductCommunicationInfoFragment.newInstance().apply {
-                        arguments = UProductCommunicationInfoFragment.newBundleArguments(
+                    CommonCommunicationInfoFragment.newInstance().apply {
+                        arguments = CommonCommunicationInfoFragment.newBundleArguments(
                             centerNum = 3,
                             productType,
                             communicateWay,
@@ -214,8 +213,8 @@ class CommonRunningDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
                     }
                 )
                 fragmentList.add(
-                    UProductCommunicationInfoFragment.newInstance().apply {
-                        arguments = UProductCommunicationInfoFragment.newBundleArguments(
+                    CommonCommunicationInfoFragment.newInstance().apply {
+                        arguments = CommonCommunicationInfoFragment.newBundleArguments(
                             centerNum = 3,
                             productType,
                             communicateWay,

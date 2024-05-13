@@ -19,7 +19,7 @@ import com.shmedo.mcloudapp.databinding.FragmentMr702BaseInfoBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
-import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceInfoViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceStatusInfoParentViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import timber.log.Timber
@@ -27,7 +27,7 @@ import java.text.DecimalFormat
 
 class MR702BaseInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702BaseInfoBinding
-    private lateinit var mStates: MR702DeviceInfoViewModel
+    private lateinit var mStates: MR702DeviceStatusInfoParentViewModel
     private lateinit var deviceRequestViewModel: DeviceRequestViewModel
     private val iotParseManager: IOTParserManager by inject()
 

@@ -2,9 +2,9 @@ package com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinfo
 
 import androidx.fragment.app.Fragment
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.ui.common.BaseRunningDeviceInfoFragment
+import com.shmedo.mcloudapp.device.ui.common.BaseDeviceStatusInfoParentFragment
 
-class MR702DeviceInfoFragment : BaseRunningDeviceInfoFragment() {
+class MR702DeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment() {
     override fun initData() {
         tabs.clear()
         tabs.addAll(listOf("基本信息", "运行状态", "接口状态", "模块状态"))

@@ -21,10 +21,10 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
-import com.shmedo.mcloudapp.databinding.FragmentBaseRunningDeviceInfoBinding
+import com.shmedo.mcloudapp.databinding.FragmentBaseDeviceStatusInfoParentBinding
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
-import com.shmedo.mcloudapp.device.viewmodel.state.BaseRunningDeviceInfoViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.BaseDeviceStatusInfoParentViewModel
 import com.shmedo.mcloudapp.ext.nav
 
 /**
@@ -32,9 +32,9 @@ import com.shmedo.mcloudapp.ext.nav
  * 创建时间：2024/4/30
  * 描述： TODO
  */
-abstract class BaseRunningDeviceInfoFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
-    private lateinit var binding: FragmentBaseRunningDeviceInfoBinding
-    protected lateinit var mStates: BaseRunningDeviceInfoViewModel
+abstract class BaseDeviceStatusInfoParentFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
+    private lateinit var binding: FragmentBaseDeviceStatusInfoParentBinding
+    protected lateinit var mStates: BaseDeviceStatusInfoParentViewModel
 
     protected var productType = ProductType.UnKnown
     protected var statusBarColor = 0
@@ -49,11 +49,11 @@ abstract class BaseRunningDeviceInfoFragment : BaseFragment(), TabLayout.OnTabSe
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_base_running_device_info, BR.stateVM, mStates)
+        return DataBindingConfig(R.layout.fragment_base_device_status_info_parent, BR.stateVM, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentBaseRunningDeviceInfoBinding
+        binding = getBinding() as FragmentBaseDeviceStatusInfoParentBinding
         binding.toolbar.title = "状态信息"
         binding.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

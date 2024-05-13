@@ -7,7 +7,7 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.BaseRunningDeviceInfoViewModel" />
+            type="com.shmedo.mcloudapp.device.viewmodel.state.BaseDeviceStatusInfoParentViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
