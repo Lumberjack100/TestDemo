@@ -7,10 +7,12 @@ import androidx.databinding.BaseObservable
  * 创建时间:  2023/10/12 <br/>
  * 描述：     TODO
  */
-data class DeviceBaseInfoItem(
+data class DeviceStatusInfoBasicItem(
     val name: String = "",
     var value: String = "",
-    ) : BaseObservable() {
+    var signalValue: Int = 0,
+    var colorRes: Int = 0,
+) : BaseObservable() {
 
     fun refreshValue(value: String) {
         this.value = value

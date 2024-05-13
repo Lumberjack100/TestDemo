@@ -54,29 +54,47 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="SIM卡号(ICCID)" />
+                        android:text="设备IMEI" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.wrapStateInfo.attach_data.get("SN")}'
-                        tools:text="123344" />
+                        android:text='@{stateVM.wrapStateInfo.attach_data.get("imei")}'
+                        tools:text="4343434" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.wrapStateInfo.attach_data.get("imsi") != null}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="IMEI号" />
+                        android:text="设备IMSI" />
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.wrapStateInfo.attach_data.get("SN")}'
+                        android:text='@{stateVM.wrapStateInfo.attach_data.get("imsi")}'
                         tools:text="4343434" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    visible='@{ stateVM.wrapStateInfo.attach_data.get("iccid") != null}'
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        android:text="设备ICCID" />
+
+                    <TextView
+                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        android:text='@{stateVM.wrapStateInfo.attach_data.get("iccid")}'
+                        tools:text="123344" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
@@ -159,7 +177,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
-                    visible='@{ stateVM.wrapStateInfo.location != IOTConstants.NULL_KEY}'
+                    visible='@{ stateVM.wrapStateInfo.volumelevel != IOTConstants.NULL_KEY}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -202,7 +220,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
-                    visible='@{ stateVM.wrapStateInfo.solar_current != IOTConstants.NULL_KEY}'
+                    visible="@{ stateVM.wrapStateInfo.solar_volt != IOTConstants.NULL_KEY}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -211,15 +229,15 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.wrapStateInfo.solar_current+" V"}'
-                        app:bind_voltage_color='@{stateVM.wrapStateInfo.solar_current}'
+                        android:text='@{stateVM.wrapStateInfo.solar_volt+" V"}'
+                        app:bind_voltage_color="@{stateVM.wrapStateInfo.solar_volt}"
                         tools:text="2" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/DeviceCurrentState_SingleItem_Style"
-                    visible='@{ stateVM.wrapStateInfo.battery_current != IOTConstants.NULL_KEY}'
+                    visible="@{ stateVM.wrapStateInfo.battery_volt != IOTConstants.NULL_KEY}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -228,8 +246,8 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.wrapStateInfo.battery_current+" V"}'
-                        app:bind_voltage_color='@{stateVM.wrapStateInfo.battery_current}'
+                        android:text='@{stateVM.wrapStateInfo.battery_volt+" V"}'
+                        app:bind_voltage_color="@{stateVM.wrapStateInfo.battery_volt}"
                         tools:text="2" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>

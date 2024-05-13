@@ -21,7 +21,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentGw100BaseInfoBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
-import com.shmedo.mcloudapp.device.model.DeviceBaseInfoItem
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.GW100BaseInfoViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
@@ -87,7 +87,7 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
 
     private fun initAdapter() {
         binding.rvStationNode.setup { rv ->
-            addType<DeviceBaseInfoItem>(R.layout.item_gw100_device_info_station_node)
+            addType<DeviceStatusInfoBasicItem>(R.layout.item_gw100_device_info_station_node)
         }.models = getAdapterData()
     }
 
@@ -206,7 +206,7 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
                 }
                 terminalIds.forEachIndexed { index, terminalId ->
                     if (index < STATION_NODE_NUM) {
-                        binding.rvStationNode.bindingAdapter.getModel<DeviceBaseInfoItem>(index)
+                        binding.rvStationNode.bindingAdapter.getModel<DeviceStatusInfoBasicItem>(index)
                             .refreshValue(terminalId)
                     }
                 }
@@ -216,10 +216,10 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun getAdapterData(): MutableList<DeviceBaseInfoItem> {
-        val list = mutableListOf<DeviceBaseInfoItem>()
+    private fun getAdapterData(): MutableList<DeviceStatusInfoBasicItem> {
+        val list = mutableListOf<DeviceStatusInfoBasicItem>()
         for (i in 1..STATION_NODE_NUM) {
-            list.add(DeviceBaseInfoItem("测站${i}编号", ""))
+            list.add(DeviceStatusInfoBasicItem("测站${i}编号", ""))
         }
         return list
     }

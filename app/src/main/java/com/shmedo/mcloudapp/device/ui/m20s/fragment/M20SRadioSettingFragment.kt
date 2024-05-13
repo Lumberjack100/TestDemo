@@ -38,7 +38,7 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: M20SRadioSettingViewModel
     private val iotParseManager: IOTParserManager by inject()
 
-    private val radioReceiveChannelList by lazy { Utils.getApp().resources.getStringArray(R.array.radio_receive_channel) }
+    private val radioReceiveChannelList by lazy { Utils.getApp().resources.getStringArray(R.array.radio_channel) }
     private val transmitPowerList: List<String> = (0..22).map { it.toString() }
     private val airSpeedList: List<String> = (0..2).map { it.toString() }
 

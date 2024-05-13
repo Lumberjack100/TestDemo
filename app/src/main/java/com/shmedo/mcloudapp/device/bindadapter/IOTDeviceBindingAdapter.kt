@@ -117,18 +117,6 @@ object IOTDeviceBindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("bind_level_color")
-    fun setLevelColor(view: SignalView, color: Int) {
-        view.setLevelColor(color)
-    }
-
-    @JvmStatic
-    @BindingAdapter("bind_signal_level")
-    fun setSignalLevel(view: SignalView, level: Int) {
-        view.setSignalLevel(level)
-    }
-
-    @JvmStatic
     @BindingAdapter("bind_signal_value")
     fun setSignalLevelBydBmValue(view: SignalView, value: Int) {
         when (value) {

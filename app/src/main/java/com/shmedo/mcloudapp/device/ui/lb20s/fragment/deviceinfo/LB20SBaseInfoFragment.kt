@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.formatDoubleValue
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -109,47 +110,40 @@ class LB20SBaseInfoFragment : BaseIOTDeviceFragment() {
 
     private fun initStatusInfo(content: String) {
         try {
-            val fullJsonMap = MoshiUtil.fromJson<Map<String, Any>>(content) ?: return
-            val targetData = fullJsonMap["000_1"] ?: return
-            val commonCurrentStateInfo =
-                MoshiUtil.fromJson<LB20SCurrentStateInfo>(targetData.toString()) ?: return
+            val dataMap = MoshiUtil.fromJson<Map<String, LB20SCurrentStateInfo>>(content) ?: return
+            val commonCurrentStateInfo = dataMap["000_1"] ?: return
 
+            val volumeLevelStr = commonCurrentStateInfo.attach_data?.get("volumelevel") ?: "0"
             mStates.wrapStateInfo.set(commonCurrentStateInfo)
             mStates.wrapStateInfo.get().apply {
-                inner_power_volt = inner_power_volt.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                ext_power_volt = ext_power_volt.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                solar_current = solar_current.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: "0"
-                battery_current = battery_current.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: "0"
-                temp = temp.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                humidity = humidity.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                temp_out = temp_out.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                humidity_out = humidity_out.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
+                ext_power_volt = formatDoubleValue(
+                    ext_power_volt.toDoubleOrNull(),
+                    decimalFormat,
+                    IOTConstants.NULL_KEY
+                )
+                solar_volt =
+                    formatDoubleValue(solar_volt.toDoubleOrNull(), decimalFormat, "0")
+                battery_volt =
+                    formatDoubleValue(battery_volt.toDoubleOrNull(), decimalFormat, "0")
+                temp =
+                    formatDoubleValue(temp.toDoubleOrNull(), decimalFormat, IOTConstants.NULL_KEY)
+                humidity = formatDoubleValue(
+                    humidity.toDoubleOrNull(),
+                    decimalFormat,
+                    IOTConstants.NULL_KEY
+                )
+                temp_out = formatDoubleValue(
+                    temp_out.toDoubleOrNull(),
+                    decimalFormat,
+                    IOTConstants.NULL_KEY
+                )
+                humidity_out = formatDoubleValue(
+                    humidity_out.toDoubleOrNull(),
+                    decimalFormat,
+                    IOTConstants.NULL_KEY
+                )
                 volumelevel =
-                    if (volumelevel == "0") "无" else if (volumelevel == "1") "低" else if (volumelevel == "2") "中" else "高"
+                    if (volumeLevelStr == "0") "无" else if (volumeLevelStr == "1") "低" else if (volumeLevelStr == "2") "中" else if (volumeLevelStr == "3") "高" else "无"
             }
             mStates.wrapStateInfo.notifyChange()
 
@@ -166,10 +160,12 @@ class LB20SBaseInfoFragment : BaseIOTDeviceFragment() {
                     it * 2 - 113
             })
 
+
         } catch (e: Exception) {
             Timber.e(e)
         }
     }
+
 
     companion object {
         fun newInstance() = LB20SBaseInfoFragment()

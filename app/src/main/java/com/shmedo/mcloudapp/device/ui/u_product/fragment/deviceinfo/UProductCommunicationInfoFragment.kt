@@ -14,6 +14,7 @@ import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo2
+import com.shmedo.lib.device.base.iot_cmd.model.lb20s.LB20SCurrentStateInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
@@ -91,7 +92,9 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
 
         val command =
-            if (productType == ProductType.LR200) IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS) else IOTCommandUtil.getCommand(
+            if (productType == ProductType.LR200 || productType == ProductType.LB20S) IOTCommandUtil.getCommand(
+                IOTCommandType.QUERY_DEVICE_STATUS
+            ) else IOTCommandUtil.getCommand(
                 IOTCommandType.MD_GET_DEVICE_STATUS
             )
         commandItems.add(command)
@@ -118,7 +121,7 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
                             binding.refreshLayout.finish()
                         }
                         val content: String = result.data
-                        initStatusInfo1(content)
+                        initStatusInfo(content)
                     }
                 }
             }
@@ -141,7 +144,11 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
                             binding.refreshLayout.finish()
                         }
                         val content: String = result.data
-                        initStatusInfo2(content)
+                        if (productType == ProductType.LR200) {
+                            initLR200StatusInfo(content)
+                        } else if (productType == ProductType.LB20S) {
+                            initLB20SStatusInfo(content)
+                        }
                     }
                 }
             }
@@ -150,7 +157,7 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initStatusInfo1(content: String) {
+    private fun initStatusInfo(content: String) {
         launchWithViewLifecycle {
             try {
                 val commonCurrentStateInfoList = withContext(Dispatchers.IO) {
@@ -197,7 +204,7 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initStatusInfo2(content: String) {
+    private fun initLR200StatusInfo(content: String) {
         launchWithViewLifecycle {
             try {
                 val info = MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
@@ -226,6 +233,39 @@ class UProductCommunicationInfoFragment : BaseIOTDeviceFragment() {
                     else
                         it * 2 - 113
                 } ?: -113)
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
+    }
+
+    private fun initLB20SStatusInfo(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val dataMap = MoshiUtil.fromJson<Map<String, LB20SCurrentStateInfo>>(content)
+                    ?: return@launchWithViewLifecycle
+                val info = dataMap["000_1"] ?: return@launchWithViewLifecycle
+
+                //根据逗号分隔
+                val enableStatusList = ArrayList<String>()
+                for (i in 1..centerNum)
+                    enableStatusList.add("1")
+
+                if (info.datacenterStatus != IOTConstants.NULL_KEY && info.datacenterStatus.isNotEmpty()) {
+                    //根据逗号分隔
+                    val onlineStatusList = info.datacenterStatus.split(",")
+                    tableAdapter.setAllItems(
+                        getColumnHeaderList(enableStatusList),
+                        getRowHeaderList(),
+                        getCellDataList(enableStatusList, onlineStatusList)
+                    )
+                }
+                mStates.signalValue.set(info._4g_signal.let {
+                    if (it <= 0)
+                        it
+                    else
+                        it * 2 - 113
+                })
             } catch (e: Exception) {
                 Timber.e(e)
             }

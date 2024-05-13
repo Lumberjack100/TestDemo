@@ -10,6 +10,7 @@ import com.shmedo.mcloudapp.device.ui.das.fragment.ble.deviceinfo.BleDasSensorIn
 import com.shmedo.mcloudapp.device.ui.das.fragment.deviceinfo.DasBaseInfoFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.deviceinfo.DasCommunicationInfoFragment
 import com.shmedo.mcloudapp.device.ui.lb20s.fragment.deviceinfo.LB20SBaseInfoFragment
+import com.shmedo.mcloudapp.device.ui.lb20s.fragment.deviceinfo.LB20SGatewayInfoFragment
 import com.shmedo.mcloudapp.device.ui.m20.fragment.deviceinfo.M20BaseInfoFragment
 import com.shmedo.mcloudapp.device.ui.m20.fragment.deviceinfo.M20CommunicationInfoFragment
 import com.shmedo.mcloudapp.device.ui.m20.fragment.deviceinfo.M20SensorInfoFragment
@@ -39,7 +40,6 @@ class CommonRunningDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
             deviceInfo,
             bleDevice
         )
-        val centerNum = if (productType == ProductType.LR200) 4 else 3
         val fragmentList = mutableListOf<Fragment>()
         when (productType) {
             ProductType.LR200 -> {//米度一体式裂缝计
@@ -51,7 +51,7 @@ class CommonRunningDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
                 fragmentList.add(
                     UProductCommunicationInfoFragment.newInstance().apply {
                         arguments = UProductCommunicationInfoFragment.newBundleArguments(
-                            centerNum,
+                            centerNum = 4,
                             productType,
                             communicateWay,
                             deviceInfo,
@@ -77,7 +77,7 @@ class CommonRunningDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
                 fragmentList.add(
                     UProductCommunicationInfoFragment.newInstance().apply {
                         arguments = UProductCommunicationInfoFragment.newBundleArguments(
-                            centerNum,
+                            centerNum = 3,
                             productType,
                             communicateWay,
                             deviceInfo,
@@ -102,7 +102,7 @@ class CommonRunningDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
                 fragmentList.add(
                     UProductCommunicationInfoFragment.newInstance().apply {
                         arguments = UProductCommunicationInfoFragment.newBundleArguments(
-                            centerNum,
+                            centerNum = 3,
                             productType,
                             communicateWay,
                             deviceInfo,
@@ -127,7 +127,7 @@ class CommonRunningDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
                 fragmentList.add(
                     UProductCommunicationInfoFragment.newInstance().apply {
                         arguments = UProductCommunicationInfoFragment.newBundleArguments(
-                            centerNum,
+                            centerNum = 3,
                             productType,
                             communicateWay,
                             deviceInfo,
@@ -188,6 +188,23 @@ class CommonRunningDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
                         arguments = bundle
                     }
                 )
+                fragmentList.add(
+                    UProductCommunicationInfoFragment.newInstance().apply {
+                        arguments = UProductCommunicationInfoFragment.newBundleArguments(
+                            centerNum = 3,
+                            productType,
+                            communicateWay,
+                            deviceInfo,
+                            bleDevice,
+                            statusBarColor
+                        )
+                    }
+                )
+                fragmentList.add(
+                    LB20SGatewayInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                )
             }
 
             else -> {
@@ -199,7 +216,7 @@ class CommonRunningDeviceInfoFragment : BaseRunningDeviceInfoFragment() {
                 fragmentList.add(
                     UProductCommunicationInfoFragment.newInstance().apply {
                         arguments = UProductCommunicationInfoFragment.newBundleArguments(
-                            centerNum,
+                            centerNum = 3,
                             productType,
                             communicateWay,
                             deviceInfo,

@@ -49,13 +49,12 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class LB20SCurrentStateInfo(
     var ext_power_volt: String = IOTConstants.NULL_KEY, //设备输入端电压，单位V
-    var inner_power_volt: String = IOTConstants.NULL_KEY, //内部电源电压
     var temp: String = IOTConstants.NULL_KEY, //设备内部环境温度，单位 ℃
     var humidity: String = IOTConstants.NULL_KEY, //设备内部湿度，单位 RH%
     var temp_out: String = IOTConstants.NULL_KEY, //设备外部环境温度，单位 ℃
     var humidity_out: String = IOTConstants.NULL_KEY, //设备外部环境湿度，单位RH%
-    var solar_current: String = IOTConstants.NULL_KEY,//太阳能板电压,单位V,接了太阳能控制器，就取太阳能控制器给的电压值，没有接就取0值；
-    var battery_current: String = IOTConstants.NULL_KEY,//蓄电池电压，单位V,接了太阳能控制器，就取太阳能控制器给的电压值，没有接就取0值；
+    var solar_volt: String = IOTConstants.NULL_KEY,//太阳能板电压,单位V,接了太阳能控制器，就取太阳能控制器给的电压值，没有接就取0值；
+    var battery_volt: String = IOTConstants.NULL_KEY,//蓄电池电压，单位V,接了太阳能控制器，就取太阳能控制器给的电压值，没有接就取0值；
     @Json(name = "4g_signal")
     var _4g_signal: Int = 0, //4g信号强度（dBm），dBm=2*CSQ值-113，数值99表示无信号；
     var bd_signal: Int = 0, //北斗信号强度，参数预留，默认99值；数值99表示无信号；
