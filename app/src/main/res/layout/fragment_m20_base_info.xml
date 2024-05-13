@@ -133,7 +133,7 @@
 
                     <TextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                        android:text='@{stateVM.wrapStateInfo.workMode=="1"?"基站":"移动站"}'
+                        android:text='@{stateVM.wrapStateInfo.workMode}'
                         tools:text="1212" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>

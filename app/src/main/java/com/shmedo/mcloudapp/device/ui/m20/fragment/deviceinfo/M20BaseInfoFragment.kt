@@ -168,6 +168,8 @@ class M20BaseInfoFragment : BaseIOTDeviceFragment() {
                     ?.let {
                         decimalFormat.format(it)
                     } ?: IOTConstants.NULL_KEY
+
+                workMode = if (workMode.contains("1")) "基准站" else "移动站"
             }
             mStates.wrapStateInfo.notifyChange()
 
@@ -219,7 +221,7 @@ class M20BaseInfoFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-            if (commonCurrentStateInfo.emmc_storage.isNotEmpty() && commonCurrentStateInfo.emmc_storage !=IOTConstants.NULL_KEY) {
+            if (commonCurrentStateInfo.emmc_storage.isNotEmpty() && commonCurrentStateInfo.emmc_storage != IOTConstants.NULL_KEY) {
                 val storages = commonCurrentStateInfo.emmc_storage.replace("MB", "").split(",")
                 if (storages.size == 2) {
                     decimalFormat.applyPattern("#.#")

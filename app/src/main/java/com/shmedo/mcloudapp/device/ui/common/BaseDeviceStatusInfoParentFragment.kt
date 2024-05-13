@@ -78,6 +78,9 @@ abstract class BaseDeviceStatusInfoParentFragment : BaseFragment(), TabLayout.On
         }
         mStates.productName.set(deviceInfo.productName)
         mStates.productType.set("型号：${deviceInfo.deviceName}")
+    }
+
+    override fun lazyLoadData() {
         initViewPager()
     }
 
@@ -128,7 +131,6 @@ abstract class BaseDeviceStatusInfoParentFragment : BaseFragment(), TabLayout.On
     override fun onTabReselected(tab: TabLayout.Tab) {}
 
     abstract fun initTabFragment(): List<Fragment>
-
 
     override fun onResume() {
         super.onResume()

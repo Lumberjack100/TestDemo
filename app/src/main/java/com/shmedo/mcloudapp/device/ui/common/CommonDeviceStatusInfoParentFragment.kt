@@ -30,6 +30,10 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
     override fun initData() {
         super.initData()
         mStates.productType.set(if (productType == ProductType.GNSS_M_1) "型号：M20 (单北斗)" else if (productType == ProductType.GNSS_M_2) "型号：M20 (全星座)" else "型号：${deviceInfo.deviceName}")
+        if (productType == ProductType.LB20S) {
+            tabs.clear()
+            tabs.addAll(listOf("基本信息", "通讯状态", "网关信息"))
+        }
     }
 
     override fun initTabFragment(): List<Fragment> {

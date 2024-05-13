@@ -28,7 +28,7 @@ data class CommonCurrentStateInfo2(
     var bt: String = IOTConstants.NULL_KEY, //蓝牙状态 OK/FAIL
     var btVersion: String = IOTConstants.NULL_KEY, //蓝牙模块版本
     var ld: String = IOTConstants.NULL_KEY, //雷达状态 OK/FAIL
-    var radio: String = IOTConstants.NULL_KEY, //电台模块状态 OK/FAIL
+    var radio: String = IOTConstants.NULL_KEY, //电台状态 OK/FAIL
     var radioVersion: String = IOTConstants.NULL_KEY, //电台模块版本
     var radioEUI: String = IOTConstants.NULL_KEY, //电台EUI-ID
     var cam: String = IOTConstants.NULL_KEY, //相机状态 OK/FAIL

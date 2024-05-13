@@ -117,7 +117,7 @@ class LB20SAlarmTestFragment : BaseIOTDeviceFragment() {
         val entity = BroadcastEntity(
             b_num = "3",
             b_size = "99",
-            b_content = "报警测试，请勿慌张".toByteArray().toString()
+            b_content = "报警测试，请勿慌张"
         )
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_BROADCAST,
