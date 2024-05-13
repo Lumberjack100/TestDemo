@@ -3,7 +3,9 @@ package com.shmedo.mcloudapp.device.ui.common
 import android.os.Bundle
 import android.view.View
 import androidx.core.view.ViewCompat
+import com.blankj.utilcode.util.ClipboardUtils
 import com.blankj.utilcode.util.StringUtils
+import com.blankj.utilcode.util.VibrateUtils
 import com.drake.brv.listener.OnHoverAttachListener
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
@@ -82,6 +84,11 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
 
                     }
                 }
+            }
+            R.id.tv_value.onLongClick {
+                VibrateUtils.vibrate(300)
+                ClipboardUtils.copyText(getModel<DeviceStatusInfoBasicItem>().value)
+                Toaster.show("已复制到剪贴板")
             }
 
             // 可选项, 粘性监听器
