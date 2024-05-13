@@ -11,6 +11,7 @@ data class DeviceStatusInfoBasicItem(
     val name: String = "",
     var value: String = "",
     var colorRes: Int = 0,
+    var isClickable: Boolean = false
 ) : BaseObservable() {
 
     fun refreshValue(value: String) {

@@ -63,14 +63,6 @@ class LB20SGatewayInfoFragment : BaseDeviceStatusInfoFragment() {
                         )
                     )
                 }
-                if (stateInfo.rttVersion != IOTConstants.NULL_KEY) {
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "系统版本",
-                            value = stateInfo.rttVersion
-                        )
-                    )
-                }
                 if (stateInfo.hardwareVersion != IOTConstants.NULL_KEY) {
                     groupList.add(
                         DeviceStatusInfoBasicItem(

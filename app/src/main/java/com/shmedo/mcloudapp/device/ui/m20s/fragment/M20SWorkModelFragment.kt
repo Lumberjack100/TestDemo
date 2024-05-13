@@ -28,7 +28,6 @@ import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -39,6 +38,7 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
     private val modelList = arrayListOf("基准站", "移动站")
+    private val frontCalcList = arrayListOf("关", "开", "自动")
 
     override fun initViewModel() {
         super.initViewModel()
@@ -108,6 +108,23 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
+        fun onFrontCalcChooseClick() {
+            val selectedIndex = frontCalcList.indexOf(mStates.frontCalc.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "", frontCalcList.toTypedArray(),
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.frontCalc.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
         /**
          * 恢复默认配置
          */
@@ -127,27 +144,13 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
 
     private fun resetParams() {
         mStates.model.set(modelList[1])//默认移动站
-        mStates.frequency.set("5")//默认5
+        mStates.frontCalc.set(frontCalcList[2])//默认自动
     }
 
     private fun initSaveCommand() {
-        if (mStates.frequency.get().isEmpty()) {
-            showMessageDialog("请输入频率!")
-            return
-        }
-        try {
-            val value = mStates.frequency.get().toDouble()
-            if (value < 0 || value > 60) {
-                showMessageDialog("频率数值范围[0,255]!")
-                return
-            }
-        } catch (ex: Exception) {
-            showMessageDialog("请输入正确的频率!")
-            return
-        }
         val entity = RtkParamEntity(
             mode = (modelList.indexOf(mStates.model.get()) + 1).toString(),
-            obs = mStates.frequency.get()
+            frontCalc = frontCalcList.indexOf(mStates.frontCalc.get()).toString()
         )
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
@@ -212,13 +215,18 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
 
     private fun initParamData(info: RtkParamInfo) {
         try {
-            info.mode.toIntOrNull() ?.let {
+            info.mode.toIntOrNull()?.let {
                 if (it < 1 || it > modelList.size) {
                     return
                 }
                 mStates.model.set(modelList[it - 1])
             }
-            mStates.frequency.set(info.obs)
+            info.frontCalc.toIntOrNull()?.let {
+                if (it < 0 || it > frontCalcList.size) {
+                    return
+                }
+                mStates.frontCalc.set(frontCalcList[it])
+            }
         } catch (e: Exception) {
             Timber.e(e)
         }

@@ -23,8 +23,18 @@
 
         <com.google.android.material.textview.MaterialTextView
             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            visible='@{ !m.clickable}'
             android:text="@{m.value}"
             android:textColor="@{m.colorRes==0?@color/title_text_color:m.colorRes}"
+            tools:text="1212" />
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/Common_ClickableItem_ValueStyle"
+            rightArrowVisible="@{m.clickable}"
+            visible='@{ m.clickable}'
+            android:text="@{m.value}"
+            android:textColor="@{m.colorRes==0?@color/title_text_color:m.colorRes}"
+            tools:drawableEndCompat="@drawable/icon_arrow_right"
             tools:text="1212" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
