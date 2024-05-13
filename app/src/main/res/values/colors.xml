@@ -10,6 +10,7 @@
     <color name="orange">#ff7502</color>
     <color name="transparent">#00000000</color>
     <color name="bg_black_40">#66000000</color>
+    <color name="bg_gray_15">#26666666</color>
     <color name="main_bg_gray">#f6f6f6</color>
     <color name="main_bg_gray_f3f9fe">#F3F9FE</color>
     <color name="main_bg_gray_f2f2f2">#f2f2f2</color>

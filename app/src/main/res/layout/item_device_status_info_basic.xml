@@ -21,10 +21,17 @@
             android:text='@{m.name}'
             tools:text="固件版本" />
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_value"
             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
             visible='@{ !m.clickable}'
+            android:layout_width="wrap_content"
+            android:background='@{m.clipboard?@color/bg_gray_15:@color/transparent}'
             android:text="@{m.value}"
             android:textColor="@{m.colorRes==0?@color/title_text_color:m.colorRes}"
             tools:text="1212" />
@@ -33,6 +40,7 @@
             style="@style/Common_ClickableItem_ValueStyle"
             rightArrowVisible="@{m.clickable}"
             visible='@{ m.clickable}'
+            android:layout_width="wrap_content"
             android:text="@{m.value}"
             android:textColor="@{m.colorRes==0?@color/title_text_color:m.colorRes}"
             tools:drawableEndCompat="@drawable/icon_arrow_right"

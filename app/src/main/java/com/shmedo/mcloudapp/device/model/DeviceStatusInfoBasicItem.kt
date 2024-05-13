@@ -11,11 +11,17 @@ data class DeviceStatusInfoBasicItem(
     val name: String = "",
     var value: String = "",
     var colorRes: Int = 0,
-    var isClickable: Boolean = false
+    var isClickable: Boolean = false,
+    var isClipboard: Boolean = false,
 ) : BaseObservable() {
 
     fun refreshValue(value: String) {
         this.value = value
+        notifyChange()
+    }
+
+    fun refreshClipboardState(value: Boolean) {
+        this.isClipboard = value
         notifyChange()
     }
 }

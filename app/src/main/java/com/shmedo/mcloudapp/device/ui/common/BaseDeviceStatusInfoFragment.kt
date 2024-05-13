@@ -11,6 +11,9 @@ import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
+import com.lxj.xpopup.interfaces.SimpleCallback
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
@@ -20,6 +23,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.FragmentBaseDeviceStatusInfoBinding
+import com.shmedo.mcloudapp.databinding.ItemDeviceStatusInfoBasicBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
@@ -70,12 +74,49 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
 
     private fun initAdapter() {
         binding.recyclerview.linear().setup { rv ->
-            addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group_item)
-            addType<DeviceStatusInfoBasicItem>(R.layout.item_device_status_info_basic_item)
-            addType<DeviceStatusInfoSignalItem>(R.layout.item_device_status_info_signal_item)
+            addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group)
+            addType<DeviceStatusInfoBasicItem>(R.layout.item_device_status_info_basic)
+            addType<DeviceStatusInfoSignalItem>(R.layout.item_device_status_info_signal)
+            onBind {
+                when (itemViewType) {
+                    R.layout.item_device_status_info_basic -> {
+                        val itemBinding = getBinding<ItemDeviceStatusInfoBasicBinding>()
+                        val item = getModel<DeviceStatusInfoBasicItem>()
+                        //必须要在事件发生之前就watch，如果你写在onLongClickListener中的话，就拿不到触摸点了，触摸事件被长按消费了
+                        val builder = XPopup.Builder(context)
+                            .hasShadowBg(false)
+                            .watchView(itemBinding.tvValue)
+                            .setPopupCallback(object : SimpleCallback() {
+                                override fun onClickOutside(popupView: BasePopupView?) {
+                                    item.refreshClipboardState(false)
+                                }
+                            })
+                        itemBinding.tvValue.setOnLongClickListener {
+                            item.refreshClipboardState(true)
+                            VibrateUtils.vibrate(300)
+                            builder.asAttachList(arrayListOf("复制").toTypedArray(), null)
+                            { _, text ->
+                                when (text) {
+                                    "复制" -> {
+                                        item.refreshClipboardState(false)
+                                        ClipboardUtils.copyText(item.value)
+                                        Toaster.show("已复制到剪贴板")
+                                    }
+                                }
+                            }
+                                .show()
+                            true
+                        }
+                    }
+
+                    else -> {
+
+                    }
+                }
+            }
             R.id.item.onClick {
                 when (itemViewType) {
-                    R.layout.item_device_status_info_basic_item -> {
+                    R.layout.item_device_status_info_basic -> {
                         val item = getModel<DeviceStatusInfoBasicItem>()
                         processItemClick(item)
                     }
@@ -85,12 +126,6 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
                     }
                 }
             }
-            R.id.tv_value.onLongClick {
-                VibrateUtils.vibrate(300)
-                ClipboardUtils.copyText(getModel<DeviceStatusInfoBasicItem>().value)
-                Toaster.show("已复制到剪贴板")
-            }
-
             // 可选项, 粘性监听器
             onHoverAttachListener = object : OnHoverAttachListener {
                 override fun attachHover(v: View) {

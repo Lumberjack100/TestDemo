@@ -21,7 +21,7 @@
             android:paddingBottom="@dimen/dimen_size_30"
             android:splitMotionEvents="false"
             tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_device_status_info_basic_item" />
+            tools:listitem="@layout/item_device_status_info_basic" />
 
     </com.drake.brv.PageRefreshLayout>
 </layout>
