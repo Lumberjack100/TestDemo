@@ -4,7 +4,7 @@ import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.core.ext.formatDoubleValue
+import com.shmedo.mcloudapp.ext.formatDoubleValue
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType

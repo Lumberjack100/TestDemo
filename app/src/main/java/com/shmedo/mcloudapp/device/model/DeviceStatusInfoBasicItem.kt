@@ -13,6 +13,8 @@ data class DeviceStatusInfoBasicItem(
     var colorRes: Int = 0,
     var isClickable: Boolean = false,
     var isClipboard: Boolean = false,
+    var isShowDividerGap: Boolean = false
+
 ) : BaseObservable() {
 
     fun refreshValue(value: String) {

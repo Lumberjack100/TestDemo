@@ -17,12 +17,8 @@
         android:layout_height="wrap_content"
         android:foreground="?attr/selectableItemBackground"
         android:background="@drawable/layer_common_click_item_with_divider"
-        android:gravity="center_vertical"
-        android:minHeight="60dp"
-        android:paddingStart="@dimen/dimen_size_15"
-        android:paddingTop="@dimen/dimen_size_5"
-        android:paddingEnd="@dimen/dimen_size_15"
-        android:paddingBottom="@dimen/dimen_size_5">
+        android:paddingHorizontal="@dimen/dimen_size_10"
+        android:paddingVertical="@dimen/dimen_size_10">
 
         <TextView
             android:id="@+id/tv_name"
@@ -31,7 +27,7 @@
             android:singleLine="true"
             android:text='@{m.name}'
             android:textColor="@color/title_text_color"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_size_15"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -41,10 +37,11 @@
             android:id="@+id/tv_key"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_6"
             android:singleLine="true"
             android:text='@{m.key}'
             android:textColor="@color/sub_title_text_color"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size_13"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_name"
             tools:text="70:04:1D:8C:BB:9E" />

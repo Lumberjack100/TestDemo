@@ -1,140 +1,113 @@
 package com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo
 
-import android.os.Bundle
-import com.blankj.utilcode.util.StringUtils
-import com.hjq.toast.Toaster
-import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.drake.brv.utils.models
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
-import com.shmedo.mcloudapp.BR
-import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentLr200SensorInfoBinding
-import com.shmedo.mcloudapp.device.model.BleConnect
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.LR200SensorInfoViewModel
-import org.koin.android.ext.android.inject
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
+import com.shmedo.mcloudapp.device.ui.common.BaseDeviceStatusInfoFragment
+import com.shmedo.mcloudapp.ext.formatDoubleValue
 import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
 
-class LR200SensorInfoFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentLr200SensorInfoBinding
-    private lateinit var mStates: LR200SensorInfoViewModel
-    private val iotParseManager: IOTParserManager by inject()
-    private val decimalFormat = DecimalFormat("#.##", DecimalFormatSymbols(Locale.getDefault()))
+class LR200SensorInfoFragment : BaseDeviceStatusInfoFragment() {
 
-    override fun initViewModel() {
-        super.initViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
-
-    override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_lr200_sensor_info, BR.stateVM, mStates)
-    }
-
-    override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentLr200SensorInfoBinding
-        refreshLayout = binding.refreshLayout
-        initRefresh()
-    }
-
-    private fun initRefresh() {
-        binding.refreshLayout.setEnableLoadMore(false)
-        binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return@onRefresh
-            }
-            queryInfo()
-        }
-    }
-
-    override fun lazyLoadData() {
-        binding.refreshLayout.autoRefresh()
-    }
-
-    /**
-     * 获取设备的基本信息
-     */
-    private fun queryInfo() {
-        commandItems.clear()
-
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    override fun setResultData(cmdStr: String) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_DEVICE_STATUS -> {
-                val result = iotParseManager.parse<String>(
-                    cmdStr,
-                    IOTCommandType.QUERY_DEVICE_STATUS
-                )
-                when (result) {
-                    is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "查询传感器状态出错: ${result.message}"
-                        Toaster.show(errMsg)
-                        return
-                    }
-
-                    is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        val content: String = result.data
-                        initStatusInfo(content)
-                    }
+    override fun initStatusInfo(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val stateInfo =
+                    MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
+                if (stateInfo == null) {
+                    binding.refreshLayout.showEmpty()
+                    return@launchWithViewLifecycle
                 }
+                binding.refreshLayout.showContent()
+                val groupList = mutableListOf<Any>()
+                groupList.add(DeviceStatusInfoGroupItem("倾角计"))
+                if (stateInfo.x_Angle != IOTConstants.NULL_KEY) {
+                    val tempValue = stateInfo.x_Angle.toDoubleOrNull() ?: 0.0
+                    groupList.add(
+                        DeviceStatusInfoBasicItem(
+                            name = "X轴角度(°)",
+                            value = formatDoubleValue(
+                                tempValue,
+                                decimalFormat,
+                                "0"
+                            )
+                        )
+                    )
+                }
+                if (stateInfo.y_Angle != IOTConstants.NULL_KEY) {
+                    val tempValue = stateInfo.y_Angle.toDoubleOrNull() ?: 0.0
+                    groupList.add(
+                        DeviceStatusInfoBasicItem(
+                            name = "Y轴角度(°)",
+                            value = formatDoubleValue(
+                                tempValue,
+                                decimalFormat,
+                                "0"
+                            )
+                        )
+                    )
+                }
+                if (stateInfo.z_Angle != IOTConstants.NULL_KEY) {
+                    val tempValue = stateInfo.z_Angle.toDoubleOrNull() ?: 0.0
+                    groupList.add(
+                        DeviceStatusInfoBasicItem(
+                            name = "Z轴角度(°)",
+                            value = formatDoubleValue(
+                                tempValue,
+                                decimalFormat,
+                                "0"
+                            )
+                        )
+                    )
+                }
+                groupList.add(DeviceStatusInfoGroupItem("裂缝计"))
+                if (stateInfo.lF_initial != IOTConstants.NULL_KEY) {
+                    val tempValue = stateInfo.lF_initial.toDoubleOrNull() ?: 0.0
+                    groupList.add(
+                        DeviceStatusInfoBasicItem(
+                            name = "初始测量值(mm)",
+                            value = formatDoubleValue(
+                                tempValue,
+                                decimalFormat,
+                                "0"
+                            )
+                        )
+                    )
+                }
+                if (stateInfo.lF_current != IOTConstants.NULL_KEY) {
+                    val tempValue = stateInfo.lF_current.toDoubleOrNull() ?: 0.0
+                    groupList.add(
+                        DeviceStatusInfoBasicItem(
+                            name = "实时测量值(mm)",
+                            value = formatDoubleValue(
+                                tempValue,
+                                decimalFormat,
+                                "0"
+                            )
+                        )
+                    )
+                }
+                if (stateInfo.lF_Cumulative != IOTConstants.NULL_KEY) {
+                    val tempValue = stateInfo.lF_Cumulative.toDoubleOrNull() ?: 0.0
+                    groupList.add(
+                        DeviceStatusInfoBasicItem(
+                            name = "累计变化量(mm)",
+                            value = formatDoubleValue(
+                                tempValue,
+                                decimalFormat,
+                                "0"
+                            )
+                        )
+                    )
+                }
+                binding.recyclerview.models = groupList
+            } catch (e: Exception) {
+                Timber.e(e)
             }
-
-            else -> {}
-        }
-    }
-
-    private fun initStatusInfo(content: String) {
-        try {
-            val commonCurrentStateInfo =
-                MoshiUtil.fromJson<CommonCurrentStateInfo>(content) ?: return
-            mStates.wrapStateInfo.set(commonCurrentStateInfo)
-            mStates.wrapStateInfo.get().apply {
-                x_Angle = x_Angle.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                y_Angle = y_Angle.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                z_Angle = z_Angle.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-
-                lF_initial = lF_initial.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                lF_current = lF_current.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                lF_Cumulative = lF_Cumulative.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-            }
-            mStates.wrapStateInfo.notifyChange()
-        } catch (e: Exception) {
-            Timber.e(e)
         }
     }
 
