@@ -4,7 +4,6 @@ import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.ext.formatDoubleValue
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -15,7 +14,9 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.device.ui.common.BaseDeviceStatusInfoFragment
+import com.shmedo.mcloudapp.ext.notNullKey
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -45,70 +46,45 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
 
-                if (stateInfo.sn != IOTConstants.NULL_KEY) {
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "设备SN",
-                            value = stateInfo.sn
-                        )
-                    )
-                }
-                if (stateInfo.imei != IOTConstants.NULL_KEY) {
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "设备IMEI",
-                            value = stateInfo.imei
-                        )
-                    )
-                }
-                if (stateInfo.imsi != IOTConstants.NULL_KEY) {
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "设备IMSI",
-                            value = stateInfo.imsi
-                        )
-                    )
-                }
-                if (stateInfo.ccid != IOTConstants.NULL_KEY) {
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "设备ICCID",
-                            value = stateInfo.ccid
-                        )
-                    )
-                }
-                if (stateInfo.hardwareVersion != IOTConstants.NULL_KEY) {
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "硬件版本",
-                            value = stateInfo.hardwareVersion
-                        )
-                    )
-                }
-                if (stateInfo.firmwareVersion != IOTConstants.NULL_KEY) {
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "固件版本",
-                            value = stateInfo.firmwareVersion
-                        )
-                    )
-                }
-                if (stateInfo.extPowerVolt != IOTConstants.NULL_KEY) {
-                    val tempValue = stateInfo.extPowerVolt.toDoubleOrNull() ?: 0.0
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "电源电压",
-                            value = formatDoubleValue(
-                                tempValue,
-                                decimalFormat,
-                                "0"
-                            ) + "V",
-                            colorRes = if (tempValue <= 5) ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
-                                R.color.text_color_3AD094
-                            )
-                        )
-                    )
-                }
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "设备SN",
+                    value = stateInfo.sn,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "设备IMEI",
+                    value = stateInfo.imei,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "设备IMSI",
+                    value = stateInfo.imsi,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "设备ICCID",
+                    value = stateInfo.ccid,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "硬件版本",
+                    value = stateInfo.hardwareVersion,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "固件版本",
+                    value = stateInfo.firmwareVersion,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                    groupList,
+                    name = "外接电源电压",
+                    value = stateInfo.extPowerVolt,
+                    defaultValue = "0",
+                    thresHold = 5.0,
+                    digit = 2,
+                    unit = "V",
+                )
                 deviceAbnormalList.clear()
                 deviceAbnormalList.addAll(DeviceStatusHelper.checkDeviceAbnormal(stateInfo))
                 groupList.add(
@@ -123,8 +99,9 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 )
                 if (stateInfo.worktime != IOTConstants.NULL_KEY || stateInfo.emmcStorage != IOTConstants.NULL_KEY)
                     groupList.add(DeviceStatusInfoGroupItem("运行数据"))
-                if (stateInfo.worktime != IOTConstants.NULL_KEY) {
-                    val tempValue = stateInfo.worktime.toIntOrNull() ?: 0
+
+                stateInfo.worktime.notNullKey {
+                    val tempValue = it.toIntOrNull() ?: 0
                     groupList.add(
                         DeviceStatusInfoBasicItem(
                             name = "运行时间(小时)",
@@ -132,14 +109,20 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         )
                     )
                 }
+
                 if (stateInfo.emmcStorage != IOTConstants.NULL_KEY && stateInfo.emmcFree != IOTConstants.NULL_KEY) {
-                    decimalFormat.applyPattern("#.#")
-                    val free = stateInfo.emmcFree.replace("MB", "").toDoubleOrNull()?.let {
-                        decimalFormat.format(it)
-                    } ?: ""
-                    val total = stateInfo.emmcStorage.replace("MB", "").toDoubleOrNull()?.let {
-                        decimalFormat.format(it)
-                    } ?: ""
+                    val free = DeviceStatusInfoProcessor.formatDoubleValue(
+                        stateInfo.emmcFree.replace(
+                            "MB",
+                            ""
+                        ), "0", 1
+                    )
+                    val total = DeviceStatusInfoProcessor.formatDoubleValue(
+                        stateInfo.emmcStorage.replace(
+                            "MB",
+                            ""
+                        ), "0", 1
+                    )
                     groupList.add(
                         DeviceStatusInfoBasicItem(
                             name = "存储状态",

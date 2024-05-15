@@ -1,17 +1,18 @@
 package com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo
 
 import com.blankj.utilcode.util.ColorUtils
-import com.shmedo.mcloudapp.ext.formatDoubleValue
+import com.drake.brv.utils.models
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.device.ui.common.BaseDeviceStatusInfoFragment
+import com.shmedo.mcloudapp.ext.notNullKey
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -45,8 +46,9 @@ class UDProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                 val stateInfo = commonCurrentStateInfoList[0]
                 binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
+
                 groupList.add(DeviceStatusInfoGroupItem("泥位计"))
-                if (stateInfo.cam != IOTConstants.NULL_KEY) {
+                stateInfo.cam.notNullKey {
                     val camState = if (stateInfo.cam.uppercase().contains("OK")) "正常" else "异常"
                     groupList.add(
                         DeviceStatusInfoBasicItem(
@@ -58,7 +60,7 @@ class UDProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         )
                     )
                 }
-                if (stateInfo.ld != IOTConstants.NULL_KEY) {
+                stateInfo.ld.notNullKey {
                     val camState = if (stateInfo.ld.uppercase().contains("OK")) "正常" else "异常"
                     groupList.add(
                         DeviceStatusInfoBasicItem(
@@ -70,33 +72,24 @@ class UDProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         )
                     )
                 }
-                decimalFormat.applyPattern("#.###")
-                if (stateInfo.height != IOTConstants.NULL_KEY) {
-                    val tempValue = stateInfo.height.toDoubleOrNull() ?: 0.0
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "安装高度(米)",
-                            value = formatDoubleValue(
-                                tempValue,
-                                decimalFormat,
-                                "0"
-                            )
-                        )
-                    )
-                }
-                if (stateInfo.ldValue != IOTConstants.NULL_KEY) {
-                    val tempValue = stateInfo.ldValue.toDoubleOrNull() ?: 0.0
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "雷达测量值(米)",
-                            value = formatDoubleValue(
-                                tempValue,
-                                decimalFormat,
-                                "0"
-                            )
-                        )
-                    )
-                }
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                    groupList,
+                    name = "安装高度",
+                    value = stateInfo.height,
+                    defaultValue = "0",
+                    digit =3,
+                    unit = "m",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                    groupList,
+                    name = "雷达测量值",
+                    value = stateInfo.ldValue,
+                    defaultValue = "0",
+                    digit =3,
+                    unit = "m",
+                )
+
+                binding.recyclerview.models = groupList
             } catch (e: Exception) {
                 Timber.e(e)
             }

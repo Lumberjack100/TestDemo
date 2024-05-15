@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.ext
 
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
-import java.text.DecimalFormat
 
 /**
  * 创建者：gonghe
@@ -24,8 +23,4 @@ inline fun <reified T> T.notNullKey(action: (T) -> Unit) {
     if (this != IOTConstants.NULL_KEY) {
         action.invoke(this)
     }
-}
-
-fun formatDoubleValue(value: Double?, format: DecimalFormat, defaultValue: String): String {
-    return value?.let { format.format(it) } ?: defaultValue
 }

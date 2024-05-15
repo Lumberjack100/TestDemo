@@ -2,16 +2,16 @@ package com.shmedo.mcloudapp.device.ui.lb20s.fragment.deviceinfo
 
 import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.models
-import com.shmedo.mcloudapp.ext.formatDoubleValue
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.model.lb20s.LB20SCurrentStateInfo
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoSignalItem
 import com.shmedo.mcloudapp.device.ui.common.BaseDeviceStatusInfoFragment
+import com.shmedo.mcloudapp.ext.notNullKey
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -53,47 +53,37 @@ class LB20SBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 stateInfo.attach_data?.get("iccid")?.let {
                     groupList.add(DeviceStatusInfoBasicItem(name = "设备ICCID", value = it))
                 }
-                if (stateInfo.sw_version != IOTConstants.NULL_KEY) {
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "固件版本",
-                            value = stateInfo.sw_version
-                        )
-                    )
-                }
-                if (stateInfo.location != IOTConstants.NULL_KEY)
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "设备位置",
-                            value = stateInfo.location
-                        )
-                    )
-                if (stateInfo.ext_power_volt != IOTConstants.NULL_KEY) {
-                    val tempValue = stateInfo.ext_power_volt.toDoubleOrNull() ?: 0.0
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "外部电源电压",
-                            value = formatDoubleValue(
-                                tempValue,
-                                decimalFormat,
-                                "0"
-                            ) + "V",
-                            colorRes = if (tempValue <= 5) ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
-                                R.color.text_color_3AD094
-                            )
-                        )
-                    )
-                }
-                groupList.add(
-                    DeviceStatusInfoSignalItem(
-                        name = "4G信号强度",
-                        signalValue = stateInfo._4g_signal.let {
-                            if (it <= 0)
-                                it
-                            else
-                                it * 2 - 113
-                        })
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "硬件版本",
+                    value = stateInfo.sw_version,
                 )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "设备位置",
+                    value = stateInfo.location,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                    groupList,
+                    name = "外接电源电压",
+                    value = stateInfo.ext_power_volt,
+                    defaultValue = "0",
+                    thresHold = 5.0,
+                    digit = 2,
+                    unit = "V",
+                )
+                stateInfo._4g_signal.notNullKey {
+                    groupList.add(
+                        DeviceStatusInfoSignalItem(
+                            name = "4G信号强度",
+                            signalValue = it.let {
+                                if (it <= 0)
+                                    it
+                                else
+                                    it * 2 - 113
+                            })
+                    )
+                }
                 stateInfo.attach_data?.get("volumelevel")?.let { volumeLevelStr ->
                     groupList.add(
                         DeviceStatusInfoBasicItem(
@@ -103,7 +93,7 @@ class LB20SBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     )
                 }
                 groupList.add(DeviceStatusInfoGroupItem("太阳能控制器"))
-                if (stateInfo.ext_power_volt != IOTConstants.NULL_KEY)
+                stateInfo.ext_power_volt.notNullKey {
                     groupList.add(
                         DeviceStatusInfoBasicItem(
                             name = "状态",
@@ -111,38 +101,25 @@ class LB20SBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                             colorRes = ColorUtils.getColor(R.color.device_online_platform)
                         )
                     )
-                if (stateInfo.solar_volt != IOTConstants.NULL_KEY) {
-                    val tempValue = stateInfo.solar_volt.toDoubleOrNull() ?: 0.0
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "太阳能板电压",
-                            value = formatDoubleValue(
-                                tempValue,
-                                decimalFormat,
-                                "0"
-                            ) + "V",
-                            colorRes = if (tempValue <= 5) ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
-                                R.color.text_color_3AD094
-                            )
-                        )
-                    )
                 }
-                if (stateInfo.battery_volt != IOTConstants.NULL_KEY) {
-                    val tempValue = stateInfo.battery_volt.toDoubleOrNull() ?: 0.0
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "蓄电池电压",
-                            value = formatDoubleValue(
-                                tempValue,
-                                decimalFormat,
-                                "0"
-                            ) + "V",
-                            colorRes = if (tempValue <= 5) ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
-                                R.color.text_color_3AD094
-                            )
-                        )
-                    )
-                }
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                    groupList,
+                    name = "太阳能板电压",
+                    value = stateInfo.solar_volt,
+                    defaultValue = "0",
+                    thresHold = 5.0,
+                    digit = 2,
+                    unit = "V",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                    groupList,
+                    name = "蓄电池电压",
+                    value = stateInfo.battery_volt,
+                    defaultValue = "0",
+                    thresHold = 5.0,
+                    digit = 2,
+                    unit = "V",
+                )
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
                 Timber.e(e)
