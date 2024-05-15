@@ -28,6 +28,7 @@ import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoSignalItem
+import com.shmedo.mcloudapp.device.model.GapItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import org.koin.android.ext.android.inject
 import java.text.DecimalFormat
@@ -77,6 +78,7 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
             addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group)
             addType<DeviceStatusInfoBasicItem>(R.layout.item_device_status_info_basic)
             addType<DeviceStatusInfoSignalItem>(R.layout.item_device_status_info_signal)
+            addType<GapItem>(R.layout.item_device_status_info_gap)
             onBind {
                 when (itemViewType) {
                     R.layout.item_device_status_info_basic -> {

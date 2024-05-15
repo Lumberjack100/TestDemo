@@ -9,6 +9,121 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
  * 描述： TODO
  */
 object DeviceStatusHelper {
+    fun checkDeviceAbnormal(selfCheck: String): ArrayList<String> {
+        //"self_check": "GPS:1,eMMC:1,4g:1,RTC:1,solar485:0,G-Sensor:1,BT:1,GNSS:1,QMC:0,SHT21:1,product_time:20240411"
+        //解析 self_check,根据逗号分隔，取出各个传感器的状态
+        val selfCheckArray = selfCheck.split(",")
+
+        val deviceAbnormalList: ArrayList<String> = ArrayList()
+        for (item in selfCheckArray) {
+            val sensor = item.split(":")
+            when (sensor[0].uppercase()) {
+                "4G" -> {
+                    if (sensor[1] == "0") {
+                        deviceAbnormalList.add("4G 状态异常")
+                    }
+                }
+
+                "SCL" -> {
+                    if (sensor[1] == "0") {
+                        deviceAbnormalList.add("SCL 倾角加速度状态异常")
+                    }
+                }
+
+                "LORA" -> {
+                    if (sensor[1] == "0") {
+                        deviceAbnormalList.add("LoRa 状态异常")
+                    }
+                }
+
+                "BT" -> {
+                    if (sensor[1] == "0") {
+                        deviceAbnormalList.add("蓝牙状态异常")
+                    }
+                }
+
+                "LD" -> {
+                    if (sensor[1] == "0") {
+                        deviceAbnormalList.add("雷达状态异常")
+                    }
+                }
+
+                "RADIO" -> {
+                    if (sensor[1] == "0") {
+                        deviceAbnormalList.add("电台状态异常")
+                    }
+                }
+
+                "CAM" -> {
+                    if (sensor[1] == "0") {
+                        deviceAbnormalList.add("相机状态异常")
+                    }
+                }
+
+                "GNSS" -> {
+                    if (sensor[1] == "0") {
+                        deviceAbnormalList.add("GNSS 状态异常")
+                    }
+                }
+
+                "ADC" -> {
+                    if (sensor[1] == "0") {
+                        deviceAbnormalList.add("ADC 电压采集功能状态异常")
+                    }
+                }
+
+                "EMMC" -> {
+                    if (sensor[1] == "0") {
+                        deviceAbnormalList.add("EMMC 状态异常")
+                    }
+                }
+
+                "SHT21" -> {
+                    if (sensor[1] == "0") {
+                        deviceAbnormalList.add("sht21 温湿度状态异常")
+                    }
+                }
+
+                "QMC5883" -> {
+                    if (sensor[1] == "0") {
+                        deviceAbnormalList.add("qmc5883 磁力状态异常")
+                    }
+                }
+
+                "battery" -> {
+                    if (sensor[1] == "0") {
+                        deviceAbnormalList.add("电池状态异常")
+                    }
+                }
+
+                "SIMCARD" -> {
+                    if (sensor[1] == "0") {
+                        deviceAbnormalList.add("SIM 卡状态异常")
+                    }
+                }
+
+                "fram" -> {
+                    if (sensor[1] == "0") {
+                        deviceAbnormalList.add("FRAM 状态异常")
+                    }
+                }
+
+                "RTC" -> {
+                    if (sensor[1] == "0") {
+                        deviceAbnormalList.add("RTC 状态异常")
+                    }
+                }
+
+                else -> {
+                    if (sensor[1] == "0") {
+                        deviceAbnormalList.add("${sensor[0]} 状态异常")
+                    }
+                }
+
+            }
+        }
+        return deviceAbnormalList
+    }
 
     fun checkDeviceAbnormal(currentStateInfo: CommonCurrentStateInfo2): ArrayList<String> {
         val deviceAbnormalList: ArrayList<String> = ArrayList()

@@ -191,6 +191,13 @@ object CommonBindingAdapter {
         view.isSelected = select
     }
 
+    @BindingAdapter("layout_height")
+    fun setLayoutHeight(view: View, height: Int) {
+        val layoutParams = view.layoutParams
+        layoutParams.height = height
+        view.layoutParams = layoutParams
+    }
+
     @JvmStatic
     @BindingAdapter(
         value = ["lengthFilter", "inputTypeFilter"],

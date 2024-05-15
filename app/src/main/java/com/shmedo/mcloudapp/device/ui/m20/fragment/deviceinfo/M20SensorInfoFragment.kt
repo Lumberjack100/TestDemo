@@ -1,125 +1,77 @@
 package com.shmedo.mcloudapp.device.ui.m20.fragment.deviceinfo
 
-import android.os.Bundle
-import com.blankj.utilcode.util.StringUtils
-import com.hjq.toast.Toaster
-import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.blankj.utilcode.util.ColorUtils
+import com.drake.brv.utils.models
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentM20SensorInfoBinding
-import com.shmedo.mcloudapp.device.model.BleConnect
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.M20SensorInfoViewModel
-import org.koin.android.ext.android.inject
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
+import com.shmedo.mcloudapp.device.ui.common.BaseDeviceStatusInfoFragment
+import com.shmedo.mcloudapp.ext.notNullKey
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class M20SensorInfoFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentM20SensorInfoBinding
-    private lateinit var mStates: M20SensorInfoViewModel
-    private val iotParseManager: IOTParserManager by inject()
+class M20SensorInfoFragment : BaseDeviceStatusInfoFragment() {
 
-    override fun initViewModel() {
-        super.initViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
+    override fun initStatusInfo(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val stateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
+                }
+                if (stateInfo == null) {
+                    binding.refreshLayout.showEmpty()
+                    return@launchWithViewLifecycle
+                }
+                binding.refreshLayout.showContent()
+                val groupList = mutableListOf<Any>()
 
-    override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_m20_sensor_info, BR.stateVM, mStates)
-    }
-
-    override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentM20SensorInfoBinding
-        refreshLayout = binding.refreshLayout
-        initRefresh()
-    }
-
-    private fun initRefresh() {
-        binding.refreshLayout.setEnableLoadMore(false)
-        binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return@onRefresh
-            }
-            queryInfo()
-        }
-    }
-
-    override fun lazyLoadData() {
-        binding.refreshLayout.autoRefresh()
-    }
-
-    /**
-     * 获取设备的基本信息
-     */
-    private fun queryInfo() {
-        commandItems.clear()
-
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    override fun setResultData(cmdStr: String) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_DEVICE_STATUS -> {
-                val result = iotParseManager.parse<String>(
-                    cmdStr,
-                    IOTCommandType.QUERY_DEVICE_STATUS
+                groupList.add(DeviceStatusInfoGroupItem("倾角计"))
+                stateInfo.self_check.notNullKey {
+                    val camState = if (it.uppercase().contains("MEMS:1")) "正常" else "异常"
+                    groupList.add(
+                        DeviceStatusInfoBasicItem(
+                            name = "倾角MEMS状态",
+                            value = camState,
+                            colorRes = if (camState == "正常") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                                R.color.device_offline_platform
+                            )
+                        )
+                    )
+                }
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                    groupList,
+                    name = "X轴角度值",
+                    value = stateInfo.x_Angle,
+                    defaultValue = "0",
+                    digit = 2,
+                    unit = "°",
                 )
-                when (result) {
-                    is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "查询传感器状态出错: ${result.message}"
-                        Toaster.show(errMsg)
-                        return
-                    }
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                    groupList,
+                    name = "Y轴角度值",
+                    value = stateInfo.y_Angle,
+                    defaultValue = "0",
+                    digit = 2,
+                    unit = "°",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                    groupList,
+                    name = "Z轴角度值",
+                    value = stateInfo.z_Angle,
+                    defaultValue = "0",
+                    digit = 2,
+                    unit = "°",
+                )
 
-                    is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        val content: String = result.data
-                        initStatusInfo(content)
-                    }
-                }
+                binding.recyclerview.models = groupList
+            } catch (e: Exception) {
+                Timber.e(e)
             }
-
-            else -> {}
-        }
-    }
-
-    private fun initStatusInfo(content: String) {
-        try {
-            val commonCurrentStateInfo =
-                MoshiUtil.fromJson<CommonCurrentStateInfo>(content) ?: return
-
-            mStates.memsAxisY.set(commonCurrentStateInfo.x_Angle)
-            mStates.memsAxisX.set(commonCurrentStateInfo.y_Angle)
-            mStates.memsAxisZ.set(commonCurrentStateInfo.z_Angle)
-
-            //"self_check": "GPS:1,eMMC:1,4g:1,RTC:1,solar485:0,G-Sensor:1,BT:1,GNSS:1,QMC:0,SHT21:1,product_time:20240411"
-            //解析 self_check,根据逗号分隔，取出各个传感器的状态
-            val selfCheck = commonCurrentStateInfo.self_check
-            val selfCheckArray = selfCheck.split(",")
-            //查找 MEMS 并设置状态
-            for (item in selfCheckArray) {
-                val sensor = item.split(":")
-                when (sensor[0].uppercase()) {
-                    "G-SENSOR" -> {
-                        mStates.memsErrNo.set(sensor[1])
-                    }
-                }
-            }
-
-        } catch (e: Exception) {
-            Timber.e(e)
         }
     }
 

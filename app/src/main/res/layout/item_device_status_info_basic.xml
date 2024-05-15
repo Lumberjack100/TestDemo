@@ -12,53 +12,39 @@
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:id="@+id/item"
+        style="@style/DeviceCurrentState_SingleItem_Style"
+        android:background="@drawable/layer_common_click_item_with_divider">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/item"
-            style="@style/DeviceCurrentState_SingleItem_Style"
-            android:background="@drawable/layer_common_click_item_with_divider">
-
-            <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                android:text='@{m.name}'
-                tools:text="固件版本" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_value"
-                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                visible='@{ !m.clickable}'
-                android:layout_width="wrap_content"
-                android:background='@{m.clipboard?@color/bg_gray_15:@color/transparent}'
-                android:text="@{m.value}"
-                android:textColor="@{m.colorRes==0?@color/title_text_color:m.colorRes}"
-                tools:text="1212" />
-
-            <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_ValueStyle"
-                rightArrowVisible="@{m.clickable}"
-                visible='@{ m.clickable}'
-                android:layout_width="wrap_content"
-                android:text="@{m.value}"
-                android:textColor="@{m.colorRes==0?@color/title_text_color:m.colorRes}"
-                tools:drawableEndCompat="@drawable/icon_arrow_right"
-                tools:text="1212" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            android:text='@{m.name}'
+            tools:text="固件版本" />
 
         <View
-            android:id="@+id/divider"
-            visible="@{m.isShowDividerGap}"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_size_10"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_value"
+            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            visible='@{ !m.clickable}'
+            android:layout_width="wrap_content"
+            android:background='@{m.clipboard?@color/bg_gray_15:@color/transparent}'
+            android:text="@{m.value}"
+            android:textColor="@{m.colorRes==0?@color/title_text_color:m.colorRes}"
+            tools:text="1212" />
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/Common_ClickableItem_ValueStyle"
+            rightArrowVisible="@{m.clickable}"
+            visible='@{ m.clickable}'
+            android:layout_width="wrap_content"
+            android:text="@{m.value}"
+            android:textColor="@{m.colorRes==0?@color/title_text_color:m.colorRes}"
+            tools:drawableEndCompat="@drawable/icon_arrow_right"
+            tools:text="1212" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

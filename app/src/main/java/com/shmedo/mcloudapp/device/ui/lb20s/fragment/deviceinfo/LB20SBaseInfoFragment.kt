@@ -121,6 +121,7 @@ class LB20SBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     unit = "V",
                 )
                 binding.recyclerview.models = groupList
+
             } catch (e: Exception) {
                 Timber.e(e)
             }

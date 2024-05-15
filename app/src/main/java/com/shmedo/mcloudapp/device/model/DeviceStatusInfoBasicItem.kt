@@ -12,8 +12,7 @@ data class DeviceStatusInfoBasicItem(
     var value: String = "",
     var colorRes: Int = 0,
     var isClickable: Boolean = false,
-    var isClipboard: Boolean = false,
-    var isShowDividerGap: Boolean = false
+    var isClipboard: Boolean = false
 
 ) : BaseObservable() {
 

@@ -104,8 +104,8 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     val tempValue = it.toIntOrNull() ?: 0
                     groupList.add(
                         DeviceStatusInfoBasicItem(
-                            name = "运行时间(小时)",
-                            value = decimalFormat.format(tempValue / 3600)
+                            name = "运行时间",
+                            value = decimalFormat.format(tempValue / 3600)+ " 小时"
                         )
                     )
                 }
