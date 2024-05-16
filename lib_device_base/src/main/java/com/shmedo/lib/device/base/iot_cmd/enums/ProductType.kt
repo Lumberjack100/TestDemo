@@ -169,15 +169,15 @@ enum class ProductType(
         description = ""
     ),
 
-
+    ADME_HAC("ADME_HAC10", oldSuffix = "T", productName = "半自动化测斜机器人"),
     ADME("ADME", oldSuffix = "T", productName = "自动化测斜机器人"),
     BHY("BHY", oldSuffix = "H", productName = "崩滑仪"),
     DAS("DAS", oldSuffix = "L", productName = "智能采集器"),
-    LR200("LR200", oldSuffix = "Z", productName = "一体式裂缝计"),
+    LR200("LR200", oldSuffix = "Z", productName = "米度一体式裂缝计"),
     M20("M20", oldSuffix = "V", productName = "M20-GNSS"),
     MR702("MR702", oldSuffix = "A", productName = "水利遥测终端机"),
     RN20("RN20", oldSuffix = "Y", productName = "轴力计"),
-    VMS("VMS,GW300", oldSuffix = "G", productName = "振弦式采集仪"),
+    LB20S("MD-LB20S", oldSuffix = "S", productName = "无线预警广播"),
 
     INCLINOMETER_DEBUG_BOX("INCLINOMETER", "#", productName = "蓝牙测斜仪调试盒子"),
     TEST_DEVICE("TEST", oldSuffix = "", productName = "测试设备"),

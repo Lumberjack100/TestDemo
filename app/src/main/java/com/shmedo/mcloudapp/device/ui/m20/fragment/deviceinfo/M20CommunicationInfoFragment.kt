@@ -97,7 +97,9 @@ class M20CommunicationInfoFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 
@@ -105,17 +107,23 @@ class M20CommunicationInfoFragment : BaseIOTDeviceFragment() {
         try {
             val commonCurrentStateInfo =
                 MoshiUtil.fromJson<CommonCurrentStateInfo>(content) ?: return
-            mStates.wrapStateInfo.set(commonCurrentStateInfo)
-
-            mStates.amsState.set(
-                if (commonCurrentStateInfo.dataCenter4 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter4 == 1) "在线" else "离线"
-            )
 
             tableAdapter.setAllItems(
                 getColumnHeaderList(),
                 getRowHeaderList(),
                 getCellDataList(commonCurrentStateInfo)
             )
+
+            mStates.starNum.set(commonCurrentStateInfo.starNum)
+            mStates.amsState.set(
+                if (commonCurrentStateInfo.dataCenter4 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter4 == 1) "已连接" else "未连接"
+            )
+            mStates.signalValue.set(commonCurrentStateInfo._4g_signal.let {
+                if (it <= 0)
+                    it
+                else
+                    it * 2 - 113
+            } ?: -113)
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -144,25 +152,25 @@ class M20CommunicationInfoFragment : BaseIOTDeviceFragment() {
                 "数据状态" -> {
                     columnCellDataList.add(
                         CommunicationDataCellModel(
-                            mData = if (commonCurrentStateInfo.dataCenter1 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter1 == 1) "在线" else "离线",
+                            mData = if (commonCurrentStateInfo.dataCenter1 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter1 == 1) "已连接" else "未连接",
                             textColorResId = if (commonCurrentStateInfo.dataCenter1 == 1) R.color.device_online_platform else R.color.device_offline_platform
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
-                            mData = if (commonCurrentStateInfo.dataCenter2 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter2 == 1) "在线" else "离线",
+                            mData = if (commonCurrentStateInfo.dataCenter2 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter2 == 1) "已连接" else "未连接",
                             textColorResId = if (commonCurrentStateInfo.dataCenter2 == 1) R.color.device_online_platform else R.color.device_offline_platform
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
-                            mData = if (commonCurrentStateInfo.dataCenter3 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter3 == 1) "在线" else "离线",
+                            mData = if (commonCurrentStateInfo.dataCenter3 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter3 == 1) "已连接" else "未连接",
                             textColorResId = if (commonCurrentStateInfo.dataCenter3 == 1) R.color.device_online_platform else R.color.device_offline_platform
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
-                            mData = if (commonCurrentStateInfo.dataCenter4 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter4 == 1) "在线" else "离线",
+                            mData = if (commonCurrentStateInfo.dataCenter4 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter4 == 1) "已连接" else "未连接",
                             textColorResId = if (commonCurrentStateInfo.dataCenter4 == 1) R.color.device_online_platform else R.color.device_offline_platform
                         )
                     )

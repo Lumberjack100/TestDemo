@@ -28,19 +28,19 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentAdmeExecutiveAgencyBinding
-import com.shmedo.mcloudapp.device.common.BaseClickProxy
+import com.shmedo.mcloudapp.device.common.BaseAdmeExecutiveAgencyClickProxy
 import com.shmedo.mcloudapp.device.model.AdmeTimeItem
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.adme.adapter.AdmeTimeAdapter
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeExecutiveAgencyViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -66,6 +66,8 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             mData
         )
     }
+
+    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
 
     override fun initViewModel() {
@@ -168,7 +170,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         mStates.isEditable.set(editable)
     }
 
-    inner class ClickProxy : BaseClickProxy() {
+    inner class ClickProxy : BaseAdmeExecutiveAgencyClickProxy() {
         override fun onToolbarIvClick() {
             setEditable(true)
         }
@@ -180,7 +182,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         /**
          * 测量方式
          */
-        fun onMeasureMethodClick() {
+        override fun onMeasureMethodClick() {
             val selectedIndex = measureMethodList.indexOf(mStates.measureMethodText.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
@@ -203,7 +205,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         /**
          * 数据解算方式
          */
-        fun onDataSettlementMethodClick() {
+        override fun onDataSettlementMethodClick() {
             val selectedIndex = settlementMethodList.indexOf(mStates.dataSettlementMethod.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
@@ -223,7 +225,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         /**
          * 数据应答方式
          */
-        fun onDataResponseClick() {
+        override fun onDataResponseClick() {
             val selectedIndex = dataResponseTypeList.indexOf(mStates.dataResponse.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
@@ -243,7 +245,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         /**
          * 每轮测量间隔
          */
-        fun onMeasIntervalPerRoundsClick() {
+        override fun onMeasIntervalPerRoundsClick() {
             val selectedIndex =
                 measIntervalPerRoundList.indexOf(mStates.measurementIntervalPerRound.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -261,7 +263,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        fun onSubmitClick() {
+        override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
             if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
@@ -410,7 +412,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             showMessageDialog("电机上拉速度数值范围[1,180]!")
             return
         }
-        if(mStates.isPullUpZeroSpeedSupport.get()){
+        if (mStates.pullUpZeroSpeed.get() != IOTConstants.NULL_KEY) {
             if (mStates.pullUpZeroSpeed.get().isEmpty()) {
                 Toaster.show("请输入上拉归零速度!")
                 return
@@ -545,7 +547,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             downspeed = mStates.decentralizationSpeed.get(),
             downwaitetime = mStates.decentralizationWaitingTime.get(),
             upspeed = mStates.pullUpSpeed.get(),
-            pzspeed = if (mStates.isPullUpZeroSpeedSupport.get()) mStates.pullUpZeroSpeed.get() else IOTConstants.NULL_KEY,
+            pzspeed = mStates.pullUpZeroSpeed.get(),
             measpacing = mStates.measuringDistance.get(),
             meaintertime = mStates.measurementIntervalTime.get(),
             meabaseth = mStates.measuringReferenceDepth.get(),
@@ -653,12 +655,15 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 
     private fun initParamData(info: AdmeExecutiveAgencyInfo) {
-        val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
+        mStates.wrapInfo.set(info)
+        mStates.wrapInfo.notifyChange()
         try {
             mStates.measureMethodText.set(if (info.meastype == "0") measureMethodList[0] else measureMethodList[1])
             mStates.measureMethod.set(info.meastype.toInt())
@@ -666,11 +671,13 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             mStates.dataResponse.set(if (info.datareply == "0") dataResponseTypeList[0] else dataResponseTypeList[1])
             mStates.waitingIntervalPerRound.set(info.roundwaitetime)
             mStates.measurementIntervalPerRound.set(info.roundmeasinval)
-            mStates.modifiedDate.set(
-                TimeUtils.date2String(
-                    Date(info.updatedate.toLong() * 1000),
-                    "yyyy-MM-dd"
-                )
+            mStates.modifiedDate.set(info.updatedate.toLongOrNull()
+                ?.let {
+                    TimeUtils.date2String(
+                        Date(it * 1000),
+                        "yyyy-MM-dd"
+                    )
+                } ?: ""
             )
             mStates.intervalDays.set(info.invalday)
             mStates.startTimePerRound.set(info.roundmeasstart)
@@ -703,10 +710,8 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             mStates.decentralizationSpeed.set(info.downspeed)
             mStates.decentralizationWaitingTime.set(info.downwaitetime)
             mStates.pullUpSpeed.set(info.upspeed)
-            mStates.isPullUpZeroSpeedSupport.set(info.pzspeed != IOTConstants.NULL_KEY)
-            if (mStates.isPullUpZeroSpeedSupport.get()) {
-                mStates.pullUpZeroSpeed.set(info.pzspeed)
-            }
+            mStates.pullUpZeroSpeed.set(info.pzspeed)
+
             decimalFormat.applyPattern("#.##")
             mStates.measuringDistance.set(info.measpacing.toDoubleOrNull()?.let {
                 decimalFormat.format(it)

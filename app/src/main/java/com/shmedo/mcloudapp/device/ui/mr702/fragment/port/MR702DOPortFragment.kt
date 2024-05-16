@@ -163,7 +163,9 @@ class MR702DOPortFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

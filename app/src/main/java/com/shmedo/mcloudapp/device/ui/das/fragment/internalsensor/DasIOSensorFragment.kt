@@ -219,7 +219,9 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
-import com.blankj.utilcode.util.TimeUtils
 import com.drake.brv.PageRefreshLayout
 import com.drake.brv.listener.OnHoverAttachListener
 import com.drake.brv.utils.linear
@@ -124,101 +123,6 @@ class LogSessionListFragment : BaseFragment() {
                     }
                 }
         }
-    }
-
-    private fun getTestData(): List<Any> {
-        return listOf(
-            HoverHeaderModel("2021-08-10"),
-            SessionInfo(
-                key = "70:04:1D:8C:BB:9E",
-                name = "MD-22T773A",
-                createBy = MmkvCacheUtil.getUserName(),
-                createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
-                createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
-            ),
-            SessionInfo(
-                key = "70:04:1D:8C:BB:9E",
-                name = "MD-22T773A",
-                createBy = MmkvCacheUtil.getUserName(),
-                createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
-                createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
-            ),
-            HoverHeaderModel("2021-08-09"),
-            SessionInfo(
-                key = "70:04:1D:8C:BB:9E",
-                name = "MD-22T773A",
-                createBy = MmkvCacheUtil.getUserName(),
-                createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
-                createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
-            ),
-            SessionInfo(
-                key = "70:04:1D:8C:BB:9E",
-                name = "MD-22T773A",
-                createBy = MmkvCacheUtil.getUserName(),
-                createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
-                createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
-            ),
-            HoverHeaderModel("2021-08-08"),
-            SessionInfo(
-                key = "70:04:1D:8C:BB:9E",
-                name = "MD-22T773A",
-                createBy = MmkvCacheUtil.getUserName(),
-                createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
-                createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
-            ),
-            SessionInfo(
-                key = "70:04:1D:8C:BB:9E",
-                name = "MD-22T773A",
-                createBy = MmkvCacheUtil.getUserName(),
-                createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
-                createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
-            ),
-            HoverHeaderModel("2021-08-07"),
-            SessionInfo(
-                key = "70:04:1D:8C:BB:9E",
-                name = "MD-22T773A",
-                createBy = MmkvCacheUtil.getUserName(),
-                createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
-                createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
-            ),
-            SessionInfo(
-                key = "70:04:1D:8C:BB:9E",
-                name = "MD-22T773A",
-                createBy = MmkvCacheUtil.getUserName(),
-                createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
-                createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
-            ),
-            HoverHeaderModel("2021-08-06"),
-            SessionInfo(
-                key = "70:04:1D:8C:BB:9E",
-                name = "MD-22T773A",
-                createBy = MmkvCacheUtil.getUserName(),
-                createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
-                createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
-            ),
-            SessionInfo(
-                key = "70:04:1D:8C:BB:9E",
-                name = "MD-22T773A",
-                createBy = MmkvCacheUtil.getUserName(),
-                createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
-                createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
-            ),
-            HoverHeaderModel("2021-08-05"),
-            SessionInfo(
-                key = "70:04:1D:8C:BB:9E",
-                name = "MD-22T773A",
-                createBy = MmkvCacheUtil.getUserName(),
-                createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
-                createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
-            ),
-            SessionInfo(
-                key = "70:04:1D:8C:BB:9E",
-                name = "MD-22T773A",
-                createBy = MmkvCacheUtil.getUserName(),
-                createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
-                createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
-            ),
-        )
     }
 
     override fun onResume() {

@@ -18,7 +18,8 @@ data class CommonCurrentStateInfo2(
     var rttVersion: String = IOTConstants.NULL_KEY, //RTT操作系统版本 4.1.0
     var hardwareVersion: String = IOTConstants.NULL_KEY, //硬件版本 V10
     var firmwareVersion: String = IOTConstants.NULL_KEY, //固件版本 1.0.0_M19
-    var signal: Int = 0, //4G信号强度
+    var signal: String = IOTConstants.NULL_KEY, //4G信号强度
+    var csq: String = IOTConstants.NULL_KEY, //4G信号强度
     @Json(name = "4g")
     var _4g: String = IOTConstants.NULL_KEY, //状态  OK/FAIL  OK，状态正常；FAIL，状态异常
     var scl: String = IOTConstants.NULL_KEY, //倾角加速度状态 OK/FAIL
@@ -27,7 +28,7 @@ data class CommonCurrentStateInfo2(
     var bt: String = IOTConstants.NULL_KEY, //蓝牙状态 OK/FAIL
     var btVersion: String = IOTConstants.NULL_KEY, //蓝牙模块版本
     var ld: String = IOTConstants.NULL_KEY, //雷达状态 OK/FAIL
-    var radio: String = IOTConstants.NULL_KEY, //电台模块状态 OK/FAIL
+    var radio: String = IOTConstants.NULL_KEY, //电台状态 OK/FAIL
     var radioVersion: String = IOTConstants.NULL_KEY, //电台模块版本
     var radioEUI: String = IOTConstants.NULL_KEY, //电台EUI-ID
     var cam: String = IOTConstants.NULL_KEY, //相机状态 OK/FAIL
@@ -62,7 +63,8 @@ data class CommonCurrentStateInfo2(
     var ccid: String = IOTConstants.NULL_KEY, //CCID
     var imei: String = IOTConstants.NULL_KEY, //IMEI
     var imsi: String = IOTConstants.NULL_KEY, //IMSI
-    var dataCenterStatus: String = IOTConstants.NULL_KEY, //数据中心状态 [0,1,1]
+    var dataCenterStatus: String = IOTConstants.NULL_KEY, //数据中心连接状态 [0,1,1]
+    var dataCenterUseSta: String = IOTConstants.NULL_KEY, //数据中心启用状态 [0,1,1]
     var starSearchNum: String = IOTConstants.NULL_KEY, //搜星数
     var location: String = IOTConstants.NULL_KEY, //坐标 12135.648003E, 3112.752093N
     var worktime: String = IOTConstants.NULL_KEY,//运行时间

@@ -23,6 +23,7 @@ import com.shmedo.lib.core.ext.getLogItem
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
@@ -43,6 +44,7 @@ import com.shmedo.mcloudapp.ext.showLoadingDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import timber.log.Timber
@@ -61,14 +63,26 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     protected var refreshLayout: PageRefreshLayout? = null
 
+    protected var productType = ProductType.UnKnown
     protected var statusBarColor = 0
     protected var communicateWay: CommunicateWay = NetPlatformConnect
     protected lateinit var deviceInfo: DeviceInfo
     protected var bleDevice: DiscoveredBluetoothDevice? = null
     private var timeoutJob: Job? = null
-
     protected var commandItems = LinkedList<String>()
     protected var commandDescItems = LinkedList<String>()
+
+    protected val lastCommunicationTime = MutableStateFlow(System.currentTimeMillis())
+
+    // 检查是否超时
+    protected fun isNearbyCommunicationTimeout(lastUpdateTime: Long): Boolean {
+        return (System.currentTimeMillis() - lastUpdateTime) >= AppContants.Communication.DELAY_10000_MILLIS
+    }
+
+    // 更新最后通信时间
+    protected fun updateLastCommunicationTime() {
+        lastCommunicationTime.value = System.currentTimeMillis()
+    }
 
     @CallSuper
     override fun initViewModel() {
@@ -81,6 +95,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     @CallSuper
     override fun initData() {
         arguments?.let {
+            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
             communicateWay = it.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
             deviceInfo = it.getParcelable(AppContants.Extras.DEVICE_INFO)!!
             bleDevice = it.getParcelable(AppContants.Extras.BLE_DEVICE)
@@ -229,8 +244,12 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     abstract fun setResultData(cmdStr: String)
 
-    protected fun sendHeartbeatCommand(command: String) {
+    protected fun sendHeartbeatMDCommand(command: String) {
         bleViewModel.sendMDCommand(command, 0)
+    }
+
+    protected fun sendHeartbeatIOTCommand(command: String) {
+        bleViewModel.sendIOTCommand(command, deviceInfo.apikey, 0)
     }
 
     /**
@@ -346,11 +365,13 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     companion object {
         fun newBundleArguments(
+            type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
             deviceInfo: DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
             putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
             putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
             putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)

@@ -163,25 +163,22 @@ class BleScannerListFragment : BaseFragment() {
         }
         deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
-                if (discoveredBluetoothDevice!!.name.isNullOrEmpty()) {
-                    Toaster.show("获取设备信息失败!${dataResult.responseStatus.errorMessage}")
-                    return@observe
-                }
                 discoveredBluetoothDevice!!.name?.let { token ->
-                    if (token.endsWith(ProductType.COLLECTOR_G_0.newSuffix)) {
-                        DeviceHomeActivity.start(
-                            mActivity,
-                            DeviceInfo(
-                                productName = ProductType.COLLECTOR_G_0.productName,
-                                deviceToken = token,
-                                deviceName = "MD-GW100",
-                            ),
-                            discoveredBluetoothDevice,
-                            BleConnect
-                        )
+                    //CG0 自组网报警网关 特殊处理
+                    if (!token.endsWith(ProductType.COLLECTOR_G_0.newSuffix)) {
+                        Toaster.show("获取设备信息失败!${dataResult.responseStatus.errorMessage}")
                         return@observe
                     }
-                    Toaster.show("获取设备信息失败!${dataResult.responseStatus.errorMessage}")
+                    DeviceHomeActivity.start(
+                        mActivity,
+                        DeviceInfo(
+                            productName = ProductType.COLLECTOR_G_0.productName,
+                            deviceToken = token,
+                            deviceName = "MD-GW100",
+                        ),
+                        discoveredBluetoothDevice,
+                        BleConnect
+                    )
                     return@observe
                 }
                 return@observe

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="com.shmedo.mcloudapp.device.model.SingleSelectionItem" />
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center_vertical"
+        android:paddingVertical="@dimen/dimen_size_10">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/dimen_size_15"
+            android:text="@{m.name}"
+            android:textColor="@{m.isChecked?m.obtainCheckedTextColorRes():@color/title_text_color}"
+            android:textSize="@dimen/text_size_15"
+            tools:text="定时定点上报"
+            tools:textColor="@color/title_text_color" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

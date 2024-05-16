@@ -73,37 +73,51 @@
             android:id="@+id/ll_send"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
             android:background="@color/white"
-            android:gravity="center_vertical"
-            android:padding="@dimen/dimen_size_10"
+            android:paddingHorizontal="@dimen/dimen_size_12"
+            android:paddingVertical="@dimen/dimen_size_10"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recyclerview">
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_switch_cmd_type"
+                onClickWithDebouncing="@{()->click.onSwitchCmdTypeClick()}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginEnd="@dimen/dimen_size_8"
+                android:layout_marginBottom="@dimen/dimen_size_5"
+                android:padding="@dimen/dimen_size_5"
+                android:src="@drawable/ic_switch_adme_config_model" />
+
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_custom_command"
                 android:layout_width="0dp"
-                android:layout_height="38dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@drawable/bg_search_project_gray"
                 android:hint="$cmd= 或 ##开头"
-                android:paddingHorizontal="@dimen/dimen_size_10"
-                android:singleLine="true"
+                android:maxHeight="200dp"
+                android:minHeight="@dimen/dimen_size_40"
+                android:padding="@dimen/dimen_size_4"
                 android:text="@={stateVM.command}"
                 android:textColor="@color/title_text_color"
                 android:textColorHint="@color/text_color_b3b3b3"
-                android:textSize="@dimen/text_size_15" />
+                android:textSize="@dimen/text_size_14"
+                app:drawable_radius="@{4}"
+                app:drawable_solidColor="@{@color/search_bg_gray_color}"
+                tools:background="@drawable/bg_command_log_input" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/btn_send"
                 onClickWithDebouncing="@{()->click.onSendClick()}"
-                android:layout_width="80dp"
-                android:layout_height="38dp"
-                android:layout_marginStart="8dp"
+                android:layout_width="60dp"
+                android:layout_height="30dp"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="@dimen/dimen_size_8"
                 android:gravity="center"
                 android:text="发送"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_16"
+                android:textSize="@dimen/text_size_14"
                 app:drawable_radius="@{4}"
                 app:drawable_solidColor="@{@color/colorPrimary}"
                 tools:background="@color/colorPrimary" />

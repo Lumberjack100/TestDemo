@@ -8,11 +8,7 @@ package com.shmedo.lib.core.util
 interface AppContants {
 
     companion object {
-        const val PGY_API_KEY = "64454bf76fe2abd8dec45200c11fc93b"
-        const val PGY_APP_KEY = "b8a852c106c6cc532332081e22f218a9"
 
-        const val AMS_APP_KEY = "b80dd379-5256-48c8-947a-2208872c8a8f"
-        const val AMS_APP_SECRET = "3dc8e0ec1f673325c6694b4da534dabe"
     }
 
     interface Extras {
@@ -33,9 +29,18 @@ interface AppContants {
 
             //蓝牙设备信息
             const val BLE_DEVICE = "ble_device"
+
             const val SERVER_NUMBER = "server_number"
+
+            const val SENSOR_CHANNEL = "sensor_channel"
+
+            const val SENSOR_INDEX = "sensor_index"
+
+            const val SENSOR_ADDR = "sensor_addr"
+
             const val FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY =
                 "fragment_data_center_home_result_request_key"
+
             const val REFRESH_DATA_CENTER_STATUS = "refresh_data_center_status"
         }
     }

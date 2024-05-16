@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.NetDeviceListViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.device.ui.NewNetDeviceListFragment.ClickProxy" />
+
+    </data>
+
+    <com.drake.brv.PageRefreshLayout
+        android:id="@+id/page"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray"
+        app:srlEnableLoadMore="false">
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/coordinator"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                app:elevation="0dp">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_scrollFlags="scroll">
+
+                    <include
+                        android:id="@+id/search_placeholder"
+                        layout="@layout/search_device_placeholder_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:click="@{click}" />
+
+                    <include
+                        android:id="@+id/ll_statistics"
+                        layout="@layout/include_net_device_list_statistics"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:vm="@{stateVM}" />
+
+                    <View
+                        android:id="@+id/head_line"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvTab"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/dimen_size_10"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="5"
+                    tools:listitem="@layout/item_filter_device_tab" />
+
+            </com.google.android.material.appbar.AppBarLayout>
+
+            <com.drake.brv.PageRefreshLayout
+                android:id="@+id/refreshLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                app:srlEnableRefresh="false">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerview_device"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:clipToPadding="false"
+                    android:padding="@dimen/dimen_size_10"
+                    android:splitMotionEvents="false"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="2"
+                    tools:listitem="@layout/item_device_info" />
+
+            </com.drake.brv.PageRefreshLayout>
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </com.drake.brv.PageRefreshLayout>
+</layout>

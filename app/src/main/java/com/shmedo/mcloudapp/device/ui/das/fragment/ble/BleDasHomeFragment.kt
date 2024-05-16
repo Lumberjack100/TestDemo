@@ -55,7 +55,6 @@ import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessage
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.debounce
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -67,9 +66,6 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: BleDasHomeFragmentViewModel
     private lateinit var mCommandResponseStates: CommandResponseViewModel
     private val mdParseManager: MDParserManager by inject()
-
-    private val lastCommunicationTime = MutableStateFlow(System.currentTimeMillis())
-
 
     override fun initViewModel() {
         super.initViewModel()
@@ -154,8 +150,8 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         mStates.deviceStateTagText.set("未连接")
         mStates.isConnectOperateVisible.set(true)
         mStates.connectOperateText.set("蓝牙连接")
-        mStates.isPlatformConnectionStateVisible.set(true)
-        mStates.platformConnectionStateText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
+        mStates.isIOTPlatformStateVisible.set(true)
+        mStates.iotPlatformStateText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
 
         updateConfigModuleData()
     }
@@ -228,7 +224,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         }
         when (module.configModule) {
             is TimeCalibrationModule -> {//时间校准
-                doQueryTimeCmd()
+                queryTerminalTime()
                 mCommandResponseStates.isResponseLoading.set(true)
                 showTimeCalibrationPopup()
             }
@@ -246,11 +242,12 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             is CollectorConfigModule -> {//采集器配置
                 if (module.configModule.navId != 0) {
                     val bundle = BleDasCollectorSettingFragment.newBundleArguments(
+                        mStates.collectorModel.get(),
+                        productType,
                         communicateWay,
                         deviceInfo,
                         bleDevice,
-                        mStates.collectorModel.get()
-                    )
+                        )
                     nav().navigate(
                         module.configModule.navId,
                         bundle
@@ -261,10 +258,11 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             is SensorConfigModule -> {//传感器配置
                 if (module.configModule.navId != 0) {
                     val bundle = BleDasSensorHomeFragment.newBundleArguments(
+                        mStates.collectorModel.get(),
+                        productType,
                         communicateWay,
                         deviceInfo,
                         bleDevice,
-                        mStates.collectorModel.get()
                     )
                     nav().navigate(
                         module.configModule.navId,
@@ -276,6 +274,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             else -> {
                 if (module.configModule.navId != 0) {
                     val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                        productType,
                         communicateWay,
                         deviceInfo,
                         bleDevice
@@ -406,7 +405,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = false)
     }
 
-    private fun doQueryTimeCmd() {
+    private fun queryTerminalTime() {
         commandItems.clear()
 
         val command =
@@ -678,7 +677,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                     "关于设备",
                     "设备基本信息、运行数据",
                     R.drawable.ic_device_running_info,
-                    navId = R.id.action_bleDasHomeFragment_to_bleDasDeviceInfoFragment
+                    navId = R.id.action_global_to_commonRunningDeviceInfoFragment
                 )
             )
         )
@@ -706,17 +705,6 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         binding.recyclerview.models = moduleList
     }
 
-
-    // 检查是否超时
-    private fun isNearbyCommunicationTimeout(lastUpdateTime: Long): Boolean {
-        return (System.currentTimeMillis() - lastUpdateTime) >= AppContants.Communication.DELAY_10000_MILLIS
-    }
-
-    // 更新最后通信时间
-    private fun updateLastCommunicationTime() {
-        lastCommunicationTime.value = System.currentTimeMillis()
-    }
-
     // 设置心跳检查
     private fun setupHeartbeat() {
         launchWithViewLifecycle {
@@ -728,9 +716,9 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                     // 仅当设备连接并且需要发送心跳时，才发送心跳包
                     if (mStates.isConnected.get() && isNearbyCommunicationTimeout(lastUpdateTime)) {
                         Timber.d("bingo startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
-                        val command = MDCommandUtil.getCommand(MDCommandType.HEARTBEAT)
+                        val command = MDCommandUtil.getCommand(MDCommandType.HEART_BEAT)
                         Timber.d("发送心跳包指令: $command")
-                        sendHeartbeatCommand(command)
+                        sendHeartbeatMDCommand(command)
                     }
                 }
         }

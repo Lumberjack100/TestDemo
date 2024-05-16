@@ -350,7 +350,9 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

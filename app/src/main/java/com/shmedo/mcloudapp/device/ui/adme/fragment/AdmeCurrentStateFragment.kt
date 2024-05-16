@@ -8,10 +8,13 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.device.base.iot_cmd.enums.AdmeCTRMotionState
 import com.shmedo.lib.device.base.iot_cmd.enums.AdmeModuleErrorType
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeCurrentStateInfo
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeMotionState
+import com.shmedo.lib.device.base.iot_cmd.model.hac.HacMotionState
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
@@ -43,6 +46,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: AdmeCurrentStateViewModel
     private val iotParseManager: IOTParserManager by inject()
+    private val decimalFormat = DecimalFormat("#.###", DecimalFormatSymbols(Locale.getDefault()))
 
     private var currentStateInfo: AdmeCurrentStateInfo? = null
 
@@ -104,8 +108,13 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
         var command = IOTCommandUtil.getCommand(IOTCommandType.ADME_MD_GET_EQUIPMENT_STATE)
         commandItems.add(command)
 
-        command = IOTCommandUtil.getCommand(IOTCommandType.ADME_MD_GET_MOTION_STATE)
-        commandItems.add(command)
+        if (productType == ProductType.ADME_HAC) {
+            command = IOTCommandUtil.getCommand(IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE)
+            commandItems.add(command)
+        } else {
+            command = IOTCommandUtil.getCommand(IOTCommandType.ADME_MD_GET_MOTION_STATE)
+            commandItems.add(command)
+        }
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -128,14 +137,16 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
                         currentStateInfo = result.data
                         initStatusInfo(result.data)
                     }
                 }
             }
 
-            IOTCommandType.ADME_MD_GET_MOTION_STATE -> {//获取ADME的运行状态
+            IOTCommandType.ADME_MD_GET_MOTION_STATE -> {//获取 ADME 的运行状态
                 val result = iotParseManager.parse<AdmeMotionState>(
                     cmdStr,
                     IOTCommandType.ADME_MD_GET_MOTION_STATE
@@ -143,7 +154,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "获取设备的运行状态出错: ${result.message}"
+                        val errMsg = "获取CTR工作状态出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
                         return
@@ -158,21 +169,37 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE -> {//获取ADME HAC 的运行状态
+                val result = iotParseManager.parse<HacMotionState>(
+                    cmdStr,
+                    IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "获取CTR工作状态出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        updateHacMotionState(result.data)
+                    }
+                }
+            }
+
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 
     private fun initStatusInfo(currentStateInfo: AdmeCurrentStateInfo) {
-        val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
         try {
-            mStates.sn.set(currentStateInfo.sn)
-            mStates.productType.set(currentStateInfo.productid)
-            mStates.sim.set(currentStateInfo.simid)
-            mStates.imei.set(currentStateInfo.imeid)
-            mStates.firmwareVersion.set(currentStateInfo.firversion)
-            mStates.signal.set(String.format("%sdBm", currentStateInfo.scsq))
-            mStates.signalValue.set(currentStateInfo.scsq.toInt())
-
             mStates.deviceNormal.set(currentStateInfo.abndiasis == "0")
             when (currentStateInfo.testway) {
                 "0" -> mStates.workMode.set("常规测量模式")
@@ -180,58 +207,109 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                 "2" -> mStates.workMode.set("静态测量模式")
                 "3" -> mStates.workMode.set("设备停用模式")
             }
-            mStates.ctrInputVoltage.set(currentStateInfo.ctrinputv.toDoubleOrNull()?.let {
-                decimalFormat.format(it) + "V"
-            } ?: "--V")
-            mStates.driverInputVoltage.set(currentStateInfo.driveinputv.toDoubleOrNull()?.let {
-                decimalFormat.format(it) + "V"
-            } ?: "--V")
-            mStates.deviceTemperature.set(currentStateInfo.temperature.toDoubleOrNull()?.let {
-                decimalFormat.format(it) + "℃"
-            } ?: "--℃")
-            mStates.deviceHumidity.set(currentStateInfo.humidity.toDoubleOrNull()?.let {
-                decimalFormat.format(it) + "%"
-            } ?: "--%")
-            mStates.deviceDropNumber.set(currentStateInfo.downnum)
+            mStates.wrapStateInfo.set(currentStateInfo)
+            mStates.wrapStateInfo.get().apply {
+                ctrinputv = ctrinputv.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: IOTConstants.NULL_KEY
+                driveinputv = driveinputv.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: IOTConstants.NULL_KEY
+                temperature = temperature.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: IOTConstants.NULL_KEY
+                humidity = humidity.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: IOTConstants.NULL_KEY
+                runmileage = runmileage.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it / 100)
+                    } ?: IOTConstants.NULL_KEY
 
-            decimalFormat.applyPattern("#.#")
-            mStates.deviceMileage.set(currentStateInfo.runmileage.toDoubleOrNull()?.let {
-                decimalFormat.format(it / 100) + "m"
-            } ?: "--m")
-            mStates.nextMeasureTime.set(currentStateInfo.nexttime.toULongOrNull()?.let {
-                if (it > 0u) {
-                    TimeUtils.millis2String(
-                        it.toLong(),
-                        "yyyy-MM-dd HH:mm"
-                    )
-                } else "--"
-            } ?: "--")
-            mStates.inclinometerType.set(if (currentStateInfo.inctype == "0") "433测斜仪" else "蓝牙测斜仪")
-            mStates.inclinometerChannelNumber.set(currentStateInfo.incnum)
-            mStates.inclinometerLocationInfo.set(currentStateInfo.incloc)
+                nexttime = nexttime.toULongOrNull()
+                    ?.let {
+                        if (it > 0u) {
+                            TimeUtils.millis2String(
+                                it.toLong(),
+                                "yyyy-MM-dd HH:mm"
+                            )
+                        } else IOTConstants.NULL_KEY
+                    } ?: IOTConstants.NULL_KEY
 
-            decimalFormat.applyPattern("#.#")
-            mStates.inclinometerVoltage.set(currentStateInfo.incvoltage.toDoubleOrNull()?.let {
-                decimalFormat.format(it) + "V"
-            } ?: "--V")
-            mStates.inclinometerTemperature.set(currentStateInfo.intertempe.toDoubleOrNull()?.let {
-                decimalFormat.format(it) + "℃"
-            } ?: "--℃")
-            mStates.inclinometerBluetoothSignal.set(String.format("%sdBm", currentStateInfo.bcsq))
-            mStates.inclinometerBluetoothSignalValue.set(currentStateInfo.bcsq.toInt())
+                incvoltage = incvoltage.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: IOTConstants.NULL_KEY
 
-            mStates.isVerticalMagneticSwitchTriggerCountSupport.set(currentStateInfo.verticalswitchnum != IOTConstants.NULL_KEY)
-            if (currentStateInfo.verticalswitchnum != IOTConstants.NULL_KEY) {
-                mStates.verticalMagneticSwitchTriggerCount.set(currentStateInfo.verticalswitchnum)
+                intertempe = intertempe.toDoubleOrNull()
+                    ?.let {
+                        decimalFormat.format(it)
+                    } ?: IOTConstants.NULL_KEY
             }
-            mStates.isRotationMagneticSwitchTriggerCountSupport.set(currentStateInfo.rotaryswitchnum != IOTConstants.NULL_KEY)
-            if (currentStateInfo.rotaryswitchnum != IOTConstants.NULL_KEY) {
-                mStates.rotationMagneticSwitchTriggerCount.set(currentStateInfo.rotaryswitchnum)
+            mStates.wrapStateInfo.notifyChange()
+
+            if (currentStateInfo.scsq != IOTConstants.NULL_KEY) {
+                mStates.signalValue.set(currentStateInfo.scsq.toIntOrNull()?.let {
+                    if (it <= 0)
+                        it
+                    else
+                        it * 2 - 113
+                } ?: -113)
             }
-            mStates.isBrakePadOpenCloseCountSupport.set(currentStateInfo.brakepadnum != IOTConstants.NULL_KEY)
-            if (currentStateInfo.brakepadnum != IOTConstants.NULL_KEY) {
-                mStates.brakePadOpenCloseCount.set(currentStateInfo.brakepadnum)
+            if (currentStateInfo.bcsq != IOTConstants.NULL_KEY) {
+                mStates.inclinometerBluetoothSignalValue.set(
+                    currentStateInfo.bcsq.toIntOrNull()?.let {
+                        if (it <= 0)
+                            it
+                        else
+                            it * 2 - 113
+                    } ?: -113)
             }
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
+
+    private fun updateHacMotionState(hacMotionState: HacMotionState) {
+        try {
+            if (hacMotionState.measmode.isEmpty()) {
+                mStates.ctrMotionInfoVisible.set(false)
+                return
+            }
+            mStates.ctrMotionInfoVisible.set(true)
+            //CTR 工作异常
+            if (hacMotionState.abndiasis != "0") {
+                mStates.measureMode.set("异常保护")
+                mStates.isMotorInfoNormal.set(false)
+                //列出异常原因
+                val stringBuilder = StringBuilder()
+                stringBuilder.append("异常原因: ")
+                val codes = hacMotionState.abndiasis.split("|")
+                codes.forEach { code ->
+                    val errorType = AdmeModuleErrorType.valueByCode(code)
+                    if (errorType != null) {
+                        stringBuilder.append(errorType.description)
+                        stringBuilder.append(";")
+                    }
+                }
+                //移除最后一个分号
+                if (stringBuilder.isNotEmpty()) {
+                    stringBuilder.deleteCharAt(stringBuilder.length - 1)
+                }
+                mStates.motorInfo.set(stringBuilder.toString())
+                return
+            }
+            updateMotionInfo(
+                hacMotionState.measmode,
+                hacMotionState.measpoint,
+                hacMotionState.motorinfo,
+                hacMotionState.waittime
+            )
+
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -244,53 +322,65 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                 return
             }
             mStates.ctrMotionInfoVisible.set(true)
-            mStates.measureMode.set(if (admeMotionState.measmode == "0") "正测" else "反测")
-            val measurePoint = admeMotionState.measpoint
-            when (admeMotionState.motorinfo) {
-                "0" -> mStates.motorInfo.set("磁开关触发")
-                "1" -> mStates.motorInfo.set("磁开关触发,测斜仪配对,设置参数")
-                "2" -> {
-                    val msg = if (measurePoint.isNotEmpty() && !measurePoint.contains("|"))
-                        String.format("测斜仪下放: %s 米", measurePoint)
-                    else
-                        "测斜仪下放"
-                    mStates.motorInfo.set(msg)
-                }
-
-                "3" -> {
-                    val msg = if (measurePoint.isNotEmpty() && !measurePoint.contains("|"))
-                        String.format(
-                            "管底等待-位置(%s 米)-剩余时间(%s 秒)",
-                            measurePoint,
-                            admeMotionState.waittime
-                        )
-                    else
-                        "管底等待"
-                    mStates.motorInfo.set(msg)
-                }
-
-                "4" -> {
-                    if (measurePoint.isNotEmpty() && measurePoint.contains("|")) {
-                        val points = measurePoint.split("|")
-                        val msg = if (points[0].isNotEmpty() && points[1].isNotEmpty())
-                            String.format(
-                                "测点测量-测斜仪位置(%s 米)-测点序列(%s)",
-                                points[1],
-                                points[0]
-                            )
-                        else
-                            "测点测量"
-                        mStates.motorInfo.set(msg)
-                    }
-                }
-
-                "5" -> mStates.motorInfo.set("磁开关触发，测量结束")
-                "6" -> mStates.motorInfo.set("测斜仪配对,读取数据")
-                "7" -> mStates.motorInfo.set("数据上传")
-                "8" -> mStates.motorInfo.set("周期等待")
-            }
+            updateMotionInfo(
+                admeMotionState.measmode,
+                admeMotionState.measpoint,
+                admeMotionState.motorinfo,
+                admeMotionState.waittime
+            )
         } catch (e: Exception) {
             Timber.e(e)
+        }
+    }
+
+    private fun updateMotionInfo(
+        measmode: String,
+        measurePoint: String,
+        motorinfo: String,
+        waittime: String
+    ) {
+        mStates.isMotorInfoNormal.set(true)
+        mStates.measureMode.set(if (measmode == "0") "正测" else "反测")
+        when (val ctrMotionState = AdmeCTRMotionState.valueByCode(motorinfo)) {
+            AdmeCTRMotionState.DOWN -> {//测斜仪下放
+                val msg = if (measurePoint.isNotEmpty() && !measurePoint.contains("|"))
+                    String.format("测斜仪下放: %s 米", measurePoint)
+                else
+                    "测斜仪下放"
+                mStates.motorInfo.set(msg)
+            }
+
+            AdmeCTRMotionState.BOTTOM_WAITING -> {//管底等待
+                val msg = if (measurePoint.isNotEmpty() && !measurePoint.contains("|"))
+                    String.format(
+                        "管底等待-位置(%s 米)-剩余时间(%s 秒)",
+                        measurePoint,
+                        waittime
+                    )
+                else
+                    "管底等待"
+                mStates.motorInfo.set(msg)
+            }
+
+            AdmeCTRMotionState.POINT_MEASUREMENT -> {//测点测量
+                if (measurePoint.isNotEmpty() && measurePoint.contains("|")) {
+                    val points = measurePoint.split("|")
+                    val msg = if (points[0].isNotEmpty() && points[1].isNotEmpty())
+                        String.format(
+                            "测点测量-测斜仪位置(%s 米)-测点序列(%s)",
+                            points[1],
+                            points[0]
+                        )
+                    else
+                        "测点测量"
+                    mStates.motorInfo.set(msg)
+                } else
+                    mStates.motorInfo.set("测点测量")
+            }
+
+            else -> {
+                mStates.motorInfo.set(ctrMotionState.description)
+            }
         }
     }
 

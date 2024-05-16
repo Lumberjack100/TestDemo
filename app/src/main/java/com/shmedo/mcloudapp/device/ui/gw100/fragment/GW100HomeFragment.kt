@@ -38,7 +38,8 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
         toolbarViewModel.toolbarIvActionVisible.set(false)
         mHeadStates.productLightResId.set(R.drawable.device_logo_gateway)
         mHeadStates.productGrayResId.set(R.drawable.device_logo_gateway_gray)
-        mHeadStates.isPlatformConnectionStateVisible.set(false)
+        mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
+        mHeadStates.isIOTPlatformStateVisible.set(false)
     }
 
     override fun updateConfigModuleData() {
@@ -64,7 +65,7 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
                     name = "网关设置",
                     desc = "GNSS电台网关设置",
                     resID = R.drawable.ic_module_gateway,
-                    navId = R.id.action_gW100HomeFragment_to_gW100GatewaySettingsFragment
+                    navId = R.id.action_gW100HomeFragment_to_radioSettingsFragment
                 )
             )
         )
@@ -120,30 +121,20 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
 
     override fun processOtherItemClick(configModule: DeviceFunctionModule) {
         when (configModule) {
-            is LoraConfigModule -> {//LORA设置
-                val bundle = UniversalDeviceHomeFragment.newBundleArguments(
+            is CommandDebugConfigModule -> {
+                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+                    true,
                     productType,
                     communicateWay,
                     deviceInfo,
                     bleDevice
-                )
-                nav().navigate(
-                    R.id.action_global_to_loraSettingFragment,
-                    bundle
-                )
-            }
-            is CommandDebugConfigModule -> {
-                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice,
-                    true
                 )
                 nav().navigate(configModule.navId, bundle)
             }
             else -> {
                 if (configModule.navId != 0) {
                     val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                        productType,
                         communicateWay,
                         deviceInfo,
                         bleDevice

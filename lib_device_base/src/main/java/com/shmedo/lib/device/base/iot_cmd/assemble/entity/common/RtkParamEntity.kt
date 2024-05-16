@@ -12,7 +12,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class RtkParamEntity(
     val method: String = "1",//0：获取当前参数信息  1：设置参数
-    val mode: String = "", //当前gnss模式 1:固定站  2:移动站  默认2
+    val mode: String = "", //当前gnss模式 1:基准站  2:移动站  默认2
     val sw: String = IOTConstants.NULL_KEY, //解算盒子使用配置开关 0:停止使用解算盒子  1:开始使用解算盒子  默认0
     val frontCalc: String = IOTConstants.NULL_KEY, //前端解算开关 0:关闭前端解算  1:打开前端解算  默认0
     val baseStationMode: String = IOTConstants.NULL_KEY, //基站坐标模式 0:以精确坐标设置基站模式  1:以自主优化方式设置基准站模式  默认0

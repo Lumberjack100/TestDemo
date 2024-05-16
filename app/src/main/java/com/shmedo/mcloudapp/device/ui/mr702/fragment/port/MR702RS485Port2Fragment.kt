@@ -119,6 +119,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                         val bundle = MR702RS485Port2SensorParamFragment.newBundleArguments(
                             item,
                             false,
+                            productType,
                             communicateWay,
                             deviceInfo,
                             bleDevice
@@ -156,6 +157,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                             modelFieldList = sensorModel.modelFieldList.map { it.fieldName }
                         ),
                         true,
+                        productType,
                         communicateWay,
                         deviceInfo,
                         bleDevice
@@ -492,7 +494,9 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

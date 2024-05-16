@@ -903,27 +903,34 @@ enum class IOTCommandType(private val value: String) {
     MD_SET_RADIO_CTRL("md_setcqradioctrl"),
 
     /**
+     * 预警报警开关（仅适用于监测设备）
+     */
+    MD_GET_ALRAM_BROADCAST_SWITCH("md_getcqbroadcastswitch"),
+    MD_SET_ALRAM_BROADCAST_SWITCH("md_setcqbroadcastswitch"),
+
+
+    /**
      * 预警广播参数配置
      */
-    MD_GET_ALRAM_CTRL("md_getcqalarmctrl"),
-    MD_SET_ALRAM_CTRL("md_setcqalarmctrl"),
+    MD_GET_ALRAM_BROADCAST_CTRL("md_getcqalarmctrl"),
+    MD_SET_ALRAM_BROADCAST_CTRL("md_setcqalarmctrl"),
 
     /**
      * 预警广播触发值配置
      */
-    MD_GET_ALRAM_TRIGGER_VALUE("md_getcqgateval"),
-    MD_SET_ALRAM_TRIGGER_VALUE("md_setcqgateval"),
+    MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE("md_getcqgateval"),
+    MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE("md_setcqgateval"),
 
     /**
      * 预警广播上报间隔配置
      */
-    MD_GET_ALRAM_REPORT_INTERVAL("md_getcqreptgap"),
-    MD_SET_ALRAM_REPORT_INTERVAL("md_setcqreptgap"),
+    MD_GET_ALRAM_BROADCAST_REPORT_INTERVAL("md_getcqreptgap"),
+    MD_SET_ALRAM_BROADCAST_REPORT_INTERVAL("md_setcqreptgap"),
 
     /**
      * 预警广播测试
      */
-    MD_TEST_ALRAM("md_testbroadcast"),
+    MD_TEST_ALRAM_BROADCAST("md_testbroadcast"),
 
     /**
      * 配置参数初始值指令
@@ -937,14 +944,35 @@ enum class IOTCommandType(private val value: String) {
     MD_SET_MUD_LEVEL_METER_SENSOR("md_setsense"),
 
     /**
-     *  GNSS-RTK模式配置
+     * 米度一体式裂缝计零位校准
+     */
+    MD_GET_LF_ZERO_VALUE("md_getlfzerovalue"),
+    MD_SET_LF_ZERO_VALUE("md_setlfzerovalue"),
+
+    /**
+     * 米度一体式裂缝计初始化
+     */
+    MD_SET_LF_INITIAL_VALUE("md_setlfinitial"),
+
+    /**
+     * GNSS-RTK模式配置
      */
     MD_CFG_RTK("md_cfgrtkparam"),
 
     /**
+     * 关闭语音播报
+     */
+    MD_SET_VOICE_BROADCAST_VOLUME_OFF("volumeoff"),
+
+    /**
+     * 设置语音播报音量
+     */
+    MD_SET_VOICE_BROADCAST_VOLUME("volume"),
+
+    /**
      * 自定义心跳包
      */
-    HEART_BEAT("HeartBeatData"),
+    HEART_BEAT("ble_keepalive"),
 
     /**
      * 长度不够指令头最低长度要求

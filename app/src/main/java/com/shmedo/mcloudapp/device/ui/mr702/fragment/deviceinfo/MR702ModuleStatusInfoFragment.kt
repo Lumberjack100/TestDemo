@@ -22,12 +22,12 @@ import com.shmedo.mcloudapp.databinding.FragmentMr702ModuleStatusInfoBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.MRModuleStatusItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceInfoViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceStatusInfoParentViewModel
 import org.koin.android.ext.android.inject
 
 class MR702ModuleStatusInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702ModuleStatusInfoBinding
-    private lateinit var mStates: MR702DeviceInfoViewModel
+    private lateinit var mStates: MR702DeviceStatusInfoParentViewModel
     private val iotParseManager: IOTParserManager by inject()
 
 
@@ -108,7 +108,9 @@ class MR702ModuleStatusInfoFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

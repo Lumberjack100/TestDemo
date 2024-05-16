@@ -1,251 +1,165 @@
 package com.shmedo.mcloudapp.device.ui.m20.fragment.deviceinfo
 
-import android.os.Bundle
-import com.blankj.utilcode.util.ConvertUtils
-import com.blankj.utilcode.util.StringUtils
+import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.models
-import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
-import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.lxj.xpopup.XPopup
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
-import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
-import com.shmedo.mcloudapp.databinding.FragmentM20BaseInfoBinding
-import com.shmedo.mcloudapp.device.model.BleConnect
-import com.shmedo.mcloudapp.device.model.MRRunningDataItem
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.M20BaseInfoViewModel
-import org.koin.android.ext.android.inject
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
+import com.shmedo.mcloudapp.device.ui.common.BaseDeviceStatusInfoFragment
+import com.shmedo.mcloudapp.ext.notNullKey
+import com.shmedo.mcloudapp.utils.DeviceStatusHelper
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
 
-class M20BaseInfoFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentM20BaseInfoBinding
-    private lateinit var mStates: M20BaseInfoViewModel
-    private val iotParseManager: IOTParserManager by inject()
-    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
+class M20BaseInfoFragment : BaseDeviceStatusInfoFragment() {
+    private val deviceAbnormalList: ArrayList<String> = ArrayList()
 
-    override fun initViewModel() {
-        super.initViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
+    override fun initStatusInfo(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val stateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
+                }
+                if (stateInfo == null) {
+                    binding.refreshLayout.showEmpty()
+                    return@launchWithViewLifecycle
+                }
+                binding.refreshLayout.showContent()
+                val groupList = mutableListOf<Any>()
 
-    override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_m20_base_info, BR.stateVM, mStates)
-    }
 
-    override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentM20BaseInfoBinding
-        initRefresh()
-        initRunningDataAdapter()
-    }
-
-    private fun initRefresh() {
-        refreshLayout = binding.refreshLayout
-        binding.refreshLayout.setEnableLoadMore(false)
-        binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return@onRefresh
-            }
-            queryBaseInfo()
-        }
-    }
-
-    private fun initRunningDataAdapter() {
-        binding.rvRunningData.setup { rv ->
-            rv.addItemDecoration(
-                MyGridSpacingItemDecoration(
-                    2,
-                    ConvertUtils.dp2px(10f),
-                    false
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "设备SN",
+                    value = stateInfo.sN,
                 )
-            )
-            addType<MRRunningDataItem>(R.layout.item_mr702_device_info_running_data)
-        }
-    }
-
-    override fun lazyLoadData() {
-        binding.refreshLayout.autoRefresh()
-    }
-
-    /**
-     * 获取设备的基本信息
-     */
-    private fun queryBaseInfo() {
-        commandItems.clear()
-
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    override fun setResultData(cmdStr: String) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_DEVICE_STATUS -> {
-                val result = iotParseManager.parse<String>(
-                    cmdStr,
-                    IOTCommandType.QUERY_DEVICE_STATUS
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "设备IMEI",
+                    value = stateInfo.iMEI,
                 )
-                when (result) {
-                    is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "查询基本信息出错: ${result.message}"
-                        Toaster.show(errMsg)
-                        return
-                    }
-
-                    is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        val content: String = result.data
-                        initStatusInfo(content)
-                    }
-                }
-            }
-
-            else -> {}
-        }
-    }
-
-    private fun initStatusInfo(content: String) {
-        decimalFormat.applyPattern("#.###")
-        try {
-            val commonCurrentStateInfo =
-                MoshiUtil.fromJson<CommonCurrentStateInfo>(content) ?: return
-
-            initRunningData(commonCurrentStateInfo)
-            mStates.wrapStateInfo.set(commonCurrentStateInfo)
-            mStates.wrapStateInfo.get().apply {
-                inner_power_volt = commonCurrentStateInfo.inner_power_volt.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                ext_power_volt = commonCurrentStateInfo.ext_power_volt.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                solar_volt = commonCurrentStateInfo.solar_volt.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                battery_volt = commonCurrentStateInfo.battery_volt.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                supply_power = commonCurrentStateInfo.supply_power.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                consume_power = commonCurrentStateInfo.consume_power.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                temp = commonCurrentStateInfo.temp.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                humidity = commonCurrentStateInfo.humidity.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                temp_out = commonCurrentStateInfo.temp_out.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                humidity_out = commonCurrentStateInfo.humidity_out.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-            }
-            mStates.wrapStateInfo.notifyChange()
-
-            checkDeviceNormal(commonCurrentStateInfo.self_check)
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
-    }
-
-    private fun checkDeviceNormal(selfCheck: String) {
-        //"self_check": "GPS:1,eMMC:1,4g:1,RTC:1,solar485:0,G-Sensor:1,BT:1,GNSS:1,QMC:0,SHT21:1,product_time:20240411"
-        //解析 self_check,根据逗号分隔，取出各个传感器的状态
-        val selfCheckArray = selfCheck.split(",")
-        for (item in selfCheckArray) {
-            val sensor = item.split(":")
-            when (sensor[0].uppercase()) {
-                "BT" -> {//0：关闭或异常 1：正常未连接 2：正常已连接
-                    if (sensor[1] == "0") {
-                        mStates.isDeviceNormal.set("0")
-                        break
-                    }
-                }
-
-                "PRODUCT_TIME" -> {
-
-                }
-
-                else -> {
-                    if (sensor[1] == "0") {
-                        mStates.isDeviceNormal.set("0")
-                        break
-                    }
-                }
-            }
-        }
-
-        mStates.isDeviceNormal.set("1")
-    }
-
-    private fun initRunningData(commonCurrentStateInfo: CommonCurrentStateInfo) {
-        try {
-            val list = mutableListOf<MRRunningDataItem>()
-            if (commonCurrentStateInfo.worktime.isNotEmpty() && commonCurrentStateInfo.worktime != IOTConstants.NULL_KEY) {
-                list.add(
-                    MRRunningDataItem(
-                        "运行时间(小时)",
-                        decimalFormat.format(commonCurrentStateInfo.worktime.toDouble() / 3600)
-                    )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "设备IMSI",
+                    value = stateInfo.iMSI,
                 )
-            }
-
-            if (commonCurrentStateInfo.emmc_storage.isNotEmpty() && commonCurrentStateInfo.emmc_storage !=IOTConstants.NULL_KEY) {
-                val storages = commonCurrentStateInfo.emmc_storage.replace("MB", "").split(",")
-                if (storages.size == 2) {
-                    decimalFormat.applyPattern("#.#")
-                    val free = storages[0].toDoubleOrNull()?.let {
-                        decimalFormat.format(it)
-                    } ?: ""
-
-                    val total = storages[1].toDoubleOrNull()?.let {
-                        decimalFormat.format(it)
-                    } ?: ""
-
-                    list.add(
-                        MRRunningDataItem(
-                            "存储状态",
-                            "${free}/${total}MB",
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "设备ICCID",
+                    value = stateInfo.cCID,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "硬件版本",
+                    value = stateInfo.hw_version,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "固件版本",
+                    value = stateInfo.sw_version,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "工作模式",
+                    value = if (stateInfo.workMode.contains("1")) "基准站" else "移动站",
+                )
+                stateInfo.self_check.notNullKey {
+                    deviceAbnormalList.clear()
+                    deviceAbnormalList.addAll(DeviceStatusHelper.checkDeviceAbnormal(it))
+                    groupList.add(
+                        DeviceStatusInfoBasicItem(
+                            name = "设备状态",
+                            value = if (deviceAbnormalList.isEmpty()) "正常" else "异常",
+                            colorRes = if (deviceAbnormalList.isEmpty()) ColorUtils.getColor(
+                                R.color.text_color_3AD094
+                            ) else ColorUtils.getColor(R.color.device_offline_platform),
+                            isClickable = deviceAbnormalList.isNotEmpty()
                         )
                     )
                 }
-            }
-            binding.rvRunningData.models = list
-            if (list.isNotEmpty())
-                mStates.isRunningDataVisible.set(true)
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                    groupList,
+                    name = "外接电源电压",
+                    value = stateInfo.ext_power_volt,
+                    defaultValue = "0",
+                    thresHold = 5.0,
+                    digit = 2,
+                    unit = "V",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                    groupList,
+                    name = "太阳能板电压",
+                    value = stateInfo.solar_volt,
+                    defaultValue = "0",
+                    thresHold = 5.0,
+                    digit = 2,
+                    unit = "V",
+                )
+                if (stateInfo.worktime != IOTConstants.NULL_KEY || stateInfo.emmc_storage != IOTConstants.NULL_KEY)
+                    groupList.add(DeviceStatusInfoGroupItem("运行数据"))
 
-        } catch (e: Exception) {
-            Timber.e(e)
+                stateInfo.worktime.notNullKey {
+                    val tempValue = it.toIntOrNull() ?: 0
+                    groupList.add(
+                        DeviceStatusInfoBasicItem(
+                            name = "运行时间",
+                            value = decimalFormat.format(tempValue / 3600) + " 小时"
+                        )
+                    )
+                }
+                stateInfo.emmc_storage.notNullKey {
+                    val storages = it.replace("MB", "").split(",")
+                    if (storages.size == 2) {
+                        val free = DeviceStatusInfoProcessor.formatDoubleValue(
+                            storages[0], "0", 1
+                        )
+                        val total = DeviceStatusInfoProcessor.formatDoubleValue(
+                            storages[1], "0", 1
+                        )
+                        groupList.add(
+                            DeviceStatusInfoBasicItem(
+                                name = "存储状态",
+                                value = "${free}/${total} MB"
+                            )
+                        )
+                    }
+                }
+
+                binding.recyclerview.models = groupList
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }
+    }
+
+    override fun processItemClick(item: DeviceStatusInfoBasicItem) {
+        if (item.name == "设备状态" && item.value == "异常") {
+            showErrorModulesInfoDialog()
+        }
+    }
+
+    private fun showErrorModulesInfoDialog() {
+        if (deviceAbnormalList.isEmpty()) {
+            Toaster.show("设备异常信息为空")
+            return
+        }
+        XPopup.Builder(context)
+            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+            .enableDrag(false)
+            .asCenterList(
+                "异常信息", deviceAbnormalList.toTypedArray(),
+                null, -1,
+                null, 0, R.layout.custom_xpopup_adapter_abnormal_info
+            )
+            .show()
     }
 
     companion object {

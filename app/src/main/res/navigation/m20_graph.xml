@@ -6,8 +6,10 @@
     app:startDestination="@id/m20HomeFragment">
 
     <include app:graph="@navigation/include_query_data_graph" />
-    <include app:graph="@navigation/include_firmware_upgrade_graph" />
+    <include app:graph="@navigation/include_common_running_device_info_graph" />
     <include app:graph="@navigation/include_data_center_graph" />
+    <include app:graph="@navigation/include_firmware_upgrade_graph" />
+    <include app:graph="@navigation/include_ble_command_debug_graph" />
 
     <fragment
         android:id="@+id/m20HomeFragment"
@@ -15,43 +17,7 @@
         android:label="M20HomeFragment"
         tools:layout="@layout/fragment_universal_device_home">
 
-        <action
-            android:id="@+id/action_m20HomeFragment_to_m20DeviceInfoFragment"
-            app:destination="@id/m20DeviceInfoFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_m20HomeFragment_to_m20AdvancedSettingFragment"
-            app:destination="@id/m20AdvancedSettingFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
     </fragment>
-
-    <fragment
-        android:id="@+id/m20DeviceInfoFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.m20.fragment.deviceinfo.M20DeviceInfoFragment"
-        android:label="M20DeviceInfoFragment"
-        tools:layout="@layout/fragment_m20_device_info" />
-
-    <fragment
-        android:id="@+id/m20AdvancedSettingFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.m20.fragment.M20AdvancedSettingFragment"
-        android:label="m20AdvancedSettingFragment"
-        tools:layout="@layout/fragment_m20_advanced_setting" />
-
-    <action
-        android:id="@+id/action_global_to_firmwareUpgradeFragment"
-        app:destination="@id/firmware_upgrade_graph"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
 
     <action
         android:id="@+id/action_global_to_queryDeviceDataFragment"
@@ -62,8 +28,31 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
+        android:id="@+id/action_global_to_commonRunningDeviceInfoFragment"
+        app:destination="@id/common_running_device_info_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
         android:id="@+id/action_global_universalDataCenterHomeFragment"
         app:destination="@id/data_center_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+    <action
+        android:id="@+id/action_global_to_firmwareUpgradeFragment"
+        app:destination="@id/firmware_upgrade_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_commandDebug"
+        app:destination="@id/ble_command_debug_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

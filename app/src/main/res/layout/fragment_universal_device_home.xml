@@ -36,7 +36,7 @@
             android:id="@+id/ll_device_info"
             layout="@layout/device_config_head_info_common"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="0.5dp"
             app:click="@{click}"
             app:layout_constraintEnd_toEndOf="parent"
@@ -44,16 +44,28 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar"
             app:vm="@{stateVM}" />
 
+        <include
+            android:id="@+id/ll_adme_mode_choose"
+            layout="@layout/include_adme_mode_choose_layout"
+            visible="@{stateVM.isAdmeModeChooseViewVisible}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:click="@{click}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_device_info"
+            app:vm="@{stateVM}" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_module"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:padding="@dimen/dimen_size_15"
             android:clipToPadding="false"
+            android:padding="@dimen/dimen_size_15"
             android:splitMotionEvents="false"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ll_device_info"
+            app:layout_constraintTop_toBottomOf="@+id/ll_adme_mode_choose"
             app:spanCount="2"
             tools:listitem="@layout/item_device_config_module" />
 

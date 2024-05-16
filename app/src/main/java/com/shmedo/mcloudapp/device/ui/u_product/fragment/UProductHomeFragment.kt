@@ -1,8 +1,12 @@
 package com.shmedo.mcloudapp.device.ui.u_product.fragment
 
+import com.blankj.utilcode.util.TimeUtils
 import com.drake.brv.utils.models
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
+import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.AlarmConfigModule
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -22,6 +26,8 @@ import com.shmedo.mcloudapp.device.ui.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.device.ui.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.device.ui.common.UniversalDeviceHomeFragment
 import com.shmedo.mcloudapp.ext.nav
+import kotlinx.coroutines.flow.debounce
+import timber.log.Timber
 
 /**
  * 创建者：gonghe
@@ -29,32 +35,38 @@ import com.shmedo.mcloudapp.ext.nav
  * 描述： INTEGRATION(一体化传感器产品线)
  */
 class UProductHomeFragment : UniversalDeviceHomeFragment() {
+
     override fun initData() {
         super.initData()
-        toolbarViewModel.toolbarIvActionVisible.set(true)
-        mHeadStates.isPlatformConnectionStateVisible.set(false)
         when (productType) {
             ProductType.U_D_1,//水位
             ProductType.U_D_2 -> {//泥位
                 mHeadStates.productLightResId.set(R.drawable.device_logo_niweiji)
                 mHeadStates.productGrayResId.set(R.drawable.device_logo_niweiji_gray)
+                mHeadStates.isIOTPlatformStateVisible.set(false)
             }
 
             ProductType.U_I_1 -> {//倾斜仪
                 mHeadStates.productLightResId.set(R.drawable.device_logo_qingxieyi)
                 mHeadStates.productGrayResId.set(R.drawable.device_logo_qingxieyi_gray)
+                mHeadStates.isIOTPlatformStateVisible.set(false)
             }
 
-            ProductType.U_R_1 -> {//雨量计
+            ProductType.U_R_1 -> {//一体化雨量计
                 mHeadStates.productLightResId.set(R.drawable.device_logo_rain_gauge)
                 mHeadStates.productGrayResId.set(R.drawable.device_logo_rain_gauge_gray)
+                mHeadStates.isIOTPlatformStateVisible.set(false)
+            }
+
+            ProductType.LR200 -> {//米度一体式裂缝计
+                mHeadStates.deviceName.set("BHY-3-LR200")
             }
 
             else -> {
 
             }
         }
-//        mHeadStates.deviceName.set(if (deviceInfo.deviceToken.endsWith(ProductType.GNSS_M_1.newSuffix)) "M20 (单北斗)" else "M20 (全星座)")
+        mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
     }
 
     override fun updateConfigModuleData() {
@@ -63,7 +75,7 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
             ConfigModule(
                 RunningStatusModule(
                     resID = R.drawable.ic_module_current_state,
-                    navId = R.id.action_uProductHomeFragment_to_uProductDeviceInfoFragment
+                    navId = R.id.action_global_to_commonRunningDeviceInfoFragment
                 )
             )
         )
@@ -132,134 +144,82 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
 
     override fun processOtherItemClick(configModule: DeviceFunctionModule) {
         when (configModule) {
-            is RunningStatusModule -> {
-                val bundle = UniversalDeviceHomeFragment.newBundleArguments(
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().navigate(
-                    configModule.navId,
-                    bundle
-                )
-            }
-
             is SensorConfigModule -> {
-                val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
+                var navId = configModule.navId
                 when (productType) {
                     ProductType.U_D_1,//水位
                     ProductType.U_D_2 -> {//泥位
-                        nav().navigate(
-                            R.id.action_uProductHomeFragment_to_uDProductSensorParamFragment,
-                            bundle
-                        )
+                        navId = R.id.action_uProductHomeFragment_to_uDProductSensorParamFragment
                     }
 
                     ProductType.U_I_1 -> {//倾斜仪
-                        nav().navigate(
-                            R.id.action_uProductHomeFragment_to_uIProductSensorParamFragment,
-                            bundle
-                        )
+                        navId = R.id.action_uProductHomeFragment_to_uIProductSensorParamFragment
                     }
 
-                    ProductType.U_R_1 -> {//雨量计
-                        nav().navigate(
-                            R.id.action_uProductHomeFragment_to_uRProductSensorParamFragment,
-                            bundle
-                        )
+                    ProductType.U_R_1 -> {//一体化雨量计
+                        navId = R.id.action_uProductHomeFragment_to_uRProductSensorParamFragment
+                    }
+
+                    ProductType.LR200 -> {//米度一体式裂缝计
+                        navId = R.id.action_uProductHomeFragment_to_lR200SensorParamFragment
                     }
 
                     else -> {
 
                     }
                 }
-            }
-
-            is LoraConfigModule -> {//LORA设置
-                val bundle = UniversalDeviceHomeFragment.newBundleArguments(
+                val bundle = BaseIOTDeviceFragment.newBundleArguments(
                     productType,
                     communicateWay,
                     deviceInfo,
                     bleDevice
                 )
-                nav().navigate(
-                    R.id.action_global_to_loraSettingFragment,
-                    bundle
-                )
-            }
-
-            is AlarmConfigModule -> {
-                val bundle = UniversalDeviceHomeFragment.newBundleArguments(
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().navigate(
-                    configModule.navId,
-                    bundle
-                )
+                nav().navigate(navId, bundle)
             }
 
             is DataCenterModule -> {
+                var navId = configModule.navId
+                var centerNum = 3
                 when (productType) {
                     ProductType.U_D_1,//水位
                     ProductType.U_D_2 -> {//泥位
-                        nav().navigate(
-                            configModule.navId,
-                            UniversalDataCenterHomeFragment.newBundleArguments(
-                                centerNum = 2,
-                                productType,
-                                communicateWay,
-                                deviceInfo,
-                                bleDevice
-                            )
-                        )
+                        navId = R.id.action_uProductHomeFragment_to_uDProductDataCenterHomeFragment
+                        centerNum = 3
                     }
 
-                    ProductType.U_I_1 -> {//倾斜仪
-                        nav().navigate(
-                            configModule.navId,
-                            UniversalDataCenterHomeFragment.newBundleArguments(
-                                centerNum = 3,
-                                productType,
-                                communicateWay,
-                                deviceInfo,
-                                bleDevice
-                            )
-                        )
+                    ProductType.U_I_1,//倾斜仪
+                    ProductType.U_R_1 //一体化雨量计
+                    -> {
+                        centerNum = 3
                     }
 
-                    ProductType.U_R_1 -> {//雨量计
-                        nav().navigate(
-                            configModule.navId,
-                            UniversalDataCenterHomeFragment.newBundleArguments(
-                                centerNum = 3,
-                                productType,
-                                communicateWay,
-                                deviceInfo,
-                                bleDevice
-                            )
-                        )
+                    ProductType.LR200 -> {//米度一体式裂缝计
+                        centerNum = 4
                     }
 
                     else -> {
 
                     }
                 }
+                nav().navigate(
+                    navId,
+                    UniversalDataCenterHomeFragment.newBundleArguments(
+                        centerNum,
+                        productType,
+                        communicateWay,
+                        deviceInfo,
+                        bleDevice
+                    )
+                )
             }
 
             is CommandDebugConfigModule -> {
                 val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+                    true,
+                    productType,
                     communicateWay,
                     deviceInfo,
-                    bleDevice,
-                    true
+                    bleDevice
                 )
                 nav().navigate(configModule.navId, bundle)
             }
@@ -267,6 +227,7 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
             else -> {
                 if (configModule.navId != 0) {
                     val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                        productType,
                         communicateWay,
                         deviceInfo,
                         bleDevice
@@ -277,6 +238,30 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
                     )
                 }
             }
+        }
+    }
+
+    override fun createObserver() {
+        super.createObserver()
+        setupHeartbeat()
+    }
+
+    // 设置心跳检查
+    private fun setupHeartbeat() {
+        launchWithViewLifecycle {
+            lastCommunicationTime
+                .debounce(AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
+                .collect { lastUpdateTime ->
+                    val updateTime = TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
+                    Timber.d("startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
+                    // 仅当设备连接并且需要发送心跳时，才发送心跳包
+                    if (mHeadStates.isConnected.get() && isNearbyCommunicationTimeout(lastUpdateTime)) {
+                        Timber.d("bingo startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
+                        val command = IOTCommandUtil.getCommand(IOTCommandType.HEART_BEAT)
+                        Timber.d("发送心跳包指令: $command")
+                        sendHeartbeatIOTCommand(command)
+                    }
+                }
         }
     }
 

@@ -11,7 +11,7 @@ plugins {
 
 val majorVersion = 5
 val minorVersion = 0
-val patchVersion = 0
+val patchVersion = 2
 
 /**
  * 获取Git库HEAD的SHA1码前5位
@@ -73,7 +73,8 @@ android {
             abiFilters.add("armeabi-v7a")
         }
         manifestPlaceholders["buglyAppId"] = "09b15cd6a7"
-        manifestPlaceholders["umengAppkey"] = "6209cd80226836222738b72b"
+        buildConfigField("String", "AMS_APP_KEY", "\"b80dd379-5256-48c8-947a-2208872c8a8f\"")
+        buildConfigField("String", "AMS_APP_SECRET", "\"3dc8e0ec1f673325c6694b4da534dabe\"")
     }
     signingConfigs {
         create("release") {
@@ -121,6 +122,8 @@ android {
             dimension = "version"
             resValue("string", "app_name", "米易通物联网")   // 设置默认的app_name
             buildConfigField("String", "APP_NAME", "\"米易通物联网\"")
+            buildConfigField("String", "PGY_API_KEY", "\"64454bf76fe2abd8dec45200c11fc93b\"")
+            buildConfigField("String", "PGY_APP_KEY", "\"b8a852c106c6cc532332081e22f218a9\"")
             manifestPlaceholders["mapApikey"] = "61b252e0afae07eebf71fd8b519b511c"
         }
         create("demo") {//测试版本
@@ -128,6 +131,8 @@ android {
             applicationIdSuffix = ".v5"
             resValue("string", "app_name", "米易通V5")   // 设置默认的app_name
             buildConfigField("String", "APP_NAME", "\"米易通V5\"")
+            buildConfigField("String", "PGY_API_KEY", "\"db9ce8a6bd3b8b95c20c66e4205194d9\"")
+            buildConfigField("String", "PGY_APP_KEY", "\"a8508805883003fdd3e223b6f9e85a60\"")
             manifestPlaceholders["mapApikey"] = "dbf444c2ac068b1ed7d7d2a604e37b93"
         }
     }

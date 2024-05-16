@@ -59,6 +59,8 @@
     <string name="company_intro">上海米度测控科技有限公司成立于2012年2月3日，是一家集GNSS产品研发、生产、销售、服务于一体的综合性高新技术企业。</string>
 
     <!-- 设备模块 -->
+    <string name="device_online">在线</string>
+    <string name="device_offline">离线</string>
     <string name="unsupported_device_type">暂不支持此设备类型</string>
     <string name="ble_config_disconnect_warn">蓝牙连接已断开，暂无法进行操作</string>
     <string name="tcp_config_disconnect_warn">设备已断开连接，暂无法进行操作</string>
@@ -107,6 +109,7 @@
     <string name="water_level3_hint">请输入0~100000之间数值</string>
     <string name="alarm_play_time_hint">请输入10~300之间数值</string>
     <string name="alarm_play_gap_hint">请输入5~300之间数值</string>
+    <string name="button_send_text">发送</string>
     <string name="button_save_text">保存</string>
     <string name="button_reset_text">恢复默认配置</string>
 

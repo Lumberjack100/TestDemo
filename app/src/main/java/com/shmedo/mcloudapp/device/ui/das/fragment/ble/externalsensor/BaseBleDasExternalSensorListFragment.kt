@@ -14,6 +14,7 @@ import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
+import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.model.das.DasCollectorInfo
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.device.base.md_cmd.model.das.MDDasExternalSensorInfo
@@ -22,9 +23,6 @@ import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.showMessage
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentDasExternalSensorListBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -34,7 +32,13 @@ import com.shmedo.mcloudapp.device.model.DASSensorItem
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.model.RVEmptyFooter
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.ble.BleDasSensorHomeFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalDigitalSensorFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalVibratingSensorFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasExternalSensorListViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.showMessage
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -122,23 +126,25 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                     R.layout.item_das_sensor -> {
                         val item = getModel<DASSensorItem>()
                         if (!mStates.isVibratingWireSensor.get()) {
-                            val bundle = BleDasExternalDigitalSensorFragment.newBundleArguments(
+                            val bundle = DasExternalDigitalSensorFragment.newBundleArguments(
+                                index = modelPosition,
+                                sensorAddr = item.addr,
+                                productType,
                                 communicateWay,
                                 deviceInfo,
-                                bleDevice,
-                                modelPosition,
-                                item.addr
+                                bleDevice
                             )
                             nav().navigate(
                                 R.id.action_bleDasSensorHomeFragment_to_bleDasExternalDigitalSensorFragment,
                                 bundle
                             )
                         } else {
-                            val bundle = BleDasExternalVibratingSensorFragment.newBundleArguments(
+                            val bundle = DasExternalVibratingSensorFragment.newBundleArguments(
+                                sensorChannel = item.addr,
+                                productType,
                                 communicateWay,
                                 deviceInfo,
                                 bleDevice,
-                                item.addr
                             )
                             nav().navigate(
                                 R.id.action_bleDasSensorHomeFragment_to_bleDasExternalVibratingSensorFragment,
@@ -149,23 +155,25 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
 
                     else -> {//添加传感器
                         if (!mStates.isVibratingWireSensor.get()) {
-                            val bundle = BleDasExternalDigitalSensorFragment.newBundleArguments(
+                            val bundle = DasExternalDigitalSensorFragment.newBundleArguments(
+                                index = -1,
+                                sensorAddr = "-1",
+                                productType,
                                 communicateWay,
                                 deviceInfo,
                                 bleDevice,
-                                -1,
-                                "-1"
                             )
                             nav().navigate(
                                 R.id.action_bleDasSensorHomeFragment_to_bleDasExternalDigitalSensorFragment,
                                 bundle
                             )
                         } else {
-                            val bundle = BleDasExternalVibratingSensorFragment.newBundleArguments(
+                            val bundle = DasExternalVibratingSensorFragment.newBundleArguments(
+                                sensorChannel = "-1",
+                                productType,
                                 communicateWay,
                                 deviceInfo,
                                 bleDevice,
-                                "-1"
                             )
                             nav().navigate(
                                 R.id.action_bleDasSensorHomeFragment_to_bleDasExternalVibratingSensorFragment,
@@ -364,7 +372,9 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             }
 
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 
@@ -436,18 +446,20 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
 
     companion object {
         const val MAX_SENSOR_COUNT = 16
-        private const val COLLECTOR_MODEL = "collector_model"
+        const val COLLECTOR_MODEL = "collector_model"
         fun newBundleArguments(
+            collectorModel: String,
+            type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
             deviceInfo: DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
-            collectorModel: String,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
+            putString(BleDasSensorHomeFragment.COLLECTOR_MODEL, collectorModel)
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
             putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
             putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
             putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putString(COLLECTOR_MODEL, collectorModel)
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }

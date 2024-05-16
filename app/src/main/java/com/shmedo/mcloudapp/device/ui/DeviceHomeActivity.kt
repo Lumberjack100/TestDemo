@@ -6,8 +6,6 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
-import com.blankj.utilcode.util.StringUtils
-import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
@@ -25,7 +23,6 @@ import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
-import com.shmedo.mcloudapp.device.ui.common.UniversalDeviceHomeFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -87,102 +84,79 @@ class DeviceHomeActivity : BaseActivity() {
     }
 
     private fun setGraph() {
-        val bundle = BaseIOTDeviceFragment.newBundleArguments(
+        val bundle2 = BaseIOTDeviceFragment.newBundleArguments(
+            productType,
             communicateWay,
             deviceInfo!!,
             bleDevice
         )
         val navController = findNavController(R.id.device_home_host_fragment)
         when (productType) {
-            ProductType.COLLECTOR_G_0 -> {
+            ProductType.COLLECTOR_G_0 -> {//自组网报警网关
                 navController.setGraph(
                     R.navigation.gw100_graph,
-                    UniversalDeviceHomeFragment.newBundleArguments(
-                        productType,
-                        communicateWay,
-                        deviceInfo!!,
-                        bleDevice
-                    )
+                    bundle2
                 )
             }
 
             ProductType.M_A_1, ProductType.ADME -> navController.setGraph(
                 R.navigation.adme_graph,
-                bundle
+                bundle2
             )
 
-            //ProductType.U_I_1, ProductType.U_R_1
-            ProductType.U_R_1, ProductType.COLLECTOR_R_1, ProductType.DAS, ProductType.BHY -> {
+            ProductType.ADME_HAC -> navController.setGraph(
+                R.navigation.adme_hac_graph,
+                bundle2
+            )
+
+            ProductType.COLLECTOR_R_1, ProductType.DAS, ProductType.BHY -> {
                 val graphId =
                     if (communicateWay == BleConnect) R.navigation.ble_das_graph else R.navigation.das_graph
-                navController.setGraph(graphId, bundle)
-            }
-
-            ProductType.LR200 -> {
                 navController.setGraph(
-                    R.navigation.lr200_graph,
-                    UniversalDeviceHomeFragment.newBundleArguments(
-                        productType,
-                        communicateWay,
-                        deviceInfo!!,
-                        bleDevice
-                    )
+                    graphId, bundle2
                 )
             }
 
             ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {
                 navController.setGraph(
                     R.navigation.m20s_graph,
-                    UniversalDeviceHomeFragment.newBundleArguments(
-                        productType,
-                        communicateWay,
-                        deviceInfo!!,
-                        bleDevice
-                    )
+                    bundle2
                 )
             }
 
             ProductType.M20 -> {
                 navController.setGraph(
                     R.navigation.m20_graph,
-                    UniversalDeviceHomeFragment.newBundleArguments(
-                        productType,
-                        communicateWay,
-                        deviceInfo!!,
-                        bleDevice
-                    )
+                    bundle2
                 )
             }
 
             ProductType.COLLECTOR_R_2, ProductType.MR702 -> navController.setGraph(
                 R.navigation.mr702_graph,
-                bundle
+                bundle2
             )
 
-            //, ProductType.U_I_1, ProductType.U_R_1
-            ProductType.U_D_1, ProductType.U_D_2, ProductType.U_I_1 -> {
+            ProductType.LR200, ProductType.U_D_1, ProductType.U_D_2, ProductType.U_I_1, ProductType.U_R_1 -> {
                 navController.setGraph(
                     R.navigation.u_product_graph,
-                    UniversalDeviceHomeFragment.newBundleArguments(
-                        productType,
-                        communicateWay,
-                        deviceInfo!!,
-                        bleDevice
-                    )
+                    bundle2
+                )
+            }
+
+            ProductType.LB20S -> {
+                navController.setGraph(
+                    R.navigation.lb20s_graph,
+                    bundle2
                 )
             }
 
             ProductType.TEST_DEVICE -> {
                 navController.setGraph(
                     R.navigation.test_device_graph,
-                    UniversalDeviceHomeFragment.newBundleArguments(
-                        ProductType.TEST_DEVICE,
-                        communicateWay,
-                        deviceInfo!!,
-                        bleDevice
-                    )
+                    bundle2
                 )
             }
+
 
             else -> {
 
@@ -206,8 +180,8 @@ class DeviceHomeActivity : BaseActivity() {
                     ///根据设备 SN 用旧的产品规则判断所属产品类型
                     type = ProductType.valueByOldSuffix(deviceInfo.deviceToken)
                     if (type == ProductType.UnKnown) {
-                        Toaster.show(StringUtils.getString(R.string.unsupported_device_type))
-                        return
+                        type = ProductType.TEST_DEVICE
+//                        return
                     }
                 }
             }

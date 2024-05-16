@@ -56,6 +56,8 @@ class IOTParserManager constructor(
         //将 reason 中的"unsupported"转换为可读的中文"设备版本不支持","equimodel_err"转换为"设备模式错误"
         return when (reason) {
             "unsupported" -> "设备版本不支持"
+            "state not ready" -> "状态未就绪"
+
             else -> reason
         }
     }

@@ -13,6 +13,7 @@ import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
+import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
@@ -112,7 +113,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
     override fun initData() {
         super.initData()
         arguments?.let {
-            sensorChannel = it.getString(SENSOR_CHANNEL, "-1")
+            sensorChannel = it.getString(AppContants.Extras.SENSOR_CHANNEL, "-1")
         }
         unUsedChannelList.clear()
         unUsedChannelList.addAll(allChannelList)
@@ -1104,19 +1105,20 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
 
     companion object {
         private const val MCU_PREFIX = "MCU_"
-        private const val SENSOR_CHANNEL = "sensor_channel"
 
         fun newBundleArguments(
+            sensorChannel: String,
+            type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
             deviceInfo: DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
-            sensorChannel: String,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
+            putString(AppContants.Extras.SENSOR_CHANNEL, sensorChannel)
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
             putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
             putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
             putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putString(SENSOR_CHANNEL, sensorChannel)
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }

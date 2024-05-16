@@ -3,16 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-
     <data>
 
-        <variable
-            name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeCurrentStateViewModel" />
+        <import type="com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants" />
 
         <variable
             name="toolbarVM"
             type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeCurrentStateViewModel" />
 
         <variable
             name="click"
@@ -46,7 +47,7 @@
                 android:id="@+id/scrollView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white">
+                android:background="@color/main_bg_gray">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
@@ -59,6 +60,7 @@
                         visible="@{stateVM.ctrMotionInfoVisible}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_size_1"
                         android:background="@color/white"
                         android:orientation="vertical"
                         tools:visibility="visible">
@@ -91,7 +93,7 @@
                             android:layout_marginStart="18dp"
                             android:gravity="center_vertical"
                             android:text="@{stateVM.motorInfo}"
-                            android:textColor="@color/title_text_color"
+                            android:textColor="@{stateVM.isMotorInfoNormal ? @color/title_text_color : @color/red}"
                             android:textSize="15sp"
                             tools:text="磁开关触发，测量结束" />
 
@@ -109,82 +111,100 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <TextView
-                        style="@style/DeviceCurrentState_GroupName_Style"
-                        android:text="基本信息" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/dimen_size_10"
+                        android:layout_marginStart="@dimen/dimen_size_10"
+                        android:drawablePadding="-80dp"
+                        android:text="基本信息"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_17"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_mr702_device_info_running_data" />
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                            android:text="设备SN号" />
+                            android:text="设备SN" />
 
                         <TextView
-                            android:id="@+id/tv_device_sn"
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.sn}"
-                            android:textColor="@color/text_color_3AD094"
-                            tools:text="19F00L" />
+                            android:text="@{stateVM.wrapStateInfo.sn}"
+                            tools:text="modo-1819929190" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.wrapStateInfo.productid != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
                             android:text="设备型号" />
 
                         <TextView
-                            android:id="@+id/tv_product_number"
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.productType}"
+                            android:text="@{stateVM.wrapStateInfo.productid}"
                             tools:text="19902102313" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.wrapStateInfo.imeid != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                            android:text="SIM卡号(ICCID)" />
+                            android:text="设备IMEI" />
 
                         <TextView
-                            android:id="@+id/tv_sim_card_number"
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.sim}"
-                            tools:text="19902102313" />
+                            android:text="@{stateVM.wrapStateInfo.imeid}"
+                            tools:text="4343434" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.wrapStateInfo.simid != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                            android:text="IMEI号" />
+                            android:text="设备ICCID" />
 
                         <TextView
-                            android:id="@+id/tv_imei_number"
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.imei}"
-                            tools:text="19902102313" />
+                            android:text="@{stateVM.wrapStateInfo.simid}"
+                            tools:text="123344" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.wrapStateInfo.firversion != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
                             android:text="固件版本" />
 
                         <TextView
-                            android:id="@+id/tv_firmware_version"
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.firmwareVersion}"
-                            tools:text="19902102313" />
+                            android:text="@{stateVM.wrapStateInfo.firversion}"
+                            tools:text="1212" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.wrapStateInfo.scsq != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -193,7 +213,7 @@
                         <TextView
                             android:id="@+id/tv_4g_signal_strength"
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.signal}"
+                            android:text='@{stateVM.signalValue==0?"--dBm":stateVM.signalValue+"dBm" }'
                             tools:text="-51dBm" />
 
                         <com.shmedo.mcloudapp.common.widget.SignalView
@@ -213,14 +233,23 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <TextView
-                        style="@style/DeviceCurrentState_GroupName_Style"
-                        android:text="设备工作信息" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/dimen_size_10"
+                        android:layout_marginStart="@dimen/dimen_size_10"
+                        android:drawablePadding="-80dp"
+                        android:text="设备工作信息"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_17"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_mr702_device_info_running_data" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/ll_device_abnormal_diagnosis"
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onShowErrorModulesInfoClick()}"
                         android:layout_height="44dp"
+                        android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{!stateVM.deviceNormal}">
 
                         <TextView
@@ -239,7 +268,10 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.workMode != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -253,63 +285,76 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.wrapStateInfo.ctrinputv != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
                             android:text="CTR输入电压" />
 
                         <TextView
-                            android:id="@+id/tv_ctr_input_voltage"
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.ctrInputVoltage}"
+                            android:text='@{stateVM.wrapStateInfo.ctrinputv+" V"}'
+                            app:bind_voltage_color='@{stateVM.wrapStateInfo.ctrinputv+""}'
                             tools:text="22.6v" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.wrapStateInfo.driveinputv != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
                             android:text="驱动器输入电压" />
 
                         <TextView
-                            android:id="@+id/tv_driver_input_voltage"
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.driverInputVoltage}"
+                            android:text='@{stateVM.wrapStateInfo.driveinputv+" V"}'
+                            app:bind_voltage_color='@{stateVM.wrapStateInfo.driveinputv+""}'
                             tools:text="22.6v" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.wrapStateInfo.temperature != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
                             android:text="设备温度" />
 
                         <TextView
-                            android:id="@+id/tv_device_temperature"
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.deviceTemperature}"
-                            tools:text="41.5°" />
+                            android:text='@{stateVM.wrapStateInfo.temperature+" ℃"}'
+                            tools:text="2" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.wrapStateInfo.humidity != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
                             android:text="设备湿度" />
 
                         <TextView
-                            android:id="@+id/tv_device_humidity"
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.deviceHumidity}"
-                            tools:text="67%" />
+                            android:text='@{stateVM.wrapStateInfo.humidity+" %"}'
+                            tools:text="2" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.wrapStateInfo.downnum != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -318,12 +363,15 @@
                         <TextView
                             android:id="@+id/tv_device_drop_number"
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.deviceDropNumber}"
-                            tools:text="67%" />
+                            android:text="@{stateVM.wrapStateInfo.downnum}"
+                            tools:text="67" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.wrapStateInfo.runmileage != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -332,14 +380,15 @@
                         <TextView
                             android:id="@+id/tv_device_mileage"
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.deviceMileage}"
+                            android:text='@{stateVM.wrapStateInfo.runmileage+" m"}'
                             tools:text="12.1m" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/DeviceCurrentState_SingleItem_Style"
-                        visible="@{stateVM.isVerticalMagneticSwitchTriggerCountSupport}">
+                        visible='@{ stateVM.wrapStateInfo.verticalswitchnum != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -347,13 +396,15 @@
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.verticalMagneticSwitchTriggerCount}"
+                            android:text="@{stateVM.wrapStateInfo.verticalswitchnum}"
                             tools:text="1222" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
+
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/DeviceCurrentState_SingleItem_Style"
-                        visible="@{stateVM.isRotationMagneticSwitchTriggerCountSupport}">
+                        visible='@{ stateVM.wrapStateInfo.rotaryswitchnum != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -361,13 +412,15 @@
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.rotationMagneticSwitchTriggerCount}"
+                            android:text="@{stateVM.wrapStateInfo.rotaryswitchnum}"
                             tools:text="1222" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
+
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/DeviceCurrentState_SingleItem_Style"
-                        visible="@{stateVM.isBrakePadOpenCloseCountSupport}">
+                        visible='@{ stateVM.wrapStateInfo.brakepadnum != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -375,12 +428,15 @@
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.brakePadOpenCloseCount}"
+                            android:text="@{stateVM.wrapStateInfo.brakepadnum}"
                             tools:text="1222" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.wrapStateInfo.nexttime != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -388,16 +444,27 @@
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.nextMeasureTime}"
+                            android:text="@{stateVM.wrapStateInfo.nexttime}"
                             tools:text="2024-01-12 12:23" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <TextView
-                        style="@style/DeviceCurrentState_GroupName_Style"
-                        android:text="测斜仪信息" />
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/dimen_size_10"
+                        android:layout_marginStart="@dimen/dimen_size_10"
+                        android:drawablePadding="-80dp"
+                        android:text="测斜仪信息"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_17"
+                        android:textStyle="bold"
+                        app:drawableStartCompat="@drawable/ic_mr702_device_info_running_data" />
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.wrapStateInfo.inctype != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -406,12 +473,15 @@
                         <TextView
                             android:id="@+id/tv_inclinometer_type"
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.inclinometerType}"
+                            android:text='@{stateVM.wrapStateInfo.inctype=="0"?"433测斜仪":"蓝牙测斜仪"}'
                             tools:text="433测斜仪" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.wrapStateInfo.incnum != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -420,12 +490,15 @@
                         <TextView
                             android:id="@+id/tv_inclinometer_channel_number"
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.inclinometerChannelNumber}"
+                            android:text="@{stateVM.wrapStateInfo.incnum}"
                             tools:text="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.wrapStateInfo.incloc != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -434,40 +507,48 @@
                         <TextView
                             android:id="@+id/tv_inclinometer_location_information"
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.inclinometerLocationInfo}"
+                            android:text="@{stateVM.wrapStateInfo.incloc}"
                             tools:text="上拉到管口" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.wrapStateInfo.incvoltage != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
                             android:text="测斜仪电压" />
 
                         <TextView
-                            android:id="@+id/tv_inclinometer_voltage"
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.inclinometerVoltage}"
+                            android:text='@{stateVM.wrapStateInfo.incvoltage+" V"}'
+                            app:bind_voltage_color='@{stateVM.wrapStateInfo.incvoltage+""}'
                             tools:text="22.6v" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.wrapStateInfo.intertempe != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
                             android:text="测斜仪管温度" />
 
                         <TextView
-                            android:id="@+id/tv_inclinometer_temperature"
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.inclinometerTemperature}"
-                            tools:text="41.5°" />
+                            android:text='@{stateVM.wrapStateInfo.intertempe+" ℃"}'
+                            tools:text="2" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        visible='@{ stateVM.wrapStateInfo.bcsq != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
@@ -475,7 +556,7 @@
 
                         <TextView
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                            android:text="@{stateVM.inclinometerBluetoothSignal}"
+                            android:text='@{stateVM.inclinometerBluetoothSignalValue==0?"--dBm":stateVM.inclinometerBluetoothSignalValue+"dBm" }'
                             tools:text="-51dBm" />
 
                         <com.shmedo.mcloudapp.common.widget.SignalView

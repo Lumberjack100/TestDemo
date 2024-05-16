@@ -107,5 +107,4 @@
             tools:listitem="@layout/item_device_config_module" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

@@ -56,7 +56,6 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: UniversalDataCenterHomeViewModel
     private val iotParseManager: IOTParserManager by inject()
     private var centerNum = 0//数据中心数量
-    private var productType = ProductType.UnKnown
 
     override fun initViewModel() {
         super.initViewModel()
@@ -93,9 +92,8 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
         super.initData()
         arguments?.let {
             centerNum = it.getInt(CENTER_NUM)
-            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
         }
-        mStates.isSupportedReportInterval.set(productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2|| productType == ProductType.U_I_1|| productType == ProductType.U_R_1)
+        mStates.isSupportedReportInterval.set(productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2 || productType == ProductType.U_I_1 || productType == ProductType.U_R_1)
         binding.recyclerView.bindingAdapter.models = getAdapterData()
     }
 
@@ -274,7 +272,9 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 
@@ -326,7 +326,7 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
     }
 
     companion object {
-        private const val CENTER_NUM = "center_num"
+        const val CENTER_NUM = "center_num"
 
         fun newBundleArguments(
             centerNum: Int = 1,

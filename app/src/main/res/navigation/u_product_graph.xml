@@ -6,6 +6,7 @@
     app:startDestination="@id/uProductHomeFragment">
 
     <include app:graph="@navigation/include_query_data_graph" />
+    <include app:graph="@navigation/include_common_running_device_info_graph" />
     <include app:graph="@navigation/include_data_center_graph" />
     <include app:graph="@navigation/include_lora_graph" />
     <include app:graph="@navigation/include_alarm_setting_graph" />
@@ -17,14 +18,6 @@
         android:name="com.shmedo.mcloudapp.device.ui.u_product.fragment.UProductHomeFragment"
         android:label="UProductHomeFragment"
         tools:layout="@layout/fragment_universal_device_home">
-
-        <action
-            android:id="@+id/action_uProductHomeFragment_to_uProductDeviceInfoFragment"
-            app:destination="@id/uProductDeviceInfoFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
 
         <action
             android:id="@+id/action_uProductHomeFragment_to_uDProductSensorParamFragment"
@@ -49,15 +42,23 @@
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
             app:popExitAnim="@anim/activity_close_exit" />
+        <action
+            android:id="@+id/action_uProductHomeFragment_to_lR200SensorParamFragment"
+            app:destination="@id/lR200SensorParamFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
 
+        <action
+            android:id="@+id/action_uProductHomeFragment_to_uDProductDataCenterHomeFragment"
+            app:destination="@id/uDProductDataCenterHomeFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
 
     </fragment>
-
-    <fragment
-        android:id="@+id/uProductDeviceInfoFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.UProductDeviceInfoFragment"
-        android:label="UProductDeviceInfoFragment"
-        tools:layout="@layout/fragment_m20_device_info" />
     <fragment
         android:id="@+id/uDProductSensorParamFragment"
         android:name="com.shmedo.mcloudapp.device.ui.u_product.fragment.UDProductSensorParamFragment"
@@ -73,6 +74,45 @@
         android:name="com.shmedo.mcloudapp.device.ui.u_product.fragment.URProductSensorParamFragment"
         android:label="URProductSensorParamFragment"
         tools:layout="@layout/fragment_u_d_product_sensor_param" />
+    <fragment
+        android:id="@+id/lR200SensorParamFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.u_product.fragment.LR200SensorParamFragment"
+        android:label="LR200SensorParamFragment"
+        tools:layout="@layout/fragment_lr200_sensor_param">
+        <action
+            android:id="@+id/action_lR200SensorParamFragment_to_lR200InitialValueFragment"
+            app:destination="@id/lR200InitialValueFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/lR200InitialValueFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.u_product.fragment.LR200InitialValueFragment"
+        android:label="LR200InitialValueFragment"
+        tools:layout="@layout/fragment_lr200_initial_value" />
+
+    <fragment
+        android:id="@+id/uDProductDataCenterHomeFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.u_product.fragment.UDProductDataCenterHomeFragment"
+        android:label="UDProductDataCenterHomeFragment"
+        tools:layout="@layout/fragment_universal_data_center_home">
+        <action
+            android:id="@+id/action_uDProductDataCenterHomeFragment_to_dataCenterParamFragment"
+            app:destination="@id/dataCenterParamFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dataCenterParamFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.common.DataCenterParamFragment"
+        android:label="DataCenterParamFragment"
+        tools:layout="@layout/fragment_data_center_param" />
 
     <action
         android:id="@+id/action_global_to_queryDeviceDataFragment"
@@ -81,6 +121,15 @@
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_commonRunningDeviceInfoFragment"
+        app:destination="@id/common_running_device_info_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
     <action
         android:id="@+id/action_global_universalDataCenterHomeFragment"
         app:destination="@id/data_center_graph"

@@ -100,11 +100,12 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                         val item = getModel<DASSensorItem>()
                         if (!mStates.isVibratingWireSensor.get()) {
                             val bundle = DasExternalDigitalSensorFragment.newBundleArguments(
+                                index = modelPosition,
+                                sensorAddr = item.addr,
+                                productType,
                                 communicateWay,
                                 deviceInfo,
-                                bleDevice,
-                                index = modelPosition,
-                                sensorAddr = item.addr
+                                bleDevice
                             )
                             nav().navigate(
                                 R.id.action_dasSensorHomeFragment_to_dasExternalDigitalSensorFragment,
@@ -112,10 +113,11 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                             )
                         } else {
                             val bundle = DasExternalVibratingSensorFragment.newBundleArguments(
+                                sensorChannel = item.addr,
+                                productType,
                                 communicateWay,
                                 deviceInfo,
                                 bleDevice,
-                                sensorChannel = item.addr
                             )
                             nav().navigate(
                                 R.id.action_dasSensorHomeFragment_to_dasExternalVibratingSensorFragment,
@@ -127,11 +129,12 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                     else -> {//新增传感器
                         if (!mStates.isVibratingWireSensor.get()) {
                             val bundle = DasExternalDigitalSensorFragment.newBundleArguments(
+                                index = -1,
+                                sensorAddr = "-1",
+                                productType,
                                 communicateWay,
                                 deviceInfo,
                                 bleDevice,
-                                index = -1,
-                                sensorAddr = "-1"
                             )
                             nav().navigate(
                                 R.id.action_dasSensorHomeFragment_to_dasExternalDigitalSensorFragment,
@@ -139,10 +142,11 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                             )
                         } else {
                             val bundle = DasExternalVibratingSensorFragment.newBundleArguments(
+                                sensorChannel = "-1",
+                                productType,
                                 communicateWay,
                                 deviceInfo,
                                 bleDevice,
-                                sensorChannel = "-1"
                             )
                             nav().navigate(
                                 R.id.action_dasSensorHomeFragment_to_dasExternalVibratingSensorFragment,
@@ -483,7 +487,9 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
             }
 
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

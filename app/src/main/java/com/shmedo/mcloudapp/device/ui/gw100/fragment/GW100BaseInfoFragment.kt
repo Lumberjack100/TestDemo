@@ -21,12 +21,13 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentGw100BaseInfoBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
-import com.shmedo.mcloudapp.device.model.DeviceBaseInfoItem
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.GW100BaseInfoViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -86,7 +87,7 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
 
     private fun initAdapter() {
         binding.rvStationNode.setup { rv ->
-            addType<DeviceBaseInfoItem>(R.layout.item_gw100_device_info_station_node)
+            addType<DeviceStatusInfoBasicItem>(R.layout.item_gw100_device_info_station_node)
         }.models = getAdapterData()
     }
 
@@ -161,7 +162,9 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 
@@ -189,22 +192,7 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
 
     private fun checkDeviceIsNormal(currentStateInfo: CommonCurrentStateInfo2) {
         deviceAbnormalList.clear()
-        //lora LORA模块
-        if (!currentStateInfo.lora.uppercase().contains("OK")) {
-            deviceAbnormalList.add("LORA 模块异常")
-        }
-        //bt 蓝牙模块
-        if (!currentStateInfo.bt.uppercase().contains("OK")) {
-            deviceAbnormalList.add("蓝牙模块异常")
-        }
-        //radio 电台模块
-        if (!currentStateInfo.radio.uppercase().contains("OK")) {
-            deviceAbnormalList.add("电台模块异常")
-        }
-        //flash
-        if (!currentStateInfo.flash.uppercase().contains("OK")) {
-            deviceAbnormalList.add("FLASH 异常")
-        }
+        deviceAbnormalList.addAll(DeviceStatusHelper.checkDeviceAbnormal(currentStateInfo))
         mStates.deviceNormal.set(deviceAbnormalList.isEmpty())
     }
 
@@ -220,7 +208,7 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
                 }
                 terminalIds.forEachIndexed { index, terminalId ->
                     if (index < STATION_NODE_NUM) {
-                        binding.rvStationNode.bindingAdapter.getModel<DeviceBaseInfoItem>(index)
+                        binding.rvStationNode.bindingAdapter.getModel<DeviceStatusInfoBasicItem>(index)
                             .refreshValue(terminalId)
                     }
                 }
@@ -230,10 +218,10 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun getAdapterData(): MutableList<DeviceBaseInfoItem> {
-        val list = mutableListOf<DeviceBaseInfoItem>()
+    private fun getAdapterData(): MutableList<DeviceStatusInfoBasicItem> {
+        val list = mutableListOf<DeviceStatusInfoBasicItem>()
         for (i in 1..STATION_NODE_NUM) {
-            list.add(DeviceBaseInfoItem("测站${i}编号", ""))
+            list.add(DeviceStatusInfoBasicItem("测站${i}编号", ""))
         }
         return list
     }

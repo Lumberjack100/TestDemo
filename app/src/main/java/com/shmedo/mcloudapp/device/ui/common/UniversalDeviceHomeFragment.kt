@@ -9,12 +9,8 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
@@ -25,7 +21,6 @@ import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecorati
 import com.shmedo.mcloudapp.databinding.FragmentUniversalDeviceHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
-import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
@@ -52,7 +47,6 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     protected lateinit var mHeadStates: CommonDeviceHomeViewModel
     protected lateinit var mCommandResponseStates: CommandResponseViewModel
     protected val iotParseManager: IOTParserManager by inject()
-    protected var productType = ProductType.UnKnown
 
     override fun initViewModel() {
         super.initViewModel()
@@ -69,7 +63,6 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUniversalDeviceHomeBinding
-        toolbarViewModel.toolbarIvActionVisible.set(true)
         binding.llToolbar.toolbar.title = "设备配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
@@ -125,21 +118,21 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        arguments?.let {
-            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
-        }
+        toolbarViewModel.toolbarIvActionVisible.set(true)
         mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
         mHeadStates.productName.set(deviceInfo.productName)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
-        mHeadStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
-        mHeadStates.firmwareVersion.set(deviceInfo.firmwareVersion)
+        mHeadStates.deviceName.set(if (deviceInfo.deviceName == deviceInfo.deviceToken) deviceInfo.productToken else deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
+        mHeadStates.firmwareVersion.set(deviceInfo.firmwareVersion.ifEmpty { "--" })
+        mHeadStates.isRunningStateVisible.set(false)
+        mHeadStates.isPlatformsVisible.set(false)
 
         when (communicateWay) {
             NetPlatformConnect -> {
                 mHeadStates.isDeviceStateTagHighLight.set(deviceInfo.onlineStatus)
                 mHeadStates.deviceStateTagText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
                 mHeadStates.isConnectOperateVisible.set(false)
-                mHeadStates.isPlatformConnectionStateVisible.set(false)
+                mHeadStates.isIOTPlatformStateVisible.set(false)
             }
 
             BleConnect -> {
@@ -147,8 +140,8 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
                 mHeadStates.deviceStateTagText.set("未连接")
                 mHeadStates.isConnectOperateVisible.set(true)
                 mHeadStates.connectOperateText.set("蓝牙连接")
-                mHeadStates.isPlatformConnectionStateVisible.set(true)
-                mHeadStates.platformConnectionStateText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
+                mHeadStates.isIOTPlatformStateVisible.set(true)
+                mHeadStates.iotPlatformStateText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
             }
 
             else -> {}
@@ -201,6 +194,10 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
                 bleViewModel.launch(bleDevice!!)
             }
         }
+
+        override fun onAdmeModeChooseClick() {
+            chooseAdmeMode()
+        }
     }
 
     private fun processItemClick(module: ConfigModule) {
@@ -210,16 +207,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
         }
         when (module.configModule) {
             is TimeCalibrationModule -> {//时间校准
-                commandItems.clear()
-                val command =
-                    IOTCommandUtil.getCommand(IOTCommandType.QUERY_TERMINAL_TIME)
-                commandItems.add(command)
-
-                if (communicateWay is BleConnect) {
-                    mCommandResponseStates.isResponseLoading.set(true)
-                    showTimeCalibrationPopup()
-                }
-                sendCommandFromCmdList(isStartTimeoutJob = true)
+                queryTerminalTime()
             }
 
             is TelemetryDataModule -> {//召测
@@ -296,6 +284,22 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     }
 
     /**
+     * 查询终端时间
+     */
+    private fun queryTerminalTime() {
+        commandItems.clear()
+        val command =
+            IOTCommandUtil.getCommand(IOTCommandType.QUERY_TERMINAL_TIME)
+        commandItems.add(command)
+
+        if (communicateWay is BleConnect) {
+            mCommandResponseStates.isResponseLoading.set(true)
+            showTimeCalibrationPopup()
+        }
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
      * 重启设备
      */
     private fun reboot() {
@@ -320,9 +324,16 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun lazyLoadData() {
-        if (communicateWay is BleConnect) {
+        //4G 模式下，直接查询设备工作模式
+        if (communicateWay is NetPlatformConnect) {
+            onNetPlatformReady()
+        } else {
             bleViewModel.launch(bleDevice!!)
         }
+    }
+
+    protected open fun onNetPlatformReady() {
+
     }
 
     override fun onBleDeviceReady() {
@@ -408,6 +419,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        updateLastCommunicationTime()
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME -> {//查询终端时间
                 val result = iotParseManager.parse<String>(
@@ -520,6 +532,24 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            IOTCommandType.MD_SAVE_CONFIG_PARAM -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "保存出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("保存成功")
+                        }
+                    }
+                }
+            }
+
             else -> {
                 processOtherCmdResult(
                     IOTCommandUtil.extractCommandType(cmdStr),
@@ -531,9 +561,12 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
 
     protected abstract fun updateConfigModuleData()
 
+    protected open fun chooseAdmeMode() {}
+
     protected open fun processOtherItemClick(configModule: DeviceFunctionModule) {
         if (configModule.navId != 0) {
             val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                productType,
                 communicateWay,
                 deviceInfo,
                 bleDevice
@@ -550,21 +583,5 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
-    }
-
-    companion object {
-        fun newBundleArguments(
-            type: ProductType = ProductType.UnKnown,
-            communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: DeviceInfo,
-            bleDevice: DiscoveredBluetoothDevice? = null,
-            statusBarColor: Int = R.color.white
-        ): Bundle = Bundle().apply {
-            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
-        }
     }
 }

@@ -31,10 +31,10 @@ import com.shmedo.mcloudapp.ext.nav
 class M20SHomeFragment : UniversalDeviceHomeFragment() {
     override fun initData() {
         super.initData()
-        toolbarViewModel.toolbarIvActionVisible.set(true)
         mHeadStates.productLightResId.set(R.drawable.device_logo_m20)
         mHeadStates.productGrayResId.set(R.drawable.device_logo_m20_gray)
-        mHeadStates.isPlatformConnectionStateVisible.set(false)
+        mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
+        mHeadStates.isIOTPlatformStateVisible.set(false)
         mHeadStates.deviceName.set(if (deviceInfo.deviceToken.endsWith(ProductType.GNSS_M_1.newSuffix)) "M20 (单北斗)" else "M20 (全星座)")
     }
 
@@ -44,7 +44,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
             ConfigModule(
                 RunningStatusModule(
                     resID = R.drawable.ic_module_current_state,
-                    navId = R.id.action_m20SHomeFragment_to_m20SDeviceInfoFragment
+                    navId = R.id.action_global_to_commonRunningDeviceInfoFragment
                 )
             )
         )
@@ -127,19 +127,6 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
 
     override fun processOtherItemClick(configModule: DeviceFunctionModule) {
         when (configModule) {
-            is AlarmConfigModule -> {
-                val bundle = UniversalDeviceHomeFragment.newBundleArguments(
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().navigate(
-                    configModule.navId,
-                    bundle
-                )
-            }
-
             is DataCenterModule -> {
                 val bundle = UniversalDataCenterHomeFragment.newBundleArguments(
                     4,
@@ -156,10 +143,11 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
 
             is CommandDebugConfigModule -> {
                 val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+                    true,
+                    productType,
                     communicateWay,
                     deviceInfo,
-                    bleDevice,
-                    true
+                    bleDevice
                 )
                 nav().navigate(configModule.navId, bundle)
             }
@@ -167,6 +155,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
             else -> {
                 if (configModule.navId != 0) {
                     val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                        productType,
                         communicateWay,
                         deviceInfo,
                         bleDevice

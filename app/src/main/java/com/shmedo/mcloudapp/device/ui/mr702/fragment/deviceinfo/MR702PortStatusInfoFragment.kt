@@ -31,14 +31,14 @@ import com.shmedo.mcloudapp.device.model.MRIOStatusItem
 import com.shmedo.mcloudapp.device.model.MRInterfaceStatusItem
 import com.shmedo.mcloudapp.device.model.RVEmptyHeader
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceInfoViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceStatusInfoParentViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
 
 class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702PortStatusInfoBinding
-    private lateinit var mStates: MR702DeviceInfoViewModel
+    private lateinit var mStates: MR702DeviceStatusInfoParentViewModel
     private val iotParseManager: IOTParserManager by inject()
 
 
@@ -154,7 +154,9 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

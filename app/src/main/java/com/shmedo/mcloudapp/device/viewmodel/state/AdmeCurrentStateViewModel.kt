@@ -2,46 +2,21 @@ package com.shmedo.mcloudapp.device.viewmodel.state
 
 import androidx.lifecycle.ViewModel
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
+import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeCurrentStateInfo
 
 class AdmeCurrentStateViewModel : ViewModel() {
+    val wrapStateInfo = NonNullObservableField(AdmeCurrentStateInfo())
+
     val ctrMotionInfoVisible = NonNullObservableField(false)
+    val isMotorInfoNormal = NonNullObservableField(true)
     val measureMode = NonNullObservableField("")
     val motorInfo = NonNullObservableField("")
     val measurePoint = NonNullObservableField("")
 
-    val sn = NonNullObservableField("")
-    val productType = NonNullObservableField("")
-    val sim = NonNullObservableField("")
-    val imei = NonNullObservableField("")
-    val firmwareVersion = NonNullObservableField("")
-    val signal = NonNullObservableField("")
-    val signalValue = NonNullObservableField(0)
 
     val deviceNormal = NonNullObservableField(false)
     val workMode = NonNullObservableField("")
-    val ctrInputVoltage = NonNullObservableField("")
-    val driverInputVoltage = NonNullObservableField("")
-    val deviceTemperature = NonNullObservableField("")
-    val deviceHumidity = NonNullObservableField("")
-    val deviceDropNumber = NonNullObservableField("")
-    val deviceMileage = NonNullObservableField("")
-    val nextMeasureTime = NonNullObservableField("--")
 
-    val inclinometerType = NonNullObservableField("")
-    val inclinometerChannelNumber = NonNullObservableField("")
-    val inclinometerLocationInfo = NonNullObservableField("")
-    val inclinometerVoltage = NonNullObservableField("")
-    val inclinometerTemperature = NonNullObservableField("")
-    val inclinometerBluetoothSignal = NonNullObservableField("")
+    val signalValue = NonNullObservableField(0)
     val inclinometerBluetoothSignalValue = NonNullObservableField(0)
-
-    //竖向磁开关触发次数
-    val isVerticalMagneticSwitchTriggerCountSupport = NonNullObservableField(false)//设备固件是否支持
-    val verticalMagneticSwitchTriggerCount= NonNullObservableField("0")
-    //旋转磁开关触发次数
-    val isRotationMagneticSwitchTriggerCountSupport = NonNullObservableField(false)//设备固件是否支持
-    val rotationMagneticSwitchTriggerCount= NonNullObservableField("0")
-    //刹车片启闭次数
-    val isBrakePadOpenCloseCountSupport = NonNullObservableField(false)//设备固件是否支持
-    val brakePadOpenCloseCount= NonNullObservableField("0")
 }

@@ -15,10 +15,10 @@ import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
-import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentDasSensorHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -30,11 +30,13 @@ import com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor.DasDigitalOsmo
 import com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor.DasIOSensorFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor.DasMCUAddressFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
 
 class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentDasSensorHomeBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
 
+    private var productType = ProductType.UnKnown
     private var statusBarColor = 0
     private var communicateWay: CommunicateWay = NetPlatformConnect
     private lateinit var deviceInfo: DeviceInfo
@@ -69,6 +71,7 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
     override fun initData() {
         arguments?.let {
+            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
             communicateWay = it.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
             deviceInfo = it.getParcelable(AppContants.Extras.DEVICE_INFO)!!
             bleDevice = it.getParcelable(AppContants.Extras.BLE_DEVICE)
@@ -82,6 +85,7 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
     private fun initViewPager() {
         val bundle = BaseIOTDeviceFragment.newBundleArguments(
+            productType,
             communicateWay,
             deviceInfo,
             bleDevice
@@ -152,9 +156,8 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
     companion object {
         private val activeColor: Int = ColorUtils.getColor(R.color.colorPrimary)
-        private val normalColor: Int = ColorUtils.getColor(R.color.title_text_color)
+        private val normalColor: Int = ColorUtils.getColor(R.color.text_color_666666)
         private const val activeSize: Float = 17f
         private const val normalSize: Float = 15f
-        fun newInstance() = DasSensorHomeFragment()
     }
 }

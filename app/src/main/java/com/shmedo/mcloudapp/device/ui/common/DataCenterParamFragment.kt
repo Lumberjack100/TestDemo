@@ -17,7 +17,6 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.CenterNumberEntity
@@ -30,12 +29,9 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.DataCenterInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessage
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentDataCenterParamBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -45,6 +41,10 @@ import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DataCenterParamViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -55,7 +55,6 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: DataCenterParamViewModel
     private val iotParseManager: IOTParserManager by inject()
 
-    private var productType = ProductType.UnKnown
     private lateinit var statusItem: DataCenterStatusItem
 
     private val transferProtocolList: MutableList<String> =
@@ -110,13 +109,14 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         arguments?.let {
-            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
             statusItem = it.getParcelable(AppContants.Extras.SERVER_NUMBER)!!
         }
         mStates.centerName.set(statusItem.name)
         mStates.centerStatus.set(statusItem.status)
         mStates.isCenterOpened.set(statusItem.status != "0")
-        mStates.isDataProtocolVisible.set(productType != ProductType.DAS && productType != ProductType.ADME && productType != ProductType.VMS)
+        mStates.isDataProtocolVisible.set(
+            productType == ProductType.GNSS_E_1 || productType == ProductType.GNSS_E_2 || productType == ProductType.GNSS_E_3
+        )
         mStates.transferProtocol.set(transferProtocolList[2])
         mStates.dataProtocol.set(dataProtocolList[5])
         mStates.platformType.set(platformList[0])
@@ -230,6 +230,7 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
                     null, selectedIndex,
                     { position, text ->
                         mStates.platformType.set(text)
+                        mStates.isRigisterVisible.set(!text.contains("重庆地灾"))
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -313,12 +314,16 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
             addr = mStates.centerServerAddress.get(),
             port = mStates.centerServerPort.get(),
             protocol = mStates.transferProtocol.get(),
-            datatype = (dataProtocolList.indexOf(mStates.dataProtocol.get()) + 1).toString(),
+            datatype = if (productType == ProductType.GNSS_E_1 || productType == ProductType.GNSS_E_2 || productType == ProductType.GNSS_E_3)
+                (dataProtocolList.indexOf(mStates.dataProtocol.get()) + 1).toString()
+            else IOTConstants.NULL_KEY,
             plattype = platformList.indexOf(mStates.platformType.get()).toString()
         )
         if (mStates.transferProtocol.get() == "MQTT") {//MQTT
             //当设备 ID、产品 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
-            if (mStates.deviceId.get().isEmpty() && mStates.deviceKey.get().isEmpty()) {
+            if (mStates.isRigisterVisible.get() && mStates.deviceId.get()
+                    .isEmpty() && mStates.deviceKey.get().isEmpty()
+            ) {
                 if (mStates.registerCode.get().isEmpty()) {
                     showMessageDialog("请输入设备注册码!")
                     return
@@ -327,14 +332,14 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
                     showMessageDialog("请输入设备注册地址!")
                     return
                 }
-                if (mStates.centerServerPort.get().isEmpty()) {
+                if (mStates.registerPort.get().isEmpty()) {
                     showMessageDialog("请输入设备注册端口号!")
                     return
                 }
             }
-            if (mStates.registerPort.get().isNotEmpty()) {
+            if (mStates.isRigisterVisible.get() && mStates.registerPort.get().isNotEmpty()) {
                 try {
-                    val port: Int = mStates.centerServerPort.get().toInt()
+                    val port: Int = mStates.registerPort.get().toInt()
                     if (port < 0 || port > 65535) {
                         showMessageDialog("设备注册端口号数值范围[0,65535]!")
                         return
@@ -347,9 +352,11 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
             entity.projid = mStates.productId.get()
             entity.deviceid = mStates.deviceId.get()
             entity.devicekey = mStates.deviceKey.get()
-            entity.regcode = mStates.registerCode.get()
-            entity.httpaddr = mStates.registerAddress.get()
-            entity.httpport = mStates.registerPort.get()
+            entity.regcode = if (mStates.isRigisterVisible.get()) mStates.registerCode.get() else ""
+            entity.httpaddr =
+                if (mStates.isRigisterVisible.get()) mStates.registerAddress.get() else ""
+            entity.httpport =
+                if (mStates.isRigisterVisible.get()) mStates.registerPort.get() else ""
         } else if (mStates.transferProtocol.get() == "SL651") {//SL651
             entity.type_code = StationCode.valueByDescription(mStates.stationType.get()).code
             entity.co_address = mStates.centerStationAddr.get()
@@ -427,7 +434,9 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

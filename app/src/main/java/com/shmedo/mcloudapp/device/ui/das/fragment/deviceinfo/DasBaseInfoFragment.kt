@@ -147,7 +147,9 @@ class DasBaseInfoFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 
@@ -168,12 +170,11 @@ class DasBaseInfoFragment : BaseIOTDeviceFragment() {
             }
             mStates.wrapBaseInfo.notifyChange()
 
-            mStates.signal.set(baseInfo.csq.toIntOrNull()?.let {
-                (it * 2 - 113).toString() + "dBm"
-            } ?: "--dBm"
-            )
             mStates.signalValue.set(baseInfo.csq.toIntOrNull()?.let {
-                it * 2 - 113
+                if (it <= 0)
+                    it
+                else
+                    it * 2 - 113
             } ?: -113)
         } catch (e: Exception) {
             Timber.e(e)

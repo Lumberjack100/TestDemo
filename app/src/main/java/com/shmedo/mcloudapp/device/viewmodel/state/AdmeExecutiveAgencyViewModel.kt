@@ -2,10 +2,12 @@ package com.shmedo.mcloudapp.device.viewmodel.state
 
 import androidx.lifecycle.ViewModel
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
+import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeExecutiveAgencyInfo
 
 class AdmeExecutiveAgencyViewModel : ViewModel() {
+    val wrapInfo = NonNullObservableField(AdmeExecutiveAgencyInfo())
+
     val isEditable = NonNullObservableField(false)
-    val isPullUpZeroSpeedSupport = NonNullObservableField(false)
 
     val measureMethodText = NonNullObservableField("")
     val measureMethod = NonNullObservableField(0)//测量方式 （0:实时测量，1:整时整点测量，2:定时定点测量)

@@ -7,11 +7,11 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
+import com.shmedo.lib.core.util.AppContants.Extras.Companion.SENSOR_ADDR
+import com.shmedo.lib.core.util.AppContants.Extras.Companion.SENSOR_INDEX
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.device.base.md_cmd.model.das.MDDasExternalSensorInfo
@@ -22,8 +22,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentDasExternalDigitalSensorBinding
 import com.shmedo.mcloudapp.device.common.BaseDasExternalDigitalSensorClickProxy
-import com.shmedo.mcloudapp.device.model.CommunicateWay
-import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasExternalDigitalSensorViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.DasExternalSensorListViewModel
@@ -667,24 +665,4 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         initImmersionBar(binding.llToolbar.toolbar)
     }
 
-    companion object {
-        private const val SENSOR_INDEX = "sensor_index"
-        private const val SENSOR_ADDR = "sensor_addr"
-
-        fun newBundleArguments(
-            communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: DeviceInfo,
-            bleDevice: DiscoveredBluetoothDevice? = null,
-            index: Int,
-            sensorAddr: String,
-            statusBarColor: Int = R.color.white
-        ): Bundle = Bundle().apply {
-            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(SENSOR_INDEX, index)
-            putString(SENSOR_ADDR, sensorAddr)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
-        }
-    }
 }

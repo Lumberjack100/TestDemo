@@ -411,7 +411,9 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

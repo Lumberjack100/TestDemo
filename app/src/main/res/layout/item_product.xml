@@ -6,7 +6,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.lib.core.base.model.ProductInfo" />
+            type="com.shmedo.mcloudapp.device.model.SingleSelectionItem" />
     </data>
 
     <FrameLayout
@@ -17,21 +17,23 @@
             android:id="@+id/item"
             android:layout_width="match_parent"
             android:layout_height="32dp"
-            tools:background="@drawable/bg_product_tab_normal"
+            android:background="@{m.isChecked?@drawable/bg_mr702_port_tab_checked:@drawable/bg_mr702_port_tab_normal}"
             android:gravity="center"
             android:layout_marginStart="@dimen/dimen_size_6"
             android:layout_marginBottom="@dimen/dimen_size_5"
-            android:paddingStart="@dimen/dimen_size_8"
-            android:paddingEnd="@dimen/dimen_size_8">
+            android:paddingHorizontal="@dimen/dimen_size_8"
+            android:paddingVertical="@dimen/dimen_size_5"
+            tools:background="@drawable/bg_product_tab_normal">
 
             <TextView
                 android:id="@+id/tabText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{m.productName}"
-                android:textColor="@color/colorPrimary"
+                android:text="@{m.name}"
+                android:textColor="@{m.isChecked?@color/white:@color/colorPrimary}"
                 android:textSize="@dimen/text_size_15"
-                tools:text="全部" />
+                tools:text="全部"
+                tools:textColor="@color/colorPrimary" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
     </FrameLayout>

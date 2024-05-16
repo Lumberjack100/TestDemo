@@ -12,7 +12,6 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.base.model.DeviceStatisticInfo
 import com.shmedo.lib.core.base.model.ProductInfo
 import com.shmedo.lib.core.base.model.UserInfo
@@ -23,11 +22,12 @@ import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
-import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentNetDeviceListBinding
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.NetDeviceListViewModel
+import com.shmedo.mcloudapp.ext.nav
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.text.DecimalFormat
 
@@ -50,8 +50,8 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
 
     override fun initViewModel() {
-        mStates =  getFragmentScopeViewModel()
-        deviceRequestViewModel =  getViewModel()
+        mStates = getFragmentScopeViewModel()
+        deviceRequestViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -66,34 +66,34 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     override fun initData() {
         companyID = userInfo.companyID
         productID = -1
-        deviceRequestViewModel.getProductList(userInfo.companyID)
+        deviceRequestViewModel.getAllPageProductList(userInfo.companyID)
         binding.page.showLoading(false)
     }
 
-    inner class ClickProxy {
-        fun onGoToSearch() {
+    inner class ClickProxy : BaseClickProxy() {
+        override fun onGoToSearch() {
             nav().navigate(
                 R.id.action_mainFragment_to_deviceSearchFragment
             )
         }
 
         fun onShowSelectProductPopup() {
-            val selectionPopupView = ProductSelectionPartShadowPopupView(requireContext())
-            selectionPopupView.setData(productInfoList, binding.tabs.selectedTabPosition)
-                .setSelectListener(object : ProductSelectionPartShadowPopupView.OnSelectListener {
-                    override fun onSelect(productInfo: ProductInfo, position: Int) {
-                        binding.tabs.getTabAt(position)?.select()
-                    }
-                })
-            XPopup.Builder(context)
-                .atView(binding.headLine)
-                .isViewMode(true)
-                .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
-                .dismissOnTouchOutside(true)// 点击外部是否关闭弹窗，默认为true
-                .enableDrag(false)
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .asCustom(selectionPopupView)
-                .show()
+//            val selectionPopupView = ProductSelectionPartShadowPopupView(requireContext())
+//            selectionPopupView.setData(productInfoList, binding.tabs.selectedTabPosition)
+//                .setSelectListener(object : ProductSelectionPartShadowPopupView.OnSelectListener {
+//                    override fun onSelect(productInfo: ProductInfo, position: Int) {
+//                        binding.tabs.getTabAt(position)?.select()
+//                    }
+//                })
+//            XPopup.Builder(context)
+//                .atView(binding.headLine)
+//                .isViewMode(true)
+//                .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
+//                .dismissOnTouchOutside(true)// 点击外部是否关闭弹窗，默认为true
+//                .enableDrag(false)
+//                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+//                .asCustom(selectionPopupView)
+//                .show()
         }
     }
 
@@ -200,7 +200,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         if (companyID != userInfo.companyID) {
             companyID = userInfo.companyID
             productID = -1
-            deviceRequestViewModel.getProductList(userInfo.companyID)
+            deviceRequestViewModel.getAllPageProductList(userInfo.companyID)
         }
         deviceRequestViewModel.getDeviceStatByCompanyID(
             userInfo.companyID,

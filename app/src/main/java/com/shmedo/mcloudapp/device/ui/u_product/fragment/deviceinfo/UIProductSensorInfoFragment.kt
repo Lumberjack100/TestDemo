@@ -1,30 +1,20 @@
 package com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo
 
-import android.os.Bundle
-import com.blankj.utilcode.util.StringUtils
-import com.hjq.toast.Toaster
-import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.blankj.utilcode.util.ColorUtils
+import com.drake.brv.utils.models
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo2
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.mcloudapp.BR
+import com.shmedo.lib.device.base.iot_cmd.model.u_product.URCurrentStateInfo
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentUIProductSensorInfoBinding
-import com.shmedo.mcloudapp.device.model.BleConnect
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.UIProductSensorInfoViewModel
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
+import com.shmedo.mcloudapp.device.model.GapItem
+import com.shmedo.mcloudapp.device.ui.common.BaseDeviceStatusInfoFragment
+import com.shmedo.mcloudapp.ext.notNullKey
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
 
 /**
  * @author：gonghe
@@ -32,99 +22,171 @@ import java.util.Locale
  * @desc: 倾斜仪传感器状态
  *
  */
-class UIProductSensorInfoFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentUIProductSensorInfoBinding
-    private lateinit var mStates: UIProductSensorInfoViewModel
-    private val iotParseManager: IOTParserManager by inject()
-    private val decimalFormat = DecimalFormat("#.###", DecimalFormatSymbols(Locale.getDefault()))
-
-
-    override fun initViewModel() {
-        super.initViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
-
-    override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_u_i_product_sensor_info, BR.stateVM, mStates)
-    }
-
-    override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentUIProductSensorInfoBinding
-        refreshLayout = binding.refreshLayout
-        initRefresh()
-    }
-
-    private fun initRefresh() {
-        binding.refreshLayout.setEnableLoadMore(false)
-        binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return@onRefresh
-            }
-            queryInfo()
-        }
-    }
-
-    override fun lazyLoadData() {
-        binding.refreshLayout.autoRefresh()
-    }
-
-    /**
-     * 获取设备的基本信息
-     */
-    private fun queryInfo() {
-        commandItems.clear()
-
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS)
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    override fun setResultData(cmdStr: String) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_DEVICE_STATUS -> {
-                val result = iotParseManager.parse<String>(
-                    cmdStr,
-                    IOTCommandType.MD_GET_DEVICE_STATUS
-                )
-                when (result) {
-                    is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "查询传感器信息出错: ${result.message}"
-                        Toaster.show(errMsg)
-                        return
-                    }
-
-                    is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        val content: String = result.data
-                        initStatusInfo(content)
-                    }
-                }
-            }
-
-            else -> {}
-        }
-    }
-
-    private fun initStatusInfo(content: String) {
+class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
+    override fun initStatusInfo(content: String) {
         launchWithViewLifecycle {
             try {
-                val commonCurrentStateInfoList = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<List<CommonCurrentStateInfo2>>(content)
-                } ?: return@launchWithViewLifecycle
-
-                if (commonCurrentStateInfoList.isEmpty()) {
-                    Toaster.show("数据为空")
+                val stateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<URCurrentStateInfo>(content)
+                }
+                if (stateInfo == null) {
+                    binding.refreshLayout.showEmpty()
                     return@launchWithViewLifecycle
                 }
-                val info = commonCurrentStateInfoList[0]
-                decimalFormat.applyPattern("#.###")
+                val uRSensorInfoList = stateInfo.attach_data
+                if (uRSensorInfoList.isNullOrEmpty()) {
+                    binding.refreshLayout.showEmpty()
+                    return@launchWithViewLifecycle
+                }
+                binding.refreshLayout.showContent()
+                val groupList = mutableListOf<Any>()
 
+                groupList.add(DeviceStatusInfoGroupItem("倾角计"))
+                uRSensorInfoList.forEach { info ->
+                    when (info.key) {
+                        "memsstatus" -> {
+                            val camState = if (info.value.contains("1")) "正常" else "异常"
+                            groupList.add(
+                                DeviceStatusInfoBasicItem(
+                                    name = "倾角MEMS状态",
+                                    value = camState,
+                                    colorRes = if (camState == "正常") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                                        R.color.device_offline_platform
+                                    )
+                                )
+                            )
+                        }
 
+                        "initAngle" -> {
+                            info.value.notNullKey { value ->
+                                //根据逗号分隔
+                                val initAngle = value.split(",")
+                                if (initAngle.isNotEmpty()) {
+                                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                                        groupList,
+                                        name = "X轴初始角度值",
+                                        value = initAngle[0],
+                                        defaultValue = "0",
+                                        digit = 2,
+                                        unit = "°",
+                                    )
+                                }
+                                if (initAngle.size > 1) {
+                                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                                        groupList,
+                                        name = "Y轴初始角度值",
+                                        value = initAngle[1],
+                                        defaultValue = "0",
+                                        digit = 2,
+                                        unit = "°",
+                                    )
+                                }
+                                if (initAngle.size > 2) {
+                                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                                        groupList,
+                                        name = "Z轴初始角度值",
+                                        value = initAngle[2],
+                                        defaultValue = "0",
+                                        digit = 2,
+                                        unit = "°",
+                                    )
+                                }
+                                groupList.add(GapItem())
+                            }
+                        }
 
+                        "angle" -> {
+                            info.value.notNullKey { value ->
+                                //根据逗号分隔
+                                val angle = value.split(",")
+                                if (angle.isNotEmpty()) {
+                                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                                        groupList,
+                                        name = "X轴当前角度值",
+                                        value = angle[0],
+                                        defaultValue = "0",
+                                        digit = 2,
+                                        unit = "°",
+                                    )
+                                }
+                                if (angle.size > 1) {
+                                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                                        groupList,
+                                        name = "Y轴当前角度值",
+                                        value = angle[1],
+                                        defaultValue = "0",
+                                        digit = 2,
+                                        unit = "°",
+                                    )
+                                }
+                                if (angle.size > 2) {
+                                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                                        groupList,
+                                        name = "Z轴当前角度值",
+                                        value = angle[2],
+                                        defaultValue = "0",
+                                        digit = 2,
+                                        unit = "°",
+                                    )
+                                }
+                                groupList.add(GapItem())
+                            }
+                        }
+
+                        "acc" -> {
+                            info.value.notNullKey { value ->
+                                //根据逗号分隔
+                                val acc = value.split(",")
+                                if (acc.isNotEmpty()) {
+                                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                                        groupList,
+                                        name = "X轴加速度值",
+                                        value = acc[0],
+                                        defaultValue = "0",
+                                        digit = 2,
+                                        unit = "mg",
+                                    )
+                                }
+                                if (acc.size > 1) {
+                                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                                        groupList,
+                                        name = "Y轴加速度值",
+                                        value = acc[1],
+                                        defaultValue = "0",
+                                        digit = 2,
+                                        unit = "mg",
+                                    )
+                                }
+                                if (acc.size > 2) {
+                                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                                        groupList,
+                                        name = "Z轴加速度值",
+                                        value = acc[2],
+                                        defaultValue = "0",
+                                        digit = 2,
+                                        unit = "mg",
+                                    )
+                                }
+                                groupList.add(GapItem())
+                            }
+                        }
+
+                        "worktime" -> {
+                            if (info.value.isNotEmpty()) {
+                                val day = info.value.toInt() / (24 * 60 * 60)
+                                val hour = (info.value.toInt() % (24 * 60 * 60)) / (60 * 60)
+                                val minute = (info.value.toInt() % (60 * 60)) / 60
+                                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                                    groupList,
+                                    name = "连续运行时间",
+                                    value = "${day}天${hour}时${minute}分",
+                                )
+                            }
+                        }
+                    }
+                }
+
+                binding.recyclerview.models = groupList
             } catch (e: Exception) {
                 Timber.e(e)
             }

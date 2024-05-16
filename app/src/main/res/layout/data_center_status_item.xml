@@ -27,7 +27,7 @@
             style="@style/Common_ClickableItem_ValueStyle"
             dataCenterStatus='@{m.status}'
             android:textSize="17sp"
-            tools:text="在线" />
+            tools:text="已连接" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

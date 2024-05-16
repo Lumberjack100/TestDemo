@@ -18,7 +18,9 @@ import com.shmedo.lib.network.response.ResultSource
 import com.shmedo.mcloudapp.data.repository.remote.NetDataRepository
 import com.shmedo.mcloudapp.device.model.CloudDeviceData
 import com.shmedo.mcloudapp.device.model.FirmWareInfo
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -92,52 +94,64 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
         }
     }
 
-    /**
-     *  分页查询产品列表
-     */
-    fun getProductList(companyID: Int) {
+    fun getAllPageProductList(companyID: Int) {
         viewModelScope.launch {
-            val jsonObjectRequest = JSONObject()
-            try {
-//                jsonObjectRequest.put("companyID", companyID)
-                jsonObjectRequest.put("pageSize", 100)
-                jsonObjectRequest.put("currentPage", 1)
-            } catch (e: JSONException) {
-                Timber.e(e)
-            }
-            val data: PageList<ProductInfo> =
-                NetDataRepository.instance.getUserCompanyProductList(jsonObjectRequest.toString()) { error: Throwable ->
-                    error.printStackTrace()
-
-                    val responseStatus = ResponseStatus()
-                    responseStatus.isSuccess = false
-                    responseStatus.errorMessage = error.errorMsg
-                    responseStatus.source = ResultSource.NETWORK
-                    _productListResult.setValue(DataResult(responseStatus = responseStatus))
-                } ?: return@launch
-
+            var currentPage = 1 // Start with the first page
+            val pageSize = 100
             val tempList = mutableListOf<ProductInfo>()
-            data.currentPageData?.filter { product ->
-                product.deviceNum > 0 &&     //过滤掉设备数为0的产品
-                        ProductType.valueByPrefix(product.productToken.uppercase()) !== ProductType.UnKnown //过滤掉未知产品类型
-            }?.sortedBy { product ->
-                product.productName
-            }?.let {
-                tempList.addAll(it)
-            }
-            val productInfo = ProductInfo(id = -1, productName = "全部", isChecked = true)
-            tempList.add(0, productInfo)
+            val filterList = mutableListOf<ProductInfo>()
 
+            while (true) { // Keep fetching pages until there are no more pages left
+                val jsonObjectRequest = JSONObject()
+                jsonObjectRequest.put("pageSize", pageSize)
+                jsonObjectRequest.put("currentPage", currentPage)
+
+                val data: PageList<ProductInfo>? = withContext(Dispatchers.IO) {
+                    NetDataRepository.instance.getUserCompanyProductList(jsonObjectRequest.toString()) { error: Throwable ->
+                        error.printStackTrace()
+                        val responseStatus = ResponseStatus()
+                        responseStatus.isSuccess = false
+                        responseStatus.errorMessage = error.errorMsg
+                        responseStatus.source = ResultSource.NETWORK
+                        _productListResult.setValue(DataResult(responseStatus = responseStatus))
+                    }
+                }
+
+                if (data == null) {
+                    // 如果数据为空，则结束循环
+                    break
+                }
+                data.currentPageData?.let { tempList.addAll(it) }
+
+                // 更新当前页数
+                currentPage++
+                // Check if there are more pages
+                if (currentPage > data.totalPage) {
+                    // No more pages left, break the loop
+                    break
+                }
+            }
+
+            withContext(Dispatchers.Default) {
+                // 过滤、排序并添加到列表中
+                tempList.filter { product ->
+                    product.deviceNum > 0 &&     //过滤掉设备数为0的产品
+                            ProductType.valueByPrefix(product.productToken.uppercase()) !== ProductType.UnKnown //过滤掉未知产品类型
+                }.sortedBy { product ->
+                    product.productName
+                }.let { filterList.addAll(it) }
+            }
+
+            // Set response status and return the final result
             val responseStatus = ResponseStatus()
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
             _productListResult.setValue(
                 DataResult(
-                    tempList,
+                    filterList,
                     responseStatus = responseStatus,
-                    totalCount = data.totalCount,
-                    totalPage = data.totalPage
+                    totalCount = filterList.size // Update totalCount to reflect all fetched items
                 )
             )
         }
@@ -148,7 +162,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
      */
     fun getDeviceList(
         companyID: Int,
-        productID: Int = -1,
+        productID: String = "",
         deviceToken: String = "",
         currentPage: Int,
         pageSize: Int,
@@ -157,25 +171,21 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     ) {
         viewModelScope.launch {
             val jsonObjectRequest = JSONObject()
-            try {
-                jsonObjectRequest.put("companyID", companyID)
-                if (deviceToken.isNotEmpty())
-                    jsonObjectRequest.put("deviceToken", deviceToken)//SN号,支持模糊查询
-                jsonObjectRequest.put(
-                    "productID",
-                    if (productID == -1) "" else productID
-                )//产品ID,null则不指定产品
-                jsonObjectRequest.put("tokenAndVersion", false)//sn号和版本号之间得关系
-                jsonObjectRequest.put("deviceStatus", "启用")//ull选择全部，启用选择启用设备，禁用用选择未启用设备
-//                jsonObjectRequest.put("sortSNAsc", true)//ture按SN正序，false按Sn逆序
+            jsonObjectRequest.put("companyID", companyID)
+            if (deviceToken.isNotEmpty())
+                jsonObjectRequest.put("deviceToken", deviceToken)//SN号,支持模糊查询
+            if (productID.isNotEmpty() && productID != "-1")
+                jsonObjectRequest.put("productID", productID)//产品ID,null则不指定产品
+            if (onlineStatus.isNotEmpty())
                 jsonObjectRequest.put("onlineStatus", onlineStatus)//在线状态
-                if (isHasListSuperInfoPermission)
-                    jsonObjectRequest.put("filterNoPermissionDevice", true)//过滤用户无权限设备
-                jsonObjectRequest.put("currentPage", currentPage)
-                jsonObjectRequest.put("pageSize", pageSize)
-            } catch (e: JSONException) {
-                Timber.e(e)
-            }
+            if (isHasListSuperInfoPermission)
+                jsonObjectRequest.put("filterNoPermissionDevice", true)//过滤用户无权限设备
+            jsonObjectRequest.put("deviceStatus", "启用")//ull选择全部，启用选择启用设备，禁用选择未启用设备
+            //jsonObjectRequest.put("sortSNAsc", true)//ture按SN正序，false按Sn逆序
+            jsonObjectRequest.put("tokenAndVersion", false)//sn号和版本号之间得关系
+            jsonObjectRequest.put("currentPage", currentPage)
+            jsonObjectRequest.put("pageSize", pageSize)
+
             val data: PageList<DeviceInfo> =
                 NetDataRepository.instance.queryDeviceList(
                     jsonObjectRequest.toString(),

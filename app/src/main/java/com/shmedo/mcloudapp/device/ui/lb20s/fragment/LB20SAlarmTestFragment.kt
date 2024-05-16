@@ -1,0 +1,163 @@
+package com.shmedo.mcloudapp.device.ui.lb20s.fragment
+
+import android.os.Bundle
+import android.view.View
+import com.blankj.utilcode.util.KeyboardUtils
+import com.blankj.utilcode.util.StringUtils
+import com.hjq.toast.Toaster
+import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.BroadcastEntity
+import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.mcloudapp.BR
+import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.databinding.FragmentLb20sAlarmTestBinding
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
+import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.viewmodel.state.LB20SAlarmTestViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
+import org.koin.android.ext.android.inject
+import timber.log.Timber
+
+/**
+ * @author：gonghe
+ * @time: 2024/5/11
+ * @desc: 无线预警广播报警测试
+ *
+ */
+class LB20SAlarmTestFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentLb20sAlarmTestBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: LB20SAlarmTestViewModel
+    private val iotParseManager: IOTParserManager by inject()
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
+
+    override fun getDataBindingConfig(): DataBindingConfig {
+        return DataBindingConfig(
+            R.layout.fragment_lb20s_alarm_test,
+            BR.stateVM,
+            mStates
+        )
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, ClickProxy())
+    }
+
+    override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentLb20sAlarmTestBinding
+        binding.llToolbar.toolbar.title = "报警测试"
+        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
+//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
+            nav().navigateUp()
+        }
+        registerOnBackPressedDispatcher {
+//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
+            nav().navigateUp()
+        }
+    }
+
+    inner class ClickProxy : BaseClickProxy() {
+        /**
+         * 一键报警测试
+         */
+        fun onOnClickAlarmTestClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            showMessage(
+                "是否发送报警语音测试？",
+                "温馨提示",
+                "确定",
+                {
+                    initSaveCommand()
+                },
+                "取消"
+            )
+        }
+
+        /**
+         * 自定义播报
+         */
+        fun onCustomBroadcastClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
+            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                productType,
+                communicateWay,
+                deviceInfo,
+                bleDevice
+            )
+            nav().navigate(
+                R.id.action_lB20SAlarmTestFragment_to_lB20SCustomAlarmTestFragment,
+                bundle
+            )
+        }
+    }
+
+    private fun initSaveCommand() {
+        commandItems.clear()
+        val entity = BroadcastEntity(
+            b_num = "3",
+            b_size = "99",
+            b_content = "报警测试，请勿慌张"
+        )
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_BROADCAST,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    override fun setResultData(cmdStr: String) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_BROADCAST -> {//
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "播报出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("播报成功")
+                        }
+                    }
+                }
+            }
+
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+}

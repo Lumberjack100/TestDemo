@@ -100,9 +100,6 @@
         <meta-data
             android:name="BUGLY_ENABLE_DEBUG"
             android:value="false" />
-        <meta-data
-            android:name="UMENG_APP_KEY"
-            android:value="${umengAppkey}" />
 
         <activity
             android:name=".common.activity.SplashActivity"

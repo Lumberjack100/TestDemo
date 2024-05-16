@@ -13,7 +13,7 @@
         android:id="@+id/admeHomeFragment"
         android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeHomeFragment"
         android:label="AdmeHomeFragment"
-        tools:layout="@layout/fragment_adme_home">
+        tools:layout="@layout/fragment_universal_device_home">
 
         <action
             android:id="@+id/action_admeHomeFragment_to_admeCurrentStateFragment"

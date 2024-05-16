@@ -25,14 +25,14 @@ import com.shmedo.mcloudapp.device.model.MRRunningDataItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.mr702.widget.tableview.CommunicationDataTableAdapter
 import com.shmedo.mcloudapp.device.ui.mr702.widget.tableview.model.CommunicationDataCellModel
-import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceInfoViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.MR702DeviceStatusInfoParentViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
 
 class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702RunningStatusInfoBinding
-    private lateinit var mStates: MR702DeviceInfoViewModel
+    private lateinit var mStates: MR702DeviceStatusInfoParentViewModel
     private val iotParseManager: IOTParserManager by inject()
     private val tableAdapter: CommunicationDataTableAdapter by lazy { CommunicationDataTableAdapter() }
 
@@ -130,7 +130,9 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 
@@ -174,31 +176,31 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
                 "数据状态" -> {
                     columnCellDataList.add(
                         CommunicationDataCellModel(
-                            mData = if (communicationData.status1 == "0") "未开启" else if (communicationData.status1 == "1") "在线" else "离线",
+                            mData = if (communicationData.status1 == "0") "未开启" else if (communicationData.status1 == "1") "已连接" else "未连接",
                             textColorResId = if (communicationData.status1 == "1") R.color.device_online_platform else R.color.device_offline_platform
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
-                            mData = if (communicationData.status2 == "0") "未开启" else if (communicationData.status2 == "1") "在线" else "离线",
+                            mData = if (communicationData.status2 == "0") "未开启" else if (communicationData.status2 == "1") "已连接" else "未连接",
                             textColorResId = if (communicationData.status2 == "1") R.color.device_online_platform else R.color.device_offline_platform
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
-                            mData = if (communicationData.status3 == "0") "未开启" else if (communicationData.status3 == "1") "在线" else "离线",
+                            mData = if (communicationData.status3 == "0") "未开启" else if (communicationData.status3 == "1") "已连接" else "未连接",
                             textColorResId = if (communicationData.status3 == "1") R.color.device_online_platform else R.color.device_offline_platform
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
-                            mData = if (communicationData.status4 == "0") "未开启" else if (communicationData.status4 == "1") "在线" else "离线",
+                            mData = if (communicationData.status4 == "0") "未开启" else if (communicationData.status4 == "1") "已连接" else "未连接",
                             textColorResId = if (communicationData.status4 == "1") R.color.device_online_platform else R.color.device_offline_platform
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
-                            mData = if (communicationData.status5 == "0") "未接入" else if (communicationData.status5 == "1") "在线" else "离线",
+                            mData = if (communicationData.status5 == "0") "未接入" else if (communicationData.status5 == "1") "已连接" else "未连接",
                             textColorResId = if (communicationData.status5 == "1") R.color.device_online_platform else R.color.device_offline_platform
                         )
                     )

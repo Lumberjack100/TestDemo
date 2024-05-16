@@ -25,6 +25,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeVoltageConfigInfoParse
 import com.shmedo.lib.device.base.iot_cmd.parser.adme.AdmeWorkModeInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.AlarmMonitorPointInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.AlarmReportIntervalInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.common.AlarmSwitchInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.AlarmTriggerValueInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.CommonSettingIOTCommandResponseParser
 import com.shmedo.lib.device.base.iot_cmd.parser.common.DataCenterInfoParser
@@ -54,6 +55,12 @@ import com.shmedo.lib.device.base.iot_cmd.parser.das.DasSensorStatusParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasSolarStatusInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasTemperatureAndHumidityStatusInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.McuAddressInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.hac.AdmeHacExecutiveAgencyInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.hac.HacMeasuringHoleDepthInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.hac.HacMotionStateParser
+import com.shmedo.lib.device.base.iot_cmd.parser.hac.HacMotorMotionDistanceInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.hac.HacWarningValueParser
+import com.shmedo.lib.device.base.iot_cmd.parser.lr200.LR200ZeroValueParser
 import com.shmedo.lib.device.base.iot_cmd.parser.m20.M20BaseInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDIPortParamParser
 import com.shmedo.lib.device.base.iot_cmd.parser.mr.MRDOPortParamParser
@@ -112,6 +119,12 @@ val iotCommandModule = module {
     factory { AdmeWorkModeInfoParser() }
     factory { AdmeCalibrationProcessingInfoParser() }
     factory { AdmeAndNegativeTestExceptionHandlingInfoParser() }
+    factory { HacMotionStateParser() }
+    factory { HacWarningValueParser() }
+    factory { AdmeHacExecutiveAgencyInfoParser() }
+    factory { HacMeasuringHoleDepthInfoParser() }
+    factory { HacMotorMotionDistanceInfoParser() }
+
     factory { DasBaseInfoParser() }
     factory { DasCollectorInfoParser() }
     factory { DasReportInfoParser() }
@@ -155,10 +168,12 @@ val iotCommandModule = module {
     factory { LoraCommunicateInfoParser() }
     factory { RadioCommunicateInfoParser() }
     factory { RtkParamInfoParser() }
+    factory { AlarmSwitchInfoParser() }
     factory { AlarmMonitorPointInfoParser() }
     factory { AlarmTriggerValueInfoParser() }
     factory { AlarmReportIntervalInfoParser() }
     factory { MudLevelMeterSensorInfoParser() }
+    factory { LR200ZeroValueParser() }
 
 
     // 提供 IOTParseManager 的实例
@@ -191,6 +206,12 @@ val iotCommandModule = module {
             get<AdmeWorkModeInfoParser>(),
             get<AdmeCalibrationProcessingInfoParser>(),
             get<AdmeAndNegativeTestExceptionHandlingInfoParser>(),
+            get<HacMotionStateParser>(),
+            get<HacWarningValueParser>(),
+            get<AdmeHacExecutiveAgencyInfoParser>(),
+            get<HacMeasuringHoleDepthInfoParser>(),
+            get<HacMotorMotionDistanceInfoParser>(),
+
             get<DasBaseInfoParser>(),
             get<DasCollectorInfoParser>(),
             get<DasReportInfoParser>(),
@@ -234,10 +255,12 @@ val iotCommandModule = module {
             get<LoraCommunicateInfoParser>(),
             get<RadioCommunicateInfoParser>(),
             get<RtkParamInfoParser>(),
+            get<AlarmSwitchInfoParser>(),
             get<AlarmMonitorPointInfoParser>(),
             get<AlarmTriggerValueInfoParser>(),
             get<AlarmReportIntervalInfoParser>(),
-            get<MudLevelMeterSensorInfoParser>()
+            get<MudLevelMeterSensorInfoParser>(),
+            get<LR200ZeroValueParser>(),
         )
         IOTParserManager(parsers)
     }

@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/adme_hac_graph"
+    app:startDestination="@id/admeHacHomeFragment">
+
+    <include app:graph="@navigation/include_query_data_graph" />
+    <include app:graph="@navigation/include_firmware_upgrade_graph" />
+    <include app:graph="@navigation/include_data_center_graph" />
+    <include app:graph="@navigation/include_ble_command_debug_graph" />
+
+    <fragment
+        android:id="@+id/admeHacHomeFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacHomeFragment"
+        android:label="AdmeHacHomeFragment"
+        tools:layout="@layout/fragment_universal_device_home">
+
+        <action
+            android:id="@+id/action_admeHacHomeFragment_to_admeCurrentStateFragment"
+            app:destination="@id/admeCurrentStateFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/admeCurrentStateFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeCurrentStateFragment"
+        android:label="AdmeCurrentStateFragment"
+        tools:layout="@layout/fragment_adme_current_state" />
+
+    <fragment
+        android:id="@+id/admeAdvancedConfigurationFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeAdvancedConfigurationFragment"
+        android:label="AdmeAdvancedConfigurationFragment"
+        tools:layout="@layout/fragment_adme_advanced_configuration">
+
+        <action
+            android:id="@+id/action_admeAdvancedConfigurationFragment_to_admeMeterWheelFragment"
+            app:destination="@id/admeMeterWheelFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
+            android:id="@+id/action_admeAdvancedConfigurationFragment_to_admeInclinometerFragment"
+            app:destination="@id/admeInclinometerFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
+            android:id="@+id/action_admeAdvancedConfigurationFragment_to_admeHacExecutiveAgencyFragment"
+            app:destination="@id/admeHacExecutiveAgencyFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
+            android:id="@+id/action_admeAdvancedConfigurationFragment_to_admeLockedRotorDetectionFragment"
+            app:destination="@id/admeLockedRotorDetectionFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
+            android:id="@+id/action_admeAdvancedConfigurationFragment_to_admeIntelligentControlFragment"
+            app:destination="@id/admeIntelligentControlFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
+            android:id="@+id/action_admeAdvancedConfigurationFragment_to_admeThresholdFragment"
+            app:destination="@id/admeThresholdFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
+            android:id="@+id/action_admeAdvancedConfigurationFragment_to_admeHacAlarmSettingFragment"
+            app:destination="@id/admeHacAlarmSettingFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/admeMeterWheelFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeMeterWheelFragment"
+        android:label="AdmeMeterWheelFragment"
+        tools:layout="@layout/fragment_adme_meter_wheel" />
+
+    <fragment
+        android:id="@+id/admeInclinometerFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeInclinometerFragment"
+        android:label="AdmeInclinometerFragment"
+        tools:layout="@layout/fragment_adme_inclinometer" />
+
+    <fragment
+        android:id="@+id/admeHacExecutiveAgencyFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacExecutiveAgencyFragment"
+        android:label="AdmeHacExecutiveAgencyFragment"
+        tools:layout="@layout/fragment_adme_executive_agency" />
+
+    <fragment
+        android:id="@+id/admeLockedRotorDetectionFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeLockedRotorDetectionFragment"
+        android:label="AdmeLockedRotorDetectionFragment"
+        tools:layout="@layout/fragment_adme_locked_rotor_detection" />
+
+    <fragment
+        android:id="@+id/admeIntelligentControlFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeIntelligentControlFragment"
+        android:label="AdmeIntelligentControlFragment"
+        tools:layout="@layout/fragment_adme_intelligent_control" />
+
+    <fragment
+        android:id="@+id/admeThresholdFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeThresholdFragment"
+        android:label="AdmeThresholdFragment"
+        tools:layout="@layout/fragment_adme_threshold" />
+
+    <fragment
+        android:id="@+id/admeHacAlarmSettingFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacAlarmSettingFragment"
+        android:label="AdmeHacAlarmSettingFragment"
+        tools:layout="@layout/fragment_adme_hac_alarm_setting" />
+
+    <fragment
+        android:id="@+id/admeHacMeasuringHoleDepthFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacMeasuringHoleDepthFragment"
+        android:label="AdmeHacMeasuringHoleDepthFragment"
+        tools:layout="@layout/fragment_adme_hac_measuring_hole_depth" />
+
+    <fragment
+        android:id="@+id/admeAdvancedSettingFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeAdvancedSettingFragment"
+        android:label="AdmeAdvancedSettingFragment"
+        tools:layout="@layout/fragment_adme_advanced_setting" />
+
+    <action
+        android:id="@+id/action_global_to_admeHacMeasuringHoleDepthFragment"
+        app:destination="@id/admeHacMeasuringHoleDepthFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_admeAdvancedConfigurationFragment"
+        app:destination="@id/admeAdvancedConfigurationFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_admeAdvancedSettingFragment"
+        app:destination="@id/admeAdvancedSettingFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_firmwareUpgradeFragment"
+        app:destination="@id/firmware_upgrade_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_queryDeviceDataFragment"
+        app:destination="@id/query_data_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_universalDataCenterHomeFragment"
+        app:destination="@id/data_center_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_commandDebug"
+        app:destination="@id/ble_command_debug_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+</navigation>

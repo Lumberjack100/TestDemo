@@ -85,7 +85,7 @@
                         <com.kyleduo.switchbutton.SwitchButton
                             android:id="@+id/downEnableSBtn"
                             style="@style/SwitchButton_ButtonStyle"
-                            checkedImmediatelyNoEvent="@{stateVM.downEnable}"
+                            checkedImmediatelyNoEvent="@{stateVM.decentralizedEnable}"
                             android:enabled="@{stateVM.isEditable}"
                             android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                             app:kswAnimationDuration="100"

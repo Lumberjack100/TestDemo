@@ -11,7 +11,6 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.LoraCommunicateEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
@@ -41,9 +40,7 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: LoraSettingViewModel
     private val iotParseManager: IOTParserManager by inject()
 
-    private var productType = ProductType.UnKnown
-
-    private val loraReceiveChannelList by lazy { Utils.getApp().resources.getStringArray(R.array.lora_receive_channel) }
+    private val loraReceiveChannelList by lazy { Utils.getApp().resources.getStringArray(R.array.lora_channel) }
     private val transmitPowerList: List<String> = (5..20).map { it.toString() }
     private val airSpeedList: List<String> = (1..6).map { it.toString() }
     private val networkNumberList: List<String> = (1..10).map { it.toString() }
@@ -82,9 +79,6 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        arguments?.let {
-            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
-        }
         mStates.isTargetAddressSupport.set(productType != ProductType.COLLECTOR_G_0)
         resetParams()
     }
@@ -258,10 +252,11 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
             localid = mStates.localAddress.get(),
             dstid = if (mStates.isTargetAddressSupport.get()) mStates.targetAddress.get() else IOTConstants.NULL_KEY
         )
-        val command = IOTCommandUtil.getCommand(
+        //devicetype  添加且赋值为1时，表示配置自组网网关
+        val command = if (productType == ProductType.LB20S) IOTCommandUtil.getCommand(
             IOTCommandType.MD_SET_LORA_CTRL,
-            entity.toCommandString()
-        )
+            "${entity.toCommandString()}&devicetype=1"
+        ) else IOTCommandUtil.getCommand(IOTCommandType.MD_SET_LORA_CTRL, entity.toCommandString())
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
@@ -274,9 +269,13 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
 
     private fun queryData() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_LORA_CTRL
-        )
+        val command =
+            //devicetype  添加且赋值为1时，表示配置自组网网关
+            if (productType == ProductType.LB20S) IOTCommandUtil.getCommand(
+                IOTCommandType.MD_GET_LORA_CTRL,
+                "devicetype=1"
+            )
+            else IOTCommandUtil.getCommand(IOTCommandType.MD_GET_LORA_CTRL)
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -323,7 +322,9 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

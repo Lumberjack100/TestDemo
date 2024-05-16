@@ -24,6 +24,7 @@ import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecorati
 import com.shmedo.mcloudapp.databinding.FragmentMr702HomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DataCenterModule
 import com.shmedo.mcloudapp.device.model.DeviceOperationModule
@@ -119,7 +120,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 val module = getModel<ConfigModule>()
                 processItemClick(module)
             }
-        }.models = getModuleList()
+        }.models
     }
 
     override fun initData() {
@@ -129,7 +130,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
         mHeadStates.productName.set(deviceInfo.productName)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
-        mHeadStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
+        mHeadStates.deviceName.set(if (deviceInfo.deviceName == deviceInfo.deviceToken) deviceInfo.productToken else deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
         mHeadStates.firmwareVersion.set(deviceInfo.firmwareVersion)
 
         when (communicateWay) {
@@ -137,7 +138,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 mHeadStates.isDeviceStateTagHighLight.set(deviceInfo.onlineStatus)
                 mHeadStates.deviceStateTagText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
                 mHeadStates.isConnectOperateVisible.set(false)
-                mHeadStates.isPlatformConnectionStateVisible.set(false)
+                mHeadStates.isIOTPlatformStateVisible.set(false)
             }
 
             BleConnect -> {
@@ -145,12 +146,13 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 mHeadStates.deviceStateTagText.set("未连接")
                 mHeadStates.isConnectOperateVisible.set(true)
                 mHeadStates.connectOperateText.set("蓝牙连接")
-                mHeadStates.isPlatformConnectionStateVisible.set(true)
-                mHeadStates.platformConnectionStateText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
+                mHeadStates.isIOTPlatformStateVisible.set(true)
+                mHeadStates.iotPlatformStateText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
             }
 
             else -> {}
         }
+        updateConfigModuleData()
     }
 
     override fun onConnectionStateChanged(isConnected: Boolean) {
@@ -235,6 +237,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             else -> {
                 if (module.configModule.navId != 0) {
                     val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                        productType,
                         communicateWay,
                         deviceInfo,
                         bleDevice
@@ -410,8 +413,9 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         initImmersionBar(binding.llToolbar.toolbar)
     }
 
-    private fun getModuleList() =
-        arrayListOf<ConfigModule>(
+    private fun updateConfigModuleData() {
+        val moduleList = arrayListOf<ConfigModule>()
+        moduleList.add(
             ConfigModule(
                 RunningStatusModule(
                     "关于设备",
@@ -419,17 +423,40 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     R.drawable.ic_device_running_info,
                     navId = R.id.action_mR702HomeFragment_to_mR702DeviceInfoFragment
                 )
-            ),
-            ConfigModule(DataCenterModule(navId = R.id.action_mR702HomeFragment_to_mR702DataCenterHomeFragment)),
-            ConfigModule(MR702PortConfigModule(navId = R.id.action_mR702HomeFragment_to_mR702PortHomeFragment)),
-            ConfigModule(MR702TerminalParameterModule(navId = R.id.action_mR702HomeFragment_to_mR702TerminalParameterFragment)),
-            ConfigModule(DeviceOperationModule(navId = R.id.action_global_mR702EquipmentOperationFragment)),
-            ConfigModule(NetworkCommunicationModule(navId = R.id.action_mR702HomeFragment_to_mR702NetworkCommunicationFragment)),
-            ConfigModule(RebootModule()),
+            )
+        )
+        moduleList.add(
+            ConfigModule(DataCenterModule(navId = R.id.action_mR702HomeFragment_to_mR702DataCenterHomeFragment))
+        )
+        moduleList.add(
+            ConfigModule(MR702PortConfigModule(navId = R.id.action_mR702HomeFragment_to_mR702PortHomeFragment))
+        )
+        moduleList.add(
+            ConfigModule(MR702TerminalParameterModule(navId = R.id.action_mR702HomeFragment_to_mR702TerminalParameterFragment))
+        )
+        moduleList.add(
+            ConfigModule(DeviceOperationModule(navId = R.id.action_global_mR702EquipmentOperationFragment))
+        )
+        moduleList.add(
+            ConfigModule(NetworkCommunicationModule(navId = R.id.action_mR702HomeFragment_to_mR702NetworkCommunicationFragment))
+        )
+        moduleList.add(
+            ConfigModule(RebootModule())
+        )
+        moduleList.add(
             ConfigModule(
                 FirmwareUpgradeModule(
                     navId = R.id.action_global_to_firmwareUpgradeFragment
                 )
             )
         )
+        if (communicateWay is BleConnect) {
+            moduleList.add(
+                ConfigModule(
+                    CommandDebugConfigModule()
+                )
+            )
+        }
+        binding.rvModule.models = moduleList
+    }
 }
