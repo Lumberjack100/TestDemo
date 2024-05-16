@@ -48,7 +48,6 @@ class NewNetDeviceListFragment : BaseFragment() {
     private lateinit var deviceRequestViewModel: DeviceRequestViewModel
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
-    private val productInfoList = mutableListOf<ProductInfo>()
     private val productList = mutableListOf<SingleSelectionItem>()
     private val onlineStatusList = mutableListOf<SingleSelectionItem>()
 
@@ -115,14 +114,13 @@ class NewNetDeviceListFragment : BaseFragment() {
         val filterDeviceTabItem = binding.rvTab.bindingAdapter.getModel<FilterDeviceTabItem>(0)
         val selectionPopupView = ProductSelectionPartShadowPopupView(requireContext())
         selectionPopupView.setData(
-            productInfoList,
+            productList,
             filterDeviceTabItem.singleSelectionItemLastSelectedIndex
         )
-            .setSelectListener(object :
-                ProductSelectionPartShadowPopupView.OnSelectListener {
-                override fun onSelect(productInfo: ProductInfo, position: Int) {
-                    filterDeviceTabItem.refreshValue(productInfo.productName, position)
-                    mStates.filterProductID.set(productInfo.id.toString())
+            .setSelectListener(object : ProductSelectionPartShadowPopupView.OnSelectListener {
+                override fun onSelect(selectionItem: SingleSelectionItem, position: Int) {
+                    filterDeviceTabItem.refreshValue(selectionItem.name, position)
+                    mStates.filterProductID.set(selectionItem.extValue)
                     binding.refreshLayout.showLoading()
                 }
             })
@@ -200,6 +198,7 @@ class NewNetDeviceListFragment : BaseFragment() {
             )
         )
         binding.rvTab.models = tabList
+        deviceRequestViewModel.getAllPageProductList(userInfo.companyID)
     }
 
     private fun initOnlineStatusData() {
@@ -207,6 +206,7 @@ class NewNetDeviceListFragment : BaseFragment() {
         onlineStatusList.add(
             SingleSelectionItem(
                 name = "全部状态",
+                isChecked = true
             )
         )
         onlineStatusList.add(
@@ -240,7 +240,6 @@ class NewNetDeviceListFragment : BaseFragment() {
     }
 
     override fun lazyLoadData() {
-        deviceRequestViewModel.getProductList(userInfo.companyID)
         binding.page.showLoading(refresh = false)
         refreshPage()
         refreshDeviceList()
@@ -276,9 +275,13 @@ class NewNetDeviceListFragment : BaseFragment() {
                 return@observe
             }
             dataResult.result?.let { tempList ->
-                productInfoList.clear()
-                productInfoList.addAll(tempList)
                 productList.clear()
+                productList.add(
+                    SingleSelectionItem(
+                        name = "全部产品",
+                        isChecked = true
+                    )
+                )
                 tempList.map {
                     productList.add(
                         SingleSelectionItem(

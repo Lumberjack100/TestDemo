@@ -18,7 +18,9 @@ import com.shmedo.lib.network.response.ResultSource
 import com.shmedo.mcloudapp.data.repository.remote.NetDataRepository
 import com.shmedo.mcloudapp.device.model.CloudDeviceData
 import com.shmedo.mcloudapp.device.model.FirmWareInfo
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
@@ -92,48 +94,64 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
         }
     }
 
-    /**
-     * 分页查询产品列表
-     */
-    fun getProductList(companyID: Int, isHasListSuperInfoPermission: Boolean = false) {
+    fun getAllPageProductList(companyID: Int) {
         viewModelScope.launch {
-            val jsonObjectRequest = JSONObject()
-            jsonObjectRequest.put("pageSize", 100)
-            jsonObjectRequest.put("currentPage", 1)
-
-            val data: PageList<ProductInfo> =
-                NetDataRepository.instance.getUserCompanyProductList(jsonObjectRequest.toString()) { error: Throwable ->
-                    error.printStackTrace()
-
-                    val responseStatus = ResponseStatus()
-                    responseStatus.isSuccess = false
-                    responseStatus.errorMessage = error.errorMsg
-                    responseStatus.source = ResultSource.NETWORK
-                    _productListResult.setValue(DataResult(responseStatus = responseStatus))
-                } ?: return@launch
-
+            var currentPage = 1 // Start with the first page
+            val pageSize = 100
             val tempList = mutableListOf<ProductInfo>()
-            data.currentPageData?.filter { product ->
-                product.deviceNum > 0 &&     //过滤掉设备数为0的产品
-                        ProductType.valueByPrefix(product.productToken.uppercase()) !== ProductType.UnKnown //过滤掉未知产品类型
-            }?.sortedBy { product ->
-                product.productName
-            }?.let {
-                tempList.addAll(it)
-            }
-            val productInfo = ProductInfo(id = -1, productName = "全部产品", isChecked = true)
-            tempList.add(0, productInfo)
+            val filterList = mutableListOf<ProductInfo>()
 
+            while (true) { // Keep fetching pages until there are no more pages left
+                val jsonObjectRequest = JSONObject()
+                jsonObjectRequest.put("pageSize", pageSize)
+                jsonObjectRequest.put("currentPage", currentPage)
+
+                val data: PageList<ProductInfo>? = withContext(Dispatchers.IO) {
+                    NetDataRepository.instance.getUserCompanyProductList(jsonObjectRequest.toString()) { error: Throwable ->
+                        error.printStackTrace()
+                        val responseStatus = ResponseStatus()
+                        responseStatus.isSuccess = false
+                        responseStatus.errorMessage = error.errorMsg
+                        responseStatus.source = ResultSource.NETWORK
+                        _productListResult.setValue(DataResult(responseStatus = responseStatus))
+                    }
+                }
+
+                if (data == null) {
+                    // 如果数据为空，则结束循环
+                    break
+                }
+                data.currentPageData?.let { tempList.addAll(it) }
+
+                // 更新当前页数
+                currentPage++
+                // Check if there are more pages
+                if (currentPage > data.totalPage) {
+                    // No more pages left, break the loop
+                    break
+                }
+            }
+
+            withContext(Dispatchers.Default) {
+                // 过滤、排序并添加到列表中
+                tempList.filter { product ->
+                    product.deviceNum > 0 &&     //过滤掉设备数为0的产品
+                            ProductType.valueByPrefix(product.productToken.uppercase()) !== ProductType.UnKnown //过滤掉未知产品类型
+                }.sortedBy { product ->
+                    product.productName
+                }.let { filterList.addAll(it) }
+            }
+
+            // Set response status and return the final result
             val responseStatus = ResponseStatus()
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
             _productListResult.setValue(
                 DataResult(
-                    tempList,
+                    filterList,
                     responseStatus = responseStatus,
-                    totalCount = data.totalCount,
-                    totalPage = data.totalPage
+                    totalCount = filterList.size // Update totalCount to reflect all fetched items
                 )
             )
         }

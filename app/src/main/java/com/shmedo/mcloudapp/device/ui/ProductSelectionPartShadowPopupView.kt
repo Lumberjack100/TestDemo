@@ -1,18 +1,15 @@
 package com.shmedo.mcloudapp.device.ui
 
 import android.content.Context
-import android.graphics.Color
 import androidx.databinding.DataBindingUtil
-import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.lxj.xpopup.impl.PartShadowPopupView
-import com.shmedo.lib.core.base.model.ProductInfo
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.ItemProductBinding
 import com.shmedo.mcloudapp.databinding.ProductSelectionPartShadowPopupBinding
+import com.shmedo.mcloudapp.device.model.SingleSelectionItem
 
 /**
  * 创建者:   gonghe <br/>
@@ -21,19 +18,18 @@ import com.shmedo.mcloudapp.databinding.ProductSelectionPartShadowPopupBinding
  */
 class ProductSelectionPartShadowPopupView(context: Context) : PartShadowPopupView(context) {
     private lateinit var binding: ProductSelectionPartShadowPopupBinding
-    private lateinit var data: List<ProductInfo>
+    private lateinit var data: List<SingleSelectionItem>
 
-    private var selectedIndex: Int = 0
+    private var lastSelectedIndex = -1
     private lateinit var selectListener: OnSelectListener
-    private val activeColor: Int = ColorUtils.getColor(R.color.white)
-    private val normalColor: Int = Color.parseColor("#65A2CD")
+   
 
     fun setData(
-        list: List<ProductInfo>,
+        list: List<SingleSelectionItem>,
         selectedIndex: Int = 0
     ): ProductSelectionPartShadowPopupView {
         this.data = list.toList()
-        this.selectedIndex = selectedIndex
+        this.lastSelectedIndex = selectedIndex
         return this
     }
 
@@ -58,19 +54,14 @@ class ProductSelectionPartShadowPopupView(context: Context) : PartShadowPopupVie
     private fun initAdapter() {
         binding.rv.setup { rv ->
             rv.layoutManager = FlexboxLayoutManager(context)
-            addType<ProductInfo>(R.layout.item_product)
-            onBind {
-                if (selectedIndex == modelPosition) {
-                    getBinding<ItemProductBinding>().item.setBackgroundResource(R.drawable.bg_mr702_port_tab_checked)
-                    getBinding<ItemProductBinding>().tabText.setTextColor(activeColor)
-                } else {
-                    getBinding<ItemProductBinding>().item.setBackgroundResource(R.drawable.bg_mr702_port_tab_normal)
-                    getBinding<ItemProductBinding>().tabText.setTextColor(normalColor)
-                }
-            }
+            addType<SingleSelectionItem>(R.layout.item_product)
             R.id.item.onClick {
-                val productInfo = getModel<ProductInfo>()
-                selectListener.onSelect(productInfo, modelPosition)
+                val selectionItem = getModel<SingleSelectionItem>()
+                if (lastSelectedIndex != -1) {
+                    getModel<SingleSelectionItem>(lastSelectedIndex).refreshChecked(false)
+                }
+                selectionItem.refreshChecked(true)
+                selectListener.onSelect(selectionItem, modelPosition)
                 dismiss()
             }
         }
@@ -79,7 +70,7 @@ class ProductSelectionPartShadowPopupView(context: Context) : PartShadowPopupVie
     }
 
     interface OnSelectListener {
-        fun onSelect(productInfo: ProductInfo, position: Int)
+        fun onSelect(selectionItem: SingleSelectionItem, position: Int)
     }
 
     override fun getMaxHeight(): Int {
