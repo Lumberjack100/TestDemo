@@ -28,6 +28,10 @@ open class BaseClickProxy {
 
     }
 
+    open fun onGoToSearch() {
+
+    }
+
     open fun onSubmitButtonClick() {
 
     }

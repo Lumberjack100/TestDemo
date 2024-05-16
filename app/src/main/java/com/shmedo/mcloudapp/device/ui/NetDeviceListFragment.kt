@@ -23,11 +23,12 @@ import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
-import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentNetDeviceListBinding
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.NetDeviceListViewModel
+import com.shmedo.mcloudapp.ext.nav
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.text.DecimalFormat
 
@@ -50,8 +51,8 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
 
     override fun initViewModel() {
-        mStates =  getFragmentScopeViewModel()
-        deviceRequestViewModel =  getViewModel()
+        mStates = getFragmentScopeViewModel()
+        deviceRequestViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -70,8 +71,8 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         binding.page.showLoading(false)
     }
 
-    inner class ClickProxy {
-        fun onGoToSearch() {
+    inner class ClickProxy : BaseClickProxy() {
+        override fun onGoToSearch() {
             nav().navigate(
                 R.id.action_mainFragment_to_deviceSearchFragment
             )

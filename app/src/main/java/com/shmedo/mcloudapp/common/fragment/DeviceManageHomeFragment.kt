@@ -30,7 +30,7 @@ import com.shmedo.mcloudapp.common.model.CustomActivityResult
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.FragmentDeviceManageHomeBinding
 import com.shmedo.mcloudapp.device.ui.BleScannerListFragment
-import com.shmedo.mcloudapp.device.ui.NetDeviceListFragment
+import com.shmedo.mcloudapp.device.ui.NewNetDeviceListFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DeviceManageHomeViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.showMessageDialog
@@ -86,7 +86,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     private fun initViewPager() {
         val mFragments =
             listOf<Fragment>(
-                NetDeviceListFragment.newInstance(),
+                NewNetDeviceListFragment.newInstance(),
                 BleScannerListFragment.newInstance()
             )
         binding.viewpager.adapter = PageAdapter(this, mFragments)

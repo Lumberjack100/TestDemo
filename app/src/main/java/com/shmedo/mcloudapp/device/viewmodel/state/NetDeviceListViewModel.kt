@@ -7,4 +7,7 @@ class NetDeviceListViewModel : ViewModel() {
     val onlineCount = NonNullObservableField(0)
     val offlineCount = NonNullObservableField(0)
     val name = NonNullObservableField("")
+
+    val filterProductID = NonNullObservableField("")
+    val filterOnlineStatus = NonNullObservableField("")
 }

@@ -121,7 +121,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             }?.let {
                 tempList.addAll(it)
             }
-            val productInfo = ProductInfo(id = -1, productName = "全部", isChecked = true)
+            val productInfo = ProductInfo(id = -1, productName = "全部产品", isChecked = true)
             tempList.add(0, productInfo)
 
             val responseStatus = ResponseStatus()
@@ -144,7 +144,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
      */
     fun getDeviceList(
         companyID: Int,
-        productID: Int = -1,
+        productID: String = "",
         deviceToken: String = "",
         currentPage: Int,
         pageSize: Int,
@@ -156,13 +156,13 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             jsonObjectRequest.put("companyID", companyID)
             if (deviceToken.isNotEmpty())
                 jsonObjectRequest.put("deviceToken", deviceToken)//SN号,支持模糊查询
-            if (productID != -1)
+            if (productID.isNotEmpty() && productID != "-1")
                 jsonObjectRequest.put("productID", productID)//产品ID,null则不指定产品
-            jsonObjectRequest.put("deviceStatus", "启用")//ull选择全部，启用选择启用设备，禁用选择未启用设备
             if (onlineStatus.isNotEmpty())
                 jsonObjectRequest.put("onlineStatus", onlineStatus)//在线状态
             if (isHasListSuperInfoPermission)
                 jsonObjectRequest.put("filterNoPermissionDevice", true)//过滤用户无权限设备
+            jsonObjectRequest.put("deviceStatus", "启用")//ull选择全部，启用选择启用设备，禁用选择未启用设备
             //jsonObjectRequest.put("sortSNAsc", true)//ture按SN正序，false按Sn逆序
             jsonObjectRequest.put("tokenAndVersion", false)//sn号和版本号之间得关系
             jsonObjectRequest.put("currentPage", currentPage)
