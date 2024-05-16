@@ -311,7 +311,9 @@ class AdmeSportsCalibrationProcessingFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

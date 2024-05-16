@@ -487,7 +487,9 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
             }
 
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

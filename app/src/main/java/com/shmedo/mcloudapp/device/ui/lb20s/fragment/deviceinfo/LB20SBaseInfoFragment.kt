@@ -4,6 +4,7 @@ import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.models
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
+import com.shmedo.lib.device.base.iot_cmd.enums.SensorErrorType
 import com.shmedo.lib.device.base.iot_cmd.model.lb20s.LB20SCurrentStateInfo
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
@@ -93,12 +94,17 @@ class LB20SBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     )
                 }
                 groupList.add(DeviceStatusInfoGroupItem("太阳能控制器"))
-                stateInfo.ext_power_volt.notNullKey {
+                stateInfo.sensor_errno?.let {
+                    val item = it[0]
                     groupList.add(
                         DeviceStatusInfoBasicItem(
                             name = "状态",
-                            value = "正常",
-                            colorRes = ColorUtils.getColor(R.color.device_online_platform)
+                            value = if (item.errno.toString() == "0") "正常" else SensorErrorType.getErrorMessageByCode(
+                                item.errno.toString()
+                            ),
+                            colorRes = if (item.errno.toString() == "0") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                                R.color.device_offline_platform
+                            )
                         )
                     )
                 }

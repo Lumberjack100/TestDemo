@@ -113,7 +113,9 @@ class DasAdvancedSettingFragment : BaseIOTDeviceFragment() {
                     }
                 }
             }
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

@@ -262,7 +262,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             showMessageDialog("请输入正确的Mac地址!")
             return
         }
-        if (mStates.holeno.get().isEmpty()) {
+        if (binding.etHoleNum.toString().isEmpty()) {
             showMessageDialog("请设置孔号!")
             return
         }
@@ -357,7 +357,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         val entity = HacMeasuringHoleDepthInfoEntity(
             model = "0",
             address = mStates.address.get(),
-            holeno = mStates.holeno.get(),
+            holeno = binding.etHoleNum.toString(),
             areano = mStates.areano.get(),
             lowtbtss = "1",
             motorspeed = mStates.downSpeed.get(),
@@ -385,7 +385,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         val entity = HacMeasuringHoleDepthInfoEntity(
             model = "0",
             address = mStates.address.get(),
-            holeno = mStates.holeno.get(),
+            holeno = binding.etHoleNum.toString(),
             areano = mStates.areano.get(),
             lowtbtss = if (mStates.decentralizedEnable.get()) "1" else "0",
             motorspeed = mStates.speed.get(),
@@ -440,7 +440,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_HAC_MD_GET_HOLE_MEASURE_PARAM
         )
         commandItems.add(command)
-
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
@@ -587,7 +586,9 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

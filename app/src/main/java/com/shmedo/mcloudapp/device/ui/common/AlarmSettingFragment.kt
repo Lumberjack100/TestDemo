@@ -751,9 +751,9 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
                     }
                 }
             }
-
-
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

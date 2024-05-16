@@ -443,7 +443,9 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

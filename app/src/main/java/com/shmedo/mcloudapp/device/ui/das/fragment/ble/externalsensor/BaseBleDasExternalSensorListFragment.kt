@@ -372,7 +372,9 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             }
 
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

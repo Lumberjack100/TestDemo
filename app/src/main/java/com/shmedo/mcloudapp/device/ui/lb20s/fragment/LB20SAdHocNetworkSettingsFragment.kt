@@ -387,7 +387,9 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

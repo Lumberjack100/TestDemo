@@ -259,7 +259,9 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment(),
                 }
             }
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 

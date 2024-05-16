@@ -223,7 +223,9 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
             }
 
 
-            else -> {}
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
         }
     }
 
