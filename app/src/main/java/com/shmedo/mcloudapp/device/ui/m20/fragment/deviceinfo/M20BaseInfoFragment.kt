@@ -81,7 +81,7 @@ class M20BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                             colorRes = if (deviceAbnormalList.isEmpty()) ColorUtils.getColor(
                                 R.color.text_color_3AD094
                             ) else ColorUtils.getColor(R.color.device_offline_platform),
-                            isClickable = false //deviceAbnormalList.isNotEmpty()
+                            isClickable = deviceAbnormalList.isNotEmpty()
                         )
                     )
                 }
@@ -107,11 +107,15 @@ class M20BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     groupList.add(DeviceStatusInfoGroupItem("运行数据"))
 
                 stateInfo.worktime.notNullKey {
-                    val tempValue = it.toIntOrNull() ?: 0
+                    val tempValue = it.toDoubleOrNull()?.div(3600) ?: 0.0
                     groupList.add(
                         DeviceStatusInfoBasicItem(
                             name = "运行时间",
-                            value = decimalFormat.format(tempValue / 3600) + " 小时"
+                            value = DeviceStatusInfoProcessor.formatDoubleValue(
+                                tempValue.toString(),
+                                "0",
+                                1
+                            ) + " 小时"
                         )
                     )
                 }
@@ -141,7 +145,7 @@ class M20BaseInfoFragment : BaseDeviceStatusInfoFragment() {
     }
 
     override fun processItemClick(item: DeviceStatusInfoBasicItem) {
-        if (item.name == "设备状态" && item.value == "异常") {
+        if (item.isClickable && item.name == "设备状态" && item.value == "异常") {
             showErrorModulesInfoDialog()
         }
     }

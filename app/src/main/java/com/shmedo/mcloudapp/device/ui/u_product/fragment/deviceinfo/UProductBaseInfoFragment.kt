@@ -101,11 +101,15 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     groupList.add(DeviceStatusInfoGroupItem("运行数据"))
 
                 stateInfo.worktime.notNullKey {
-                    val tempValue = it.toIntOrNull() ?: 0
+                    val tempValue = it.toDoubleOrNull()?.div(3600) ?: 0.0
                     groupList.add(
                         DeviceStatusInfoBasicItem(
                             name = "运行时间",
-                            value = decimalFormat.format(tempValue / 3600)+ " 小时"
+                            value = DeviceStatusInfoProcessor.formatDoubleValue(
+                                tempValue.toString(),
+                                "0",
+                                1
+                            ) + " 小时"
                         )
                     )
                 }

@@ -31,9 +31,6 @@ import com.shmedo.mcloudapp.device.model.DeviceStatusInfoSignalItem
 import com.shmedo.mcloudapp.device.model.GapItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import org.koin.android.ext.android.inject
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
 
 /**
  * 创建者：gonghe
@@ -44,7 +41,6 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentBaseDeviceStatusInfoBinding
     private lateinit var mStates: EmptyViewModel
     protected val iotParseManager: IOTParserManager by inject()
-    protected val decimalFormat = DecimalFormat("#.##", DecimalFormatSymbols(Locale.getDefault()))
 
     override fun initViewModel() {
         super.initViewModel()

@@ -46,7 +46,7 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: AlarmParamSettingViewModel
     private val iotParseManager: IOTParserManager by inject()
 
-    private val monitorPointList: List<String> = (1..15).map { it.toString() }
+    private val monitorPointList: List<String> = (1..10).map { it.toString() }
     private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
     override fun initViewModel() {

@@ -29,6 +29,7 @@ import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.mr702.widget.tableview.CommunicationDataTableAdapter
 import com.shmedo.mcloudapp.device.ui.mr702.widget.tableview.model.CommunicationDataCellModel
 import com.shmedo.mcloudapp.device.viewmodel.state.CommonCommunicationInfoViewModel
+import com.shmedo.mcloudapp.ext.notNullKey
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -182,24 +183,24 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
                     )
                 }
 
-                if (info.csq != IOTConstants.NULL_KEY) {
-                    mStates.signalValue.set(info.csq.toIntOrNull()?.let {
-                        if (it <= 0)
-                            it
+                info.csq.notNullKey {
+                    val temp = it.toIntOrNull() ?: 0
+                    mStates.signalValue.set(
+                        if (temp <= 0)
+                            temp
                         else
-                            it * 2 - 113
-                    } ?: -113)
+                            temp * 2 - 113
+                    )
                 }
-
-                if (info.signal != IOTConstants.NULL_KEY) {
-                    mStates.signalValue.set(info.signal.toIntOrNull()?.let {
-                        if (it <= 0)
-                            it
+                info.signal.notNullKey {
+                    val temp = it.toIntOrNull() ?: 0
+                    mStates.signalValue.set(
+                        if (temp <= 0)
+                            temp
                         else
-                            it * 2 - 113
-                    } ?: -113)
+                            temp * 2 - 113
+                    )
                 }
-
             } catch (e: Exception) {
                 Timber.e(e)
             }
@@ -234,7 +235,7 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
                         it
                     else
                         it * 2 - 113
-                } ?: -113)
+                })
             } catch (e: Exception) {
                 Timber.e(e)
             }

@@ -77,12 +77,10 @@ class LB20SBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     groupList.add(
                         DeviceStatusInfoSignalItem(
                             name = "4G信号强度",
-                            signalValue = it.let {
-                                if (it <= 0)
-                                    it
-                                else
-                                    it * 2 - 113
-                            })
+                            signalValue = if (it <= 0)
+                                it
+                            else
+                                it * 2 - 113)
                     )
                 }
                 stateInfo.attach_data?.get("volumelevel")?.let { volumeLevelStr ->
