@@ -28,7 +28,6 @@ import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentNewNetDeviceListBinding
-import com.shmedo.mcloudapp.databinding.ItemDeviceInfoBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.FilterDeviceTabItem
 import com.shmedo.mcloudapp.device.model.SingleSelectionItem
@@ -172,29 +171,25 @@ class NewNetDeviceListFragment : BaseFragment() {
                 )
             )
             addType<DeviceInfo>(R.layout.item_device_info)
-            onBind {
-                val deviceInfo = getModel<DeviceInfo>()
-                val itemBinding = getBinding<ItemDeviceInfoBinding>()
-                //必须要在事件发生之前就watch，如果你写在onLongClickListener中的话，就拿不到触摸点了，触摸事件被长按消费了
-                val builder = XPopup.Builder(context)
-                    .hasShadowBg(true)
-                    .watchView(itemBinding.root)
-                itemBinding.item.setOnLongClickListener {
-                    builder.asAttachList(arrayListOf("查看数据").toTypedArray(), null)
-                    { _, text ->
-                        when (text) {
-                            "查看数据" -> {
-                                QuickFunctionActivity.start(mActivity, deviceInfo)
-                            }
-                        }
-                    }
-                        .show()
-                    true
-                }
-            }
             R.id.item.onClick {
                 val deviceInfo = getModel<DeviceInfo>()
                 DeviceHomeActivity.start(mActivity, deviceInfo)
+            }
+            R.id.item.onLongClick {
+                val deviceInfo = getModel<DeviceInfo>()
+                val builder = XPopup.Builder(context)
+                    .hasShadowBg(true)
+                    .atView(itemView)
+                builder.asAttachList(arrayListOf("查看数据").toTypedArray(), null)
+                { _, text ->
+                    when (text) {
+                        "查看数据" -> {
+                            QuickFunctionActivity.start(mActivity, deviceInfo)
+                        }
+                    }
+                }
+                    .show()
+                true
             }
         }
     }
