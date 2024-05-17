@@ -46,7 +46,15 @@ fun NavController.navigateAction(resId: Int, bundle: Bundle? = null, interval: L
     }
 }
 
-fun  BaseVmDbFragment.registerOnBackPressedDispatcher(backPressedHandle: () -> Unit) {
+fun BaseVmDbActivity.registerOnBackPressedDispatcher(backPressedHandle: () -> Unit) {
+    onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            backPressedHandle()
+        }
+    })
+}
+
+fun BaseVmDbFragment.registerOnBackPressedDispatcher(backPressedHandle: () -> Unit) {
     activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             backPressedHandle()

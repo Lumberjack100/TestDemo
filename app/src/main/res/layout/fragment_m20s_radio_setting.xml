@@ -80,7 +80,7 @@
                         <TextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="广播接收频点" />
+                            android:text="报警接收频点" />
 
                         <TextView
                             style="@style/Common_ClickableItem_ValueStyle"

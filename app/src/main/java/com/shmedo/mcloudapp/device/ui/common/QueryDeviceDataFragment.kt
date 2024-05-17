@@ -79,14 +79,23 @@ class QueryDeviceDataFragment : BaseFragment() {
         binding.llToolbar.toolbar.title = "数据查询"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            handleBackPressed()
+
         }
         registerOnBackPressedDispatcher {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            handleBackPressed()
         }
         initRefresh()
         initAdapter()
+    }
+
+    private fun handleBackPressed() {
+        if (nav().currentDestination?.id == R.id.queryDeviceDataFragment && !nav().popBackStack()) {
+            activity?.finish()
+        } else {
+            nav().navigateUp()
+        }
     }
 
     private fun initRefresh() {

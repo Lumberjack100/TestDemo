@@ -81,7 +81,7 @@ class M20BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                             colorRes = if (deviceAbnormalList.isEmpty()) ColorUtils.getColor(
                                 R.color.text_color_3AD094
                             ) else ColorUtils.getColor(R.color.device_offline_platform),
-                            isClickable = deviceAbnormalList.isNotEmpty()
+                            isClickable = false //deviceAbnormalList.isNotEmpty()
                         )
                     )
                 }
