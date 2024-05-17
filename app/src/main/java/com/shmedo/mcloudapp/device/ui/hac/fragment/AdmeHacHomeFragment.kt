@@ -73,7 +73,7 @@ class AdmeHacHomeFragment : UniversalDeviceHomeFragment() {
                     name = "开始测斜",
                     desc = "测量位移",
                     resID = R.drawable.ic_measuring_hole_depth,
-                    navId = R.id.action_global_to_admeMeasuringHoleDepthFragment
+                    navId = 0
                 )
             )
         )
