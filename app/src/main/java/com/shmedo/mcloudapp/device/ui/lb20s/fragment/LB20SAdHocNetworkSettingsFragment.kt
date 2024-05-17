@@ -202,7 +202,7 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
     /**
      * 恢复出厂
      */
-    private fun restoreFactory() {
+    override fun restoreFactory() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(IOTCommandType.RESET, "devicetype=1")
         commandItems.add(command)

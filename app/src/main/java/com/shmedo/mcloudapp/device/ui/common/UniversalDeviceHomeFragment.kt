@@ -25,7 +25,6 @@ import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.model.RebootModule
-import com.shmedo.mcloudapp.device.model.RestoreFactoryModule
 import com.shmedo.mcloudapp.device.model.TelemetryDataModule
 import com.shmedo.mcloudapp.device.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
@@ -229,12 +228,6 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
                 }, "取消")
             }
 
-            is RestoreFactoryModule -> {//恢复出厂
-                showMessage("确定恢复出厂设置吗？", "温馨提示", "确定", {
-                    restoreFactory()
-                }, "取消")
-            }
-
             else -> {
                 processOtherItemClick(module.configModule)
             }
@@ -305,18 +298,6 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     private fun reboot() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(IOTCommandType.REBOOT)
-        commandItems.add(command)
-
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
-     * 恢复出厂
-     */
-    private fun restoreFactory() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.RESET)
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
@@ -509,24 +490,6 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show(StringUtils.getString(R.string.device_reboot_tip))
-                        }
-                    }
-                }
-            }
-
-            IOTCommandType.RESET -> {//恢复出厂设置
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = StringUtils.getString(R.string.reset_failed) + result.message
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show(StringUtils.getString(R.string.device_reset_tip))
                         }
                     }
                 }

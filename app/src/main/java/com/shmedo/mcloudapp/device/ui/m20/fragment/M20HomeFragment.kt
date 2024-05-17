@@ -8,14 +8,13 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DataCenterModule
 import com.shmedo.mcloudapp.device.model.DeviceFunctionModule
-import com.shmedo.mcloudapp.device.model.FirmwareUpgradeModule
 import com.shmedo.mcloudapp.device.model.RebootModule
-import com.shmedo.mcloudapp.device.model.RestoreFactoryModule
 import com.shmedo.mcloudapp.device.model.RunningStatusModule
 import com.shmedo.mcloudapp.device.model.SetupWizard
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
@@ -56,16 +55,7 @@ class M20HomeFragment : UniversalDeviceHomeFragment() {
             ConfigModule(RebootModule(resID = R.drawable.ic_module_reboot))
         )
         moduleList.add(
-            ConfigModule(RestoreFactoryModule(resID = R.drawable.ic_module_reset))
-        )
-        moduleList.add(
-            ConfigModule(
-                FirmwareUpgradeModule(
-                    resID = R.drawable.ic_module_firmware_upgrade,
-                    navId = R.id.action_global_to_firmwareUpgradeFragment,
-                    isSupport = false
-                )
-            )
+            ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_advancedSettingFragment))
         )
         if (communicateWay is BleConnect) {
             moduleList.add(
@@ -81,10 +71,6 @@ class M20HomeFragment : UniversalDeviceHomeFragment() {
     override fun processOtherItemClick(configModule: DeviceFunctionModule) {
         when (configModule) {
             is SetupWizard -> {
-                if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
-                    Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                    return
-                }
                 showMessage("确定进行水平初始化吗？", "温馨提示", "确定", {
                     commandItems.clear()
                     val command = IOTCommandUtil.getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL)
