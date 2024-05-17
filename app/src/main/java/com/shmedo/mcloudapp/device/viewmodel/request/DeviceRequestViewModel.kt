@@ -18,7 +18,10 @@ import com.shmedo.lib.network.response.ResultSource
 import com.shmedo.mcloudapp.data.repository.remote.NetDataRepository
 import com.shmedo.mcloudapp.device.model.CloudDeviceData
 import com.shmedo.mcloudapp.device.model.FirmWareInfo
+import com.shmedo.mcloudapp.device.model.SingleSelectionItem
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONException
@@ -40,6 +43,10 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     private val _deviceStatisticInfoResult = MutableResult<DataResult<DeviceStatisticInfo>>()
     val deviceStatisticInfoResult: Result<DataResult<DeviceStatisticInfo>> =
         _deviceStatisticInfoResult
+
+    private val _allProductTabResultFlow: MutableSharedFlow<DataResult<List<SingleSelectionItem>>> =
+        MutableSharedFlow()
+    val allProductTabResultFlow = _allProductTabResultFlow.asSharedFlow()
 
     private val _productListResult = MutableResult<DataResult<List<ProductInfo>>>()
     val productListResult: Result<DataResult<List<ProductInfo>>> =
@@ -93,67 +100,82 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             _deviceStatisticInfoResult.setValue(DataResult(data, responseStatus = responseStatus))
         }
     }
-
-    fun getAllPageProductList(companyID: Int) {
+    fun getAllProductTabList(companyID: Int) {
         viewModelScope.launch {
-            var currentPage = 1 // Start with the first page
             val pageSize = 100
             val tempList = mutableListOf<ProductInfo>()
-            val filterList = mutableListOf<ProductInfo>()
+            val filterList = mutableListOf<SingleSelectionItem>()
 
-            while (true) { // Keep fetching pages until there are no more pages left
-                val jsonObjectRequest = JSONObject()
-                jsonObjectRequest.put("pageSize", pageSize)
-                jsonObjectRequest.put("currentPage", currentPage)
+            val responseStatus = ResponseStatus().apply {
+                isSuccess = true
+                responseCode = "0"
+                source = ResultSource.NETWORK
+            }
 
-                val data: PageList<ProductInfo>? = withContext(Dispatchers.IO) {
-                    NetDataRepository.instance.getUserCompanyProductList(jsonObjectRequest.toString()) { error: Throwable ->
-                        error.printStackTrace()
-                        val responseStatus = ResponseStatus()
-                        responseStatus.isSuccess = false
-                        responseStatus.errorMessage = error.errorMsg
-                        responseStatus.source = ResultSource.NETWORK
-                        _productListResult.setValue(DataResult(responseStatus = responseStatus))
+            try {
+                var currentPage = 1 // Start with the first page
+
+                while (true) { // Keep fetching pages until there are no more pages left
+                    val jsonObjectRequest = JSONObject().apply {
+                        put("pageSize", pageSize)
+                        put("currentPage", currentPage)
+                    }
+
+                    val data: PageList<ProductInfo>? = withContext(Dispatchers.IO) {
+                        try {
+                            NetDataRepository.instance.getUserCompanyProductList(jsonObjectRequest.toString())
+                        } catch (error: Throwable) {
+                            Timber.e(error)
+                            responseStatus.apply {
+                                isSuccess = false
+                                errorMessage = error.errorMsg
+                            }
+                            null
+                        }
+                    }
+
+                    data?.currentPageData?.let { tempList.addAll(it) }
+
+                    if (data == null || currentPage >= data.totalPage) {
+                        // Break if data is null or we've reached the last page
+                        break
+                    }
+                    currentPage++
+                }
+
+                if (responseStatus.isSuccess) {
+                    filterList.apply {
+                        clear()
+                        add(SingleSelectionItem(name = "全部产品", isChecked = true))
+
+                        tempList.filter { product ->
+                            product.deviceNum > 0 && // Filter out products with 0 devices
+                                    ProductType.valueByPrefix(product.productToken.uppercase()) != ProductType.UnKnown // Filter out unknown product types
+                        }.sortedBy { it.productName }
+                            .mapTo(this) { product ->
+                                SingleSelectionItem(
+                                    name = product.productName,
+                                    extValue = product.id.toString()
+                                )
+                            }
                     }
                 }
 
-                if (data == null) {
-                    // 如果数据为空，则结束循环
-                    break
-                }
-                data.currentPageData?.let { tempList.addAll(it) }
-
-                // 更新当前页数
-                currentPage++
-                // Check if there are more pages
-                if (currentPage > data.totalPage) {
-                    // No more pages left, break the loop
-                    break
-                }
-            }
-
-            withContext(Dispatchers.Default) {
-                // 过滤、排序并添加到列表中
-                tempList.filter { product ->
-                    product.deviceNum > 0 &&     //过滤掉设备数为0的产品
-                            ProductType.valueByPrefix(product.productToken.uppercase()) !== ProductType.UnKnown //过滤掉未知产品类型
-                }.sortedBy { product ->
-                    product.productName
-                }.let { filterList.addAll(it) }
-            }
-
-            // Set response status and return the final result
-            val responseStatus = ResponseStatus()
-            responseStatus.isSuccess = true
-            responseStatus.responseCode = "0"
-            responseStatus.source = ResultSource.NETWORK
-            _productListResult.setValue(
-                DataResult(
-                    filterList,
-                    responseStatus = responseStatus,
-                    totalCount = filterList.size // Update totalCount to reflect all fetched items
+                _allProductTabResultFlow.emit(
+                    DataResult(
+                        result = if (responseStatus.isSuccess) filterList else null,
+                        responseStatus = responseStatus,
+                        totalCount = filterList.size
+                    )
                 )
-            )
+            } catch (error: Throwable) {
+                Timber.e(error)
+                responseStatus.apply {
+                    isSuccess = false
+                    errorMessage = error.errorMsg
+                }
+                _allProductTabResultFlow.emit(DataResult(responseStatus = responseStatus))
+            }
         }
     }
 

@@ -38,18 +38,15 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingBottom="@dimen/dimen_size_25">
-
-                <TextView
-                    style="@style/Common_GroupName_Style"
-                    android:text="报警信息" />
+                android:orientation="vertical">
 
                 <RelativeLayout
                     style="@style/SwitchButton_LayoutStyle"
+                    android:layout_marginTop="@dimen/dimen_size_1"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <TextView
@@ -69,19 +66,31 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_LayoutStyle"
                     onClickWithDebouncing="@{()->click.onGoToParamSettingClick()}"
-                    android:background="@drawable/layer_common_click_item_with_divider"
-                    android:enabled="@{stateVM.isOpened }">
+                    android:layout_height="40dp"
+                    android:background="@color/transparent">
 
                     <TextView
-                        style="@style/Common_ClickableItem_TitleStyle"
-                        textViewEnabled="@{stateVM.isOpened }"
-                        android:text="参数配置" />
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="参数配置"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_16"
+                        android:textStyle="bold" />
 
-                    <TextView
-                        style="@style/Common_ClickableItem_ValueStyle"
-                        textViewEnabled="@{stateVM.isOpened }"
-                        android:drawableEnd="@drawable/icon_arrow_right" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/icon_arrow_right"
+                        app:tint="@color/black" />
+
                 </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/white" />
 
                 <TextView
                     style="@style/Common_GroupName_Style"
@@ -144,6 +153,7 @@
                         tools:textColor="@color/colorPrimary" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
+
             </androidx.appcompat.widget.LinearLayoutCompat>
         </com.drake.brv.PageRefreshLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

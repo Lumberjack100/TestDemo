@@ -17,9 +17,9 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.model.DeviceStatisticInfo
-import com.shmedo.lib.core.base.model.ProductInfo
 import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
@@ -48,7 +48,7 @@ class NewNetDeviceListFragment : BaseFragment() {
     private lateinit var deviceRequestViewModel: DeviceRequestViewModel
     private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
-    private val productList = mutableListOf<SingleSelectionItem>()
+    private val productTabList = mutableListOf<SingleSelectionItem>()
     private val onlineStatusList = mutableListOf<SingleSelectionItem>()
 
 
@@ -114,7 +114,7 @@ class NewNetDeviceListFragment : BaseFragment() {
         val filterDeviceTabItem = binding.rvTab.bindingAdapter.getModel<FilterDeviceTabItem>(0)
         val selectionPopupView = ProductSelectionPartShadowPopupView(requireContext())
         selectionPopupView.setData(
-            productList,
+            productTabList,
             filterDeviceTabItem.singleSelectionItemLastSelectedIndex
         )
             .setSelectListener(object : ProductSelectionPartShadowPopupView.OnSelectListener {
@@ -198,7 +198,7 @@ class NewNetDeviceListFragment : BaseFragment() {
             )
         )
         binding.rvTab.models = tabList
-        deviceRequestViewModel.getAllPageProductList(userInfo.companyID)
+        deviceRequestViewModel.getAllProductTabList(userInfo.companyID)
     }
 
     private fun initOnlineStatusData() {
@@ -269,26 +269,15 @@ class NewNetDeviceListFragment : BaseFragment() {
                 binding.page.showContent(false)
             }
         }
-        deviceRequestViewModel.productListResult.observe(viewLifecycleOwner) { dataResult: DataResult<List<ProductInfo>> ->
-            if (!dataResult.responseStatus.isSuccess) {
-                Toaster.show(dataResult.responseStatus.errorMessage)
-                return@observe
-            }
-            dataResult.result?.let { tempList ->
-                productList.clear()
-                productList.add(
-                    SingleSelectionItem(
-                        name = "全部产品",
-                        isChecked = true
-                    )
-                )
-                tempList.map {
-                    productList.add(
-                        SingleSelectionItem(
-                            name = it.productName,
-                            extValue = it.id.toString()
-                        )
-                    )
+        launchWithViewLifecycle {
+            deviceRequestViewModel.allProductTabResultFlow.collect {
+                if (!it.responseStatus.isSuccess) {
+                    Toaster.show(it.responseStatus.errorMessage)
+                    return@collect
+                }
+                it.result?.let { tempList ->
+                    productTabList.clear()
+                    productTabList.addAll(tempList)
                 }
             }
         }
