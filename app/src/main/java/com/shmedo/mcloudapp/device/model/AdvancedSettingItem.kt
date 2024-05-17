@@ -10,9 +10,15 @@ data class AdvancedSettingItem(
     val type: Type = Type.FIRMWARE
 ) {
     sealed class Type {
+
+        //固件
         data object FIRMWARE : Type()
 
+        //重置
         data object RESET : Type()
+
+        //同步安装位置
+        data object SYNC_INSTALL_POSITION : Type()
     }
 }
 

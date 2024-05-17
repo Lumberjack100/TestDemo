@@ -970,6 +970,12 @@ enum class IOTCommandType(private val value: String) {
     MD_SET_VOICE_BROADCAST_VOLUME("volume"),
 
     /**
+     * 查询/设置安装位置
+     */
+    MD_GET_INSTALL_LOCATION("md_getloc"),
+    MD_SET_INSTALL_LOCATION("md_setloc"),
+
+    /**
      * 自定义心跳包
      */
     HEART_BEAT("ble_keepalive"),

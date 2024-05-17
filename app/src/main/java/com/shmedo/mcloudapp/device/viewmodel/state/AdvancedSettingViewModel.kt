@@ -8,8 +8,10 @@ import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
  * 创建时间：2024/4/22
  * 描述： TODO
  */
-class DasAdvancedSettingViewModel: ViewModel()  {
+class AdvancedSettingViewModel: ViewModel()  {
     val isRefreshingLocation = NonNullObservableField(false)
+    val latitude = NonNullObservableField("")
+    val longitude = NonNullObservableField("")
     val location = NonNullObservableField("")
     val address = NonNullObservableField("")
 
