@@ -34,7 +34,7 @@
                 android:tint="@{m.configModule.isSupport&amp;&amp;m.configModule.connected ? @color/colorPrimary : @color/sub_title_text_color}"
                 tools:src="@drawable/ic_device_current_state" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_config_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -47,7 +47,7 @@
                 android:textStyle="bold"
                 tools:text="关于设备" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_config_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

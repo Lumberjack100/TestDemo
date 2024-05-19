@@ -56,6 +56,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.das.DasSolarStatusInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.DasTemperatureAndHumidityStatusInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.das.McuAddressInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.hac.AdmeHacExecutiveAgencyInfoParser
+import com.shmedo.lib.device.base.iot_cmd.parser.hac.HacMeasuringDataInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.hac.HacMeasuringHoleDepthInfoParser
 import com.shmedo.lib.device.base.iot_cmd.parser.hac.HacMotionStateParser
 import com.shmedo.lib.device.base.iot_cmd.parser.hac.HacMotorMotionDistanceInfoParser
@@ -124,6 +125,7 @@ val iotCommandModule = module {
     factory { AdmeHacExecutiveAgencyInfoParser() }
     factory { HacMeasuringHoleDepthInfoParser() }
     factory { HacMotorMotionDistanceInfoParser() }
+    factory { HacMeasuringDataInfoParser() }
 
     factory { DasBaseInfoParser() }
     factory { DasCollectorInfoParser() }
@@ -211,6 +213,7 @@ val iotCommandModule = module {
             get<AdmeHacExecutiveAgencyInfoParser>(),
             get<HacMeasuringHoleDepthInfoParser>(),
             get<HacMotorMotionDistanceInfoParser>(),
+            get<HacMeasuringDataInfoParser>(),
 
             get<DasBaseInfoParser>(),
             get<DasCollectorInfoParser>(),

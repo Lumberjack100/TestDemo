@@ -42,6 +42,12 @@ interface AppContants {
                 "fragment_data_center_home_result_request_key"
 
             const val REFRESH_DATA_CENTER_STATUS = "refresh_data_center_status"
+
+            const val FRAGMENT_MEASURING_DATA_PROCEDURE_RESULT_REQUEST_KEY =
+                "fragment_measuring_data_procedure_result_request_key"
+
+            //ADME 电机运动 状态信息
+            const val MOTOR_STATE = "motor_state"
         }
     }
 

@@ -62,7 +62,7 @@
                     android:layout_toRightOf="@+id/userAvatar"
                     android:orientation="vertical">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/userName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
                         android:textSize="@dimen/text_size_18"
                         tools:text="张三丰" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/userTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -104,12 +104,12 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/icon_userinfo_company" />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Common_ClickableItem_TitleStyle"
                     android:layout_marginStart="@dimen/dimen_size_15"
                     android:text="所属企业" />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Common_ClickableItem_ValueStyle"
                     android:text="@{vm.company}"
                     android:textColor="@color/sub_title_text_color"
@@ -128,12 +128,12 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/icon_userinfo_setting" />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Common_ClickableItem_TitleStyle"
                     android:layout_marginStart="@dimen/dimen_size_15"
                     android:text="修改密码" />
 
-                <TextView style="@style/Common_ClickableItem_ValueStyle" />
+                <androidx.appcompat.widget.AppCompatTextView style="@style/Common_ClickableItem_ValueStyle" />
 
             </LinearLayout>
 
@@ -149,12 +149,12 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/icon_userinfo_check_version" />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Common_ClickableItem_TitleStyle"
                     android:layout_marginStart="@dimen/dimen_size_15"
                     android:text="版本检测" />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Common_ClickableItem_ValueStyle"
                     android:text="@{vm.appVersion}"
                     android:textColor="@color/sub_title_text_color"
@@ -173,12 +173,12 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/icon_userinfo_setting" />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Common_ClickableItem_TitleStyle"
                     android:layout_marginStart="@dimen/dimen_size_15"
                     android:text="设置" />
 
-                <TextView style="@style/Common_ClickableItem_ValueStyle" />
+                <androidx.appcompat.widget.AppCompatTextView style="@style/Common_ClickableItem_ValueStyle" />
 
             </LinearLayout>
 
@@ -190,7 +190,7 @@
                 android:layout_marginBottom="30dp"
                 android:gravity="center">
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="退出登录"

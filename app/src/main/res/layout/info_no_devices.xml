@@ -39,7 +39,7 @@
 		android:padding="@dimen/dimen_size_16"
 		app:srcCompat="@drawable/ic_bluetooth_searching"/>
 
-	<TextView
+	<androidx.appcompat.widget.AppCompatTextView
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:gravity="center_horizontal"

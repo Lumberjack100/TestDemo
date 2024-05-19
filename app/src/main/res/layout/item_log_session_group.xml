@@ -19,7 +19,7 @@
         android:paddingVertical="10dp"
         android:paddingStart="@dimen/dimen_size_10">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

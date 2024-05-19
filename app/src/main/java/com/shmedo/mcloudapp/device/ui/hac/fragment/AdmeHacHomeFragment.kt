@@ -10,6 +10,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
+import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.device.model.CommonModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
@@ -48,16 +49,18 @@ class AdmeHacHomeFragment : UniversalDeviceHomeFragment() {
                 )
             )
         )
-        moduleList.add(
-            ConfigModule(
-                CommonModule(
-                    name = "孔深测量",
-                    desc = "测量测斜管深度",
-                    resID = R.drawable.ic_measuring_hole_depth,
-                    navId = R.id.action_global_to_admeHacMeasuringHoleDepthFragment
+        if (communicateWay is BleConnect) {
+            moduleList.add(
+                ConfigModule(
+                    CommonModule(
+                        name = "孔深测量",
+                        desc = "测量测斜管深度",
+                        resID = R.drawable.ic_measuring_hole_depth,
+                        navId = R.id.action_global_to_admeHacMeasuringHoleDepthFragment
+                    )
                 )
             )
-        )
+        }
         moduleList.add(
             ConfigModule(
                 DeviceOperationModule(
@@ -67,21 +70,25 @@ class AdmeHacHomeFragment : UniversalDeviceHomeFragment() {
                 )
             )
         )
-        moduleList.add(
-            ConfigModule(
-                CommonModule(
-                    name = "开始测斜",
-                    desc = "测量位移",
-                    resID = R.drawable.ic_measuring_hole_depth,
-                    navId = 0
+        if (communicateWay is BleConnect) {
+            moduleList.add(
+                ConfigModule(
+                    CommonModule(
+                        name = "开始测斜",
+                        desc = "测量位移",
+                        resID = R.drawable.ic_measuring_hole_depth,
+                        navId = R.id.action_global_to_admeHacMeasuringDataFragment
+                    )
                 )
             )
-        )
-        moduleList.add(
-            ConfigModule(
-                CommandDebugConfigModule()
+        }
+        if (communicateWay is BleConnect) {
+            moduleList.add(
+                ConfigModule(
+                    CommandDebugConfigModule()
+                )
             )
-        )
+        }
 
         moduleList.add(
             ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_admeAdvancedSettingFragment))
@@ -179,13 +186,12 @@ class AdmeHacHomeFragment : UniversalDeviceHomeFragment() {
      * 刷新电机运动状态
      */
     private fun updateMotionState(hacMotionState: HacMotionState) {
-        AdmeCTRMotionState.valueByCode(hacMotionState.motorinfo).let {state->
+        AdmeCTRMotionState.valueByCode(hacMotionState.motorinfo).let { state ->
             mHeadStates.runningStateText.set(state.simpleDesc)
-            if(state.code=="8"||state.code=="9")
+            if (state.code == "8" || state.code == "9")
                 mMessenger.admeDeviceMode.set("0")
             else
                 mMessenger.admeDeviceMode.set("1")
-
         }
     }
 }

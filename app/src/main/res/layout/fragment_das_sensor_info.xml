@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     visible="@{stateVM.isIOSensorVisible}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -45,11 +45,11 @@
                     visible="@{stateVM.isIOSensorVisible}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="状态" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.ioType == 2 ? "未接入" :"接入"}'
                         android:textColor="@{stateVM.ioType == 2 ? @color/red : @color/text_color_3AD094}"
@@ -62,11 +62,11 @@
                     visible="@{stateVM.isIOSensorVisible &amp;&amp; stateVM.ioType == 1}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="雨量值(毫米)" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.ioValue}'
                         tools:text="2" />
@@ -78,11 +78,11 @@
                     visible="@{stateVM.isIOSensorVisible &amp;&amp; stateVM.ioType == 3}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="断线报警器" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.ioValue == "1" ? "断线" :"未断线"}'
                         android:textColor='@{stateVM.ioValue == "1" ? @color/red : @color/text_color_3AD094}'
@@ -90,7 +90,7 @@
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     visible="@{stateVM.isVWPSensorVisible}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -108,11 +108,11 @@
                     visible="@{stateVM.isVWPSensorVisible}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="状态" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         app:bind_sensor_errno="@{stateVM.vwpErrNo}"
                         tools:text="正常" />
@@ -124,11 +124,11 @@
                     visible='@{stateVM.isVWPSensorVisible &amp;&amp; stateVM.vwpValue1 != "--"}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="水深(m)" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.vwpValue1 }'
                         tools:text="2" />
@@ -140,11 +140,11 @@
                     visible='@{stateVM.isVWPSensorVisible &amp;&amp; stateVM.vwpValue2 != "--"}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="空管距离(m)" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.vwpValue2 }'
                         tools:text="2" />
@@ -156,18 +156,18 @@
                     visible='@{stateVM.isVWPSensorVisible &amp;&amp; stateVM.vwpValue3 != "--"}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="水温(℃)" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.vwpValue3 }'
                         tools:text="2" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     visible="@{stateVM.isMEMSSensorVisible}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -185,11 +185,11 @@
                     visible="@{stateVM.isMEMSSensorVisible}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="状态" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         app:bind_sensor_errno="@{stateVM.memsErrNo}"
                         tools:text="正常" />
@@ -201,11 +201,11 @@
                     visible='@{stateVM.isMEMSSensorVisible &amp;&amp; stateVM.memsAxisX != "--"}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="X轴角度(°)" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.memsAxisX }'
                         tools:text="2" />
@@ -217,11 +217,11 @@
                     visible='@{stateVM.isMEMSSensorVisible &amp;&amp; stateVM.memsAxisY != "--"}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="Y轴角度(°)" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.memsAxisY }'
                         tools:text="2" />
@@ -233,11 +233,11 @@
                     visible='@{stateVM.isMEMSSensorVisible &amp;&amp; stateVM.memsAxisZ != "--"}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="Z轴角度(°)" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.memsAxisZ }'
                         tools:text="2" />
@@ -249,11 +249,11 @@
                     visible='@{stateVM.isMEMSSensorVisible &amp;&amp; stateVM.memsAccelerationX != "--"}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="X轴加速度(mg)" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.memsAccelerationX }'
                         tools:text="2" />
@@ -265,11 +265,11 @@
                     visible='@{stateVM.isMEMSSensorVisible &amp;&amp; stateVM.memsAccelerationY != "--"}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="Y轴加速度(mg)" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.memsAccelerationY }'
                         tools:text="2" />
@@ -281,18 +281,18 @@
                     visible='@{stateVM.isMEMSSensorVisible &amp;&amp; stateVM.memsAccelerationZ != "--"}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="Z轴加速度(mg)" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.memsAccelerationZ }'
                         tools:text="2" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     visible="@{stateVM.isExternalSensorVisible}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

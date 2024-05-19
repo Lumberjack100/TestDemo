@@ -45,11 +45,11 @@
                     android:layout_marginTop="@dimen/dimen_size_8"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="同步安装位置" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@null" />
 
@@ -61,11 +61,11 @@
                     android:layout_marginTop="@dimen/dimen_size_8"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="指令日志输出" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@null" />
 
@@ -77,11 +77,11 @@
                     android:layout_marginTop="@dimen/dimen_size_8"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="恢复出厂设置" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@null" />
 
@@ -93,11 +93,11 @@
                     android:layout_marginTop="@dimen/dimen_size_8"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="远程调试" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@null" />
 

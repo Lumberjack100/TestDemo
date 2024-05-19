@@ -18,7 +18,7 @@
         android:paddingEnd="@dimen/dimen_size_10"
         android:paddingBottom="@dimen/dimen_size_10">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_data_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
             android:textStyle="bold"
             tools:text="2020.07.18 17:23:32" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_data_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

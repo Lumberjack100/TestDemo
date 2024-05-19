@@ -22,7 +22,7 @@
         app:drawable_solidColor="@{@color/gray_f5f6f8}"
         tools:background="@color/gray_f5f6f8">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             visible="@{!m.num1.empty}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,7 +35,7 @@
             android:textStyle="bold"
             tools:text="32.5%" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             visible="@{!m.num2.empty}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
             android:textSize="14sp"
             tools:text="已用5.2GB/16GB" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"

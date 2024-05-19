@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeHacMeasuringDataProcedureViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacMeasuringDataProcedureFragment.ClickProxy" />
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/dimen_size_16">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{stateVM.measureMode}"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/text_size_17"
+            tools:text="正向测量" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="@dimen/dimen_size_10"
+            android:background="@color/divider_line_bg" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设备运行状态:"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_14" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_motorinfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_10"
+                android:text="@{stateVM.motorInfo}"
+                android:textColor="@color/orange"
+                android:textSize="@dimen/text_size_14"
+                tools:text="下放运动" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical|start"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_inclinometer_battery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{stateVM.inclinometerBattery}"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_18"
+                    android:textStyle="bold"
+                    tools:text="100%" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_inclinometer_battery_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="测斜仪电量"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_14" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical|start"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_device_battery"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{stateVM.deviceBattery}"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_18"
+                    android:textStyle="bold"
+                    tools:text="100%" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_device_battery_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="设备电量"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_14" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/ll_waiting_time"
+                visible="@{stateVM.isWaitTimeVisible}"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical|start"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_waiting_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{stateVM.waittime}"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_18"
+                    android:textStyle="bold"
+                    tools:text="30分钟" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_waiting_time_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@{stateVM.waittimedesc}"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_14"
+                    tools:text="测量结束倒计时" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btn_action"
+            onClickWithDebouncing="@{()->click.onActionClick()}"
+            visible="@{stateVM.isRunButtonVisible}"
+            android:layout_width="150dp"
+            android:layout_height="46dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginBottom="30dp"
+            android:background="@{stateVM.isRunButtonCanStop? @drawable/bg_btn_stop_measuring_data : @drawable/bg_btn_pause_motor_motion}"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:text="@{stateVM.runButtonText}"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_17"
+            android:textStyle="bold"
+            tools:background="@drawable/bg_btn_stop_measuring_data"
+            tools:text="结束测量" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

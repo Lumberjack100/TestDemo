@@ -7,7 +7,7 @@
     android:background="@color/white"
     android:gravity="center">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/cell_data"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

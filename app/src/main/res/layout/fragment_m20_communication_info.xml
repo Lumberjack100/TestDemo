@@ -30,11 +30,11 @@
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="设备搜星数量" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.starNum+""}'
                         tools:text="34" />
@@ -45,11 +45,11 @@
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="AMS连接状态" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text="@{stateVM.amsState}"
                         tools:text="在线" />
@@ -60,11 +60,11 @@
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="4G信号强度" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_4g_signal_strength"
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.signalValue==0?"--dBm":stateVM.signalValue+"dBm" }'
@@ -86,7 +86,7 @@
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_size_15"

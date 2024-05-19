@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/column_header_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

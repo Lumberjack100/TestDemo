@@ -25,7 +25,7 @@ import com.shmedo.mcloudapp.common.fragment.LoadingDialogFragment
 //                .customView(R.layout.layout_custom_progress_dialog_view)
 //                .lifecycleOwner(this)
 //            loadingDialog?.getCustomView()?.run {
-//                this.findViewById<TextView>(R.id.loading_tips).text = message
+//                this.findViewById<androidx.appcompat.widget.AppCompatTextView>(R.id.loading_tips).text = message
 ////                this.findViewById<ProgressBar>(R.id.progressBar).indeterminateTintList = SettingUtil.getOneColorStateList(this@showLoadingExt)
 //            }
 //        }
@@ -46,7 +46,7 @@ import com.shmedo.mcloudapp.common.fragment.LoadingDialogFragment
 //                    .customView(R.layout.layout_custom_progress_dialog_view)
 //                    .lifecycleOwner(viewLifecycleOwner)
 //                loadingDialog?.getCustomView()?.run {
-//                    this.findViewById<TextView>(R.id.loading_tips).text = message
+//                    this.findViewById<androidx.appcompat.widget.AppCompatTextView>(R.id.loading_tips).text = message
 ////                    this.findViewById<ProgressBar>(R.id.progressBar).indeterminateTintList = SettingUtil.getOneColorStateList(it)
 //                }
 //            }
@@ -85,7 +85,7 @@ import com.shmedo.mcloudapp.common.fragment.LoadingDialogFragment
 //            .customView(R.layout.layout_custom_progress_dialog_view)
 //            .lifecycleOwner(this)
 //
-//        loadingDialog.getCustomView().findViewById<TextView>(R.id.loading_tips)?.text = message
+//        loadingDialog.getCustomView().findViewById<androidx.appcompat.widget.AppCompatTextView>(R.id.loading_tips)?.text = message
 //
 //        loadingDialog.show()
 //    }

@@ -54,11 +54,11 @@
                     android:layout_marginTop="@dimen/dimen_size_1"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="传感器类型" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.sensorTypeName }"
@@ -70,11 +70,11 @@
                     onClickWithDebouncing="@{()->click.onChannelSwitchClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="通道" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.channel }"
@@ -86,7 +86,7 @@
                     app:click="@{click}"
                     app:stateVM="@{stateVM}" />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/btn_confirm"
                     style="@style/SubmitButton_ColorPrimary"
                     onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"

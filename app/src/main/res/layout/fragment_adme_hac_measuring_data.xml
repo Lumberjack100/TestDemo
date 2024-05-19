@@ -1,13 +1,246 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".device.ui.hac.fragment.AdmeHacMeasuringDataFragment">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
+    <data>
+
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeHacMeasuringDataViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacMeasuringDataFragment.ClickProxy" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello" />
+        android:background="@color/main_bg_gray"
+        android:keepScreenOn="true">
 
-</FrameLayout>
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:vm="@{toolbarVM}" />
+
+        <com.drake.brv.PageRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_run"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/dimen_size_25">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:layout_marginTop="@dimen/dimen_size_1"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="测斜仪Mac地址" />
+
+                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:hint="XXXXXXXXXXXX"
+                            android:inputType="textCapCharacters"
+                            android:text="@={stateVM.address}"
+                            app:lengthFilter="@{12}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_LayoutStyle"
+                        onClickWithDebouncing="@{()->click.onHoleChooseClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable }">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="孔号" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            style="@style/Common_ClickableItem_ValueStyle"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:drawableEnd="@drawable/ic_arrow_down"
+                            android:text="@{stateVM.holeno }"
+                            tools:text="1" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable }">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="区号" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            style="@style/Common_ClickableItem_ValueStyle"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:drawableEnd="@null"
+                            android:text="@{stateVM.areano }"
+                            tools:text="1" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="测得孔深(米)" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            style="@style/Common_ClickableItem_ValueStyle"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:drawableEnd="@null"
+                            android:text="@{stateVM.holeDepth }"
+                            tools:text="10" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="测量孔深(米)" />
+
+                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="@={stateVM.measDepth}"
+                            app:inputTypeFilter='@{"numberDecimal"}'
+                            app:lengthFilter="@{5}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="下放等待时间(分钟)" />
+
+                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:hint="数值范围[1-32]"
+                            android:text="@={stateVM.decentralizationWaitingTime}"
+                            app:inputTypeFilter='@{"number"}'
+                            app:lengthFilter="@{3}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_LayoutStyle"
+                        onClickWithDebouncing="@{()->click.onDataSettlementMethodClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable }">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="数据解算方式" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            style="@style/Common_ClickableItem_ValueStyle"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:drawableEnd="@drawable/ic_arrow_down"
+                            android:text="@{stateVM.dataSettlementMethod }"
+                            tools:text="顶部固定法" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <RelativeLayout
+                        style="@style/SwitchButton_LayoutStyle"
+                        android:layout_marginTop="@dimen/dimen_size_8"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            style="@style/SwitchButton_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="仅用单向测量" />
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            android:id="@+id/switch_single_way"
+                            style="@style/SwitchButton_ButtonStyle"
+                            checkedImmediatelyNoEvent="@{stateVM.isSingleWayTest}"
+                            android:enabled="@{stateVM.isEditable}"
+                            app:kswAnimationDuration="100"
+                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        style="@style/SwitchButton_LayoutStyle"
+                        android:layout_marginTop="@dimen/dimen_size_8"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            style="@style/SwitchButton_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="测斜仪反转自检" />
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            android:id="@+id/switch_reverse"
+                            style="@style/SwitchButton_ButtonStyle"
+                            checkedImmediatelyNoEvent="@{stateVM.isCheckReverse}"
+                            android:enabled="@{stateVM.isEditable}"
+                            app:kswAnimationDuration="100"
+                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
+
+                    </RelativeLayout>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.core.widget.NestedScrollView>
+        </com.drake.brv.PageRefreshLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btn_run"
+            style="@style/SubmitButton_ColorPrimary"
+            onClickWithDebouncing="@{()->click.onRunClick()}"
+            visible="@{stateVM.isEditable }"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="@dimen/dimen_size_60"
+            android:text="@={stateVM.runButtonText}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/refreshLayout"
+            tools:text="正向测量" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

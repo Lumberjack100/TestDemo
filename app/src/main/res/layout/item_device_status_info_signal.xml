@@ -16,12 +16,12 @@
         style="@style/DeviceCurrentState_SingleItem_Style"
         android:background="@drawable/layer_common_click_item_with_divider">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             style="@style/DeviceCurrentState_SingleItem_NameStyle"
             android:text='@{m.name}'
             tools:text="4G信号强度" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_4g_signal_strength"
             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
             android:text='@{m.signalValue==0?"--dBm":m.signalValue+"dBm" }'

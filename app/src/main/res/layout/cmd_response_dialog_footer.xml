@@ -14,7 +14,7 @@
             android:layout_height="1dp"
             android:background="@color/divider_line_bg" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_ok"
             android:layout_width="match_parent"
             android:layout_height="50dp"

@@ -61,14 +61,14 @@
             android:layout_marginBottom="@dimen/dimen_size_10"
             android:orientation="horizontal">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="设备运行状态："
                 android:textColor="@color/title_text_color"
                 android:textSize="@dimen/text_size_14" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_motion_state"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

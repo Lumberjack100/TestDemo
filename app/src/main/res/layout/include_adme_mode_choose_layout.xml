@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/ic_switch_adme_config_model" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_config_model"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

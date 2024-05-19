@@ -29,7 +29,7 @@
             android:paddingTop="@dimen/dimen_size_10"
             android:paddingBottom="@dimen/dimen_size_10">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_product_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="智能遥测终端机" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_device_state_flag"
                 android:layout_width="wrap_content"
                 android:layout_height="16dp"
@@ -62,7 +62,7 @@
                 tools:text="已断开"
                 tools:textColor="@color/device_offline_foreground" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_device_connect_operate"
                 onClickWithDebouncing="@{()->click.onConnectOperateClick()}"
                 visible="@{vm.isConnectOperateVisible}"
@@ -121,7 +121,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_device_sn_desc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -129,7 +129,7 @@
                         android:textColor="@color/sub_title_text_color"
                         android:textSize="@dimen/text_size_13" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_device_sn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -148,14 +148,14 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="产品型号："
                         android:textColor="@color/sub_title_text_color"
                         android:textSize="@dimen/text_size_13" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
@@ -173,7 +173,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_platform_desc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
