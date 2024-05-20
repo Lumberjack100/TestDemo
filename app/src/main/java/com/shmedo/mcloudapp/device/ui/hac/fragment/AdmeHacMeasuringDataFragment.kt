@@ -284,6 +284,9 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        if (isRestrictHiddenMode() && isHidden) {
+            return
+        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.ADME_HAC_MD_GET_DATA_MEASURE_PARAM -> {
                 val result = iotParseManager.parse<HacMeasuringDataInfo>(
