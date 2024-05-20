@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
 
 class AdmeHacMeasuringDataViewModel : ViewModel() {
-    val isEditable = NonNullObservableField(false)
+    val isEditable = NonNullObservableField(true)
 
 
     val equipmodel = NonNullObservableField("0")//电机工作标识  0：停止  1：正常 2: 异常
@@ -18,5 +18,7 @@ class AdmeHacMeasuringDataViewModel : ViewModel() {
     val dataSettlementMethod = NonNullObservableField("")//数据解算方式
     val isSingleWayTest = NonNullObservableField(false)//单向测量
     val isCheckReverse = NonNullObservableField(false)//测斜仪反转自检
+
+    val isRunButtonEnable = NonNullObservableField(true)//测量按钮是否可用
     val runButtonText = NonNullObservableField("正向测量")//
 }

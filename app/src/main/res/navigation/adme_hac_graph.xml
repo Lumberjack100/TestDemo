@@ -150,6 +150,18 @@
         tools:layout="@layout/fragment_adme_hac_measuring_data" />
 
     <fragment
+        android:id="@+id/admeHacMeasuringDataProcedureFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacMeasuringDataProcedureFragment"
+        android:label="AdmeHacMeasuringDataProcedureFragment"
+        tools:layout="@layout/fragment_adme_hac_measuring_data_procedure" />
+
+    <fragment
+        android:id="@+id/admeHacMeasuringDataResultsFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacMeasuringDataResultsFragment"
+        android:label="AdmeHacMeasuringDataResultsFragment"
+        tools:layout="@layout/fragment_adme_hac_measuring_data_results" />
+
+    <fragment
         android:id="@+id/admeAdvancedSettingFragment"
         android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeAdvancedSettingFragment"
         android:label="AdmeAdvancedSettingFragment"
@@ -166,6 +178,22 @@
     <action
         android:id="@+id/action_global_to_admeHacMeasuringDataFragment"
         app:destination="@id/admeHacMeasuringDataFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_admeHacMeasuringDataProcedureFragment"
+        app:destination="@id/admeHacMeasuringDataProcedureFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_admeHacMeasuringDataResultsFragment"
+        app:destination="@id/admeHacMeasuringDataResultsFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

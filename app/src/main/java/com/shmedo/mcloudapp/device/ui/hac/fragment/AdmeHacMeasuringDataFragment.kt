@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.device.ui.hac.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.setFragmentResultListener
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.RegexUtils
@@ -108,20 +109,23 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
         mStates.dataSettlementMethod.set(settlementMethodList[0])
     }
 
-    private fun setEditable(editable: Boolean) {
-        toolbarViewModel.toolbarIvActionVisible.set(!editable)
-        toolbarViewModel.toolbarTvActionVisible.set(editable)
-        mStates.isEditable.set(editable)
+    override fun createObserver() {
+        super.createObserver()
+        //从编辑页面返回需要刷新事件详情页面
+        setFragmentResultListener(AppContants.Extras.FRAGMENT_MEASURING_DATA_PROCEDURE_RESULT_REQUEST_KEY) { key, bundle ->
+            (bundle.getParcelable(AppContants.Extras.MOTOR_STATE) as HacMotionState?)?.let { motionState ->
+                Timber.d("onActivityResult %s", motionState.toString())
+                mStates.isRunButtonEnable.set(motionState.motorinfo == "8" || motionState.motorinfo == "9" || motionState.motorinfo == "10")
+                mStates.runButtonText.set(
+                    if (binding.switchSingleWay.isChecked || motionState.motorinfo == "8")
+                        "正向测量"
+                    else if (motionState.measmode == "1") "反向测量" else "正向测量"
+                )
+            }
+        }
     }
 
     inner class ClickProxy : BaseClickProxy() {
-        override fun onToolbarIvClick() {
-            setEditable(true)
-        }
-
-        override fun onToolbarTvClick() {
-            setEditable(false)
-        }
 
         /**
          * 选择孔号
@@ -339,7 +343,17 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            //TODO
+                            val bundle = AdmeHacMeasuringDataProcedureFragment.newBundleArguments(
+                                binding.switchReverse.isChecked,
+                                productType,
+                                communicateWay,
+                                deviceInfo,
+                                bleDevice
+                            )
+                            nav().navigate(
+                                R.id.action_global_to_admeHacMeasuringDataProcedureFragment,
+                                bundle
+                            )
                         }
                     }
                 }
@@ -369,11 +383,10 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
             holeAreaDepthInfoArrayList.addAll(info.holelist)
             if (holeAreaDepthInfoArrayList.isEmpty()) {
                 showMessageDialog("还没有测孔信息,请先进行孔深测量")
-                mStates.isEditable.set(false)
+                mStates.isRunButtonEnable.set(false)
                 return
             }
 
-            mStates.isEditable.set(true)
             holeNumList.clear()
             holeAreaDepthInfoArrayList.forEach {
                 holeNumList.add(it.holeno)
@@ -407,7 +420,17 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
         1.3 equipmodel =2(异常状态)，弹框提示异常信息，点击按钮开始测量时，设备自动清除异常状态标志。
          */
         if (mStates.equipmodel.get() == "1") {//表示在测量 然后根据 motorinfo 控制跳转页面
-//TODO
+            val bundle = AdmeHacMeasuringDataProcedureFragment.newBundleArguments(
+                binding.switchReverse.isChecked,
+                productType,
+                communicateWay,
+                deviceInfo,
+                bleDevice
+            )
+            nav().navigate(
+                R.id.action_global_to_admeHacMeasuringDataProcedureFragment,
+                bundle
+            )
             return
         }
         //停止或异常状态下,判断是否单测模式，单测模式下显示正向测量；正反测模式下，根据 motorinfo 处理操作按钮

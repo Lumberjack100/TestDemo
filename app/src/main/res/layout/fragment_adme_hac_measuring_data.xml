@@ -233,6 +233,7 @@
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onRunClick()}"
             visible="@{stateVM.isEditable }"
+            android:enabled="@{stateVM.isRunButtonEnable }"
             android:layout_marginTop="0dp"
             android:layout_marginBottom="@dimen/dimen_size_60"
             android:text="@={stateVM.runButtonText}"
