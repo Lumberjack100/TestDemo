@@ -7,9 +7,7 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.fragment.BaseVmDbDialogFragment
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.device.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeHacMeasuringHoleDepthViewModel
-import com.shmedo.mcloudapp.ext.showMessage
 
 /**
  * 创建者：gonghe
@@ -18,7 +16,6 @@ import com.shmedo.mcloudapp.ext.showMessage
  */
 class AdmeHacAutoMeasuringHoleDepthBottomDialog : BaseVmDbDialogFragment() {
     private val mStates: AdmeHacMeasuringHoleDepthViewModel by viewModels({ requireParentFragment() })
-    private val bleViewModel: BleViewModel by viewModels()
 
 
     override val dataBindingConfig: DataBindingConfig
@@ -36,20 +33,17 @@ class AdmeHacAutoMeasuringHoleDepthBottomDialog : BaseVmDbDialogFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        mStates.isStopQueryMotorState.set(false)
         mStates.isExitButtonVisible.set(false)
+        mStates.motorInfo.set("正常")
         mStates.motionPulse.set("0")
         mStates.motionDistance.set("0")
+
     }
 
     inner class ClickProxy {
         fun onCloseClick() {
-            if (!bleViewModel.isConnected() || mStates.isExitButtonVisible.get()) {
-                dismiss()
-                return
-            }
-            showMessage("确认退出数据运行吗?", "温馨提示", "确定", {
-                fragmentClickListener?.onCloseClick()
-            }, "取消")
+            fragmentClickListener?.onCloseClick()
         }
 
         fun onStopClick() {

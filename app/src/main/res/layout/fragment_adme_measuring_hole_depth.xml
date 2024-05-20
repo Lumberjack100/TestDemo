@@ -74,7 +74,7 @@
 
                     <RelativeLayout
                         style="@style/SwitchButton_LayoutStyle"
-                        visible="@{!stateVM.isAutoMode}"
+                        visible="@{!stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -96,7 +96,7 @@
 
                     <RelativeLayout
                         style="@style/SwitchButton_LayoutStyle"
-                        visible="@{stateVM.isAutoMode}"
+                        visible="@{stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -138,7 +138,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
-                        visible="@{stateVM.isAutoMode}"
+                        visible="@{stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -156,7 +156,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
-                        visible="@{stateVM.isAutoMode}"
+                        visible="@{stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <androidx.appcompat.widget.AppCompatTextView
@@ -175,7 +175,7 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onMotionTypeClick()}"
-                        visible="@{!stateVM.isAutoMode}"
+                        visible="@{!stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
@@ -194,7 +194,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
-                        visible="@{!stateVM.isAutoMode}"
+                        visible="@{!stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <androidx.appcompat.widget.AppCompatTextView

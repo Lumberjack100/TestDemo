@@ -7,16 +7,10 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.fragment.BaseVmDbDialogFragment
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.showMessage
-import com.shmedo.mcloudapp.device.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeMeasuringHoleDepthViewModel
-import kotlinx.coroutines.Job
 
 class AdmeAutoMeasuringHoleDepthBottomDialog : BaseVmDbDialogFragment() {
     private val mStates: AdmeMeasuringHoleDepthViewModel by viewModels({ requireParentFragment() })
-    private val bleViewModel: BleViewModel by viewModels()
-
-    private var queryJob: Job? = null
 
     override val dataBindingConfig: DataBindingConfig
         get() = DataBindingConfig(
@@ -33,6 +27,7 @@ class AdmeAutoMeasuringHoleDepthBottomDialog : BaseVmDbDialogFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        mStates.isStopQueryMotorState.set(false)
         mStates.isExitButtonVisible.set(false)
         mStates.motionPulse.set("0")
         mStates.motionDistance.set("0")
@@ -40,13 +35,7 @@ class AdmeAutoMeasuringHoleDepthBottomDialog : BaseVmDbDialogFragment() {
 
     inner class ClickProxy {
         fun onCloseClick() {
-            if (!bleViewModel.isConnected() || mStates.isExitButtonVisible.get()) {
-                dismiss()
-                return
-            }
-            showMessage("确认退出数据运行吗?", "温馨提示", "确定", {
-                fragmentClickListener?.onCloseClick()
-            }, "取消")
+            fragmentClickListener?.onCloseClick()
         }
 
         fun onStopClick() {

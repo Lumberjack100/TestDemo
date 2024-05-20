@@ -7,16 +7,10 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.fragment.BaseVmDbDialogFragment
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentAdmeHacManualMeasuringHoleDepthBottomDialogBinding
-import com.shmedo.mcloudapp.device.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeHacMeasuringHoleDepthViewModel
-import com.shmedo.mcloudapp.ext.showMessage
 
 class AdmeHacManualMeasuringHoleDepthBottomDialog : BaseVmDbDialogFragment() {
-    private val binding: FragmentAdmeHacManualMeasuringHoleDepthBottomDialogBinding by lazy { mDatabind as FragmentAdmeHacManualMeasuringHoleDepthBottomDialogBinding }
     private val mStates: AdmeHacMeasuringHoleDepthViewModel by viewModels({ requireParentFragment() })
-    private val bleViewModel: BleViewModel by viewModels()
-
 
     override val dataBindingConfig: DataBindingConfig
         get() = DataBindingConfig(
@@ -33,31 +27,28 @@ class AdmeHacManualMeasuringHoleDepthBottomDialog : BaseVmDbDialogFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
+        mStates.isStopQueryMotorState.set(false)
         mStates.isExitButtonVisible.set(false)
-        mStates.isStopAction.set(false)
+        mStates.isDoManualStopAction.set(false)
+        mStates.motorInfo.set("正常")
         mStates.pauseButtonText.set("暂停")
         mStates.motionPulse.set("0")
         mStates.motionDistance.set("0")
+
     }
 
     inner class ClickProxy {
         fun onCloseClick() {
-            if (!bleViewModel.isConnected() || mStates.isExitButtonVisible.get()) {
-                dismiss()
-                return
-            }
-            showMessage("确认退出数据运行吗?", "温馨提示", "确定", {
-                fragmentClickListener?.onCloseClick()
-            }, "取消")
+            fragmentClickListener?.onCloseClick()
         }
 
         fun onStopClick() {
-            mStates.isStopAction.set(true)
+            mStates.isDoManualStopAction.set(true)
             fragmentClickListener?.onStopClick()
         }
 
         fun onPauseClick() {
-            mStates.isStopAction.set(false)
+            mStates.isDoManualStopAction.set(false)
             fragmentClickListener?.onPauseClick()
         }
 
