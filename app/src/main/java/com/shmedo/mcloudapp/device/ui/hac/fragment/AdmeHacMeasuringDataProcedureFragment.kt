@@ -190,20 +190,8 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         getMotorMotionData()
     }
 
-    private fun setEditable(editable: Boolean) {
-        toolbarViewModel.toolbarIvActionVisible.set(!editable)
-        toolbarViewModel.toolbarTvActionVisible.set(editable)
-        mStates.isEditable.set(editable)
-    }
 
     inner class ClickProxy : BaseClickProxy() {
-        override fun onToolbarIvClick() {
-            setEditable(true)
-        }
-
-        override fun onToolbarTvClick() {
-            setEditable(false)
-        }
 
         fun onActionClick() {
             KeyboardUtils.hideSoftInput(binding.root)
