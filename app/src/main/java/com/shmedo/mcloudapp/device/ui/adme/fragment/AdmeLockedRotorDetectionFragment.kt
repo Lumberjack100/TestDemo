@@ -21,17 +21,17 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessage
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentAdmeLockedRotorDetectionBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeLockedRotorDetectionViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import org.koin.android.ext.android.inject
@@ -696,18 +696,14 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                 )
             )
             var leftProgress1: Float = if (holedepth == 0) 0f
-            else mStates.downSlowStartIntervalEndValue.get()
-                .toFloat() / holedepth.toFloat() * 100f
+            else mStates.downSlowStartIntervalEndValue.get().toFloat() / holedepth.toFloat() * 100f
 
             var rightProgress1: Float = if (holedepth == 0) 0f
-            else (1 - mStates.downSlowStopIntervalStartValue.get()
-                .toFloat() / holedepth.toFloat()) * 100f
+            else (1 - mStates.downSlowStopIntervalStartValue.get().toFloat() / holedepth.toFloat()) * 100f
 
             decimalFormat.applyPattern("#")
-            leftProgress1 =
-                if (leftProgress1 > 50) 49f else decimalFormat.format(leftProgress1).toFloat()
-            rightProgress1 =
-                if (rightProgress1 < 50) 50f else decimalFormat.format(rightProgress1).toFloat()
+            leftProgress1 = if (leftProgress1 > 50) 49f else decimalFormat.format(leftProgress1).toFloat()
+            rightProgress1 = if (rightProgress1 < 50) 50f else decimalFormat.format(rightProgress1).toFloat()
             binding.seekBarDownSlowStopInterval.setProgress(
                 leftProgress1,
                 rightProgress1
@@ -767,18 +763,14 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             } ?: "")
 
             var leftProgress3: Float = if (measpacing == 0) 0f
-            else mStates.pullUpSlowStartIntervalEndValue.get()
-                .toFloat() / holedepth.toFloat() * 100f
+            else mStates.pullUpSlowStartIntervalEndValue.get().toFloat() / measpacing.toFloat() * 100f
 
             var rightProgress3 = if (measpacing == 0) 100f
-            else (1 - mStates.pullUpSlowStopIntervalStartValue.get()
-                .toFloat() / holedepth.toFloat()) * 100f
+            else (1 - mStates.pullUpSlowStopIntervalStartValue.get().toFloat() / measpacing.toFloat()) * 100f
 
             decimalFormat.applyPattern("#")
-            leftProgress3 =
-                if (leftProgress3 > 50) 49f else decimalFormat.format(leftProgress3).toFloat()
-            rightProgress3 =
-                if (rightProgress3 < 50) 50f else decimalFormat.format(rightProgress3).toFloat()
+            leftProgress3 = if (leftProgress3 > 50) 49f else decimalFormat.format(leftProgress3).toFloat()
+            rightProgress3 = if (rightProgress3 < 50) 50f else decimalFormat.format(rightProgress3).toFloat()
             binding.seekBarPullUpSlowStopInterval.setProgress(
                 leftProgress3,
                 rightProgress3

@@ -736,6 +736,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList()
                         mStates.isClearMotionDataVisible.set(false)
+                        mStates.isStopQueryMotorState.set(false)
                         getMotorMotionData()
                     }
                 }
@@ -893,6 +894,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             }
         manualMeasuringHoleDepthBottomDialog?.show(childFragmentManager, "dialog")
         mStates.isClearMotionDataVisible.set(true)
+        mStates.isStopQueryMotorState.set(false)
         getMotorMotionData(1000)
     }
 

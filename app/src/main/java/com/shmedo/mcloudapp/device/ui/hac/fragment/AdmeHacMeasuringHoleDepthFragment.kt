@@ -638,6 +638,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 })
             }
         autoMeasuringHoleDepthBottomDialog?.show(childFragmentManager, "dialog")
+        mStates.isStopQueryMotorState.set(false)
         getMotorMotionData(1000)
     }
 
@@ -705,6 +706,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 })
             }
         manualMeasuringHoleDepthBottomDialog?.show(childFragmentManager, "dialog")
+        mStates.isStopQueryMotorState.set(false)
         getMotorMotionData(1000)
     }
 
