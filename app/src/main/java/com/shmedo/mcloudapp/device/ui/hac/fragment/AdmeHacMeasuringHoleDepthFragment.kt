@@ -345,7 +345,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         val entity = HacMeasuringHoleDepthInfoEntity(
             model = "0",
             address = mStates.address.get(),
-            holeno = binding.etHoleNum.toString(),
+            holeno = binding.etHoleNum.text.toString(),
             areano = mStates.areano.get(),
             lowtbtss = "1",//自动测孔深，默认打开下放堵转检测
             motorspeed = mStates.downSpeed.get(),
@@ -373,7 +373,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         val entity = HacMeasuringHoleDepthInfoEntity(
             model = "0",
             address = mStates.address.get(),
-            holeno = binding.etHoleNum.toString(),
+            holeno = binding.etHoleNum.text.toString(),
             areano = mStates.areano.get(),
             lowtbtss = if (mStates.decentralizedEnable.get()) "1" else "0",
             motorspeed = mStates.speed.get(),
@@ -469,6 +469,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
+                        safeDistance = ""
                         sendCommandFromCmdList()
                     }
                 }
@@ -608,11 +609,13 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     override fun onCloseClick() {
                         if (!bleViewModel.isConnected() || mStates.isExitButtonVisible.get()) {
                             autoMeasuringHoleDepthBottomDialog = null
+                            safeDistance = ""
                             dismiss()
                             return
                         }
                         showMessage("确认退出数据运行吗?", "温馨提示", "确定", {
                             autoMeasuringHoleDepthBottomDialog = null
+                            safeDistance = ""
                             //蓝牙未断开时先发送停止电机指令，再关闭运行页面
                             if (bleViewModel.isConnected()) {
                                 stopQueryMotorState()
@@ -633,6 +636,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
                     override fun onExitClick() {
                         autoMeasuringHoleDepthBottomDialog = null
+                        safeDistance = ""
                         dismiss()
                     }
                 })
@@ -661,11 +665,13 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     override fun onCloseClick() {
                         if (!bleViewModel.isConnected() || mStates.isExitButtonVisible.get()) {
                             manualMeasuringHoleDepthBottomDialog = null
+                            safeDistance = ""
                             dismiss()
                             return
                         }
                         showMessage("确认退出数据运行吗?", "温馨提示", "确定", {
                             manualMeasuringHoleDepthBottomDialog = null
+                            safeDistance = ""
                             //蓝牙未断开时先发送停止电机指令，再关闭运行页面
                             if (bleViewModel.isConnected()) {
                                 stopQueryMotorState()
@@ -701,6 +707,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
                     override fun onExitClick() {
                         manualMeasuringHoleDepthBottomDialog = null
+                        safeDistance = ""
                         dismiss()
                     }
                 })
@@ -712,9 +719,10 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
     private fun updateMotorMotionDistance(motorMotionDistanceInfo: HacMotorMotionDistanceInfo) {
         try {
-            if (safeDistance.isEmpty())
+            if (safeDistance.isEmpty()) {
                 safeDistance = motorMotionDistanceInfo.realholedepth
-
+                Timber.d("safeDistance=$safeDistance")
+            }
             if (motorMotionDistanceInfo.realholedepth.isNotEmpty() && safeDistance.isNotEmpty()) {
                 val holeValue = abs(motorMotionDistanceInfo.realholedepth.toDouble())
                 val safeValue = abs(safeDistance.toDouble())
@@ -798,8 +806,8 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     }
 
     private fun stopQueryMotorState() {
-        mStates.isStopQueryMotorState.set(true)
         cancelNearbyCommunicationTimeoutJob()
+        mStates.isStopQueryMotorState.set(true)
     }
 
     override fun onResume() {

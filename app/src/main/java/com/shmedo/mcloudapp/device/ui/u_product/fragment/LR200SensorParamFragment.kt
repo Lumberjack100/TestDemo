@@ -169,7 +169,7 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
                         //{"103_1":{"x":-1.32,"y":-4.06,"z":85.73},"203_1":0.00,"105_1":0.00}
                         //下面取出 203_1 对应的值赋值给 zeroValueMeasured：
                         val zeroValueMeasured =
-                            MoshiUtil.fromJson<Map<String, Double>>(result.data)?.get("203_1")
+                            MoshiUtil.fromJson<Map<String, Any>>(result.data)?.get("203_1")
                         mCommandResponseStates.zeroValueMeasured.set(zeroValueMeasured.toString())
                     }
                 }

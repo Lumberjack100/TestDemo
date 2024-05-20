@@ -400,19 +400,19 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
 
         if (productType == ProductType.ADME_HAC) {
-            mStates.isClearDeviceDropTimesSupport.set(false)
-            mStates.isClearRopeRunDistanceSupport.set(false)
-            mStates.isClearVerticalMagneticSwitchTriggerRecordSupport.set(false)
-            mStates.isClearRotaryMagneticSwitchTriggerRecordSupport.set(false)
-            mStates.isClearBrakePadOpenCloseRecordSupport.set(false)
+            mStates.isPositiveAndNegativeTestSupport.set(false)
+            mStates.isAnthropomorphicMovementSupport.set(false)
             mStates.isMotorPowerSupport.set(false)
         }
 
-        //获取设备的步进电机正反测使能信息
-        var command = IOTCommandUtil.getCommand(
-            IOTCommandType.ADME_MD_GET_STEPPER_MOTOR
-        )
-        commandItems.add(command)
+        var command = ""
+        if (productType == ProductType.ADME) {
+            //获取设备的步进电机正反测使能信息
+            command = IOTCommandUtil.getCommand(
+                IOTCommandType.ADME_MD_GET_STEPPER_MOTOR
+            )
+            commandItems.add(command)
+        }
 
         //获取正反测异常智能处理使能信息
         command = IOTCommandUtil.getCommand(
@@ -543,7 +543,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                         //cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询拟人运动使能状态出错: ${result.message}"
                         Timber.e(errMsg)
-                       // Toaster.show(errMsg)
+                        // Toaster.show(errMsg)
                         //设备版本不支持，隐藏拟人运动使能
                         mStates.isAnthropomorphicMovementSupport.set(!errMsg.contains("设备版本不支持"))
                         //return

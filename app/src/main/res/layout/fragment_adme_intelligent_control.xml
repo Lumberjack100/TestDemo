@@ -144,6 +144,7 @@
                     </RelativeLayout>
 
                     <RelativeLayout
+                        visible="@{stateVM.isTorqueMotorPowerOffRestartSupport}"
                         android:id="@+id/rl_torque_motor_reboot"
                         style="@style/SwitchButton_LayoutStyle"
                         android:layout_marginTop="@dimen/dimen_size_8">
