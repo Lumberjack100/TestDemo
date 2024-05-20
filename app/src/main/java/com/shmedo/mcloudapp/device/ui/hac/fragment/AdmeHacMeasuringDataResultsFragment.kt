@@ -39,11 +39,11 @@ class AdmeHacMeasuringDataResultsFragment : BaseFragment() {
         binding.llToolbar.toolbar.title = "数据展示"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().popBackStack(R.id.admeHacMeasuringDataFragment, true)
+            nav().popBackStack(R.id.admeHacMeasuringDataFragment, false)
         }
         registerOnBackPressedDispatcher {
             //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().popBackStack(R.id.admeHacMeasuringDataFragment, true)
+            nav().popBackStack(R.id.admeHacMeasuringDataFragment, false)
         }
         toolbarViewModel.toolbarIvActionVisible.set(false)
     }
@@ -52,7 +52,7 @@ class AdmeHacMeasuringDataResultsFragment : BaseFragment() {
 
         //重新测量
         fun onReMeasureClick() {
-            nav().popBackStack(R.id.admeHacMeasuringDataFragment, true)
+            nav().popBackStack(R.id.admeHacMeasuringDataFragment, false)
         }
 
         //保存数据
