@@ -14,6 +14,7 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeStepperMotorEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeAndNegativeTestExceptionHandlingInfo
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeAnthropomorphicMovementInfo
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeBrakePadControlInfo
@@ -129,6 +130,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                 R.id.positiveAndNegativeSB -> { //正反测使能
                     enableOrDisableStepperMotorParam(isChecked)
                 }
+
                 R.id.positiveAndNegativeTestExceptionHandlingSB -> { //正反测异常智能处理
                     enableOrDisableAndNegativeTestExceptionHandling(isChecked)
                 }
@@ -397,6 +399,15 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
 
+        if (productType == ProductType.ADME_HAC) {
+            mStates.isClearDeviceDropTimesSupport.set(false)
+            mStates.isClearRopeRunDistanceSupport.set(false)
+            mStates.isClearVerticalMagneticSwitchTriggerRecordSupport.set(false)
+            mStates.isClearRotaryMagneticSwitchTriggerRecordSupport.set(false)
+            mStates.isClearBrakePadOpenCloseRecordSupport.set(false)
+            mStates.isMotorPowerSupport.set(false)
+        }
+
         //获取设备的步进电机正反测使能信息
         var command = IOTCommandUtil.getCommand(
             IOTCommandType.ADME_MD_GET_STEPPER_MOTOR
@@ -427,11 +438,13 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
         )
         commandItems.add(command)
 
-        //获取电机电源使能信息
-        command = IOTCommandUtil.getCommand(
-            IOTCommandType.ADME_MD_GET_MOTOR_POWER
-        )
-        commandItems.add(command)
+        if (productType == ProductType.ADME) {
+            //获取电机电源使能信息
+            command = IOTCommandUtil.getCommand(
+                IOTCommandType.ADME_MD_GET_MOTOR_POWER
+            )
+            commandItems.add(command)
+        }
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -448,7 +461,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                         //cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询正反测使能状态出错: ${result.message}"
                         Timber.e(errMsg)
-                        Toaster.show(errMsg)
+//                        Toaster.show(errMsg)
                         //设备版本不支持，隐藏正反测使能
                         mStates.isPositiveAndNegativeTestSupport.set(!errMsg.contains("设备版本不支持"))
                         //return
@@ -474,9 +487,13 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                         //cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询正反测异常智能处理使能状态出错: ${result.message}"
                         Timber.e(errMsg)
-                        Toaster.show(errMsg)
+//                        Toaster.show(errMsg)
                         //设备版本不支持，隐藏正反测异常智能处理使能
-                        mStates.isPositiveAndNegativeTestExceptionHandlingSupport.set(!errMsg.contains("设备版本不支持"))
+                        mStates.isPositiveAndNegativeTestExceptionHandlingSupport.set(
+                            !errMsg.contains(
+                                "设备版本不支持"
+                            )
+                        )
                         //return
                     }
 
@@ -500,7 +517,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                         //cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询低功耗使能状态出错: ${result.message}"
                         Timber.e(errMsg)
-                        Toaster.show(errMsg)
+//                        Toaster.show(errMsg)
                         //设备版本不支持，隐藏低功耗使能
                         mStates.isLowPowerAlarmSupport.set(!errMsg.contains("设备版本不支持"))
                         //return
@@ -526,7 +543,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                         //cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询拟人运动使能状态出错: ${result.message}"
                         Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                       // Toaster.show(errMsg)
                         //设备版本不支持，隐藏拟人运动使能
                         mStates.isAnthropomorphicMovementSupport.set(!errMsg.contains("设备版本不支持"))
                         //return
@@ -552,7 +569,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                         //cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询刹车片控制方式出错: ${result.message}"
                         Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        //Toaster.show(errMsg)
                         //设备版本不支持，隐藏刹车片控制
                         mStates.isBrakePadControlSupport.set(!errMsg.contains("设备版本不支持"))
                         //return
@@ -578,7 +595,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                         //cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询电机电源使能状态出错: ${result.message}"
                         Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        //Toaster.show(errMsg)
                         //设备版本不支持，隐藏电机电源使能
                         mStates.isMotorPowerSupport.set(!errMsg.contains("设备版本不支持"))
                         //return

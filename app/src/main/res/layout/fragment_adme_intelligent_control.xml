@@ -210,6 +210,7 @@
                     </RelativeLayout>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
+                        visible="@{stateVM.isClearDeviceDropTimesSupport}"
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onClearDeviceDropNumberClick()}"
                         android:layout_marginTop="@dimen/dimen_size_8"
@@ -226,6 +227,7 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
+                        visible="@{stateVM.isClearRopeRunDistanceSupport}"
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onClearDeviceMileageClick()}"
                         android:layout_marginTop="@dimen/dimen_size_8"
@@ -242,6 +244,7 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
+                        visible="@{stateVM.isClearVerticalMagneticSwitchTriggerRecordSupport}"
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onClearVerticalMagneticSwitchTriggerClick()}"
                         android:layout_marginTop="@dimen/dimen_size_8"
@@ -258,6 +261,7 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
+                        visible="@{stateVM.isClearRotaryMagneticSwitchTriggerRecordSupport}"
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onClearRotationMagneticSwitchTriggerClick()}"
                         android:layout_marginTop="@dimen/dimen_size_8"
@@ -274,6 +278,7 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
+                        visible="@{stateVM.isClearBrakePadOpenCloseRecordSupport}"
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onClearPadOpenCloseClick()}"
                         android:layout_marginTop="@dimen/dimen_size_8"
