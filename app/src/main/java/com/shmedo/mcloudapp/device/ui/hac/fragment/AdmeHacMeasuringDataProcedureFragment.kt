@@ -214,10 +214,12 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             if (mStates.runButtonText.get() == "结束测量") {
                 showStopWarnDialog()
             } else if (mStates.runButtonText.get() == "下一步") {
-                processBack()
+                processBack(false)
                 if (mStates.motionStateWrapper.get().motorinfo == "8") {
                     //等待下次测量,进入测量结果展示页面
-
+                    nav().navigate(
+                        R.id.action_global_to_admeHacMeasuringDataResultsFragment
+                    )
                 }
             }
         }
@@ -256,7 +258,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.LENGTH_INVALID -> {
-
+                getMotorMotionData(5000)
             }
 
             else -> {
@@ -488,7 +490,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    fun setHorizontalMaxProgress() {
+    private fun setHorizontalMaxProgress() {
         mStates.horizontalProgress.set(mStates.horizontalMaxProgress.get())
         mStates.processDataNum.set(
             String.format(
@@ -550,7 +552,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         initImmersionBar(binding.llToolbar.toolbar)
     }
 
-    private fun processBack() {
+    private fun processBack(isNavUp: Boolean = true) {
         launchWithViewLifecycle {
             delay(500)
             //巡护事件需要给上一级浏览页面传递最新的事件信息
@@ -558,7 +560,8 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 AppContants.Extras.FRAGMENT_MEASURING_DATA_PROCEDURE_RESULT_REQUEST_KEY,
                 bundleOf(AppContants.Extras.MOTOR_STATE to mStates.motionStateWrapper.get())
             )
-            nav().navigateUp()
+            if (isNavUp)
+                nav().navigateUp()
         }
     }
 
