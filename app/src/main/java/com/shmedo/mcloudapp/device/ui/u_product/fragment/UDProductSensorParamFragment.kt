@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.u_product.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
@@ -19,6 +20,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentUDProductSensorParamBinding
@@ -365,6 +367,7 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
 
             } catch (e: Exception) {
                 Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

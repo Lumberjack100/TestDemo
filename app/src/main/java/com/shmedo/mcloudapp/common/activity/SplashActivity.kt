@@ -10,8 +10,9 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getAppViewModel
+import com.shmedo.lib.core.util.MmkvCacheUtil.getAccount
 import com.shmedo.lib.core.util.MmkvCacheUtil.getPassword
-import com.shmedo.lib.core.util.MmkvCacheUtil.getUserName
+import com.shmedo.lib.core.util.MmkvCacheUtil.getUserRealName
 import com.shmedo.lib.core.util.MmkvCacheUtil.isAgreePrivate
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
@@ -79,13 +80,13 @@ class SplashActivity : BaseActivity() {
                 redirectToLoginActivity(500)
                 return@observe
             }
-            CrashReport.setUserId(getUserName()) //该用户本次启动后的异常日志用户account
+            CrashReport.setUserId("${getAccount()}/${getUserRealName()}") //该用户本次启动后的异常日志用户account
             redirectToMainActivity(500)
         }
     }
 
     private fun goToLogin() {
-        val mAccount = getUserName()
+        val mAccount = getAccount()
         val mPassword = getPassword()
         //自动登录
         if (!TextUtils.isEmpty(mAccount) && !TextUtils.isEmpty(mPassword)) {

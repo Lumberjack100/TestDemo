@@ -296,27 +296,21 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
 
     private fun initRadioData(info: RadioCommunicateInfo) {
         try {
-            mStates.rtcmChannel.set(
-                if (info.bcchl.toInt() in radioReceiveChannelList.indices) {
-                    radioReceiveChannelList[info.bcchl.toInt()]
-                } else {
-                    radioReceiveChannelList[0]
+            info.bcchl.toInt().let {
+                if (it in radioReceiveChannelList.indices) {
+                    mStates.rtcmChannel.set(radioReceiveChannelList[it])
                 }
-            )
-            mStates.receiveChannel.set(
-                if (info.rxchl.toInt() in radioReceiveChannelList.indices) {
-                    radioReceiveChannelList[info.rxchl.toInt()]
-                } else {
-                    radioReceiveChannelList[13]
+            }
+            info.rxchl.toInt().let {
+                if (it in radioReceiveChannelList.indices) {
+                    mStates.receiveChannel.set(radioReceiveChannelList[it])
                 }
-            )
-            mStates.sendChannel.set(
-                if (info.txchl.toInt() in radioReceiveChannelList.indices) {
-                    radioReceiveChannelList[info.txchl.toInt()]
-                } else {
-                    radioReceiveChannelList[6]
+            }
+            info.txchl.toInt().let {
+                if (it in radioReceiveChannelList.indices) {
+                    mStates.sendChannel.set(radioReceiveChannelList[it])
                 }
-            )
+            }
             mStates.transmitPower.set(info.outpwr)
             mStates.airSpeed.set(info.airbaud)
 

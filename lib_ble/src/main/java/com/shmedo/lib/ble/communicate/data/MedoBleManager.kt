@@ -30,6 +30,7 @@
  */
 package com.shmedo.lib.ble.communicate.data
 
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCharacteristic
@@ -131,10 +132,15 @@ class MedoBleManager(
     }
 
 
+    @SuppressLint("MissingPermission")
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun initialize() {
         // Increase the MTU
-        requestMtu(512).enqueue()
+        requestMtu(512)
+            .fail { device, status ->
+                Timber.e("requestMtu  error:${device.name} $status")
+            }
+            .enqueue()
 
         // Enable notifications
         setNotificationCallback(notifyCharacteristic)
@@ -151,7 +157,11 @@ class MedoBleManager(
             }
             .launchIn(scope)
 
-        enableNotifications(notifyCharacteristic).enqueue()
+        enableNotifications(notifyCharacteristic)
+            .fail { device, status ->
+                Timber.e("enableNotifications  error:${device.name} $status")
+            }
+            .enqueue()
     }
 
     override fun isRequiredServiceSupported(gatt: BluetoothGatt): Boolean {
@@ -220,32 +230,46 @@ class MedoBleManager(
     }
 
     suspend fun sendData(command: String) {
-        writeCharacteristic?.let {
-            Timber.v(
-                "发送数据: length=%s bytes;content: %s",
-                command.toByteArray().size,
-                command
-            )
-            writeCharacteristic(
-                it,
-                Data.from(command),
-                it.writeType
-            )
-                // Outgoing data can use automatic splitting.
-                //.split() with no parameters uses the default MTU splitter.
-                .split()
-                .suspend()
+        try {
+            writeCharacteristic?.let {
+                Timber.v(
+                    "发送数据: length=%s bytes;content: %s",
+                    command.toByteArray().size,
+                    command
+                )
+                writeCharacteristic(
+                    it,
+                    Data.from(command),
+                    it.writeType
+                )
+                    // Outgoing data can use automatic splitting.
+                    //.split() with no parameters uses the default MTU splitter.
+                    .split()
+                    .suspend()
+            }
+        } catch (e: Exception) {
+            // 处理异常
+            Timber.e(e, "发送数据时出现异常")
+            // 根据需要决定是否抛出异常或进行其他处理
         }
     }
 
-    suspend fun connect() = connect(device)
-        .useAutoConnect(false)
-        // Automatic retries are supported, in case of 133 error.
-        .retry(3, 300)
-        // A connection timeout can be set. This is additional to the Android's connection timeout which is 30 seconds.
-        .timeout(15_000)
-        // To suspend until the connection AND initialization is complete, call suspend().
-        .suspend()
+    suspend fun connect() {
+        try {
+            connect(device)
+                .useAutoConnect(false)
+                // Automatic retries are supported, in case of 133 error.
+                .retry(3, 300)
+                // A connection timeout can be set. This is additional to the Android's connection timeout which is 30 seconds.
+                .timeout(15_000)
+                // To suspend until the connection AND initialization is complete, call suspend().
+                .suspend()
+        } catch (e: Exception) {
+            // 处理异常
+            Timber.e(e, "连接时出现异常")
+            // 根据需要决定是否抛出异常或进行其他处理
+        }
+    }
 
     fun release() {
         cancelQueue()

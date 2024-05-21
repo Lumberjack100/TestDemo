@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.das.fragment.ble
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
@@ -18,6 +19,7 @@ import com.shmedo.lib.device.base.md_cmd.enums.SaveConfigMode
 import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentDasCollectorSettingBinding
@@ -361,6 +363,7 @@ class BleDasCollectorSettingFragment : BaseIOTDeviceFragment() {
             }
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

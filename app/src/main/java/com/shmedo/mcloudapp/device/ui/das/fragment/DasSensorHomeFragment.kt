@@ -42,7 +42,7 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var deviceInfo: DeviceInfo
     private var bleDevice: DiscoveredBluetoothDevice? = null
 
-    private val tabNames = arrayListOf<String>("开关量", "数字式水位计", "扩展传感器")
+    private var tabNames = arrayListOf<String>()
 
 
     override fun initViewModel() {
@@ -77,9 +77,14 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             bleDevice = it.getParcelable(AppContants.Extras.BLE_DEVICE)
             statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
         }
+
+        tabNames.clear()
+        tabNames.add("开关量")
+        tabNames.add("数字式水位计")
         if (deviceInfo.productName.contains("MR701")) {
-            tabNames.add(2, "MCU地址")
+            tabNames.add("MCU地址")
         }
+        tabNames.add("扩展传感器")
         initViewPager()
     }
 
@@ -90,22 +95,23 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             deviceInfo,
             bleDevice
         )
-        val mFragments =
-            listOf<Fragment>(
-                DasIOSensorFragment.newInstance().apply {
-                    arguments = bundle
-                },
-                DasDigitalOsmometerFragment.newInstance().apply {
-                    arguments = bundle
-                },
-                DasMCUAddressFragment.newInstance().apply {
-                    arguments = bundle
-                },
-                DasExternalSensorListFragment.newInstance().apply {
-                    arguments = bundle
-                }
-            )
-        binding.viewpager.adapter = PageAdapter(this, mFragments)
+        val fragmentList = mutableListOf<Fragment>()
+        fragmentList.add(DasIOSensorFragment.newInstance().apply {
+            arguments = bundle
+        })
+        fragmentList.add(DasDigitalOsmometerFragment.newInstance().apply {
+            arguments = bundle
+        })
+        if (deviceInfo.productName.contains("MR701")) {
+            fragmentList.add(DasMCUAddressFragment.newInstance().apply {
+                arguments = bundle
+            })
+        }
+        fragmentList.add(DasExternalSensorListFragment.newInstance().apply {
+            arguments = bundle
+        })
+
+        binding.viewpager.adapter = PageAdapter(this, fragmentList)
         binding.viewpager.offscreenPageLimit = tabNames.size
         binding.viewpager.isUserInputEnabled = false
         binding.tabs.addOnTabSelectedListener(this)

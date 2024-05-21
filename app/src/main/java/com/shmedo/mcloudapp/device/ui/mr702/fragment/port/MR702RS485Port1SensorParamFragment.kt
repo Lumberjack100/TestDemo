@@ -462,8 +462,8 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                     }
                     initTabLayout()
                 }
-                sensorParamWrapper.port1_param.let {
-                    val sensorParam: MRRS485Port1SensorParam = it[0]
+                sensorParamWrapper.port1_param.let { portParam ->
+                    val sensorParam: MRRS485Port1SensorParam = portParam[0]
                     mStates.sensorParamWrapper.set(sensorParam)
 
                     val strs = sensorParam.model.split("_").toTypedArray()
@@ -471,13 +471,29 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                     mStates.modelToken.set(strs[0])
                     mStates.baudRate.set(sensorParam.baud)
                     mStates.dataBit.set(sensorParam.databit)
-                    mStates.checkBit.set(checkBitList[sensorParam.parity.toInt()])
-                    mStates.stopBit.set(stopBitList[sensorParam.stopbit.toInt()])
+                    sensorParam.parity.toInt().let { value ->
+                        if (value in checkBitList.indices) {
+                            mStates.checkBit.set(checkBitList[value])
+                        }
+                    }
+                    sensorParam.stopbit.toInt().let {value ->
+                        if (value in stopBitList.indices) {
+                            mStates.stopBit.set(stopBitList[value])
+                        }
+                    }
                     mStates.hydrologicalIdentification.set(sensorParam.swtoken)
                     mStates.collectionInstructions.set(sensorParam.cmd)
                     mStates.ratio.set(sensorParam.ratio)
-                    mStates.dataFormat.set(dataFormatList[sensorParam.dataformat.toInt()])
-                    mStates.solutionMethod.set(solutionMethodList[sensorParam.calctype.toInt()])
+                    sensorParam.dataformat.toInt().let { value ->
+                        if (value in dataFormatList.indices) {
+                            mStates.dataFormat.set(dataFormatList[value])
+                        }
+                    }
+                    sensorParam.calctype.toInt().let { value ->
+                        if (value in solutionMethodList.indices) {
+                            mStates.solutionMethod.set(solutionMethodList[value])
+                        }
+                    }
                     mStates.triggerValue.set(sensorParam.gateval)
                     mStates.upperLimit.set(sensorParam.uplimit)
                     mStates.lowerLimit.set(sensorParam.lowlimit)

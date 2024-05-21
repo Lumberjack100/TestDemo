@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.common
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
 import androidx.activity.OnBackPressedCallback
@@ -30,6 +31,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentDataCenterParamBinding
@@ -49,7 +51,7 @@ import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class DataCenterParamFragment : BaseIOTDeviceFragment() {
+class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDataCenterParamBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: DataCenterParamViewModel
@@ -409,7 +411,12 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        initDataCenterParam(result.data)
+                        try {
+                            initDataCenterParam(result.data)
+                        } catch (e: Exception) {
+                            Timber.e(e)
+                            addLogItem(Log.ERROR, e.errorMsg)
+                        }
                     }
                 }
             }
@@ -466,12 +473,12 @@ class DataCenterParamFragment : BaseIOTDeviceFragment() {
             }
         }
         data.datatype.toIntOrNull()?.let {
-            if (it <= dataProtocolList.size) {
+            if (it in 1..dataProtocolList.size) {
                 mStates.dataProtocol.set(dataProtocolList[it - 1])
             }
         }
         data.plattype.toIntOrNull()?.let {
-            if (it < platformList.size) {
+            if (it in platformList.indices) {
                 mStates.platformType.set(platformList[it])
             }
         }

@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.das.fragment.ble
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.CompoundButton
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
@@ -30,6 +31,7 @@ import com.shmedo.lib.device.base.md_cmd.utils.DesUtil
 import com.shmedo.lib.device.base.md_cmd.utils.HexUtils
 import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.lib.device.base.md_cmd.utils.MDConstants
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
@@ -374,6 +376,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             }
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -666,6 +669,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             mStates.isActivated.set(MDLowEnergyModel.value(info.activeStatus) == MDLowEnergyModel.ACTIVATE)
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

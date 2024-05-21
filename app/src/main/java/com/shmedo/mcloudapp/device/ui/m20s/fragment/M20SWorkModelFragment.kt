@@ -218,16 +218,15 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
     private fun initParamData(info: RtkParamInfo) {
         try {
             info.mode.toIntOrNull()?.let {
-                if (it < 1 || it > modelList.size) {
-                    return
+                if (it in 1..modelList.size) {
+                    mStates.model.set(modelList[it - 1])
                 }
-                mStates.model.set(modelList[it - 1])
             }
+
             info.frontCalc.toIntOrNull()?.let {
-                if (it < 0 || it > frontCalcList.size) {
-                    return
+                if (it in frontCalcList.indices) {
+                    mStates.frontCalc.set(frontCalcList[it])
                 }
-                mStates.frontCalc.set(frontCalcList[it])
             }
         } catch (e: Exception) {
             Timber.e(e)

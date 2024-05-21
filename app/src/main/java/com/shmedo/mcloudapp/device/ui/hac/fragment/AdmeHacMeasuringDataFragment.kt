@@ -377,7 +377,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
             mStates.address.set(info.address)
             mStates.decentralizationWaitingTime.set(info.downwaitetime)
             info.datatype.toIntOrNull()?.let {
-                mStates.dataSettlementMethod.set(if (it < settlementMethodList.size) settlementMethodList[it] else settlementMethodList[0])
+                mStates.dataSettlementMethod.set(if (it in settlementMethodList.indices) settlementMethodList[it] else settlementMethodList[0])
             }
             mStates.isSingleWayTest.set(info.onewaytest == "1")
             mStates.isCheckReverse.set(info.checkreverse == "1")

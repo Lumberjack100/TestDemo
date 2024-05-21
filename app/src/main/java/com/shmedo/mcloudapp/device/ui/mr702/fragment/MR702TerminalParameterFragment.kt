@@ -26,15 +26,15 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702TerminalParameterBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702TerminalParameterViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -358,8 +358,16 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
 
     private fun initReportMethod(info: MRReportMethod) {
         mStates.isStartTimeItemVisible.set(info.type.toInt() == 1)
-        mStates.reportMethod.set(reportMethodList[info.type.toInt() - 1])
-        mStates.startTime.set(reportStartTimeList[info.basis.toInt()])
+        info.type.toInt().let {
+            if (it in 1..reportMethodList.size) {
+                mStates.reportMethod.set(reportMethodList[it - 1])
+            }
+        }
+        info.basis.toInt().let {
+            if (it in reportStartTimeList.indices) {
+                mStates.startTime.set(reportStartTimeList[it])
+            }
+        }
         mStates.interval.set(info.interval)
     }
 

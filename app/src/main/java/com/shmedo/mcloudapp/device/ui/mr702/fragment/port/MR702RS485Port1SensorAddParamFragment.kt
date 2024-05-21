@@ -50,7 +50,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
 
 class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port1SensorAddParamBinding
@@ -65,7 +64,6 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
     private val dataFormatList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_data_format) }
     private val solutionMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_solution_method) }
-    private val decimalFormat = DecimalFormat("#.#")
 
     private var modelFieldIndex: Int = 0
 
