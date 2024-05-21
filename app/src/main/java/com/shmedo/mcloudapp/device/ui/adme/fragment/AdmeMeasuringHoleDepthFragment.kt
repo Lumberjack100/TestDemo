@@ -17,6 +17,7 @@ import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
+import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeAutoMeasuringHoleDepthEntity
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeLockedRotorDetectionEntity
@@ -128,29 +129,15 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        mStates.isAutoMode.set(true)
-        mStates.measureWay.set(measureWayList[0])
-        mStates.motionType.set(motionTypeList[0])
+        mStates.isAutoMeasuringMode.set(true)//默认自动测量模式
+        mStates.measureWay.set(measureWayList[0])//自动测孔深
+        mStates.motionType.set(motionTypeList[0])//上拉
         mStates.decentralizedEnable.set(true)//进入页面默认自动测孔深，需要打开堵转检测使能
         mStates.isClearMotionDataVisible.set(true)
         loadAutoLastHistoryData()
     }
 
-    private fun setEditable(editable: Boolean) {
-        toolbarViewModel.toolbarIvActionVisible.set(!editable)
-        toolbarViewModel.toolbarTvActionVisible.set(editable)
-        mStates.isEditable.set(editable)
-    }
-
     inner class ClickProxy : BaseClickProxy() {
-        override fun onToolbarIvClick() {
-            setEditable(true)
-        }
-
-        override fun onToolbarTvClick() {
-            setEditable(false)
-        }
-
         /**
          * 测量孔深模式
          */
@@ -166,7 +153,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     null, selectedIndex,
                     { position, text ->
                         mStates.measureWay.set(text)
-                        mStates.isAutoMode.set(position == 0)
+                        mStates.isAutoMeasuringMode.set(position == 0)
                         if (position == 0) {
                             loadAutoLastHistoryData()
                             //自动测量孔深模式，需要打开堵转检测
@@ -332,7 +319,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             showMessageDialog("电机速度数值范围[1,100]!")
             return
         }
-        if (!mStates.isAutoMode.get()) {//手动测量孔深模式
+        if (!mStates.isAutoMeasuringMode.get()) {//手动测量孔深模式
             if (mStates.distanceGoal.get().isEmpty()) {
                 showMessageDialog("请输入运动距离!")
                 return
@@ -348,7 +335,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 return
             }
         }
-        if (mStates.isAutoMode.get())
+        if (mStates.isAutoMeasuringMode.get())
             setAutoMeasuringHoleDepth()
         else
             setManualMeasuringHoleDepth()
@@ -360,8 +347,10 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     private fun setAutoMeasuringHoleDepth() {
         //持久化保存电机速度
         MmkvCacheUtil.setAdmeAutoLastMotorDropSpeed(mStates.speed.get())
-        val entity = AdmeAutoMeasuringHoleDepthEntity(mStates.speed.get())
+        mStates.realHoleDepth.set("0")
+        mStates.recommendHoleDepth.set("0")
 
+        val entity = AdmeAutoMeasuringHoleDepthEntity(mStates.speed.get())
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.ADME_MD_SET_AUTO_MEASURING_HOLEDEPTH,
@@ -369,11 +358,11 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         )
         commandItems.add(command)
 
-        mStates.realHoleDepth.set("0")
-        mStates.recommendHoleDepth.set("0")
-
         showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(
+            isStartTimeoutJob = true,
+            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
+        )
     }
 
     /**
@@ -387,6 +376,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             MmkvCacheUtil.setAdmeManualLastMotorDropSpeed(mStates.speed.get())
             MmkvCacheUtil.setAdmeManualLastMotorDropDistance(mStates.distanceGoal.get())
         }
+
         val entity = AdmeMeasuringHoleDepthEntity(
             movementway = if (mStates.motionType.get() == motionTypeList[0]) "0" else "1",
             motorspeed = mStates.speed.get(),
@@ -407,6 +397,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
      * 查询ADME测孔深运动的脉冲数、运动距离
      */
     private fun getMotorMotionData(timeMillis: Long = 0L) {
+        if (mStates.isStopQueryMotorState.get()) return
+
         launchWithViewLifecycle {
             delay(timeMillis)
 
@@ -664,7 +656,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             return
                         }
                         //当轮询 N 次电机脉冲数据没有变化时，根据电机运动状态进行后续处理
-                        if (mStates.isAutoMode.get()) {
+                        if (mStates.isAutoMeasuringMode.get()) {
                             processAutoMotorMotionState(result.data)
                         } else {
                             processManualMotorMotionState(result.data)
@@ -690,7 +682,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList()
                         updateMotorMotionDistance(result.data)
-                        if (mStates.isAutoMode.get()) {
+                        if (mStates.isAutoMeasuringMode.get()) {
                             autoMeasuringHoleDepthBottomDialog?.let { dialog ->
                                 if (dialog.isResumed) {
                                     updateMotionData(result.data)
@@ -719,10 +711,10 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList()
-                        if (mStates.isAutoMode.get()) {
+                        if (mStates.isAutoMeasuringMode.get()) {
                             mStates.isExitButtonVisible.set(true)
                         } else {
-                            if (mStates.isStopAction.get())
+                            if (mStates.isDoManualStopAction.get())
                                 mStates.isExitButtonVisible.set(true)
                             else
                                 mStates.isExitButtonVisible.set(false)
@@ -744,6 +736,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList()
                         mStates.isClearMotionDataVisible.set(false)
+                        mStates.isStopQueryMotorState.set(false)
                         getMotorMotionData()
                     }
                 }
@@ -781,14 +774,24 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 setOnDialogFragmentClickListener(object :
                     AdmeAutoMeasuringHoleDepthBottomDialog.OnDialogFragmentClickListener {
                     override fun onCloseClick() {
-                        autoMeasuringHoleDepthBottomDialog = null
-                        lastMotionDistance = ""
-                        safeDistance = ""
-                        //蓝牙未断开时先发送停止电机指令
-                        if (bleViewModel.isConnected()) {
-                            stopMotorMotion()
+                        if (!bleViewModel.isConnected() || mStates.isExitButtonVisible.get()) {
+                            autoMeasuringHoleDepthBottomDialog = null
+                            lastMotionDistance = ""
+                            safeDistance = ""
+                            dismiss()
+                            return
                         }
-                        dismiss()
+                        showMessage("确认退出数据运行吗?", "温馨提示", "确定", {
+                            autoMeasuringHoleDepthBottomDialog = null
+                            lastMotionDistance = ""
+                            safeDistance = ""
+                            //蓝牙未断开时先发送停止电机指令，再关闭运行页面
+                            if (bleViewModel.isConnected()) {
+                                stopQueryMotorState()
+                                stopMotorMotion()
+                            }
+                            dismiss()
+                        }, "取消")
                     }
 
                     override fun onStopClick() {
@@ -796,6 +799,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                             return
                         }
+                        stopQueryMotorState()
                         stopMotorMotion()
                     }
 
@@ -809,7 +813,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             }
         autoMeasuringHoleDepthBottomDialog?.show(childFragmentManager, "dialog")
         mStates.isClearMotionDataVisible.set(true)
-        getMotorMotionData(800)
+        getMotorMotionData(1000)
     }
 
     private fun showManualMotorMotionBottomDialog() {
@@ -822,7 +826,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 mStates.motionPulse.get(),
                 continueDistanceGoal,
             )
-            getMotorMotionData(800)
+            mStates.isStopQueryMotorState.set(false)
+            getMotorMotionData(1000)
             return
         }
         Timber.d(
@@ -835,14 +840,24 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 setOnDialogFragmentClickListener(object :
                     AdmeManualMeasuringHoleDepthBottomDialog.OnDialogFragmentClickListener {
                     override fun onCloseClick() {
-                        manualMeasuringHoleDepthBottomDialog = null
-                        lastMotionDistance = ""
-                        safeDistance = ""
-                        //蓝牙未断开时先发送停止电机指令
-                        if (bleViewModel.isConnected()) {
-                            stopMotorMotion()
+                        if (!bleViewModel.isConnected() || mStates.isExitButtonVisible.get()) {
+                            manualMeasuringHoleDepthBottomDialog = null
+                            lastMotionDistance = ""
+                            safeDistance = ""
+                            dismiss()
+                            return
                         }
-                        dismiss()
+                        showMessage("确认退出数据运行吗?", "温馨提示", "确定", {
+                            manualMeasuringHoleDepthBottomDialog = null
+                            lastMotionDistance = ""
+                            safeDistance = ""
+                            //蓝牙未断开时先发送停止电机指令，再关闭运行页面
+                            if (bleViewModel.isConnected()) {
+                                stopQueryMotorState()
+                                stopMotorMotion()
+                            }
+                            dismiss()
+                        }, "取消")
                     }
 
                     override fun onStopClick() {
@@ -850,7 +865,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                             return
                         }
-                        mStates.isStopAction.set(true)
+                        stopQueryMotorState()
                         stopMotorMotion()
                     }
 
@@ -859,12 +874,12 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                             return
                         }
-                        mStates.isStopAction.set(false)
                         if (mStates.pauseButtonText.get() == "继续") {
                             mStates.pauseButtonText.set("暂停")
                             continueMotorMotion()
                         } else {
                             mStates.pauseButtonText.set("继续")
+                            stopQueryMotorState()
                             stopMotorMotion()
                         }
                     }
@@ -879,7 +894,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             }
         manualMeasuringHoleDepthBottomDialog?.show(childFragmentManager, "dialog")
         mStates.isClearMotionDataVisible.set(true)
-        getMotorMotionData(800)
+        mStates.isStopQueryMotorState.set(false)
+        getMotorMotionData(1000)
     }
 
     /**
@@ -906,7 +922,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             mStates.motionPulse.set(motorMotionDistanceInfo.pulsenumber)
             mStates.motionDistance.set(motorMotionDistanceInfo.realmovedistance)
             //继续轮询电机脉冲数据
-            getMotorMotionData(800)
+            getMotorMotionData(1000)
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
@@ -922,7 +938,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         if (measuringHoleDepthInfo.morunstate == "1") {
             repeatPollNum = 0
             //继续轮询电机脉冲数据
-            getMotorMotionData(800)
+            getMotorMotionData(1000)
             return
         }
         repeatPollNum = 0
@@ -940,7 +956,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         if (measuringHoleDepthInfo.morunstate == "1") {
             repeatPollNum = 0
             //继续轮询电机脉冲数据
-            getMotorMotionData(800)
+            getMotorMotionData(1000)
             return
         }
         repeatPollNum = 0
@@ -959,6 +975,11 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
+    }
+
+    private fun stopQueryMotorState() {
+        mStates.isStopQueryMotorState.set(true)
+        cancelNearbyCommunicationTimeoutJob()
     }
 
     override fun onResume() {

@@ -51,7 +51,7 @@
                     android:orientation="vertical"
                     android:paddingBottom="@dimen/dimen_size_25">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_GroupName_Style"
                         android:text="驱动器" />
 
@@ -59,7 +59,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="驱动器标压阈值(V)" />
@@ -77,7 +77,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="驱动器低压阈值(V)" />
@@ -95,7 +95,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="驱动器欠压阈值(V)" />
@@ -109,7 +109,7 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_GroupName_Style"
                         android:text="测斜仪" />
 
@@ -117,7 +117,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测斜仪标压阈值(V)" />
@@ -135,7 +135,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测斜仪低压阈值(V)" />
@@ -153,7 +153,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测斜仪欠压阈值(V)" />
@@ -167,7 +167,7 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_GroupName_Style"
                         android:text="钢丝绳" />
 
@@ -175,7 +175,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="钢丝绳长度(米)" />
@@ -189,7 +189,7 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_GroupName_Style"
                         visible="@{stateVM.isAntifreezeSupport}"
                         android:text="防冻" />
@@ -199,7 +199,7 @@
                         visible="@{stateVM.isAntifreezeSupport}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="防冻距离(毫米)" />
@@ -218,7 +218,7 @@
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onSubmitClick()}"

@@ -7,7 +7,7 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.DasAdvancedSettingViewModel" />
+            type="com.shmedo.mcloudapp.device.viewmodel.state.AdvancedSettingViewModel" />
 
     </data>
 
@@ -36,7 +36,7 @@
                 android:layout_marginEnd="@dimen/dimen_size_15"
                 android:orientation="vertical">
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="经纬度"
@@ -75,7 +75,7 @@
 
                 </LinearLayout>
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_size_15"
@@ -83,7 +83,7 @@
                     android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_14" />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -104,7 +104,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_cancel"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -120,7 +120,7 @@
                         android:layout_height="match_parent"
                         android:background="@color/divider_line_bg" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_confirm"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"

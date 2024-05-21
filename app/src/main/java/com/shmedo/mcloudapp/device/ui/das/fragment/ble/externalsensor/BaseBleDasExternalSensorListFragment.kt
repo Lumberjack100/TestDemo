@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor
 
 import android.os.Bundle
+import android.util.Log
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.bindingAdapter
@@ -21,6 +22,7 @@ import com.shmedo.lib.device.base.md_cmd.model.das.MDDasExternalSensorInfo
 import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
@@ -397,6 +399,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
         } catch (e: Exception) {
             cancelNearbyCommunicationTimeoutJob()
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

@@ -121,7 +121,7 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
             addType<DataCenterStatusItem>(R.layout.data_center_status_item)
             R.id.item.onClick {
                 val item = getModel<DataCenterStatusItem>()
-                val bundle = DataCenterParamFragment.newBundleArguments(
+                val bundle = UniversalDataCenterParamFragment.newBundleArguments(
                     item,
                     productType,
                     communicateWay,

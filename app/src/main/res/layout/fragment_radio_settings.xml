@@ -51,7 +51,7 @@
                     android:orientation="vertical"
                     android:paddingBottom="@dimen/dimen_size_25">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="@dimen/dimen_size_10"
@@ -68,12 +68,12 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="报警接收频点" />
+                            android:text="广播接收频点" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -87,12 +87,12 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="广播发射频点" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -106,12 +106,12 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="发射功率" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -125,12 +125,12 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="空中速率" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -138,7 +138,7 @@
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="@dimen/dimen_size_10"
@@ -152,7 +152,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站1编号" />
@@ -170,7 +170,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站2编号" />
@@ -188,7 +188,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站3编号" />
@@ -206,7 +206,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站4编号" />
@@ -223,7 +223,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站5编号" />
@@ -240,7 +240,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站6编号" />
@@ -257,7 +257,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站7编号" />
@@ -274,7 +274,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站8编号" />
@@ -291,7 +291,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站9编号" />
@@ -308,7 +308,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站10编号" />
@@ -324,7 +324,7 @@
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/btn_reset"
             style="@style/ResetButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onResetClick()}"
@@ -337,7 +337,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/refreshLayout" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"

@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
@@ -18,6 +19,7 @@ import com.shmedo.lib.device.base.md_cmd.model.das.MDDasExternalSensorInfo
 import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentDasExternalDigitalSensorBinding
@@ -258,6 +260,7 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             }
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

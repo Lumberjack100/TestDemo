@@ -59,12 +59,12 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测量孔深模式" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -74,10 +74,10 @@
 
                     <RelativeLayout
                         style="@style/SwitchButton_LayoutStyle"
-                        visible="@{!stateVM.isAutoMode}"
+                        visible="@{!stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/SwitchButton_TitleStyle"
                             android:text="下放堵转检测"
                             android:textColor="@{stateVM.isEditable?@color/title_text_color:@color/sub_title_text_color}" />
@@ -96,10 +96,10 @@
 
                     <RelativeLayout
                         style="@style/SwitchButton_LayoutStyle"
-                        visible="@{stateVM.isAutoMode}"
+                        visible="@{stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/SwitchButton_TitleStyle"
                             android:text="正反测使能"
                             android:textColor="@{stateVM.isEditable?@color/title_text_color:@color/sub_title_text_color}" />
@@ -120,7 +120,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="电机速度(r/min)" />
@@ -138,15 +138,15 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
-                        visible="@{stateVM.isAutoMode}"
+                        visible="@{stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="实测测斜管孔深(米)" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@null"
@@ -156,15 +156,15 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
-                        visible="@{stateVM.isAutoMode}"
+                        visible="@{stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="推荐测斜管孔深(米)" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@null"
@@ -175,16 +175,16 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onMotionTypeClick()}"
-                        visible="@{!stateVM.isAutoMode}"
+                        visible="@{!stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="运动方式" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -194,10 +194,10 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
-                        visible="@{!stateVM.isAutoMode}"
+                        visible="@{!stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="运动距离(米)" />
@@ -215,7 +215,7 @@
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/btn_run"
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onRunClick()}"
@@ -249,7 +249,7 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableStart="@drawable/ic_clear_motion_data"
@@ -270,7 +270,7 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableStart="@drawable/ic_motion_data_clear_complete"

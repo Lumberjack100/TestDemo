@@ -37,7 +37,7 @@ import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.ui.common.DataCenterParamFragment
+import com.shmedo.mcloudapp.device.ui.common.UniversalDataCenterParamFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasSensorHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
@@ -110,7 +110,7 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
             addType<DataCenterStatusItem>(R.layout.data_center_status_item)
             R.id.item.onClick {
                 val item = getModel<DataCenterStatusItem>()
-                val bundle = DataCenterParamFragment.newBundleArguments(
+                val bundle = UniversalDataCenterParamFragment.newBundleArguments(
                     item,
                     productType,
                     communicateWay,

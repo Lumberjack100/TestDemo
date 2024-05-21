@@ -58,12 +58,12 @@
                         android:enabled="@{stateVM.isEditable }"
                         onClickWithDebouncing="@{()->click.onVersionChooseClick()}">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测斜仪版本" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -77,12 +77,12 @@
                         android:enabled="@{stateVM.isEditable }"
                         onClickWithDebouncing="@{()->click.onModeChooseClick()}">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测量工作模式" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -96,7 +96,7 @@
                         visible="@{stateVM.isTwistAngleSupport &amp;&amp; stateVM.isCompensateWayVisible}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/SwitchButton_TitleStyle"
                             android:text="扭转角测量使能"
                             android:textColor="@{stateVM.isEditable?@color/title_text_color:@color/sub_title_text_color}" />
@@ -121,12 +121,12 @@
                         onClickWithDebouncing="@{()->click.onCompensateWayChooseClick()}"
                         tools:visibility="visible">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="补偿方式" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -141,7 +141,7 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         tools:visibility="visible">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="扭转角γ" />
@@ -160,7 +160,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="Mac地址" />
@@ -178,7 +178,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="采集器采集间隔(秒)" />
@@ -196,7 +196,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="采集器解算间隔(秒)" />
@@ -214,7 +214,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="休眠时间(秒)" />
@@ -232,7 +232,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测斜仪修正值(毫米)" />
@@ -250,7 +250,7 @@
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onSubmitClick()}"

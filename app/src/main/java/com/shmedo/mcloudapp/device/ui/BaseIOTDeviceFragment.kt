@@ -23,7 +23,9 @@ import com.shmedo.lib.core.ext.getLogItem
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
@@ -339,6 +341,18 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         commandItems.clear()
         commandDescItems.clear()
         refreshLayout?.finish(false)
+    }
+
+    /**
+     * 恢复出厂
+     */
+    protected open fun restoreFactory() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(IOTCommandType.RESET)
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     fun addLogItem(priority: Int, data: String) {

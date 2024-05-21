@@ -62,7 +62,7 @@
                         android:layout_marginTop="@dimen/dimen_size_8"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="数据中心地址" />
@@ -80,7 +80,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="数据中心端口" />
@@ -101,12 +101,12 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="通讯协议" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -121,12 +121,12 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="平台类型" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -147,7 +147,7 @@
                             visible="@{stateVM.isMqttAutoRegister}"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
-                            <TextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 style="@style/Common_ClickableItem_TitleStyle"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="设备注册地址" />
@@ -165,7 +165,7 @@
                             visible="@{stateVM.isMqttAutoRegister}"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
-                            <TextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 style="@style/Common_ClickableItem_TitleStyle"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="设备注册端口" />
@@ -183,7 +183,7 @@
                             style="@style/Common_EditItem_LayoutStyle"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
-                            <TextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 style="@style/Common_ClickableItem_TitleStyle"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="心跳间隔(秒)" />
@@ -202,7 +202,7 @@
                             visible="@{stateVM.isMqttAutoRegister}"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
-                            <TextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 style="@style/Common_ClickableItem_TitleStyle"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="设备SN号" />
@@ -220,7 +220,7 @@
                             visible="@{stateVM.isMqttAutoRegister}"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
-                            <TextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 style="@style/Common_ClickableItem_TitleStyle"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="产品ID" />
@@ -238,7 +238,7 @@
                             visible="@{stateVM.isMqttAutoRegister}"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
-                            <TextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 style="@style/Common_ClickableItem_TitleStyle"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="设备注册码" />
@@ -256,7 +256,7 @@
                             visible="@{!stateVM.isMqttAutoRegister}"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
-                            <TextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 style="@style/Common_ClickableItem_TitleStyle"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="MQTT设备ID" />
@@ -274,7 +274,7 @@
                             visible="@{!stateVM.isMqttAutoRegister}"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
-                            <TextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 style="@style/Common_ClickableItem_TitleStyle"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="MQTT用户名" />
@@ -292,7 +292,7 @@
                             visible="@{!stateVM.isMqttAutoRegister}"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
-                            <TextView
+                            <androidx.appcompat.widget.AppCompatTextView
                                 style="@style/Common_ClickableItem_TitleStyle"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="MQTT密码" />
@@ -310,7 +310,7 @@
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onSubmitClick()}"

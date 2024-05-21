@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
@@ -12,6 +13,7 @@ import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants.Extras.Companion.SENSOR_CHANNEL
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.device.base.md_cmd.model.das.MDDasExternalSensorInfo
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
@@ -23,6 +25,7 @@ import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showMessageDialog
+import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.util.Locale
@@ -369,7 +372,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                 else -> {}
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
         }
     }
 

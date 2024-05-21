@@ -7,7 +7,7 @@
     android:foreground="?attr/selectableItemBackground"
     android:paddingStart="16dp">
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

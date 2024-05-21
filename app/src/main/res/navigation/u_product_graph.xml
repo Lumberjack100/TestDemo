@@ -110,9 +110,15 @@
 
     <fragment
         android:id="@+id/dataCenterParamFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.common.DataCenterParamFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.common.UniversalDataCenterParamFragment"
         android:label="DataCenterParamFragment"
         tools:layout="@layout/fragment_data_center_param" />
+
+    <fragment
+        android:id="@+id/advancedSettingFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.common.BaseAdvancedSettingFragment"
+        android:label="BaseAdvancedSettingFragment"
+        tools:layout="@layout/fragment_advanced_setting" />
 
     <action
         android:id="@+id/action_global_to_queryDeviceDataFragment"
@@ -149,6 +155,14 @@
     <action
         android:id="@+id/action_global_to_alarmSettingFragment"
         app:destination="@id/alarm_setting_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_advancedSettingFragment"
+        app:destination="@id/advancedSettingFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

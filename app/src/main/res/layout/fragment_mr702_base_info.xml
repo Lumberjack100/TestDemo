@@ -33,11 +33,11 @@
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="产品名称" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text="@{stateVM.wrapBaseInfo.productname}"
                         tools:text="终端遥控测试机" />
@@ -48,11 +48,11 @@
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="产品型号" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text="@{stateVM.wrapBaseInfo.producttype}"
                         tools:text="MR702-SL" />
@@ -63,11 +63,11 @@
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="产品注册码" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text="@{stateVM.wrapBaseInfo.regcode}"
                         tools:text="mjkah1882910" />
@@ -78,11 +78,11 @@
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="设备SN" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text="@{stateVM.wrapBaseInfo.sn}"
                         tools:text="modo-1819929190" />
@@ -93,11 +93,11 @@
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="软件版本" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text="@{stateVM.wrapBaseInfo.ver}"
                         tools:text="终端遥控测试机" />
@@ -108,11 +108,11 @@
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="SIM卡号" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text="@{stateVM.wrapBaseInfo.imei}"
                         tools:text="终端遥控测试机" />
@@ -123,11 +123,11 @@
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="温度" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.wrapBaseInfo.temp+"℃"}'
                         tools:text="终端遥控测试机" />
@@ -138,11 +138,11 @@
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="湿度" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.wrapBaseInfo.hum+"%"}'
                         tools:text="终端遥控测试机" />
@@ -153,11 +153,11 @@
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="供电电压" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.wrapBaseInfo.volt+"V"}'
                         tools:text="终端遥控测试机" />
@@ -168,11 +168,11 @@
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="4G信号强度" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text="@{stateVM.wrapBaseInfo.csq}"
                         tools:text="终端遥控测试机" />
@@ -183,11 +183,11 @@
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="设备位置" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text="@{stateVM.wrapBaseInfo.local}"
                         tools:text="终端遥控测试机" />
@@ -196,11 +196,11 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat style="@style/DeviceCurrentState_SingleItem_Style">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="注册时间" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text="@{stateVM.wrapBaseInfo.regtime}"
                         tools:text="终端遥控测试机" />

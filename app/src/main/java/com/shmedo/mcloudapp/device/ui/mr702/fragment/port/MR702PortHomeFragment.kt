@@ -178,7 +178,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                 val tabView =
                     LayoutInflater.from(mActivity)
                         .inflate(R.layout.custom_tab_mr702_interface, null)
-                val textView = tabView.findViewById<TextView>(R.id.tabText)
+                val textView = tabView.findViewById<androidx.appcompat.widget.AppCompatTextView>(R.id.tabText)
                 textView.text = tabNames[position]
                 if (position == 0) { // 第一个为默认选中
                     tabView.setBackgroundResource(activeBg)
@@ -221,7 +221,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     override fun onTabSelected(tab: TabLayout.Tab) {
         tab.customView?.let {
             it.setBackgroundResource(activeBg)
-            val textView = it.findViewById<TextView>(R.id.tabText)
+            val textView = it.findViewById<androidx.appcompat.widget.AppCompatTextView>(R.id.tabText)
             textView.textSize = activeSize
             textView.setTextColor(activeColor)
         }
@@ -230,7 +230,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     override fun onTabUnselected(tab: TabLayout.Tab) {
         tab.customView?.let {
             it.setBackgroundResource(normalBg)
-            val textView = it.findViewById<TextView>(R.id.tabText)
+            val textView = it.findViewById<androidx.appcompat.widget.AppCompatTextView>(R.id.tabText)
             textView.textSize = normalSize
             textView.setTextColor(normalColor)
         }

@@ -9,8 +9,17 @@ class AdmeIntelligentControlViewModel : ViewModel() {
     val isPositiveAndNegativeTestExceptionHandlingSupport = NonNullObservableField(true)
     val isLowPowerAlarmSupport = NonNullObservableField(true)
     val isAnthropomorphicMovementSupport = NonNullObservableField(true)
+    val isTorqueMotorPowerOffRestartSupport = NonNullObservableField(true)  //力矩电机断电重启是否支持
     val isBrakePadControlSupport = NonNullObservableField(true)
     val isMotorPowerSupport = NonNullObservableField(true)
+    val isClearDeviceDropTimesSupport = NonNullObservableField(true)//清空设备下降次数是否支持
+    val isClearRopeRunDistanceSupport = NonNullObservableField(true)//清空钢丝绳运行里程是否支持
+    val isClearVerticalMagneticSwitchTriggerRecordSupport =
+        NonNullObservableField(true)//清空竖向磁开关触发记录是否支持
+    val isClearRotaryMagneticSwitchTriggerRecordSupport =
+        NonNullObservableField(true)//清空旋转磁开关触发记录是否支持
+    val isClearBrakePadOpenCloseRecordSupport = NonNullObservableField(true)//清空刹车片启闭记录是否支持
+
 
     val positiveAndNegativeTest = NonNullObservableField(false)//正反测使能
     val isPositiveAndNegativeTestExceptionHandling = NonNullObservableField(false)//正反测异常智能处理

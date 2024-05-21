@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="35dp"
@@ -64,7 +64,7 @@
             app:drawable_radiusRT="@{24}"
             app:drawable_solidColor="@{@color/white}">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_login_way_title_zh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
                 android:textColor="#2F3033"
                 android:textSize="@dimen/text_size_18" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_login_way_title_en"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -246,7 +246,7 @@
                             android:layout_marginEnd="19dp"
                             android:background="@color/text_color_cccccc" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tv_get_code"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -262,7 +262,7 @@
 
             </FrameLayout>
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/btn_confirm"
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
@@ -274,7 +274,7 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_17" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_user_protocol"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -295,7 +295,7 @@
                 onClickWithDebouncing="@{()->click.onSwitchLoginWayClick()}"
                 android:src="@{vm.isAccountLogin?@drawable/icon_account_login:@drawable/icon_phone_login}" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_login_way_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -309,7 +309,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"

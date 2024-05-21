@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
@@ -21,6 +22,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.ext.showLoadingDialog
@@ -255,6 +257,7 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
 
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

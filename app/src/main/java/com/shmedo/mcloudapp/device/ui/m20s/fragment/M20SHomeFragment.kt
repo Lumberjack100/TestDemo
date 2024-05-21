@@ -1,9 +1,15 @@
 package com.shmedo.mcloudapp.device.ui.m20s.fragment
 
+import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
+import com.hjq.toast.Toaster
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.device.model.AlarmConfigModule
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommandDebugConfigModule
@@ -11,10 +17,9 @@ import com.shmedo.mcloudapp.device.model.CommonModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DataCenterModule
 import com.shmedo.mcloudapp.device.model.DeviceFunctionModule
-import com.shmedo.mcloudapp.device.model.FirmwareUpgradeModule
 import com.shmedo.mcloudapp.device.model.RebootModule
-import com.shmedo.mcloudapp.device.model.RestoreFactoryModule
 import com.shmedo.mcloudapp.device.model.RunningStatusModule
+import com.shmedo.mcloudapp.device.model.SetupWizard
 import com.shmedo.mcloudapp.device.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.device.model.WorkModeModule
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
@@ -22,6 +27,9 @@ import com.shmedo.mcloudapp.device.ui.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.device.ui.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.device.ui.common.UniversalDeviceHomeFragment
 import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
+import timber.log.Timber
 
 /**
  * 创建者:   gonghe <br></br>
@@ -55,6 +63,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
                 )
             )
         )
+        moduleList.add(ConfigModule(SetupWizard(name = "初始化")))
         moduleList.add(
             ConfigModule(
                 WorkModeModule(
@@ -104,16 +113,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
             ConfigModule(RebootModule(resID = R.drawable.ic_module_reboot))
         )
         moduleList.add(
-            ConfigModule(RestoreFactoryModule(resID = R.drawable.ic_module_reset))
-        )
-        moduleList.add(
-            ConfigModule(
-                FirmwareUpgradeModule(
-                    resID = R.drawable.ic_module_firmware_upgrade,
-                    navId = R.id.action_global_to_firmwareUpgradeFragment,
-                    isSupport = false
-                )
-            )
+            ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_advancedSettingFragment))
         )
         if (communicateWay is BleConnect) {
             moduleList.add(
@@ -127,6 +127,20 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
 
     override fun processOtherItemClick(configModule: DeviceFunctionModule) {
         when (configModule) {
+            is SetupWizard -> {
+                showMessage("确定进行初始化吗？", "温馨提示", "确定", {
+                    commandItems.clear()
+                    val command = IOTCommandUtil.getCommand(
+                        IOTCommandType.MD_SET_SENSOR_INITIAL,
+                        "method=1&type=gnss"
+                    )
+                    commandItems.add(command)
+
+                    showLoadingDialog(StringUtils.getString(R.string.processing))
+                    sendCommandFromCmdList(isStartTimeoutJob = true)
+                }, "取消")
+            }
+
             is DataCenterModule -> {
                 val bundle = UniversalDataCenterHomeFragment.newBundleArguments(
                     4,
@@ -171,6 +185,24 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
 
     override fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {
         when (commandType) {
+            IOTCommandType.MD_SET_SENSOR_INITIAL -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "初始化失败: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("初始化完成")
+                        }
+                    }
+                }
+            }
+
             else -> {
 
             }

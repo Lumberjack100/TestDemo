@@ -35,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_size_15"
@@ -62,7 +62,7 @@
 
                 </FrameLayout>
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_size_15"
@@ -80,7 +80,7 @@
                     app:drawable_solidColor="@{@color/gray_f5f6f8}"
                     tools:background="@color/gray_f5f6f8">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_time"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_cancel"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -125,7 +125,7 @@
                         android:layout_height="match_parent"
                         android:background="@color/divider_line_bg" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_confirm"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"

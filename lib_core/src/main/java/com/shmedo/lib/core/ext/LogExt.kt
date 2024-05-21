@@ -17,7 +17,7 @@ fun getSystemLogSession(): SessionInfo {
         id = UUID.randomUUID().toString(),
         key = "V " + AppUtils.getAppVersionName(),
         name = "系统日志",
-        createBy = MmkvCacheUtil.getUserName(),
+        createBy = MmkvCacheUtil.getAccount(),
         createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
         createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
     )
@@ -30,7 +30,7 @@ fun getIOTDeviceLogSession(mKey: String, mName: String): SessionInfo {
         id = UUID.randomUUID().toString(),
         key = mKey,
         name = mName,
-        createBy = MmkvCacheUtil.getUserName(),
+        createBy = MmkvCacheUtil.getAccount(),
         createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
         createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
     )

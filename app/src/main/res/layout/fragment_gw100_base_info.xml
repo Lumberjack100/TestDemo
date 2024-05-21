@@ -51,7 +51,7 @@
                     android:layout_marginBottom="@dimen/dimen_size_50"
                     android:orientation="vertical">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="@dimen/dimen_size_10"
@@ -65,11 +65,11 @@
                         style="@style/DeviceCurrentState_SingleItem_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
                             android:text="设备SN" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                             android:text="@{stateVM.wrapStateInfo.sn}"
                             tools:text="modo-1819929190" />
@@ -80,11 +80,11 @@
                         style="@style/DeviceCurrentState_SingleItem_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
                             android:text="硬件版本" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                             android:text="@{stateVM.wrapStateInfo.hardwareVersion}"
                             tools:text="1212" />
@@ -95,11 +95,11 @@
                         style="@style/DeviceCurrentState_SingleItem_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
                             android:text="固件版本" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                             android:text="@{stateVM.wrapStateInfo.firmwareVersion}"
                             tools:text="1212" />
@@ -112,11 +112,11 @@
                         android:layout_height="44dp"
                         android:enabled="@{!stateVM.deviceNormal}">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/DeviceCurrentState_SingleItem_NameStyle"
                             android:text="设备状态" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tv_device_abnormal_diagnosis"
                             style="@style/Common_ClickableItem_ValueStyle"
                             rightArrowVisible="@{!stateVM.deviceNormal}"
@@ -128,7 +128,7 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginVertical="@dimen/dimen_size_10"

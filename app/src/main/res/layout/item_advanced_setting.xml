@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="com.shmedo.mcloudapp.device.model.AdvancedSettingItem" />
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/item"
+        style="@style/Common_ClickableItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:text='@{m.name}'
+            tools:text="固件升级" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

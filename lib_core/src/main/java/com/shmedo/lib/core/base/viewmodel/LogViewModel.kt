@@ -30,7 +30,7 @@ class LogViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) : ViewM
      */
     fun insertSystemLogSession() = viewModelScope.launch {
         val sessionList = loggerRepositoryImp.getSessionByUserAndName(
-            MmkvCacheUtil.getUserName(),
+            MmkvCacheUtil.getAccount(),
             "系统日志",
             TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd"))
         )
@@ -56,7 +56,7 @@ class LogViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) : ViewM
     fun insertIOTDeviceLogSession(mKey: String, mName: String) =
         viewModelScope.launch {
             val sessionList = loggerRepositoryImp.getSessionByUserAndName(
-                MmkvCacheUtil.getUserName(),
+                MmkvCacheUtil.getAccount(),
                 mName,
                 TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd"))
             )

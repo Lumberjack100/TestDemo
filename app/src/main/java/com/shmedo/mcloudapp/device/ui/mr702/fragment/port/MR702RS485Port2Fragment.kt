@@ -505,7 +505,11 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
             mStates.acquisitionFrequency.set(collectionParam.collfreq)
             mStates.collectionTimes.set(collectionParam.collcycle)
             mStates.noResponseTimes.set(collectionParam.noresp)
-            mStates.collectorType.set(collectorTypeList[collectionParam.colltype.toInt() - 1])
+            collectionParam.colltype.toInt().let {
+                if (it in 1..collectorTypeList.size) {
+                    mStates.collectorType.set(collectorTypeList[it - 1])
+                }
+            }
             mStates.collectorAddress.set(collectionParam.colladdr)
             mStates.delayDuration.set(collectionParam.powerontimes)
         } catch (e: Exception) {
@@ -517,8 +521,16 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
         try {
             mStates.baudRate.set(serialPortParam.baud)
             mStates.dataBit.set(serialPortParam.databit)
-            mStates.checkBit.set(checkBitList[serialPortParam.parity.toInt()])
-            mStates.stopBit.set(stopBitList[serialPortParam.stopbit.toInt()])
+            serialPortParam.parity.toInt().let {
+                if (it in checkBitList.indices) {
+                    mStates.checkBit.set(checkBitList[it])
+                }
+            }
+            serialPortParam.stopbit.toInt().let {
+                if (it in stopBitList.indices) {
+                    mStates.stopBit.set(stopBitList[it])
+                }
+            }
         } catch (e: Exception) {
             Timber.e(e)
         }

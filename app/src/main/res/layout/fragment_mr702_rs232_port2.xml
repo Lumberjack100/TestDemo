@@ -42,7 +42,7 @@
                     android:layout_marginTop="@dimen/dimen_size_1"
                     app:vm="@{homeVM}" />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Common_GroupName_Style"
                     android:text="北斗数据终端配置" />
 
@@ -50,11 +50,11 @@
                     style="@style/Common_ClickableItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="状态" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@null"
                         android:text="@{stateVM.status}"
@@ -67,7 +67,7 @@
                     style="@style/SwitchButton_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/SwitchButton_TitleStyle"
                         android:text="开关"
                         android:textColor="@{homeVM.isEditable?@color/title_text_color:@color/sub_title_text_color}" />
@@ -84,7 +84,7 @@
 
                 </RelativeLayout>
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Common_GroupName_Style"
                     android:text="串口参数" />
 
@@ -92,7 +92,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                         android:text="目的地址"
@@ -111,7 +111,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                         android:text="波特率(Bps)"
@@ -132,12 +132,12 @@
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                         android:text="数据位" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                         android:drawableEnd="@drawable/ic_arrow_down"
@@ -151,12 +151,12 @@
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                         android:text="校验位" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                         android:drawableEnd="@drawable/ic_arrow_down"
@@ -170,12 +170,12 @@
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                         android:text="停止位" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                         android:drawableEnd="@drawable/ic_arrow_down"
@@ -183,7 +183,7 @@
                         tools:text="2" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/btn_confirm"
                     style="@style/SubmitButton_ColorPrimary"
                     onClickWithDebouncing="@{()->click.onSubmitClick()}"

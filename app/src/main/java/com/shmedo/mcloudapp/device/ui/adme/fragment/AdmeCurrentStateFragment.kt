@@ -2,12 +2,23 @@ package com.shmedo.mcloudapp.device.ui.adme.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.ViewCompat
+import com.blankj.utilcode.util.ClipboardUtils
+import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
+import com.blankj.utilcode.util.VibrateUtils
+import com.drake.brv.listener.OnHoverAttachListener
+import com.drake.brv.utils.linear
+import com.drake.brv.utils.models
+import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
+import com.lxj.xpopup.interfaces.SimpleCallback
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.device.base.iot_cmd.enums.AdmeCTRMotionState
 import com.shmedo.lib.device.base.iot_cmd.enums.AdmeModuleErrorType
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -18,22 +29,26 @@ import com.shmedo.lib.device.base.iot_cmd.model.hac.HacMotionState
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentAdmeCurrentStateBinding
+import com.shmedo.mcloudapp.databinding.ItemDeviceStatusInfoBasicBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoSignalItem
+import com.shmedo.mcloudapp.device.model.GapItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeCurrentStateViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.notNullKey
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.utils.DeviceStatusHelper
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
 
 /**
  * @author：gonghe
@@ -46,9 +61,8 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: AdmeCurrentStateViewModel
     private val iotParseManager: IOTParserManager by inject()
-    private val decimalFormat = DecimalFormat("#.###", DecimalFormatSymbols(Locale.getDefault()))
 
-    private var currentStateInfo: AdmeCurrentStateInfo? = null
+    private val deviceAbnormalList: ArrayList<String> = ArrayList()
 
 
     override fun initViewModel() {
@@ -60,7 +74,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_adme_current_state, BR.stateVM, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
-            .addBindingParam(BR.click, ClickProxy())
+            .addBindingParam(BR.click, BaseClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -75,6 +89,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
             nav().navigateUp()
         }
         initRefresh()
+        initAdapter()
     }
 
     private fun initRefresh() {
@@ -89,8 +104,76 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    inner class ClickProxy : BaseClickProxy() {
-        fun onShowErrorModulesInfoClick() {
+    private fun initAdapter() {
+        binding.recyclerview.linear().setup { rv ->
+            addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group)
+            addType<DeviceStatusInfoBasicItem>(R.layout.item_device_status_info_basic)
+            addType<DeviceStatusInfoSignalItem>(R.layout.item_device_status_info_signal)
+            addType<GapItem>(R.layout.item_device_status_info_gap)
+            onBind {
+                when (itemViewType) {
+                    R.layout.item_device_status_info_basic -> {
+                        val itemBinding = getBinding<ItemDeviceStatusInfoBasicBinding>()
+                        val item = getModel<DeviceStatusInfoBasicItem>()
+                        //必须要在事件发生之前就watch，如果你写在onLongClickListener中的话，就拿不到触摸点了，触摸事件被长按消费了
+                        val builder = XPopup.Builder(context)
+                            .hasShadowBg(false)
+                            .watchView(itemBinding.tvValue)
+                            .setPopupCallback(object : SimpleCallback() {
+                                override fun onClickOutside(popupView: BasePopupView?) {
+                                    item.refreshClipboardState(false)
+                                }
+                            })
+                        itemBinding.tvValue.setOnLongClickListener {
+                            item.refreshClipboardState(true)
+                            VibrateUtils.vibrate(300)
+                            builder.asAttachList(arrayListOf("复制").toTypedArray(), null)
+                            { _, text ->
+                                when (text) {
+                                    "复制" -> {
+                                        item.refreshClipboardState(false)
+                                        ClipboardUtils.copyText(item.value)
+                                        Toaster.show("已复制到剪贴板")
+                                    }
+                                }
+                            }
+                                .show()
+                            true
+                        }
+                    }
+
+                    else -> {
+
+                    }
+                }
+            }
+            R.id.item.onClick {
+                when (itemViewType) {
+                    R.layout.item_device_status_info_basic -> {
+                        val item = getModel<DeviceStatusInfoBasicItem>()
+                        processItemClick(item)
+                    }
+
+                    else -> {
+
+                    }
+                }
+            }
+            // 可选项, 粘性监听器
+            onHoverAttachListener = object : OnHoverAttachListener {
+                override fun attachHover(v: View) {
+                    ViewCompat.setElevation(v, 10F) // 悬停时显示阴影
+                }
+
+                override fun detachHover(v: View) {
+                    ViewCompat.setElevation(v, 0F) // 非悬停时隐藏阴影
+                }
+            }
+        }
+    }
+
+    private fun processItemClick(item: DeviceStatusInfoBasicItem) {
+        if (item.isClickable && item.name == "设备状态" && item.value == "异常") {
             showErrorModulesInfoDialog()
         }
     }
@@ -140,7 +223,6 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        currentStateInfo = result.data
                         initStatusInfo(result.data)
                     }
                 }
@@ -198,77 +280,215 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initStatusInfo(currentStateInfo: AdmeCurrentStateInfo) {
-        try {
-            mStates.deviceNormal.set(currentStateInfo.abndiasis == "0")
-            when (currentStateInfo.testway) {
-                "0" -> mStates.workMode.set("常规测量模式")
-                "1" -> mStates.workMode.set("特定点位模式")
-                "2" -> mStates.workMode.set("静态测量模式")
-                "3" -> mStates.workMode.set("设备停用模式")
-            }
-            mStates.wrapStateInfo.set(currentStateInfo)
-            mStates.wrapStateInfo.get().apply {
-                ctrinputv = ctrinputv.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                driveinputv = driveinputv.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                temperature = temperature.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                humidity = humidity.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
-                runmileage = runmileage.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it / 100)
-                    } ?: IOTConstants.NULL_KEY
+    private fun initStatusInfo(stateInfo: AdmeCurrentStateInfo) {
+        launchWithViewLifecycle {
+            try {
+                binding.refreshLayout.showContent()
+                val groupList = mutableListOf<Any>()
 
-                nexttime = nexttime.toULongOrNull()
-                    ?.let {
-                        if (it > 0u) {
-                            TimeUtils.millis2String(
-                                it.toLong(),
+                groupList.add(DeviceStatusInfoGroupItem("基本信息"))
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "设备SN",
+                    value = stateInfo.sn,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "设备型号",
+                    value = stateInfo.productid,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "设备IMEI",
+                    value = stateInfo.imeid,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "设备ICCID",
+                    value = stateInfo.simid,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "固件版本",
+                    value = stateInfo.firversion,
+                )
+                stateInfo.scsq.notNullKey {
+                    val temp = it.toIntOrNull() ?: 0
+                    groupList.add(
+                        DeviceStatusInfoSignalItem(
+                            name = "4G信号强度",
+                            signalValue = if (temp <= 0)
+                                temp
+                            else
+                                temp * 2 - 113
+                        )
+                    )
+                }
+                groupList.add(DeviceStatusInfoGroupItem("设备工作信息"))
+                stateInfo.abndiasis.notNullKey {
+                    deviceAbnormalList.clear()
+                    deviceAbnormalList.addAll(DeviceStatusHelper.checkAdmeDeviceAbnormal(it))
+                    groupList.add(
+                        DeviceStatusInfoBasicItem(
+                            name = "设备状态",
+                            value = if (deviceAbnormalList.isEmpty()) "正常" else "异常",
+                            colorRes = if (deviceAbnormalList.isEmpty()) ColorUtils.getColor(
+                                R.color.text_color_3AD094
+                            ) else ColorUtils.getColor(R.color.device_offline_platform),
+                            isClickable = deviceAbnormalList.isNotEmpty()
+                        )
+                    )
+                }
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "工作模式",
+                    value = if (stateInfo.testway == "0") "常规测量模式" else if (stateInfo.testway == "1") "特定点位模式" else if (stateInfo.testway == "2") "静态测量模式" else "设备停用模式",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                    groupList,
+                    name = "CTR输入电压",
+                    value = stateInfo.ctrinputv,
+                    defaultValue = "0",
+                    thresHold = 5.0,
+                    digit = 2,
+                    unit = "V",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                    groupList,
+                    name = "驱动器输入电压",
+                    value = stateInfo.driveinputv,
+                    defaultValue = "0",
+                    thresHold = 5.0,
+                    digit = 2,
+                    unit = "V",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                    groupList,
+                    name = "设备温度",
+                    value = stateInfo.temperature,
+                    defaultValue = "0",
+                    digit = 2,
+                    unit = "℃",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                    groupList,
+                    name = "设备湿度",
+                    value = stateInfo.humidity,
+                    defaultValue = "0",
+                    digit = 2,
+                    unit = "%",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "设备下降次数",
+                    value = stateInfo.downnum,
+                )
+                stateInfo.runmileage.notNullKey {
+                    val tempValue = it.toDoubleOrNull()?.div(100) ?: 0.0
+                    groupList.add(
+                        DeviceStatusInfoBasicItem(
+                            name = "钢丝绳运行里程",
+                            value = DeviceStatusInfoProcessor.formatDoubleValue(
+                                tempValue.toString(),
+                                "0",
+                                3
+                            ) + " m"
+                        )
+                    )
+                }
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "竖向磁开关触发次数",
+                    value = stateInfo.verticalswitchnum,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "旋转磁开关触发次数",
+                    value = stateInfo.rotaryswitchnum,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "刹车片启闭次数",
+                    value = stateInfo.brakepadnum,
+                )
+                stateInfo.nexttime.notNullKey {
+                    val tempValue = it.toULongOrNull() ?: 0u
+                    groupList.add(
+                        DeviceStatusInfoBasicItem(
+                            name = "预计下次测量时间",
+                            value = if (tempValue > 0u) TimeUtils.millis2String(
+                                tempValue.toLong(),
                                 "yyyy-MM-dd HH:mm"
-                            )
-                        } else IOTConstants.NULL_KEY
-                    } ?: IOTConstants.NULL_KEY
+                            ) else ""
+                        )
+                    )
+                }
+                groupList.add(DeviceStatusInfoGroupItem("测斜仪信息"))
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "测斜仪类型",
+                    value = if (stateInfo.inctype == "0") "433测斜仪" else "蓝牙测斜仪",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "测斜仪信道号",
+                    value = stateInfo.incnum,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "测斜仪位置信息",
+                    value = stateInfo.incloc,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                    groupList,
+                    name = "测斜仪电压",
+                    value = stateInfo.incvoltage,
+                    defaultValue = "0",
+                    thresHold = 5.0,
+                    digit = 2,
+                    unit = "V",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                    groupList,
+                    name = "测斜仪管温度",
+                    value = stateInfo.intertempe,
+                    defaultValue = "0",
+                    digit = 2,
+                    unit = "℃",
+                )
+                stateInfo.bcsq.notNullKey {
+                    val temp = it.toIntOrNull() ?: 0
+                    groupList.add(
+                        DeviceStatusInfoSignalItem(
+                            name = "测斜仪蓝牙信号强度",
+                            signalValue = if (temp <= 0)
+                                temp
+                            else
+                                temp * 2 - 113
+                        )
+                    )
+                }
 
-                incvoltage = incvoltage.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
+                binding.recyclerview.models = groupList
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
+    }
 
-                intertempe = intertempe.toDoubleOrNull()
-                    ?.let {
-                        decimalFormat.format(it)
-                    } ?: IOTConstants.NULL_KEY
+    private fun updateMotionState(admeMotionState: AdmeMotionState) {
+        try {
+            if (admeMotionState.measmode.isEmpty()) {
+                mStates.ctrMotionInfoVisible.set(false)
+                return
             }
-            mStates.wrapStateInfo.notifyChange()
-
-            if (currentStateInfo.scsq != IOTConstants.NULL_KEY) {
-                mStates.signalValue.set(currentStateInfo.scsq.toIntOrNull()?.let {
-                    if (it <= 0)
-                        it
-                    else
-                        it * 2 - 113
-                } ?: -113)
-            }
-            if (currentStateInfo.bcsq != IOTConstants.NULL_KEY) {
-                mStates.inclinometerBluetoothSignalValue.set(
-                    currentStateInfo.bcsq.toIntOrNull()?.let {
-                        if (it <= 0)
-                            it
-                        else
-                            it * 2 - 113
-                    } ?: -113)
-            }
+            mStates.ctrMotionInfoVisible.set(true)
+            updateMotionInfo(
+                admeMotionState.measmode,
+                admeMotionState.measpoint,
+                admeMotionState.motorinfo,
+                admeMotionState.waittime
+            )
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -310,24 +530,6 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                 hacMotionState.waittime
             )
 
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
-    }
-
-    private fun updateMotionState(admeMotionState: AdmeMotionState) {
-        try {
-            if (admeMotionState.measmode.isEmpty()) {
-                mStates.ctrMotionInfoVisible.set(false)
-                return
-            }
-            mStates.ctrMotionInfoVisible.set(true)
-            updateMotionInfo(
-                admeMotionState.measmode,
-                admeMotionState.measpoint,
-                admeMotionState.motorinfo,
-                admeMotionState.waittime
-            )
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -384,24 +586,16 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    fun showErrorModulesInfoDialog() {
-        if (currentStateInfo == null || currentStateInfo!!.abndiasis.isEmpty()) {
+    private fun showErrorModulesInfoDialog() {
+        if (deviceAbnormalList.isEmpty()) {
             Toaster.show("设备异常信息为空")
             return
-        }
-        val descList: ArrayList<String> = ArrayList()
-        val codes = currentStateInfo!!.abndiasis.split("|")
-        codes.forEach {
-            val errorType = AdmeModuleErrorType.valueByCode(it)
-            if (errorType != null) {
-                descList.add(errorType.description)
-            }
         }
         XPopup.Builder(context)
             .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
             .enableDrag(false)
             .asCenterList(
-                "异常信息", descList.toTypedArray(),
+                "异常信息", deviceAbnormalList.toTypedArray(),
                 null, -1,
                 null, 0, R.layout.custom_xpopup_adapter_abnormal_info
             )

@@ -20,7 +20,7 @@
         android:paddingHorizontal="@dimen/dimen_size_15"
         android:paddingVertical="@dimen/dimen_size_10">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/item_history_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

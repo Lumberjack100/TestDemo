@@ -21,15 +21,15 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessage
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs232Port2Binding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS232Port2ViewModel
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -270,8 +270,16 @@ class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
 
             mStates.baudRate.set(sensorParam.baud)
             mStates.dataBit.set(sensorParam.databit)
-            mStates.checkBit.set(checkBitList[sensorParam.parity.toInt()])
-            mStates.stopBit.set(stopBitList[sensorParam.stopbit.toInt()])
+            sensorParam.parity.toInt().let {
+                if (it in checkBitList.indices) {
+                    mStates.checkBit.set(checkBitList[it])
+                }
+            }
+            sensorParam.stopbit.toInt().let {
+                if (it in stopBitList.indices) {
+                    mStates.stopBit.set(stopBitList[it])
+                }
+            }
         } catch (e: Exception) {
             Timber.e(e)
         }

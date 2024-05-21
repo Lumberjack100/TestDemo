@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.das.fragment.ble.deviceinfo
 
 import android.os.Bundle
+import android.util.Log
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -11,6 +12,7 @@ import com.shmedo.lib.device.base.md_cmd.model.common.DeviceNetStatus
 import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
@@ -154,6 +156,7 @@ class BleDasCommunicationInfoFragment : BaseIOTDeviceFragment() {
             }
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

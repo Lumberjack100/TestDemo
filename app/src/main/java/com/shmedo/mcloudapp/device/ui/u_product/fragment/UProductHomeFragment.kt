@@ -8,16 +8,15 @@ import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.device.model.AlarmConfigModule
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DataCenterModule
 import com.shmedo.mcloudapp.device.model.DeviceFunctionModule
-import com.shmedo.mcloudapp.device.model.FirmwareUpgradeModule
 import com.shmedo.mcloudapp.device.model.LoraConfigModule
 import com.shmedo.mcloudapp.device.model.RebootModule
-import com.shmedo.mcloudapp.device.model.RestoreFactoryModule
 import com.shmedo.mcloudapp.device.model.RunningStatusModule
 import com.shmedo.mcloudapp.device.model.SensorConfigModule
 import com.shmedo.mcloudapp.device.model.TimeCalibrationModule
@@ -121,15 +120,7 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
             ConfigModule(RebootModule(resID = R.drawable.ic_module_reboot))
         )
         moduleList.add(
-            ConfigModule(RestoreFactoryModule(resID = R.drawable.ic_module_reset))
-        )
-        moduleList.add(
-            ConfigModule(
-                FirmwareUpgradeModule(
-                    resID = R.drawable.ic_module_firmware_upgrade,
-                    navId = R.id.action_global_to_firmwareUpgradeFragment
-                )
-            )
+            ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_advancedSettingFragment))
         )
         if (communicateWay is BleConnect) {
             moduleList.add(

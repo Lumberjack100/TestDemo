@@ -22,15 +22,15 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessage
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs232Port1Binding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS232Port1ViewModel
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -305,14 +305,29 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
         try {
             mStates.status.set(if (sensorParam.status == "1") "已接入" else "未接入")
             mStates.isOpened.set(sensorParam.switch == "1")
-            mStates.cameraModel.set(cameraModelList[sensorParam.type.toInt()])
-            mStates.cameraResolution.set(cameraResolutionList[sensorParam.resolut.toInt()])
+            sensorParam.type.toInt().let {
+                if (it in cameraModelList.indices) {
+                    mStates.cameraModel.set(cameraModelList[it])
+                }
+            }
+            sensorParam.resolut.toInt().let {
+                if (it in cameraResolutionList.indices) {
+                    mStates.cameraResolution.set(cameraResolutionList[it])
+                }
+            }
             mStates.photoInterval.set(sensorParam.interval)
-
             mStates.baudRate.set(sensorParam.baud)
             mStates.dataBit.set(sensorParam.databit)
-            mStates.checkBit.set(checkBitList[sensorParam.parity.toInt()])
-            mStates.stopBit.set(stopBitList[sensorParam.stopbit.toInt()])
+            sensorParam.parity.toInt().let {
+                if (it in checkBitList.indices) {
+                    mStates.checkBit.set(checkBitList[it])
+                }
+            }
+            sensorParam.stopbit.toInt().let {
+                if (it in stopBitList.indices) {
+                    mStates.stopBit.set(stopBitList[it])
+                }
+            }
         } catch (e: Exception) {
             Timber.e(e)
         }

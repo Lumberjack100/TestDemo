@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo
 
+import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
@@ -10,6 +11,7 @@ import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
@@ -101,11 +103,15 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     groupList.add(DeviceStatusInfoGroupItem("运行数据"))
 
                 stateInfo.worktime.notNullKey {
-                    val tempValue = it.toIntOrNull() ?: 0
+                    val tempValue = it.toDoubleOrNull()?.div(3600) ?: 0.0
                     groupList.add(
                         DeviceStatusInfoBasicItem(
                             name = "运行时间",
-                            value = decimalFormat.format(tempValue / 3600)+ " 小时"
+                            value = DeviceStatusInfoProcessor.formatDoubleValue(
+                                tempValue.toString(),
+                                "0",
+                                1
+                            ) + " 小时"
                         )
                     )
                 }
@@ -134,6 +140,7 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
                 Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

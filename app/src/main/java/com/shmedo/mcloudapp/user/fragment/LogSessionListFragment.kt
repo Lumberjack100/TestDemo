@@ -105,7 +105,7 @@ class LogSessionListFragment : BaseFragment() {
 
     private fun loadLogSessionList() {
         launchWithViewLifecycle {
-            logViewModel.getSessionListByUser(MmkvCacheUtil.getUserName())
+            logViewModel.getSessionListByUser(MmkvCacheUtil.getAccount())
                 .let { logSessionList ->
                     if (logSessionList.isEmpty()) {
                         binding.refreshLayout.showEmpty()

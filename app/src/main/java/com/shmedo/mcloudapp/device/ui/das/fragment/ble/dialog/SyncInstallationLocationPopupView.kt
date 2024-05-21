@@ -5,11 +5,11 @@ import androidx.databinding.DataBindingUtil
 import com.lxj.xpopup.core.CenterPopupView
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.SyncInstallationLocationPopupViewBinding
-import com.shmedo.mcloudapp.device.viewmodel.state.DasAdvancedSettingViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.AdvancedSettingViewModel
 
 class SyncInstallationLocationPopupView(context: Context) : CenterPopupView(context) {
     private lateinit var binding: SyncInstallationLocationPopupViewBinding
-    private lateinit var stateVM: DasAdvancedSettingViewModel
+    private lateinit var stateVM: AdvancedSettingViewModel
 
     private var title: String = ""
     private var clickListener: OnClickListener? = null
@@ -17,7 +17,7 @@ class SyncInstallationLocationPopupView(context: Context) : CenterPopupView(cont
 
     fun setTitle(
         title: String = "",
-        vm: DasAdvancedSettingViewModel
+        vm: AdvancedSettingViewModel
     ): SyncInstallationLocationPopupView {
         this.title = title
         this.stateVM = vm

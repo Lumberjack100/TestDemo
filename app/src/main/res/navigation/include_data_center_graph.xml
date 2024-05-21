@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/dataCenterParamFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.common.DataCenterParamFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.common.UniversalDataCenterParamFragment"
         android:label="DataCenterParamFragment"
         tools:layout="@layout/fragment_data_center_param" />
 

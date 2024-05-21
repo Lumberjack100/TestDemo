@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
@@ -24,6 +25,7 @@ import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentDasExternalDigitalSensorBinding
@@ -314,6 +316,7 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             }
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

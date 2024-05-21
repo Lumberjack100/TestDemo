@@ -134,6 +134,13 @@
             android:theme="@style/LightStatusBarActivity" />
 
         <activity
+            android:name=".device.ui.QuickFunctionActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+
+        <activity
             android:name=".common.activity.WebviewActivity"
             android:exported="false"
             android:screenOrientation="portrait" />

@@ -36,13 +36,13 @@ object MmkvCacheUtil {
     /**
      * 用户名
      */
-    fun getUserName(): String {
+    fun getAccount(): String {
         val kv = MMKV.defaultMMKV()
         val value = kv.decodeString("username")
         return value ?: ""
     }
 
-    fun setUserName(value: String) {
+    fun setAccount(value: String) {
         val kv = MMKV.defaultMMKV()
         kv.encode("username", value)
     }
@@ -90,6 +90,17 @@ object MmkvCacheUtil {
     fun setUserCompanyId(value: Int) {
         val kv = MMKV.defaultMMKV()
         kv.encode("user_company_id", value)
+    }
+
+    fun getUserRealName(): String {
+        val kv = MMKV.defaultMMKV()
+        val value = kv.decodeString("user_real_name")
+        return value ?: ""
+    }
+
+    fun setUserRealName(value: String) {
+        val kv = MMKV.defaultMMKV()
+        kv.encode("user_real_name", value)
     }
 
     /**
@@ -150,7 +161,6 @@ object MmkvCacheUtil {
         kv.encode("device_search_history", searchResponseStr)
     }
 
-
     //<editor-fold desc="ADME ">
     /**
      * 获取 ADME 自动测孔深上一次电机下放速度
@@ -164,20 +174,6 @@ object MmkvCacheUtil {
     fun setAdmeAutoLastMotorDropSpeed(value: String) {
         val kv = MMKV.defaultMMKV()
         kv.encode("auto_last_motor_drop_speed", value)
-    }
-
-    /**
-     * 获取 ADME 自动测孔深上一次管底安全补偿距离
-     */
-    fun getAdmeAutoLastBottomSafeDistance(): String {
-        val kv = MMKV.defaultMMKV()
-        val value = kv.decodeString("auto_last_bottom_safe_distance")
-        return value ?: ""
-    }
-
-    fun setAdmeAutoLastBottomSafeDistance(value: String) {
-        val kv = MMKV.defaultMMKV()
-        kv.encode("auto_last_bottom_safe_distance", value)
     }
 
     /**

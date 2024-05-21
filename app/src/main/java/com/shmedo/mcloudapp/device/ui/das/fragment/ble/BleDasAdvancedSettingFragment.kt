@@ -36,7 +36,7 @@ import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.dialog.SyncInstallationLocationPopupView
 import com.shmedo.mcloudapp.device.viewmodel.request.LocationViewModel
-import com.shmedo.mcloudapp.device.viewmodel.state.DasAdvancedSettingViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.AdvancedSettingViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
@@ -62,7 +62,7 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment(),
     GeocodeSearch.OnGeocodeSearchListener {
     private lateinit var binding: FragmentBleDasAdvancedSettingBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: DasAdvancedSettingViewModel
+    private lateinit var mStates: AdvancedSettingViewModel
     private lateinit var locationViewModel: LocationViewModel
     private val mdParseManager: MDParserManager by inject()
 

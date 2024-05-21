@@ -26,7 +26,7 @@
                 android:layout_marginBottom="30dp"
                 android:orientation="vertical">
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     style="@style/Common_GroupName_Style"
                     android:text="DI-开关状态" />
 

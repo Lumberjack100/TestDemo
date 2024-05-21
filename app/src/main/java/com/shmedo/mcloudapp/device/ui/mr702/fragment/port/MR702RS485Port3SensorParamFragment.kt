@@ -436,8 +436,16 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
             mStates.address.set(sensorParam.addr)
             mStates.baudRate.set(sensorParam.baud)
             mStates.dataBit.set(sensorParam.databit)
-            mStates.checkBit.set(checkBitList[sensorParam.paritybit.toInt()])
-            mStates.stopBit.set(stopBitList[sensorParam.stopbit.toInt()])
+            sensorParam.paritybit.toInt().let {
+                if (it in checkBitList.indices) {
+                    mStates.checkBit.set(checkBitList[it])
+                }
+            }
+            sensorParam.stopbit.toInt().let {
+                if (it in stopBitList.indices) {
+                    mStates.stopBit.set(stopBitList[it])
+                }
+            }
             when (sensorType) {
                 1 -> {
                     sensorParam.svolt.toDoubleOrNull()?.let {
@@ -474,7 +482,11 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
                 }
 
                 else -> {
-                    mStates.ledType.set(ledTypeList[sensorParam.type.toInt() - 1])
+                    sensorParam.type.toInt().let {
+                        if (it in 1..ledTypeList.size) {
+                            mStates.ledType.set(ledTypeList[it - 1])
+                        }
+                    }
                     mStates.duration.set(sensorParam.duration)
                     mStates.interval.set(sensorParam.interval)
                     mStates.screenTime.set(sensorParam.stime)

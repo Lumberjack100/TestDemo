@@ -7,6 +7,7 @@ import com.drake.brv.PageRefreshLayout
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
@@ -15,13 +16,13 @@ import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentDeviceSearchResultBinding
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 /**
@@ -44,8 +45,8 @@ class DeviceSearchResultFragment : BaseFragment() {
 
 
     override fun initViewModel() {
-        mStates =  getFragmentScopeViewModel()
-        deviceRequestViewModel =  getViewModel()
+        mStates = getFragmentScopeViewModel()
+        deviceRequestViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -79,6 +80,22 @@ class DeviceSearchResultFragment : BaseFragment() {
             R.id.item.onClick {
                 val deviceInfo = getModel<DeviceInfo>()
                 DeviceHomeActivity.start(mActivity, deviceInfo)
+            }
+            R.id.item.onLongClick {
+                val deviceInfo = getModel<DeviceInfo>()
+                val builder = XPopup.Builder(context)
+                    .hasShadowBg(true)
+                    .atView(itemView)
+                builder.asAttachList(arrayListOf("查看数据").toTypedArray(), null)
+                { _, text ->
+                    when (text) {
+                        "查看数据" -> {
+                            QuickFunctionActivity.start(mActivity, deviceInfo)
+                        }
+                    }
+                }
+                    .show()
+                true
             }
         }
     }

@@ -25,7 +25,7 @@
         app:drawable_solidColor="@{@color/white}"
         tools:background="@color/white">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawablePadding="-80dp"
@@ -45,7 +45,7 @@
             app:drawable_solidColor="@{@color/gray_f5f6f8}"
             tools:background="@color/gray_f5f6f8">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -63,7 +63,7 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             visible="@{stateVM.isStartTimeItemVisible }"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
             app:drawable_solidColor="@{@color/gray_f5f6f8}"
             tools:background="@color/gray_f5f6f8">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -106,7 +106,7 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/text_size_20"
@@ -128,7 +128,7 @@
                 android:text="@={stateVM.interval}"
                 app:lengthFilter="@{4}" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/text_size_15"

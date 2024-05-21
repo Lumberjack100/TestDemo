@@ -66,7 +66,7 @@
                         android:layout_marginTop="160dp"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/SwitchButton_TitleStyle"
                             android:text="开关" />
 
@@ -87,7 +87,7 @@
                         android:layout_marginHorizontal="@dimen/dimen_size_10"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isBdOpened}"
                             android:text="目标地址"
@@ -111,12 +111,12 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isBdOpened}">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isBdOpened}"
                             android:text="波特率(Bps)" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isBdOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -135,7 +135,7 @@
                         tools:itemCount="4"
                         tools:listitem="@layout/data_center_status_item" />
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/btn_confirm"
                         style="@style/SubmitButton_ColorPrimary"
                         onClickWithDebouncing="@{()->click.onSubmitClick()}"

@@ -512,6 +512,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                     }
                 }
             }
+
             MDCommandType.SET_SERVER_ADDRESS_PORT -> {//设置数据服务器地址、端口应答
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
@@ -543,6 +544,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                     }
                 }
             }
+
             MDCommandType.SET_AUTO_REGISTRATION_PLATFORM_SERVER_ADDRESS_PORT -> {//MQTT 自动注册设置注册平台地址时应答
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
@@ -558,7 +560,8 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                     }
                 }
             }
-            MDCommandType.MQTT_KEEP_ALIVE ->{//设置KeepAlive值应答
+
+            MDCommandType.MQTT_KEEP_ALIVE -> {//设置KeepAlive值应答
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
@@ -573,7 +576,8 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                     }
                 }
             }
-            MDCommandType.SET_AUTO_REGISTRATION_PLATFORM_PARAM ->{//MQTT 自动注册设置参数
+
+            MDCommandType.SET_AUTO_REGISTRATION_PLATFORM_PARAM -> {//MQTT 自动注册设置参数
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
@@ -588,7 +592,8 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                     }
                 }
             }
-            MDCommandType.SET_MANUAL_REGISTRATION_PLATFORM_PARAM ->{//MQTT 手动注册设置参数
+
+            MDCommandType.SET_MANUAL_REGISTRATION_PLATFORM_PARAM -> {//MQTT 手动注册设置参数
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
@@ -657,7 +662,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
         }
 
         data.registerPlatform.toIntOrNull()?.let {
-            if (it < platformList.size) {
+            if (it in platformList.indices) {
                 mStates.platformType.set(platformList[it])
             }
         }

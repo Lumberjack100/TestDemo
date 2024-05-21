@@ -17,7 +17,7 @@
         android:gravity="bottom"
         tools:background="@color/white">
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
             android:textSize="15sp"
             tools:text="X位移" />
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

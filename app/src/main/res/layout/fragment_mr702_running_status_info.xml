@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_size_15"
@@ -48,7 +48,7 @@
                     app:column_header_height="@dimen/mr_communication_data_table_column_header_height"
                     app:row_header_width="@dimen/mr_communication_data_table_row_header_width" />
 
-                <TextView
+                <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_size_15"

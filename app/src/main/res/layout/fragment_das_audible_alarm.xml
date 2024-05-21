@@ -51,7 +51,7 @@
                     android:orientation="vertical"
                     android:paddingBottom="@dimen/dimen_size_25">
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_GroupName_Style"
                         android:text="声光报警器" />
 
@@ -59,7 +59,7 @@
                         style="@style/SwitchButton_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/SwitchButton_TitleStyle"
                             android:text="开关" />
 
@@ -80,12 +80,12 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isAudibleOpened}">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="监测要素" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -93,7 +93,7 @@
                             tools:text="降雨量" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_GroupName_Style"
                         android:text="设备参数" />
 
@@ -101,7 +101,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="地址"
@@ -121,7 +121,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="播放时长(秒)"
@@ -141,7 +141,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="切换间隔(秒)"
@@ -159,13 +159,13 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat style="@style/Common_EditItem_LayoutStyle">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="音量设置"
                             tools:textColor="@color/title_text_color" />
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_EditItem_EditText_Style"
                             android:hint="请输入"
                             android:text='@{stateVM.volume+""}'
@@ -196,7 +196,7 @@
 
                     </FrameLayout>
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_GroupName_Style"
                         android:text="报警阈值" />
 
@@ -204,7 +204,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="一级报警(毫米)"
@@ -223,7 +223,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="二级报警(毫米)"
@@ -242,7 +242,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="三级报警(毫米)"
@@ -257,7 +257,7 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <TextView
+                    <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_GroupName_Style"
                         android:text="电子点阵屏" />
 
@@ -265,7 +265,7 @@
                         style="@style/SwitchButton_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/SwitchButton_TitleStyle"
                             android:text="开关" />
 
@@ -283,7 +283,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isScreenOpened}"
                             android:text="地址"
@@ -303,7 +303,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isScreenOpened}"
                             android:text="显示时长(秒)"
@@ -323,7 +323,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <TextView
+                        <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isScreenOpened}"
                             android:text="显示间隔(秒)"
@@ -342,7 +342,7 @@
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
 
-        <TextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onSubmitClick()}"

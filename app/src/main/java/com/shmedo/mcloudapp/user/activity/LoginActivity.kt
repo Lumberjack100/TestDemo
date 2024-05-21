@@ -27,10 +27,10 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.activity.BaseActivity
 import com.shmedo.mcloudapp.common.activity.MainActivity
 import com.shmedo.mcloudapp.common.activity.WebviewActivity
-import com.shmedo.mcloudapp.ext.dismissLoadingDialog
-import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.common.widget.MyCountDownTimer
 import com.shmedo.mcloudapp.databinding.ActivityLoginBinding
+import com.shmedo.mcloudapp.ext.dismissLoadingDialog
+import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.user.model.ContentType
 import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.user.viewmodel.state.LoginViewModel
@@ -59,7 +59,7 @@ class LoginActivity : BaseActivity() {
     }
 
     override fun initData() {
-        val mAccount = MmkvCacheUtil.getUserName()
+        val mAccount = MmkvCacheUtil.getAccount()
         //自动登录
         if (!TextUtils.isEmpty(mAccount)) {
             binding.accountET.setText(mAccount)
@@ -103,7 +103,7 @@ class LoginActivity : BaseActivity() {
                 Toaster.show("登录失败: " + dataResult.responseStatus.errorMessage)
                 return@observe
             }
-            CrashReport.setUserId(MmkvCacheUtil.getUserName()) //该用户本次启动后的异常日志用户account
+            CrashReport.setUserId(MmkvCacheUtil.getAccount()) //该用户本次启动后的异常日志用户account
             redirectToMainActivity(500)
         }
     }

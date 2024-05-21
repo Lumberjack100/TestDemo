@@ -102,13 +102,14 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
     fun requestLogin(mAccount: String, mPassword: String) {
         viewModelScope.launch {
             val token: String = loginByAccount(mAccount, mPassword) ?: return@launch
-            MmkvCacheUtil.setUserName(mAccount)
+            MmkvCacheUtil.setAccount(mAccount)
             MmkvCacheUtil.setPassword(mPassword)
             MmkvCacheUtil.setToken(token)
 
             val basicUserInfo: BasicUserInfo = getUserByToken() ?: return@launch
             MmkvCacheUtil.setUserId(basicUserInfo.subjectID)
             MmkvCacheUtil.setUserCompanyId(basicUserInfo.companyID)
+            MmkvCacheUtil.setUserRealName(basicUserInfo.subjectName)
 
             val userWrapperInfo: UserWrapperInfo =
                 queryUserByID(basicUserInfo.companyID, basicUserInfo.subjectID) ?: return@launch
@@ -472,7 +473,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
         val jsonObjectRequest = JSONObject()//接口请求参数
         jsonObjectRequest.put("appKey", BuildConfig.AMS_APP_KEY)
         jsonObjectRequest.put("appSecret", BuildConfig.AMS_APP_SECRET)
-        jsonObjectRequest.put("account", MmkvCacheUtil.getUserName())
+        jsonObjectRequest.put("account", MmkvCacheUtil.getAccount())
         jsonObjectRequest.put("password", MmkvCacheUtil.getPassword())
         return NetDataRepository.instance.appConfigLogin(jsonObjectRequest.toString()) { error: Throwable ->
             error.printStackTrace()
