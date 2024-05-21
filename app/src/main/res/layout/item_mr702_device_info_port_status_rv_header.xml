@@ -10,6 +10,7 @@
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@color/mr_communication_data_table_row_header_backround">

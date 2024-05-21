@@ -1,14 +1,15 @@
 package com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinfo
 
 import android.os.Bundle
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.annotaion.DividerOrientation
-import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.divider
 import com.drake.brv.utils.grid
+import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
@@ -22,11 +23,13 @@ import com.shmedo.lib.device.base.iot_cmd.model.mr.MRInterfaceStatusInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentMr702PortStatusInfoBinding
 import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.device.model.MRIOStatusItem
 import com.shmedo.mcloudapp.device.model.MRInterfaceStatusItem
 import com.shmedo.mcloudapp.device.model.RVEmptyHeader
@@ -55,7 +58,6 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentMr702PortStatusInfoBinding
         initRefresh()
         initSerialPortStatusAdapter()
-        initAnalogInterfaceStatusAdapter()
         initIOStatusAdapter()
     }
 
@@ -72,7 +74,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initSerialPortStatusAdapter() {
-        binding.rvSerialPortStatus.setup { rv ->
+        binding.rvSerialPortStatus.linear().setup { rv ->
             rv.addItemDecoration(
                 RecycleViewDivider(
                     LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(1f), ColorUtils.getColor(
@@ -80,20 +82,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                     )
                 )
             )
-            addType<RVEmptyHeader>(R.layout.item_mr702_device_info_port_status_rv_header)
-            addType<MRInterfaceStatusItem>(R.layout.item_mr702_device_info_port_status_rv)
-        }
-    }
-
-    private fun initAnalogInterfaceStatusAdapter() {
-        binding.rvAnalogInterfaceStatus.setup { rv ->
-            rv.addItemDecoration(
-                RecycleViewDivider(
-                    LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(1f), ColorUtils.getColor(
-                        R.color.divider_line_bg
-                    )
-                )
-            )
+            addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group)
             addType<RVEmptyHeader>(R.layout.item_mr702_device_info_port_status_rv_header)
             addType<MRInterfaceStatusItem>(R.layout.item_mr702_device_info_port_status_rv)
         }
@@ -145,7 +134,6 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList()
                         if (result.data.label == "1") {
                             initSerialPortData(result.data.interfaceStatusInfo)
-                            initAnalogInterfaceStatusInfo(result.data.interfaceStatusInfo)
                         } else {
                             binding.refreshLayout.finish()
                             initIOStatusInfo(result.data.ioStatusInfo)
@@ -161,8 +149,11 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initSerialPortData(interfaceStatusInfo: MRInterfaceStatusInfo) {
-        val serialPortList = mutableListOf<MRInterfaceStatusItem>()
         try {
+            val serialPortList = mutableListOf<Any>()
+
+            serialPortList.add(DeviceStatusInfoGroupItem("串口状态"))
+            serialPortList.add(RVEmptyHeader())
             serialPortList.add(
                 MRInterfaceStatusItem(
                     name = "RS485-1",
@@ -208,22 +199,12 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                     )
                 )
             )
-            binding.rvSerialPortStatus.models = serialPortList
-            binding.rvSerialPortStatus.bindingAdapter.run {
-                if (headerCount == 0)
-                    addHeader(RVEmptyHeader(), animation = true)
-            }
-        } catch (e: Exception) {
-            Timber.e(e)
-        }
-    }
+            serialPortList.add(DeviceStatusInfoGroupItem("模拟量接口状态"))
+            serialPortList.add(RVEmptyHeader())
 
-    private fun initAnalogInterfaceStatusInfo(interfaceStatusInfo: MRInterfaceStatusInfo) {
-        val analogList = mutableListOf<MRInterfaceStatusItem>()
-        try {
             val decimalFormat = DecimalFormat("#.###")
             if (interfaceStatusInfo.adc_a1.toDoubleOrNull() == null || interfaceStatusInfo.adc_a1.toDouble() < 4 || interfaceStatusInfo.adc_a1.toDouble() > 20) {
-                analogList.add(
+                serialPortList.add(
                     MRInterfaceStatusItem(
                         name = "ADC-1 4~20mA",
                         value = "异常",
@@ -231,7 +212,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                     )
                 )
             } else {
-                analogList.add(
+                serialPortList.add(
                     MRInterfaceStatusItem(
                         name = "ADC-1 4~20mA",
                         value = "${decimalFormat.format(interfaceStatusInfo.adc_a1.toDouble())}mA",
@@ -241,7 +222,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
             }
 
             if (interfaceStatusInfo.adc_a2.toDoubleOrNull() == null || interfaceStatusInfo.adc_a2.toDouble() < 4 || interfaceStatusInfo.adc_a2.toDouble() > 20) {
-                analogList.add(
+                serialPortList.add(
                     MRInterfaceStatusItem(
                         name = "ADC-2 4~20mA",
                         value = "异常",
@@ -249,7 +230,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                     )
                 )
             } else {
-                analogList.add(
+                serialPortList.add(
                     MRInterfaceStatusItem(
                         name = "ADC-2 4~20mA",
                         value = "${decimalFormat.format(interfaceStatusInfo.adc_a2.toDouble())}mA",
@@ -258,7 +239,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 )
             }
             if (interfaceStatusInfo.adc_a3.toDoubleOrNull() == null || interfaceStatusInfo.adc_a3.toDouble() < 4 || interfaceStatusInfo.adc_a3.toDouble() > 20) {
-                analogList.add(
+                serialPortList.add(
                     MRInterfaceStatusItem(
                         name = "ADC-3 4~20mA",
                         value = "异常",
@@ -266,7 +247,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                     )
                 )
             } else {
-                analogList.add(
+                serialPortList.add(
                     MRInterfaceStatusItem(
                         name = "ADC-3 4~20mA",
                         value = "${decimalFormat.format(interfaceStatusInfo.adc_a3.toDouble())}mA",
@@ -275,7 +256,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 )
             }
             if (interfaceStatusInfo.adc_a4.toDoubleOrNull() == null || interfaceStatusInfo.adc_a4.toDouble() < 4 || interfaceStatusInfo.adc_a4.toDouble() > 20) {
-                analogList.add(
+                serialPortList.add(
                     MRInterfaceStatusItem(
                         name = "ADC-4 4~20mA",
                         value = "异常",
@@ -283,7 +264,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                     )
                 )
             } else {
-                analogList.add(
+                serialPortList.add(
                     MRInterfaceStatusItem(
                         name = "ADC-4 4~20mA",
                         value = "${decimalFormat.format(interfaceStatusInfo.adc_a4.toDouble())}mA",
@@ -292,7 +273,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 )
             }
             if (interfaceStatusInfo.adc_v1.toDoubleOrNull() == null || interfaceStatusInfo.adc_v1.toDouble() < 0 || interfaceStatusInfo.adc_v1.toDouble() > 5) {
-                analogList.add(
+                serialPortList.add(
                     MRInterfaceStatusItem(
                         name = "ADC-1 0~5V",
                         value = "异常",
@@ -300,7 +281,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                     )
                 )
             } else {
-                analogList.add(
+                serialPortList.add(
                     MRInterfaceStatusItem(
                         name = "ADC-1 0~5V",
                         value = "${decimalFormat.format(interfaceStatusInfo.adc_v1.toDouble())}V",
@@ -309,7 +290,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 )
             }
             if (interfaceStatusInfo.adc_v2.toDoubleOrNull() == null || interfaceStatusInfo.adc_v2.toDouble() < 0 || interfaceStatusInfo.adc_v2.toDouble() > 5) {
-                analogList.add(
+                serialPortList.add(
                     MRInterfaceStatusItem(
                         name = "ADC-2 0~5V",
                         value = "异常",
@@ -317,7 +298,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                     )
                 )
             } else {
-                analogList.add(
+                serialPortList.add(
                     MRInterfaceStatusItem(
                         name = "ADC-2 0~5V",
                         value = "${decimalFormat.format(interfaceStatusInfo.adc_v2.toDouble())}V",
@@ -325,13 +306,11 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                     )
                 )
             }
-            binding.rvAnalogInterfaceStatus.models = analogList
-            binding.rvAnalogInterfaceStatus.bindingAdapter.run {
-                if (headerCount == 0)
-                    addHeader(RVEmptyHeader(), animation = true)
-            }
+            serialPortList.add(DeviceStatusInfoGroupItem("开关量状态"))
+            binding.rvSerialPortStatus.models = serialPortList
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
