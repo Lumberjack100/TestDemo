@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.das.fragment.deviceinfo
 
 import android.os.Bundle
+import android.util.Log
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -11,6 +12,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.das.DasNetStatusInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
@@ -116,6 +118,7 @@ class DasCommunicationInfoFragment : BaseIOTDeviceFragment() {
             )
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

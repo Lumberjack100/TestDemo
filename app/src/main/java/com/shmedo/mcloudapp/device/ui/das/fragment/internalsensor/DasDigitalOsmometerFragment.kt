@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.das.fragment.internalsensor
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.CompoundButton
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
@@ -15,6 +16,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.das.DasDigitalPiezometerInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.ext.showLoadingDialog
@@ -266,6 +268,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
             }
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

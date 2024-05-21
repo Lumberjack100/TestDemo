@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.device.ui.gw100.fragment
 
+import android.util.Log
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
@@ -8,6 +9,7 @@ import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -187,6 +189,7 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
                 mHeadStates.firmwareVersion.set(commonCurrentStateInfoList[0].firmwareVersion)
             } catch (e: Exception) {
                 Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

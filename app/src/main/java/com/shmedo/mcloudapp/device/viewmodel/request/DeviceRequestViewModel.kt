@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.device.viewmodel.request
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
@@ -9,6 +10,7 @@ import com.shmedo.lib.core.base.model.DeviceStatisticInfo
 import com.shmedo.lib.core.base.model.ProductInfo
 import com.shmedo.lib.core.base.viewmodel.BaseRequestViewModel
 import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
+import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.lib.network.response.DataResult
@@ -24,7 +26,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
 
@@ -74,17 +75,15 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     fun getDeviceStatByCompanyID(companyID: Int, isHasListSuperInfoPermission: Boolean = false) {
         viewModelScope.launch {
             val jsonObjectRequest = JSONObject()
-            try {
-                jsonObjectRequest.put("companyID", companyID)
-            } catch (e: JSONException) {
-                Timber.e(e)
-            }
+            jsonObjectRequest.put("companyID", companyID)
+
             val data: DeviceStatisticInfo =
                 NetDataRepository.instance.getDeviceStatByCompanyID(
                     jsonObjectRequest.toString(),
                     isHasListSuperInfoPermission
                 ) { error: Throwable ->
-                    error.printStackTrace()
+                    Timber.e(error)
+                    addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
 
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
@@ -100,6 +99,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             _deviceStatisticInfoResult.setValue(DataResult(data, responseStatus = responseStatus))
         }
     }
+
     fun getAllProductTabList(companyID: Int) {
         viewModelScope.launch {
             val pageSize = 100
@@ -126,6 +126,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                             NetDataRepository.instance.getUserCompanyProductList(jsonObjectRequest.toString())
                         } catch (error: Throwable) {
                             Timber.e(error)
+                            addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
                             responseStatus.apply {
                                 isSuccess = false
                                 errorMessage = error.errorMsg
@@ -170,6 +171,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                 )
             } catch (error: Throwable) {
                 Timber.e(error)
+                addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
                 responseStatus.apply {
                     isSuccess = false
                     errorMessage = error.errorMsg
@@ -213,7 +215,8 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                     jsonObjectRequest.toString(),
                     isHasListSuperInfoPermission
                 ) { error: Throwable ->
-                    error.printStackTrace()
+                    Timber.e(error)
+                    addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
 
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
@@ -243,13 +246,13 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     fun getDeviceDetailInfo(deviceToken: String = "") {
         viewModelScope.launch {
             val jsonObjectRequest = JSONObject()
-            try {
-                jsonObjectRequest.put("deviceToken", deviceToken)
-            } catch (e: JSONException) {
-                Timber.e(e)
-            }
+            jsonObjectRequest.put("deviceToken", deviceToken)
+
             val data: DeviceDetailInfo =
                 NetDataRepository.instance.getDeviceDetailInfo(jsonObjectRequest.toString()) { error: Throwable ->
+                    Timber.e(error)
+                    addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
+
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
                     responseStatus.errorMessage = error.errorMsg
@@ -275,11 +278,8 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
         onCatch: ((Throwable) -> Unit)? = null
     ): DeviceDetailInfo? {
         val jsonObjectRequest = JSONObject()
-        try {
-            jsonObjectRequest.put("deviceToken", deviceToken)
-        } catch (e: JSONException) {
-            Timber.e(e)
-        }
+        jsonObjectRequest.put("deviceToken", deviceToken)
+
         return NetDataRepository.instance.getDeviceDetailInfo(jsonObjectRequest.toString(), onCatch)
     }
 
@@ -289,12 +289,9 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
         onCatch: ((Throwable) -> Unit)? = null
     ): String? {
         val jsonObjectRequest = JSONObject()
-        try {
-            jsonObjectRequest.put("backupID", backupID)
-            jsonObjectRequest.put("deviceID", deviceID)
-        } catch (e: JSONException) {
-            Timber.e(e)
-        }
+        jsonObjectRequest.put("backupID", backupID)
+        jsonObjectRequest.put("deviceID", deviceID)
+
         return NetDataRepository.instance.applyBackup(jsonObjectRequest.toString(), onCatch)
     }
 
@@ -314,24 +311,22 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     ) {
         viewModelScope.launch {
             val jsonObjectRequest = JSONObject()
-            try {
-                jsonObjectRequest.put("sn", sn)
-                jsonObjectRequest.put("begin", begin)
-                jsonObjectRequest.put("end", end)
-                jsonObjectRequest.put("condition", condition)
-                jsonObjectRequest.put("dataType", dataType)
-                jsonObjectRequest.put("iotData", iotData)
-                jsonObjectRequest.put("timeSort", timeSort)
-                jsonObjectRequest.put("currentPage", currentPage)
-                jsonObjectRequest.put("pageSize", pageSize)
-            } catch (e: JSONException) {
-                Timber.e(e)
-            }
+            jsonObjectRequest.put("sn", sn)
+            jsonObjectRequest.put("begin", begin)
+            jsonObjectRequest.put("end", end)
+            jsonObjectRequest.put("condition", condition)
+            jsonObjectRequest.put("dataType", dataType)
+            jsonObjectRequest.put("iotData", iotData)
+            jsonObjectRequest.put("timeSort", timeSort)
+            jsonObjectRequest.put("currentPage", currentPage)
+            jsonObjectRequest.put("pageSize", pageSize)
+
             val data: PageList<CloudDeviceData> =
                 NetDataRepository.instance.queryCloudDataExWithPage(
                     jsonObjectRequest.toString()
                 ) { error: Throwable ->
-                    error.printStackTrace()
+                    Timber.e(error)
+                    addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
 
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
@@ -370,23 +365,21 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     ) {
         viewModelScope.launch {
             val jsonObjectRequest = JSONObject()
-            try {
-                jsonObjectRequest.put("productID", productID)
-                jsonObjectRequest.put("companyID", companyID)
-                jsonObjectRequest.put("fwStatus", fwStatus)
-                jsonObjectRequest.put("fwName", fwName)
-                jsonObjectRequest.put("fwVersion", fwVersion)
-                jsonObjectRequest.put("nameAndVersion", nameAndVersion)
-                jsonObjectRequest.put("currentPage", currentPage)
-                jsonObjectRequest.put("pageSize", pageSize)
-            } catch (e: JSONException) {
-                Timber.e(e)
-            }
+            jsonObjectRequest.put("productID", productID)
+            jsonObjectRequest.put("companyID", companyID)
+            jsonObjectRequest.put("fwStatus", fwStatus)
+            jsonObjectRequest.put("fwName", fwName)
+            jsonObjectRequest.put("fwVersion", fwVersion)
+            jsonObjectRequest.put("nameAndVersion", nameAndVersion)
+            jsonObjectRequest.put("currentPage", currentPage)
+            jsonObjectRequest.put("pageSize", pageSize)
+
             val data: PageList<FirmWareInfo> =
                 NetDataRepository.instance.queryFirmwareListByProductIDWithPage(
                     jsonObjectRequest.toString()
                 ) { error: Throwable ->
-                    error.printStackTrace()
+                    Timber.e(error)
+                    addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
 
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
@@ -416,12 +409,9 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
         onCatch: ((Throwable) -> Unit)? = null
     ): String? {
         val jsonObjectRequest = JSONObject()
-        try {
-            jsonObjectRequest.put("deviceToken", deviceToken)
-            jsonObjectRequest.put("firmwareID", firmwareID)
-        } catch (e: JSONException) {
-            Timber.e(e)
-        }
+        jsonObjectRequest.put("deviceToken", deviceToken)
+        jsonObjectRequest.put("firmwareID", firmwareID)
+
         return NetDataRepository.instance.applyFirmwareUpgrade(
             jsonObjectRequest.toString(),
             onCatch

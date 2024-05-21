@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.das.fragment.deviceinfo
 
 import android.os.Bundle
+import android.util.Log
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -13,6 +14,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.das.DasTemperatureAndHumiditySta
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentDasBaseInfoBinding
@@ -178,6 +180,7 @@ class DasBaseInfoFragment : BaseIOTDeviceFragment() {
             } ?: -113)
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -195,6 +198,7 @@ class DasBaseInfoFragment : BaseIOTDeviceFragment() {
             mStates.loadpwr.set(decimalFormat.format(info.solar.loadpwr))
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -214,6 +218,7 @@ class DasBaseInfoFragment : BaseIOTDeviceFragment() {
             mStates.outthHumi.set(decimalFormat.format(info.outth.humi))
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
