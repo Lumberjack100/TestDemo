@@ -260,6 +260,48 @@ class NetDataRepository private constructor() {
             .tryAwait(onCatch)
 
     /**
+     * 分页查询用户关注的设备列表
+     */
+    suspend fun queryFollowDeviceList(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): PageList<DeviceInfo>? =
+        RxHttp.postJson("/QueryUserFollowDeviceList")
+            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
+            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addAll(jsonParam)
+            .toAwaitResponse<PageList<DeviceInfo>>()
+            .tryAwait(onCatch)
+
+    /**
+     * 添加用户收藏设备
+     */
+    suspend fun addUserFollowDevice(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): String? =
+        RxHttp.postJson("/AddUserFollowDevice")
+            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
+            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addAll(jsonParam)
+            .toAwaitResponse<String>()
+            .tryAwait(onCatch)
+
+    /**
+     * 取消用户收藏设备
+     */
+    suspend fun cancelUserFollowDevice(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): String? =
+        RxHttp.postJson("/CancelUserFollowDevice")
+            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
+            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addAll(jsonParam)
+            .toAwaitResponse<String>()
+            .tryAwait(onCatch)
+
+    /**
      * 查询设备详细信息
      */
     suspend fun getDeviceDetailInfo(

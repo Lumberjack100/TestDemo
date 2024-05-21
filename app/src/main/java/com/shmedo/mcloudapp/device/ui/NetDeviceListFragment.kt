@@ -5,7 +5,6 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.AbsoluteSizeSpan
 import android.view.LayoutInflater
-import android.widget.TextView
 import androidx.viewpager2.widget.ViewPager2
 import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
@@ -31,6 +30,7 @@ import com.shmedo.mcloudapp.ext.nav
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.text.DecimalFormat
 
+@Deprecated("This class is deprecated", ReplaceWith("NetProductDeviceListFragment"))
 class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentNetDeviceListBinding
     private lateinit var mStates: NetDeviceListViewModel

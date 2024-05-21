@@ -15,7 +15,7 @@ class DeviceInfo(
     val id: Int = 0,//设备ID
     val companyID: Int = 0,//所在公司编号
     val companyName: String = "",//设备ID
-    val deviceToken: String = "",//设备SN
+    var deviceToken: String = "",//设备SN
     val deviceName: String = "",//设备名称
     val deviceDesc: String = "",//设备描述信息
     val installLocation: String = "",//设备安装位置
@@ -33,4 +33,6 @@ class DeviceInfo(
     val firmwareVersion: String = "",//固件版本
     val lastActiveTime: String = "",//最后交互时间
     val createTime: String = "",//创建时间
+    val followTime: String = "",//用户收藏时间
+    val deviceSn: String = "",//设备SN
 ) : Parcelable

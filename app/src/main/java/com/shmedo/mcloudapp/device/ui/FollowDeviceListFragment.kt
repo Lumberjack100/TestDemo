@@ -4,44 +4,31 @@ import android.os.Bundle
 import android.view.View
 import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.PageRefreshLayout
+import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.base.model.DeviceInfo
-import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
-import com.shmedo.mcloudapp.databinding.FragmentDeviceSearchResultBinding
+import com.shmedo.mcloudapp.databinding.FragmentFollowDeviceListBinding
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
-/**
- * 创建者：gonghe
- *
- * 创建时间：2023/8/31
- *
- * 描述： 设备搜索结果展示页面
- *
- *
- */
-class DeviceSearchResultFragment : BaseFragment() {
-    private lateinit var binding: FragmentDeviceSearchResultBinding
+class FollowDeviceListFragment : BaseFragment() {
+    private lateinit var binding: FragmentFollowDeviceListBinding
     private lateinit var mStates: EmptyViewModel
     private lateinit var deviceRequestViewModel: DeviceRequestViewModel
-    private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
-    private var statusBarColor = 0
-    private lateinit var keyWord: String
+    private var deleteItemIndex = 0
 
 
     override fun initViewModel() {
@@ -50,11 +37,12 @@ class DeviceSearchResultFragment : BaseFragment() {
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_device_search_result, BR.vm, mStates)
+        return DataBindingConfig(R.layout.fragment_follow_device_list, BR.vm, mStates)
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentDeviceSearchResultBinding
+        binding = getBinding() as FragmentFollowDeviceListBinding
+        binding.llToolbar.toolbar.title = "我的收藏"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
@@ -78,11 +66,15 @@ class DeviceSearchResultFragment : BaseFragment() {
             )
             addType<DeviceInfo>(R.layout.item_device_info)
             R.id.item.onClick {
-                val deviceInfo = getModel<DeviceInfo>()
+                val deviceInfo = getModel<DeviceInfo>().apply {
+                    deviceToken = deviceToken.ifEmpty { deviceSn }
+                }
                 DeviceHomeActivity.start(mActivity, deviceInfo)
             }
             R.id.item.onLongClick {
-                val deviceInfo = getModel<DeviceInfo>()
+                val deviceInfo = getModel<DeviceInfo>().apply {
+                    deviceToken = deviceToken.ifEmpty { deviceSn }
+                }
                 val dataList = if (deviceInfo.followTime.isNullOrEmpty()) arrayListOf(
                     "查看数据",
                     "收藏"
@@ -98,11 +90,8 @@ class DeviceSearchResultFragment : BaseFragment() {
                             QuickFunctionActivity.start(mActivity, deviceInfo)
                         }
 
-                        "收藏" -> {
-                            followDevice(deviceInfo.deviceToken)
-                        }
-
                         "取消收藏" -> {
+                            deleteItemIndex = modelPosition
                             unFollowDevice(deviceInfo.deviceToken)
                         }
                     }
@@ -120,16 +109,8 @@ class DeviceSearchResultFragment : BaseFragment() {
         }
     }
 
-    override fun initData() {
-        arguments?.let {
-            keyWord = it.getString(AppContants.Extras.DEVICE_SEARCH_KEYWORD, "")
-            statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
-            binding.llToolbar.toolbar.title = keyWord
-        }
-    }
-
     override fun createObserver() {
-        deviceRequestViewModel.deviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<DeviceInfo>> ->
+        deviceRequestViewModel.followDeviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<DeviceInfo>> ->
             if (!listDataResult.responseStatus.isSuccess) {
                 Toaster.show(listDataResult.responseStatus.errorMessage)
                 return@observe
@@ -142,19 +123,14 @@ class DeviceSearchResultFragment : BaseFragment() {
                 binding.refreshLayout.index < listDataResult.totalPage
             })
         }
-        deviceRequestViewModel.followDeviceResult.observe(viewLifecycleOwner) { dataResult: DataResult<String> ->
-            if (!dataResult.responseStatus.isSuccess) {
-                Toaster.show(dataResult.responseStatus.errorMessage)
-                return@observe
-            }
-            Toaster.show("已收藏")
-        }
         deviceRequestViewModel.cancelFollowDeviceResult.observe(viewLifecycleOwner) { dataResult: DataResult<String> ->
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe
             }
             Toaster.show("已取消收藏")
+            binding.recyclerviewDevice.bindingAdapter.mutable.removeAt(deleteItemIndex)
+            binding.recyclerviewDevice.bindingAdapter.notifyItemRemoved(deleteItemIndex)
         }
     }
 
@@ -163,17 +139,10 @@ class DeviceSearchResultFragment : BaseFragment() {
     }
 
     private fun queryDeviceList() {
-        deviceRequestViewModel.getDeviceList(
-            companyID = userInfo.companyID,
-            deviceToken = keyWord,
+        deviceRequestViewModel.getFollowDeviceList(
             currentPage = binding.refreshLayout.index,
             pageSize = PAGE_SIZE,
-            isHasListSuperInfoPermission = MmkvCacheUtil.isHasListSuperInfoPermission()
         )
-    }
-
-    private fun followDevice(deviceSn: String) {
-        deviceRequestViewModel.addUserFollowDevice(deviceSn)
     }
 
     private fun unFollowDevice(deviceSn: String) {
@@ -187,12 +156,5 @@ class DeviceSearchResultFragment : BaseFragment() {
 
     companion object {
         private const val PAGE_SIZE = 20
-        fun newBundleArguments(
-            keyWord: String,
-            statusBarColor: Int = R.color.white
-        ): Bundle = Bundle().apply {
-            putString(AppContants.Extras.DEVICE_SEARCH_KEYWORD, keyWord)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
-        }
     }
 }
