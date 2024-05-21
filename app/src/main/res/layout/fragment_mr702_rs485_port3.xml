@@ -10,10 +10,6 @@
             name="homeVM"
             type="com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel" />
 
-        <variable
-            name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port3ViewModel" />
-
     </data>
 
     <com.drake.brv.PageRefreshLayout

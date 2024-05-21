@@ -27,11 +27,11 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
 import com.shmedo.mcloudapp.common.model.CustomActivityResult
+import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.FragmentDeviceManageHomeBinding
 import com.shmedo.mcloudapp.device.ui.BleScannerListFragment
 import com.shmedo.mcloudapp.device.ui.NewNetDeviceListFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.DeviceManageHomeViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.utils.PermissionHelper
@@ -41,7 +41,7 @@ import timber.log.Timber
 class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentDeviceManageHomeBinding
     private lateinit var mMessenger: PageMessenger
-    private lateinit var mStates: DeviceManageHomeViewModel
+    private lateinit var mStates: EmptyViewModel
 
     private val activeColor: Int = ColorUtils.getColor(R.color.title_text_color)
     private val normalColor: Int = ColorUtils.getColor(R.color.text_color_666666)

@@ -9,7 +9,6 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
-import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.mr.MRRS485Port3SensorStatus
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
@@ -23,26 +22,22 @@ import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.MRSensorItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel
-import com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port3ViewModel
 import com.shmedo.mcloudapp.ext.nav
 import org.koin.android.ext.android.inject
 
 class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port3Binding
     private lateinit var mInterfaceHomeViewModel: MR702PortHomeViewModel
-    private lateinit var mStates: MR702RS485Port3ViewModel
     private val iotParseManager: IOTParserManager by inject()
 
 
     override fun initViewModel() {
         super.initViewModel()
-        mStates = getFragmentScopeViewModel()
         mInterfaceHomeViewModel = getActivityScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_mr702_rs485_port3, BR.stateVM, mStates)
-            .addBindingParam(BR.homeVM, mInterfaceHomeViewModel)
+        return DataBindingConfig(R.layout.fragment_mr702_rs485_port3, BR.homeVM, mInterfaceHomeViewModel)
     }
 
     override fun initView(savedInstanceState: Bundle?) {

@@ -4,7 +4,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
@@ -137,7 +136,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                 MR702DOPortFragment.newInstance().apply {
                     arguments = bundle
                 },
-                MR702DIPortFragment.newInstance().apply {
+                MR702IOPortFragment.newInstance().apply {
                     arguments = bundle
                 }
             )
