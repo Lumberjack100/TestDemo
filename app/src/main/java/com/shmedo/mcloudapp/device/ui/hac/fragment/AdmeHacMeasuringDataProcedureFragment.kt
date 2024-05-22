@@ -1,7 +1,5 @@
 package com.shmedo.mcloudapp.device.ui.hac.fragment
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.SoundPool
@@ -68,6 +66,11 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     private var curCommandType = IOTCommandType.UNKNOWN_TYPE
 
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initSoundPool()
+    }
+
     override fun initViewModel() {
         super.initViewModel()
         toolbarViewModel = getFragmentScopeViewModel()
@@ -101,51 +104,23 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         arguments?.let {
             mStates.isCheckReverse.set(it.getBoolean(CHECK_REVERSE))
         }
-        initSoundPool()
     }
 
     private fun loadButtonAnimator() {
-        val scaleX = ObjectAnimator.ofFloat(
-            binding.llMeasuringDataProcedureBottom.btnAction,
-            "scaleX",
-            0.6f,
-            1f
-        )
-        val scaleY = ObjectAnimator.ofFloat(
-            binding.llMeasuringDataProcedureBottom.btnAction,
-            "scaleY",
-            0.6f,
-            1f
-        )
-        scaleX.repeatCount = 1
-        scaleY.repeatCount = 1
-
-        val animSet = AnimatorSet()
-        animSet.play(scaleX).with(scaleY)
-        animSet.setDuration(600)
-        animSet.interpolator = BounceInterpolator()
-        animSet.start()
-    }
-
-    /**
-     * 测量完成或失败后播放的提示音初始化
-     */
-    private fun initSoundPool() {
-        //AudioAttributes是一个封装音频各种属性的方法
-        val audioAttrs = AudioAttributes.Builder()
-            .setLegacyStreamType(AudioManager.STREAM_MUSIC)
-            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-            .setUsage(AudioAttributes.USAGE_MEDIA)
-            .build()
-        soundPool = SoundPool.Builder()
-            .setMaxStreams(1)
-            .setAudioAttributes(audioAttrs)
-            .build()
-
-        soundPool?.let {
-            voiceMeasureFail = it.load(context, R.raw.measure_fail, 1)
-            voiceMeasureSuccess = it.load(context, R.raw.measure_success, 1)
-        }
+        binding.llMeasuringDataProcedureBottom.btnAction.animate()
+            .scaleX(0.6f)
+            .scaleY(0.6f)
+            .setDuration(600)
+            .setInterpolator(BounceInterpolator())
+            .withEndAction {
+                binding.llMeasuringDataProcedureBottom.btnAction.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(600)
+                    .setInterpolator(BounceInterpolator())
+                    .start()
+            }
+            .start()
     }
 
     /**
@@ -399,7 +374,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                     mStates.runButtonText.set("下一步")
                     //VibrateUtils.vibrate(100);
                     if (voiceMeasureSuccess != 0) {
-                        soundPool?.play(voiceMeasureSuccess, 1.0f, 1.0f, 1, 0, 1.0f)
+                        playSound(voiceMeasureSuccess)
                     }
                     loadButtonAnimator()
                 }
@@ -410,7 +385,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                     mStates.isRunButtonVisible.set(true)
                     mStates.runButtonText.set("下一步")
                     if (voiceMeasureFail != 0) {
-                        soundPool?.play(voiceMeasureFail, 1.0f, 1.0f, 1, 0, 1.0f)
+                        playSound(voiceMeasureFail)
                     }
                     loadButtonAnimator()
                 }
@@ -586,6 +561,44 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             if (isNavUp)
                 nav().navigateUp()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        releaseSoundPool()
+    }
+    /**
+     * 测量完成或失败后播放的提示音初始化
+     */
+    private fun initSoundPool() {
+        //AudioAttributes是一个封装音频各种属性的方法
+        val audioAttrs = AudioAttributes.Builder()
+            .setLegacyStreamType(AudioManager.STREAM_MUSIC)
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+            .setUsage(AudioAttributes.USAGE_MEDIA)
+            .build()
+        soundPool = SoundPool.Builder()
+            .setMaxStreams(1)
+            .setAudioAttributes(audioAttrs)
+            .build()
+
+        soundPool?.let {
+            voiceMeasureFail = it.load(context, R.raw.measure_fail, 1)
+            voiceMeasureSuccess = it.load(context, R.raw.measure_success, 1)
+        }
+    }
+
+    private fun playSound(soundId: Int) {
+        soundPool?.let {
+            if (soundId != 0) {
+                it.play(soundId, 1.0f, 1.0f, 1, 0, 1.0f)
+            }
+        }
+    }
+
+    private fun releaseSoundPool() {
+        soundPool?.release()
+        soundPool = null
     }
 
     companion object {
