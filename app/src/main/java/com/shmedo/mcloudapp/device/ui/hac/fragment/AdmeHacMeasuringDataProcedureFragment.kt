@@ -293,13 +293,13 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             when (AdmeCTRMotionState.valueByCode(motionState.motorinfo)) {
                 AdmeCTRMotionState.NOZZLE_WAITING -> {//上拉至管口等待
                     mStates.isCurDepthVisible.set(false)
-                    updateVerticalProgress(motionState.measpoint)
+                    initVerticalProgress(motionState.measpoint)
                     mStates.motorInfo.set("上拉至管口...")
                 }
 
                 AdmeCTRMotionState.PAIR_SETTING_PARAM -> {//测斜仪配对
                     mStates.isCurDepthVisible.set(false)
-                    updateVerticalProgress(motionState.measpoint)
+                    initVerticalProgress(motionState.measpoint)
                     val msg =
                         if (motionState.measmode == "1" && mStates.isCheckReverse.get()) "测斜仪配对,反转自检..." else "测斜仪配对中..."
                     mStates.motorInfo.set(msg)
@@ -309,7 +309,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 AdmeCTRMotionState.BOTTOM_WAITING -> {//管底等待
                     mStates.isCurDepthVisible.set(false)
                     mStates.isWaitTimeVisible.set(true)
-                    updateVerticalProgress(motionState.measpoint)
+                    initVerticalProgress(motionState.measpoint)
                     mStates.motorInfo.set(
                         if (motionState.motorinfo == "2")
                             "测斜仪下放中..."
@@ -396,19 +396,19 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun updateVerticalProgress(measurePoint: String) {
+    private fun initVerticalProgress(measurePoint: String) {
         if (measurePoint.isEmpty() || !measurePoint.contains("|"))
             return
 
         try {
-            var depth = 0.0
             val values = measurePoint.split("|")
             if (!TextUtils.isEmpty(values[1])) {
-                depth = values[1].toDouble()
+                val depth = values[1].toDouble()
                 if (depth == 0.0) {
                     mStates.holeDepth.set("测斜管深度 -- 米")
                     return
                 }
+                mStates.holeDepthValue.set(depth)
                 mStates.holeDepth.set(
                     "测斜管深度 ${
                         DeviceStatusInfoProcessor.formatDoubleValue(
@@ -420,7 +420,21 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 )
                 mStates.verticalMaxProgress.set((depth * 10).toInt())
             }
-            if (TextUtils.isEmpty(values[0]) || !mStates.isCurDepthVisible.get()) {
+            mStates.verticalProgress.set(0)
+
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
+
+    private fun updateVerticalProgress(measurePoint: String) {
+        if (measurePoint.isEmpty() || !measurePoint.contains("|"))
+            return
+
+        try {
+            val depth = mStates.holeDepthValue.get()
+            val values = measurePoint.split("|")
+            if (TextUtils.isEmpty(values[0])) {
                 mStates.verticalProgress.set(0)
             } else {
                 val value = values[0].toDouble()
@@ -478,7 +492,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     private fun setHorizontalMaxProgress() {
         mStates.horizontalProgress.set(mStates.horizontalMaxProgress.get())
         mStates.processDataNum.set(
-           "${mStates.horizontalMaxProgress.get()}/${mStates.horizontalMaxProgress.get()}"
+            "${mStates.horizontalMaxProgress.get()}/${mStates.horizontalMaxProgress.get()}"
 
         )
         mStates.processDataPercent.set("100%")

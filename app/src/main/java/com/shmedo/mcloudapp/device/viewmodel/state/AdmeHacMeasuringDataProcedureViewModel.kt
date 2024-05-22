@@ -32,6 +32,7 @@ class AdmeHacMeasuringDataProcedureViewModel : ViewModel() {
     val verticalMaxProgress = NonNullObservableField(0)
     val curDepth = NonNullObservableField("")
     val holeDepth = NonNullObservableField("")
+    val holeDepthValue = NonNullObservableField(0.0)
 
     //
     val isHorizontalProgressBarReadingData = NonNullObservableField(true)

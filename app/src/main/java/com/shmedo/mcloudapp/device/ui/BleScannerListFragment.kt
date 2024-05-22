@@ -37,6 +37,7 @@ import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.BleScannerListViewModel
 import com.shmedo.mcloudapp.ext.dismissLoadingDialog
 import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -166,7 +167,7 @@ class BleScannerListFragment : BaseFragment() {
                 discoveredBluetoothDevice!!.name?.let { token ->
                     //CG0 自组网报警网关 特殊处理
                     if (!token.endsWith(ProductType.COLLECTOR_G_0.newSuffix)) {
-                        Toaster.show("获取设备信息失败!${dataResult.responseStatus.errorMessage}")
+                        showMessageDialog("获取设备信息失败!${dataResult.responseStatus.errorMessage}")
                         return@observe
                     }
                     DeviceHomeActivity.start(
