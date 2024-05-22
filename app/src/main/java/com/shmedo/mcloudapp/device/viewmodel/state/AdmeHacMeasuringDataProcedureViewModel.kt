@@ -7,6 +7,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.hac.HacMotionState
 class AdmeHacMeasuringDataProcedureViewModel : ViewModel() {
     val isEditable = NonNullObservableField(false)
     val isFirstQueryMotorState = NonNullObservableField(true)
+    val isStopQueryMotorState = NonNullObservableField(false)
 
     val motionStateWrapper = NonNullObservableField(HacMotionState())
 
@@ -22,8 +23,7 @@ class AdmeHacMeasuringDataProcedureViewModel : ViewModel() {
     val waittimedesc = NonNullObservableField("")
     val waittime = NonNullObservableField("")//预计等待时间
 
-    val isRunButtonVisible = NonNullObservableField(false)
-    val isRunButtonCanStop = NonNullObservableField(true)
+    val isRunButtonVisible = NonNullObservableField(true)
     val runButtonText = NonNullObservableField("")
 
     val isVerticalProgressBarVisible = NonNullObservableField(true)

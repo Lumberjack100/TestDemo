@@ -29,6 +29,7 @@ import com.shmedo.lib.device.base.iot_cmd.enums.AdmeCTRMotionState
 import com.shmedo.lib.device.base.iot_cmd.enums.AdmeModuleErrorType
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.hac.HacMotionState
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
@@ -151,6 +152,8 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
      * 获取电机的运行状态
      */
     private fun getMotorMotionData(timeMillis: Long = 0L) {
+        if (mStates.isStopQueryMotorState.get()) return
+
         launchWithViewLifecycle {
             delay(timeMillis)
 
@@ -187,12 +190,12 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     }
 
     override fun lazyLoadData() {
+        mStates.isStopQueryMotorState.set(false)
         getMotorMotionData()
     }
 
 
     inner class ClickProxy : BaseClickProxy() {
-
         fun onActionClick() {
             KeyboardUtils.hideSoftInput(binding.root)
             if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
@@ -201,6 +204,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             }
             if (mStates.runButtonText.get() == "结束测量") {
                 showStopWarnDialog()
+
             } else if (mStates.runButtonText.get() == "下一步") {
                 processBack(false)
                 if (mStates.motionStateWrapper.get().motorinfo == "8") {
@@ -208,7 +212,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                     nav().navigate(
                         R.id.action_global_to_admeHacMeasuringDataResultsFragment
                     )
-                }else{
+                } else {
                     nav().navigateUp()
                 }
             }
@@ -218,8 +222,14 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
     fun showStopWarnDialog() {
         showMessage("确定停止电机运动？", "温馨提示", "确定", {
+            stopQueryMotorState()
             stopMeasureAction()
         }, "取消")
+    }
+
+    private fun stopQueryMotorState() {
+        cancelNearbyCommunicationTimeoutJob()
+        mStates.isStopQueryMotorState.set(true)
     }
 
     override fun setResultData(cmdStr: String) {
@@ -239,16 +249,35 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            getMotorMotionData(5000)
-                        }
                         refreshMotionState(result.data)
+                        sendCommandFromCmdList {
+                            getMotorMotionData(DELAY_5000_MILLIS)
+                        }
                     }
                 }
             }
 
-            IOTCommandType.LENGTH_INVALID -> {
-                getMotorMotionData(5000)
+            IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM -> {//设置HAC数据测量参数
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "停止电机出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            mStates.isRunButtonVisible.set(false)
+                            mStates.motorInfo.set("本轮测量已停止,预计 ${getMinTime()} 分钟后可重新测量")
+                        }
+                    }
+                }
+            }
+
+            IOTCommandType.LENGTH_INVALID -> {//接收的数据格式不符合物联网指令协议，进入此逻辑处理
+                getMotorMotionData(DELAY_5000_MILLIS)
             }
 
             else -> {
@@ -369,7 +398,6 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                     mStates.motorInfo.set(if (motionState.motorinfo == "9") "测量完成,等待反向测量" else "测量完成")
                     mStates.isRunButtonVisible.set(true)
                     mStates.runButtonText.set("下一步")
-                    mStates.isRunButtonCanStop.set(false)
                     //VibrateUtils.vibrate(100);
                     if (voiceMeasureSuccess != 0) {
                         soundPool?.play(voiceMeasureSuccess, 1.0f, 1.0f, 1, 0, 1.0f)
@@ -382,7 +410,6 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                     mStates.motorInfo.set("测量失败")
                     mStates.isRunButtonVisible.set(true)
                     mStates.runButtonText.set("下一步")
-                    mStates.isRunButtonCanStop.set(false)
                     if (voiceMeasureFail != 0) {
                         soundPool?.play(voiceMeasureFail, 1.0f, 1.0f, 1, 0, 1.0f)
                     }
@@ -563,6 +590,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     }
 
     companion object {
+        const val DELAY_5000_MILLIS = 5000L
         const val CHECK_REVERSE: String = "check_reverse"
 
         fun newBundleArguments(

@@ -164,7 +164,7 @@
             android:layout_height="46dp"
             android:layout_marginTop="40dp"
             android:layout_marginBottom="30dp"
-            android:background="@{stateVM.isRunButtonCanStop? @drawable/bg_btn_stop_measuring_data : @drawable/bg_btn_pause_motor_motion}"
+            android:background='@{stateVM.runButtonText=="下一步"? @drawable/bg_btn_pause_motor_motion : @drawable/bg_btn_stop_measuring_data}'
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
             android:text="@{stateVM.runButtonText}"
