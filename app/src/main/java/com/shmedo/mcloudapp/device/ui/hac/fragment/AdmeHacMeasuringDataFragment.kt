@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.hac.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.setFragmentResultListener
 import com.blankj.utilcode.util.ColorUtils
@@ -16,8 +17,10 @@ import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.IOTRegexContants
+import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.hac.HacMeasuringDataEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.AdmeModuleErrorType
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
@@ -28,6 +31,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.hac.HacMotionState
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentAdmeHacMeasuringDataBinding
@@ -40,12 +44,11 @@ import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessageDialog
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.math.RoundingMode
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
 
 class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentAdmeHacMeasuringDataBinding
@@ -57,8 +60,6 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
 
     private val holeNumList = ArrayList<String>()
     private val holeAreaDepthInfoArrayList = ArrayList<HacHoleAreaDepthInfo>()
-
-    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
 
     override fun initViewModel() {
@@ -141,19 +142,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                     "", holeNumList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
-                        mStates.holeno.set(text)
-
-                        val holeAreaDepthInfo = holeAreaDepthInfoArrayList[position]
-                        mStates.areano.set(holeAreaDepthInfo.areano)
-                        //指定舍入方式为：RoundingMode.DOWN，直接舍去格式化以外的部分
-                        decimalFormat.roundingMode = RoundingMode.DOWN
-                        holeAreaDepthInfo.holedepth.toDoubleOrNull()?.let {
-                            mStates.holeDepth.set(decimalFormat.format(it))
-                        }
-                        holeAreaDepthInfo.measdepth.toDoubleOrNull()?.let {
-                            mStates.measDepth.set(decimalFormat.format(it))
-                        }
-
+                        updateHoleDepth(position)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -197,6 +186,27 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                 initSaveCommand()
             }
         }
+    }
+
+    private fun updateHoleDepth(position: Int) {
+        val holeAreaDepthInfo = holeAreaDepthInfoArrayList[position]
+
+        mStates.holeno.set(holeAreaDepthInfo.holeno)
+        mStates.areano.set(holeAreaDepthInfo.areano)
+        mStates.holeDepth.set(
+            DeviceStatusInfoProcessor.formatDoubleValue(
+                holeAreaDepthInfo.holedepth,
+                "0",
+                0
+            )
+        )
+        mStates.measDepth.set(
+            DeviceStatusInfoProcessor.formatDoubleValue(
+                holeAreaDepthInfo.measdepth,
+                "0",
+                0
+            )
+        )
     }
 
     private fun initSaveCommand() {
@@ -372,40 +382,38 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
      * 初始化测量配置参数
      */
     private fun initMeasuringDataInfoParam(info: HacMeasuringDataInfo) {
-        try {
-            mStates.equipmodel.set(info.equipmodel)
-            mStates.address.set(info.address)
-            mStates.decentralizationWaitingTime.set(info.downwaitetime)
-            info.datatype.toIntOrNull()?.let {
-                mStates.dataSettlementMethod.set(if (it in settlementMethodList.indices) settlementMethodList[it] else settlementMethodList[0])
-            }
-            mStates.isSingleWayTest.set(info.onewaytest == "1")
-            mStates.isCheckReverse.set(info.checkreverse == "1")
+        launchWithViewLifecycle {
+            try {
+                mStates.equipmodel.set(info.equipmodel)
+                mStates.address.set(info.address)
+                mStates.decentralizationWaitingTime.set(info.downwaitetime)
+                info.datatype.toIntOrNull()?.let {
+                    mStates.dataSettlementMethod.set(if (it in settlementMethodList.indices) settlementMethodList[it] else settlementMethodList[0])
+                }
+                mStates.isSingleWayTest.set(info.onewaytest == "1")
+                mStates.isCheckReverse.set(info.checkreverse == "1")
 
-            holeAreaDepthInfoArrayList.clear()
-            holeAreaDepthInfoArrayList.addAll(info.holelist)
-            if (holeAreaDepthInfoArrayList.isEmpty()) {
-                showMessageDialog("还没有测孔信息,请先进行孔深测量")
-                mStates.isRunButtonEnable.set(false)
-                return
-            }
+                val tempHoleList = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<List<HacHoleAreaDepthInfo>>(info.holelist)
+                }
+                if (tempHoleList.isNullOrEmpty()) {
+                    showMessageDialog("还没有测孔信息,请先进行孔深测量")
+                    mStates.isRunButtonEnable.set(false)
+                    return@launchWithViewLifecycle
+                }
 
-            holeNumList.clear()
-            holeAreaDepthInfoArrayList.forEach {
-                holeNumList.add(it.holeno)
-            }
-            val holeAreaDepthInfo = holeAreaDepthInfoArrayList[0]
-            mStates.holeno.set(holeAreaDepthInfo.holeno)
-            mStates.areano.set(holeAreaDepthInfo.areano)
-            holeAreaDepthInfo.holedepth.toDoubleOrNull()?.let {
-                mStates.holeDepth.set(decimalFormat.format(it))
-            }
-            holeAreaDepthInfo.measdepth.toDoubleOrNull()?.let {
-                mStates.measDepth.set(decimalFormat.format(it))
-            }
+                holeAreaDepthInfoArrayList.clear()
+                holeAreaDepthInfoArrayList.addAll(tempHoleList)
 
-        } catch (e: Exception) {
-            Timber.e(e)
+                holeNumList.clear()
+                holeAreaDepthInfoArrayList.forEach {
+                    holeNumList.add(it.holeno)
+                }
+                updateHoleDepth(0)
+            } catch (e: Exception) {
+                Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
+            }
         }
     }
 

@@ -60,7 +60,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private val activeSize: Float = 15f
     private val normalSize: Float = 15f
     private val tabNames =
-        arrayOf("RS485-1", "RS485-2", "RS485-3", "RS232-1", "RS232-2", "雨量", "DO", "DI")
+        arrayOf("RS485-1", "RS485-2", "RS485-3", "RS232-1", "RS232-2", "雨量", "开关量")
 
 
     override fun initViewModel() {
@@ -131,9 +131,6 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                     arguments = bundle
                 },
                 MR702RainPortFragment.newInstance().apply {
-                    arguments = bundle
-                },
-                MR702DOPortFragment.newInstance().apply {
                     arguments = bundle
                 },
                 MR702IOPortFragment.newInstance().apply {

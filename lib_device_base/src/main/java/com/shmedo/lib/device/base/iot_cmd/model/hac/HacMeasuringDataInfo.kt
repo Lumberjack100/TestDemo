@@ -11,6 +11,6 @@ data class HacMeasuringDataInfo(
     var downwaitetime: String = "", //下放等待时间
     var datatype: String = "", //数据解算方式（0:顶部固定法，1底部固定法）
     var onewaytest: String = "", //单向测量 0 :关闭 1:开启
-    var holelist: List<HacHoleAreaDepthInfo> = arrayListOf(),
+    var holelist: String = "",
     var checkreverse: String = "", //反转自检
 )

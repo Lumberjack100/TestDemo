@@ -17,7 +17,7 @@ object DeviceStatusInfoProcessor {
 
     // 创建DecimalFormat的方法，确保线程安全
     private fun getDecimalFormat(digit: Int): DecimalFormat {
-        return DecimalFormat("#.##", DecimalFormatSymbols(Locale.getDefault())).apply {
+        return DecimalFormat("#.####", DecimalFormatSymbols(Locale.getDefault())).apply {
             //根据 digit 设置保留小数位数
             maximumFractionDigits = digit
         }
