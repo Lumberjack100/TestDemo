@@ -162,7 +162,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
             val command = IOTCommandUtil.getCommand(curCommandType)
             commandItems.add(command)
-            sendCommandFromCmdList(isStartTimeoutJob = true)
+            sendCommandFromCmdList(isStartTimeoutJob = false)
         }
     }
 
@@ -243,6 +243,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                         val errMsg = "获取设备的运行状态出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
+                        getMotorMotionData(DELAY_5000_MILLIS)
                         return
                     }
 
