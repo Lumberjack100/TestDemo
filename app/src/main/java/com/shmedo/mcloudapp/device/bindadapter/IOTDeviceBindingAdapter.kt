@@ -170,6 +170,7 @@ object IOTDeviceBindingAdapter {
         }
     }
 
+    @JvmStatic
     @BindingAdapter("app:progressDrawableReadingData")
     fun setProgressDrawableReadingData(progressBar: ProgressBar, isReadingData: Boolean) {
         val drawableResId = if (isReadingData) R.drawable.custom_progress_horizontal_blue else R.drawable.custom_progress_horizontal_green

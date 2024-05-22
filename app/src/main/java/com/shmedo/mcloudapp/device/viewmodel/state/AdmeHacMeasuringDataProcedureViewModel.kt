@@ -24,7 +24,7 @@ class AdmeHacMeasuringDataProcedureViewModel : ViewModel() {
     val waittime = NonNullObservableField("")//预计等待时间
 
     val isRunButtonVisible = NonNullObservableField(true)
-    val runButtonText = NonNullObservableField("")
+    val runButtonText = NonNullObservableField("结束测量")
 
     val isVerticalProgressBarVisible = NonNullObservableField(true)
     val isCurDepthVisible = NonNullObservableField(true)

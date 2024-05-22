@@ -194,7 +194,6 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         getMotorMotionData()
     }
 
-
     inner class ClickProxy : BaseClickProxy() {
         fun onActionClick() {
             KeyboardUtils.hideSoftInput(binding.root)
@@ -206,18 +205,17 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 showStopWarnDialog()
 
             } else if (mStates.runButtonText.get() == "下一步") {
-                processBack(false)
                 if (mStates.motionStateWrapper.get().motorinfo == "8") {
+                    processBack(false)
                     //等待下次测量,进入测量结果展示页面
                     nav().navigate(
                         R.id.action_global_to_admeHacMeasuringDataResultsFragment
                     )
                 } else {
-                    nav().navigateUp()
+                    processBack(true)
                 }
             }
         }
-
     }
 
     fun showStopWarnDialog() {
