@@ -54,6 +54,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_data_num"
+            tools:progressDrawable="@drawable/custom_progress_horizontal_green"
             tools:progress="10" />
 
 

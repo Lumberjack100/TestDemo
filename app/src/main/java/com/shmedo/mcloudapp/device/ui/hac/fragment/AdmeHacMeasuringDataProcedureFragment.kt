@@ -208,6 +208,8 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                     nav().navigate(
                         R.id.action_global_to_admeHacMeasuringDataResultsFragment
                     )
+                }else{
+                    nav().navigateUp()
                 }
             }
         }

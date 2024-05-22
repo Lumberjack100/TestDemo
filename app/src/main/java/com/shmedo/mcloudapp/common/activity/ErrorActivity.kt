@@ -38,24 +38,10 @@ class ErrorActivity : BaseActivity() {
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as ActivityErrorBinding
         binding.llToolbar.toolbar.title = "发生错误"
+        binding.llToolbar.toolbar.setNavigationOnClickListener {
+            finish()
+        }
         val config = CustomActivityOnCrash.getConfigFromIntent(intent)
-//        binding.errorSendError.clickNoRepeat {
-//            CustomActivityOnCrash.getStackTraceFromIntent(intent)?.let {
-//                showMessage(it, "发现有Bug不去打作者脸？", "必须打", {
-//                    val mClipData = ClipData.newPlainText("errorLog", it)
-//                    // 将ClipData内容放到系统剪贴板里。
-//                    clipboardManager?.setPrimaryClip(mClipData)
-//                    ToastUtils.showShort("已复制错误日志")
-//                    try {
-//                        val url = "mqqwpa://im/chat?chat_type=wpa&uin=824868922"
-//                        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-//                    } catch (e: Exception) {
-//                        ToastUtils.showShort("请先安装QQ")
-//                    }
-//                }, "我不敢")
-//            }
-//        }
-
         ClickUtils.applySingleDebouncing(binding.errorRestart) {
             config?.run {
                 CustomActivityOnCrash.restartApplication(this@ErrorActivity, this)
