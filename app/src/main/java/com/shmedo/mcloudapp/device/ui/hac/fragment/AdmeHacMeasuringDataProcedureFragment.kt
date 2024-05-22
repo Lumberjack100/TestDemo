@@ -391,7 +391,6 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -411,13 +410,13 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                     return
                 }
                 mStates.holeDepth.set(
-                    String.format(
-                        "测斜管深度 %s 米", DeviceStatusInfoProcessor.formatDoubleValue(
+                    "测斜管深度 ${
+                        DeviceStatusInfoProcessor.formatDoubleValue(
                             depth.toString(),
                             "0",
                             1
                         )
-                    )
+                    } 米"
                 )
                 mStates.verticalMaxProgress.set((depth * 10).toInt())
             }
@@ -426,16 +425,15 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             } else {
                 val value = values[0].toDouble()
                 mStates.curDepth.set(
-                    String.format(
-                        "当前测点位置 %s 米",
+                    "当前测点位置 ${
                         DeviceStatusInfoProcessor.formatDoubleValue(
                             (depth - value).toString(),
                             "0",
                             1
                         )
-                    )
+                    } 米"
                 )
-                mStates.verticalProgress.set((depth * 10).toInt())
+                mStates.verticalProgress.set((value * 10).toInt())
             }
         } catch (e: Exception) {
             Timber.e(e)
@@ -460,18 +458,17 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 progress = values[0].toInt()
                 mStates.horizontalProgress.set(progress)
             }
-            mStates.processDataNum.set(String.format("%s/%s", values[0], values[1]))
+            mStates.processDataNum.set("${values[0]}/${values[1]}")
             val result =
                 if ((mStates.horizontalMaxProgress.get() == 0)) 0f else progress.toFloat() / mStates.horizontalMaxProgress.get()
             mStates.processDataPercent.set(
-                String.format(
-                    "%s%%",
+                "${
                     DeviceStatusInfoProcessor.formatDoubleValue(
                         (result * 100).toString(),
                         "0",
                         0
                     )
-                )
+                } %"
             )
         } catch (e: Exception) {
             Timber.e(e)
@@ -481,12 +478,8 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     private fun setHorizontalMaxProgress() {
         mStates.horizontalProgress.set(mStates.horizontalMaxProgress.get())
         mStates.processDataNum.set(
-            String.format(
-                Locale.getDefault(),
-                "(%d/%d)",
-                mStates.horizontalMaxProgress.get(),
-                mStates.horizontalMaxProgress.get()
-            )
+           "${mStates.horizontalMaxProgress.get()}/${mStates.horizontalMaxProgress.get()}"
+
         )
         mStates.processDataPercent.set("100%")
     }
