@@ -272,7 +272,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         }
 
         try {
-            mStates.inclinometerBattery.set(motionState.incvoltage)
+            mStates.inclinometerBattery.set(motionState.incvoltage + "%")
             motionState.incvoltage.toDoubleOrNull()?.let {
                 mStates.inclinometerBatteryColorRes.set(
                     if (it <= 20) ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
@@ -280,7 +280,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                     )
                 )
             }
-            mStates.deviceBattery.set(motionState.driveinputv)
+            mStates.deviceBattery.set(motionState.driveinputv + "%")
             motionState.driveinputv.toDoubleOrNull()?.let {
                 mStates.deviceBatteryColorRes.set(
                     if (it <= 20) ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
@@ -290,7 +290,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             }
             mStates.isVerticalProgressBarVisible.set(true)
             mStates.isWaitTimeVisible.set(false)
-            when (val ctrMotionState = AdmeCTRMotionState.valueByCode(motionState.motorinfo)) {
+            when (AdmeCTRMotionState.valueByCode(motionState.motorinfo)) {
                 AdmeCTRMotionState.NOZZLE_WAITING -> {//上拉至管口等待
                     mStates.isCurDepthVisible.set(false)
                     updateVerticalProgress(motionState.measpoint)
@@ -326,7 +326,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 }
 
                 AdmeCTRMotionState.POINT_MEASUREMENT -> {//测点测量
-                    mStates.isCurDepthVisible.set(false)
+                    mStates.isCurDepthVisible.set(true)
                     mStates.isWaitTimeVisible.set(true)
                     updateVerticalProgress(motionState.measpoint)
                     mStates.motorInfo.set("测点测量中...")

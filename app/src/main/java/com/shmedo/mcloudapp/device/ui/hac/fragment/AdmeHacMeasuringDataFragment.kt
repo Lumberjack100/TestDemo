@@ -44,7 +44,6 @@ import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessageDialog
-import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -193,20 +192,8 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
 
         mStates.holeno.set(holeAreaDepthInfo.holeno)
         mStates.areano.set(holeAreaDepthInfo.areano)
-        mStates.holeDepth.set(
-            DeviceStatusInfoProcessor.formatDoubleValue(
-                holeAreaDepthInfo.holedepth,
-                "0",
-                0
-            )
-        )
-        mStates.measDepth.set(
-            DeviceStatusInfoProcessor.formatDoubleValue(
-                holeAreaDepthInfo.measdepth,
-                "0",
-                0
-            )
-        )
+        mStates.holeDepth.set(holeAreaDepthInfo.holedepth)
+        mStates.measDepth.set(holeAreaDepthInfo.measdepth)
     }
 
     private fun initSaveCommand() {

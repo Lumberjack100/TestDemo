@@ -41,7 +41,6 @@
             android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_14"
             android:textStyle="bold"
-            android:visibility="invisible"
             app:layout_constraintBottom_toTopOf="@+id/tv_hole_depth"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/verticalBar"
