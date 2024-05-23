@@ -85,10 +85,15 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        mStates.acquisitionFrequency.set("180")//采集频率
+        mStates.collectionTimes.set("3")//采集次数
+        mStates.noResponseTimes.set("3")//无应答次数
+        mStates.delayDuration.set("10")//延时时间
         mStates.collectorType.set(collectorTypeList[0])
-        mStates.dataBit.set(dataBitList[3])
-        mStates.checkBit.set(checkBitList[0])
-        mStates.stopBit.set(stopBitList[0])
+        mStates.baudRate.set("9600")  //默认波特率
+        mStates.dataBit.set(dataBitList[3])//默认数据位 8
+        mStates.checkBit.set(checkBitList[0])//默认校验位 无
+        mStates.stopBit.set(stopBitList[0])//默认停止位 1
     }
 
     private fun initRefresh() {
@@ -148,7 +153,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     private fun showAddSensorPopup() {
         val sensorList = mInterfaceHomeViewModel.portSensorModelListMap["485port2"] ?: listOf()
         val selectionPopupView = MR702SensorSelectionPopupView(requireContext())
-        selectionPopupView.setData("请选择传感器类型", sensorList)
+        selectionPopupView.setData("请选择物模型", sensorList)
             .setSelectListener(object : MR702SensorSelectionPopupView.OnSelectListener {
                 override fun onSelect(sensorModel: SensorModel) {
                     val bundle = MR702RS485Port2SensorParamFragment.newBundleArguments(
@@ -156,7 +161,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                             sensorType = sensorModel.sensorType,
                             sensorName = sensorModel.sensorName,
                             modelToken = sensorModel.modelToken,
-                            modelFieldList = sensorModel.modelFieldList.map { it.fieldName }
+                            modelFieldList = sensorModel.modelFieldList
                         ),
                         true,
                         productType,
@@ -555,7 +560,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                         sensorType = sensorStatus.sensortype,
                         modelToken = mInterfaceHomeViewModel.sensorModelMap[sensorStatus.sensortype]?.modelToken
                             ?: "",
-                        modelFieldList = mInterfaceHomeViewModel.sensorModelMap[sensorStatus.sensortype]?.modelFieldList?.map { it.fieldName }
+                        modelFieldList = mInterfaceHomeViewModel.sensorModelMap[sensorStatus.sensortype]?.modelFieldList
                             ?: listOf()
                     )
                 }

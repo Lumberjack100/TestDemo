@@ -137,7 +137,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
 
         if (sensorItem.modelFieldList.isNotEmpty()) {
             tabList.clear()
-            tabList.addAll(sensorItem.modelFieldList)
+            tabList.addAll(sensorItem.modelFieldList.map { it.fieldName })
             initTabLayout()
         }
         mStates.sensorName.set(sensorItem.sensorName)
@@ -296,11 +296,11 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     private fun initSaveCommand() {
         commandItems.clear()
         if (mStates.modelToken.get().isEmpty()) {
-            showMessageDialog("请输入物模型")
+            showMessageDialog("请输入物模型编号")
             return
         }
         if (mStates.sensorAddress.get().isEmpty()) {
-            showMessageDialog("请输入传感器地址")
+            showMessageDialog("请输入地址")
             return
         }
         if (mStates.baudRate.get().isEmpty()) {
@@ -478,7 +478,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                             mStates.checkBit.set(checkBitList[value])
                         }
                     }
-                    sensorParam.stopbit.toInt().let {value ->
+                    sensorParam.stopbit.toInt().let { value ->
                         if (value in stopBitList.indices) {
                             mStates.stopBit.set(stopBitList[value])
                         }

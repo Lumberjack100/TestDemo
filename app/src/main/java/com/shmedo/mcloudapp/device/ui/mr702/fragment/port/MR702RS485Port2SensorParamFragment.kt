@@ -40,7 +40,6 @@ import com.shmedo.mcloudapp.ext.showMessageDialog
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
 
 class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port2SensorParamBinding
@@ -50,8 +49,6 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
 
     private var isAdd: Boolean = false
     private lateinit var sensorItem: MRSensorItem
-
-    private val decimalFormat = DecimalFormat("#.#")
 
 
     override fun initViewModel() {
@@ -113,6 +110,19 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
         mStates.sensorType.set(sensorItem.sensorType)
         mStates.sensorName.set(sensorItem.sensorName)
         mStates.modelToken.set(sensorItem.modelToken)
+
+        resetModelField()
+    }
+
+    /**
+     * 重置采集项
+     */
+    private fun resetModelField() {
+        mStates.filterCoefficient.set("2")//滤波系数 2
+        mStates.triggerValue.set("0")//触发值 0
+        mStates.upperLimit.set("1000")//上限值 1000
+        mStates.lowerLimit.set("0")//下限值 0
+        mStates.correctValue.set("0")//修正值 0
     }
 
     private fun setEditable(editable: Boolean) {

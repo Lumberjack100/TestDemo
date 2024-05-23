@@ -214,7 +214,8 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         isShowMsg: Boolean,
         msg: String
     ) {
-        getMotorMotionData(DELAY_2000_MILLIS)
+        if (communicateWay is BleConnect && bleViewModel.isConnected())
+            getMotorMotionData(DELAY_2000_MILLIS)
     }
 
     override fun setResultData(cmdStr: String) {

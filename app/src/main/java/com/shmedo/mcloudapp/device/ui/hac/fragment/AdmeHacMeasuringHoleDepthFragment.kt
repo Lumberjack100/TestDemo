@@ -439,6 +439,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         isShowMsg: Boolean,
         msg: String
     ) {
+        if (communicateWay is BleConnect && bleViewModel.isConnected())
         getMotorMotionData(DELAY_2000_MILLIS)
     }
 

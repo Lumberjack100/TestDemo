@@ -73,6 +73,15 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
         initSensorAdapter()
     }
 
+    override fun initData() {
+        super.initData()
+        mStates.acquisitionFrequency.set("500")//采集频率
+        mStates.collectionDuration.set("5")//采集周期
+        mStates.collectionTimes.set("1")//采集次数
+        mStates.noResponseTimes.set("3")//无应答次数
+        mStates.delayDuration.set("10")//延时时间
+    }
+
     private fun initRefresh() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
@@ -129,7 +138,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
     private fun showAddSensorPopup() {
         val sensorList = mInterfaceHomeViewModel.portSensorModelListMap["485port1"] ?: listOf()
         val selectionPopupView = MR702SensorSelectionPopupView(requireContext())
-        selectionPopupView.setData("请选择传感器类型", sensorList, true)
+        selectionPopupView.setData("请选择物模型", sensorList, true)
             .setSelectListener(object : MR702SensorSelectionPopupView.OnSelectListener {
                 override fun onSelect(sensorModel: SensorModel) {
                     val bundle = MR702RS485Port1SensorAddParamFragment.newBundleArguments(
@@ -137,7 +146,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                             sensorType = sensorModel.sensorType,
                             sensorName = sensorModel.sensorName,
                             modelToken = sensorModel.modelToken,
-                            modelFieldList = sensorModel.modelFieldList.map { it.fieldName }
+                            modelFieldList = sensorModel.modelFieldList
                         ),
                         productType,
                         communicateWay,
@@ -381,9 +390,9 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                         addr = strs[1],
                         addrDesc = "地址-${strs[1]}",
                         sensorName = mInterfaceHomeViewModel.sensorModelMap[strs[0]]?.sensorName
-                            ?: "自定义传感器",
+                            ?: "自定义物模型",
                         modelToken = strs[0],
-                        modelFieldList = mInterfaceHomeViewModel.sensorModelMap[strs[0]]?.modelFieldList?.map { it.fieldName }
+                        modelFieldList = mInterfaceHomeViewModel.sensorModelMap[strs[0]]?.modelFieldList
                             ?: listOf()
                     )
                 }

@@ -34,7 +34,7 @@ class MR702SensorSelectionPopupView(context: Context) : CenterPopupView(context)
         if (isSupportedCustom) {
             this.sensorList.add(
                 SensorModel(
-                    sensorName = "自定义传感器",
+                    sensorName = "自定义物模型",
                     sensorType = "000",
                     modelToken = "000"
                 )
