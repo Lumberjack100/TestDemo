@@ -51,7 +51,7 @@
             android:id="@+id/tv_hole_depth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/dimen_size_15"
             android:text="@{stateVM.holeDepth}"
             android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_14"

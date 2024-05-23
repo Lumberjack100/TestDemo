@@ -287,7 +287,7 @@
             onClickWithDebouncing="@{()->click.onRunClick()}"
             visible="@{stateVM.isEditable }"
             android:layout_marginTop="0dp"
-            android:layout_marginBottom="@dimen/dimen_size_30"
+            android:layout_marginBottom="@dimen/dimen_size_60"
             android:text="@={stateVM.runButtonText}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -23,18 +23,10 @@
         android:orientation="vertical"
         android:paddingHorizontal="@dimen/dimen_size_16">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{stateVM.measureMode}"
-            android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/text_size_17"
-            tools:text="正向测量" />
-
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:layout_marginVertical="@dimen/dimen_size_10"
+            android:layout_marginVertical="@dimen/dimen_size_15"
             android:background="@color/divider_line_bg" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -46,7 +38,8 @@
                 android:layout_height="wrap_content"
                 android:text="设备运行状态:"
                 android:textColor="@color/title_text_color"
-                android:textSize="@dimen/text_size_14" />
+                android:textSize="@dimen/text_size_14"
+                android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_motorinfo"
@@ -56,14 +49,14 @@
                 android:text="@{stateVM.motorInfo}"
                 android:textColor="@color/orange"
                 android:textSize="@dimen/text_size_14"
-                tools:text="下放运动" />
+                tools:text="本轮测量已停止,预计 10 分钟后可重新测量，本轮测量已停止,预计 10 分钟后可重新测量" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp">
+            android:layout_marginTop="@dimen/dimen_size_20">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="0dp"
@@ -78,10 +71,10 @@
                     android:layout_height="wrap_content"
                     android:text="@{stateVM.inclinometerBattery}"
                     android:textColor="@{stateVM.inclinometerBatteryColorRes}"
-                    tools:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_18"
+                    android:textSize="@dimen/text_size_16"
                     android:textStyle="bold"
-                    tools:text="100%" />
+                    tools:text="100%"
+                    tools:textColor="@color/title_text_color" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_inclinometer_battery_title"
@@ -107,10 +100,10 @@
                     android:layout_height="wrap_content"
                     android:text="@{stateVM.deviceBattery}"
                     android:textColor="@{stateVM.deviceBatteryColorRes}"
-                    tools:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_18"
+                    android:textSize="@dimen/text_size_16"
                     android:textStyle="bold"
-                    tools:text="100%" />
+                    tools:text="100%"
+                    tools:textColor="@color/title_text_color" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_device_battery_title"
@@ -125,7 +118,7 @@
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/ll_waiting_time"
-                visible="@{stateVM.isWaitTimeVisible}"
+                invisible="@{stateVM.isWaitTimeVisible}"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -138,7 +131,7 @@
                     android:layout_height="wrap_content"
                     android:text="@{stateVM.waittime}"
                     android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_18"
+                    android:textSize="@dimen/text_size_16"
                     android:textStyle="bold"
                     tools:text="30分钟" />
 
@@ -160,10 +153,9 @@
             android:id="@+id/btn_action"
             onClickWithDebouncing="@{()->click.onActionClick()}"
             visible="@{stateVM.isRunButtonVisible}"
-            android:layout_width="150dp"
+            android:layout_width="160dp"
             android:layout_height="46dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginVertical="@dimen/dimen_size_35"
             android:background='@{stateVM.runButtonText=="下一步"? @drawable/bg_btn_pause_motor_motion : @drawable/bg_btn_stop_measuring_data}'
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
