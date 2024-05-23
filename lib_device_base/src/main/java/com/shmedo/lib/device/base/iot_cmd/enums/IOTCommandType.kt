@@ -842,6 +842,8 @@ enum class IOTCommandType(private val value: String) {
      * DI 参数获取
      */
     MD_MR_GET_DI_PORT_PARAM("md_mrgetdistatus"),
+    MD_MR_SET_DI_PORT_PARAM("md_mrsetdistatus"),
+
 
     /**
      * 人工置数

@@ -122,7 +122,7 @@
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@null"
-                            android:text="@{stateVM.holeDepth }"
+                            android:text="@{stateVM.realHoleDepth }"
                             tools:text="10" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -138,7 +138,7 @@
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="@={stateVM.measDepth}"
+                            android:text="@={stateVM.recommendHoleDepth}"
                             app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{5}" />
 

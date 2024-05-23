@@ -73,7 +73,7 @@ class LB20SGatewayInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "LoRa状态",
                             value = camState,
-                            colorRes = if (camState == "OK") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                            textColorRes = if (camState == "OK") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
                                 R.color.device_offline_platform
                             )
                         )
@@ -90,7 +90,7 @@ class LB20SGatewayInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "蓝牙状态",
                             value = camState,
-                            colorRes = if (camState == "OK") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                            textColorRes = if (camState == "OK") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
                                 R.color.device_offline_platform
                             )
                         )
@@ -107,7 +107,7 @@ class LB20SGatewayInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "电台状态",
                             value = camState,
-                            colorRes = if (camState == "OK") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                            textColorRes = if (camState == "OK") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
                                 R.color.device_offline_platform
                             )
                         )
@@ -129,7 +129,7 @@ class LB20SGatewayInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "flash状态",
                             value = camState,
-                            colorRes = if (camState == "OK") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                            textColorRes = if (camState == "OK") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
                                 R.color.device_offline_platform
                             )
                         )

@@ -192,8 +192,8 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
 
         mStates.holeno.set(holeAreaDepthInfo.holeno)
         mStates.areano.set(holeAreaDepthInfo.areano)
-        mStates.holeDepth.set(holeAreaDepthInfo.holedepth)
-        mStates.measDepth.set(holeAreaDepthInfo.measdepth)
+        mStates.realHoleDepth.set(holeAreaDepthInfo.holedepth)
+        mStates.recommendHoleDepth.set(holeAreaDepthInfo.measdepth)
     }
 
     private fun initSaveCommand() {
@@ -213,7 +213,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
             showMessageDialog("请选择孔号!")
             return
         }
-        if (mStates.measDepth.get().isEmpty()) {
+        if (mStates.recommendHoleDepth.get().isEmpty()) {
             showMessageDialog("请输入测量孔深!")
             return
         }
@@ -239,7 +239,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
             holeno = mStates.holeno.get(),
             areano = mStates.areano.get(),
             downwaitetime = mStates.decentralizationWaitingTime.get(),
-            holedepth = mStates.measDepth.get(),
+            holedepth = mStates.recommendHoleDepth.get(),
             datatype = settlementMethodList.indexOf(mStates.dataSettlementMethod.get()).toString(),
             onewaytest = if (binding.switchSingleWay.isChecked) "1" else "0",
             checkreverse = if (binding.switchReverse.isChecked) "1" else "0"

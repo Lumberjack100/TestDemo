@@ -11,8 +11,8 @@ class AdmeHacMeasuringDataViewModel : ViewModel() {
     val address = NonNullObservableField("")//MAC 地址
     val holeno = NonNullObservableField("")//孔号
     val areano = NonNullObservableField("")//区号
-    val holeDepth = NonNullObservableField("")//测斜管孔深阈值
-    val measDepth = NonNullObservableField("")//本次测量孔深
+    val realHoleDepth = NonNullObservableField("")//测斜管孔深阈值
+    val recommendHoleDepth = NonNullObservableField("")//推荐孔深
 
     val decentralizationWaitingTime = NonNullObservableField("")//下放等待时间(min)
     val dataSettlementMethod = NonNullObservableField("")//数据解算方式

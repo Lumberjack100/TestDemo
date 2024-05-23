@@ -402,7 +402,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 IOTCommandType.ADME_HAC_MD_GET_HOLE_MEASURE_PULSE
             )
             commandItems.add(command)
-            sendCommandFromCmdList(isStartTimeoutJob = true)
+            sendCommandFromCmdList(isStartTimeoutJob = false)
         }
     }
 
@@ -643,7 +643,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             }
         autoMeasuringHoleDepthBottomDialog?.show(childFragmentManager, "dialog")
         mStates.isStopQueryMotorState.set(false)
-        getMotorMotionData(1000)
+        getMotorMotionData(DELAY_2000_MILLIS)
     }
 
     private fun showManualMotorMotionBottomDialog() {
@@ -655,7 +655,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 mStates.motionPulse.get()
             )
             mStates.isStopQueryMotorState.set(false)
-            getMotorMotionData(1000)
+            getMotorMotionData(DELAY_2000_MILLIS)
             return
         }
         manualMeasuringHoleDepthBottomDialog =
@@ -714,7 +714,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             }
         manualMeasuringHoleDepthBottomDialog?.show(childFragmentManager, "dialog")
         mStates.isStopQueryMotorState.set(false)
-        getMotorMotionData(1000)
+        getMotorMotionData(DELAY_2000_MILLIS)
     }
 
     private fun updateMotorMotionDistance(motorMotionDistanceInfo: HacMotorMotionDistanceInfo) {
@@ -777,7 +777,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 mStates.motorInfo.set("正常")
             }
             //继续轮询电机脉冲数据
-            getMotorMotionData(1000)
+            getMotorMotionData(DELAY_2000_MILLIS)
 
         } catch (ex: Exception) {
             ex.printStackTrace()
@@ -813,5 +813,9 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    companion object {
+        const val DELAY_2000_MILLIS = 2000L
     }
 }

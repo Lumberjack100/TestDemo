@@ -23,7 +23,7 @@
             android:gravity="center"
             android:text="@{m.name}"
             android:textColor="@{m.textColorResId}"
-            android:textSize="@dimen/text_size_16"
+            android:textSize="@dimen/text_size_15"
             textStyle="@{m.textBold}"
             tools:text="状态"
             tools:textColor="@color/title_text_color" />

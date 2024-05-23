@@ -334,7 +334,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "设备状态",
                             value = if (deviceAbnormalList.isEmpty()) "正常" else "异常",
-                            colorRes = if (deviceAbnormalList.isEmpty()) ColorUtils.getColor(
+                            textColorRes = if (deviceAbnormalList.isEmpty()) ColorUtils.getColor(
                                 R.color.text_color_3AD094
                             ) else ColorUtils.getColor(R.color.device_offline_platform),
                             isClickable = deviceAbnormalList.isNotEmpty()

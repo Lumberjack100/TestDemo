@@ -56,7 +56,7 @@ class UDProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "摄像头状态",
                             value = camState,
-                            colorRes = if (camState == "正常") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                            textColorRes = if (camState == "正常") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
                                 R.color.device_offline_platform
                             )
                         )
@@ -68,7 +68,7 @@ class UDProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "雷达状态",
                             value = camState,
-                            colorRes = if (camState == "正常") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                            textColorRes = if (camState == "正常") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
                                 R.color.device_offline_platform
                             )
                         )

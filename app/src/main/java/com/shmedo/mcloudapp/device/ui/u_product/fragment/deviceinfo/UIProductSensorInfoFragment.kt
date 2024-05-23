@@ -52,7 +52,7 @@ class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                                 DeviceStatusInfoBasicItem(
                                     name = "倾角MEMS状态",
                                     value = camState,
-                                    colorRes = if (camState == "正常") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                                    textColorRes = if (camState == "正常") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
                                         R.color.device_offline_platform
                                     )
                                 )

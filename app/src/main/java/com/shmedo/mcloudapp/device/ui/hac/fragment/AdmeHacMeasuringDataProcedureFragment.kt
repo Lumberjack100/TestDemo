@@ -214,7 +214,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
+//                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "获取设备的运行状态出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
@@ -435,8 +435,28 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             return
 
         try {
-            val depth = mStates.holeDepthValue.get()
+            var depth = mStates.holeDepthValue.get()
             val values = measurePoint.split("|")
+            if (mStates.holeDepthValue.get() <= 0.0) {
+                if (!TextUtils.isEmpty(values[1])) {
+                    depth = values[1].toDouble()
+                    if (depth <= 0.0) {
+                        mStates.holeDepth.set("测斜管深度 -- 米")
+                        return
+                    }
+                    mStates.holeDepthValue.set(depth)
+                    mStates.holeDepth.set(
+                        "测斜管深度 ${
+                            DeviceStatusInfoProcessor.formatDoubleValue(
+                                depth.toString(),
+                                "0",
+                                1
+                            )
+                        } 米"
+                    )
+                    mStates.verticalMaxProgress.set((depth * 10).toInt())
+                }
+            }
             if (TextUtils.isEmpty(values[0])) {
                 mStates.verticalProgress.set(0)
             } else {
@@ -567,6 +587,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         super.onDestroy()
         releaseSoundPool()
     }
+
     /**
      * 测量完成或失败后播放的提示音初始化
      */

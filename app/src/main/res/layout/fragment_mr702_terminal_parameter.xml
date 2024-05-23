@@ -33,34 +33,13 @@
             app:layout_constraintTop_toTopOf="parent"
             app:vm="@{toolbarVM}" />
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="13dp"
-            android:background="@color/divider_line_bg3"
-            app:layout_constraintBottom_toBottomOf="@+id/tabs"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tabs" />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_10"
-            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar"
-            app:tabGravity="center"
-            app:tabIndicatorColor="@color/colorPrimary"
-            app:tabIndicatorFullWidth="false"
-            app:tabIndicatorHeight="1dp"
-            app:tabMode="fixed"
-            app:tabRippleColor="@color/transparent" />
-
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
-            app:layout_constraintTop_toBottomOf="@+id/tabs">
+            android:layout_marginTop="@dimen/dimen_size_10"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -102,7 +81,7 @@
             onClickWithDebouncing="@{()->click.onSubmitClick()}"
             visible="@{stateVM.isEditable }"
             android:layout_marginTop="0dp"
-            android:layout_marginBottom="15dp"
+            android:layout_marginBottom="@dimen/dimen_size_50"
             android:text="保存"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

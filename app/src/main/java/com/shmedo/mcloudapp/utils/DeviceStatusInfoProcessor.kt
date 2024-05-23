@@ -83,7 +83,37 @@ object DeviceStatusInfoProcessor {
                 DeviceStatusInfoBasicItem(
                     name = name,
                     value = "$tempValue $unit",
-                    colorRes = if (tempValue.toDouble() <= thresHold)
+                    textColorRes = if (tempValue.toDouble() <= thresHold)
+                        ColorUtils.getColor(R.color.device_offline_platform)
+                    else
+                        ColorUtils.getColor(R.color.text_color_3AD094)
+                )
+            )
+        }
+    }
+
+
+    fun addMR702SerialPortStatusInfoItem(
+        groupList: MutableList<Any>,
+        name: String,
+        value: String,
+        defaultValue: String = "0",
+        minThresHold: Double = 4.0,
+        maxThresHold: Double = 20.0,
+        digit: Int = 2,
+        unit: String = ""
+    ) {
+        value.notNullKey {
+            val tempValue = formatDoubleValue(
+                it,
+                defaultValue,
+                digit,
+            )
+            groupList.add(
+                DeviceStatusInfoBasicItem(
+                    name = name,
+                    value = "$tempValue $unit",
+                    textColorRes = if (tempValue.toDouble() < minThresHold || tempValue.toDouble() > maxThresHold)
                         ColorUtils.getColor(R.color.device_offline_platform)
                     else
                         ColorUtils.getColor(R.color.text_color_3AD094)

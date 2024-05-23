@@ -7,5 +7,6 @@ package com.shmedo.mcloudapp.device.model
  */
 data class MRDODIPortItem(
     var checked: Boolean = false, //是否 开启
+    var ktype: String = "",//数字  1-8
     val name: String = "",//名称
 )

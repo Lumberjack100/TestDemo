@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:background='@{m.clipboard?@color/bg_gray_15:@color/transparent}'
             android:text="@{m.value}"
-            android:textColor="@{m.colorRes==0?@color/title_text_color:m.colorRes}"
+            android:textColor="@{m.textColorRes==0?@color/title_text_color:m.textColorRes}"
             tools:text="1212" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -42,7 +42,7 @@
             visible='@{ m.clickable}'
             android:layout_width="wrap_content"
             android:text="@{m.value}"
-            android:textColor="@{m.colorRes==0?@color/title_text_color:m.colorRes}"
+            android:textColor="@{m.textColorRes==0?@color/title_text_color:m.textColorRes}"
             tools:drawableEndCompat="@drawable/icon_arrow_right"
             tools:text="1212" />
 

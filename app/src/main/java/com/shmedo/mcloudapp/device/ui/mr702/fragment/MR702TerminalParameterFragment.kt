@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.device.ui.mr702.fragment
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.view.Gravity
 import android.view.View
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -91,31 +90,30 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
 
     override fun initData() {
         super.initData()
-        initTabLayout()
+//        initTabLayout()
         mStates.reportMethod.set(reportMethodList[0])
         mStates.startTime.set(reportStartTimeList[0])
     }
 
     private fun initTabLayout() {
-        // add custom tab items
-        val tabLayout = binding.tabs
-        var textView = TextView(requireContext())
-        textView.text = tabs[0]
-        textView.textSize = activeSize
-        textView.typeface = Typeface.DEFAULT_BOLD
-        textView.gravity = Gravity.CENTER
-        textView.setTextColor(activeColor)
-        tabLayout.addTab(tabLayout.newTab().setCustomView(textView))
-
-        textView = TextView(requireContext())
-        textView.text = tabs[1]
-        textView.textSize = normalSize
-        textView.typeface = Typeface.DEFAULT
-        textView.gravity = Gravity.CENTER
-        textView.setTextColor(normalColor)
-        tabLayout.addTab(tabLayout.newTab().setCustomView(textView))
-
-        tabLayout.addOnTabSelectedListener(this)
+//        val tabLayout = binding.tabs
+//        var textView = TextView(requireContext())
+//        textView.text = tabs[0]
+//        textView.textSize = activeSize
+//        textView.typeface = Typeface.DEFAULT_BOLD
+//        textView.gravity = Gravity.CENTER
+//        textView.setTextColor(activeColor)
+//        tabLayout.addTab(tabLayout.newTab().setCustomView(textView))
+//
+//        textView = TextView(requireContext())
+//        textView.text = tabs[1]
+//        textView.textSize = normalSize
+//        textView.typeface = Typeface.DEFAULT
+//        textView.gravity = Gravity.CENTER
+//        textView.setTextColor(normalColor)
+//        tabLayout.addTab(tabLayout.newTab().setCustomView(textView))
+//
+//        tabLayout.addOnTabSelectedListener(this)
     }
 
     override fun onTabSelected(tab: TabLayout.Tab) {
