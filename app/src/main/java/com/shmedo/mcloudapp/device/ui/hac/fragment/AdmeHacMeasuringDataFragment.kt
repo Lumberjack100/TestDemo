@@ -214,7 +214,18 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
             return
         }
         if (mStates.recommendHoleDepth.get().isEmpty()) {
-            showMessageDialog("请输入测量孔深!")
+            showMessageDialog("请输入推荐测斜管孔深!")
+            return
+        }
+        try {
+            if (mStates.recommendHoleDepth.get().toDouble() > mStates.realHoleDepth.get()
+                    .toDouble()
+            ) {
+                showMessageDialog("推荐测斜管孔深必须小于实测测斜管孔深!")
+                return
+            }
+        } catch (ex: Exception) {
+            showMessageDialog("推荐测斜管孔深必须小于实测测斜管孔深!")
             return
         }
         if (mStates.decentralizationWaitingTime.get().isEmpty()) {

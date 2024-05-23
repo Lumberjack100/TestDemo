@@ -137,7 +137,10 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
             val command = IOTCommandUtil.getCommand(curCommandType)
             commandItems.add(command)
-            sendCommandFromCmdList(isStartTimeoutJob = false)
+            sendCommandFromCmdList(
+                isStartTimeoutJob = true,
+                timeoutMillis = AppContants.Communication.DELAY_10000_MILLIS
+            )
         }
     }
 
@@ -203,6 +206,15 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     private fun stopQueryMotorState() {
         cancelNearbyCommunicationTimeoutJob()
         mStates.isStopQueryMotorState.set(true)
+    }
+
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowMsg: Boolean,
+        msg: String
+    ) {
+        getMotorMotionData(DELAY_2000_MILLIS)
     }
 
     override fun setResultData(cmdStr: String) {
@@ -623,6 +635,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     }
 
     companion object {
+        const val DELAY_2000_MILLIS = 2000L
         const val DELAY_5000_MILLIS = 5000L
         const val CHECK_REVERSE: String = "check_reverse"
 

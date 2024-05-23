@@ -402,7 +402,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 IOTCommandType.ADME_HAC_MD_GET_HOLE_MEASURE_PULSE
             )
             commandItems.add(command)
-            sendCommandFromCmdList(isStartTimeoutJob = false)
+            sendCommandFromCmdList(isStartTimeoutJob = true)
         }
     }
 
@@ -431,6 +431,15 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         )
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowMsg: Boolean,
+        msg: String
+    ) {
+        getMotorMotionData(DELAY_2000_MILLIS)
     }
 
     override fun setResultData(cmdStr: String) {
