@@ -21,7 +21,6 @@ import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.IOTRegexContants
 import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.hac.HacMeasuringHoleDepthInfoEntity
-import com.shmedo.lib.device.base.iot_cmd.enums.AdmeModuleErrorType
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.hac.HacHoleAreaDepthInfo
@@ -38,6 +37,7 @@ import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeHacMeasuringHoleDepthViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.getAdmeErrorMsg
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
@@ -439,8 +439,9 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         isShowMsg: Boolean,
         msg: String
     ) {
-        if (communicateWay is BleConnect && bleViewModel.isConnected())
-        getMotorMotionData(DELAY_2000_MILLIS)
+        if (communicateWay is BleConnect && bleViewModel.isConnected()) {
+            getMotorMotionData(DELAY_2000_MILLIS)
+        }
     }
 
     override fun setResultData(cmdStr: String) {
@@ -766,22 +767,12 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     "99"
                 )
             ) {
-                //列出异常原因
-                val stringBuilder = StringBuilder()
-                val codes = motorMotionDistanceInfo.abndiasis.split("|")
-                codes.forEach { code ->
-                    val errorType = AdmeModuleErrorType.valueByCode(code)
-                    if (errorType != null) {
-                        stringBuilder.append(errorType.description)
-                        stringBuilder.append(";")
-                    }
-                }
-                //移除最后一个分号
-                if (stringBuilder.isNotEmpty()) {
-                    stringBuilder.deleteCharAt(stringBuilder.length - 1)
+                val errorMsg = getAdmeErrorMsg(motorMotionDistanceInfo.abndiasis, delimiters = ";")
+                if (errorMsg.isEmpty()) {
+                    return
                 }
                 mStates.isMotorInfoNormal.set(false)
-                mStates.motorInfo.set(stringBuilder.toString())
+                mStates.motorInfo.set(errorMsg)
             } else {
                 mStates.isMotorInfoNormal.set(true)
                 mStates.motorInfo.set("正常")

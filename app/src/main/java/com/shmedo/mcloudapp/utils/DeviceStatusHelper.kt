@@ -12,118 +12,116 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 object DeviceStatusHelper {
     fun checkDeviceAbnormal(selfCheck: String): ArrayList<String> {
         //"self_check": "GPS:1,eMMC:1,4g:1,RTC:1,solar485:0,G-Sensor:1,BT:1,GNSS:1,QMC:0,SHT21:1,product_time:20240411"
-        //解析 self_check,根据逗号分隔，取出各个传感器的状态
-        val selfCheckArray = selfCheck.split(",")
-
         val deviceAbnormalList: ArrayList<String> = ArrayList()
-        for (item in selfCheckArray) {
-            val sensor = item.split(":")
-            when (sensor[0].uppercase()) {
+        //解析 self_check,根据逗号分隔，取出各个传感器的状态
+        selfCheck.split(",".toRegex()).dropLastWhile { it.isEmpty() }.forEach { item ->
+            val errors = item.split(":".toRegex()).dropLastWhile { it.isEmpty() }
+            when (errors[0].uppercase()) {
                 "4G" -> {
-                    if (sensor[1] == "0") {
+                    if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("4G 异常")
                     }
                 }
 
                 "SCL" -> {
-                    if (sensor[1] == "0") {
+                    if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("倾角加速度异常")
                     }
                 }
 
                 "LORA" -> {
-                    if (sensor[1] == "0") {
+                    if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("LoRa 异常")
                     }
                 }
 
                 "BT" -> {
-                    if (sensor[1] == "0") {
+                    if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("蓝牙异常")
                     }
                 }
 
                 "LD" -> {
-                    if (sensor[1] == "0") {
+                    if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("雷达异常")
                     }
                 }
 
                 "RADIO" -> {
-                    if (sensor[1] == "0") {
+                    if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("电台异常")
                     }
                 }
 
                 "CAM" -> {
-                    if (sensor[1] == "0") {
+                    if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("相机异常")
                     }
                 }
 
                 "GNSS" -> {
-                    if (sensor[1] == "0") {
+                    if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("GNSS 异常")
                     }
                 }
 
                 "ADC" -> {
-                    if (sensor[1] == "0") {
+                    if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("电压采集功能异常")
                     }
                 }
 
                 "EMMC" -> {
-                    if (sensor[1] == "0") {
+                    if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("EMMC 异常")
                     }
                 }
 
                 "SHT21" -> {
-                    if (sensor[1] == "0") {
+                    if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("温湿度异常")
                     }
                 }
 
                 "QMC5883" -> {
-                    if (sensor[1] == "0") {
+                    if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("磁力异常")
                     }
                 }
 
                 "SOLAR485" -> {
-                    if (sensor[1] == "0") {
+                    if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("太阳能控制器异常")
                     }
                 }
 
                 "battery" -> {
-                    if (sensor[1] == "0") {
+                    if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("电池异常")
                     }
                 }
 
                 "SIMCARD" -> {
-                    if (sensor[1] == "0") {
+                    if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("SIM 卡异常")
                     }
                 }
 
                 "fram" -> {
-                    if (sensor[1] == "0") {
+                    if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("铁电存储器异常")
                     }
                 }
 
                 "RTC" -> {
-                    if (sensor[1] == "0") {
+                    if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("系统异常")
                     }
                 }
 
                 else -> {
-                    if (sensor[1] == "0") {
-                        deviceAbnormalList.add("${sensor[0]} 异常")
+                    if (errors.size > 1 && errors[1] == "0") {
+                        deviceAbnormalList.add("${errors[0]} 异常")
                     }
                 }
 
@@ -237,12 +235,9 @@ object DeviceStatusHelper {
 
     fun checkAdmeDeviceAbnormal(abndiasis: String): ArrayList<String> {
         val deviceAbnormalList: ArrayList<String> = ArrayList()
-        val codes = abndiasis.split("|")
-        codes.forEach {
+        abndiasis.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.forEach {
             val errorType = AdmeModuleErrorType.valueByCode(it)
-            if (errorType != null) {
-                deviceAbnormalList.add(errorType.description)
-            }
+            deviceAbnormalList.add(errorType.description)
         }
 
         return deviceAbnormalList

@@ -115,13 +115,13 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         mStates.sensorName.set(sensorItem.sensorName)//传感器名称
         mStates.modelToken.set(sensorItem.modelToken)//物模型编号
 
-        resetModelField()
+        resetDefaultModelField()
     }
 
     /**
      * 重置采集项
      */
-    private fun resetModelField() {
+    private fun resetDefaultModelField() {
         mStates.sensorAddress.set("")//传感器地址
         mStates.baudRate.set("9600")  //默认波特率
         mStates.dataBit.set(dataBitList[3])//默认数据位 8
@@ -143,6 +143,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
             }
         )
         mStates.hydrologicalIdentification.set("")//水文识别
+        mStates.collectionInstructions.set("")//采集指令
         mStates.ratio.set("1")//默认倍率 1
         mStates.dataFormat.set(dataFormatList[0])
         mStates.solutionMethod.set(solutionMethodList[0])//默认解算方法 加权平均
@@ -150,7 +151,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         mStates.upperLimit.set("100")//默认上限 100
         mStates.lowerLimit.set("0")//默认下限 0
         mStates.correctValue.set("0")//默认修正值 0
-        mStates.ngateval.set("3")//默认阈值次数 0
+        mStates.ngateval.set("3")//默认阈值次数 3
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -242,7 +243,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         fun onSaveModelFieldClick() {
             if (mStates.saveModelFieldBtnText.get() == "配置下一个采集项") {
                 mStates.saveModelFieldBtnText.set("保存此采集项")
-                resetModelField()
+                resetDefaultModelField()
             } else {
                 if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
                     Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))

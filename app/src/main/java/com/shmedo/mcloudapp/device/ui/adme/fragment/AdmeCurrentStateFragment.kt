@@ -21,7 +21,6 @@ import com.lxj.xpopup.interfaces.SimpleCallback
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.device.base.iot_cmd.enums.AdmeCTRMotionState
-import com.shmedo.lib.device.base.iot_cmd.enums.AdmeModuleErrorType
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeCurrentStateInfo
@@ -44,6 +43,7 @@ import com.shmedo.mcloudapp.device.model.GapItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeCurrentStateViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.getAdmeErrorMsg
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.notNullKey
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
@@ -507,24 +507,14 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
             mStates.ctrMotionInfoVisible.set(true)
             //CTR 工作异常
             if (hacMotionState.abndiasis != "0") {
+                //列出异常原因
+                val errorMsg = getAdmeErrorMsg(hacMotionState.abndiasis, delimiters = ";")
+                if (errorMsg.isEmpty()) {
+                    return
+                }
                 mStates.measureMode.set("异常保护")
                 mStates.isMotorInfoNormal.set(false)
-                //列出异常原因
-                val stringBuilder = StringBuilder()
-                stringBuilder.append("异常原因: ")
-                val codes = hacMotionState.abndiasis.split("|")
-                codes.forEach { code ->
-                    val errorType = AdmeModuleErrorType.valueByCode(code)
-                    if (errorType != null) {
-                        stringBuilder.append(errorType.description)
-                        stringBuilder.append(";")
-                    }
-                }
-                //移除最后一个分号
-                if (stringBuilder.isNotEmpty()) {
-                    stringBuilder.deleteCharAt(stringBuilder.length - 1)
-                }
-                mStates.motorInfo.set(stringBuilder.toString())
+                mStates.motorInfo.set("异常原因: $errorMsg")
                 return
             }
             updateMotionInfo(
@@ -571,15 +561,16 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
 
             AdmeCTRMotionState.POINT_MEASUREMENT -> {//测点测量
                 if (measurePoint.isNotEmpty() && measurePoint.contains("|")) {
-                    val points = measurePoint.split("|")
-                    val msg = if (points[0].isNotEmpty() && points[1].isNotEmpty())
-                        String.format(
-                            "测点测量-测斜仪位置(%s 米)-测点序列(%s)",
-                            points[1],
-                            points[0]
-                        )
-                    else
-                        "测点测量"
+                    val points = measurePoint.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
+                    val msg =
+                        if (points.size > 1 && points[0].isNotEmpty() && points[1].isNotEmpty())
+                            String.format(
+                                "测点测量-测斜仪位置(%s 米)-测点序列(%s)",
+                                points[1],
+                                points[0]
+                            )
+                        else
+                            "测点测量"
                     mStates.motorInfo.set(msg)
                 } else
                     mStates.motorInfo.set("测点测量")

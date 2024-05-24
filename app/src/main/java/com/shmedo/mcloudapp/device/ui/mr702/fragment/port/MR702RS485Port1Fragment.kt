@@ -75,6 +75,13 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        initDefaultParam()
+    }
+
+    /**
+     * 初始化默认参数
+     */
+    private fun initDefaultParam() {
         mStates.acquisitionFrequency.set("500")//采集频率
         mStates.collectionDuration.set("5")//采集周期
         mStates.collectionTimes.set("1")//采集次数

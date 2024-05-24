@@ -683,9 +683,9 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             )
             mStates.intervalDays.set(info.invalday)
             mStates.startTimePerRound.set(info.roundmeasstart)
-            info.roundmeasstart.split("|").let { times ->
-                mAdapter.data.clear()
-                times.forEach { time ->
+            mAdapter.data.clear()
+            info.roundmeasstart.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
+                .forEach { time ->
                     if (time.isNotEmpty()) {
                         mAdapter.data.add(
                             AdmeTimeItem(
@@ -698,8 +698,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
                         )
                     }
                 }
-                mAdapter.notifyDataSetChanged()
-            }
+            mAdapter.notifyDataSetChanged()
             mStates.dataReadingInterval.set(info.datainval)
             mStates.measurementCompensationTime.set(info.compensatetime)
 

@@ -85,17 +85,17 @@ class MR702IOPortFragment : BaseIOTDeviceFragment() {
                     Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                     return@onClick
                 }
-                if (!item.checked) {
+                if (!item.isOpen) {
                     showMessage("确定要打开 ${item.name} 吗？", "提示", "确定", {
-                        item.checked = true
+                        item.isOpen = true
                         notifyItemChanged(modelPosition, true)
                         toggleSwitch(item)
                     }, "取消", {
-                        item.checked = false
+                        item.isOpen = false
                         notifyItemChanged(modelPosition)
                     })
                 } else {
-                    item.checked = false
+                    item.isOpen = false
                     notifyItemChanged(modelPosition)
                     toggleSwitch(item)
                 }
@@ -105,12 +105,9 @@ class MR702IOPortFragment : BaseIOTDeviceFragment() {
 
     private fun toggleSwitch(item: MRDODIPortItem) {
         commandItems.clear()
-        val entity = MRDOPortParamEntity(item.ktype, if (item.checked) "1" else "0")
-        val command = if (item.name.contains("DI")) IOTCommandUtil.getCommand(
+        val entity = MRDOPortParamEntity(item.ktype, if (item.isOpen) "1" else "0")
+        val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_DO_PORT_PARAM,
-            entity.toCommandString()
-        ) else IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_DI_PORT_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -199,24 +196,6 @@ class MR702IOPortFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_SET_DI_PORT_PARAM -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "设置出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("设置成功")
-                        }
-                    }
-                }
-            }
-
             else -> {
                 cancelNearbyCommunicationTimeoutJob()
             }
@@ -257,10 +236,10 @@ class MR702IOPortFragment : BaseIOTDeviceFragment() {
 
                 tempList.add(DeviceStatusInfoGroupItem("开关状态输入"))
                 tempList.add(DeviceStatusInfoGroupItem(""))
-                tempList.add(MRDODIPortItem(diPortParam.dstatus1 == "1", "1", "DI1"))
-                tempList.add(MRDODIPortItem(diPortParam.dstatus2 == "1", "2", "DI2"))
-                tempList.add(MRDODIPortItem(diPortParam.dstatus3 == "1", "3", "DI3"))
-                tempList.add(MRDODIPortItem(diPortParam.dstatus4 == "1", "4", "DI4"))
+                tempList.add(MRDODIPortItem(diPortParam.dstatus1 == "1", "1", "DI1", false))
+                tempList.add(MRDODIPortItem(diPortParam.dstatus2 == "1", "2", "DI2", false))
+                tempList.add(MRDODIPortItem(diPortParam.dstatus3 == "1", "3", "DI3", false))
+                tempList.add(MRDODIPortItem(diPortParam.dstatus4 == "1", "4", "DI4", false))
 
                 binding.rv.bindingAdapter.addModels(tempList)
             } catch (e: Exception) {

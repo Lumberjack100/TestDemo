@@ -206,15 +206,15 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
         launchWithViewLifecycle {
             try {
                 //用逗号分割
-                val terminalIds = withContext(Dispatchers.IO) {
-                    content.split(",")
-                }
-                terminalIds.forEachIndexed { index, terminalId ->
-                    if (index < STATION_NODE_NUM) {
-                        binding.rvStationNode.bindingAdapter.getModel<DeviceStatusInfoBasicItem>(index)
-                            .refreshValue(terminalId)
+                content.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                    .forEachIndexed { index, terminalId ->
+                        if (index < STATION_NODE_NUM) {
+                            binding.rvStationNode.bindingAdapter.getModel<DeviceStatusInfoBasicItem>(
+                                index
+                            )
+                                .refreshValue(terminalId)
+                        }
                     }
-                }
             } catch (e: Exception) {
                 Timber.e(e)
                 addLogItem(Log.ERROR, e.errorMsg)

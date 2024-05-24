@@ -38,10 +38,6 @@ import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentAdmeBasicParamConfigBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -51,10 +47,13 @@ import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.adme.adapter.AdmeTimeAdapter
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeBasicParamConfigViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessageDialog
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 import java.util.Date
 import java.util.Locale
 
@@ -75,8 +74,6 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
             mData
         )
     }
-    val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
-
 
     override fun initViewModel() {
         super.initViewModel()
@@ -719,7 +716,6 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
      */
     private fun initExecutiveAgencyInfo(info: AdmeExecutiveAgencyInfo) {
         mStates.executiveAgencyInfoWrapper.set(info)
-        val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
         try {
             mStates.measureMethodText.set(if (info.meastype == "0") measureMethodList[0] else measureMethodList[1])
             mStates.measureMethod.set(info.meastype.toInt())
@@ -734,9 +730,9 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
             )
             mStates.intervalDays.set(info.invalday)
             mStates.startTimePerRound.set(info.roundmeasstart)
-            info.roundmeasstart.split("|").let { times ->
-                mAdapter.data.clear()
-                times.forEach { time ->
+            mAdapter.data.clear()
+            info.roundmeasstart.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
+                .forEach { time ->
                     if (time.isNotEmpty()) {
                         mAdapter.data.add(
                             AdmeTimeItem(
@@ -749,12 +745,15 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                         )
                     }
                 }
-                mAdapter.notifyDataSetChanged()
-            }
-            decimalFormat.applyPattern("#.##")
-            mStates.inclinometerTubeHoleDepth.set(info.interdeep.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
+            mAdapter.notifyDataSetChanged()
+
+            mStates.inclinometerTubeHoleDepth.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.interdeep,
+                    "",
+                    2
+                )
+            )
             mStates.decentralizationSpeed.set(info.downspeed)
             mStates.decentralizationWaitingTime.set(info.downwaitetime)
         } catch (e: Exception) {

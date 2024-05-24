@@ -52,7 +52,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
 
 class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     TabLayout.OnTabSelectedListener {
@@ -75,7 +74,6 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     private var selectedFieldIndex = 0
 
     private val tabList: MutableList<String> = arrayListOf()
-    private val decimalFormat = DecimalFormat("#.#")
 
 
     override fun initViewModel() {
@@ -142,13 +140,29 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
         }
         mStates.sensorName.set(sensorItem.sensorName)
         mStates.modelToken.set(sensorItem.modelToken)
-        mStates.dataBit.set(dataBitList[3])
-        mStates.checkBit.set(checkBitList[0])
-        mStates.stopBit.set(stopBitList[0])
-        mStates.dataFormat.set(dataFormatList[0])
-        mStates.solutionMethod.set(solutionMethodList[0])
+        resetDefaultModelField()
     }
+    /**
+     * 重置采集项
+     */
+    private fun resetDefaultModelField() {
+        mStates.sensorAddress.set("")//传感器地址
+        mStates.baudRate.set("9600")  //默认波特率
+        mStates.dataBit.set(dataBitList[3])//默认数据位 8
+        mStates.checkBit.set(checkBitList[0])//默认校验位 无
+        mStates.stopBit.set(stopBitList[0])//默认停止位 1
 
+        mStates.hydrologicalIdentification.set("")//水文识别
+        mStates.collectionInstructions.set("")//采集指令
+        mStates.ratio.set("1")//默认倍率 1
+        mStates.dataFormat.set(dataFormatList[0])
+        mStates.solutionMethod.set(solutionMethodList[0])//默认解算方法 加权平均
+        mStates.triggerValue.set("0")//默认触发值 0
+        mStates.upperLimit.set("100")//默认上限 100
+        mStates.lowerLimit.set("0")//默认下限 0
+        mStates.correctValue.set("0")//默认修正值 0
+        mStates.ngateval.set("3")//默认阈值次数 3
+    }
     private fun initTabLayout() {
         val tabLayout = binding.tabs
         tabLayout.removeAllTabs()

@@ -124,7 +124,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
         when (sensorType) {
             IOTSensorType.VIBRATING_SENSOR //振弦传感器
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -149,7 +149,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.RAIN_GAUGE //雨量计
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -164,7 +164,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.WIRE_SHIFT //拉绳式裂缝计
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -179,7 +179,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.SOIL_MOISTURE //土壤含水率
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -204,7 +204,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.INCLINOMETER //测斜仪
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -230,7 +230,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
             IOTSensorType.ULTRASONIC_LEVEL_GAUGE, //超声波物位计
             IOTSensorType.RADAR_LEVEL_GAUGE //雷达物位计
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -245,7 +245,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.UPLIFT_PRESSURE_GAUGE //扬压力计
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -280,7 +280,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.LUYAN_INCLINOMETER //倾角仪
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -305,7 +305,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.WEIR //量水堰
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -329,7 +329,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
             IOTSensorType.STATIC_LEVEL, //静力水准
             IOTSensorType.SEDIMENTATION_METER //沉降仪
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -344,7 +344,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.WEATHER_STATION //气象站
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -399,7 +399,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.TURBIDITY_METER //浊度仪传感器
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -414,7 +414,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE //数字式水位计
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -429,7 +429,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.WATER_QUALITY_METER //多参数水质仪
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -524,7 +524,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.WATER_LEVEL_GAUGE //水位(液位)计
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -550,7 +550,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
             IOTSensorType.KANG_PERCOLATE, //基康渗压计
             IOTSensorType.GUDAN_PERCOLATE //葛南渗压计
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -585,7 +585,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.GUDAN_STRESS //葛南应变计
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -610,7 +610,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.JUNXING_ZLJ_300T //轴力计
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -732,7 +732,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
             info.vwp?.let { vwpBean ->
                 mStates.isVWPSensorVisible.set(true)
                 mStates.vwpErrNo.set(vwpBean.errno.toString())
-                val dataList = vwpBean.vaule.split(",")
+                val dataList = vwpBean.vaule.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     decimalFormat.applyPattern("#.###")
                     mStates.vwpValue1.set(dataList[0].toFloatOrNull()?.let {
@@ -758,7 +758,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                 mStates.isMEMSSensorVisible.set(true)
                 mStates.memsErrNo.set(memBean.errno.toString())
 
-                val dataList = memBean.vaule.split(",")
+                val dataList = memBean.vaule.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     decimalFormat.applyPattern("#.###")
                     mStates.memsAxisX.set(dataList[0].toFloatOrNull()?.let {

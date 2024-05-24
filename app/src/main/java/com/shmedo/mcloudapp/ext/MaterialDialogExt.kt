@@ -205,34 +205,14 @@ fun Fragment.showMessageDialog(
     )
 }
 
- fun BaseFragment.showErrorProtectionTip(abndiasis: String) {
-    //列出异常原因
-    val stringBuilder = StringBuilder()
-
-    val codes = abndiasis.split("|")
-    codes.forEach { code ->
-        val errorType = AdmeModuleErrorType.valueByCode(code)
-        if (errorType != null) {
-            stringBuilder.append(errorType.description)
-            stringBuilder.append("\n")
-        }
-    }
-    //移除最后一个分号
-    if (stringBuilder.isNotEmpty()) {
-        stringBuilder.deleteCharAt(stringBuilder.length - 1)
-    }
-
-    if (stringBuilder.toString() == AdmeModuleErrorType.EMPTY_ERROR.description) {
-        return
-    }
-    if (stringBuilder.toString() == AdmeModuleErrorType.UNKNOWN_ERROR.description) {
-        stringBuilder.clear()
-        stringBuilder.append("异常代码: $abndiasis")
+fun BaseFragment.showAdmeErrorProtectionDialog(abndiasis: String) {
+    val errorMsg = getAdmeErrorMsg(abndiasis)
+    if (errorMsg.isEmpty()) {
         return
     }
 
     val popupView = HacErrorProtectionTip(requireContext())
-    popupView.setData(stringBuilder.toString())
+    popupView.setData(errorMsg)
     XPopup.Builder(context)
         .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
         .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
@@ -240,4 +220,35 @@ fun Fragment.showMessageDialog(
         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
         .asCustom(popupView)
         .show()
+}
+
+fun BaseFragment.getAdmeErrorMsg(abndiasis: String, delimiters: String = "\n"): String {
+    if (abndiasis.isEmpty()) {
+        return ""
+    }
+
+    //列出异常原因
+    val stringBuilder = StringBuilder()
+    // | 分割
+    val codes = abndiasis.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+    codes.forEach { code ->
+        val errorType = AdmeModuleErrorType.valueByCode(code)
+        stringBuilder.append(errorType.description)
+        stringBuilder.append(delimiters)
+    }
+    //移除最后一个分号
+    if (stringBuilder.isNotEmpty()) {
+        stringBuilder.deleteCharAt(stringBuilder.length - 1)
+    }
+
+    if (stringBuilder.toString().contains(AdmeModuleErrorType.EMPTY_ERROR.description)) {
+        return ""
+    }
+
+    if (stringBuilder.toString().contains(AdmeModuleErrorType.UNKNOWN_ERROR.description)) {
+        stringBuilder.clear()
+        stringBuilder.append("异常代码: $abndiasis")
+    }
+
+    return stringBuilder.toString()
 }

@@ -62,7 +62,7 @@ class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         "initAngle" -> {
                             info.value.notNullKey { value ->
                                 //根据逗号分隔
-                                val initAngle = value.split(",")
+                                val initAngle = value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                                 if (initAngle.isNotEmpty()) {
                                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
                                         groupList,
@@ -100,7 +100,7 @@ class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         "angle" -> {
                             info.value.notNullKey { value ->
                                 //根据逗号分隔
-                                val angle = value.split(",")
+                                val angle = value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                                 if (angle.isNotEmpty()) {
                                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
                                         groupList,
@@ -138,7 +138,7 @@ class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         "acc" -> {
                             info.value.notNullKey { value ->
                                 //根据逗号分隔
-                                val acc = value.split(",")
+                                val acc = value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                                 if (acc.isNotEmpty()) {
                                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
                                         groupList,

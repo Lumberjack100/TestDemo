@@ -481,7 +481,7 @@ class RadioSettingsFragment : BaseIOTDeviceFragment() {
 
         try {
             //用逗号分割
-            val terminalIds = content.split(",")
+            val terminalIds = content.split(",".toRegex()).dropLastWhile { it.isEmpty() }
 
             mStates.telemetryStationNode1.set(
                 if (terminalIds.isNotEmpty()) {

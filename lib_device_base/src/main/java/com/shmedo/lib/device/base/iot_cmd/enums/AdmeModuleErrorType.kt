@@ -32,7 +32,7 @@ enum class AdmeModuleErrorType(val code: String, val description: String) {
 
     companion object {
         @JvmStatic
-        fun valueByCode(code: String): AdmeModuleErrorType? {
+        fun valueByCode(code: String): AdmeModuleErrorType {
             if (TextUtils.isEmpty(code)) return EMPTY_ERROR
             for (errorType in entries) {
                 if (errorType.code == code) return errorType

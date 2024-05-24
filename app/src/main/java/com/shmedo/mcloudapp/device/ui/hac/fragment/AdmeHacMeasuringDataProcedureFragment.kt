@@ -42,7 +42,7 @@ import com.shmedo.mcloudapp.device.viewmodel.state.AdmeHacMeasuringDataProcedure
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showErrorProtectionTip
+import com.shmedo.mcloudapp.ext.showAdmeErrorProtectionDialog
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
@@ -213,8 +213,9 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         isShowMsg: Boolean,
         msg: String
     ) {
-        if (communicateWay is BleConnect && bleViewModel.isConnected())
+        if (communicateWay is BleConnect && bleViewModel.isConnected()) {
             getMotorMotionData(DELAY_2000_MILLIS)
+        }
     }
 
     override fun setResultData(cmdStr: String) {
@@ -285,7 +286,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         //异常时，停止轮询电机运动状态，展示异常原因
         if (motionState.abndiasis != "0") {
             cancelNearbyCommunicationTimeoutJob()
-            showErrorProtectionTip(motionState.abndiasis)
+            showAdmeErrorProtectionDialog(motionState.abndiasis)
         }
 
         try {
@@ -416,7 +417,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             return
 
         try {
-            val values = measurePoint.split("|")
+            val values = measurePoint.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             if (!TextUtils.isEmpty(values[1])) {
                 val depth = values[1].toDouble()
                 if (depth == 0.0) {
@@ -448,7 +449,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
         try {
             var depth = mStates.holeDepthValue.get()
-            val values = measurePoint.split("|")
+            val values = measurePoint.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
             if (mStates.holeDepthValue.get() <= 0.0) {
                 if (!TextUtils.isEmpty(values[1])) {
                     depth = values[1].toDouble()
@@ -495,7 +496,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
         try {
             var progress = 0
-            val values = measurePoint.split("|")
+            val values = measurePoint.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
             if (!TextUtils.isEmpty(values[1]) && RegexUtils.isMatch(
                     RegexConstants.REGEX_INTEGER,
                     values[1]
@@ -528,7 +529,6 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         mStates.horizontalProgress.set(mStates.horizontalMaxProgress.get())
         mStates.processDataNum.set(
             "${mStates.horizontalMaxProgress.get()}/${mStates.horizontalMaxProgress.get()}"
-
         )
         mStates.processDataPercent.set("100%")
     }

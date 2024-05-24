@@ -41,7 +41,7 @@ import com.shmedo.mcloudapp.device.viewmodel.state.AdmeHacMeasuringDataViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showErrorProtectionTip
+import com.shmedo.mcloudapp.ext.showAdmeErrorProtectionDialog
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessageDialog
 import kotlinx.coroutines.Dispatchers
@@ -450,7 +450,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
         )
         //表示异常，展示异常原因
         if (motionState.measmode == "2" && motionState.abndiasis != "0") {
-            showErrorProtectionTip(motionState.abndiasis)
+            showAdmeErrorProtectionDialog(motionState.abndiasis)
         }
     }
 

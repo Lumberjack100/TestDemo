@@ -85,11 +85,19 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        initDefaultParam()
+    }
+
+    /**
+     * 初始化默认参数
+     */
+    private fun initDefaultParam() {
         mStates.acquisitionFrequency.set("180")//采集频率
         mStates.collectionTimes.set("3")//采集次数
         mStates.noResponseTimes.set("3")//无应答次数
         mStates.delayDuration.set("10")//延时时间
         mStates.collectorType.set(collectorTypeList[0])
+        mStates.collectorAddress.set("1")//采集器地址
         mStates.baudRate.set("9600")  //默认波特率
         mStates.dataBit.set(dataBitList[3])//默认数据位 8
         mStates.checkBit.set(checkBitList[0])//默认校验位 无

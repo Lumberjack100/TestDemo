@@ -107,6 +107,7 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
         toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
         toolbarViewModel.toolbarTvActionText.set("取消")
         toolbarViewModel.toolbarIvActionVisible.set(!isAdd)
+
         mStates.sensorType.set(sensorItem.sensorType)
         mStates.sensorName.set(sensorItem.sensorName)
         mStates.modelToken.set(sensorItem.modelToken)
@@ -118,6 +119,8 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
      * 重置采集项
      */
     private fun resetModelField() {
+        mStates.channelNumber.set("")//通道编号
+        mStates.hydrologicalIdentification.set("")//水文标识
         mStates.filterCoefficient.set("2")//滤波系数 2
         mStates.triggerValue.set("0")//触发值 0
         mStates.upperLimit.set("1000")//上限值 1000
