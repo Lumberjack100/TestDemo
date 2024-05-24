@@ -34,7 +34,6 @@ import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecorati
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port2Binding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.common.MRRS485Port2
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.MRSensorItem
 import com.shmedo.mcloudapp.device.model.RVEmptyFooter
 import com.shmedo.mcloudapp.device.model.SensorModel
@@ -380,6 +379,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                 "index=0"
             )
         )
+        showLoadingDialog(StringUtils.getString(R.string.loading))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 

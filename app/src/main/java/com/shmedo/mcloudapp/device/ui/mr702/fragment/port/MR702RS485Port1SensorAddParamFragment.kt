@@ -35,7 +35,6 @@ import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorAddParamBin
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.common.MRRS485Port1
 import com.shmedo.mcloudapp.device.model.AppConfigContent
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.MRSensorItem
 import com.shmedo.mcloudapp.device.model.ModelField
@@ -114,7 +113,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
 
         mStates.sensorName.set(sensorItem.sensorName)//传感器名称
         mStates.modelToken.set(sensorItem.modelToken)//物模型编号
-
+        mStates.sensorAddress.set("")//传感器地址
         resetDefaultModelField()
     }
 
@@ -122,7 +121,6 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
      * 重置采集项
      */
     private fun resetDefaultModelField() {
-        mStates.sensorAddress.set("")//传感器地址
         mStates.baudRate.set("9600")  //默认波特率
         mStates.dataBit.set(dataBitList[3])//默认数据位 8
         mStates.checkBit.set(checkBitList[0])//默认校验位 无
