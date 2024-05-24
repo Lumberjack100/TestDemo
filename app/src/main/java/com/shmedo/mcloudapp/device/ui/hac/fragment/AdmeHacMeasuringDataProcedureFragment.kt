@@ -417,8 +417,8 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             return
 
         try {
-            val values = measurePoint.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-            if (!TextUtils.isEmpty(values[1])) {
+            val values = measurePoint.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
+            if (values.size > 1 && !TextUtils.isEmpty(values[1])) {
                 val depth = values[1].toDouble()
                 if (depth == 0.0) {
                     mStates.holeDepth.set("测斜管深度 -- 米")
@@ -449,9 +449,10 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
         try {
             var depth = mStates.holeDepthValue.get()
-            val values = measurePoint.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            val values =
+                measurePoint.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
             if (mStates.holeDepthValue.get() <= 0.0) {
-                if (!TextUtils.isEmpty(values[1])) {
+                if (values.size > 1 && !TextUtils.isEmpty(values[1])) {
                     depth = values[1].toDouble()
                     if (depth <= 0.0) {
                         mStates.holeDepth.set("测斜管深度 -- 米")
@@ -497,7 +498,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         try {
             var progress = 0
             val values = measurePoint.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
-            if (!TextUtils.isEmpty(values[1]) && RegexUtils.isMatch(
+            if (values.size > 1 && !TextUtils.isEmpty(values[1]) && RegexUtils.isMatch(
                     RegexConstants.REGEX_INTEGER,
                     values[1]
                 )

@@ -230,12 +230,12 @@ fun BaseFragment.getAdmeErrorMsg(abndiasis: String, delimiters: String = "\n"): 
     //列出异常原因
     val stringBuilder = StringBuilder()
     // | 分割
-    val codes = abndiasis.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-    codes.forEach { code ->
-        val errorType = AdmeModuleErrorType.valueByCode(code)
-        stringBuilder.append(errorType.description)
-        stringBuilder.append(delimiters)
-    }
+    abndiasis.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
+        .forEach { code ->
+            val errorType = AdmeModuleErrorType.valueByCode(code)
+            stringBuilder.append(errorType.description)
+            stringBuilder.append(delimiters)
+        }
     //移除最后一个分号
     if (stringBuilder.isNotEmpty()) {
         stringBuilder.deleteCharAt(stringBuilder.length - 1)

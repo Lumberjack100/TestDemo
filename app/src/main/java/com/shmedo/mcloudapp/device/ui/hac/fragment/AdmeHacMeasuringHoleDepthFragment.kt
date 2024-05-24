@@ -619,14 +619,12 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     AdmeHacAutoMeasuringHoleDepthBottomDialog.OnDialogFragmentClickListener {
                     override fun onCloseClick() {
                         if (!bleViewModel.isConnected() || mStates.isExitButtonVisible.get()) {
-                            autoMeasuringHoleDepthBottomDialog = null
-                            safeDistance = ""
+                            resetPulseData()
                             dismiss()
                             return
                         }
                         showMessage("确认退出数据运行吗?", "温馨提示", "确定", {
-                            autoMeasuringHoleDepthBottomDialog = null
-                            safeDistance = ""
+                            resetPulseData()
                             //蓝牙未断开时先发送停止电机指令，再关闭运行页面
                             if (bleViewModel.isConnected()) {
                                 stopQueryMotorState()
@@ -646,8 +644,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     }
 
                     override fun onExitClick() {
-                        autoMeasuringHoleDepthBottomDialog = null
-                        safeDistance = ""
+                        resetPulseData()
                         dismiss()
                     }
                 })
@@ -675,14 +672,12 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     AdmeHacManualMeasuringHoleDepthBottomDialog.OnDialogFragmentClickListener {
                     override fun onCloseClick() {
                         if (!bleViewModel.isConnected() || mStates.isExitButtonVisible.get()) {
-                            manualMeasuringHoleDepthBottomDialog = null
-                            safeDistance = ""
+                            resetPulseData()
                             dismiss()
                             return
                         }
                         showMessage("确认退出数据运行吗?", "温馨提示", "确定", {
-                            manualMeasuringHoleDepthBottomDialog = null
-                            safeDistance = ""
+                            resetPulseData()
                             //蓝牙未断开时先发送停止电机指令，再关闭运行页面
                             if (bleViewModel.isConnected()) {
                                 stopQueryMotorState()
@@ -717,8 +712,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     }
 
                     override fun onExitClick() {
-                        manualMeasuringHoleDepthBottomDialog = null
-                        safeDistance = ""
+                        resetPulseData()
                         dismiss()
                     }
                 })
@@ -805,7 +799,11 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             ex.printStackTrace()
         }
     }
-
+    private fun resetPulseData() {
+        autoMeasuringHoleDepthBottomDialog = null
+        manualMeasuringHoleDepthBottomDialog = null
+        safeDistance = ""
+    }
     private fun stopQueryMotorState() {
         cancelNearbyCommunicationTimeoutJob()
         mStates.isStopQueryMotorState.set(true)

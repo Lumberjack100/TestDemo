@@ -391,7 +391,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                     MoshiUtil.fromJson<List<MRSensorStatus>>(content)
                 } ?: return@launchWithViewLifecycle
                 val list = sensorStatusList.map { sensorStatus ->
-                    val strs = sensorStatus.model.split("_").toTypedArray()
+                    val strs = sensorStatus.model.split("_")
                     MRSensorItem(
                         isPlugin = sensorStatus.sta == "0",
                         addr = strs[1],

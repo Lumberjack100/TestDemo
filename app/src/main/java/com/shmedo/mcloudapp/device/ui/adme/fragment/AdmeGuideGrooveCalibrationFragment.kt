@@ -23,23 +23,20 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessage
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.databinding.FragmentAdmeGuideGrooveCalibrationBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeGuideGrooveCalibrationViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
+import com.shmedo.mcloudapp.ext.showMessageDialog
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
 import kotlin.math.abs
 
 /**
@@ -55,12 +52,12 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
     private val motionTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_guide_groove_calibration_motor_motion_type) }
+
     private var lastPulse: String = "" //上次停止时脉冲数
     private var continuePulseGoal: Int = 0 //继续运动脉冲目标数
     private var repeatPollNum = 0 //当查询电机脉冲数重复超过一定次数时，判定电机停止
 
     private var motorMotionAngleFragmentBottomDialog: AdmeMotorMotionAngleBottomDialog? = null
-    val decimalFormat = DecimalFormat("#", DecimalFormatSymbols(Locale.getDefault()))
 
 
     override fun initViewModel() {
@@ -112,20 +109,7 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
         mStates.isClearMotionDataVisible.set(true)
     }
 
-    private fun setEditable(editable: Boolean) {
-        toolbarViewModel.toolbarIvActionVisible.set(!editable)
-        toolbarViewModel.toolbarTvActionVisible.set(editable)
-        mStates.isEditable.set(editable)
-    }
-
     inner class ClickProxy : BaseClickProxy() {
-        override fun onToolbarIvClick() {
-            setEditable(true)
-        }
-
-        override fun onToolbarTvClick() {
-            setEditable(false)
-        }
 
         /**
          * 选择运动方式
@@ -230,6 +214,8 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
      * 查询ADME测孔深运动的脉冲数、运动角度
      */
     private fun getMotorMotionData(timeMillis: Long = 0L) {
+        if (mStates.isStopQueryMotorState.get()) return
+
         launchWithViewLifecycle {
             delay(timeMillis)
 
@@ -381,8 +367,8 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList()
-                        if (mStates.isStopAction.get()) {
-                            mStates.isStopAction.set(false)
+                        if (mStates.isDoStopAction.get()) {
+                            mStates.isDoStopAction.set(false)
                             mStates.isExitButtonVisible.set(true)
                             return
                         }
@@ -420,13 +406,8 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
     private fun initParamConfigInfo(grooveCalibrationInfo: AdmeGuideGrooveCalibrationInfo) {
         try {
             mStates.motionType.set(motionTypeList[grooveCalibrationInfo.movementway.toInt()])
-            mStates.speed.set(grooveCalibrationInfo.motorspeed.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-
-            mStates.pulseGoal.set(grooveCalibrationInfo.movepulse.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
+            mStates.speed.set(grooveCalibrationInfo.motorspeed)
+            mStates.pulseGoal.set(grooveCalibrationInfo.movepulse)
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
@@ -442,7 +423,8 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
                 mStates.motionPulse.get(),
                 continuePulseGoal,
             )
-            getMotorMotionData(800)
+            mStates.isStopQueryMotorState.set(false)
+            getMotorMotionData(DELAY_2000_MILLIS)
             return
         }
         Timber.d(
@@ -455,12 +437,20 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
                 setOnDialogFragmentClickListener(object :
                     AdmeMotorMotionAngleBottomDialog.OnDialogFragmentClickListener {
                     override fun onCloseClick() {
-                        //蓝牙未断开时先发送停止电机指令
-                        if (bleViewModel.isConnected()) {
-                            stopMotorMotion()
+                        if (!bleViewModel.isConnected() || mStates.isExitButtonVisible.get()) {
+                            resetPulseData()
+                            dismiss()
+                            return
                         }
-                        dismiss()
-                        resetData()
+                        showMessage("确认退出数据运行吗?", "温馨提示", "确定", {
+                            resetPulseData()
+                            //蓝牙未断开时先发送停止电机指令，再关闭运行页面
+                            if (bleViewModel.isConnected()) {
+                                stopQueryMotorState()
+                                stopMotorMotion()
+                            }
+                            dismiss()
+                        }, "取消")
                     }
 
                     override fun onStopClick() {
@@ -468,6 +458,7 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                             return
                         }
+                        stopQueryMotorState()
                         stopMotorMotion()
                     }
 
@@ -481,20 +472,21 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
                             continueMotorMotion()
                         } else {
                             mStates.pauseButtonText.set("继续")
+                            stopQueryMotorState()
                             stopMotorMotion()
                         }
                     }
 
                     override fun onExitClick() {
+                        resetPulseData()
                         dismiss()
-                        resetData()
                     }
                 })
-
             }
         motorMotionAngleFragmentBottomDialog?.show(childFragmentManager, "dialog")
         mStates.isClearMotionDataVisible.set(true)
-        getMotorMotionData(800)
+        mStates.isStopQueryMotorState.set(false)
+        getMotorMotionData(DELAY_2000_MILLIS)
     }
 
     /**
@@ -521,7 +513,7 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
             mStates.motionPulse.set(motorMotionAngleInfo.pulsenumber)
             mStates.motionAngle.set(motorMotionAngleInfo.realmoveangle)
             //继续轮询电机脉冲数据
-            getMotorMotionData(800)
+            getMotorMotionData(DELAY_2000_MILLIS)
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
@@ -537,9 +529,10 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
         if (grooveCalibrationInfo.morunstate == "1") {
             repeatPollNum = 0
             //继续轮询电机脉冲数据
-            getMotorMotionData(800)
+            getMotorMotionData(DELAY_2000_MILLIS)
             return
         }
+        //下面电机状态表示停止运动
         repeatPollNum = 0
         try {
             val pulseTotalGoal = abs(mStates.pulseGoal.get().toInt())
@@ -551,20 +544,30 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
             } else {
                 //电机暂停
                 mStates.pauseButtonText.set("继续")
+                stopQueryMotorState()
             }
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
     }
 
-    private fun resetData() {
+    private fun resetPulseData() {
         motorMotionAngleFragmentBottomDialog = null
         lastPulse = ""
         repeatPollNum = 0
     }
 
+    private fun stopQueryMotorState() {
+        mStates.isStopQueryMotorState.set(true)
+        cancelNearbyCommunicationTimeoutJob()
+    }
+
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    companion object {
+        const val DELAY_2000_MILLIS = 2000L
     }
 }

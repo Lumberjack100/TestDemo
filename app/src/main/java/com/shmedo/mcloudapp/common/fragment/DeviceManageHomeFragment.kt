@@ -239,7 +239,6 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
      */
     private fun parseOldDeviceCode(barCode: String) {
         val localData = barCode.split(",".toRegex()).dropLastWhile { it.isEmpty() }
-            .toTypedArray()
         if (localData.size != 3) {
             showMessageDialog("请扫描正确的设备二维码")
             return
@@ -256,7 +255,6 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
      */
     private fun parseNewDeviceCode(barCode: String) {
         val localData = barCode.split("=".toRegex()).dropLastWhile { it.isEmpty() }
-            .toTypedArray()
         if (localData.size != 2) {
             showMessageDialog("请扫描正确的设备二维码")
             return

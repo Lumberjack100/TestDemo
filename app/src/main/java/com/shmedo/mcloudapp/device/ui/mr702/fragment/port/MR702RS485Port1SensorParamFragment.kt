@@ -482,7 +482,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                     val sensorParam: MRRS485Port1SensorParam = portParam[0]
                     mStates.sensorParamWrapper.set(sensorParam)
 
-                    val strs = sensorParam.model.split("_").toTypedArray()
+                    val strs = sensorParam.model.split("_")
                     mStates.sensorAddress.set(strs[1])
                     mStates.modelToken.set(strs[0])
                     mStates.baudRate.set(sensorParam.baud)
