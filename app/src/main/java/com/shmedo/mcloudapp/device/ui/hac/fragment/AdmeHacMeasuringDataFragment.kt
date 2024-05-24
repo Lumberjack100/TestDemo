@@ -22,7 +22,6 @@ import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.IOTRegexContants
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.hac.HacMeasuringDataEntity
-import com.shmedo.lib.device.base.iot_cmd.enums.AdmeModuleErrorType
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.hac.HacHoleAreaDepthInfo
@@ -42,6 +41,7 @@ import com.shmedo.mcloudapp.device.viewmodel.state.AdmeHacMeasuringDataViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showErrorProtectionTip
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessageDialog
 import kotlinx.coroutines.Dispatchers
@@ -452,34 +452,6 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
         if (motionState.measmode == "2" && motionState.abndiasis != "0") {
             showErrorProtectionTip(motionState.abndiasis)
         }
-    }
-
-    private fun showErrorProtectionTip(abndiasis: String) {
-        //列出异常原因
-        val stringBuilder = StringBuilder()
-
-        val codes = abndiasis.split("|")
-        codes.forEach { code ->
-            val errorType = AdmeModuleErrorType.valueByCode(code)
-            if (errorType != null) {
-                stringBuilder.append(errorType.description)
-                stringBuilder.append("\n")
-            }
-        }
-        //移除最后一个分号
-        if (stringBuilder.isNotEmpty()) {
-            stringBuilder.deleteCharAt(stringBuilder.length - 1)
-        }
-
-        val popupView = HacErrorProtectionTip(requireContext())
-        popupView.setData(stringBuilder.toString())
-        XPopup.Builder(context)
-            .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
-            .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
-            .enableDrag(false)
-            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-            .asCustom(popupView)
-            .show()
     }
 
     override fun onResume() {

@@ -10,7 +10,11 @@ import com.afollestad.materialdialogs.list.listItemsMultiChoice
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.blankj.utilcode.util.ColorUtils
 import com.kongzue.dialogx.dialogs.MessageDialog
+import com.lxj.xpopup.XPopup
+import com.shmedo.lib.device.base.iot_cmd.enums.AdmeModuleErrorType
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.fragment.BaseFragment
+import com.shmedo.mcloudapp.device.ui.hac.fragment.HacErrorProtectionTip
 import com.shmedo.mcloudapp.utils.SettingUtil
 
 
@@ -199,4 +203,41 @@ fun Fragment.showMessageDialog(
         message,
         positiveButtonText
     )
+}
+
+ fun BaseFragment.showErrorProtectionTip(abndiasis: String) {
+    //列出异常原因
+    val stringBuilder = StringBuilder()
+
+    val codes = abndiasis.split("|")
+    codes.forEach { code ->
+        val errorType = AdmeModuleErrorType.valueByCode(code)
+        if (errorType != null) {
+            stringBuilder.append(errorType.description)
+            stringBuilder.append("\n")
+        }
+    }
+    //移除最后一个分号
+    if (stringBuilder.isNotEmpty()) {
+        stringBuilder.deleteCharAt(stringBuilder.length - 1)
+    }
+
+    if (stringBuilder.toString() == AdmeModuleErrorType.EMPTY_ERROR.description) {
+        return
+    }
+    if (stringBuilder.toString() == AdmeModuleErrorType.UNKNOWN_ERROR.description) {
+        stringBuilder.clear()
+        stringBuilder.append("异常代码: $abndiasis")
+        return
+    }
+
+    val popupView = HacErrorProtectionTip(requireContext())
+    popupView.setData(stringBuilder.toString())
+    XPopup.Builder(context)
+        .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
+        .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
+        .enableDrag(false)
+        .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+        .asCustom(popupView)
+        .show()
 }
