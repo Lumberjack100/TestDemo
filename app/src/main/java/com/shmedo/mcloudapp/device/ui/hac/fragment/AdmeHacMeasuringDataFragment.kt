@@ -96,7 +96,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -169,7 +169,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
 
         fun onRunClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -254,7 +254,6 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
             datatype = settlementMethodList.indexOf(mStates.dataSettlementMethod.get()).toString(),
             onewaytest = if (binding.switchSingleWay.isChecked) "1" else "0",
             checkreverse = if (binding.switchReverse.isChecked) "1" else "0"
-
         )
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(

@@ -28,7 +28,6 @@ import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecorati
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentDasSensorInfoBinding
 import com.shmedo.mcloudapp.databinding.ItemDasSensorStatusBinding
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.DasSensorSubMonitorStatusItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasSensorInfoViewModel
@@ -68,7 +67,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
     private fun initRefresh() {
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -730,10 +729,8 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询开关量传感器信息出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -753,10 +750,8 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询倾角计信息出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -776,10 +771,8 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询扩展传感器状态出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

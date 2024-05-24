@@ -245,7 +245,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                 mStates.saveModelFieldBtnText.set("保存此采集项")
                 resetDefaultModelField()
             } else {
-                if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                if (isBleDisconnected()) {
                     Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                     return
                 }

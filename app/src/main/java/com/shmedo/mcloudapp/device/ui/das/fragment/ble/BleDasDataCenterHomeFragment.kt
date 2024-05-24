@@ -30,7 +30,6 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentBleDasDataCenterHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.BleDasDataCenterHomeViewModel
@@ -84,7 +83,7 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -159,7 +158,7 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
         }
 
         fun onSubmitClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -242,10 +241,8 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询基础配置信息出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -265,10 +262,8 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询数据中心状态错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -284,10 +279,8 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
             MDCommandType.DATA_MASSAGE_MODEL -> {//设置数据通讯方式
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "数据通讯方式配置错误!"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -300,10 +293,8 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
             MDCommandType.DATA_REPORT_INTERVAL -> {//设置数据上报间隔
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "数据上报间隔配置错误!"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -316,10 +307,8 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
             MDCommandType.SIX_TARGER_BD_NUMBER -> {//北斗配置
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "北斗目标卡号配置错误!"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -332,10 +321,8 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
             MDCommandType.SAVE_CONFIG_INFO -> {//
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "保存出错!"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

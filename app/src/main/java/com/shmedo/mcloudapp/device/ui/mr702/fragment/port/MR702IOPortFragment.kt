@@ -59,7 +59,7 @@ class MR702IOPortFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -81,7 +81,7 @@ class MR702IOPortFragment : BaseIOTDeviceFragment() {
             // 点击列表触发选中
             onClick(R.id.statusSB) {
                 val item = getModel<MRDODIPortItem>()
-                if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                if (isBleDisconnected()) {
                     Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                     return@onClick
                 }

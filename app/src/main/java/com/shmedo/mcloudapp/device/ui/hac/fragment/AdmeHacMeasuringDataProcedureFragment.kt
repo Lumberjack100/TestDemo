@@ -147,6 +147,8 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
      * 停止测量
      */
     private fun stopMeasureAction() {
+        stopQueryMotorState()
+
         //数据测量配置参数
         val entity = HacMeasuringDataEntity(
             equipmodel = "0",
@@ -174,7 +176,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     inner class ClickProxy : BaseClickProxy() {
         fun onActionClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -197,14 +199,13 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
     fun showStopWarnDialog() {
         showMessage("确定停止电机运动？", "温馨提示", "确定", {
-            stopQueryMotorState()
             stopMeasureAction()
         }, "取消")
     }
 
     private fun stopQueryMotorState() {
-        cancelNearbyCommunicationTimeoutJob()
         mStates.isStopQueryMotorState.set(true)
+        cancelNearbyCommunicationTimeoutJob()
     }
 
     override fun showNearbyCommunicationTimeoutAlert(

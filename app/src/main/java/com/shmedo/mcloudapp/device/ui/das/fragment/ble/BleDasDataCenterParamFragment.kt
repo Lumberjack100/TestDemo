@@ -33,7 +33,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentBleDasDataCenterParamBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
@@ -94,7 +93,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -117,7 +116,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
 
     inner class ClickProxy : BaseClickProxy() {
         override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
                 return
@@ -195,7 +194,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
         }
 
         fun onSubmitClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -458,10 +457,8 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询数据中心地址出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -481,10 +478,8 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询数据中心参数出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -500,10 +495,8 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             MDCommandType.NET_LINK_COMMUN_PROTOCOL -> {//设置通讯协议应答
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "通讯协议配置错误!"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -516,10 +509,8 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             MDCommandType.SET_SERVER_ADDRESS_PORT -> {//设置数据服务器地址、端口应答
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置数据中心地址、端口错误!"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -532,10 +523,8 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             MDCommandType.AUTO_REGISTRATION_PLATFORM -> {//MQTT 自动注册设置通选择注册平台时应答
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "平台类型配置错误!"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -548,10 +537,8 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             MDCommandType.SET_AUTO_REGISTRATION_PLATFORM_SERVER_ADDRESS_PORT -> {//MQTT 自动注册设置注册平台地址时应答
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "注册平台地址、端口配置错误!"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -564,10 +551,8 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             MDCommandType.MQTT_KEEP_ALIVE -> {//设置KeepAlive值应答
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "心跳间隔配置错误!"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -580,10 +565,8 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             MDCommandType.SET_AUTO_REGISTRATION_PLATFORM_PARAM -> {//MQTT 自动注册设置参数
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "自动注册平台参数配置错误!"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult("$errMsg")
                         return
                     }
 
@@ -596,10 +579,8 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             MDCommandType.SET_MANUAL_REGISTRATION_PLATFORM_PARAM -> {//MQTT 手动注册设置参数
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "手动注册平台参数配置错误!"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -612,10 +593,8 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             MDCommandType.SAVE_CONFIG_INFO -> {//
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "保存参数出错!"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

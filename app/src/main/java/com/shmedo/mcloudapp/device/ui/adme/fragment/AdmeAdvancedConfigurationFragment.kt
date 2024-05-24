@@ -85,7 +85,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
     }
 
     private fun processItemClick(module: ConfigModule) {
-        if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+        if (isBleDisconnected()) {
             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
             return
         }

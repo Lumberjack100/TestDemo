@@ -99,7 +99,7 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -153,7 +153,7 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
          */
         fun onSetInitialValueClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -217,7 +217,7 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
 
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -287,10 +287,8 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -306,10 +304,8 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR -> {//设置
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -324,10 +320,9 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_SENSOR_INITIAL -> {//设置开关量传感器
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
+
                         val errMsg = "更新雷达初始值出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

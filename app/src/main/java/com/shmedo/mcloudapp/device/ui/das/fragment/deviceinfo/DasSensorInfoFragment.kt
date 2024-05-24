@@ -58,7 +58,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
     private fun initRefresh() {
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -674,9 +674,8 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询辅传感器状态出错: ${result.message}"
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -696,9 +695,8 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询扩展传感器状态出错: ${result.message}"
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

@@ -80,7 +80,7 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -91,7 +91,7 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
 
     inner class ClickProxy : BaseClickProxy() {
         override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
                 return
@@ -104,7 +104,7 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
          * 测试一级报警
          */
         fun onTestFirstAlarmClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -115,7 +115,7 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
          * 测试二级报警
          */
         fun onTestSecondAlarmClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -126,7 +126,7 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
          * 测试三级报警
          */
         fun onTestThirdAlarmClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -137,7 +137,7 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
          * 测试四级报警
          */
         fun onTestFourthAlarmClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -149,7 +149,7 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
          */
         fun onGoToParamSettingClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }

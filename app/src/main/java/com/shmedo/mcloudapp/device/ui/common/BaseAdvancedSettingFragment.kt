@@ -200,7 +200,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
     }
 
     protected open fun processItemClick(item: AdvancedSettingItem) {
-        if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+        if (isBleDisconnected()) {
             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
             return
         }

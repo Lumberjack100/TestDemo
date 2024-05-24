@@ -28,7 +28,6 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentDasExternalSensorListBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.DASSensorItem
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
@@ -95,7 +94,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -116,7 +115,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             addType<DASSensorItem>(R.layout.item_das_sensor)
             addType<RVEmptyFooter>(R.layout.item_sensor_add_footer)
             R.id.item.onClick {
-                if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                if (isBleDisconnected()) {
                     Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                     return@onClick
                 }
@@ -186,7 +185,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                 }
             }
             R.id.item_del.onClick {
-                if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                if (isBleDisconnected()) {
                     Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                     return@onClick
                 }
@@ -212,7 +211,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
 
     inner class ClickProxy : BaseClickProxy() {
         override fun onSubmitButtonClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -299,10 +298,8 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询采集器参数出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -319,11 +316,9 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         initEmptySensor()
                         val errMsg = "查询传感器参数出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -342,10 +337,8 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             MDCommandType.SET_COLLECTOR_SENSOR -> {//
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "接入传感器设置出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -358,10 +351,8 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             MDCommandType.SAVE_CONFIG_INFO -> {//
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "保存出错!"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

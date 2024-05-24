@@ -105,7 +105,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -169,7 +169,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         }
 
         override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
                 return
@@ -210,7 +210,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
         fun onRunClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -219,7 +219,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
         fun onClearDataClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -512,10 +512,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询步进电机参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -535,10 +533,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询堵转参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -558,10 +554,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置堵转参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -574,10 +568,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_STEPPER_MOTOR -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置步进电机参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -590,10 +582,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SAVE_CONFIG_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "保存出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -606,10 +596,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_AUTO_MEASURING_HOLEDEPTH -> {//设置自动测量孔深参数
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "自动测量孔深出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -623,10 +611,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_MEASURING_HOLEDEPTH -> {//设置手动测量孔深配置参数
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "手动测量孔深出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -644,10 +630,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "获取测量孔深配置参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -674,10 +658,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "获取电机的实时运动数据出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -704,10 +686,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_STOP_MEASURING_HOLEDEPTH -> {//停止电机运动
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "停止电机出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -727,10 +707,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_CLEAR_MEASURING_HOLEDEPTH_DATA -> {//ADME测量孔深清空数据
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "清空数据出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -771,7 +749,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     }
 
                     override fun onStopClick() {
-                        if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                        if (isBleDisconnected()) {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                             return
                         }
@@ -830,7 +808,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     }
 
                     override fun onStopClick() {
-                        if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                        if (isBleDisconnected()) {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                             return
                         }
@@ -838,7 +816,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     }
 
                     override fun onPauseClick() {
-                        if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                        if (isBleDisconnected()) {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                             return
                         }

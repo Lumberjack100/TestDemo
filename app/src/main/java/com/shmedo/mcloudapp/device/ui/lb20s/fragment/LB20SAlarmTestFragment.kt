@@ -75,7 +75,7 @@ class LB20SAlarmTestFragment : BaseIOTDeviceFragment() {
          */
         fun onOnClickAlarmTestClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -95,7 +95,7 @@ class LB20SAlarmTestFragment : BaseIOTDeviceFragment() {
          */
         fun onCustomBroadcastClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }

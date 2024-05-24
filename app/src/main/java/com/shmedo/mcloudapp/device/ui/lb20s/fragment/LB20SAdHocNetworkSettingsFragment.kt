@@ -81,7 +81,7 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
          */
         fun onRadioSettingsClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -102,7 +102,7 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
          */
         fun onLoRaSettingsClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -123,7 +123,7 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
          */
         fun onGatewaySchoolTimeClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -135,7 +135,7 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
          */
         fun onGatewayRestartClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -155,7 +155,7 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
          */
         fun onRestoreGatewayToFactoryClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }

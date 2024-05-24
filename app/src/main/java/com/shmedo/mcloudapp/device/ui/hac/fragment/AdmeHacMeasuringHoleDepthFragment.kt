@@ -102,7 +102,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -209,7 +209,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
         fun onRunClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -657,7 +657,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     }
 
                     override fun onStopClick() {
-                        if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                        if (isBleDisconnected()) {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                             return
                         }
@@ -708,7 +708,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     }
 
                     override fun onStopClick() {
-                        if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                        if (isBleDisconnected()) {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                             return
                         }
@@ -716,7 +716,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     }
 
                     override fun onPauseClick() {
-                        if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                        if (isBleDisconnected()) {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                             return
                         }

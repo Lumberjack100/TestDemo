@@ -118,7 +118,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -295,7 +295,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
         }
 
         fun onSaveModelFieldClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }

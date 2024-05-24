@@ -183,7 +183,7 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
         }
 
         fun onSubmitClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }

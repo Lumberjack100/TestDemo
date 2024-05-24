@@ -84,7 +84,7 @@ class AdmeStepperMotorFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -109,7 +109,7 @@ class AdmeStepperMotorFragment : BaseIOTDeviceFragment() {
 
         fun onSubmitClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -206,10 +206,8 @@ class AdmeStepperMotorFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询步进电机参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -225,10 +223,8 @@ class AdmeStepperMotorFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_STEPPER_MOTOR -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置步进电机参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -241,10 +237,8 @@ class AdmeStepperMotorFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SAVE_CONFIG_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "保存出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

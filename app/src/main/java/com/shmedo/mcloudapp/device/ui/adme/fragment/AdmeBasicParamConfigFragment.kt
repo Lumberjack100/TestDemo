@@ -113,7 +113,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -248,7 +248,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
         }
 
         override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
                 return
@@ -268,7 +268,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
 
         fun onSubmitClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -521,10 +521,8 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询基础配置参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        handleFailureResult(errMsg)
                         //设备版本不支持，隐藏编辑按钮
                         toolbarViewModel.toolbarIvActionVisible.set(!errMsg.contains("设备版本不支持"))
                         return

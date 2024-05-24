@@ -199,7 +199,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         }
 
         override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
                 return
@@ -220,7 +220,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun processItemClick(module: ConfigModule) {
-        if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+        if (isBleDisconnected()) {
             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
             return
         }
@@ -525,10 +525,8 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询基础配置信息出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -541,10 +539,8 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             MDCommandType.LOW_ENERGY -> {//
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "激活/待机出错!"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -587,10 +583,8 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             MDCommandType.INSTANT_COLLEACTOR -> {//
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "遥测出错!"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -606,10 +600,8 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             MDCommandType.SAVE_CONFIG_INFO -> {//
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "$cmdStr 指令出错!"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -625,10 +617,8 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             MDCommandType.REBOOT_DEVICE -> {//
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "重启出错!"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

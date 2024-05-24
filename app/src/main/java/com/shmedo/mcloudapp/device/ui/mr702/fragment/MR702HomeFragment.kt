@@ -198,7 +198,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         fun onNormalClick() {
             if (mHeadStates.isWorkModeNormal.get())
                 return
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -211,7 +211,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         fun onLowPowerClick() {
             if (!mHeadStates.isWorkModeNormal.get())
                 return
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -223,7 +223,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun processItemClick(module: ConfigModule) {
-        if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+        if (isBleDisconnected()) {
             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
             return
         }

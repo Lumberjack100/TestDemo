@@ -78,7 +78,7 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
          */
         fun onZeroCalibrationClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -104,7 +104,7 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
          */
         fun onSetInitialValueClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }

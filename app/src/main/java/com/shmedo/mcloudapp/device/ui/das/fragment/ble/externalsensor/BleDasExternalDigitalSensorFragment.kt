@@ -623,10 +623,8 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             MDCommandType.SENSOR_INITIAL_READING -> {//设置量水堰初始读数 171
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "量水堰初始读数设置出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -643,10 +641,8 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "刷新传感器参数出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
