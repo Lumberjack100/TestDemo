@@ -233,21 +233,18 @@ fun BaseFragment.getAdmeErrorMsg(abndiasis: String, delimiters: String = "\n"): 
     abndiasis.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
         .forEach { code ->
             val errorType = AdmeModuleErrorType.valueByCode(code)
-            stringBuilder.append(errorType.description)
-            stringBuilder.append(delimiters)
+            if (errorType != AdmeModuleErrorType.EMPTY_ERROR) {
+                stringBuilder.append(if (errorType == AdmeModuleErrorType.UNKNOWN_ERROR) "未知异常,异常代码: $code" else errorType.description)
+                stringBuilder.append(delimiters)
+            }
         }
-    //移除最后一个分号
+    //移除最后一个定界符
     if (stringBuilder.isNotEmpty()) {
         stringBuilder.deleteCharAt(stringBuilder.length - 1)
     }
 
-    if (stringBuilder.toString().contains(AdmeModuleErrorType.EMPTY_ERROR.description)) {
+    if (stringBuilder.toString().replace(delimiters, "").isEmpty()) {
         return ""
-    }
-
-    if (stringBuilder.toString().contains(AdmeModuleErrorType.UNKNOWN_ERROR.description)) {
-        stringBuilder.clear()
-        stringBuilder.append("异常代码: $abndiasis")
     }
 
     return stringBuilder.toString()

@@ -424,18 +424,6 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 停止或者暂停电机运动
-     */
-    private fun stopMotorMotion() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.ADME_MD_STOP_MEASURING_HOLEDEPTH
-        )
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
      * 继续电机运动
      */
     private fun continueMotorMotion() {
@@ -464,6 +452,20 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
+    }
+
+    /**
+     * 停止或者暂停电机运动
+     */
+    private fun stopMotorMotion() {
+        stopQueryMotorState()
+
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.ADME_MD_STOP_MEASURING_HOLEDEPTH
+        )
+        commandItems.add(command)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     /**
@@ -747,26 +749,6 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun updateMotorMotionDistance(motorMotionDistanceInfo: AdmeMotorMotionDistanceInfo) {
-        try {
-            if (lastMotionDistance.isEmpty())
-                lastMotionDistance = motorMotionDistanceInfo.realmovedistance
-            if (safeDistance.isEmpty())
-                safeDistance = motorMotionDistanceInfo.realholedepth
-            if (motorMotionDistanceInfo.realholedepth.isNotEmpty() && safeDistance.isNotEmpty()) {
-                val holeValue = abs(motorMotionDistanceInfo.realholedepth.toDouble())
-                val safeValue = abs(safeDistance.toDouble())
-                //测孔深值不等于安全补偿距离表示测孔深值有效
-                if (holeValue != safeValue) {
-                    mStates.realHoleDepth.set(motorMotionDistanceInfo.realholedepth)
-                    mStates.recommendHoleDepth.set(motorMotionDistanceInfo.recoholedepth)
-                }
-            }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
-    }
-
     private fun showAutoMotorMotionBottomDialog() {
         autoMeasuringHoleDepthBottomDialog =
             AdmeAutoMeasuringHoleDepthBottomDialog.newInstance().apply {
@@ -782,7 +764,6 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             resetPulseData()
                             //蓝牙未断开时先发送停止电机指令，再关闭运行页面
                             if (bleViewModel.isConnected()) {
-                                stopQueryMotorState()
                                 stopMotorMotion()
                             }
                             dismiss()
@@ -794,7 +775,6 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                             return
                         }
-                        stopQueryMotorState()
                         stopMotorMotion()
                     }
 
@@ -843,7 +823,6 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             resetPulseData()
                             //蓝牙未断开时先发送停止电机指令，再关闭运行页面
                             if (bleViewModel.isConnected()) {
-                                stopQueryMotorState()
                                 stopMotorMotion()
                             }
                             dismiss()
@@ -855,7 +834,6 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                             return
                         }
-                        stopQueryMotorState()
                         stopMotorMotion()
                     }
 
@@ -869,7 +847,6 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             continueMotorMotion()
                         } else {
                             mStates.pauseButtonText.set("继续")
-                            stopQueryMotorState()
                             stopMotorMotion()
                         }
                     }
@@ -884,6 +861,26 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         mStates.isClearMotionDataVisible.set(true)
         mStates.isStopQueryMotorState.set(false)
         getMotorMotionData(DELAY_2000_MILLIS)
+    }
+
+    private fun updateMotorMotionDistance(motorMotionDistanceInfo: AdmeMotorMotionDistanceInfo) {
+        try {
+            if (lastMotionDistance.isEmpty())
+                lastMotionDistance = motorMotionDistanceInfo.realmovedistance
+            if (safeDistance.isEmpty())
+                safeDistance = motorMotionDistanceInfo.realholedepth
+            if (motorMotionDistanceInfo.realholedepth.isNotEmpty() && safeDistance.isNotEmpty()) {
+                val holeValue = abs(motorMotionDistanceInfo.realholedepth.toDouble())
+                val safeValue = abs(safeDistance.toDouble())
+                //测孔深值不等于安全补偿距离表示测孔深值有效
+                if (holeValue != safeValue) {
+                    mStates.realHoleDepth.set(motorMotionDistanceInfo.realholedepth)
+                    mStates.recommendHoleDepth.set(motorMotionDistanceInfo.recoholedepth)
+                }
+            }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
     }
 
     /**
@@ -961,8 +958,9 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             } else {
                 //电机暂停
                 mStates.pauseButtonText.set("继续")
-                stopQueryMotorState()
             }
+            stopQueryMotorState()
+
         } catch (ex: Exception) {
             ex.printStackTrace()
         }

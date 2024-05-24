@@ -235,9 +235,11 @@ object DeviceStatusHelper {
 
     fun checkAdmeDeviceAbnormal(abndiasis: String): ArrayList<String> {
         val deviceAbnormalList: ArrayList<String> = ArrayList()
-        abndiasis.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.forEach {
-            val errorType = AdmeModuleErrorType.valueByCode(it)
-            deviceAbnormalList.add(errorType.description)
+        abndiasis.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.forEach {code->
+            val errorType = AdmeModuleErrorType.valueByCode(code)
+            if (errorType != AdmeModuleErrorType.EMPTY_ERROR) {
+                deviceAbnormalList.add(if (errorType == AdmeModuleErrorType.UNKNOWN_ERROR) "未知异常,异常代码: $code" else errorType.description)
+            }
         }
 
         return deviceAbnormalList

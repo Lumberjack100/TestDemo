@@ -407,9 +407,32 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     }
 
     /**
+     * 继续电机运动
+     */
+    private fun continueMotorMotion() {
+        try {
+            commandItems.clear()
+            val entity = HacMeasuringHoleDepthInfoEntity(
+                model = "1",
+                movementway = if (mStates.motionType.get() == motionTypeList[0]) "0" else "1",
+            )
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.ADME_HAC_MD_SET_HOLE_MEASURE_PARAM,
+                entity.toCommandString()
+            )
+            commandItems.add(command)
+            sendCommandFromCmdList(isStartTimeoutJob = true)
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+    }
+
+    /**
      * 停止或者暂停电机运动
      */
     private fun stopMotorMotion() {
+        stopQueryMotorState()
+
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.ADME_MD_STOP_MEASURING_HOLEDEPTH
@@ -627,7 +650,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             resetPulseData()
                             //蓝牙未断开时先发送停止电机指令，再关闭运行页面
                             if (bleViewModel.isConnected()) {
-                                stopQueryMotorState()
                                 stopMotorMotion()
                             }
                             dismiss()
@@ -639,7 +661,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                             return
                         }
-                        stopQueryMotorState()
                         stopMotorMotion()
                     }
 
@@ -680,7 +701,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             resetPulseData()
                             //蓝牙未断开时先发送停止电机指令，再关闭运行页面
                             if (bleViewModel.isConnected()) {
-                                stopQueryMotorState()
                                 stopMotorMotion()
                             }
                             dismiss()
@@ -692,7 +712,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                             return
                         }
-                        stopQueryMotorState()
                         stopMotorMotion()
                     }
 
@@ -706,7 +725,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             continueMotorMotion()
                         } else {
                             mStates.pauseButtonText.set("继续")
-                            stopQueryMotorState()
                             stopMotorMotion()
                         }
                     }
@@ -749,7 +767,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         //异常码 99 表示上拉到管口，测量结束，停止轮询脉冲数并发送停止电机运动指令
         if (motorMotionDistanceInfo.abndiasis.contains("99")) {
             mStates.isDoManualStopAction.set(true)
-            stopQueryMotorState()
             stopMotorMotion()
             return
         }
@@ -779,31 +796,12 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    /**
-     * 继续电机运动
-     */
-    private fun continueMotorMotion() {
-        try {
-            commandItems.clear()
-            val entity = HacMeasuringHoleDepthInfoEntity(
-                model = "1",
-                movementway = if (mStates.motionType.get() == motionTypeList[0]) "0" else "1",
-            )
-            val command = IOTCommandUtil.getCommand(
-                IOTCommandType.ADME_HAC_MD_SET_HOLE_MEASURE_PARAM,
-                entity.toCommandString()
-            )
-            commandItems.add(command)
-            sendCommandFromCmdList(isStartTimeoutJob = true)
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
-    }
     private fun resetPulseData() {
         autoMeasuringHoleDepthBottomDialog = null
         manualMeasuringHoleDepthBottomDialog = null
         safeDistance = ""
     }
+
     private fun stopQueryMotorState() {
         cancelNearbyCommunicationTimeoutJob()
         mStates.isStopQueryMotorState.set(true)

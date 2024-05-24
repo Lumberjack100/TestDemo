@@ -27,7 +27,6 @@ class AdmeHacManualMeasuringHoleDepthBottomDialog : BaseVmDbDialogFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        mStates.isStopQueryMotorState.set(false)
         mStates.isExitButtonVisible.set(false)
         mStates.isDoManualStopAction.set(false)
         mStates.motorInfo.set("正常")
