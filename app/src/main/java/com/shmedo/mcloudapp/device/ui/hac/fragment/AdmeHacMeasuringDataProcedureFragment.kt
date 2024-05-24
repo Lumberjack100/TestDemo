@@ -378,7 +378,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
                 AdmeCTRMotionState.WAITING_NEXT_TESTING,//等待下一次测量
                 AdmeCTRMotionState.WAITING_BACK_TESTING -> {//等待反测
-                    cancelNearbyCommunicationTimeoutJob()
+                    stopQueryMotorState()
                     mStates.isVerticalProgressBarVisible.set(false)
                     mStates.isHorizontalProgressBarReadingData.set(motionState.motorinfo == "9")//正反测模式下，正测阶段只有读取数据过程，没有上传数据，所以不展示上传数据进度框
                     setHorizontalMaxProgress()
@@ -393,7 +393,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 }
 
                 AdmeCTRMotionState.FAILED -> {//测量失败
-                    cancelNearbyCommunicationTimeoutJob()
+                    stopQueryMotorState()
                     mStates.motorInfo.set("测量失败")
                     mStates.isRunButtonVisible.set(true)
                     mStates.runButtonText.set("下一步")
@@ -549,6 +549,15 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         //移除最后一个分号
         if (stringBuilder.isNotEmpty()) {
             stringBuilder.deleteCharAt(stringBuilder.length - 1)
+        }
+
+        if (stringBuilder.toString() == AdmeModuleErrorType.EMPTY_ERROR.description) {
+            return
+        }
+        if (stringBuilder.toString() == AdmeModuleErrorType.UNKNOWN_ERROR.description) {
+            stringBuilder.clear()
+            stringBuilder.append("异常代码: $abndiasis")
+            return
         }
 
         val popupView = HacErrorProtectionTip(requireContext())
