@@ -142,13 +142,16 @@ class BleScannerListFragment : BaseFragment() {
                         mStates.bluetoothNotAvailable.set(false)
                         mStates.bluetoothMissPermission.set(false)
                         mStates.bluetoothDisabled.set(false)
-                        processScanResult()
+                        launchAndRepeatWithViewLifecycle {
+                            processScanResult()
+                        }
                     }
 
                     else -> {}
                 }
             }
         }
+
         mStates.keyWords.observe(viewLifecycleOwner) { keyword ->
             Timber.i("keyWords 触发")
             scannerViewModel.setFilterName(keyword)
@@ -206,6 +209,10 @@ class BleScannerListFragment : BaseFragment() {
 
                 is ScanningState.DevicesDiscovered -> {
                     Timber.i("scannerViewModel.state: DevicesDiscovered=${state.devices.size}")
+                    if (state.devices.isNotEmpty())
+                        binding.refreshLayout.showContent()
+                    else
+                        binding.refreshLayout.showEmpty()
                     binding.recyclerviewDevice.models = state.devices
 
                     if (isFilterNameByScanningQRCode && state.devices.isNotEmpty()) {
