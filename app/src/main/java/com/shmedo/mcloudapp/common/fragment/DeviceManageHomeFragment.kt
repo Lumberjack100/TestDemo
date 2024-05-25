@@ -20,39 +20,47 @@ import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.enums.PopupAnimation
+import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.permission.PermissionInterceptor
+import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
 import com.shmedo.mcloudapp.common.model.CustomActivityResult
-import com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.databinding.FragmentDeviceManageHomeBinding
 import com.shmedo.mcloudapp.device.ui.BleScannerListFragment
+import com.shmedo.mcloudapp.device.ui.DeviceHomeActivity
 import com.shmedo.mcloudapp.device.ui.NewNetDeviceListFragment
+import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.ScanQRCodeResultPopupViewViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.utils.PermissionHelper
 import com.shmedo.mcloudapp.utils.PermissionHelper.REQUEST_CODE_SCAN
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import timber.log.Timber
 
 class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentDeviceManageHomeBinding
     private lateinit var mMessenger: PageMessenger
-    private lateinit var mStates: EmptyViewModel
+    private lateinit var mStates: ScanQRCodeResultPopupViewViewModel
+    private lateinit var deviceRequestViewModel: DeviceRequestViewModel
 
     private val activeColor: Int = ColorUtils.getColor(R.color.title_text_color)
     private val normalColor: Int = ColorUtils.getColor(R.color.text_color_666666)
     private val activeSize: Float = 18f
     private val normalSize: Float = 16f
     private val tabs = arrayOf("4G", "蓝牙")
-    private val moreChooseList = arrayListOf("查询数据")//"扫一扫", "WIFI 设备", "USB 设备", "查询数据"
+    private val moreChooseList =
+        arrayListOf("扫码连接", "查询数据")//"扫一扫", "WIFI 设备", "USB 设备", "查询数据"
 
     override fun initViewModel() {
         mMessenger = getAppViewModel()
         mStates = getFragmentScopeViewModel()
+        deviceRequestViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -81,6 +89,16 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
                 scanResult(obj.originalValue)
             }
         }
+        deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceInfo> ->
+            if (!dataResult.responseStatus.isSuccess) {
+                showMessageDialog("获取设备信息失败!${dataResult.responseStatus.errorMessage}")
+                return@observe
+            }
+            DeviceHomeActivity.start(
+                mActivity,
+                dataResult.result!!,
+            )
+        }
     }
 
     private fun initViewPager() {
@@ -97,7 +115,6 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
         val tabLayoutMediator =
             TabLayoutMediator(binding.tabs, binding.viewpager) { tab, position ->
                 val textView = TextView(requireContext())
-
                 textView.text = tabs[position]
                 if (position == 0) { // 第一个为默认选中
                     textView.textSize = activeSize
@@ -121,14 +138,6 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
             textSize = activeSize
             typeface = Typeface.DEFAULT_BOLD
             setTextColor(activeColor)
-        }
-        if (tab.position == 0) {
-            moreChooseList.clear()
-            moreChooseList.add("查询数据")
-        } else {
-            moreChooseList.clear()
-            moreChooseList.add("扫码连接")
-            moreChooseList.add("查询数据")
         }
     }
 
@@ -218,7 +227,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     private fun scanResult(result: String) {
         var result = result
         if (TextUtils.isEmpty(result)) {
-            showMessageDialog("请扫描正确的设备二维码")
+            showMessageDialog("米易通无法识别该二维码")
             return
         }
         if (result.contains("MEDO")) {
@@ -229,7 +238,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
         } else if (result.startsWith("https://cloud.shmedo.cn/mcloudapp/device")) {
             parseNewDeviceCode(result)
         } else {
-            showMessageDialog("请扫描正确的设备二维码")
+            showMessageDialog("米易通无法识别该二维码")
             return
         }
     }
@@ -240,14 +249,15 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     private fun parseOldDeviceCode(barCode: String) {
         val localData = barCode.split(",".toRegex()).dropLastWhile { it.isEmpty() }
         if (localData.size != 3) {
-            showMessageDialog("请扫描正确的设备二维码")
+            showMessageDialog("米易通无法识别该二维码")
             return
         }
         if (TextUtils.isEmpty(localData[1])) {
-            showMessageDialog("请扫描正确的设备二维码")
+            showMessageDialog("米易通无法识别该二维码")
             return
         }
-        mMessenger.dispatchScanSNResult(localData[1])
+        mStates.scanQRCodeResult.set(localData[1])
+        showChooseConnectType()
     }
 
     /**
@@ -256,13 +266,39 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     private fun parseNewDeviceCode(barCode: String) {
         val localData = barCode.split("=".toRegex()).dropLastWhile { it.isEmpty() }
         if (localData.size != 2) {
-            showMessageDialog("请扫描正确的设备二维码")
+            showMessageDialog("米易通无法识别该二维码")
             return
         }
         if (TextUtils.isEmpty(localData[1])) {
-            showMessageDialog("请扫描正确的设备二维码")
+            showMessageDialog("米易通无法识别该二维码")
             return
         }
-        mMessenger.dispatchScanSNResult(localData[1])
+        mStates.scanQRCodeResult.set(localData[1])
+        showChooseConnectType()
+    }
+
+
+    private fun showChooseConnectType() {
+        val popupView = ScanQRCodeResultPopupView(requireContext())
+        popupView.setTitle("选择连接方式", mStates)
+            .setClickListener(object : ScanQRCodeResultPopupView.OnClickListener {
+                override fun onBleConnectClick() {
+                    binding.tabs.getTabAt(1)?.select()
+                    mMessenger.dispatchScanSNResult(mStates.scanQRCodeResult.get())
+                }
+
+                override fun on4gConnectClick() {
+                    deviceRequestViewModel.getDeviceDetailInfo(mStates.scanQRCodeResult.get())
+                }
+            })
+        XPopup.Builder(context)
+            .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
+            .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
+            .enableDrag(false)
+            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+            .asCustom(popupView)
+            .show()
     }
 }
+
+

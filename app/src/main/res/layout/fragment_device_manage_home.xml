@@ -7,7 +7,7 @@
 
         <variable
             name="vm"
-            type="com.shmedo.mcloudapp.common.viewmodel.state.EmptyViewModel" />
+            type="com.shmedo.mcloudapp.device.viewmodel.state.ScanQRCodeResultPopupViewViewModel" />
 
         <variable
             name="click"

@@ -10,7 +10,6 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.XXPermissions
-import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.permission.util.Available
 import com.shmedo.lib.ble.permission.util.FeatureNotAvailableReason
@@ -54,7 +53,7 @@ class BleScannerListFragment : BaseFragment() {
     private lateinit var scannerViewModel: ScannerViewModel
 
     private var discoveredBluetoothDevice: DiscoveredBluetoothDevice? = null
-    private var isFilterNameByScanning = false//是否通过扫描设备二维码来过滤查找设备
+    private var isFilterNameByScanningQRCode = false//是否通过扫描设备二维码来过滤查找设备
     private var scanSearchDeviceTimeoutJob: Job? = null
 
     /**
@@ -95,7 +94,7 @@ class BleScannerListFragment : BaseFragment() {
             addType<DiscoveredBluetoothDevice>(R.layout.item_ble_device)
             R.id.item.onClick {
                 discoveredBluetoothDevice = getModel<DiscoveredBluetoothDevice>()
-                discoveredBluetoothDevice!!.name?.replaceFirst(Regex("^MD-?"), "")
+                discoveredBluetoothDevice?.name?.replaceFirst(Regex("^MD-?"), "")
                     ?.let { deviceToken ->
                         deviceRequestViewModel.getDeviceDetailInfo(deviceToken)
                     }
@@ -158,13 +157,14 @@ class BleScannerListFragment : BaseFragment() {
             if (sn.isNullOrEmpty()) {
                 return@observe
             }
-            isFilterNameByScanning = true
+            scannerViewModel.setFilterName(sn)
+            isFilterNameByScanningQRCode = true
             mStates.keyWords.value = sn
             startScanningSearchDeviceTimeoutJob()
         }
         deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
-                discoveredBluetoothDevice!!.name?.let { token ->
+                discoveredBluetoothDevice?.name?.let { token ->
                     //CG0 自组网报警网关 特殊处理
                     if (!token.endsWith(ProductType.COLLECTOR_G_0.newSuffix)) {
                         showMessageDialog("获取设备信息失败!${dataResult.responseStatus.errorMessage}")
@@ -208,14 +208,18 @@ class BleScannerListFragment : BaseFragment() {
                     Timber.i("scannerViewModel.state: DevicesDiscovered=${state.devices.size}")
                     binding.recyclerviewDevice.models = state.devices
 
-                    if (isFilterNameByScanning) {
-                        if (state.devices.isNotEmpty()) {
-                            stopScanningSearchDeviceTimeoutJob()
-                            discoveredBluetoothDevice = state.devices[0]
-                            discoveredBluetoothDevice!!.name?.replaceFirst(Regex("^MD-?"), "")
-                                ?.let { deviceToken ->
-                                    deviceRequestViewModel.getDeviceDetailInfo(deviceToken)
-                                }
+                    if (isFilterNameByScanningQRCode && state.devices.isNotEmpty()) {
+                        discoveredBluetoothDevice = state.devices[0]
+                        discoveredBluetoothDevice?.name?.let { deviceToken ->
+                            if (deviceToken.contains(mStates.keyWords.value.toString())) {
+                                stopScanningSearchDeviceTimeoutJob()
+                                deviceRequestViewModel.getDeviceDetailInfo(
+                                    deviceToken.replaceFirst(
+                                        Regex("^MD-?"),
+                                        ""
+                                    )
+                                )
+                            }
                         }
                     }
                 }
@@ -268,21 +272,22 @@ class BleScannerListFragment : BaseFragment() {
         scanSearchDeviceTimeoutJob?.cancel()
         scanSearchDeviceTimeoutJob = launchWithViewLifecycle {
             withContext(Dispatchers.Main) {
-                showLoadingDialog("正在搜索设备 ${mStates.keyWords.value}...")
+                showLoadingDialog("搜索设备 ${mStates.keyWords.value} 蓝牙广播中...")
             }
-            delay(10000)
+            delay(5000)
             withContext(Dispatchers.Main) {
                 dismissLoadingDialog()
-                Toaster.show("未搜索到设备 ${mStates.keyWords.value}")
-                isFilterNameByScanning = false
-                mStates.keyWords.value = ""
+                isFilterNameByScanningQRCode = false
+                mStates.keyWords.value = "MD"
+                delay(500)
+                showMessageDialog("未搜索到该设备!")
             }
         }
     }
 
     private fun stopScanningSearchDeviceTimeoutJob() {
-        isFilterNameByScanning = false
-        mStates.keyWords.value = ""
+        isFilterNameByScanningQRCode = false
+        mStates.keyWords.value = "MD"
         scanSearchDeviceTimeoutJob?.cancel()
         dismissLoadingDialog()
     }
