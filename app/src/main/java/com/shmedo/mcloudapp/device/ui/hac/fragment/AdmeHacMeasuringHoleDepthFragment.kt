@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.device.ui.hac.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
+import android.view.WindowManager
 import android.widget.CompoundButton
 import androidx.core.widget.addTextChangedListener
 import com.blankj.utilcode.util.ColorUtils
@@ -807,7 +808,15 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
     override fun onResume() {
         super.onResume()
+        // 启用屏幕长亮
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // 禁用屏幕长亮
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     companion object {

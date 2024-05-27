@@ -230,6 +230,8 @@ dependencies {
 //    debugImplementation(libs.leakcanary.android)
 //    debugImplementation(libs.getActivity.logcat)
 
+    implementation (libs.progressbutton)
+
     implementation(libs.glide)
     implementation(libs.bundles.pictureselector)
 

@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.device.ui.adme.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
+import android.view.WindowManager
 import android.widget.CompoundButton
 import androidx.core.widget.addTextChangedListener
 import com.blankj.utilcode.util.ColorUtils
@@ -11,7 +12,6 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
@@ -36,7 +36,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentAdmeMeasuringHoleDepthBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeMeasuringHoleDepthViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
@@ -958,7 +957,15 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
     override fun onResume() {
         super.onResume()
+        // 启用屏幕长亮
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // 禁用屏幕长亮
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     companion object {

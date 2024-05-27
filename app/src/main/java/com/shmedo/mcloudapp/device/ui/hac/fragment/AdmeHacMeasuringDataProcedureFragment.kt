@@ -6,6 +6,7 @@ import android.media.SoundPool
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
+import android.view.WindowManager
 import android.view.animation.BounceInterpolator
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
@@ -232,14 +233,14 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                         val errMsg = "获取设备的运行状态出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
-                        getMotorMotionData(DELAY_5000_MILLIS)
+                        getMotorMotionData(DELAY_2000_MILLIS)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
                         refreshMotionState(result.data)
                         sendCommandFromCmdList {
-                            getMotorMotionData(DELAY_5000_MILLIS)
+                            getMotorMotionData(DELAY_2000_MILLIS)
                         }
                     }
                 }
@@ -265,7 +266,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.LENGTH_INVALID -> {//接收的数据格式不符合物联网指令协议，进入此逻辑处理
-                getMotorMotionData(DELAY_5000_MILLIS)
+                getMotorMotionData(DELAY_2000_MILLIS)
             }
 
             else -> {
@@ -554,7 +555,15 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
     override fun onResume() {
         super.onResume()
+        // 启用屏幕长亮
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // 禁用屏幕长亮
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun processBack(isNavUp: Boolean = true) {
@@ -611,7 +620,6 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
     companion object {
         const val DELAY_2000_MILLIS = 2000L
-        const val DELAY_5000_MILLIS = 5000L
         const val CHECK_REVERSE: String = "check_reverse"
 
         fun newBundleArguments(
