@@ -19,7 +19,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentLb20sVolumeSettingsBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.LB20SVolumeSettingsViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
@@ -28,6 +27,7 @@ import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+
 /**
  * @author：gonghe
  * @time: 2024/5/11
@@ -132,7 +132,7 @@ class LB20SVolumeSettingsFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_SET_VOICE_BROADCAST_VOLUME -> {//
+            IOTCommandType.MD_SET_VOICE_BROADCAST_VOLUME_RESPONSE -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
