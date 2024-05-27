@@ -188,10 +188,8 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
             IOTCommandType.MD_SET_SENSOR_INITIAL -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "初始化失败: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

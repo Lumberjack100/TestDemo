@@ -18,7 +18,7 @@
         android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/layer_common_click_item_with_divider2"
+        android:background="@drawable/layer_common_click_item_with_divider"
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"

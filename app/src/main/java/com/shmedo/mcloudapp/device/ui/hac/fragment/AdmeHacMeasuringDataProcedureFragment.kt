@@ -285,7 +285,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         }
 
         //异常时，停止轮询电机运动状态，展示异常原因
-        if (motionState.abndiasis != "0") {
+        if (motionState.abndiasis.isNotEmpty() && motionState.abndiasis != "0") {
             cancelNearbyCommunicationTimeoutJob()
             showAdmeErrorProtectionDialog(motionState.abndiasis)
         }

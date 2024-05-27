@@ -224,10 +224,8 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
             IOTCommandType.DAS_MD_SET_DIGITAL_PIEZOMETER_INFO -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置数字水位计参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

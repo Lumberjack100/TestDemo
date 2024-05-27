@@ -190,11 +190,9 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
                 else iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg =
                             if (cmdStr.contains("method=0")) "查询信息出错: ${result.message}" else "设置参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

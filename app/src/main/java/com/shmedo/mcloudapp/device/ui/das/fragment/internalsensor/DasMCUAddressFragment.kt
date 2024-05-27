@@ -137,10 +137,8 @@ class DasMCUAddressFragment : BaseIOTDeviceFragment() {
             IOTCommandType.DAS_MD_SET_MCU_ADDRESS -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置 MCU 地址出错!: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

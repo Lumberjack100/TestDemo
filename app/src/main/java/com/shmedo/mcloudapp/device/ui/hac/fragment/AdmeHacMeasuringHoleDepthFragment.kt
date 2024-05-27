@@ -560,10 +560,11 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
+                        //cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "获取电机的实时运动数据出错: ${result.message}"
                         Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(3500).iconError()
+                        Toaster.show(errMsg)
+                        getMotorMotionData(DELAY_2000_MILLIS)
                         return
                     }
 
@@ -774,10 +775,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             mStates.motionPulse.set(motorMotionDistanceInfo.pulsenumber)
             mStates.motionDistance.set(motorMotionDistanceInfo.realmovedistance)
             //CTR 工作异常
-            if (motorMotionDistanceInfo.abndiasis != "0" && !motorMotionDistanceInfo.abndiasis.contains(
-                    "99"
-                )
-            ) {
+            if (motorMotionDistanceInfo.abndiasis.isNotEmpty() && motorMotionDistanceInfo.abndiasis != "0") {
                 val errorMsg = getAdmeErrorMsg(motorMotionDistanceInfo.abndiasis, delimiters = ";")
                 if (errorMsg.isEmpty()) {
                     return

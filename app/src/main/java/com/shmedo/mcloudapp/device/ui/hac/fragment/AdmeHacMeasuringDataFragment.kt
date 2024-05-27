@@ -35,7 +35,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentAdmeHacMeasuringDataBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeHacMeasuringDataViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
@@ -448,7 +447,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
             else if (motionState.measmode == "1") "反向测量" else "正向测量"
         )
         //表示异常，展示异常原因
-        if (motionState.measmode == "2" && motionState.abndiasis != "0") {
+        if (motionState.measmode == "2" && motionState.abndiasis.isNotEmpty() && motionState.abndiasis != "0") {
             showAdmeErrorProtectionDialog(motionState.abndiasis)
         }
     }

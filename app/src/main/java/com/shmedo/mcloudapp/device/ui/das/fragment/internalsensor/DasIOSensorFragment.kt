@@ -204,10 +204,8 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
             IOTCommandType.DAS_MD_SET_IO_SENSOR_INFO -> {//设置开关量传感器
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置开关量传感器参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
