@@ -58,6 +58,7 @@
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
+
     <action
         android:id="@+id/action_global_to_firmwareUpgradeFragment"
         app:destination="@id/firmware_upgrade_graph"

@@ -115,8 +115,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        isIotCmd =
-            (productType == ProductType.COLLECTOR_R_1 || productType == ProductType.DAS || productType == ProductType.BHY)
+        isIotCmd = productType != ProductType.COLLECTOR_R_1 && productType != ProductType.DAS && productType != ProductType.BHY
     }
 
     override fun lazyLoadData() {
@@ -212,7 +211,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
 
                     is UnknownErrorResult -> {
                         printLog(
-                            "蓝牙连接失败, reason: device unknown erro",
+                            "蓝牙连接失败, reason: device unknown error",
                             ColorUtils.getColor(R.color.device_offline_platform)
                         )
                     }

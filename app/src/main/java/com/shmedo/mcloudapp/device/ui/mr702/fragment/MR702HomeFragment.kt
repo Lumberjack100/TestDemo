@@ -23,12 +23,12 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702HomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
+import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DataCenterModule
 import com.shmedo.mcloudapp.device.model.DeviceOperationModule
-import com.shmedo.mcloudapp.device.model.FirmwareUpgradeModule
 import com.shmedo.mcloudapp.device.model.MR702PortConfigModule
 import com.shmedo.mcloudapp.device.model.MR702TerminalParameterModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
@@ -442,11 +442,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             ConfigModule(RebootModule())
         )
         moduleList.add(
-            ConfigModule(
-                FirmwareUpgradeModule(
-                    navId = R.id.action_global_to_firmwareUpgradeFragment
-                )
-            )
+            ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_advancedSettingFragment))
         )
         if (communicateWay is BleConnect) {
             moduleList.add(

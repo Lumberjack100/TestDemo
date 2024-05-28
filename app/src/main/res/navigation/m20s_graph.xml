@@ -75,13 +75,7 @@
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
-    <action
-        android:id="@+id/action_global_to_firmwareUpgradeFragment"
-        app:destination="@id/firmware_upgrade_graph"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
+
 
     <action
         android:id="@+id/action_global_to_alarmSettingFragment"
@@ -94,6 +88,14 @@
     <action
         android:id="@+id/action_global_to_advancedSettingFragment"
         app:destination="@id/advancedSettingFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_firmwareUpgradeFragment"
+        app:destination="@id/firmware_upgrade_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
