@@ -6,6 +6,7 @@
     <data>
 
         <import type="android.text.TextUtils" />
+
         <import type="com.shmedo.lib.device.base.iot_cmd.enums.ProductType" />
 
         <variable
@@ -17,18 +18,17 @@
         android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@drawable/layer_common_click_item_with_divider"
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center_vertical"
-        android:minHeight="60dp"
         android:orientation="horizontal"
-        android:paddingStart="31dp"
-        android:paddingEnd="31dp">
+        android:paddingHorizontal="@dimen/dimen_size_20"
+        android:paddingVertical="@dimen/dimen_size_10">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_device_icon"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:src="@drawable/ic_ble_device" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -45,16 +45,14 @@
                     android:id="@+id/tv_dev_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="@dimen/dimen_size_10"
                     android:singleLine="true"
                     android:text='@{TextUtils.isEmpty(m.name)? "Unknown device":m.name}'
                     android:textColor="@color/title_text_color"
-                    android:textSize="17sp"
+                    android:textSize="@dimen/text_size_16"
                     android:textStyle="bold"
                     tools:text="小泉寺门头沟-E60S0231" />
 
-                <!-- visible="@{!TextUtils.isEmpty(m.name)}"-->
-                <!-- visible="@{ProductType.valueBySuffix(m.name).prefix}"-->
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_device_type"
                     android:layout_width="wrap_content"
@@ -67,8 +65,8 @@
                     android:singleLine="true"
                     android:textColor="#626366"
                     android:textSize="@dimen/text_size_12"
-                    tools:text="ADME"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    tools:text="ADME" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -80,32 +78,31 @@
                     android:id="@+id/tv_mac_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
+                    android:layout_marginStart="@dimen/dimen_size_10"
                     android:singleLine="true"
                     android:text="@{m.address}"
                     android:textColor="@color/title_text_color"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/text_size_13"
                     tools:text="0D:00:00:99:88:11" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tv_rssi"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
+                    android:layout_marginStart="@dimen/dimen_size_20"
                     android:singleLine="true"
                     android:text='@{m.rssi + " dBm"}'
                     android:textColor="@color/title_text_color"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/text_size_13"
                     tools:text="-91 dBm" />
             </androidx.appcompat.widget.LinearLayoutCompat>
-
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
+            android:layout_marginStart="@dimen/dimen_size_15"
             android:src="@drawable/icon_arrow_right" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>

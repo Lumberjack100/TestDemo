@@ -72,7 +72,7 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
     private fun initRefresh() {
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -174,8 +174,8 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
                 val info = commonCurrentStateInfoList[0]
                 if (info.dataCenterUseSta != IOTConstants.NULL_KEY && info.dataCenterStatus != IOTConstants.NULL_KEY && info.dataCenterUseSta.isNotEmpty() && info.dataCenterStatus.isNotEmpty()) {
                     //根据逗号分隔
-                    val enableStatusList = info.dataCenterUseSta.split(",")
-                    val onlineStatusList = info.dataCenterStatus.split(",")
+                    val enableStatusList = info.dataCenterUseSta.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                    val onlineStatusList = info.dataCenterStatus.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                     tableAdapter.setAllItems(
                         getColumnHeaderList(enableStatusList),
                         getRowHeaderList(),
@@ -256,7 +256,7 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
 
                 if (info.datacenterStatus != IOTConstants.NULL_KEY && info.datacenterStatus.isNotEmpty()) {
                     //根据逗号分隔
-                    val onlineStatusList = info.datacenterStatus.split(",")
+                    val onlineStatusList = info.datacenterStatus.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                     tableAdapter.setAllItems(
                         getColumnHeaderList(enableStatusList),
                         getRowHeaderList(),

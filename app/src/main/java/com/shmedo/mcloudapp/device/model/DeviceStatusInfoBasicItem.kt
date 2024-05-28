@@ -10,7 +10,7 @@ import androidx.databinding.BaseObservable
 data class DeviceStatusInfoBasicItem(
     val name: String = "",
     var value: String = "",
-    var colorRes: Int = 0,
+    var textColorRes: Int = 0,
     var isClickable: Boolean = false,
     var isClipboard: Boolean = false
 

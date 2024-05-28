@@ -20,6 +20,7 @@ import com.shmedo.mcloudapp.databinding.FragmentNetProductDeviceListBinding
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
+@Deprecated("This class is deprecated")
 class NetProductDeviceListFragment : BaseFragment() {
     private lateinit var binding: FragmentNetProductDeviceListBinding
     private lateinit var mStates: EmptyViewModel
@@ -29,7 +30,7 @@ class NetProductDeviceListFragment : BaseFragment() {
     private var productID = -1
 
     override fun initViewModel() {
-        mStates =  getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
         deviceRequestViewModel = getViewModel()
     }
 

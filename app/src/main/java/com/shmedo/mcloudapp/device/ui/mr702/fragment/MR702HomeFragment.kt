@@ -23,12 +23,12 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702HomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
+import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.device.model.ConfigModule
 import com.shmedo.mcloudapp.device.model.DataCenterModule
 import com.shmedo.mcloudapp.device.model.DeviceOperationModule
-import com.shmedo.mcloudapp.device.model.FirmwareUpgradeModule
 import com.shmedo.mcloudapp.device.model.MR702PortConfigModule
 import com.shmedo.mcloudapp.device.model.MR702TerminalParameterModule
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
@@ -198,7 +198,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         fun onNormalClick() {
             if (mHeadStates.isWorkModeNormal.get())
                 return
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -211,7 +211,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         fun onLowPowerClick() {
             if (!mHeadStates.isWorkModeNormal.get())
                 return
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -223,7 +223,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun processItemClick(module: ConfigModule) {
-        if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+        if (isBleDisconnected()) {
             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
             return
         }
@@ -316,10 +316,8 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     iotParseManager.parse<WorkModeBean>(cmdStr, IOTCommandType.GET_WORK_MODE)
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询设备工作模式出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -444,11 +442,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             ConfigModule(RebootModule())
         )
         moduleList.add(
-            ConfigModule(
-                FirmwareUpgradeModule(
-                    navId = R.id.action_global_to_firmwareUpgradeFragment
-                )
-            )
+            ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_advancedSettingFragment))
         )
         if (communicateWay is BleConnect) {
             moduleList.add(

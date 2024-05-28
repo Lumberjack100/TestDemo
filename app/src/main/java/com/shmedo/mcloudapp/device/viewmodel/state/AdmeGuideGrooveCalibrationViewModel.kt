@@ -11,9 +11,11 @@ class AdmeGuideGrooveCalibrationViewModel : ViewModel() {
     val pulseGoal = NonNullObservableField("")//运动脉冲数
 
     //底部弹窗
+    val isStopQueryMotorState = NonNullObservableField(false)
     val isExitButtonVisible = NonNullObservableField(false)
-    val isStopAction = NonNullObservableField(false)
+    val isDoStopAction = NonNullObservableField(false)
     val pauseButtonText = NonNullObservableField("暂停")
     val motionPulse = NonNullObservableField("0")
     val motionAngle = NonNullObservableField("0")
+
 }

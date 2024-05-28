@@ -7,13 +7,10 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.fragment.BaseVmDbDialogFragment
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.showMessage
-import com.shmedo.mcloudapp.device.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeGuideGrooveCalibrationViewModel
 
 class AdmeMotorMotionAngleBottomDialog : BaseVmDbDialogFragment() {
     private val mStates: AdmeGuideGrooveCalibrationViewModel by viewModels({ requireParentFragment() })
-    private val bleViewModel: BleViewModel by viewModels()
 
     override val dataBindingConfig: DataBindingConfig
         get() = DataBindingConfig(
@@ -31,7 +28,7 @@ class AdmeMotorMotionAngleBottomDialog : BaseVmDbDialogFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         mStates.isExitButtonVisible.set(false)
-        mStates.isStopAction.set(false)
+        mStates.isDoStopAction.set(false)
         mStates.pauseButtonText.set("暂停")
         mStates.motionPulse.set("0")
         mStates.motionAngle.set("0")
@@ -39,22 +36,16 @@ class AdmeMotorMotionAngleBottomDialog : BaseVmDbDialogFragment() {
 
     inner class ClickProxy {
         fun onCloseClick() {
-            if (!bleViewModel.isConnected() || mStates.isExitButtonVisible.get()) {
-                dismiss()
-                return
-            }
-            showMessage("确认退出数据运行吗?", "温馨提示", "确定", {
-                fragmentClickListener?.onCloseClick()
-            }, "取消")
+            fragmentClickListener?.onCloseClick()
         }
 
         fun onStopClick() {
-            mStates.isStopAction.set(true)
+            mStates.isDoStopAction.set(true)
             fragmentClickListener?.onStopClick()
         }
 
         fun onPauseClick() {
-            mStates.isStopAction.set(false)
+            mStates.isDoStopAction.set(false)
             fragmentClickListener?.onPauseClick()
         }
 

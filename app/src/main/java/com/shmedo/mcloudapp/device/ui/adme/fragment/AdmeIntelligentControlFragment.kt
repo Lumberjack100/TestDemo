@@ -92,7 +92,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -121,7 +121,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
         }
 
         override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
                 return
@@ -150,7 +150,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
         }
 
         fun onTorqueMotorRebootClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -185,7 +185,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
         }
 
         fun onClearDeviceDropNumberClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -204,7 +204,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
         }
 
         fun onClearDeviceMileageClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -223,7 +223,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
         }
 
         fun onClearVerticalMagneticSwitchTriggerClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -242,7 +242,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
         }
 
         fun onClearRotationMagneticSwitchTriggerClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -261,7 +261,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
         }
 
         fun onClearPadOpenCloseClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -614,10 +614,8 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_STEPPER_MOTOR -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置正反测使能出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -630,10 +628,8 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_AND_NEGATIVE_TEST_EXCEPTION_HANDLING -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置正反测异常智能处理使能出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -646,10 +642,8 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_LOW_ENERGY_MODE -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置低功耗使能出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -662,10 +656,8 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_ANTHROPOMORPHIC_MOVEMENT_MODE -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置拟人运动使能出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -678,10 +670,8 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
             IOTCommandType.TORQUE_MOTOR_REBOOT -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "重启失败: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -696,10 +686,8 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_BRAKE_PAD_CONTROL -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置刹车片控制方式出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -712,10 +700,8 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_MOTOR_POWER -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置电机电源使能出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -728,10 +714,8 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_CLEAR_DEVICE_RUNNING_DATA -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "清空数据出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -744,10 +728,8 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SAVE_CONFIG_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "保存出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

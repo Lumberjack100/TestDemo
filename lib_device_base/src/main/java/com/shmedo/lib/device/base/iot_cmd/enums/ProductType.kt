@@ -203,11 +203,11 @@ enum class ProductType(
                 if (productType.prefix.isEmpty())
                     continue
 
-                val tags = productType.prefix.split(",").toTypedArray()
-                for (tag in tags) {
-                    if (productToken.uppercase(Locale.getDefault()).startsWith(tag))
-                        return productType
-                }
+                productType.prefix.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                    .forEach { tag ->
+                        if (productToken.uppercase(Locale.getDefault()).startsWith(tag))
+                            return productType
+                    }
             }
             return UnKnown
         }

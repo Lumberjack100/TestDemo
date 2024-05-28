@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.mr702.fragment.port
 
 import android.os.Bundle
+import android.util.Log
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.bindingAdapter
@@ -21,13 +22,13 @@ import com.shmedo.lib.device.base.iot_cmd.model.mr.MRSensorStatus
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1Binding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.common.MRRS485Port1
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.MRSensorItem
 import com.shmedo.mcloudapp.device.model.RVEmptyFooter
 import com.shmedo.mcloudapp.device.model.SensorModel
@@ -71,11 +72,27 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
         initSensorAdapter()
     }
 
+    override fun initData() {
+        super.initData()
+        initDefaultParam()
+    }
+
+    /**
+     * 初始化默认参数
+     */
+    private fun initDefaultParam() {
+        mStates.acquisitionFrequency.set("500")//采集频率
+        mStates.collectionDuration.set("5")//采集周期
+        mStates.collectionTimes.set("1")//采集次数
+        mStates.noResponseTimes.set("3")//无应答次数
+        mStates.delayDuration.set("10")//延时时间
+    }
+
     private fun initRefresh() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -127,7 +144,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
     private fun showAddSensorPopup() {
         val sensorList = mInterfaceHomeViewModel.portSensorModelListMap["485port1"] ?: listOf()
         val selectionPopupView = MR702SensorSelectionPopupView(requireContext())
-        selectionPopupView.setData("请选择传感器类型", sensorList, true)
+        selectionPopupView.setData("请选择物模型", sensorList, true)
             .setSelectListener(object : MR702SensorSelectionPopupView.OnSelectListener {
                 override fun onSelect(sensorModel: SensorModel) {
                     val bundle = MR702RS485Port1SensorAddParamFragment.newBundleArguments(
@@ -135,7 +152,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                             sensorType = sensorModel.sensorType,
                             sensorName = sensorModel.sensorName,
                             modelToken = sensorModel.modelToken,
-                            modelFieldList = sensorModel.modelFieldList.map { it.fieldName }
+                            modelFieldList = sensorModel.modelFieldList
                         ),
                         productType,
                         communicateWay,
@@ -168,7 +185,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
 
     inner class ClickProxy : BaseClickProxy() {
         fun onSubmitClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -256,6 +273,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                 "index=0"
             )
         )
+        showLoadingDialog(StringUtils.getString(R.string.loading))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
@@ -268,9 +286,8 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询采集参数出错: ${result.message}"
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -362,6 +379,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
             mStates.delayDuration.set(collectionParam.powerontimes)
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -372,15 +390,15 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                     MoshiUtil.fromJson<List<MRSensorStatus>>(content)
                 } ?: return@launchWithViewLifecycle
                 val list = sensorStatusList.map { sensorStatus ->
-                    val strs = sensorStatus.model.split("_").toTypedArray()
+                    val strs = sensorStatus.model.split("_")
                     MRSensorItem(
                         isPlugin = sensorStatus.sta == "0",
                         addr = strs[1],
                         addrDesc = "地址-${strs[1]}",
                         sensorName = mInterfaceHomeViewModel.sensorModelMap[strs[0]]?.sensorName
-                            ?: "自定义传感器",
+                            ?: "自定义物模型",
                         modelToken = strs[0],
-                        modelFieldList = mInterfaceHomeViewModel.sensorModelMap[strs[0]]?.modelFieldList?.map { it.fieldName }
+                        modelFieldList = mInterfaceHomeViewModel.sensorModelMap[strs[0]]?.modelFieldList
                             ?: listOf()
                     )
                 }
@@ -388,6 +406,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                 updateFooter()
             } catch (e: Exception) {
                 Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

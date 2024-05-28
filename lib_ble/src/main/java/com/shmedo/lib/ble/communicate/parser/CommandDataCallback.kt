@@ -30,9 +30,8 @@ abstract class CommandDataCallback : ProfileReadResponse(), CommandCallback {
                 cmdContent
             )
             if (cmdContent.contains("\$\$")) {
-                val tempCmdList = cmdContent.split("\r\n".toRegex()).filter { it.isNotEmpty() }
-                if (tempCmdList.isNotEmpty()) {
-                    tempCmdList.forEach { tempCmd ->
+                cmdContent.split("\r\n".toRegex()).filter { it.isNotEmpty() }
+                    .forEach { tempCmd ->
                         Timber.v(
                             "接收数据(拆分后): length=%s bytes;content: %s",
                             tempCmd.toByteArray().size,
@@ -43,7 +42,7 @@ abstract class CommandDataCallback : ProfileReadResponse(), CommandCallback {
                         if (index != -1) cmd = cmd.substring(index)
                         onResponseReceived(device, cmdResult = cmd)
                     }
-                }
+
             } else if (cmdContent.contains("\$cmd")) {
                 val index = cmdContent.lastIndexOf("\$cmd")
                 if (index != -1)

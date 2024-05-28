@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.device.ui.adme.fragment
 
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,12 +35,9 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showLoadingDialog
-import com.shmedo.mcloudapp.ext.showMessageDialog
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentAdmeBasicParamConfigBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
@@ -49,10 +47,13 @@ import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.adme.adapter.AdmeTimeAdapter
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeBasicParamConfigViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessageDialog
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 import java.util.Date
 import java.util.Locale
 
@@ -73,8 +74,6 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
             mData
         )
     }
-    val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
-
 
     override fun initViewModel() {
         super.initViewModel()
@@ -114,7 +113,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -249,7 +248,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
         }
 
         override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
                 return
@@ -269,7 +268,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
 
         fun onSubmitClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -522,10 +521,8 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询基础配置参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        handleFailureResult(errMsg)
                         //设备版本不支持，隐藏编辑按钮
                         toolbarViewModel.toolbarIvActionVisible.set(!errMsg.contains("设备版本不支持"))
                         return
@@ -549,8 +546,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询执行机构参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        handleFailureResult(errMsg)
                         //设备版本不支持，隐藏编辑按钮
                         toolbarViewModel.toolbarIvActionVisible.set(!errMsg.contains("设备版本不支持"))
                         return
@@ -574,8 +570,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询堵转参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        handleFailureResult(errMsg)
                         //设备版本不支持，隐藏编辑按钮
                         toolbarViewModel.toolbarIvActionVisible.set(!errMsg.contains("设备版本不支持"))
                         return
@@ -717,7 +712,6 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
      */
     private fun initExecutiveAgencyInfo(info: AdmeExecutiveAgencyInfo) {
         mStates.executiveAgencyInfoWrapper.set(info)
-        val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
         try {
             mStates.measureMethodText.set(if (info.meastype == "0") measureMethodList[0] else measureMethodList[1])
             mStates.measureMethod.set(info.meastype.toInt())
@@ -732,9 +726,9 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
             )
             mStates.intervalDays.set(info.invalday)
             mStates.startTimePerRound.set(info.roundmeasstart)
-            info.roundmeasstart.split("|").let { times ->
-                mAdapter.data.clear()
-                times.forEach { time ->
+            mAdapter.data.clear()
+            info.roundmeasstart.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
+                .forEach { time ->
                     if (time.isNotEmpty()) {
                         mAdapter.data.add(
                             AdmeTimeItem(
@@ -747,16 +741,20 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                         )
                     }
                 }
-                mAdapter.notifyDataSetChanged()
-            }
-            decimalFormat.applyPattern("#.##")
-            mStates.inclinometerTubeHoleDepth.set(info.interdeep.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
+            mAdapter.notifyDataSetChanged()
+
+            mStates.inclinometerTubeHoleDepth.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.interdeep,
+                    "",
+                    2
+                )
+            )
             mStates.decentralizationSpeed.set(info.downspeed)
             mStates.decentralizationWaitingTime.set(info.downwaitetime)
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

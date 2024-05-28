@@ -42,10 +42,6 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
-    // 权限请求框架：https://github.com/getActivity/XXPermissions
-    implementation(libs.getActivity.xxpermission)
-    //Material Dialog
-    implementation(libs.bundles.material.dialogs)
     //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
     implementation(libs.timber)
     implementation(libs.utilcodex)

@@ -45,6 +45,15 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{stateVM.measureMode}"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/text_size_18"
+                    android:textStyle="bold"
+                    tools:text="正向测量" />
+
                 <include
                     layout="@layout/hac_measuringdata_vertical_progressbar_view"
                     visible="@{stateVM.isVerticalProgressBarVisible}"

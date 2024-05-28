@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.gw100.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.bindingAdapter
@@ -16,6 +17,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentGw100BaseInfoBinding
@@ -77,7 +79,7 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -124,9 +126,8 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询基本信息出错: ${result.message}"
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -147,9 +148,8 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询测站节点信息出错: ${result.message}"
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -186,6 +186,7 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
                 checkDeviceIsNormal(info)
             } catch (e: Exception) {
                 Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }
@@ -203,17 +204,18 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
         launchWithViewLifecycle {
             try {
                 //用逗号分割
-                val terminalIds = withContext(Dispatchers.IO) {
-                    content.split(",")
-                }
-                terminalIds.forEachIndexed { index, terminalId ->
-                    if (index < STATION_NODE_NUM) {
-                        binding.rvStationNode.bindingAdapter.getModel<DeviceStatusInfoBasicItem>(index)
-                            .refreshValue(terminalId)
+                content.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                    .forEachIndexed { index, terminalId ->
+                        if (index < STATION_NODE_NUM) {
+                            binding.rvStationNode.bindingAdapter.getModel<DeviceStatusInfoBasicItem>(
+                                index
+                            )
+                                .refreshValue(terminalId)
+                        }
                     }
-                }
             } catch (e: Exception) {
                 Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

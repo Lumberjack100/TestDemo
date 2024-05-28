@@ -843,6 +843,7 @@ enum class IOTCommandType(private val value: String) {
      */
     MD_MR_GET_DI_PORT_PARAM("md_mrgetdistatus"),
 
+
     /**
      * 人工置数
      */
@@ -968,6 +969,7 @@ enum class IOTCommandType(private val value: String) {
      * 设置语音播报音量
      */
     MD_SET_VOICE_BROADCAST_VOLUME("volume"),
+    MD_SET_VOICE_BROADCAST_VOLUME_RESPONSE("volumelevel"),
 
     /**
      * 查询/设置安装位置

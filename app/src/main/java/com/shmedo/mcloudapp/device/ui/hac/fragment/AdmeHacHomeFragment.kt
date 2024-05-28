@@ -115,7 +115,7 @@ class AdmeHacHomeFragment : UniversalDeviceHomeFragment() {
                 IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE
             )
             commandItems.add(command)
-            sendCommandFromCmdList(isStartTimeoutJob = true)
+            sendCommandFromCmdList(isStartTimeoutJob = false)
         }
     }
 

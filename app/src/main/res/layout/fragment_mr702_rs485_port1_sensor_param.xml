@@ -90,7 +90,7 @@
 
                         <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
-                            android:text="传感器" />
+                            android:text="物模型名称" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_ValueStyle"
@@ -106,7 +106,7 @@
 
                         <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
-                            android:text="物模型" />
+                            android:text="物模型编号" />
 
                         <com.shmedo.mcloudapp.common.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -252,7 +252,7 @@
                             android:hint="请输入"
                             android:text="@={stateVM.collectionInstructions}"
                             app:inputTypeFilter='@{"character"}'
-                            app:lengthFilter="@{32}" />
+                            app:lengthFilter="@{12}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -270,7 +270,7 @@
                             android:hint="请输入"
                             android:text="@={stateVM.ratio}"
                             app:inputTypeFilter='@{"numberDecimal"}'
-                            app:lengthFilter="@{100}" />
+                            app:lengthFilter="@{10}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat

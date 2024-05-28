@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.ScanQRCodeResultPopupViewViewModel" />
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/popup_head"
+            layout="@layout/cmd_response_dialog_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/dimen_size_10" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text='@{"设备SN："+ stateVM.scanQRCodeResult}'
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_15"
+            android:textStyle="bold"
+            tools:text="设备SN：235200A" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_ble_connect"
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:layout_marginTop="@dimen/dimen_size_15"
+            android:background="@drawable/layer_common_click_item_with_divider"
+            android:gravity="center"
+            android:text="蓝牙连接"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/text_size_15"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_4g_connect"
+            style="@style/Common_ClickableItem_LayoutStyle"
+            android:layout_marginBottom="@dimen/text_size_10"
+            android:gravity="center"
+            android:text="4G连接"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/text_size_15"
+            android:textStyle="bold" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

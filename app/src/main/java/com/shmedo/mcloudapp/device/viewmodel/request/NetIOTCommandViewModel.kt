@@ -51,6 +51,7 @@ class NetIOTCommandViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                 msgIDList.addAll(data.map { it.msgID })
                 _cmdDispatchFlow.emit(DispatchSuccess(content))
             } catch (error: Throwable) {
+                Timber.e(error)
                 _cmdDispatchFlow.emit(DispatchFailed(content, error.errorMsg))
             }
         }
@@ -62,13 +63,14 @@ class NetIOTCommandViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                 val parameter =
                     QueryCmdResultParam(if (otherMsgIDList.isEmpty()) msgIDList else otherMsgIDList)
                 pollForCommandResult(cmdStr = cmdStr, jsonParam = MoshiUtil.toJson(parameter))
-            } catch (e: Exception) {
-                Timber.e(e)
+            } catch (error: Exception) {
+                Timber.e(error)
+
                 // 错误处理
                 _cmdDispatchFlow.emit(
                     CmdResponseResultError(
                         cmdStr = cmdStr,
-                        errorMsg = e.message ?: "Error"
+                        errorMsg = error.message ?: "Error"
                     )
                 )
             }

@@ -70,7 +70,7 @@ class DasAdvancedSettingFragment : BaseIOTDeviceFragment() {
         }
 
         override fun onResetClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -99,10 +99,8 @@ class DasAdvancedSettingFragment : BaseIOTDeviceFragment() {
             IOTCommandType.RESET -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = StringUtils.getString(R.string.reset_failed) + result.message
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

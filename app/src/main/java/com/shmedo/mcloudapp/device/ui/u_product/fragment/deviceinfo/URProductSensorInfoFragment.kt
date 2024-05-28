@@ -1,10 +1,12 @@
 package com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo
 
+import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.models
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.model.u_product.URCurrentStateInfo
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
@@ -45,7 +47,7 @@ class URProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                     DeviceStatusInfoBasicItem(
                         name = "雨量传感器状态",
                         value = "正常",
-                        colorRes =  ColorUtils.getColor(R.color.device_online_platform)
+                        textColorRes =  ColorUtils.getColor(R.color.device_online_platform)
                     )
                 )
                 uRSensorInfoList.forEach { info ->
@@ -90,6 +92,7 @@ class URProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
                 Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.mr702.fragment.port
 
 import android.os.Bundle
+import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -26,13 +27,13 @@ import com.shmedo.lib.device.base.iot_cmd.model.mr.MRSerialPortParam
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port2Binding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.common.MRRS485Port2
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.MRSensorItem
 import com.shmedo.mcloudapp.device.model.RVEmptyFooter
 import com.shmedo.mcloudapp.device.model.SensorModel
@@ -83,17 +84,30 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        initDefaultParam()
+    }
+
+    /**
+     * 初始化默认参数
+     */
+    private fun initDefaultParam() {
+        mStates.acquisitionFrequency.set("180")//采集频率
+        mStates.collectionTimes.set("3")//采集次数
+        mStates.noResponseTimes.set("3")//无应答次数
+        mStates.delayDuration.set("10")//延时时间
         mStates.collectorType.set(collectorTypeList[0])
-        mStates.dataBit.set(dataBitList[3])
-        mStates.checkBit.set(checkBitList[0])
-        mStates.stopBit.set(stopBitList[0])
+        mStates.collectorAddress.set("1")//采集器地址
+        mStates.baudRate.set("9600")  //默认波特率
+        mStates.dataBit.set(dataBitList[3])//默认数据位 8
+        mStates.checkBit.set(checkBitList[0])//默认校验位 无
+        mStates.stopBit.set(stopBitList[0])//默认停止位 1
     }
 
     private fun initRefresh() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -146,7 +160,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     private fun showAddSensorPopup() {
         val sensorList = mInterfaceHomeViewModel.portSensorModelListMap["485port2"] ?: listOf()
         val selectionPopupView = MR702SensorSelectionPopupView(requireContext())
-        selectionPopupView.setData("请选择传感器类型", sensorList)
+        selectionPopupView.setData("请选择物模型", sensorList)
             .setSelectListener(object : MR702SensorSelectionPopupView.OnSelectListener {
                 override fun onSelect(sensorModel: SensorModel) {
                     val bundle = MR702RS485Port2SensorParamFragment.newBundleArguments(
@@ -154,7 +168,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                             sensorType = sensorModel.sensorType,
                             sensorName = sensorModel.sensorName,
                             modelToken = sensorModel.modelToken,
-                            modelFieldList = sensorModel.modelFieldList.map { it.fieldName }
+                            modelFieldList = sensorModel.modelFieldList
                         ),
                         true,
                         productType,
@@ -256,7 +270,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
         }
 
         fun onSubmitClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -365,6 +379,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                 "index=0"
             )
         )
+        showLoadingDialog(StringUtils.getString(R.string.loading))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
@@ -514,6 +529,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
             mStates.delayDuration.set(collectionParam.powerontimes)
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -533,6 +549,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
             }
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -551,7 +568,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                         sensorType = sensorStatus.sensortype,
                         modelToken = mInterfaceHomeViewModel.sensorModelMap[sensorStatus.sensortype]?.modelToken
                             ?: "",
-                        modelFieldList = mInterfaceHomeViewModel.sensorModelMap[sensorStatus.sensortype]?.modelFieldList?.map { it.fieldName }
+                        modelFieldList = mInterfaceHomeViewModel.sensorModelMap[sensorStatus.sensortype]?.modelFieldList
                             ?: listOf()
                     )
                 }

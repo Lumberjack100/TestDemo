@@ -6,10 +6,11 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.device.model.RVEmptyHeader" />
+            type="com.shmedo.mcloudapp.device.model.RVEmptyItem" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@color/mr_communication_data_table_row_header_backround">
@@ -21,7 +22,7 @@
             android:gravity="center"
             android:text="接口"
             android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_17"
+            android:textSize="@dimen/text_size_16"
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -31,7 +32,7 @@
             android:gravity="center"
             android:text="状态"
             android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_17"
+            android:textSize="@dimen/text_size_16"
             android:textStyle="bold" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>

@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.device.ui.adme.fragment
 import android.app.TimePickerDialog
 import android.app.TimePickerDialog.OnTimeSetListener
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
@@ -26,6 +27,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
@@ -108,7 +110,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -265,7 +267,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
 
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -598,10 +600,8 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询执行机构参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        handleFailureResult(errMsg)
                         //设备版本不支持，隐藏编辑按钮
                         toolbarViewModel.toolbarIvActionVisible.set(!errMsg.contains("设备版本不支持"))
                         return
@@ -640,10 +640,8 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SAVE_CONFIG_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "保存出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -681,9 +679,9 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             )
             mStates.intervalDays.set(info.invalday)
             mStates.startTimePerRound.set(info.roundmeasstart)
-            info.roundmeasstart.split("|").let { times ->
-                mAdapter.data.clear()
-                times.forEach { time ->
+            mAdapter.data.clear()
+            info.roundmeasstart.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
+                .forEach { time ->
                     if (time.isNotEmpty()) {
                         mAdapter.data.add(
                             AdmeTimeItem(
@@ -696,8 +694,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
                         )
                     }
                 }
-                mAdapter.notifyDataSetChanged()
-            }
+            mAdapter.notifyDataSetChanged()
             mStates.dataReadingInterval.set(info.datainval)
             mStates.measurementCompensationTime.set(info.compensatetime)
 
@@ -744,6 +741,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             } ?: "")
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

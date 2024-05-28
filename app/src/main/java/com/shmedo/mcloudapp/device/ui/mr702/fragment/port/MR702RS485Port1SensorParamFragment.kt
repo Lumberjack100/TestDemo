@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.device.ui.mr702.fragment.port
 
 import android.graphics.Typeface
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
@@ -30,6 +31,7 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorParamBinding
@@ -50,7 +52,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
 
 class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     TabLayout.OnTabSelectedListener {
@@ -73,7 +74,6 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     private var selectedFieldIndex = 0
 
     private val tabList: MutableList<String> = arrayListOf()
-    private val decimalFormat = DecimalFormat("#.#")
 
 
     override fun initViewModel() {
@@ -118,7 +118,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -135,18 +135,34 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
 
         if (sensorItem.modelFieldList.isNotEmpty()) {
             tabList.clear()
-            tabList.addAll(sensorItem.modelFieldList)
+            tabList.addAll(sensorItem.modelFieldList.map { it.fieldName })
             initTabLayout()
         }
         mStates.sensorName.set(sensorItem.sensorName)
         mStates.modelToken.set(sensorItem.modelToken)
-        mStates.dataBit.set(dataBitList[3])
-        mStates.checkBit.set(checkBitList[0])
-        mStates.stopBit.set(stopBitList[0])
-        mStates.dataFormat.set(dataFormatList[0])
-        mStates.solutionMethod.set(solutionMethodList[0])
+        resetDefaultModelField()
     }
+    /**
+     * 重置采集项
+     */
+    private fun resetDefaultModelField() {
+        mStates.sensorAddress.set("")//传感器地址
+        mStates.baudRate.set("9600")  //默认波特率
+        mStates.dataBit.set(dataBitList[3])//默认数据位 8
+        mStates.checkBit.set(checkBitList[0])//默认校验位 无
+        mStates.stopBit.set(stopBitList[0])//默认停止位 1
 
+        mStates.hydrologicalIdentification.set("")//水文识别
+        mStates.collectionInstructions.set("")//采集指令
+        mStates.ratio.set("1")//默认倍率 1
+        mStates.dataFormat.set(dataFormatList[0])
+        mStates.solutionMethod.set(solutionMethodList[0])//默认解算方法 加权平均
+        mStates.triggerValue.set("0")//默认触发值 0
+        mStates.upperLimit.set("100")//默认上限 100
+        mStates.lowerLimit.set("0")//默认下限 0
+        mStates.correctValue.set("0")//默认修正值 0
+        mStates.ngateval.set("3")//默认阈值次数 3
+    }
     private fun initTabLayout() {
         val tabLayout = binding.tabs
         tabLayout.removeAllTabs()
@@ -279,7 +295,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
         }
 
         fun onSaveModelFieldClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -294,11 +310,11 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     private fun initSaveCommand() {
         commandItems.clear()
         if (mStates.modelToken.get().isEmpty()) {
-            showMessageDialog("请输入物模型")
+            showMessageDialog("请输入物模型编号")
             return
         }
         if (mStates.sensorAddress.get().isEmpty()) {
-            showMessageDialog("请输入传感器地址")
+            showMessageDialog("请输入地址")
             return
         }
         if (mStates.baudRate.get().isEmpty()) {
@@ -408,10 +424,8 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -466,7 +480,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                     val sensorParam: MRRS485Port1SensorParam = portParam[0]
                     mStates.sensorParamWrapper.set(sensorParam)
 
-                    val strs = sensorParam.model.split("_").toTypedArray()
+                    val strs = sensorParam.model.split("_")
                     mStates.sensorAddress.set(strs[1])
                     mStates.modelToken.set(strs[0])
                     mStates.baudRate.set(sensorParam.baud)
@@ -476,7 +490,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                             mStates.checkBit.set(checkBitList[value])
                         }
                     }
-                    sensorParam.stopbit.toInt().let {value ->
+                    sensorParam.stopbit.toInt().let { value ->
                         if (value in stopBitList.indices) {
                             mStates.stopBit.set(stopBitList[value])
                         }
@@ -502,6 +516,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                 }
             } catch (e: Exception) {
                 Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

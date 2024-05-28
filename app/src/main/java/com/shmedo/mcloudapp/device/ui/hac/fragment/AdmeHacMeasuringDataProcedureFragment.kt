@@ -1,13 +1,12 @@
 package com.shmedo.mcloudapp.device.ui.hac.fragment
 
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.SoundPool
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
+import android.view.WindowManager
 import android.view.animation.BounceInterpolator
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
@@ -18,7 +17,6 @@ import com.blankj.utilcode.util.RegexUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.lxj.xpopup.XPopup
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
@@ -26,9 +24,9 @@ import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.hac.HacMeasuringDataEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.AdmeCTRMotionState
-import com.shmedo.lib.device.base.iot_cmd.enums.AdmeModuleErrorType
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.model.hac.HacMotionState
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
@@ -45,6 +43,7 @@ import com.shmedo.mcloudapp.device.viewmodel.state.AdmeHacMeasuringDataProcedure
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showAdmeErrorProtectionDialog
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
@@ -66,6 +65,11 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     private var voiceMeasureSuccess = 0
     private var curCommandType = IOTCommandType.UNKNOWN_TYPE
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initSoundPool()
+    }
 
     override fun initViewModel() {
         super.initViewModel()
@@ -100,57 +104,31 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         arguments?.let {
             mStates.isCheckReverse.set(it.getBoolean(CHECK_REVERSE))
         }
-        initSoundPool()
     }
 
     private fun loadButtonAnimator() {
-        val scaleX = ObjectAnimator.ofFloat(
-            binding.llMeasuringDataProcedureBottom.btnAction,
-            "scaleX",
-            0.6f,
-            1f
-        )
-        val scaleY = ObjectAnimator.ofFloat(
-            binding.llMeasuringDataProcedureBottom.btnAction,
-            "scaleY",
-            0.6f,
-            1f
-        )
-        scaleX.repeatCount = 1
-        scaleY.repeatCount = 1
-
-        val animSet = AnimatorSet()
-        animSet.play(scaleX).with(scaleY)
-        animSet.setDuration(600)
-        animSet.interpolator = BounceInterpolator()
-        animSet.start()
-    }
-
-    /**
-     * 测量完成或失败后播放的提示音初始化
-     */
-    private fun initSoundPool() {
-        //AudioAttributes是一个封装音频各种属性的方法
-        val audioAttrs = AudioAttributes.Builder()
-            .setLegacyStreamType(AudioManager.STREAM_MUSIC)
-            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-            .setUsage(AudioAttributes.USAGE_MEDIA)
-            .build()
-        soundPool = SoundPool.Builder()
-            .setMaxStreams(1)
-            .setAudioAttributes(audioAttrs)
-            .build()
-
-        soundPool?.let {
-            voiceMeasureFail = it.load(context, R.raw.measure_fail, 1)
-            voiceMeasureSuccess = it.load(context, R.raw.measure_success, 1)
-        }
+        binding.llMeasuringDataProcedureBottom.btnAction.animate()
+            .scaleX(0.6f)
+            .scaleY(0.6f)
+            .setDuration(600)
+            .setInterpolator(BounceInterpolator())
+            .withEndAction {
+                binding.llMeasuringDataProcedureBottom.btnAction.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(600)
+                    .setInterpolator(BounceInterpolator())
+                    .start()
+            }
+            .start()
     }
 
     /**
      * 获取电机的运行状态
      */
     private fun getMotorMotionData(timeMillis: Long = 0L) {
+        if (mStates.isStopQueryMotorState.get()) return
+
         launchWithViewLifecycle {
             delay(timeMillis)
 
@@ -159,7 +137,10 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
             val command = IOTCommandUtil.getCommand(curCommandType)
             commandItems.add(command)
-            sendCommandFromCmdList(isStartTimeoutJob = true)
+            sendCommandFromCmdList(
+                isStartTimeoutJob = true,
+                timeoutMillis = AppContants.Communication.DELAY_10000_MILLIS
+            )
         }
     }
 
@@ -167,6 +148,8 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
      * 停止测量
      */
     private fun stopMeasureAction() {
+        stopQueryMotorState()
+
         //数据测量配置参数
         val entity = HacMeasuringDataEntity(
             equipmodel = "0",
@@ -187,37 +170,54 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     }
 
     override fun lazyLoadData() {
+        mStates.isStopQueryMotorState.set(false)
         getMotorMotionData()
     }
 
-
     inner class ClickProxy : BaseClickProxy() {
-
         fun onActionClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
             if (mStates.runButtonText.get() == "结束测量") {
                 showStopWarnDialog()
+
             } else if (mStates.runButtonText.get() == "下一步") {
-                processBack(false)
                 if (mStates.motionStateWrapper.get().motorinfo == "8") {
+                    processBack(false)
                     //等待下次测量,进入测量结果展示页面
                     nav().navigate(
                         R.id.action_global_to_admeHacMeasuringDataResultsFragment
                     )
+                } else {
+                    processBack(true)
                 }
             }
         }
-
     }
 
     fun showStopWarnDialog() {
         showMessage("确定停止电机运动？", "温馨提示", "确定", {
             stopMeasureAction()
         }, "取消")
+    }
+
+    private fun stopQueryMotorState() {
+        mStates.isStopQueryMotorState.set(true)
+        cancelNearbyCommunicationTimeoutJob()
+    }
+
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowMsg: Boolean,
+        msg: String
+    ) {
+        if (communicateWay is BleConnect && bleViewModel.isConnected()) {
+            getMotorMotionData(DELAY_2000_MILLIS)
+        }
     }
 
     override fun setResultData(cmdStr: String) {
@@ -229,24 +229,44 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
+//                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "获取设备的运行状态出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        getMotorMotionData(DELAY_2000_MILLIS)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        refreshMotionState(result.data)
+                        sendCommandFromCmdList {
+                            getMotorMotionData(DELAY_2000_MILLIS)
+                        }
+                    }
+                }
+            }
+
+            IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM -> {//设置HAC数据测量参数
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "停止电机出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
                         return
                     }
 
-                    is IOTCommandResult.Success -> {
+                    else -> {
                         sendCommandFromCmdList {
-                            getMotorMotionData(5000)
+                            mStates.isRunButtonVisible.set(false)
+                            mStates.motorInfo.set("本轮测量已停止,预计 ${getMinTime()} 分钟后可重新测量")
                         }
-                        refreshMotionState(result.data)
                     }
                 }
             }
 
-            IOTCommandType.LENGTH_INVALID -> {
-                getMotorMotionData(5000)
+            IOTCommandType.LENGTH_INVALID -> {//接收的数据格式不符合物联网指令协议，进入此逻辑处理
+                getMotorMotionData(DELAY_2000_MILLIS)
             }
 
             else -> {
@@ -266,13 +286,13 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         }
 
         //异常时，停止轮询电机运动状态，展示异常原因
-        if (motionState.abndiasis != "0") {
+        if (motionState.abndiasis.isNotEmpty() && motionState.abndiasis != "0") {
             cancelNearbyCommunicationTimeoutJob()
-            showErrorProtectionTip(motionState.abndiasis)
+            showAdmeErrorProtectionDialog(motionState.abndiasis)
         }
 
         try {
-            mStates.inclinometerBattery.set(motionState.incvoltage)
+            mStates.inclinometerBattery.set(motionState.incvoltage + "%")
             motionState.incvoltage.toDoubleOrNull()?.let {
                 mStates.inclinometerBatteryColorRes.set(
                     if (it <= 20) ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
@@ -280,7 +300,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                     )
                 )
             }
-            mStates.deviceBattery.set(motionState.driveinputv)
+            mStates.deviceBattery.set(motionState.driveinputv + "%")
             motionState.driveinputv.toDoubleOrNull()?.let {
                 mStates.deviceBatteryColorRes.set(
                     if (it <= 20) ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
@@ -290,16 +310,16 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             }
             mStates.isVerticalProgressBarVisible.set(true)
             mStates.isWaitTimeVisible.set(false)
-            when (val ctrMotionState = AdmeCTRMotionState.valueByCode(motionState.motorinfo)) {
+            when (AdmeCTRMotionState.valueByCode(motionState.motorinfo)) {
                 AdmeCTRMotionState.NOZZLE_WAITING -> {//上拉至管口等待
                     mStates.isCurDepthVisible.set(false)
-                    updateVerticalProgress(motionState.measpoint)
+                    initVerticalProgress(motionState.measpoint)
                     mStates.motorInfo.set("上拉至管口...")
                 }
 
                 AdmeCTRMotionState.PAIR_SETTING_PARAM -> {//测斜仪配对
                     mStates.isCurDepthVisible.set(false)
-                    updateVerticalProgress(motionState.measpoint)
+                    initVerticalProgress(motionState.measpoint)
                     val msg =
                         if (motionState.measmode == "1" && mStates.isCheckReverse.get()) "测斜仪配对,反转自检..." else "测斜仪配对中..."
                     mStates.motorInfo.set(msg)
@@ -309,7 +329,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 AdmeCTRMotionState.BOTTOM_WAITING -> {//管底等待
                     mStates.isCurDepthVisible.set(false)
                     mStates.isWaitTimeVisible.set(true)
-                    updateVerticalProgress(motionState.measpoint)
+                    initVerticalProgress(motionState.measpoint)
                     mStates.motorInfo.set(
                         if (motionState.motorinfo == "2")
                             "测斜仪下放中..."
@@ -326,7 +346,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 }
 
                 AdmeCTRMotionState.POINT_MEASUREMENT -> {//测点测量
-                    mStates.isCurDepthVisible.set(false)
+                    mStates.isCurDepthVisible.set(true)
                     mStates.isWaitTimeVisible.set(true)
                     updateVerticalProgress(motionState.measpoint)
                     mStates.motorInfo.set("测点测量中...")
@@ -360,29 +380,27 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
                 AdmeCTRMotionState.WAITING_NEXT_TESTING,//等待下一次测量
                 AdmeCTRMotionState.WAITING_BACK_TESTING -> {//等待反测
-                    cancelNearbyCommunicationTimeoutJob()
+                    stopQueryMotorState()
                     mStates.isVerticalProgressBarVisible.set(false)
                     mStates.isHorizontalProgressBarReadingData.set(motionState.motorinfo == "9")//正反测模式下，正测阶段只有读取数据过程，没有上传数据，所以不展示上传数据进度框
                     setHorizontalMaxProgress()
                     mStates.motorInfo.set(if (motionState.motorinfo == "9") "测量完成,等待反向测量" else "测量完成")
                     mStates.isRunButtonVisible.set(true)
                     mStates.runButtonText.set("下一步")
-                    mStates.isRunButtonCanStop.set(false)
                     //VibrateUtils.vibrate(100);
                     if (voiceMeasureSuccess != 0) {
-                        soundPool?.play(voiceMeasureSuccess, 1.0f, 1.0f, 1, 0, 1.0f)
+                        playSound(voiceMeasureSuccess)
                     }
                     loadButtonAnimator()
                 }
 
                 AdmeCTRMotionState.FAILED -> {//测量失败
-                    cancelNearbyCommunicationTimeoutJob()
+                    stopQueryMotorState()
                     mStates.motorInfo.set("测量失败")
                     mStates.isRunButtonVisible.set(true)
                     mStates.runButtonText.set("下一步")
-                    mStates.isRunButtonCanStop.set(false)
                     if (voiceMeasureFail != 0) {
-                        soundPool?.play(voiceMeasureFail, 1.0f, 1.0f, 1, 0, 1.0f)
+                        playSound(voiceMeasureFail)
                     }
                     loadButtonAnimator()
                 }
@@ -391,6 +409,36 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
+
+    private fun initVerticalProgress(measurePoint: String) {
+        if (measurePoint.isEmpty() || !measurePoint.contains("|"))
+            return
+
+        try {
+            val values = measurePoint.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
+            if (values.size > 1 && !TextUtils.isEmpty(values[1])) {
+                val depth = values[1].toDouble()
+                if (depth == 0.0) {
+                    mStates.holeDepth.set("测斜管深度 -- 米")
+                    return
+                }
+                mStates.holeDepthValue.set(depth)
+                mStates.holeDepth.set(
+                    "测斜管深度 ${
+                        DeviceStatusInfoProcessor.formatDoubleValue(
+                            depth.toString(),
+                            "0",
+                            1
+                        )
+                    } 米"
+                )
+                mStates.verticalMaxProgress.set((depth * 10).toInt())
+            }
+            mStates.verticalProgress.set(0)
 
         } catch (e: Exception) {
             Timber.e(e)
@@ -402,40 +450,43 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             return
 
         try {
-            var depth = 0.0
-            val values = measurePoint.split("|")
-            if (!TextUtils.isEmpty(values[1])) {
-                depth = values[1].toDouble()
-                if (depth == 0.0) {
-                    mStates.holeDepth.set("测斜管深度 -- 米")
-                    return
-                }
-                mStates.holeDepth.set(
-                    String.format(
-                        "测斜管深度 %s 米", DeviceStatusInfoProcessor.formatDoubleValue(
-                            depth.toString(),
-                            "0",
-                            1
-                        )
+            var depth = mStates.holeDepthValue.get()
+            val values =
+                measurePoint.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
+            if (mStates.holeDepthValue.get() <= 0.0) {
+                if (values.size > 1 && !TextUtils.isEmpty(values[1])) {
+                    depth = values[1].toDouble()
+                    if (depth <= 0.0) {
+                        mStates.holeDepth.set("测斜管深度 -- 米")
+                        return
+                    }
+                    mStates.holeDepthValue.set(depth)
+                    mStates.holeDepth.set(
+                        "测斜管深度 ${
+                            DeviceStatusInfoProcessor.formatDoubleValue(
+                                depth.toString(),
+                                "0",
+                                1
+                            )
+                        } 米"
                     )
-                )
-                mStates.verticalMaxProgress.set((depth * 10).toInt())
+                    mStates.verticalMaxProgress.set((depth * 10).toInt())
+                }
             }
-            if (TextUtils.isEmpty(values[0]) || !mStates.isCurDepthVisible.get()) {
+            if (TextUtils.isEmpty(values[0])) {
                 mStates.verticalProgress.set(0)
             } else {
                 val value = values[0].toDouble()
                 mStates.curDepth.set(
-                    String.format(
-                        "当前测点位置 %s 米",
+                    "当前测点位置 ${
                         DeviceStatusInfoProcessor.formatDoubleValue(
                             (depth - value).toString(),
                             "0",
                             1
                         )
-                    )
+                    } 米"
                 )
-                mStates.verticalProgress.set((depth * 10).toInt())
+                mStates.verticalProgress.set((value * 10).toInt())
             }
         } catch (e: Exception) {
             Timber.e(e)
@@ -448,8 +499,8 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
         try {
             var progress = 0
-            val values = measurePoint.split("|")
-            if (!TextUtils.isEmpty(values[1]) && RegexUtils.isMatch(
+            val values = measurePoint.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
+            if (values.size > 1 && !TextUtils.isEmpty(values[1]) && RegexUtils.isMatch(
                     RegexConstants.REGEX_INTEGER,
                     values[1]
                 )
@@ -460,18 +511,17 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 progress = values[0].toInt()
                 mStates.horizontalProgress.set(progress)
             }
-            mStates.processDataNum.set(String.format("%s/%s", values[0], values[1]))
+            mStates.processDataNum.set("${values[0]}/${values[1]}")
             val result =
                 if ((mStates.horizontalMaxProgress.get() == 0)) 0f else progress.toFloat() / mStates.horizontalMaxProgress.get()
             mStates.processDataPercent.set(
-                String.format(
-                    "%s%%",
+                "${
                     DeviceStatusInfoProcessor.formatDoubleValue(
                         (result * 100).toString(),
                         "0",
                         0
                     )
-                )
+                } %"
             )
         } catch (e: Exception) {
             Timber.e(e)
@@ -481,43 +531,11 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     private fun setHorizontalMaxProgress() {
         mStates.horizontalProgress.set(mStates.horizontalMaxProgress.get())
         mStates.processDataNum.set(
-            String.format(
-                Locale.getDefault(),
-                "(%d/%d)",
-                mStates.horizontalMaxProgress.get(),
-                mStates.horizontalMaxProgress.get()
-            )
+            "${mStates.horizontalMaxProgress.get()}/${mStates.horizontalMaxProgress.get()}"
         )
         mStates.processDataPercent.set("100%")
     }
 
-    private fun showErrorProtectionTip(abndiasis: String) {
-        //列出异常原因
-        val stringBuilder = StringBuilder()
-
-        val codes = abndiasis.split("|")
-        codes.forEach { code ->
-            val errorType = AdmeModuleErrorType.valueByCode(code)
-            if (errorType != null) {
-                stringBuilder.append(errorType.description)
-                stringBuilder.append("\n")
-            }
-        }
-        //移除最后一个分号
-        if (stringBuilder.isNotEmpty()) {
-            stringBuilder.deleteCharAt(stringBuilder.length - 1)
-        }
-
-        val popupView = HacErrorProtectionTip(requireContext())
-        popupView.setData(stringBuilder.toString())
-        XPopup.Builder(context)
-            .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
-            .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
-            .enableDrag(false)
-            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-            .asCustom(popupView)
-            .show()
-    }
 
     private fun getMinTime(): String {
         val decimalFormat = DecimalFormat("#", DecimalFormatSymbols(Locale.getDefault()))
@@ -537,7 +555,15 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
     override fun onResume() {
         super.onResume()
+        // 启用屏幕长亮
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // 禁用屏幕长亮
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun processBack(isNavUp: Boolean = true) {
@@ -553,7 +579,47 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        releaseSoundPool()
+    }
+
+    /**
+     * 测量完成或失败后播放的提示音初始化
+     */
+    private fun initSoundPool() {
+        //AudioAttributes是一个封装音频各种属性的方法
+        val audioAttrs = AudioAttributes.Builder()
+            .setLegacyStreamType(AudioManager.STREAM_MUSIC)
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+            .setUsage(AudioAttributes.USAGE_MEDIA)
+            .build()
+        soundPool = SoundPool.Builder()
+            .setMaxStreams(1)
+            .setAudioAttributes(audioAttrs)
+            .build()
+
+        soundPool?.let {
+            voiceMeasureFail = it.load(context, R.raw.measure_fail, 1)
+            voiceMeasureSuccess = it.load(context, R.raw.measure_success, 1)
+        }
+    }
+
+    private fun playSound(soundId: Int) {
+        soundPool?.let {
+            if (soundId != 0) {
+                it.play(soundId, 1.0f, 1.0f, 1, 0, 1.0f)
+            }
+        }
+    }
+
+    private fun releaseSoundPool() {
+        soundPool?.release()
+        soundPool = null
+    }
+
     companion object {
+        const val DELAY_2000_MILLIS = 2000L
         const val CHECK_REVERSE: String = "check_reverse"
 
         fun newBundleArguments(

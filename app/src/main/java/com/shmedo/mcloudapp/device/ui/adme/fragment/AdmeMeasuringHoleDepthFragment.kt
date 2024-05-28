@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.device.ui.adme.fragment
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
+import android.view.WindowManager
 import android.widget.CompoundButton
 import androidx.core.widget.addTextChangedListener
 import com.blankj.utilcode.util.ColorUtils
@@ -11,7 +12,6 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
@@ -36,7 +36,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentAdmeMeasuringHoleDepthBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeMeasuringHoleDepthViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
@@ -105,7 +104,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -169,7 +168,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         }
 
         override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
                 return
@@ -210,7 +209,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
         fun onRunClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -219,7 +218,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
         fun onClearDataClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -424,18 +423,6 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 停止或者暂停电机运动
-     */
-    private fun stopMotorMotion() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.ADME_MD_STOP_MEASURING_HOLEDEPTH
-        )
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
      * 继续电机运动
      */
     private fun continueMotorMotion() {
@@ -464,6 +451,20 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
+    }
+
+    /**
+     * 停止或者暂停电机运动
+     */
+    private fun stopMotorMotion() {
+        stopQueryMotorState()
+
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.ADME_MD_STOP_MEASURING_HOLEDEPTH
+        )
+        commandItems.add(command)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     /**
@@ -510,10 +511,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询步进电机参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -533,10 +532,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询堵转参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -556,10 +553,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置堵转参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -572,10 +567,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_STEPPER_MOTOR -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置步进电机参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -588,10 +581,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SAVE_CONFIG_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "保存出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -604,10 +595,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_AUTO_MEASURING_HOLEDEPTH -> {//设置自动测量孔深参数
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "自动测量孔深出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -621,10 +610,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_MEASURING_HOLEDEPTH -> {//设置手动测量孔深配置参数
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "手动测量孔深出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -642,10 +629,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "获取测量孔深配置参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -672,10 +657,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "获取电机的实时运动数据出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -702,22 +685,19 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_STOP_MEASURING_HOLEDEPTH -> {//停止电机运动
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "停止电机出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList()
+                        stopQueryMotorState()
+                        //电机停止,更新运动状态页面
                         if (mStates.isAutoMeasuringMode.get()) {
                             mStates.isExitButtonVisible.set(true)
                         } else {
-                            if (mStates.isDoManualStopAction.get())
-                                mStates.isExitButtonVisible.set(true)
-                            else
-                                mStates.isExitButtonVisible.set(false)
+                            mStates.isExitButtonVisible.set(mStates.isDoManualStopAction.get())
                         }
                     }
                 }
@@ -726,10 +706,8 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_CLEAR_MEASURING_HOLEDEPTH_DATA -> {//ADME测量孔深清空数据
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "清空数据出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -746,6 +724,120 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 cancelNearbyCommunicationTimeoutJob()
             }
         }
+    }
+
+    private fun showAutoMotorMotionBottomDialog() {
+        autoMeasuringHoleDepthBottomDialog =
+            AdmeAutoMeasuringHoleDepthBottomDialog.newInstance().apply {
+                setOnDialogFragmentClickListener(object :
+                    AdmeAutoMeasuringHoleDepthBottomDialog.OnDialogFragmentClickListener {
+                    override fun onCloseClick() {
+                        if (!bleViewModel.isConnected() || mStates.isExitButtonVisible.get()) {
+                            resetPulseData()
+                            dismiss()
+                            return
+                        }
+                        showMessage("确认退出数据运行吗?", "温馨提示", "确定", {
+                            resetPulseData()
+                            //蓝牙未断开时先发送停止电机指令，再关闭运行页面
+                            if (bleViewModel.isConnected()) {
+                                stopMotorMotion()
+                            }
+                            dismiss()
+                        }, "取消")
+                    }
+
+                    override fun onStopClick() {
+                        if (isBleDisconnected()) {
+                            Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                            return
+                        }
+                        stopMotorMotion()
+                    }
+
+                    override fun onExitClick() {
+                        resetPulseData()
+                        dismiss()
+                    }
+                })
+            }
+        autoMeasuringHoleDepthBottomDialog?.show(childFragmentManager, "dialog")
+        mStates.isClearMotionDataVisible.set(true)
+        mStates.isStopQueryMotorState.set(false)
+        getMotorMotionData(DELAY_2000_MILLIS)
+    }
+
+    private fun showManualMotorMotionBottomDialog() {
+        //数据运行弹框已经显示了
+        if (manualMeasuringHoleDepthBottomDialog != null && manualMeasuringHoleDepthBottomDialog!!.isVisible) {
+            Timber.d(
+                "Continue Motion: lastDistance=%s,curDistance=%s,curPulse=%s,continueDistanceGoal=%s",
+                lastMotionDistance,
+                mStates.motionDistance.get(),
+                mStates.motionPulse.get(),
+                continueDistanceGoal,
+            )
+            mStates.isStopQueryMotorState.set(false)
+            getMotorMotionData(DELAY_2000_MILLIS)
+            return
+        }
+        Timber.d(
+            "start Motion: lastDistance=%s,totalDistanceGoal=%s",
+            lastMotionDistance,
+            mStates.distanceGoal.get()
+        )
+        manualMeasuringHoleDepthBottomDialog =
+            AdmeManualMeasuringHoleDepthBottomDialog.newInstance().apply {
+                setOnDialogFragmentClickListener(object :
+                    AdmeManualMeasuringHoleDepthBottomDialog.OnDialogFragmentClickListener {
+                    override fun onCloseClick() {
+                        if (!bleViewModel.isConnected() || mStates.isExitButtonVisible.get()) {
+                            resetPulseData()
+                            dismiss()
+                            return
+                        }
+                        showMessage("确认退出数据运行吗?", "温馨提示", "确定", {
+                            resetPulseData()
+                            //蓝牙未断开时先发送停止电机指令，再关闭运行页面
+                            if (bleViewModel.isConnected()) {
+                                stopMotorMotion()
+                            }
+                            dismiss()
+                        }, "取消")
+                    }
+
+                    override fun onStopClick() {
+                        if (isBleDisconnected()) {
+                            Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                            return
+                        }
+                        stopMotorMotion()
+                    }
+
+                    override fun onPauseClick() {
+                        if (isBleDisconnected()) {
+                            Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                            return
+                        }
+                        if (mStates.pauseButtonText.get() == "继续") {
+                            mStates.pauseButtonText.set("暂停")
+                            continueMotorMotion()
+                        } else {
+                            mStates.pauseButtonText.set("继续")
+                            stopMotorMotion()
+                        }
+                    }
+
+                    override fun onExitClick() {
+                        resetPulseData()
+                        dismiss()
+                    }
+                })
+            }
+        manualMeasuringHoleDepthBottomDialog?.show(childFragmentManager, "dialog")
+        mStates.isClearMotionDataVisible.set(true)
+        mStates.isStopQueryMotorState.set(false)
+        getMotorMotionData(DELAY_2000_MILLIS)
     }
 
     private fun updateMotorMotionDistance(motorMotionDistanceInfo: AdmeMotorMotionDistanceInfo) {
@@ -766,136 +858,6 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
-    }
-
-    private fun showAutoMotorMotionBottomDialog() {
-        autoMeasuringHoleDepthBottomDialog =
-            AdmeAutoMeasuringHoleDepthBottomDialog.newInstance().apply {
-                setOnDialogFragmentClickListener(object :
-                    AdmeAutoMeasuringHoleDepthBottomDialog.OnDialogFragmentClickListener {
-                    override fun onCloseClick() {
-                        if (!bleViewModel.isConnected() || mStates.isExitButtonVisible.get()) {
-                            autoMeasuringHoleDepthBottomDialog = null
-                            lastMotionDistance = ""
-                            safeDistance = ""
-                            dismiss()
-                            return
-                        }
-                        showMessage("确认退出数据运行吗?", "温馨提示", "确定", {
-                            autoMeasuringHoleDepthBottomDialog = null
-                            lastMotionDistance = ""
-                            safeDistance = ""
-                            //蓝牙未断开时先发送停止电机指令，再关闭运行页面
-                            if (bleViewModel.isConnected()) {
-                                stopQueryMotorState()
-                                stopMotorMotion()
-                            }
-                            dismiss()
-                        }, "取消")
-                    }
-
-                    override fun onStopClick() {
-                        if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
-                            Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                            return
-                        }
-                        stopQueryMotorState()
-                        stopMotorMotion()
-                    }
-
-                    override fun onExitClick() {
-                        autoMeasuringHoleDepthBottomDialog = null
-                        lastMotionDistance = ""
-                        safeDistance = ""
-                        dismiss()
-                    }
-                })
-            }
-        autoMeasuringHoleDepthBottomDialog?.show(childFragmentManager, "dialog")
-        mStates.isClearMotionDataVisible.set(true)
-        getMotorMotionData(1000)
-    }
-
-    private fun showManualMotorMotionBottomDialog() {
-        //数据运行弹框已经显示了
-        if (manualMeasuringHoleDepthBottomDialog != null && manualMeasuringHoleDepthBottomDialog!!.isVisible) {
-            Timber.d(
-                "Continue Motion: lastDistance=%s,curDistance=%s,curPulse=%s,continueDistanceGoal=%s",
-                lastMotionDistance,
-                mStates.motionDistance.get(),
-                mStates.motionPulse.get(),
-                continueDistanceGoal,
-            )
-            mStates.isStopQueryMotorState.set(false)
-            getMotorMotionData(1000)
-            return
-        }
-        Timber.d(
-            "start Motion: lastDistance=%s,totalDistanceGoal=%s",
-            lastMotionDistance,
-            mStates.distanceGoal.get()
-        )
-        manualMeasuringHoleDepthBottomDialog =
-            AdmeManualMeasuringHoleDepthBottomDialog.newInstance().apply {
-                setOnDialogFragmentClickListener(object :
-                    AdmeManualMeasuringHoleDepthBottomDialog.OnDialogFragmentClickListener {
-                    override fun onCloseClick() {
-                        if (!bleViewModel.isConnected() || mStates.isExitButtonVisible.get()) {
-                            manualMeasuringHoleDepthBottomDialog = null
-                            lastMotionDistance = ""
-                            safeDistance = ""
-                            dismiss()
-                            return
-                        }
-                        showMessage("确认退出数据运行吗?", "温馨提示", "确定", {
-                            manualMeasuringHoleDepthBottomDialog = null
-                            lastMotionDistance = ""
-                            safeDistance = ""
-                            //蓝牙未断开时先发送停止电机指令，再关闭运行页面
-                            if (bleViewModel.isConnected()) {
-                                stopQueryMotorState()
-                                stopMotorMotion()
-                            }
-                            dismiss()
-                        }, "取消")
-                    }
-
-                    override fun onStopClick() {
-                        if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
-                            Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                            return
-                        }
-                        stopQueryMotorState()
-                        stopMotorMotion()
-                    }
-
-                    override fun onPauseClick() {
-                        if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
-                            Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                            return
-                        }
-                        if (mStates.pauseButtonText.get() == "继续") {
-                            mStates.pauseButtonText.set("暂停")
-                            continueMotorMotion()
-                        } else {
-                            mStates.pauseButtonText.set("继续")
-                            stopQueryMotorState()
-                            stopMotorMotion()
-                        }
-                    }
-
-                    override fun onExitClick() {
-                        manualMeasuringHoleDepthBottomDialog = null
-                        lastMotionDistance = ""
-                        safeDistance = ""
-                        dismiss()
-                    }
-                })
-            }
-        manualMeasuringHoleDepthBottomDialog?.show(childFragmentManager, "dialog")
-        mStates.isClearMotionDataVisible.set(true)
-        mStates.isStopQueryMotorState.set(false)
-        getMotorMotionData(1000)
     }
 
     /**
@@ -922,7 +884,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             mStates.motionPulse.set(motorMotionDistanceInfo.pulsenumber)
             mStates.motionDistance.set(motorMotionDistanceInfo.realmovedistance)
             //继续轮询电机脉冲数据
-            getMotorMotionData(1000)
+            getMotorMotionData(DELAY_2000_MILLIS)
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
@@ -938,7 +900,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         if (measuringHoleDepthInfo.morunstate == "1") {
             repeatPollNum = 0
             //继续轮询电机脉冲数据
-            getMotorMotionData(1000)
+            getMotorMotionData(DELAY_2000_MILLIS)
             return
         }
         repeatPollNum = 0
@@ -956,9 +918,11 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         if (measuringHoleDepthInfo.morunstate == "1") {
             repeatPollNum = 0
             //继续轮询电机脉冲数据
-            getMotorMotionData(1000)
+            getMotorMotionData(DELAY_2000_MILLIS)
             return
         }
+
+        //下面电机状态表示停止运动
         repeatPollNum = 0
         try {
             val distanceTotalGoal = abs(mStates.distanceGoal.get().toDouble())
@@ -972,9 +936,18 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 //电机暂停
                 mStates.pauseButtonText.set("继续")
             }
+            stopQueryMotorState()
+
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
+    }
+
+    private fun resetPulseData() {
+        autoMeasuringHoleDepthBottomDialog = null
+        manualMeasuringHoleDepthBottomDialog = null
+        lastMotionDistance = ""
+        safeDistance = ""
     }
 
     private fun stopQueryMotorState() {
@@ -984,6 +957,18 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
     override fun onResume() {
         super.onResume()
+        // 启用屏幕长亮
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // 禁用屏幕长亮
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    companion object {
+        const val DELAY_2000_MILLIS = 2000L
     }
 }

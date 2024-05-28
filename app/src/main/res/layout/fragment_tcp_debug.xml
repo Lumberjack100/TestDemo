@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.device.viewmodel.state.TcpDebugViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.device.ui.common.TcpDebugFragment.ClickProxy" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white"
+            app:layout_constraintTop_toTopOf="parent"
+            app:navigationIcon="@drawable/ic_navigation_black2"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:subtitleTextAppearance="@style/Toolbar_SubTitleText"
+            app:subtitleTextColor="@color/sub_title_text_color"
+            app:titleTextAppearance="@style/Toolbar_TitleText"
+            app:titleTextColor="@color/title_text_color"
+            tools:subtitle="192.168.0.107:1088"
+            tools:title="TCP远程调试">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/menuLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_gravity="end"
+                android:gravity="center_vertical">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvConnect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    onClickWithDebouncing="@{()->click.onConnectOperateClick()}"
+                    android:padding="10dp"
+                    android:text="@{stateVM.tcpConnected?`断开TCP`:`连接TCP`}"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/text_size_16"
+                    tools:text="连接" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/ivMore"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="4dp"
+                    onClickWithDebouncing="@{()->click.onToolbarIvClick()}"
+                    android:padding="9dp"
+                    android:src="@drawable/ic_more_18dp"
+                    app:tint="@color/colorPrimary" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.Toolbar>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutCount"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginTop="@dimen/dimen_size_1"
+            android:background="@color/white"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="#ffdddddd"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/countGuideline"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.5" />
+
+            <View
+                android:id="@+id/receiveIndicator"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="2dp"
+                android:background="@color/receive_data_color"
+                app:layout_constraintBottom_toTopOf="@id/countGuideline"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvReceiveColon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:text="设备接收数据"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_12"
+                app:layout_constraintBottom_toTopOf="@id/countGuideline"
+                app:layout_constraintStart_toEndOf="@id/receiveIndicator" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvReceiveData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:textColor="@color/title_text_color"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@id/countGuideline"
+                app:layout_constraintStart_toEndOf="@id/tvReceiveColon"
+                tools:text="1024" />
+
+            <View
+                android:id="@+id/responseIndicator"
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginTop="2dp"
+                android:background="@color/send_data_color"
+                app:layout_constraintStart_toStartOf="@id/receiveIndicator"
+                app:layout_constraintTop_toBottomOf="@id/countGuideline" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvResponseColon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="设备响应数据"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_12"
+                app:layout_constraintStart_toStartOf="@id/tvReceiveColon"
+                app:layout_constraintTop_toBottomOf="@id/countGuideline" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvResponseData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:textColor="@color/title_text_color"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@id/tvReceiveData"
+                app:layout_constraintTop_toBottomOf="@id/countGuideline"
+                tools:text="10245" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/dimen_size_20"
+            android:splitMotionEvents="false"
+            app:fastScrollEnabled="true"
+            app:fastScrollHorizontalThumbDrawable="@drawable/fast_scroll_thumb"
+            app:fastScrollHorizontalTrackDrawable="@drawable/fast_scroll_track"
+            app:fastScrollVerticalThumbDrawable="@drawable/fast_scroll_thumb"
+            app:fastScrollVerticalTrackDrawable="@drawable/fast_scroll_track"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layoutCount"
+            tools:itemCount="4"
+            tools:listitem="@layout/item_debug_cmd_log" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

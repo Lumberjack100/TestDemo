@@ -11,7 +11,7 @@ plugins {
 
 val majorVersion = 5
 val minorVersion = 0
-val patchVersion = 8
+val patchVersion = 9
 
 /**
  * 获取Git库HEAD的SHA1码前5位
@@ -92,6 +92,12 @@ android {
                 "proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("release")
+        }
+    }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{INDEX.LIST,io.netty.versions.properties}"
         }
     }
     compileOptions {
@@ -209,7 +215,6 @@ dependencies {
 
     //开关 Button
     implementation(libs.switchbutton.library)
-    implementation(libs.progressbutton)
     // 一款美观强大的支持单向、双向范围选择、分步、垂直、高度自定义的SeekBar
     implementation(libs.rangeSeekBar)
     //Android Library to handle software keyboard visibility change event.

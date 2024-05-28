@@ -10,7 +10,11 @@ import com.afollestad.materialdialogs.list.listItemsMultiChoice
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.blankj.utilcode.util.ColorUtils
 import com.kongzue.dialogx.dialogs.MessageDialog
+import com.lxj.xpopup.XPopup
+import com.shmedo.lib.device.base.iot_cmd.enums.AdmeModuleErrorType
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.common.fragment.BaseFragment
+import com.shmedo.mcloudapp.device.ui.hac.fragment.HacErrorProtectionTip
 import com.shmedo.mcloudapp.utils.SettingUtil
 
 
@@ -199,4 +203,49 @@ fun Fragment.showMessageDialog(
         message,
         positiveButtonText
     )
+}
+
+fun BaseFragment.showAdmeErrorProtectionDialog(abndiasis: String) {
+    val errorMsg = getAdmeErrorMsg(abndiasis)
+    if (errorMsg.isEmpty()) {
+        return
+    }
+
+    val popupView = HacErrorProtectionTip(requireContext())
+    popupView.setData(errorMsg)
+    XPopup.Builder(context)
+        .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
+        .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
+        .enableDrag(false)
+        .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+        .asCustom(popupView)
+        .show()
+}
+
+fun BaseFragment.getAdmeErrorMsg(abndiasis: String, delimiters: String = "\n"): String {
+    if (abndiasis.isEmpty()) {
+        return ""
+    }
+
+    //列出异常原因
+    val stringBuilder = StringBuilder()
+    // | 分割
+    abndiasis.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
+        .forEach { code ->
+            val errorType = AdmeModuleErrorType.valueByCode(code)
+            if (errorType != AdmeModuleErrorType.EMPTY_ERROR) {
+                stringBuilder.append(if (errorType == AdmeModuleErrorType.UNKNOWN_ERROR) "未知异常,异常代码: $code" else errorType.description)
+                stringBuilder.append(delimiters)
+            }
+        }
+    //移除最后一个定界符
+    if (stringBuilder.isNotEmpty()) {
+        stringBuilder.deleteCharAt(stringBuilder.length - 1)
+    }
+
+    if (stringBuilder.toString().replace(delimiters, "").isEmpty()) {
+        return ""
+    }
+
+    return stringBuilder.toString()
 }

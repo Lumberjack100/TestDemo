@@ -57,7 +57,7 @@ class AdmeHacMeasuringDataResultsFragment : BaseFragment() {
 
         //保存数据
         fun onSaveDataClick() {
-            nav().popBackStack(R.id.admeHacHomeFragment, true)
+            nav().popBackStack(R.id.admeHacMeasuringDataFragment, true)
         }
     }
 

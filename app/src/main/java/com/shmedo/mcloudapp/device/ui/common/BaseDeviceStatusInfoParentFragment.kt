@@ -32,7 +32,8 @@ import com.shmedo.mcloudapp.ext.nav
  * 创建时间：2024/4/30
  * 描述： TODO
  */
-abstract class BaseDeviceStatusInfoParentFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
+abstract class BaseDeviceStatusInfoParentFragment : BaseFragment(),
+    TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentBaseDeviceStatusInfoParentBinding
     protected lateinit var mStates: BaseDeviceStatusInfoParentViewModel
 
@@ -49,7 +50,11 @@ abstract class BaseDeviceStatusInfoParentFragment : BaseFragment(), TabLayout.On
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_base_device_status_info_parent, BR.stateVM, mStates)
+        return DataBindingConfig(
+            R.layout.fragment_base_device_status_info_parent,
+            BR.stateVM,
+            mStates
+        )
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -135,6 +140,10 @@ abstract class BaseDeviceStatusInfoParentFragment : BaseFragment(), TabLayout.On
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.toolbar)
+    }
+
+    override fun lazyLoadTime(): Long {
+        return 0
     }
 
     companion object {

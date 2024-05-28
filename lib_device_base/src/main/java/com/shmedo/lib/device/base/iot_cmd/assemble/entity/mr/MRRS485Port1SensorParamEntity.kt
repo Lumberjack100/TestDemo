@@ -28,6 +28,9 @@ data class MRRS485Port1SensorParamEntity(
     val databit: String = IOTConstants.NULL_KEY,//数据位   数字(5 6 7 8)
     val parity: String = IOTConstants.NULL_KEY,//校验位 0:NONE  1:ODD  2:EVEN  3:MARK 4:SPACE
     val stopbit: String = IOTConstants.NULL_KEY,//停止位   0: 1  1: 1.5  2: 2  或 数字(1 1.5 2)
+    val mgbk: String = IOTConstants.NULL_KEY,//采集项名称GBK编码
+    val egbk: String = IOTConstants.NULL_KEY,//采集项单位GBK编码
+    val sgbk: String = IOTConstants.NULL_KEY,//传感器名称GBK编码
 ) {
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)

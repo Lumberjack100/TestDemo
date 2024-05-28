@@ -10,56 +10,53 @@
             type="com.shmedo.mcloudapp.device.model.MRDODIPortItem" />
     </data>
 
-    <FrameLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@{m.checked?@drawable/mr702_do_port_item_bright_bg:@drawable/mr702_do_port_item_gray_bg}"
-        android:minHeight="100dp"
+        android:background="@{m.open?@drawable/mr702_do_port_item_bright_bg:@drawable/mr702_do_port_item_gray_bg}"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingVertical="@dimen/dimen_size_10"
         tools:background="@drawable/mr702_do_port_item_bright_bg">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@{m.name}"
+            android:textColor="@{m.open?@color/colorPrimary:@color/title_text_color}"
+            android:textSize="@dimen/text_size_17"
+            android:textStyle="bold"
+            tools:text="K1"
+            tools:textColor="@color/colorPrimary" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:orientation="vertical">
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:gravity="center_vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@{m.name}"
-                android:textColor="@{m.checked?@color/colorPrimary:@color/title_text_color}"
-                android:textSize="@dimen/text_size_20"
-                android:textStyle="bold"
-                tools:text="K1"
+                android:text='@{m.open?"开启":"关闭"}'
+                android:textColor="@{m.open?@color/colorPrimary:@color/title_text_color}"
+                android:textSize="@dimen/text_size_15"
+                tools:text="开启"
                 tools:textColor="@color/colorPrimary" />
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_size_15"
-                android:gravity="center_vertical">
+            <com.kyleduo.switchbutton.SwitchButton
+                android:id="@+id/statusSB"
+                style="@style/SwitchButton_ButtonStyle"
+                checkedImmediatelyNoEvent="@{m.open}"
+                visible="@{m.switchButtonVisible}"
+                android:layout_marginStart="@dimen/dimen_size_12"
+                app:kswAnimationDuration="100"
+                app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text='@{m.checked?"开启":"关闭"}'
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_17"
-                    tools:text="开启" />
-
-                <com.kyleduo.switchbutton.SwitchButton
-                    android:id="@+id/statusSB"
-                    style="@style/SwitchButton_ButtonStyle"
-                    checkedImmediatelyNoEvent="@{m.checked}"
-                    android:layout_marginStart="@dimen/dimen_size_15"
-                    app:kswAnimationDuration="100"
-                    app:kswBackDrawable="@drawable/sl_switchbutton_back"
-                    app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
-    </FrameLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

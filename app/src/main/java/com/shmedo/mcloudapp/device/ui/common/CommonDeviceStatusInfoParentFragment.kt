@@ -14,6 +14,10 @@ import com.shmedo.mcloudapp.device.ui.lb20s.fragment.deviceinfo.LB20SGatewayInfo
 import com.shmedo.mcloudapp.device.ui.m20.fragment.deviceinfo.M20BaseInfoFragment
 import com.shmedo.mcloudapp.device.ui.m20.fragment.deviceinfo.M20CommunicationInfoFragment
 import com.shmedo.mcloudapp.device.ui.m20.fragment.deviceinfo.M20SensorInfoFragment
+import com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinfo.MR702BaseInfoFragment
+import com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinfo.MR702ModuleStatusInfoFragment
+import com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinfo.MR702PortStatusInfoFragment
+import com.shmedo.mcloudapp.device.ui.mr702.fragment.deviceinfo.MR702RunningStatusInfoFragment
 import com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.LR200BaseInfoFragment
 import com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.LR200SensorInfoFragment
 import com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.UDProductSensorInfoFragment
@@ -29,10 +33,29 @@ import com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo.URProductSen
 class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment() {
     override fun initData() {
         super.initData()
-        mStates.productType.set(if (productType == ProductType.GNSS_M_1) "型号：M20 (单北斗)" else if (productType == ProductType.GNSS_M_2) "型号：M20 (全星座)" else "型号：${deviceInfo.deviceName}")
-        if (productType == ProductType.LB20S) {
-            tabs.clear()
-            tabs.addAll(listOf("基本信息", "通讯状态", "网关信息"))
+        mStates.productType.set(
+            when (productType) {
+                ProductType.GNSS_M_1 -> "型号：M20 (单北斗)"
+                ProductType.GNSS_M_2 -> "型号：M20 (全星座)"
+                else -> "型号：${deviceInfo.deviceName}"
+            }
+        )
+        when (productType) {
+            ProductType.LB20S -> {
+                tabs.clear()
+                tabs.addAll(listOf("基本信息", "通讯状态", "网关信息"))
+            }
+
+            ProductType.MR702,
+            ProductType.COLLECTOR_R_2 -> {//水利遥测终端机
+                tabs.clear()
+                tabs.addAll(listOf("基本信息", "运行状态", "接口状态", "模块状态"))
+            }
+
+            else -> {
+                tabs.clear()
+                tabs.addAll(listOf("基本信息", "通讯状态", "传感器信息"))
+            }
         }
     }
 
@@ -205,6 +228,30 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                 )
                 fragmentList.add(
                     LB20SGatewayInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                )
+            }
+
+            ProductType.MR702,
+            ProductType.COLLECTOR_R_2 -> {//水利遥测终端机
+                fragmentList.add(
+                    MR702BaseInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                )
+                fragmentList.add(
+                    MR702RunningStatusInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                )
+                fragmentList.add(
+                    MR702PortStatusInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                )
+                fragmentList.add(
+                    MR702ModuleStatusInfoFragment.newInstance().apply {
                         arguments = bundle
                     }
                 )

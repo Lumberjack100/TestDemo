@@ -1,6 +1,8 @@
 package com.shmedo.mcloudapp.device.bindadapter
 
+import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.blankj.utilcode.util.ColorUtils
 import com.kyleduo.switchbutton.SwitchButton
@@ -167,4 +169,12 @@ object IOTDeviceBindingAdapter {
             }
         }
     }
+
+    @JvmStatic
+    @BindingAdapter("app:progressDrawableReadingData")
+    fun setProgressDrawableReadingData(progressBar: ProgressBar, isReadingData: Boolean) {
+        val drawableResId = if (isReadingData) R.drawable.custom_progress_horizontal_blue else R.drawable.custom_progress_horizontal_green
+        progressBar.progressDrawable = ContextCompat.getDrawable(progressBar.context, drawableResId)
+    }
+
 }

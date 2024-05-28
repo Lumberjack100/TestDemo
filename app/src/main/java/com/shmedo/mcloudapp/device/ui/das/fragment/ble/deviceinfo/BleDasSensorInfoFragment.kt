@@ -28,7 +28,6 @@ import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecorati
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentDasSensorInfoBinding
 import com.shmedo.mcloudapp.databinding.ItemDasSensorStatusBinding
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.DasSensorSubMonitorStatusItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasSensorInfoViewModel
@@ -68,7 +67,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
     private fun initRefresh() {
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -126,7 +125,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
         when (sensorType) {
             IOTSensorType.VIBRATING_SENSOR //振弦传感器
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -151,7 +150,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.RAIN_GAUGE //雨量计
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -166,7 +165,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.WIRE_SHIFT //拉绳式裂缝计
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -181,7 +180,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.SOIL_MOISTURE //土壤含水率
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -206,7 +205,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.INCLINOMETER //测斜仪
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -232,7 +231,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
             IOTSensorType.ULTRASONIC_LEVEL_GAUGE, //超声波物位计
             IOTSensorType.RADAR_LEVEL_GAUGE //雷达物位计
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -247,7 +246,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.UPLIFT_PRESSURE_GAUGE //扬压力计
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -282,7 +281,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.LUYAN_INCLINOMETER //倾角仪
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -307,7 +306,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.INFRASOUND //次声传感器
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -322,7 +321,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.WEIR //量水堰
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -346,7 +345,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
             IOTSensorType.STATIC_LEVEL, //静力水准
             IOTSensorType.SEDIMENTATION_METER //沉降仪
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -361,7 +360,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.WEATHER_STATION //气象站
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -416,7 +415,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.TURBIDITY_METER //浊度仪传感器
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -431,7 +430,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE //数字式水位计
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -446,7 +445,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.WATER_QUALITY_METER //多参数水质仪
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -541,7 +540,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.WATER_LEVEL_GAUGE //水位(液位)计
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -567,7 +566,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
             IOTSensorType.KANG_PERCOLATE, //基康渗压计
             IOTSensorType.GUDAN_PERCOLATE //葛南渗压计
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -602,7 +601,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.GUDAN_STRESS //葛南应变计
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -627,7 +626,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.JUNXING_ZLJ_300T //轴力计
             -> {
-                val dataList = data.split(",")
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
@@ -730,10 +729,8 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询开关量传感器信息出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -753,10 +750,8 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询倾角计信息出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -776,10 +771,8 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询扩展传感器状态出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -875,9 +868,9 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
             }
 
             mStates.isExternalSensorVisible.set(true)
-            info.sensorStatus.forEach {
+            info.sensorStatus.forEach { tempStr ->
                 //①:②:③，其中①：传感器地址，②：传感器状态，0正常，1异常，③：传感器数据
-                val sensorStatus = it.split(":")
+                val sensorStatus = tempStr.split(":").dropLastWhile { it.isEmpty() }
                 if (sensorStatus.size < 3) {
                     return@forEach
                 }

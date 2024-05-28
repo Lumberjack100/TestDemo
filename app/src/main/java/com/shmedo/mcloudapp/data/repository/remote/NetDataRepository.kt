@@ -20,6 +20,7 @@ import com.shmedo.lib.network.util.BaseURL
 import com.shmedo.mcloudapp.BuildConfig
 import com.shmedo.mcloudapp.common.model.CheckSoftModel
 import com.shmedo.mcloudapp.device.model.CloudDeviceData
+import com.shmedo.mcloudapp.device.model.DeviceDebugAddress
 import com.shmedo.mcloudapp.device.model.DispatchCmdItem
 import com.shmedo.mcloudapp.device.model.FirmWareInfo
 import com.shmedo.mcloudapp.device.model.QueryCmdResult
@@ -73,6 +74,20 @@ class NetDataRepository private constructor() {
             .addHeader("Authorization", MmkvCacheUtil.getAmsToken())
             .addAll(jsonParam)
             .toAwaitResponse<String>()
+            .tryAwait(onCatch)
+
+
+    /**
+     * 查询设备远程调试连接地址信息
+     */
+    suspend fun getRemoteDeviceLogin(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): DeviceDebugAddress? =
+        RxHttp.postJson("/DeviceLogin")
+            .setDomainIfAbsent(BaseURL.AMS_CONFIG_ADDRESS.baseUrl)
+            .addAll(jsonParam)
+            .toAwaitResponse<DeviceDebugAddress>()
             .tryAwait(onCatch)
     // </editor-fold>
 
@@ -257,6 +272,48 @@ class NetDataRepository private constructor() {
             .addHeader("Authorization", MmkvCacheUtil.getToken())
             .addAll(jsonParam)
             .toAwaitResponse<PageList<DeviceInfo>>()
+            .tryAwait(onCatch)
+
+    /**
+     * 分页查询用户关注的设备列表
+     */
+    suspend fun queryFollowDeviceList(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): PageList<DeviceInfo>? =
+        RxHttp.postJson("/QueryUserFollowDeviceList")
+            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
+            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addAll(jsonParam)
+            .toAwaitResponse<PageList<DeviceInfo>>()
+            .tryAwait(onCatch)
+
+    /**
+     * 添加用户收藏设备
+     */
+    suspend fun addUserFollowDevice(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): String? =
+        RxHttp.postJson("/AddUserFollowDevice")
+            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
+            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addAll(jsonParam)
+            .toAwaitResponse<String>()
+            .tryAwait(onCatch)
+
+    /**
+     * 取消用户收藏设备
+     */
+    suspend fun cancelUserFollowDevice(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): String? =
+        RxHttp.postJson("/CancelUserFollowDevice")
+            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
+            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addAll(jsonParam)
+            .toAwaitResponse<String>()
             .tryAwait(onCatch)
 
     /**

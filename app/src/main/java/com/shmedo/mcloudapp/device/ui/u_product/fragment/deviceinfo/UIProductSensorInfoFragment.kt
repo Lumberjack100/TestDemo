@@ -1,10 +1,12 @@
 package com.shmedo.mcloudapp.device.ui.u_product.fragment.deviceinfo
 
+import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.models
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.model.u_product.URCurrentStateInfo
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
@@ -50,7 +52,7 @@ class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                                 DeviceStatusInfoBasicItem(
                                     name = "倾角MEMS状态",
                                     value = camState,
-                                    colorRes = if (camState == "正常") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                                    textColorRes = if (camState == "正常") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
                                         R.color.device_offline_platform
                                     )
                                 )
@@ -60,7 +62,7 @@ class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         "initAngle" -> {
                             info.value.notNullKey { value ->
                                 //根据逗号分隔
-                                val initAngle = value.split(",")
+                                val initAngle = value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                                 if (initAngle.isNotEmpty()) {
                                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
                                         groupList,
@@ -98,7 +100,7 @@ class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         "angle" -> {
                             info.value.notNullKey { value ->
                                 //根据逗号分隔
-                                val angle = value.split(",")
+                                val angle = value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                                 if (angle.isNotEmpty()) {
                                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
                                         groupList,
@@ -136,7 +138,7 @@ class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         "acc" -> {
                             info.value.notNullKey { value ->
                                 //根据逗号分隔
-                                val acc = value.split(",")
+                                val acc = value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                                 if (acc.isNotEmpty()) {
                                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
                                         groupList,
@@ -189,6 +191,7 @@ class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
                 Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

@@ -98,7 +98,7 @@ class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
             R.id.item.onClick {
                 val firmWareInfo = getModel<FirmWareInfo>()
                 showMessage("确定下载升级此固件吗？", "温馨提示", "确定", {
-                    if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                    if (isBleDisconnected()) {
                         Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                         return@showMessage
                     }

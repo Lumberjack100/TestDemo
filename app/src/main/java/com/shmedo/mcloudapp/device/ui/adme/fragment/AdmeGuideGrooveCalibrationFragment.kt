@@ -8,7 +8,6 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
@@ -23,23 +22,19 @@ import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.databinding.FragmentAdmeGuideGrooveCalibrationBinding
+import com.shmedo.mcloudapp.device.common.BaseClickProxy
+import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.viewmodel.state.AdmeGuideGrooveCalibrationViewModel
+import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.ext.showMessageDialog
-import com.shmedo.mcloudapp.databinding.FragmentAdmeGuideGrooveCalibrationBinding
-import com.shmedo.mcloudapp.device.common.BaseClickProxy
-import com.shmedo.mcloudapp.device.model.BleConnect
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.AdmeGuideGrooveCalibrationViewModel
-import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
 import kotlin.math.abs
 
 /**
@@ -55,12 +50,12 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
     private val motionTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_guide_groove_calibration_motor_motion_type) }
+
     private var lastPulse: String = "" //上次停止时脉冲数
     private var continuePulseGoal: Int = 0 //继续运动脉冲目标数
     private var repeatPollNum = 0 //当查询电机脉冲数重复超过一定次数时，判定电机停止
 
     private var motorMotionAngleFragmentBottomDialog: AdmeMotorMotionAngleBottomDialog? = null
-    val decimalFormat = DecimalFormat("#", DecimalFormatSymbols(Locale.getDefault()))
 
 
     override fun initViewModel() {
@@ -98,7 +93,7 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -112,20 +107,7 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
         mStates.isClearMotionDataVisible.set(true)
     }
 
-    private fun setEditable(editable: Boolean) {
-        toolbarViewModel.toolbarIvActionVisible.set(!editable)
-        toolbarViewModel.toolbarTvActionVisible.set(editable)
-        mStates.isEditable.set(editable)
-    }
-
     inner class ClickProxy : BaseClickProxy() {
-        override fun onToolbarIvClick() {
-            setEditable(true)
-        }
-
-        override fun onToolbarTvClick() {
-            setEditable(false)
-        }
 
         /**
          * 选择运动方式
@@ -149,7 +131,7 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
 
         fun onRunClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -158,7 +140,7 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
 
         fun onClearDataClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -230,6 +212,8 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
      * 查询ADME测孔深运动的脉冲数、运动角度
      */
     private fun getMotorMotionData(timeMillis: Long = 0L) {
+        if (mStates.isStopQueryMotorState.get()) return
+
         launchWithViewLifecycle {
             delay(timeMillis)
 
@@ -246,6 +230,8 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
      * 停止或者暂停电机运动
      */
     private fun stopMotorMotion() {
+        stopQueryMotorState()
+
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.ADME_MD_STOP_GUIDE_GROOVE_CALIBRATION
@@ -311,19 +297,17 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "获取导槽校准配置参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        handleFailureResult("获取导槽校准配置参数出错: ${result.message}")
                         return
                     }
 
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList()
-                        if (motorMotionAngleFragmentBottomDialog != null && motorMotionAngleFragmentBottomDialog!!.isVisible)
-                            processMotorMotionState(result.data)
-                        else
-                            initParamConfigInfo(result.data)
+                        motorMotionAngleFragmentBottomDialog?.let {
+                            if (it.isVisible) {
+                                processMotorMotionState(result.data)
+                            }
+                        } ?: initParamConfigInfo(result.data)
                     }
                 }
             }
@@ -331,10 +315,8 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_GUIDE_GROOVE_CALIBRATION -> {//设置ADME的导槽校准配置参数
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置导槽校准配置参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -352,10 +334,8 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "获取电机的实时运动数据出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -363,8 +343,11 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList()
                         if (lastPulse.isEmpty())
                             lastPulse = result.data.pulsenumber
-                        if (motorMotionAngleFragmentBottomDialog != null && motorMotionAngleFragmentBottomDialog!!.isVisible)
-                            updateMotionData(result.data)
+                        motorMotionAngleFragmentBottomDialog?.let {
+                            if (it.isVisible) {
+                                updateMotionData(result.data)
+                            }
+                        }
                     }
                 }
             }
@@ -372,23 +355,16 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_STOP_GUIDE_GROOVE_CALIBRATION -> {//停止电机运动
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "停止电机出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList()
-                        if (mStates.isStopAction.get()) {
-                            mStates.isStopAction.set(false)
-                            mStates.isExitButtonVisible.set(true)
-                            return
-                        }
-
-                        if (mStates.pauseButtonText.get() != "继续")//不是暂停按钮操作，是停止按钮操作
-                            mStates.isExitButtonVisible.set(true)
+                        stopQueryMotorState()
+                        //电机停止,更新运动状态页面
+                        mStates.isExitButtonVisible.set(mStates.isDoStopAction.get())
                     }
                 }
             }
@@ -396,10 +372,8 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_CLEAR_GUIDE_GROOVE_CALIBRATION_DATA -> {//ADME 深清空数据
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "清空数据出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -419,14 +393,13 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
 
     private fun initParamConfigInfo(grooveCalibrationInfo: AdmeGuideGrooveCalibrationInfo) {
         try {
-            mStates.motionType.set(motionTypeList[grooveCalibrationInfo.movementway.toInt()])
-            mStates.speed.set(grooveCalibrationInfo.motorspeed.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-
-            mStates.pulseGoal.set(grooveCalibrationInfo.movepulse.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
+            grooveCalibrationInfo.movementway.toInt().let {
+                if (it in motionTypeList.indices) {
+                    mStates.motionType.set(motionTypeList[it])
+                }
+            }
+            mStates.speed.set(grooveCalibrationInfo.motorspeed)
+            mStates.pulseGoal.set(grooveCalibrationInfo.movepulse)
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
@@ -435,36 +408,43 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
 
     private fun showMotorMotionBottomDialog() {
         //数据运行弹框已经显示了
-        if (motorMotionAngleFragmentBottomDialog != null && motorMotionAngleFragmentBottomDialog!!.isVisible) {
-            Timber.d(
-                "Continue Motion: lastPulse=%s,curPulse=%s,continuePulseGoal=%s",
-                lastPulse,
-                mStates.motionPulse.get(),
-                continuePulseGoal,
-            )
-            getMotorMotionData(800)
-            return
+        motorMotionAngleFragmentBottomDialog?.let {
+            if (it.isVisible) {
+                Timber.d(
+                    "Continue Motion: lastPulse=%s,curPulse=%s,continuePulseGoal=%s",
+                    lastPulse,
+                    mStates.motionPulse.get(),
+                    continuePulseGoal,
+                )
+                mStates.isStopQueryMotorState.set(false)
+                getMotorMotionData(DELAY_2000_MILLIS)
+                return
+            }
         }
-        Timber.d(
-            "start Motion: lastPulse=%s,totalPulseGoal=%s",
-            lastPulse,
-            mStates.pulseGoal.get()
-        )
+
+        Timber.d("start Motion: lastPulse=$lastPulse,totalPulseGoal=${mStates.pulseGoal.get()}")
         motorMotionAngleFragmentBottomDialog =
             AdmeMotorMotionAngleBottomDialog.newInstance().apply {
                 setOnDialogFragmentClickListener(object :
                     AdmeMotorMotionAngleBottomDialog.OnDialogFragmentClickListener {
                     override fun onCloseClick() {
-                        //蓝牙未断开时先发送停止电机指令
-                        if (bleViewModel.isConnected()) {
-                            stopMotorMotion()
+                        if (!bleViewModel.isConnected() || mStates.isExitButtonVisible.get()) {
+                            resetPulseData()
+                            dismiss()
+                            return
                         }
-                        dismiss()
-                        resetData()
+                        showMessage("确认退出数据运行吗?", "温馨提示", "确定", {
+                            //蓝牙未断开时先发送停止电机指令，再关闭运行页面
+                            if (bleViewModel.isConnected()) {
+                                stopMotorMotion()
+                            }
+                            resetPulseData()
+                            dismiss()
+                        }, "取消")
                     }
 
                     override fun onStopClick() {
-                        if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                        if (isBleDisconnected()) {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                             return
                         }
@@ -472,7 +452,7 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
                     }
 
                     override fun onPauseClick() {
-                        if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+                        if (isBleDisconnected()) {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                             return
                         }
@@ -486,15 +466,15 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
                     }
 
                     override fun onExitClick() {
+                        resetPulseData()
                         dismiss()
-                        resetData()
                     }
                 })
-
             }
         motorMotionAngleFragmentBottomDialog?.show(childFragmentManager, "dialog")
         mStates.isClearMotionDataVisible.set(true)
-        getMotorMotionData(800)
+        mStates.isStopQueryMotorState.set(false)
+        getMotorMotionData(DELAY_2000_MILLIS)
     }
 
     /**
@@ -521,7 +501,7 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
             mStates.motionPulse.set(motorMotionAngleInfo.pulsenumber)
             mStates.motionAngle.set(motorMotionAngleInfo.realmoveangle)
             //继续轮询电机脉冲数据
-            getMotorMotionData(800)
+            getMotorMotionData(DELAY_2000_MILLIS)
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
@@ -537,9 +517,10 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
         if (grooveCalibrationInfo.morunstate == "1") {
             repeatPollNum = 0
             //继续轮询电机脉冲数据
-            getMotorMotionData(800)
+            getMotorMotionData(DELAY_2000_MILLIS)
             return
         }
+        //下面电机状态表示停止运动
         repeatPollNum = 0
         try {
             val pulseTotalGoal = abs(mStates.pulseGoal.get().toInt())
@@ -552,19 +533,29 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
                 //电机暂停
                 mStates.pauseButtonText.set("继续")
             }
+            stopQueryMotorState()
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
     }
 
-    private fun resetData() {
+    private fun resetPulseData() {
         motorMotionAngleFragmentBottomDialog = null
         lastPulse = ""
         repeatPollNum = 0
     }
 
+    private fun stopQueryMotorState() {
+        mStates.isStopQueryMotorState.set(true)
+        cancelNearbyCommunicationTimeoutJob()
+    }
+
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    companion object {
+        const val DELAY_2000_MILLIS = 2000L
     }
 }

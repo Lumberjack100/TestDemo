@@ -10,6 +10,7 @@ import androidx.databinding.BaseObservable
 data class FilterDeviceTabItem(
     var name: String = "",
     var value: String = "",
+    var isShowDropDown: Boolean = true,
     var singleSelectionItemLastSelectedIndex: Int = 0,
 ) : BaseObservable() {
 

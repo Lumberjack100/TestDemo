@@ -31,7 +31,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentBleDasAdvancedSettingBinding
 import com.shmedo.mcloudapp.device.common.BaseDasAdvancedSettingClickProxy
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.dialog.SyncInstallationLocationPopupView
@@ -50,7 +49,6 @@ import com.shmedo.mcloudapp.utils.map.JZLocationConverter
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
-import timber.log.Timber
 import java.util.Locale
 
 /**
@@ -140,7 +138,7 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment(),
 
     inner class ClickProxy : BaseDasAdvancedSettingClickProxy() {
         override fun onSyncLocationClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -148,7 +146,7 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment(),
         }
 
         override fun onCommandDebugClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -163,7 +161,7 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment(),
         }
 
         override fun onResetClick() {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -177,7 +175,17 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment(),
         }
 
         override fun onRemoteDebuggingClick() {
-
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                productType,
+                communicateWay,
+                deviceInfo,
+                bleDevice
+            )
+            nav().navigate(R.id.action_global_to_remoteDebugFragment, bundle)
         }
     }
 
@@ -226,10 +234,8 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment(),
             MDCommandType.INSTALL_LOCATION -> {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "同步安装位置出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -244,10 +250,8 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment(),
             MDCommandType.RESTORE_FACTORY_SETTING -> {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = StringUtils.getString(R.string.reset_failed)
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

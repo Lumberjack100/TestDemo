@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.device.ui.m20.fragment.deviceinfo
 
+import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
@@ -8,6 +9,7 @@ import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
@@ -78,7 +80,7 @@ class M20BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "设备状态",
                             value = if (deviceAbnormalList.isEmpty()) "正常" else "异常",
-                            colorRes = if (deviceAbnormalList.isEmpty()) ColorUtils.getColor(
+                            textColorRes = if (deviceAbnormalList.isEmpty()) ColorUtils.getColor(
                                 R.color.text_color_3AD094
                             ) else ColorUtils.getColor(R.color.device_offline_platform),
                             isClickable = deviceAbnormalList.isNotEmpty()
@@ -140,6 +142,7 @@ class M20BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
                 Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

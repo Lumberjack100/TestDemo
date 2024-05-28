@@ -1,10 +1,12 @@
 package com.shmedo.mcloudapp.device.ui.m20.fragment.deviceinfo
 
+import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.models
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
@@ -32,12 +34,12 @@ class M20SensorInfoFragment : BaseDeviceStatusInfoFragment() {
 
                 groupList.add(DeviceStatusInfoGroupItem("倾角计"))
                 stateInfo.self_check.notNullKey {
-                    val camState = if (it.uppercase().contains("MEMS:1")) "正常" else "异常"
+                    val camState = if (it.uppercase().contains("MEMS:0")) "异常" else "正常"
                     groupList.add(
                         DeviceStatusInfoBasicItem(
                             name = "倾角MEMS状态",
                             value = camState,
-                            colorRes = if (camState == "正常") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                            textColorRes = if (camState == "正常") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
                                 R.color.device_offline_platform
                             )
                         )
@@ -71,6 +73,7 @@ class M20SensorInfoFragment : BaseDeviceStatusInfoFragment() {
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
                 Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

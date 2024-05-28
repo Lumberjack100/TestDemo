@@ -22,6 +22,7 @@ import com.shmedo.mcloudapp.device.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.device.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.device.viewmodel.request.NetIOTCommandViewModel
 import com.shmedo.mcloudapp.device.viewmodel.request.RequestSearchViewModel
+import com.shmedo.mcloudapp.device.viewmodel.request.TcpViewModel
 import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
 
 
@@ -32,6 +33,7 @@ val viewModelModule = module {
 
     viewModel { LogViewModel(get()) }
     viewModel { BleViewModel(get()) }
+    viewModel { TcpViewModel(get(), get()) }
     viewModel { NetIOTCommandViewModel(get()) }
     viewModel { DeviceRequestViewModel(get()) }
     viewModel { RequestSearchViewModel(get()) }

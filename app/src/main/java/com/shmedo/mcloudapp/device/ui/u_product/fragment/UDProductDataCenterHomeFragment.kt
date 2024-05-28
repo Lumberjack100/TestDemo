@@ -96,7 +96,7 @@ class UDProductDataCenterHomeFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -198,8 +198,8 @@ class UDProductDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 //根据 启用状态和连接状态刷新数据中心状态
                 if (info.dataCenterUseSta != IOTConstants.NULL_KEY && info.dataCenterStatus != IOTConstants.NULL_KEY && info.dataCenterUseSta.isNotEmpty() && info.dataCenterStatus.isNotEmpty()) {
                     //根据逗号分隔
-                    val enableStatusList = info.dataCenterUseSta.split(",")
-                    val onlineStatusList = info.dataCenterStatus.split(",")
+                    val enableStatusList = info.dataCenterUseSta.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                    val onlineStatusList = info.dataCenterStatus.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                     val lastIndex = enableStatusList.size.coerceAtMost(centerNum)
                     for (i in 0 until lastIndex) {
                         val status =

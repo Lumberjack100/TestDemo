@@ -89,7 +89,7 @@ class RadioSettingsFragment : BaseIOTDeviceFragment() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
         binding.refreshLayout.onRefresh {
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
@@ -187,7 +187,7 @@ class RadioSettingsFragment : BaseIOTDeviceFragment() {
 
         override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
-            if (communicateWay is BleConnect && !bleViewModel.isConnected()) {
+            if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
@@ -481,7 +481,7 @@ class RadioSettingsFragment : BaseIOTDeviceFragment() {
 
         try {
             //用逗号分割
-            val terminalIds = content.split(",")
+            val terminalIds = content.split(",".toRegex()).dropLastWhile { it.isEmpty() }
 
             mStates.telemetryStationNode1.set(
                 if (terminalIds.isNotEmpty()) {

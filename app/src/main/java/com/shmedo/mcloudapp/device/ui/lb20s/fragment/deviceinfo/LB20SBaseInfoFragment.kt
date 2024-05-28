@@ -1,11 +1,13 @@
 package com.shmedo.mcloudapp.device.ui.lb20s.fragment.deviceinfo
 
+import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.models
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.SensorErrorType
 import com.shmedo.lib.device.base.iot_cmd.model.lb20s.LB20SCurrentStateInfo
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
@@ -100,7 +102,7 @@ class LB20SBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                             value = if (item.errno.toString() == "0") "正常" else SensorErrorType.getErrorMessageByCode(
                                 item.errno.toString()
                             ),
-                            colorRes = if (item.errno.toString() == "0") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                            textColorRes = if (item.errno.toString() == "0") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
                                 R.color.device_offline_platform
                             )
                         )
@@ -128,6 +130,7 @@ class LB20SBaseInfoFragment : BaseDeviceStatusInfoFragment() {
 
             } catch (e: Exception) {
                 Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

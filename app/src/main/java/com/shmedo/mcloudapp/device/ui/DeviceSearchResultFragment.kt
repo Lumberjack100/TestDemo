@@ -83,14 +83,27 @@ class DeviceSearchResultFragment : BaseFragment() {
             }
             R.id.item.onLongClick {
                 val deviceInfo = getModel<DeviceInfo>()
+                val dataList = if (deviceInfo.followTime.isNullOrEmpty()) arrayListOf(
+                    "查看数据",
+                    "收藏"
+                ) else arrayListOf("查看数据", "取消收藏")
+
                 val builder = XPopup.Builder(context)
                     .hasShadowBg(true)
                     .atView(itemView)
-                builder.asAttachList(arrayListOf("查看数据").toTypedArray(), null)
+                builder.asAttachList(dataList.toTypedArray(), null)
                 { _, text ->
                     when (text) {
                         "查看数据" -> {
                             QuickFunctionActivity.start(mActivity, deviceInfo)
+                        }
+
+                        "收藏" -> {
+                            followDevice(deviceInfo.deviceToken)
+                        }
+
+                        "取消收藏" -> {
+                            unFollowDevice(deviceInfo.deviceToken)
                         }
                     }
                 }
@@ -129,6 +142,20 @@ class DeviceSearchResultFragment : BaseFragment() {
                 binding.refreshLayout.index < listDataResult.totalPage
             })
         }
+        deviceRequestViewModel.followDeviceResult.observe(viewLifecycleOwner) { dataResult: DataResult<String> ->
+            if (!dataResult.responseStatus.isSuccess) {
+                Toaster.show(dataResult.responseStatus.errorMessage)
+                return@observe
+            }
+            Toaster.show("已收藏")
+        }
+        deviceRequestViewModel.cancelFollowDeviceResult.observe(viewLifecycleOwner) { dataResult: DataResult<String> ->
+            if (!dataResult.responseStatus.isSuccess) {
+                Toaster.show(dataResult.responseStatus.errorMessage)
+                return@observe
+            }
+            Toaster.show("已取消收藏")
+        }
     }
 
     override fun lazyLoadData() {
@@ -143,6 +170,14 @@ class DeviceSearchResultFragment : BaseFragment() {
             pageSize = PAGE_SIZE,
             isHasListSuperInfoPermission = MmkvCacheUtil.isHasListSuperInfoPermission()
         )
+    }
+
+    private fun followDevice(deviceSn: String) {
+        deviceRequestViewModel.addUserFollowDevice(deviceSn)
+    }
+
+    private fun unFollowDevice(deviceSn: String) {
+        deviceRequestViewModel.cancelUserFollowDevice(deviceSn)
     }
 
     override fun onResume() {

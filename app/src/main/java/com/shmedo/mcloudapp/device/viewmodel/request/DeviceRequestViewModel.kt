@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.device.viewmodel.request
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
@@ -9,14 +10,18 @@ import com.shmedo.lib.core.base.model.DeviceStatisticInfo
 import com.shmedo.lib.core.base.model.ProductInfo
 import com.shmedo.lib.core.base.viewmodel.BaseRequestViewModel
 import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
+import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.lib.network.response.PageList
 import com.shmedo.lib.network.response.ResponseStatus
 import com.shmedo.lib.network.response.ResultSource
+import com.shmedo.lib.network.util.BaseURL
+import com.shmedo.mcloudapp.BuildConfig
 import com.shmedo.mcloudapp.data.repository.remote.NetDataRepository
 import com.shmedo.mcloudapp.device.model.CloudDeviceData
+import com.shmedo.mcloudapp.device.model.DeviceDebugAddress
 import com.shmedo.mcloudapp.device.model.FirmWareInfo
 import com.shmedo.mcloudapp.device.model.SingleSelectionItem
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +29,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
 
@@ -56,6 +60,16 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     val deviceListResult: Result<DataResult<List<DeviceInfo>>> =
         _deviceListResult
 
+    private val _followDeviceListResult = MutableResult<DataResult<List<DeviceInfo>>>()
+    val followDeviceListResult: Result<DataResult<List<DeviceInfo>>> =
+        _followDeviceListResult
+
+    private val _followDeviceResult = MutableResult<DataResult<String>>()
+    val followDeviceResult: Result<DataResult<String>> = _followDeviceResult
+
+    private val _cancelFollowDeviceResult = MutableResult<DataResult<String>>()
+    val cancelFollowDeviceResult: Result<DataResult<String>> = _cancelFollowDeviceResult
+
     private val _deviceInfoResult = MutableResult<DataResult<DeviceInfo>>()
     val deviceInfoResult: Result<DataResult<DeviceInfo>> =
         _deviceInfoResult
@@ -74,17 +88,15 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     fun getDeviceStatByCompanyID(companyID: Int, isHasListSuperInfoPermission: Boolean = false) {
         viewModelScope.launch {
             val jsonObjectRequest = JSONObject()
-            try {
-                jsonObjectRequest.put("companyID", companyID)
-            } catch (e: JSONException) {
-                Timber.e(e)
-            }
+            jsonObjectRequest.put("companyID", companyID)
+
             val data: DeviceStatisticInfo =
                 NetDataRepository.instance.getDeviceStatByCompanyID(
                     jsonObjectRequest.toString(),
                     isHasListSuperInfoPermission
                 ) { error: Throwable ->
-                    error.printStackTrace()
+                    Timber.e(error)
+                    addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
 
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
@@ -100,6 +112,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             _deviceStatisticInfoResult.setValue(DataResult(data, responseStatus = responseStatus))
         }
     }
+
     fun getAllProductTabList(companyID: Int) {
         viewModelScope.launch {
             val pageSize = 100
@@ -126,6 +139,11 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                             NetDataRepository.instance.getUserCompanyProductList(jsonObjectRequest.toString())
                         } catch (error: Throwable) {
                             Timber.e(error)
+                            addLogItem(
+                                MmkvCacheUtil.getAppLogSessionId(),
+                                Log.ERROR,
+                                error.errorMsg
+                            )
                             responseStatus.apply {
                                 isSuccess = false
                                 errorMessage = error.errorMsg
@@ -170,6 +188,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                 )
             } catch (error: Throwable) {
                 Timber.e(error)
+                addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
                 responseStatus.apply {
                     isSuccess = false
                     errorMessage = error.errorMsg
@@ -213,7 +232,8 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                     jsonObjectRequest.toString(),
                     isHasListSuperInfoPermission
                 ) { error: Throwable ->
-                    error.printStackTrace()
+                    Timber.e(error)
+                    addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
 
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
@@ -238,18 +258,129 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     }
 
     /**
+     * 分页查询收藏设备列表
+     */
+    fun getFollowDeviceList(
+        deviceSn: String = "",
+        deviceName: String = "",
+        currentPage: Int,
+        pageSize: Int,
+    ) {
+        viewModelScope.launch {
+            val jsonObjectRequest = JSONObject()
+            if (deviceSn.isNotEmpty())
+                jsonObjectRequest.put("deviceSn", deviceSn)//SN号,支持模糊查询
+            if (deviceName.isNotEmpty())
+                jsonObjectRequest.put("deviceName", deviceName)//在线状态
+            jsonObjectRequest.put("currentPage", currentPage)
+            jsonObjectRequest.put("pageSize", pageSize)
+
+            val data: PageList<DeviceInfo> =
+                NetDataRepository.instance.queryFollowDeviceList(
+                    jsonObjectRequest.toString()
+                ) { error: Throwable ->
+                    Timber.e(error)
+                    addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
+
+                    val responseStatus = ResponseStatus()
+                    responseStatus.isSuccess = false
+                    responseStatus.errorMessage = error.errorMsg
+                    responseStatus.source = ResultSource.NETWORK
+                    _followDeviceListResult.setValue(DataResult(responseStatus = responseStatus))
+                } ?: return@launch
+
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = true
+            responseStatus.responseCode = "0"
+            responseStatus.source = ResultSource.NETWORK
+            _followDeviceListResult.setValue(
+                DataResult(
+                    data.currentPageData,
+                    responseStatus = responseStatus,
+                    totalCount = data.totalCount,
+                    totalPage = data.totalPage
+                )
+            )
+        }
+    }
+
+    fun addUserFollowDevice(deviceSn: String = ""){
+        viewModelScope.launch {
+            val jsonObjectRequest = JSONObject()
+            jsonObjectRequest.put("deviceSn", deviceSn)
+
+            val data: String = NetDataRepository.instance.addUserFollowDevice(
+                jsonObjectRequest.toString(),
+            ) { error: Throwable ->
+                error.printStackTrace()
+                val msg =
+                    "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/AddUserFollowDevice error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
+                addLogItem(
+                    sessionId = MmkvCacheUtil.getAppLogSessionId(),
+                    priority = Log.ERROR,
+                    data = msg
+                )
+
+                val responseStatus = ResponseStatus()
+                responseStatus.isSuccess = false
+                responseStatus.errorMessage = error.errorMsg
+                responseStatus.source = ResultSource.NETWORK
+                _followDeviceResult.setValue(DataResult(responseStatus = responseStatus))
+            } ?: return@launch
+
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = true
+            responseStatus.responseCode = "0"
+            responseStatus.source = ResultSource.NETWORK
+            _followDeviceResult.setValue(DataResult(data, responseStatus = responseStatus))
+        }
+    }
+
+    fun cancelUserFollowDevice(deviceSn: String = ""){
+        viewModelScope.launch {
+            val jsonObjectRequest = JSONObject()
+            jsonObjectRequest.put("deviceSn", deviceSn)
+
+            val data: String = NetDataRepository.instance.cancelUserFollowDevice(
+                jsonObjectRequest.toString(),
+            ) { error: Throwable ->
+                error.printStackTrace()
+                val msg =
+                    "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/CancelUserFollowDevice error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
+                addLogItem(
+                    sessionId = MmkvCacheUtil.getAppLogSessionId(),
+                    priority = Log.ERROR,
+                    data = msg
+                )
+
+                val responseStatus = ResponseStatus()
+                responseStatus.isSuccess = false
+                responseStatus.errorMessage = error.errorMsg
+                responseStatus.source = ResultSource.NETWORK
+                _cancelFollowDeviceResult.setValue(DataResult(responseStatus = responseStatus))
+            } ?: return@launch
+
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = true
+            responseStatus.responseCode = "0"
+            responseStatus.source = ResultSource.NETWORK
+            _cancelFollowDeviceResult.setValue(DataResult(data, responseStatus = responseStatus))
+        }
+    }
+
+    /**
      * 获取设备详细信息
      */
     fun getDeviceDetailInfo(deviceToken: String = "") {
         viewModelScope.launch {
             val jsonObjectRequest = JSONObject()
-            try {
-                jsonObjectRequest.put("deviceToken", deviceToken)
-            } catch (e: JSONException) {
-                Timber.e(e)
-            }
+            jsonObjectRequest.put("deviceToken", deviceToken)
+
             val data: DeviceDetailInfo =
                 NetDataRepository.instance.getDeviceDetailInfo(jsonObjectRequest.toString()) { error: Throwable ->
+                    Timber.e(error)
+                    addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
+
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
                     responseStatus.errorMessage = error.errorMsg
@@ -275,11 +406,8 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
         onCatch: ((Throwable) -> Unit)? = null
     ): DeviceDetailInfo? {
         val jsonObjectRequest = JSONObject()
-        try {
-            jsonObjectRequest.put("deviceToken", deviceToken)
-        } catch (e: JSONException) {
-            Timber.e(e)
-        }
+        jsonObjectRequest.put("deviceToken", deviceToken)
+
         return NetDataRepository.instance.getDeviceDetailInfo(jsonObjectRequest.toString(), onCatch)
     }
 
@@ -289,12 +417,9 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
         onCatch: ((Throwable) -> Unit)? = null
     ): String? {
         val jsonObjectRequest = JSONObject()
-        try {
-            jsonObjectRequest.put("backupID", backupID)
-            jsonObjectRequest.put("deviceID", deviceID)
-        } catch (e: JSONException) {
-            Timber.e(e)
-        }
+        jsonObjectRequest.put("backupID", backupID)
+        jsonObjectRequest.put("deviceID", deviceID)
+
         return NetDataRepository.instance.applyBackup(jsonObjectRequest.toString(), onCatch)
     }
 
@@ -314,24 +439,22 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     ) {
         viewModelScope.launch {
             val jsonObjectRequest = JSONObject()
-            try {
-                jsonObjectRequest.put("sn", sn)
-                jsonObjectRequest.put("begin", begin)
-                jsonObjectRequest.put("end", end)
-                jsonObjectRequest.put("condition", condition)
-                jsonObjectRequest.put("dataType", dataType)
-                jsonObjectRequest.put("iotData", iotData)
-                jsonObjectRequest.put("timeSort", timeSort)
-                jsonObjectRequest.put("currentPage", currentPage)
-                jsonObjectRequest.put("pageSize", pageSize)
-            } catch (e: JSONException) {
-                Timber.e(e)
-            }
+            jsonObjectRequest.put("sn", sn)
+            jsonObjectRequest.put("begin", begin)
+            jsonObjectRequest.put("end", end)
+            jsonObjectRequest.put("condition", condition)
+            jsonObjectRequest.put("dataType", dataType)
+            jsonObjectRequest.put("iotData", iotData)
+            jsonObjectRequest.put("timeSort", timeSort)
+            jsonObjectRequest.put("currentPage", currentPage)
+            jsonObjectRequest.put("pageSize", pageSize)
+
             val data: PageList<CloudDeviceData> =
                 NetDataRepository.instance.queryCloudDataExWithPage(
                     jsonObjectRequest.toString()
                 ) { error: Throwable ->
-                    error.printStackTrace()
+                    Timber.e(error)
+                    addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
 
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
@@ -370,23 +493,21 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     ) {
         viewModelScope.launch {
             val jsonObjectRequest = JSONObject()
-            try {
-                jsonObjectRequest.put("productID", productID)
-                jsonObjectRequest.put("companyID", companyID)
-                jsonObjectRequest.put("fwStatus", fwStatus)
-                jsonObjectRequest.put("fwName", fwName)
-                jsonObjectRequest.put("fwVersion", fwVersion)
-                jsonObjectRequest.put("nameAndVersion", nameAndVersion)
-                jsonObjectRequest.put("currentPage", currentPage)
-                jsonObjectRequest.put("pageSize", pageSize)
-            } catch (e: JSONException) {
-                Timber.e(e)
-            }
+            jsonObjectRequest.put("productID", productID)
+            jsonObjectRequest.put("companyID", companyID)
+            jsonObjectRequest.put("fwStatus", fwStatus)
+            jsonObjectRequest.put("fwName", fwName)
+            jsonObjectRequest.put("fwVersion", fwVersion)
+            jsonObjectRequest.put("nameAndVersion", nameAndVersion)
+            jsonObjectRequest.put("currentPage", currentPage)
+            jsonObjectRequest.put("pageSize", pageSize)
+
             val data: PageList<FirmWareInfo> =
                 NetDataRepository.instance.queryFirmwareListByProductIDWithPage(
                     jsonObjectRequest.toString()
                 ) { error: Throwable ->
-                    error.printStackTrace()
+                    Timber.e(error)
+                    addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
 
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
@@ -416,16 +537,33 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
         onCatch: ((Throwable) -> Unit)? = null
     ): String? {
         val jsonObjectRequest = JSONObject()
-        try {
-            jsonObjectRequest.put("deviceToken", deviceToken)
-            jsonObjectRequest.put("firmwareID", firmwareID)
-        } catch (e: JSONException) {
-            Timber.e(e)
-        }
+        jsonObjectRequest.put("deviceToken", deviceToken)
+        jsonObjectRequest.put("firmwareID", firmwareID)
+
         return NetDataRepository.instance.applyFirmwareUpgrade(
             jsonObjectRequest.toString(),
             onCatch
         )
+    }
+
+    suspend fun getRemoteDeviceLogin(deviceSn: String, deviceKey: String, onCatch: ((Throwable) -> Unit)? = null): DeviceDebugAddress? {
+        val jsonObjectRequest = JSONObject()//接口请求参数
+        jsonObjectRequest.put("appKey", BuildConfig.AMS_APP_KEY)
+        jsonObjectRequest.put("appSecret", BuildConfig.AMS_APP_SECRET)
+        jsonObjectRequest.put("deviceSn", deviceSn)
+        jsonObjectRequest.put("deviceKey", deviceKey)
+        jsonObjectRequest.put("reCreate", false)
+        return NetDataRepository.instance.getRemoteDeviceLogin(jsonObjectRequest.toString()) { error: Throwable ->
+            error.printStackTrace()
+            val msg =
+                "${BaseURL.AMS_CONFIG_ADDRESS.baseUrl}/Login error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
+            addLogItem(
+                sessionId = MmkvCacheUtil.getAppLogSessionId(),
+                priority = Log.ERROR,
+                data = msg
+            )
+            onCatch?.invoke(error)
+        }
     }
 
     override fun onCleared() {

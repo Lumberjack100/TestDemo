@@ -6,6 +6,7 @@ import androidx.annotation.CallSuper
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.PageRefreshLayout
 import com.hjq.toast.Toaster
+import com.kongzue.dialogx.dialogs.PopTip
 import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
 import com.shmedo.lib.ble.communicate.service.base.ConnectingResult
 import com.shmedo.lib.ble.communicate.service.base.DisconnectedResult
@@ -37,6 +38,7 @@ import com.shmedo.mcloudapp.device.common.DispatchFailed
 import com.shmedo.mcloudapp.device.common.DispatchSuccess
 import com.shmedo.mcloudapp.device.common.NoDeviceState
 import com.shmedo.mcloudapp.device.common.WorkingState
+import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.viewmodel.request.BleViewModel
@@ -108,10 +110,18 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     @CallSuper
     override fun createObserver() {
         launchWithViewLifecycle {
-            collectNetData()
+            try {
+                collectNetData()
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }
         launchWithViewLifecycle {
-            collectBleData()
+            try {
+                collectBleData()
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
         }
     }
 
@@ -172,7 +182,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     // </editor-fold>
 
     //<editor-fold desc="处理蓝牙下发指令">
-    private suspend fun collectBleData() {
+    protected open suspend fun collectBleData() {
         bleViewModel.state.collect { state ->
             Timber.v("${javaClass.simpleName} MedoBle: $state")
 //                if (isRestrictHiddenMode() && isHidden) {
@@ -189,8 +199,6 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
                     is ConnectedResult -> {
                         addLogItem(Log.INFO, "device ${bleDevice?.address} connected")
-//                        dismissLoadingDialog()
-//                        onConnectionStateChanged(true)
                     }
 
                     is ReadyResult -> {
@@ -246,12 +254,14 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     abstract fun setResultData(cmdStr: String)
 
-    protected fun sendHeartbeatMDCommand(command: String) {
-        bleViewModel.sendMDCommand(command, 0)
-    }
-
-    protected fun sendHeartbeatIOTCommand(command: String) {
-        bleViewModel.sendIOTCommand(command, deviceInfo.apikey, 0)
+    protected fun sendBleCommand(command: String, delaySendMillis: Long = 0) {//默认不延迟发送
+        //发送物联网指令
+        if (command.startsWith(IOTConstants.COMMAND_HEADER)) {
+            bleViewModel.sendIOTCommand(command, deviceInfo.apikey, delaySendMillis)
+        } else {
+            //发送MD指令 ##开头
+            bleViewModel.sendMDCommand(command, delaySendMillis)
+        }
     }
 
     /**
@@ -341,6 +351,14 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         commandItems.clear()
         commandDescItems.clear()
         refreshLayout?.finish(false)
+    }
+
+    protected fun isBleDisconnected() = communicateWay is BleConnect && !bleViewModel.isConnected()
+
+    protected fun handleFailureResult(errMsg: String) {
+        cancelNearbyCommunicationTimeoutJob()
+        Timber.e(errMsg)
+        PopTip.show(errMsg).autoDismiss(4500).iconError()
     }
 
     /**

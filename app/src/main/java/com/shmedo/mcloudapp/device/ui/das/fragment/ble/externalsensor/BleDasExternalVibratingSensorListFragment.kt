@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor
 
 import com.blankj.utilcode.util.StringUtils
-import com.hjq.toast.Toaster
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
@@ -323,10 +322,8 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
             MDCommandType.COLLECTOR_SENSOR_THRESHOLD_MULTI -> {//传感器触发阈值 162
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "传感器触发阈值配置出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -349,10 +346,8 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
 
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "$commandDesc 配置出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

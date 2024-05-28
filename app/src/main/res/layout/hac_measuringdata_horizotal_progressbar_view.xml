@@ -48,14 +48,14 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="10dp"
-            android:progress="@{stateVM.horizontalProgress}"
             android:max="@{stateVM.horizontalMaxProgress}"
-            android:progressDrawable="@{stateVM.isHorizontalProgressBarReadingData ? @drawable/custom_progress_horizontal_blue : @drawable/custom_progress_horizontal_green}"
+            android:progress="@{stateVM.horizontalProgress}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_data_num"
-            tools:progress="10" />
-
+            app:progressDrawableReadingData="@{stateVM.isHorizontalProgressBarReadingData}"
+            tools:progress="10"
+            tools:progressDrawable="@drawable/custom_progress_horizontal_green" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

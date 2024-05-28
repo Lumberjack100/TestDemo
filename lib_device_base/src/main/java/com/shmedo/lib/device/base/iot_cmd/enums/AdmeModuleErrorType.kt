@@ -25,16 +25,19 @@ enum class AdmeModuleErrorType(val code: String, val description: String) {
     READ_DATA_FAIL("15", "测斜仪读数据失败"),
     CX_FALL("16", "钢丝绳断裂"),
     CX_NON_REVERSE("17", "测斜仪未反转"),
-    XF_EXCEED_ROPE_LENGTH("18", "下放距离超过绳长");
+    XF_EXCEED_ROPE_LENGTH("18", "下放距离超过绳长"),
+    MOTOR_STOP("99", "电机停机"),
+    EMPTY_ERROR("-100", "空异常"),
+    UNKNOWN_ERROR("-200", "未知错误");
 
     companion object {
         @JvmStatic
-        fun valueByCode(code: String): AdmeModuleErrorType? {
-            if (TextUtils.isEmpty(code)) return null
+        fun valueByCode(code: String): AdmeModuleErrorType {
+            if (TextUtils.isEmpty(code)) return EMPTY_ERROR
             for (errorType in entries) {
                 if (errorType.code == code) return errorType
             }
-            return null
+            return UNKNOWN_ERROR
         }
     }
 }
