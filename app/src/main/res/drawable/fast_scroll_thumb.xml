@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:state_pressed="true"
-        android:drawable="@drawable/fastscroll_thumb_default"/>
+    <item android:state_pressed="true">
+        <bitmap android:src="@drawable/fastscroll_thumb_default_zui" android:tint="#2c2c2c"/>
 
-    <item
-        android:drawable="@drawable/fastscroll_thumb_default"/>
+    </item>
+
+    <item>
+        <bitmap android:src="@drawable/fastscroll_thumb_default_zui" android:tint="#2c2c2c"/>
+    </item>
 </selector>

@@ -13,7 +13,7 @@ import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
  */
 sealed class ScanningState {
 
-    object Loading : ScanningState()
+    data object Loading : ScanningState()
 
     data class Error(val errorCode: Int) : ScanningState()
 

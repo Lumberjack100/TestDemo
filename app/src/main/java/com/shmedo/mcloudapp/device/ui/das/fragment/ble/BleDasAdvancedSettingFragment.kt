@@ -175,7 +175,17 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment(),
         }
 
         override fun onRemoteDebuggingClick() {
-
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                productType,
+                communicateWay,
+                deviceInfo,
+                bleDevice
+            )
+            nav().navigate(R.id.action_global_to_remoteDebugFragment, bundle)
         }
     }
 

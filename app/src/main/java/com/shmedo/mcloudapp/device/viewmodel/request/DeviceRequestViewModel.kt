@@ -18,8 +18,10 @@ import com.shmedo.lib.network.response.PageList
 import com.shmedo.lib.network.response.ResponseStatus
 import com.shmedo.lib.network.response.ResultSource
 import com.shmedo.lib.network.util.BaseURL
+import com.shmedo.mcloudapp.BuildConfig
 import com.shmedo.mcloudapp.data.repository.remote.NetDataRepository
 import com.shmedo.mcloudapp.device.model.CloudDeviceData
+import com.shmedo.mcloudapp.device.model.DeviceDebugAddress
 import com.shmedo.mcloudapp.device.model.FirmWareInfo
 import com.shmedo.mcloudapp.device.model.SingleSelectionItem
 import kotlinx.coroutines.Dispatchers
@@ -542,6 +544,26 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             jsonObjectRequest.toString(),
             onCatch
         )
+    }
+
+    suspend fun getRemoteDeviceLogin(deviceSn: String, deviceKey: String, onCatch: ((Throwable) -> Unit)? = null): DeviceDebugAddress? {
+        val jsonObjectRequest = JSONObject()//接口请求参数
+        jsonObjectRequest.put("appKey", BuildConfig.AMS_APP_KEY)
+        jsonObjectRequest.put("appSecret", BuildConfig.AMS_APP_SECRET)
+        jsonObjectRequest.put("deviceSn", deviceSn)
+        jsonObjectRequest.put("deviceKey", deviceKey)
+        jsonObjectRequest.put("reCreate", false)
+        return NetDataRepository.instance.getRemoteDeviceLogin(jsonObjectRequest.toString()) { error: Throwable ->
+            error.printStackTrace()
+            val msg =
+                "${BaseURL.AMS_CONFIG_ADDRESS.baseUrl}/Login error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
+            addLogItem(
+                sessionId = MmkvCacheUtil.getAppLogSessionId(),
+                priority = Log.ERROR,
+                data = msg
+            )
+            onCatch?.invoke(error)
+        }
     }
 
     override fun onCleared() {

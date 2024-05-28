@@ -712,7 +712,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                         Timber.d("bingo startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
                         val command = MDCommandUtil.getCommand(MDCommandType.HEART_BEAT)
                         Timber.d("发送心跳包指令: $command")
-                        sendHeartbeatMDCommand(command)
+                        sendBleCommand(command)
                     }
                 }
         }

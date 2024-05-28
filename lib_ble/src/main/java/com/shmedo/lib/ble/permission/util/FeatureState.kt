@@ -39,5 +39,5 @@ enum class FeatureNotAvailableReason {
 
 sealed class FeatureState
 
-object Available : FeatureState()
+data object Available : FeatureState()
 data class NotAvailable(val reason: FeatureNotAvailableReason) : FeatureState()

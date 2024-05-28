@@ -182,7 +182,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     // </editor-fold>
 
     //<editor-fold desc="处理蓝牙下发指令">
-    private suspend fun collectBleData() {
+    protected open suspend fun collectBleData() {
         bleViewModel.state.collect { state ->
             Timber.v("${javaClass.simpleName} MedoBle: $state")
 //                if (isRestrictHiddenMode() && isHidden) {
@@ -199,8 +199,6 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
                     is ConnectedResult -> {
                         addLogItem(Log.INFO, "device ${bleDevice?.address} connected")
-//                        dismissLoadingDialog()
-//                        onConnectionStateChanged(true)
                     }
 
                     is ReadyResult -> {
@@ -256,12 +254,14 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     abstract fun setResultData(cmdStr: String)
 
-    protected fun sendHeartbeatMDCommand(command: String) {
-        bleViewModel.sendMDCommand(command, 0)
-    }
-
-    protected fun sendHeartbeatIOTCommand(command: String) {
-        bleViewModel.sendIOTCommand(command, deviceInfo.apikey, 0)
+    protected fun sendBleCommand(command: String, delaySendMillis: Long = 0) {//默认不延迟发送
+        //发送物联网指令
+        if (command.startsWith(IOTConstants.COMMAND_HEADER)) {
+            bleViewModel.sendIOTCommand(command, deviceInfo.apikey, delaySendMillis)
+        } else {
+            //发送MD指令 ##开头
+            bleViewModel.sendMDCommand(command, delaySendMillis)
+        }
     }
 
     /**

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/remote_command_debug_graph"
+    app:startDestination="@id/tcpDebugFragment">
+
+    <fragment
+        android:id="@+id/tcpDebugFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.common.TcpDebugFragment"
+        android:label="TcpDebugFragment"
+        tools:layout="@layout/fragment_tcp_debug" />
+
+</navigation>

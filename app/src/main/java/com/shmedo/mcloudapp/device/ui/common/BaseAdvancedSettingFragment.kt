@@ -156,6 +156,12 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
                 AdvancedSettingItem.Type.FIRMWARE,
             )
         )
+        moduleList.add(
+            AdvancedSettingItem(
+                "远程调试",
+                AdvancedSettingItem.Type.REMOTE_DEBUG,
+            )
+        )
         binding.recyclerview.models = moduleList
     }
 
@@ -223,6 +229,15 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
 
             AdvancedSettingItem.Type.SYNC_INSTALL_POSITION -> {
                 showSyncInstallationLocationPopup()
+            }
+            AdvancedSettingItem.Type.REMOTE_DEBUG -> {
+                val bundle = newBundleArguments(
+                    productType,
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
+                nav().navigate(R.id.action_global_to_remoteDebugFragment, bundle)
             }
         }
     }

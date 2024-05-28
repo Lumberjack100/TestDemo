@@ -34,7 +34,7 @@ class M20SensorInfoFragment : BaseDeviceStatusInfoFragment() {
 
                 groupList.add(DeviceStatusInfoGroupItem("倾角计"))
                 stateInfo.self_check.notNullKey {
-                    val camState = if (it.uppercase().contains("MEMS:1")) "正常" else "异常"
+                    val camState = if (it.uppercase().contains("MEMS:0")) "异常" else "正常"
                     groupList.add(
                         DeviceStatusInfoBasicItem(
                             name = "倾角MEMS状态",

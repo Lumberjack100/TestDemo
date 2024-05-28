@@ -250,7 +250,7 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
                         Timber.d("bingo startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
                         val command = IOTCommandUtil.getCommand(IOTCommandType.HEART_BEAT)
                         Timber.d("发送心跳包指令: $command")
-                        sendHeartbeatIOTCommand(command)
+                        sendBleCommand(command)
                     }
                 }
         }

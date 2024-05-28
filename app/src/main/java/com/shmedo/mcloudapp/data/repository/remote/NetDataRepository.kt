@@ -20,6 +20,7 @@ import com.shmedo.lib.network.util.BaseURL
 import com.shmedo.mcloudapp.BuildConfig
 import com.shmedo.mcloudapp.common.model.CheckSoftModel
 import com.shmedo.mcloudapp.device.model.CloudDeviceData
+import com.shmedo.mcloudapp.device.model.DeviceDebugAddress
 import com.shmedo.mcloudapp.device.model.DispatchCmdItem
 import com.shmedo.mcloudapp.device.model.FirmWareInfo
 import com.shmedo.mcloudapp.device.model.QueryCmdResult
@@ -73,6 +74,20 @@ class NetDataRepository private constructor() {
             .addHeader("Authorization", MmkvCacheUtil.getAmsToken())
             .addAll(jsonParam)
             .toAwaitResponse<String>()
+            .tryAwait(onCatch)
+
+
+    /**
+     * 查询设备远程调试连接地址信息
+     */
+    suspend fun getRemoteDeviceLogin(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): DeviceDebugAddress? =
+        RxHttp.postJson("/DeviceLogin")
+            .setDomainIfAbsent(BaseURL.AMS_CONFIG_ADDRESS.baseUrl)
+            .addAll(jsonParam)
+            .toAwaitResponse<DeviceDebugAddress>()
             .tryAwait(onCatch)
     // </editor-fold>
 

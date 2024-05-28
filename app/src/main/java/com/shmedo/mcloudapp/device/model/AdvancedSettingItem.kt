@@ -19,6 +19,9 @@ data class AdvancedSettingItem(
 
         //同步安装位置
         data object SYNC_INSTALL_POSITION : Type()
+
+        //远程调试
+        data object REMOTE_DEBUG : Type()
     }
 }
 
