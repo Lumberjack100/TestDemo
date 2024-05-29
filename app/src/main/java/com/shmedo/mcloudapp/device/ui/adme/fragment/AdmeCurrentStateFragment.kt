@@ -35,7 +35,6 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentAdmeCurrentStateBinding
 import com.shmedo.mcloudapp.databinding.ItemDeviceStatusInfoBasicBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoSignalItem
@@ -291,7 +290,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "设备型号",
-                    value = stateInfo.productid,
+                    value = if (deviceInfo.deviceName == deviceInfo.deviceToken) deviceInfo.productToken else deviceInfo.deviceName.ifEmpty { stateInfo.productid },
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
@@ -380,7 +379,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                     value = stateInfo.downnum,
                 )
                 stateInfo.runmileage.notNullKey {
-                    val tempValue = it.toDoubleOrNull()?.div(100) ?: 0.0
+                    val tempValue = it.toDoubleOrNull() ?: 0.0
                     groupList.add(
                         DeviceStatusInfoBasicItem(
                             name = "钢丝绳运行里程",
