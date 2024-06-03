@@ -72,6 +72,7 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
+                        visible="@{stateVM.isFrontCalcVisible}"
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onFrontCalcChooseClick()}"
                         android:layout_marginTop="@dimen/dimen_size_1"
