@@ -9,6 +9,7 @@ import com.shmedo.mcloudapp.device.ui.das.fragment.ble.deviceinfo.BleDasCommunic
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.deviceinfo.BleDasSensorInfoFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.deviceinfo.DasBaseInfoFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.deviceinfo.DasCommunicationInfoFragment
+import com.shmedo.mcloudapp.device.ui.das.fragment.deviceinfo.DasSensorInfoFragment
 import com.shmedo.mcloudapp.device.ui.lb20s.fragment.deviceinfo.LB20SBaseInfoFragment
 import com.shmedo.mcloudapp.device.ui.lb20s.fragment.deviceinfo.LB20SGatewayInfoFragment
 import com.shmedo.mcloudapp.device.ui.m20.fragment.deviceinfo.M20BaseInfoFragment
@@ -187,7 +188,9 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                 )
             }
 
-            ProductType.DAS -> {//M20
+            ProductType.COLLECTOR_R_1,
+            ProductType.BHY,
+            ProductType.DAS -> {
                 fragmentList.add(
                     if (communicateWay is BleConnect) BleDasBaseInfoFragment.newInstance().apply {
                         arguments = bundle
@@ -204,7 +207,7 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                 fragmentList.add(
                     if (communicateWay is BleConnect) BleDasSensorInfoFragment.newInstance().apply {
                         arguments = bundle
-                    } else UDProductSensorInfoFragment.newInstance().apply { arguments = bundle }
+                    } else DasSensorInfoFragment.newInstance().apply { arguments = bundle }
                 )
             }
 

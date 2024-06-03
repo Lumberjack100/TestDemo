@@ -14,6 +14,9 @@ data class AdvancedSettingItem(
         //固件
         data object FIRMWARE : Type()
 
+        //偏移初始化
+        data object OFFSET_INITIALIZATION : Type()
+
         //重置
         data object RESET : Type()
 
