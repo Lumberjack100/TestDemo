@@ -12,7 +12,7 @@ data class DasBaseInfo(
     var ver: String = "",//固件版本
     var local: String = "",//位置
     var involt: String = "",//内部电量
-    var outvolt: String = "",//外部电压
+    var outvolt: String = "",//外部电压  供电电压是设备自检出来的电压值
     var csq: String = "",//信号强度
     var isp: String = "",//网络运营商
     var code: String = "",//设备启动代码

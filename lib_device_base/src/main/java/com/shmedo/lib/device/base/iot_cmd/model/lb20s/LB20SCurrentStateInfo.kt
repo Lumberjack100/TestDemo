@@ -48,7 +48,7 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class LB20SCurrentStateInfo(
-    var ext_power_volt: String = IOTConstants.NULL_KEY, //设备输入端电压，单位V
+    var ext_power_volt: String = IOTConstants.NULL_KEY, //设备输入端电压，单位V  供电电压是设备自检出来的电压值
     var temp: String = IOTConstants.NULL_KEY, //设备内部环境温度，单位 ℃
     var humidity: String = IOTConstants.NULL_KEY, //设备内部湿度，单位 RH%
     var temp_out: String = IOTConstants.NULL_KEY, //设备外部环境温度，单位 ℃

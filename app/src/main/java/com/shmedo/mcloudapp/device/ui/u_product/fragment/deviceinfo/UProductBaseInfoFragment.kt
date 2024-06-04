@@ -80,7 +80,7 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
                     groupList,
-                    name = "外接电源电压",
+                    name = "内部电压",
                     value = stateInfo.extPowerVolt,
                     defaultValue = "0",
                     thresHold = 5.0,

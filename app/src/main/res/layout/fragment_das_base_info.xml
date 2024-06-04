@@ -140,7 +140,7 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                        android:text="外接电源电压" />
+                        android:text="内部电压" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"

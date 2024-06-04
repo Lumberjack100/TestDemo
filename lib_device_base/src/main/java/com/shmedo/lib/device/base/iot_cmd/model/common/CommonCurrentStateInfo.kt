@@ -42,7 +42,7 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class CommonCurrentStateInfo(
-    var ext_power_volt: String = IOTConstants.NULL_KEY, //设备输入端电压，单位V
+    var ext_power_volt: String = IOTConstants.NULL_KEY, //设备输入端电压，单位V 供电电压是设备自检出来的电压值
     var inner_power_volt: String = IOTConstants.NULL_KEY, //设备内部电压，单位V
     var temp: String = IOTConstants.NULL_KEY, //设备内部环境温度，单位 ℃
     var humidity: String = IOTConstants.NULL_KEY, //设备内部湿度，单位 RH%

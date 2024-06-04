@@ -42,7 +42,7 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class URCurrentStateInfo(
-    val ext_power_volt: String = IOTConstants.NULL_KEY, //外接电源电压
+    val ext_power_volt: String = IOTConstants.NULL_KEY, //外接电源电压 供电电压是设备自检出来的电压值
     val inner_power_volt: String = IOTConstants.NULL_KEY, //内部电源电压
     val temp: String = IOTConstants.NULL_KEY, //设备内部环境温度，单位摄氏度
     val humidity: String = IOTConstants.NULL_KEY, //设备内部湿度，单位 RH%
