@@ -2,13 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/corner_container"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/mr_communication_data_table_row_header_height"
+    android:layout_width="@dimen/data_table_row_header_width"
+    android:layout_height="@dimen/data_table_cell_height"
     android:background="@color/mr_communication_data_table_row_header_backround">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/corner_textView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:ellipsize="end"
