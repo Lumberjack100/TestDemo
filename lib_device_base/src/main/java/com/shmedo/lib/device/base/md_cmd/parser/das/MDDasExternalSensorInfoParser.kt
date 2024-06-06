@@ -137,7 +137,9 @@ class MDDasExternalSensorInfoParser : MDCommandParser<MDDasExternalSensorInfo> {
                             lsyysst = (values.getOrNull(6) ?: lsyysst).replace("nan", "0")
                         }
                         IOTSensorType.STATIC_LEVEL,//静力水准
-                        IOTSensorType.SEDIMENTATION_METER -> {//沉降仪
+                        IOTSensorType.SEDIMENTATION_METER ,//沉降仪
+                        IOTSensorType.VERTICAL_COORDINATE ,//垂线坐标仪
+                        -> {
                             initialValue = (values.getOrNull(5) ?: initialValue).replace("nan", "0")
                         }
                         IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE -> {//数字式水位计

@@ -92,6 +92,8 @@ enum class IOTSensorType(val code: String, val description: String) {
 
     SEDIMENTATION_METER("30", "沉降仪"),
 
+    VERTICAL_COORDINATE("31", "垂线坐标仪"),
+
     /**
      * 基康渗压计 BGK-4500
      */

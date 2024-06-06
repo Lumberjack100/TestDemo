@@ -102,8 +102,11 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
                             //量水堰计初始堰上水头指令
                             initSingleWeirHeadValue(sensorInfo)
                         }
-                        //静力水准/沉降仪 需要额外设置
-                        if (iotSensorType == IOTSensorType.STATIC_LEVEL || iotSensorType == IOTSensorType.SEDIMENTATION_METER) {
+                        //静力水准/沉降仪/垂线坐标仪 需要额外设置
+                        if (iotSensorType == IOTSensorType.STATIC_LEVEL
+                            || iotSensorType == IOTSensorType.SEDIMENTATION_METER
+                            || iotSensorType == IOTSensorType.VERTICAL_COORDINATE
+                            ) {
                             //初始值指令
                             initSingleInitialReadingValue(sensorInfo)
                         }

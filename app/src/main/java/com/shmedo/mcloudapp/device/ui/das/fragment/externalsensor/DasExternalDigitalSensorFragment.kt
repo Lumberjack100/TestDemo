@@ -268,7 +268,8 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                 }
 
                 IOTSensorType.STATIC_LEVEL,//静力水准
-                IOTSensorType.SEDIMENTATION_METER //沉降仪
+                IOTSensorType.SEDIMENTATION_METER ,//沉降仪
+                IOTSensorType.VERTICAL_COORDINATE ,//垂线坐标仪
                 -> {
                     mStates.triggerTitle.set("触发值(单位:毫米)")
                     mStates.correctTitle.set("修正值(单位:毫米)")
@@ -420,7 +421,9 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         }
 
         override fun onExtension1ButtonClick() {
-            if (iotSensorType == IOTSensorType.STATIC_LEVEL || iotSensorType == IOTSensorType.SEDIMENTATION_METER) { //静力水准/沉降仪初始值重置
+            if (iotSensorType == IOTSensorType.STATIC_LEVEL
+                || iotSensorType == IOTSensorType.SEDIMENTATION_METER
+                || iotSensorType == IOTSensorType.VERTICAL_COORDINATE) { //静力水准/沉降仪/垂线坐标仪 初始值重置
                 if (TextUtils.isEmpty(mStates.address.get())) {
                     Toaster.show("传感器地址不能为空!")
                     return
@@ -592,7 +595,8 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             }
 
             IOTSensorType.STATIC_LEVEL,//静力水准
-            IOTSensorType.SEDIMENTATION_METER //沉降仪
+            IOTSensorType.SEDIMENTATION_METER, //沉降仪
+            IOTSensorType.VERTICAL_COORDINATE ,//垂线坐标仪
             -> {
                 if (mStates.extension1Value.get().isEmpty()) {
                     showMessageDialog("请输入初始值!")
@@ -667,7 +671,8 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             }
 
             IOTSensorType.STATIC_LEVEL,//静力水准
-            IOTSensorType.SEDIMENTATION_METER //沉降仪
+            IOTSensorType.SEDIMENTATION_METER ,//沉降仪
+            IOTSensorType.VERTICAL_COORDINATE ,//垂线坐标仪
             -> {
                 sensorInfo.initval = mStates.extension1Value.get()
             }
