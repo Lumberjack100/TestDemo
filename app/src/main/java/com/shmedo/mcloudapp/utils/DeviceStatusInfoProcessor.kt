@@ -5,8 +5,6 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.ext.notNullKey
 import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
 
 /**
  * 创建者：gonghe
@@ -17,13 +15,16 @@ object DeviceStatusInfoProcessor {
 
     // 创建DecimalFormat的方法，确保线程安全
     private fun getDecimalFormat(digit: Int): DecimalFormat {
-        return DecimalFormat("#.####", DecimalFormatSymbols(Locale.getDefault())).apply {
-            //根据 digit 设置保留小数位数
-            maximumFractionDigits = digit
+        return DecimalFormat().apply {
+            if (digit == 0) {
+                applyPattern("0")
+            } else {
+                applyPattern("#.${"#".repeat(digit)}")
+            }
         }
     }
 
-    fun formatDoubleValue(value: String?, defaultValue: String, digit: Int = 2): String {
+    fun formatDoubleValue(value: String?, defaultValue: String = "", digit: Int = 2): String {
         // 使用getDecimalFormat方法创建DecimalFormat实例
         val decimalFormat = getDecimalFormat(digit)
 

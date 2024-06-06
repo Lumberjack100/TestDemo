@@ -156,7 +156,7 @@
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.jaygoo.widget.RangeSeekBar
-                            android:id="@+id/seekBar_down_slow_stop_interval"
+                            android:id="@+id/seekBar_down_interval"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="@dimen/dimen_size_16"
@@ -360,7 +360,7 @@
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.jaygoo.widget.RangeSeekBar
-                            android:id="@+id/seekBar_pull_up_slow_stop_interval"
+                            android:id="@+id/seekBar_pull_up_interval"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginHorizontal="@dimen/dimen_size_16"

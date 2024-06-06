@@ -32,6 +32,7 @@ import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.ext.showMessageDialog
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import org.koin.android.ext.android.inject
@@ -122,9 +123,9 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                     }
                     decimalFormat.applyPattern("#.#")
                     val leftProgress = decimalFormat.format((leftValue / holedepth) * 100).toFloat()
-                    binding.seekBarDownSlowStopInterval.setProgress(
+                    binding.seekBarDownInterval.setProgress(
                         leftProgress,
-                        binding.seekBarDownSlowStopInterval.rightSeekBar.progress
+                        binding.seekBarDownInterval.rightSeekBar.progress
                     )
                 } catch (e: Exception) {
                     Timber.e(e)
@@ -155,8 +156,8 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                     decimalFormat.applyPattern("0")
                     val rightProgress =
                         decimalFormat.format((1 - rightValue / holedepth) * 100).toFloat()
-                    binding.seekBarDownSlowStopInterval.setProgress(
-                        binding.seekBarDownSlowStopInterval.leftSeekBar.progress,
+                    binding.seekBarDownInterval.setProgress(
+                        binding.seekBarDownInterval.leftSeekBar.progress,
                         rightProgress
                     )
 
@@ -197,9 +198,9 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                     decimalFormat.applyPattern("0")
                     val leftProgress =
                         decimalFormat.format((leftValue / measpacing) * 100).toFloat()
-                    binding.seekBarPullUpSlowStopInterval.setProgress(
+                    binding.seekBarPullUpInterval.setProgress(
                         leftProgress,
-                        binding.seekBarPullUpSlowStopInterval.rightSeekBar.progress
+                        binding.seekBarPullUpInterval.rightSeekBar.progress
                     )
                 } catch (e: Exception) {
                     Timber.e(e)
@@ -230,8 +231,8 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                     decimalFormat.applyPattern("0")
                     val rightProgress =
                         decimalFormat.format((1 - rightValue / measpacing) * 100).toFloat()
-                    binding.seekBarPullUpSlowStopInterval.setProgress(
-                        binding.seekBarPullUpSlowStopInterval.leftSeekBar.progress,
+                    binding.seekBarPullUpInterval.setProgress(
+                        binding.seekBarPullUpInterval.leftSeekBar.progress,
                         rightProgress
                     )
                 } catch (e: Exception) {
@@ -244,9 +245,9 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
 
     private fun initSeekBarListener() {
         //下放缓起缓停区间
-        binding.seekBarDownSlowStopInterval.setIndicatorTextDecimalFormat("0");
-        binding.seekBarDownSlowStopInterval.setIndicatorTextStringFormat("%s%%")
-        binding.seekBarDownSlowStopInterval.isEnabled = false
+        binding.seekBarDownInterval.setIndicatorTextDecimalFormat("0");
+        binding.seekBarDownInterval.setIndicatorTextStringFormat("%s%%")
+        binding.seekBarDownInterval.isEnabled = false
 
         //堵转检测区间
         binding.seekBarDownStallDetectionInterval.setIndicatorTextDecimalFormat("0");
@@ -286,7 +287,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                 val leftValue = view.leftSeekBar.progress
                 val rightValue = view.rightSeekBar.progress
                 val downSlowStopStartValue =
-                    binding.seekBarDownSlowStopInterval.rightSeekBar.progress
+                    binding.seekBarDownInterval.rightSeekBar.progress
                 if (leftValue >= 50) {
                     showMessageDialog("下放堵转检测区间起始值不能大于50%")
                     view.setProgress(49f, rightValue)
@@ -298,17 +299,17 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                 if (rightValue >= downSlowStopStartValue) {
                     view.setProgress(
                         leftValue,
-                        if (binding.seekBarDownSlowStopInterval.rightSeekBar.progress - 1 < 50) 50f
-                        else binding.seekBarDownSlowStopInterval.rightSeekBar.progress - 1
+                        if (binding.seekBarDownInterval.rightSeekBar.progress - 1 < 50) 50f
+                        else binding.seekBarDownInterval.rightSeekBar.progress - 1
                     )
                 }
             }
         })
 
         //上拉缓起缓停区间
-        binding.seekBarPullUpSlowStopInterval.setIndicatorTextDecimalFormat("0");
-        binding.seekBarPullUpSlowStopInterval.setIndicatorTextStringFormat("%s%%")
-        binding.seekBarPullUpSlowStopInterval.isEnabled = false
+        binding.seekBarPullUpInterval.setIndicatorTextDecimalFormat("0");
+        binding.seekBarPullUpInterval.setIndicatorTextStringFormat("%s%%")
+        binding.seekBarPullUpInterval.isEnabled = false
     }
 
     private fun initRefresh() {
@@ -665,40 +666,34 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             measpacing = info.measpacing.toFloat()//上拉测量间距
 
             mStates.downEnable.set(info.lowtbtss == "1")
-            mStates.downPulsesPerUnitTime.set(info.numpput)//下放单位时间脉冲数
-
+            //下放单位时间脉冲数
+            mStates.downPulsesPerUnitTime.set(info.numpput)
             //下放脉冲检测判断时间
-            mStates.downPulseDetectionTime.set(info.pdajtime.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
+            mStates.downPulseDetectionTime.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.pdajtime,
+                    "",
+                    1
+                )
+            )
 
+            val downSlowStartValue = info.lowsusranb.toFloat()
+            val downSlowStopValue = info.lowsusrana.toFloat()
             //下放缓起区间终值(加速阶段)
-            mStates.downSlowStartIntervalEndValue.set(
-                info.lowsusranb.replace(
-                    "-",
-                    ""
-                )
-            )
+            mStates.downSlowStartIntervalEndValue.set(downSlowStartValue.toString())
             //下放缓停区间起始值(减速阶段)
-            mStates.downSlowStopIntervalStartValue.set(
-                info.lowsusrana.replace(
-                    "-",
-                    ""
-                )
-            )
+            mStates.downSlowStopIntervalStartValue.set(downSlowStopValue.toString())
 
-            var leftProgress1 = holedepth.takeIf { it != 0f }
-                ?.let { (mStates.downSlowStartIntervalEndValue.get().toFloat() / it) * 100f }
-                ?: 0f
-
-            var rightProgress1 = holedepth.takeIf { it != 0f }
-                ?.let { (1 - mStates.downSlowStopIntervalStartValue.get().toFloat() / it) * 100f }
-                ?: 0f
+            val leftProgress1 = if (holedepth == 0f) 0f else (downSlowStartValue / holedepth) * 100f
+            val rightProgress1 =
+                if (holedepth == 0f) 0f else (1 - downSlowStopValue / holedepth) * 100f
 
             decimalFormat.applyPattern("0")
-            leftProgress1 = decimalFormat.format(leftProgress1.coerceAtMost(49f)).toFloat()
-            rightProgress1 = decimalFormat.format(rightProgress1.coerceAtLeast(50f)).toFloat()
-            binding.seekBarDownSlowStopInterval.setProgress(leftProgress1, rightProgress1)
+            val formattedLeftProgress =
+                decimalFormat.format(leftProgress1.coerceAtMost(49f)).toFloat()
+            val formattedRightProgress =
+                decimalFormat.format(rightProgress1.coerceAtLeast(50f)).toFloat()
+            binding.seekBarDownInterval.setProgress(formattedLeftProgress, formattedRightProgress)
 
             //堵转检测区间起始值
             mStates.downStallDetectionIntervalStartValue.set(info.detintiona)
@@ -715,16 +710,22 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                 rightProgress2
             )
 
-            decimalFormat.applyPattern("#.##")
             //下放力矩堵转阈值
-            mStates.downTorqueStallThreshold.set(info.lowtorblothr.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-            decimalFormat.applyPattern("#.#")
+            mStates.downTorqueStallThreshold.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.lowtorblothr,
+                    "",
+                    2
+                )
+            )
             //下放力矩检测判断时间
-            mStates.downTorqueDetectionTime.set(info.lowtordetime.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
+            mStates.downTorqueDetectionTime.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.lowtordetime,
+                    "",
+                    1
+                )
+            )
 
             mStates.pullUpEnable.set(info.uptbtss == "1")
             //上拉缓起区间终值(加速阶段)
@@ -750,22 +751,28 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             decimalFormat.applyPattern("0")
             leftProgress3 = decimalFormat.format(leftProgress3.coerceAtMost(49f)).toFloat()
             rightProgress3 = decimalFormat.format(rightProgress3.coerceAtLeast(50f)).toFloat()
-            binding.seekBarPullUpSlowStopInterval.setProgress(
+            binding.seekBarPullUpInterval.setProgress(
                 leftProgress3,
                 rightProgress3
             )
 
-            decimalFormat.applyPattern("#.##")
             //上拉力矩堵转阈值
-            mStates.pullUpTorqueStallThreshold.set(info.uptorblothr.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-
-            decimalFormat.applyPattern("#.#")
+            mStates.pullUpTorqueStallThreshold.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.uptorblothr,
+                    "",
+                    2
+                )
+            )
             //上拉力矩检测判断时间
-            mStates.pullUpTorqueDetectionTime.set(info.uptordetime.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
+            mStates.pullUpTorqueDetectionTime.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.uptordetime,
+                    "",
+                    1
+                )
+            )
+
         } catch (e: Exception) {
             Timber.e(e)
             addLogItem(Log.ERROR, e.errorMsg)
