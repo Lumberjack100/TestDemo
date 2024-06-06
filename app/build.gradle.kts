@@ -63,8 +63,6 @@ android {
         applicationId = "com.shmedo.mcloudapp.iot"
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = getReversion()
-        versionName = "$majorVersion.$minorVersion.$patchVersion"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         ndk {
@@ -126,6 +124,8 @@ android {
     productFlavors {
         create("production") {//正式发布版本
             dimension = "version"
+            versionCode = getReversion()
+            versionName = "$majorVersion.$minorVersion.$patchVersion"
             resValue("string", "app_name", "米易通物联网")   // 设置默认的app_name
             buildConfigField("String", "APP_NAME", "\"米易通物联网\"")
             buildConfigField("String", "PGY_API_KEY", "\"64454bf76fe2abd8dec45200c11fc93b\"")
@@ -135,6 +135,8 @@ android {
         create("demo") {//测试版本
             dimension = "version"
             applicationIdSuffix = ".v5"
+            versionCode = getReversion()
+            versionName = "5.0.12"
             resValue("string", "app_name", "米易通V5")   // 设置默认的app_name
             buildConfigField("String", "APP_NAME", "\"米易通V5\"")
             buildConfigField("String", "PGY_API_KEY", "\"db9ce8a6bd3b8b95c20c66e4205194d9\"")
