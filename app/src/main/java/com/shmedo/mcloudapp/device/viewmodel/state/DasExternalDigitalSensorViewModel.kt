@@ -52,4 +52,5 @@ class DasExternalDigitalSensorViewModel : ViewModel() {
     val isExtension5TipBtnSupport = NonNullObservableField(false)//扩展5
     val extension5Title = NonNullObservableField("")//
     val extension5Value = NonNullObservableField("")//
+    val extension5ValueEnable = NonNullObservableField(true)//
 }

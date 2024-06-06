@@ -32,6 +32,7 @@ import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessageDialog
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -212,8 +213,7 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                 }
 
                 IOTSensorType.STATIC_LEVEL,//静力水准
-                IOTSensorType.SEDIMENTATION_METER ,//沉降仪
-                IOTSensorType.VERTICAL_COORDINATE ,//垂线坐标仪
+                IOTSensorType.SEDIMENTATION_METER,//沉降仪
                 -> {
                     mStates.triggerTitle.set("触发值(单位:毫米)")
                     mStates.correctTitle.set("修正值(单位:毫米)")
@@ -224,6 +224,34 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     sensorInfo.initialValue.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
+
+                    mStates.isExtension1ButtonSupport.set(sensorIndex != -1)
+                }
+
+                IOTSensorType.VERTICAL_COORDINATE,//垂线坐标仪
+                -> {
+                    mStates.triggerTitle.set("触发值(单位:毫米)")
+                    mStates.isCorrectSupport.set(false)
+
+                    mStates.isExtension1Support.set(true)
+                    mStates.extension1Title.set("X轴初始值(毫米)")
+                    mStates.extension1Value.set(
+                        DeviceStatusInfoProcessor.formatDoubleValue(
+                            sensorInfo.correctionValue,
+                            "0",
+                            3
+                        )
+                    )
+
+                    mStates.isExtension2Support.set(true)
+                    mStates.extension2Title.set("Y轴初始值(毫米)")
+                    mStates.extension2Value.set(
+                        DeviceStatusInfoProcessor.formatDoubleValue(
+                            sensorInfo.initialValue,
+                            "0",
+                            3
+                        )
+                    )
 
                     mStates.isExtension1ButtonSupport.set(sensorIndex != -1)
                 }
@@ -343,7 +371,8 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         override fun onExtension1ButtonClick() {
             if (iotSensorType == IOTSensorType.STATIC_LEVEL
                 || iotSensorType == IOTSensorType.SEDIMENTATION_METER
-                || iotSensorType == IOTSensorType.VERTICAL_COORDINATE) { //静力水准/沉降仪/垂线坐标仪初始值重置
+                || iotSensorType == IOTSensorType.VERTICAL_COORDINATE
+            ) { //静力水准/沉降仪/垂线坐标仪初始值重置
                 if (TextUtils.isEmpty(mStates.address.get())) {
                     Toaster.show("传感器地址不能为空!")
                     return
@@ -521,8 +550,8 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             }
 
             IOTSensorType.STATIC_LEVEL,//静力水准
-            IOTSensorType.SEDIMENTATION_METER ,//沉降仪
-            IOTSensorType.VERTICAL_COORDINATE ,//垂线坐标仪
+            IOTSensorType.SEDIMENTATION_METER,//沉降仪
+            IOTSensorType.VERTICAL_COORDINATE,//垂线坐标仪
             -> {
                 if (mStates.extension1Value.get().isEmpty()) {
                     showMessageDialog("请输入初始值!")
@@ -593,8 +622,8 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             }
 
             IOTSensorType.STATIC_LEVEL,//静力水准
-            IOTSensorType.SEDIMENTATION_METER ,//沉降仪
-            IOTSensorType.VERTICAL_COORDINATE ,//垂线坐标仪
+            IOTSensorType.SEDIMENTATION_METER,//沉降仪
+            IOTSensorType.VERTICAL_COORDINATE,//垂线坐标仪
             -> {
                 sensorInfo.initialValue = mStates.extension1Value.get()
             }
