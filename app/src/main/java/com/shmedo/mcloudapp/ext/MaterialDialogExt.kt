@@ -1,7 +1,9 @@
 package com.shmedo.mcloudapp.ext
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
 import com.afollestad.materialdialogs.actions.getActionButton
@@ -248,4 +250,8 @@ fun BaseFragment.getAdmeErrorMsg(abndiasis: String, delimiters: String = "\n"): 
     }
 
     return stringBuilder.toString()
+}
+
+fun DialogFragment.isViewLifecycleActive(): Boolean {
+    return viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.CREATED)
 }

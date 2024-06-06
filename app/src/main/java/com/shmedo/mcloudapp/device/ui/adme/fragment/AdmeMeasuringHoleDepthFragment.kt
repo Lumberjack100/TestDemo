@@ -38,8 +38,10 @@ import com.shmedo.mcloudapp.databinding.FragmentAdmeMeasuringHoleDepthBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacMeasuringHoleDepthFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeMeasuringHoleDepthViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.isViewLifecycleActive
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
@@ -683,13 +685,13 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                         updateMotorMotionDistance(result.data)
                         if (mStates.isAutoMeasuringMode.get()) {
                             autoMeasuringHoleDepthBottomDialog?.let { dialog ->
-                                if (dialog.isResumed) {
+                                if (dialog.isViewLifecycleActive()) {
                                     updateMotionData(result.data)
                                 }
                             }
                         } else {
                             manualMeasuringHoleDepthBottomDialog?.let { dialog ->
-                                if (dialog.isResumed) {
+                                if (dialog.isViewLifecycleActive()) {
                                     updateMotionData(result.data)
                                 }
                             }
@@ -762,6 +764,12 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                         }, "取消")
                     }
 
+                    override fun onRefresh() {
+                        if (communicateWay is BleConnect && bleViewModel.isConnected() && !mStates.isStopQueryMotorState.get()) {
+                            getMotorMotionData(AdmeHacMeasuringHoleDepthFragment.DELAY_2000_MILLIS)
+                        }
+                    }
+
                     override fun onStopClick() {
                         if (isBleDisconnected()) {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
@@ -819,6 +827,12 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             }
                             dismiss()
                         }, "取消")
+                    }
+
+                    override fun onRefresh() {
+                        if (communicateWay is BleConnect && bleViewModel.isConnected() && !mStates.isStopQueryMotorState.get()) {
+                            getMotorMotionData(AdmeHacMeasuringHoleDepthFragment.DELAY_2000_MILLIS)
+                        }
                     }
 
                     override fun onStopClick() {

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Lifecycle
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.R
 
@@ -27,6 +28,9 @@ abstract class BaseVmDbDialogFragment : DialogFragment() {
     //该类绑定的ViewDataBinding
     private var _binding: ViewDataBinding? = null
     val mDatabind: ViewDataBinding get() = _binding!!
+
+    //是否第一次加载
+    protected var isFirst = true
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -68,7 +72,6 @@ abstract class BaseVmDbDialogFragment : DialogFragment() {
         }
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -97,6 +100,13 @@ abstract class BaseVmDbDialogFragment : DialogFragment() {
         initView(savedInstanceState)
         createObserver()
         initData()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (isFirst) {
+            isFirst = false
+        }
     }
 
     override fun onDestroyView() {
