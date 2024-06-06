@@ -464,7 +464,9 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         msg: String
     ) {
         if (communicateWay is BleConnect && bleViewModel.isConnected()) {
-            getMotorMotionData(DELAY_2000_MILLIS)
+            if (IOTCommandUtil.extractCommandType(cmdStr) == IOTCommandType.ADME_HAC_MD_GET_HOLE_MEASURE_PULSE) {
+                getMotorMotionData(DELAY_2000_MILLIS)
+            }
         }
     }
 
