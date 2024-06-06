@@ -144,7 +144,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
 
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("触发值(毫米)")
-                    decimalFormat.applyPattern("#")
+                    decimalFormat.applyPattern("0")
                     sensorInfo.triggerThreshold.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
@@ -211,7 +211,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
 
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("触发值(毫米)")
-                    decimalFormat.applyPattern("#")
+                    decimalFormat.applyPattern("0")
                     sensorInfo.triggerThreshold.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
@@ -274,7 +274,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
 
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("触发值(千牛)")
-                    decimalFormat.applyPattern("#")
+                    decimalFormat.applyPattern("0")
                     sensorInfo.triggerThreshold.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
@@ -323,7 +323,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
 
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("触发值(千牛)")
-                    decimalFormat.applyPattern("#")
+                    decimalFormat.applyPattern("0")
                     sensorInfo.triggerThreshold.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }

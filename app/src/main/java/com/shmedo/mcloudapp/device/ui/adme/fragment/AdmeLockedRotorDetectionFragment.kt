@@ -9,7 +9,6 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.jaygoo.widget.OnRangeChangedListener
 import com.jaygoo.widget.RangeSeekBar
-import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
@@ -25,7 +24,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentAdmeLockedRotorDetectionBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeLockedRotorDetectionViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
@@ -49,8 +47,8 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
     private var admeLockedRotorDetectionInfo: AdmeLockedRotorDetectionInfo? = null
-    private var holedepth = 0//下放距离
-    private var measpacing = 0//上拉测量间距
+    private var holedepth = 0f//下放距离
+    private var measpacing = 0f//上拉测量间距
     val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
 
@@ -104,7 +102,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
         //下放加速距离
         binding.etDownSlowStartInterval.setOnFocusChangeListener { v, hasFocus ->
             //失去焦点时
-            if (hasFocus) {
+            if (!hasFocus) {
                 if (mStates.downSlowStartIntervalEndValue.get().isEmpty()) {
                     showMessageDialog("请输入下放加速距离")
                     return@setOnFocusChangeListener
@@ -113,19 +111,17 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                     val leftValue = mStates.downSlowStartIntervalEndValue.get().toFloat()
                     val rightValue = if (mStates.downSlowStopIntervalStartValue.get().isEmpty()) 0f
                     else mStates.downSlowStopIntervalStartValue.get().toFloat()
-                    if (leftValue + rightValue > holedepth) {
-                        PopTip.show("下放加速距离与下放减速距离之和不能超过下放总距离(" + holedepth + "毫米)")
-                            .autoDismiss(4000).iconWarning()
+                    Timber.d("leftValue:$leftValue,rightValue:$rightValue,holedepth:$holedepth")
+                    if ((leftValue + rightValue) > holedepth) {
+                        showMessageDialog("下放加速距离与下放减速距离之和不能超过下放总距离(" + holedepth + "毫米)")
                         return@setOnFocusChangeListener
                     }
                     if (leftValue > holedepth / 2) {
-                        PopTip.show("下放加速距离不能超过下放总距离(" + holedepth + "毫米) 的 50%")
-                            .autoDismiss(4000).iconWarning()
+                        showMessageDialog("下放加速距离不能超过下放总距离(" + holedepth + "毫米) 的 50%")
                         return@setOnFocusChangeListener
                     }
                     decimalFormat.applyPattern("#.#")
-                    val leftProgress: Float =
-                        decimalFormat.format(leftValue.toFloat() / holedepth * 100).toFloat()
+                    val leftProgress = decimalFormat.format((leftValue / holedepth) * 100).toFloat()
                     binding.seekBarDownSlowStopInterval.setProgress(
                         leftProgress,
                         binding.seekBarDownSlowStopInterval.rightSeekBar.progress
@@ -139,7 +135,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
         //下放减速距离
         binding.etDownSlowStopInterval.setOnFocusChangeListener { v, hasFocus ->
             //失去焦点时
-            if (hasFocus) {
+            if (!hasFocus) {
                 if (mStates.downSlowStopIntervalStartValue.get().isEmpty()) {
                     showMessageDialog("请输入下放减速距离")
                     return@setOnFocusChangeListener
@@ -149,17 +145,15 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                     else mStates.downSlowStartIntervalEndValue.get().toFloat()
                     val rightValue = mStates.downSlowStopIntervalStartValue.get().toFloat()
                     if (leftValue + rightValue > holedepth) {
-                        PopTip.show("下放加速距离与下放减速距离之和不能超过下放总距离(" + holedepth + "毫米)")
-                            .autoDismiss(4000).iconWarning()
+                        showMessageDialog("下放加速距离与下放减速距离之和不能超过下放总距离(" + holedepth + "毫米)")
                         return@setOnFocusChangeListener
                     }
                     if (rightValue > holedepth / 2) {
-                        PopTip.show("下放减速距离不能超过下放总距离(" + holedepth + "mm) 的 50%")
-                            .autoDismiss(4000).iconWarning()
+                        showMessageDialog("下放减速距离不能小于下放总距离(" + holedepth + "毫米) 的 50%")
                         return@setOnFocusChangeListener
                     }
-                    decimalFormat.applyPattern("#")
-                    val rightProgress: Float =
+                    decimalFormat.applyPattern("0")
+                    val rightProgress =
                         decimalFormat.format((1 - rightValue / holedepth) * 100).toFloat()
                     binding.seekBarDownSlowStopInterval.setProgress(
                         binding.seekBarDownSlowStopInterval.leftSeekBar.progress,
@@ -182,7 +176,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
         //上拉加速距离
         binding.etPullUpSlowStartInterval.setOnFocusChangeListener { v, hasFocus ->
             //失去焦点时
-            if (hasFocus) {
+            if (!hasFocus) {
                 if (mStates.pullUpSlowStartIntervalEndValue.get().isEmpty()) {
                     showMessageDialog("请输入上拉加速距离")
                     return@setOnFocusChangeListener
@@ -193,18 +187,16 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                         if (mStates.pullUpSlowStopIntervalStartValue.get().isEmpty()) 0f
                         else mStates.pullUpSlowStopIntervalStartValue.get().toFloat()
                     if (leftValue + rightValue > measpacing) {
-                        PopTip.show("上拉加速距离与上拉减速距离之和不能超过上拉测量间距(" + measpacing + "毫米)")
-                            .autoDismiss(4000).iconWarning()
+                        showMessageDialog("上拉加速距离与上拉减速距离之和不能超过上拉测量间距(" + measpacing + "毫米)")
                         return@setOnFocusChangeListener
                     }
                     if (leftValue > measpacing / 2) {
-                        PopTip.show("上拉加速距离不能超过上拉测量间距(" + measpacing + "mm) 的 50%")
-                            .autoDismiss(4000).iconWarning()
+                        showMessageDialog("上拉加速距离不能超过上拉测量间距(" + measpacing + "毫米) 的 50%")
                         return@setOnFocusChangeListener
                     }
-                    decimalFormat.applyPattern("#")
-                    val leftProgress: Float =
-                        decimalFormat.format(leftValue.toFloat() / measpacing * 100).toFloat()
+                    decimalFormat.applyPattern("0")
+                    val leftProgress =
+                        decimalFormat.format((leftValue / measpacing) * 100).toFloat()
                     binding.seekBarPullUpSlowStopInterval.setProgress(
                         leftProgress,
                         binding.seekBarPullUpSlowStopInterval.rightSeekBar.progress
@@ -218,7 +210,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
         //上拉减速距离
         binding.etPullUpSlowStopInterval.setOnFocusChangeListener { v, hasFocus ->
             //失去焦点时
-            if (hasFocus) {
+            if (!hasFocus) {
                 if (mStates.pullUpSlowStopIntervalStartValue.get().isEmpty()) {
                     showMessageDialog("请输入上拉减速距离")
                     return@setOnFocusChangeListener
@@ -228,17 +220,15 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                     else mStates.pullUpSlowStartIntervalEndValue.get().toFloat()
                     val rightValue = mStates.pullUpSlowStopIntervalStartValue.get().toFloat()
                     if (leftValue + rightValue > measpacing) {
-                        PopTip.show("上拉加速距离与上拉减速距离之和不能超过上拉测量间距(" + measpacing + "毫米)")
-                            .autoDismiss(4000).iconWarning()
+                        showMessageDialog("上拉加速距离与上拉减速距离之和不能超过上拉测量间距(" + measpacing + "毫米)")
                         return@setOnFocusChangeListener
                     }
                     if (rightValue > measpacing / 2) {
-                        PopTip.show("上拉减速距离不能超过上拉测量间距(" + measpacing + "mm) 的 50%")
-                            .autoDismiss(4000).iconWarning()
+                        showMessageDialog("上拉减速距离不能小于上拉测量间距(" + measpacing + "毫米) 的 50%")
                         return@setOnFocusChangeListener
                     }
-                    decimalFormat.applyPattern("#")
-                    val rightProgress: Float =
+                    decimalFormat.applyPattern("0")
+                    val rightProgress =
                         decimalFormat.format((1 - rightValue / measpacing) * 100).toFloat()
                     binding.seekBarPullUpSlowStopInterval.setProgress(
                         binding.seekBarPullUpSlowStopInterval.leftSeekBar.progress,
@@ -295,14 +285,14 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             override fun onStopTrackingTouch(view: RangeSeekBar, isLeft: Boolean) {
                 val leftValue = view.leftSeekBar.progress
                 val rightValue = view.rightSeekBar.progress
-                val downSlowStopStartValue: Float =
+                val downSlowStopStartValue =
                     binding.seekBarDownSlowStopInterval.rightSeekBar.progress
                 if (leftValue >= 50) {
-                    Toaster.show("下放堵转检测区间起始值不能大于50%")
+                    showMessageDialog("下放堵转检测区间起始值不能大于50%")
                     view.setProgress(49f, rightValue)
                 }
                 if (rightValue < 50) {
-                    Toaster.show("下放堵转检测区间终值不能小于50%")
+                    showMessageDialog("下放堵转检测区间终值不能小于50%")
                     view.setProgress(leftValue, 50f)
                 }
                 if (rightValue >= downSlowStopStartValue) {
@@ -476,12 +466,12 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的下放力矩堵转阈值!")
+            showMessageDialog("请输入正确的下放力矩堵转阈值!")
             return
         }
 
         if (mStates.downTorqueDetectionTime.get().isEmpty()) {
-            Toaster.show("请输入下放力矩检测判断时间!")
+            showMessageDialog("请输入下放力矩检测判断时间!")
             return
         }
         try {
@@ -491,22 +481,22 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的下放力矩检测判断时间!")
+            showMessageDialog("请输入正确的下放力矩检测判断时间!")
             return
         }
 
         if (mStates.pullUpEnable.get()) {
             if (mStates.pullUpSlowStartIntervalEndValue.get().isEmpty()) {
-                Toaster.show("请输入上拉加速距离!")
+                showMessageDialog("请输入上拉加速距离!")
                 return
             }
             if (mStates.pullUpSlowStopIntervalStartValue.get().isEmpty()) {
-                Toaster.show("请输入上拉减速距离!")
+                showMessageDialog("请输入上拉减速距离!")
                 return
             }
         }
         if (mStates.pullUpTorqueStallThreshold.get().isEmpty()) {
-            Toaster.show("请输入上拉力矩堵转阈值!")
+            showMessageDialog("请输入上拉力矩堵转阈值!")
             return
         }
         try {
@@ -516,11 +506,11 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的上拉力矩堵转阈值!")
+            showMessageDialog("请输入正确的上拉力矩堵转阈值!")
             return
         }
         if (mStates.pullUpTorqueDetectionTime.get().isEmpty()) {
-            Toaster.show("请输入上拉力矩检测判断时间!")
+            showMessageDialog("请输入上拉力矩检测判断时间!")
             return
         }
         try {
@@ -530,7 +520,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                 return
             }
         } catch (ex: Exception) {
-            Toaster.show("请输入正确的上拉力矩检测判断时间!")
+            showMessageDialog("请输入正确的上拉力矩检测判断时间!")
             return
         }
 
@@ -671,8 +661,8 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
 
     private fun initParamData(info: AdmeLockedRotorDetectionInfo) {
         try {
-            holedepth = info.holedepth.toInt()//下放距离
-            measpacing = info.measpacing.toInt()//上拉测量间距
+            holedepth = info.holedepth.toFloat()//下放距离
+            measpacing = info.measpacing.toFloat()//上拉测量间距
 
             mStates.downEnable.set(info.lowtbtss == "1")
             mStates.downPulsesPerUnitTime.set(info.numpput)//下放单位时间脉冲数
@@ -681,6 +671,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             mStates.downPulseDetectionTime.set(info.pdajtime.toDoubleOrNull()?.let {
                 decimalFormat.format(it)
             } ?: "")
+
             //下放缓起区间终值(加速阶段)
             mStates.downSlowStartIntervalEndValue.set(
                 info.lowsusranb.replace(
@@ -695,28 +686,29 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                     ""
                 )
             )
-            var leftProgress1: Float = if (holedepth == 0) 0f
-            else mStates.downSlowStartIntervalEndValue.get().toFloat() / holedepth.toFloat() * 100f
 
-            var rightProgress1: Float = if (holedepth == 0) 0f
-            else (1 - mStates.downSlowStopIntervalStartValue.get().toFloat() / holedepth.toFloat()) * 100f
+            var leftProgress1 = holedepth.takeIf { it != 0f }
+                ?.let { (mStates.downSlowStartIntervalEndValue.get().toFloat() / it) * 100f }
+                ?: 0f
 
-            decimalFormat.applyPattern("#")
-            leftProgress1 = if (leftProgress1 > 50) 49f else decimalFormat.format(leftProgress1).toFloat()
-            rightProgress1 = if (rightProgress1 < 50) 50f else decimalFormat.format(rightProgress1).toFloat()
-            binding.seekBarDownSlowStopInterval.setProgress(
-                leftProgress1,
-                rightProgress1
-            )
+            var rightProgress1 = holedepth.takeIf { it != 0f }
+                ?.let { (1 - mStates.downSlowStopIntervalStartValue.get().toFloat() / it) * 100f }
+                ?: 0f
 
-            mStates.downStallDetectionIntervalStartValue.set(info.detintiona)//堵转检测区间起始值
-            mStates.downStallDetectionIntervalEndValue.set(info.detintionb)//堵转检测区间终值
-            decimalFormat.applyPattern("#")
-            val leftProgress2: Float = decimalFormat.format(info.detintiona.toFloat()).toFloat()
-            var rightProgress2: Float = decimalFormat.format(info.detintionb.toFloat()).toFloat()
+            decimalFormat.applyPattern("0")
+            leftProgress1 = decimalFormat.format(leftProgress1.coerceAtMost(49f)).toFloat()
+            rightProgress1 = decimalFormat.format(rightProgress1.coerceAtLeast(50f)).toFloat()
+            binding.seekBarDownSlowStopInterval.setProgress(leftProgress1, rightProgress1)
+
+            //堵转检测区间起始值
+            mStates.downStallDetectionIntervalStartValue.set(info.detintiona)
+            //堵转检测区间终值
+            mStates.downStallDetectionIntervalEndValue.set(info.detintionb)
+            decimalFormat.applyPattern("0")
+            val leftProgress2 = decimalFormat.format(info.detintiona.toFloat()).toFloat()
+            var rightProgress2 = decimalFormat.format(info.detintionb.toFloat()).toFloat()
             //TODO 堵转检测区间右边进度条必须小于下放缓停区间的右边进度条数值
-            rightProgress2 =
-                if (rightProgress2 >= rightProgress1) rightProgress1 - 1 else rightProgress2
+            rightProgress2 = rightProgress2.coerceAtMost(rightProgress1 - 1)
             //堵转检测区间
             binding.seekBarDownStallDetectionInterval.setProgress(
                 leftProgress2,
@@ -749,6 +741,19 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                     ""
                 )
             )
+            var leftProgress3 = measpacing.takeIf { it != 0f }
+                ?.let { (mStates.pullUpSlowStartIntervalEndValue.get().toFloat() / it) * 100f }
+                ?: 0f
+            var rightProgress3 = measpacing.takeIf { it != 0f }
+                ?.let { (1 - mStates.pullUpSlowStopIntervalStartValue.get().toFloat() / it) * 100f }
+                ?: 0f
+            decimalFormat.applyPattern("0")
+            leftProgress3 = decimalFormat.format(leftProgress3.coerceAtMost(49f)).toFloat()
+            rightProgress3 = decimalFormat.format(rightProgress3.coerceAtLeast(50f)).toFloat()
+            binding.seekBarPullUpSlowStopInterval.setProgress(
+                leftProgress3,
+                rightProgress3
+            )
 
             decimalFormat.applyPattern("#.##")
             //上拉力矩堵转阈值
@@ -761,20 +766,6 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             mStates.pullUpTorqueDetectionTime.set(info.uptordetime.toDoubleOrNull()?.let {
                 decimalFormat.format(it)
             } ?: "")
-
-            var leftProgress3: Float = if (measpacing == 0) 0f
-            else mStates.pullUpSlowStartIntervalEndValue.get().toFloat() / measpacing.toFloat() * 100f
-
-            var rightProgress3 = if (measpacing == 0) 100f
-            else (1 - mStates.pullUpSlowStopIntervalStartValue.get().toFloat() / measpacing.toFloat()) * 100f
-
-            decimalFormat.applyPattern("#")
-            leftProgress3 = if (leftProgress3 > 50) 49f else decimalFormat.format(leftProgress3).toFloat()
-            rightProgress3 = if (rightProgress3 < 50) 50f else decimalFormat.format(rightProgress3).toFloat()
-            binding.seekBarPullUpSlowStopInterval.setProgress(
-                leftProgress3,
-                rightProgress3
-            )
         } catch (e: Exception) {
             Timber.e(e)
             addLogItem(Log.ERROR, e.errorMsg)
