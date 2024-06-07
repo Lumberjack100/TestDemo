@@ -34,10 +34,10 @@ enum class IOTRainStation(private val status: String) {
     companion object {
         fun value(state: String): IOTRainStation {
             return when (state) {
+                "0" -> CLOSE
                 "1" -> RAIN_OPEN
-                "2" -> CLOSE
-                "3" -> ALARM_OPEN
-                else -> RAIN_OPEN
+                "2" -> ALARM_OPEN
+                else -> CLOSE
             }
         }
     }

@@ -66,7 +66,7 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
                 builderFirst.append(
                     "${MDCommandUtil.formatStringTwo(sensorAddress)}${
                         MDCommandUtil.formatStringTwo(
-                            sensorInfo.sensorType
+                            sensorInfo.type
                         )
                     }"
                 )
@@ -96,7 +96,7 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
                 val sensorInfo = mStates.sensorModelMap[sensorAddress]!!
                 triggerBuilder.append(
                     MDCommandUtil.formatStringFour(
-                        sensorInfo.triggerThreshold.toIntOrNull()?.toString() ?: "0"
+                        sensorInfo.threshold.toIntOrNull()?.toString() ?: "0"
                     )
                 )
             }
@@ -121,60 +121,60 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
             .forEach { sensorAddress ->
                 val sensorInfo = mStates.sensorModelMap[sensorAddress]!!
 
-                when (IOTSensorType.value(sensorInfo.sensorType)) {
+                when (IOTSensorType.value(sensorInfo.type)) {
                     IOTSensorType.KANG_PERCOLATE -> {//基康渗压计
                         var command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}A${sensorInfo.polynomialRatioA}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}A${sensorInfo.poly_a}"
                         )
                         commandDescItems.add("通道$sensorAddress 基康渗压计 多项式系数A")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}B${sensorInfo.polynomialRatioB}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}B${sensorInfo.poly_b}"
                         )
                         commandDescItems.add("通道$sensorAddress 基康渗压计 多项式系数B")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}C${sensorInfo.polynomialRatioC}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}C${sensorInfo.poly_c}"
                         )
                         commandDescItems.add("通道$sensorAddress 基康渗压计 多项式系数C")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}K${sensorInfo.temperatureCoefficientK}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}K${sensorInfo.temp_k}"
                         )
                         commandDescItems.add("通道$sensorAddress 基康渗压计 温度系数K")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}T${sensorInfo.temperatureCoefficientT0}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}T${sensorInfo.temp_t0}"
                         )
                         commandDescItems.add("通道$sensorAddress 基康渗压计 初始温度T0")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}M${sensorInfo.correctionValue}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}M${sensorInfo.corrval}"
                         )
                         commandDescItems.add("通道$sensorAddress 基康渗压计 修正值")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}F${sensorInfo.wireRopeLength}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}F${sensorInfo.ropelen}"
                         )
                         commandDescItems.add("通道$sensorAddress 基康渗压计 绳长")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.SENSOR_INSTALLELEVATION,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}${sensorInfo.installElevation}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}${sensorInfo.tubealti}"
                         )
                         commandDescItems.add("通道$sensorAddress 基康渗压计 安装高程")
                         commandItems.add(command)
@@ -183,49 +183,49 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
                     IOTSensorType.GUDAN_PERCOLATE -> {//葛南渗压计
                         var command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}A${sensorInfo.sensitivityK}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}A${sensorInfo.sens_k}"
                         )
                         commandDescItems.add("通道$sensorAddress 葛南渗压计 灵敏度K")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}B${sensorInfo.temperatureCoefficientB}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}B${sensorInfo.temp_b}"
                         )
                         commandDescItems.add("通道$sensorAddress 葛南渗压计 温度系数B")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}F${sensorInfo.referenceValueF}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}F${sensorInfo.referval_f}"
                         )
                         commandDescItems.add("通道$sensorAddress 葛南渗压计 基准值F0")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}T${sensorInfo.temperatureCoefficientT0}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}T${sensorInfo.temp_t0}"
                         )
                         commandDescItems.add("通道$sensorAddress 葛南渗压计 初始温度T0")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}M${sensorInfo.correctionValue}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}M${sensorInfo.corrval}"
                         )
                         commandDescItems.add("通道$sensorAddress 葛南渗压计 修正值")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}C${sensorInfo.wireRopeLength}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}C${sensorInfo.ropelen}"
                         )
                         commandDescItems.add("通道$sensorAddress 葛南渗压计 绳长")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.SENSOR_INSTALLELEVATION,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}${sensorInfo.installElevation}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}${sensorInfo.tubealti}"
                         )
                         commandDescItems.add("通道$sensorAddress 葛南渗压计 安装高程")
                         commandItems.add(command)
@@ -234,42 +234,42 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
                     IOTSensorType.GUDAN_STRESS -> {//葛南应力计
                         var command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}A${sensorInfo.sensitivityK}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}A${sensorInfo.sens_k}"
                         )
                         commandDescItems.add("通道$sensorAddress 应力计 灵敏度K")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}B${sensorInfo.temperatureCoefficientB}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}B${sensorInfo.temp_b}"
                         )
                         commandDescItems.add("通道$sensorAddress 应力计 温修系数B")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}F${sensorInfo.referenceValueF}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}F${sensorInfo.referval_f}"
                         )
                         commandDescItems.add("通道$sensorAddress 应力计 基准值F0")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}T${sensorInfo.temperatureCoefficientT0}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}T${sensorInfo.temp_t0}"
                         )
                         commandDescItems.add("通道$sensorAddress 应力计 初始温度T0")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}M${sensorInfo.correctionValue}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}M${sensorInfo.corrval}"
                         )
                         commandDescItems.add("通道$sensorAddress 应力计 修正值")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}M${sensorInfo.expansionCoefficient}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}M${sensorInfo.elastic_mod}"
                         )
                         commandDescItems.add("通道$sensorAddress 应力计 膨胀系数")
                         commandItems.add(command)
@@ -278,35 +278,35 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
                     IOTSensorType.JUNXING_ZLJ_300T -> {//轴力计
                         var command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}A${sensorInfo.sensitivityK}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}A${sensorInfo.sens_k}"
                         )
                         commandDescItems.add("通道$sensorAddress 轴力计 标定系数A")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}B${sensorInfo.temperatureCoefficientB}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}B${sensorInfo.temp_b}"
                         )
                         commandDescItems.add("通道$sensorAddress 轴力计 温修系数B")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}F${sensorInfo.referenceValueF}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}F${sensorInfo.referval_f}"
                         )
                         commandDescItems.add("通道$sensorAddress 轴力计 基准值F0")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}T${sensorInfo.temperatureCoefficientT0}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}T${sensorInfo.temp_t0}"
                         )
                         commandDescItems.add("通道$sensorAddress 轴力计 初始温度T0")
                         commandItems.add(command)
 
                         command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,
-                            "${MDCommandUtil.formatStringTwo(sensorAddress)}M${sensorInfo.correctionValue}"
+                            "${MDCommandUtil.formatStringTwo(sensorAddress)}M${sensorInfo.corrval}"
                         )
                         commandDescItems.add("通道$sensorAddress 轴力计 修正值")
                         commandItems.add(command)

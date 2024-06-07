@@ -96,7 +96,7 @@
 
     <fragment
         android:id="@+id/bleDasExternalDigitalSensorFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor.BleDasExternalDigitalSensorFragment"
+        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor.NewBleDasExternalDigitalSensorFragment"
         android:label="BleDasExternalDigitalSensorFragment"
         tools:layout="@layout/fragment_das_external_digital_sensor" />
 

@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
@@ -12,8 +11,7 @@ import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants.Extras.Companion.SENSOR_CHANNEL
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
-import com.shmedo.lib.device.base.md_cmd.model.das.MDDasExternalSensorInfo
-import com.shmedo.lib.network.ext.errorMsg
+import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
@@ -39,7 +37,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
     private lateinit var binding: FragmentDasExternalVibratingSensorBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: DasExternalVibratingSensorViewModel
-    private lateinit var sensorListViewModel: DasExternalSensorListViewModel<MDDasExternalSensorInfo>
+    private lateinit var sensorListViewModel: DasExternalSensorListViewModel<DasExternalSensorInfo>
 
     private val sensorTypeList = listOf(
         IOTSensorType.KANG_PERCOLATE.description,
@@ -68,7 +66,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
     )
     private val unUsedChannelList = ArrayList<String>()//未使用的通道
     private var sensorChannel = "-1"
-    private lateinit var sensorInfo: MDDasExternalSensorInfo
+    private lateinit var sensorInfo: DasExternalSensorInfo
 
     private val decimalFormat = DecimalFormat("#.###", DecimalFormatSymbols(Locale.getDefault()))
 
@@ -122,16 +120,16 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
         sensorInfo = if (sensorListViewModel.sensorModelMap.containsKey(sensorChannel))
             sensorListViewModel.sensorModelMap[sensorChannel]!!
         else {
-            MDDasExternalSensorInfo(
-                sensorAddress = "",
-                sensorType = if (sensorListViewModel.sensorModelMap.isEmpty()) sensorListViewModel.collectorType.get()
-                else sensorListViewModel.sensorModelMap.values.first().sensorType,
-                triggerThreshold = "",
-                correctionValue = ""
+            DasExternalSensorInfo(
+                addr = "",
+                type = if (sensorListViewModel.sensorModelMap.isEmpty()) sensorListViewModel.collectorType.get()
+                else sensorListViewModel.sensorModelMap.values.first().type,
+                threshold = "",
+                corrval = ""
             )
         }
-        mStates.sensorType.set(IOTSensorType.value(sensorInfo.sensorType))
-        mStates.sensorTypeName.set(IOTSensorType.value(sensorInfo.sensorType).description)
+        mStates.sensorType.set(IOTSensorType.value(sensorInfo.type))
+        mStates.sensorTypeName.set(IOTSensorType.value(sensorInfo.type).description)
         switchSensorType()
     }
 
@@ -145,7 +143,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("触发值(毫米)")
                     decimalFormat.applyPattern("0")
-                    sensorInfo.triggerThreshold.toDoubleOrNull()?.let {
+                    sensorInfo.threshold.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
 
@@ -153,36 +151,36 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                     mStates.extension2Title.set("修正值(米)")
                     decimalFormat.applyPattern("#.###")
                     mStates.extension2Value.set("0")//默认值 0
-                    sensorInfo.correctionValue.toDoubleOrNull()?.let {
+                    sensorInfo.corrval.toDoubleOrNull()?.let {
                         mStates.extension2Value.set(decimalFormat.format(it))
                     }
 
                     mStates.isExtension3Support.set(true)
                     mStates.extension3Title.set("多项式系数A")
                     mStates.extension3Value.set(
-                        sensorInfo.polynomialRatioA.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.poly_a.toDoubleOrNull()?.toString() ?: "")
 
                     mStates.isExtension4Support.set(true)
                     mStates.extension4Title.set("多项式系数B")
                     mStates.extension4Value.set(
-                        sensorInfo.polynomialRatioB.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.poly_b.toDoubleOrNull()?.toString() ?: "")
 
                     mStates.isExtension5Support.set(true)
                     mStates.extension5Title.set("多项式系数C")
                     mStates.extension5Value.set(
-                        sensorInfo.polynomialRatioC.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.poly_c.toDoubleOrNull()?.toString() ?: "")
 
                     mStates.isExtension6Support.set(true)
                     mStates.extension6Title.set("温度系数K")
                     mStates.extension6Value.set(
-                        sensorInfo.temperatureCoefficientK.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.temp_k.toDoubleOrNull()?.toString() ?: "")
 
                     //初始温度，精确到小数点后两位
                     mStates.isExtension7Support.set(true)
                     mStates.extension7Title.set("初始温度T0(℃)")
                     mStates.extension7Value.set("0")//默认值 0
                     decimalFormat.applyPattern("#.##")
-                    sensorInfo.temperatureCoefficientT0.toDoubleOrNull()?.let {
+                    sensorInfo.temp_t0.toDoubleOrNull()?.let {
                         mStates.extension7Value.set(decimalFormat.format(it))
                     }
 
@@ -190,7 +188,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                     mStates.isExtension8Support.set(true)
                     mStates.extension8Title.set("绳长(米)")
                     decimalFormat.applyPattern("#.###")
-                    sensorInfo.wireRopeLength.toDoubleOrNull()?.let {
+                    sensorInfo.ropelen.toDoubleOrNull()?.let {
                         mStates.extension8Value.set(decimalFormat.format(it))
                     }
 
@@ -198,7 +196,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                     mStates.isExtension9Support.set(true)
                     mStates.extension9Title.set("安装高程(米)")
                     decimalFormat.applyPattern("#.###")
-                    sensorInfo.installElevation.toDoubleOrNull()?.let {
+                    sensorInfo.tubealti.toDoubleOrNull()?.let {
                         mStates.extension9Value.set(decimalFormat.format(it))
                     }
 
@@ -212,7 +210,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("触发值(毫米)")
                     decimalFormat.applyPattern("0")
-                    sensorInfo.triggerThreshold.toDoubleOrNull()?.let {
+                    sensorInfo.threshold.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
 
@@ -220,31 +218,31 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                     mStates.extension2Title.set("修正值(米)")
                     decimalFormat.applyPattern("#.###")
                     mStates.extension2Value.set("0")//默认值 0
-                    sensorInfo.correctionValue.toDoubleOrNull()?.let {
+                    sensorInfo.corrval.toDoubleOrNull()?.let {
                         mStates.extension2Value.set(decimalFormat.format(it))
                     }
 
                     mStates.isExtension3Support.set(true)
                     mStates.extension3Title.set("灵敏度K")
                     mStates.extension3Value.set(
-                        sensorInfo.sensitivityK.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.sens_k.toDoubleOrNull()?.toString() ?: "")
 
                     mStates.isExtension4Support.set(true)
                     mStates.extension4Title.set("温修系数B")
                     mStates.extension4Value.set(
-                        sensorInfo.temperatureCoefficientB.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.temp_b.toDoubleOrNull()?.toString() ?: "")
 
                     mStates.isExtension5Support.set(true)
                     mStates.extension5Title.set("基准值F0")
                     mStates.extension5Value.set(
-                        sensorInfo.referenceValueF.toDoubleOrNull()?.toString() ?: "0")
+                        sensorInfo.referval_f.toDoubleOrNull()?.toString() ?: "0")
 
                     //初始温度，精确到小数点后两位
                     mStates.isExtension6Support.set(true)
                     mStates.extension6Title.set("初始温度T0(℃)")
                     mStates.extension6Value.set("0")//默认值 0
                     decimalFormat.applyPattern("#.##")
-                    sensorInfo.temperatureCoefficientT0.toDoubleOrNull()?.let {
+                    sensorInfo.temp_t0.toDoubleOrNull()?.let {
                         mStates.extension6Value.set(decimalFormat.format(it))
                     }
 
@@ -252,7 +250,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                     mStates.isExtension7Support.set(true)
                     mStates.extension7Title.set("绳长(米)")
                     decimalFormat.applyPattern("#.###")
-                    sensorInfo.wireRopeLength.toDoubleOrNull()?.let {
+                    sensorInfo.ropelen.toDoubleOrNull()?.let {
                         mStates.extension7Value.set(decimalFormat.format(it))
                     }
 
@@ -260,7 +258,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                     mStates.isExtension8Support.set(true)
                     mStates.extension8Title.set("安装高程(米)")
                     decimalFormat.applyPattern("#.###")
-                    sensorInfo.installElevation.toDoubleOrNull()?.let {
+                    sensorInfo.tubealti.toDoubleOrNull()?.let {
                         mStates.extension8Value.set(decimalFormat.format(it))
                     }
 
@@ -275,7 +273,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("触发值(千牛)")
                     decimalFormat.applyPattern("0")
-                    sensorInfo.triggerThreshold.toDoubleOrNull()?.let {
+                    sensorInfo.threshold.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
 
@@ -283,31 +281,31 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                     mStates.extension2Title.set("修正值(千牛)")
                     decimalFormat.applyPattern("#.###")
                     mStates.extension2Value.set("0")//默认值 0
-                    sensorInfo.correctionValue.toDoubleOrNull()?.let {
+                    sensorInfo.corrval.toDoubleOrNull()?.let {
                         mStates.extension2Value.set(decimalFormat.format(it))
                     }
 
                     mStates.isExtension3Support.set(true)
                     mStates.extension3Title.set("灵敏度K")
                     mStates.extension3Value.set(
-                        sensorInfo.sensitivityK.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.sens_k.toDoubleOrNull()?.toString() ?: "")
 
                     mStates.isExtension4Support.set(true)
                     mStates.extension4Title.set("温修系数B")
                     mStates.extension4Value.set(
-                        sensorInfo.temperatureCoefficientB.toDoubleOrNull()?.toString() ?: "0")
+                        sensorInfo.temp_b.toDoubleOrNull()?.toString() ?: "0")
 
                     mStates.isExtension5Support.set(true)
                     mStates.extension5Title.set("基准值F0")
                     mStates.extension5Value.set(
-                        sensorInfo.referenceValueF.toDoubleOrNull()?.toString() ?: "0")
+                        sensorInfo.referval_f.toDoubleOrNull()?.toString() ?: "0")
 
                     //初始温度，精确到小数点后两位
                     mStates.isExtension6Support.set(true)
                     mStates.extension6Title.set("初始温度T0(℃)")
                     mStates.extension6Value.set("0")//默认值 0
                     decimalFormat.applyPattern("#.##")
-                    sensorInfo.temperatureCoefficientT0.toDoubleOrNull()?.let {
+                    sensorInfo.temp_t0.toDoubleOrNull()?.let {
                         mStates.extension6Value.set(decimalFormat.format(it))
                     }
 
@@ -324,7 +322,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("触发值(千牛)")
                     decimalFormat.applyPattern("0")
-                    sensorInfo.triggerThreshold.toDoubleOrNull()?.let {
+                    sensorInfo.threshold.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
 
@@ -332,37 +330,37 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                     mStates.extension2Title.set("修正值(千牛)")
                     decimalFormat.applyPattern("#.###")
                     mStates.extension2Value.set("0")//默认值 0
-                    sensorInfo.correctionValue.toDoubleOrNull()?.let {
+                    sensorInfo.corrval.toDoubleOrNull()?.let {
                         mStates.extension2Value.set(decimalFormat.format(it))
                     }
 
                     mStates.isExtension3Support.set(true)
                     mStates.extension3Title.set("灵敏度K")
                     mStates.extension3Value.set(
-                        sensorInfo.sensitivityK.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.sens_k.toDoubleOrNull()?.toString() ?: "")
 
                     mStates.isExtension4Support.set(true)
                     mStates.extension4Title.set("温修系数B")
                     mStates.extension4Value.set(
-                        sensorInfo.temperatureCoefficientB.toDoubleOrNull()?.toString() ?: "0")
+                        sensorInfo.temp_b.toDoubleOrNull()?.toString() ?: "0")
 
                     mStates.isExtension5Support.set(true)
                     mStates.extension5Title.set("基准值F0")
                     mStates.extension5Value.set(
-                        sensorInfo.referenceValueF.toDoubleOrNull()?.toString() ?: "0")
+                        sensorInfo.referval_f.toDoubleOrNull()?.toString() ?: "0")
 
                     //初始温度，精确到小数点后两位
                     mStates.isExtension6Support.set(true)
                     mStates.extension6Title.set("初始温度T0(℃)")
                     mStates.extension6Value.set("0")//默认值 0
                     decimalFormat.applyPattern("#.##")
-                    sensorInfo.temperatureCoefficientT0.toDoubleOrNull()?.let {
+                    sensorInfo.temp_t0.toDoubleOrNull()?.let {
                         mStates.extension6Value.set(decimalFormat.format(it))
                     }
 
                     mStates.isExtension7Support.set(true)
                     mStates.extension7Title.set("膨胀系数")
-                    mStates.extension7Value.set(sensorInfo.expansionCoefficient)
+                    mStates.extension7Value.set(sensorInfo.elastic_mod)
 
                     mStates.isExtension8Support.set(false)
                     mStates.isExtension9Support.set(false)
@@ -776,54 +774,54 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
     }
 
     private fun updateSensorInfo() {
-        val sensorInfo = MDDasExternalSensorInfo()
-        sensorInfo.sensorType = mStates.sensorType.get().code
-        sensorInfo.sensorAddress = (mStates.channel.get().toInt() - 1).toString()
+        val sensorInfo = DasExternalSensorInfo()
+        sensorInfo.type = mStates.sensorType.get().code
+        sensorInfo.addr = (mStates.channel.get().toInt() - 1).toString()
         when (mStates.sensorType.get()) {
             IOTSensorType.KANG_PERCOLATE //基康渗压计(BGK-4500)
             -> {
-                sensorInfo.triggerThreshold = mStates.extension1Value.get()
-                sensorInfo.correctionValue = mStates.extension2Value.get().ifEmpty { "0" }
-                sensorInfo.polynomialRatioA = mStates.extension3Value.get()
-                sensorInfo.polynomialRatioB = mStates.extension4Value.get()
-                sensorInfo.polynomialRatioC = mStates.extension5Value.get()
-                sensorInfo.temperatureCoefficientK = mStates.extension6Value.get()
-                sensorInfo.temperatureCoefficientT0 = mStates.extension7Value.get().ifEmpty { "0" }
-                sensorInfo.wireRopeLength = mStates.extension8Value.get()
-                sensorInfo.installElevation = mStates.extension9Value.get()
+                sensorInfo.threshold = mStates.extension1Value.get()
+                sensorInfo.corrval = mStates.extension2Value.get().ifEmpty { "0" }
+                sensorInfo.poly_a = mStates.extension3Value.get()
+                sensorInfo.poly_b = mStates.extension4Value.get()
+                sensorInfo.poly_c = mStates.extension5Value.get()
+                sensorInfo.temp_k = mStates.extension6Value.get()
+                sensorInfo.temp_t0 = mStates.extension7Value.get().ifEmpty { "0" }
+                sensorInfo.ropelen = mStates.extension8Value.get()
+                sensorInfo.tubealti = mStates.extension9Value.get()
             }
 
             IOTSensorType.GUDAN_PERCOLATE //葛南渗压计(VWP-03)
             -> {
-                sensorInfo.triggerThreshold = mStates.extension1Value.get()
-                sensorInfo.correctionValue = mStates.extension2Value.get().ifEmpty { "0" }
-                sensorInfo.sensitivityK = mStates.extension3Value.get()
-                sensorInfo.temperatureCoefficientB = mStates.extension4Value.get()
-                sensorInfo.referenceValueF = mStates.extension5Value.get()
-                sensorInfo.temperatureCoefficientT0 = mStates.extension6Value.get().ifEmpty { "0" }
-                sensorInfo.wireRopeLength = mStates.extension7Value.get()
-                sensorInfo.installElevation = mStates.extension8Value.get()
+                sensorInfo.threshold = mStates.extension1Value.get()
+                sensorInfo.corrval = mStates.extension2Value.get().ifEmpty { "0" }
+                sensorInfo.sens_k = mStates.extension3Value.get()
+                sensorInfo.temp_b = mStates.extension4Value.get()
+                sensorInfo.referval_f = mStates.extension5Value.get()
+                sensorInfo.temp_t0 = mStates.extension6Value.get().ifEmpty { "0" }
+                sensorInfo.ropelen = mStates.extension7Value.get()
+                sensorInfo.tubealti = mStates.extension8Value.get()
             }
 
             IOTSensorType.JUNXING_ZLJ_300T //轴力计(ZLJ-300T)
             -> {
-                sensorInfo.triggerThreshold = mStates.extension1Value.get()
-                sensorInfo.correctionValue = mStates.extension2Value.get().ifEmpty { "0" }
-                sensorInfo.sensitivityK = mStates.extension3Value.get()
-                sensorInfo.temperatureCoefficientB = mStates.extension4Value.get()
-                sensorInfo.referenceValueF = mStates.extension5Value.get().ifEmpty { "0" }
-                sensorInfo.temperatureCoefficientT0 = mStates.extension6Value.get().ifEmpty { "0" }
+                sensorInfo.threshold = mStates.extension1Value.get()
+                sensorInfo.corrval = mStates.extension2Value.get().ifEmpty { "0" }
+                sensorInfo.sens_k = mStates.extension3Value.get()
+                sensorInfo.temp_b = mStates.extension4Value.get()
+                sensorInfo.referval_f = mStates.extension5Value.get().ifEmpty { "0" }
+                sensorInfo.temp_t0 = mStates.extension6Value.get().ifEmpty { "0" }
             }
 
             IOTSensorType.GUDAN_STRESS //应力计
             -> {
-                sensorInfo.triggerThreshold = mStates.extension1Value.get()
-                sensorInfo.correctionValue = mStates.extension2Value.get().ifEmpty { "0" }
-                sensorInfo.sensitivityK = mStates.extension3Value.get()
-                sensorInfo.temperatureCoefficientB = mStates.extension4Value.get()
-                sensorInfo.referenceValueF = mStates.extension5Value.get().ifEmpty { "0" }
-                sensorInfo.temperatureCoefficientT0 = mStates.extension6Value.get().ifEmpty { "0" }
-                sensorInfo.expansionCoefficient = mStates.extension7Value.get()
+                sensorInfo.threshold = mStates.extension1Value.get()
+                sensorInfo.corrval = mStates.extension2Value.get().ifEmpty { "0" }
+                sensorInfo.sens_k = mStates.extension3Value.get()
+                sensorInfo.temp_b = mStates.extension4Value.get()
+                sensorInfo.referval_f = mStates.extension5Value.get().ifEmpty { "0" }
+                sensorInfo.temp_t0 = mStates.extension6Value.get().ifEmpty { "0" }
+                sensorInfo.elastic_mod = mStates.extension7Value.get()
             }
 
             else -> {}
@@ -833,7 +831,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
         if (sensorListViewModel.sensorModelMap.containsKey(sensorChannel)) {
             sensorListViewModel.sensorModelMap.remove(sensorChannel)
         }
-        sensorListViewModel.sensorModelMap[sensorInfo.sensorAddress] = sensorInfo
+        sensorListViewModel.sensorModelMap[sensorInfo.addr] = sensorInfo
         sensorListViewModel.updateIsRefreshSensorList(true)
 
         nav().navigateUp()

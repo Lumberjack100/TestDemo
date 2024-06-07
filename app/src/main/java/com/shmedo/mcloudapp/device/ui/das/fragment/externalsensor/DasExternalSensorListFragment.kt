@@ -386,6 +386,9 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        if (isRestrictHiddenMode() && isHidden) {
+            return
+        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL -> {
                 val result = iotParseManager.parse<DasCollectorInfo>(

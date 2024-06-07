@@ -14,8 +14,8 @@ import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.AppContants.Extras.Companion.SENSOR_ADDR
 import com.shmedo.lib.core.util.AppContants.Extras.Companion.SENSOR_INDEX
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
+import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
-import com.shmedo.lib.device.base.md_cmd.model.das.MDDasExternalSensorInfo
 import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
@@ -49,7 +49,7 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasExternalDigitalSensorBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: DasExternalDigitalSensorViewModel
-    private lateinit var sensorListViewModel: DasExternalSensorListViewModel<MDDasExternalSensorInfo>
+    private lateinit var sensorListViewModel: DasExternalSensorListViewModel<DasExternalSensorInfo>
     val mdParseManager: MDParserManager by inject()
 
     private val iotSensorType: IOTSensorType by lazy {
@@ -104,22 +104,22 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         val sensorInfo = if (sensorListViewModel.sensorModelMap.containsKey(sensorAddr))
             sensorListViewModel.sensorModelMap[sensorAddr]!!
         else {
-            MDDasExternalSensorInfo(
-                sensorAddress = "",
-                sensorType = iotSensorType.code,
-                triggerThreshold = "",
-                correctionValue = ""
+            DasExternalSensorInfo(
+                addr = "",
+                type = iotSensorType.code,
+                threshold = "",
+                corrval = ""
             )
         }
         initSensorInfo(sensorInfo)
     }
 
-    private fun initSensorInfo(sensorInfo: MDDasExternalSensorInfo) {
-        mStates.address.set(sensorInfo.sensorAddress)
-        sensorInfo.triggerThreshold.toDoubleOrNull()?.let {
+    private fun initSensorInfo(sensorInfo: DasExternalSensorInfo) {
+        mStates.address.set(sensorInfo.addr)
+        sensorInfo.threshold.toDoubleOrNull()?.let {
             mStates.triggerValue.set(decimalFormat.format(it))
         }
-        sensorInfo.correctionValue.toDoubleOrNull()?.let {
+        sensorInfo.corrval.toDoubleOrNull()?.let {
             mStates.correctValue.set(decimalFormat.format(it))
         }
         try {
@@ -144,7 +144,7 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("测段长(单位:毫米)")
                     decimalFormat.applyPattern("#.#")
-                    sensorInfo.measuringSectionLength.toDoubleOrNull()?.let {
+                    sensorInfo.spacing.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
                 }
@@ -221,7 +221,7 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("初始值(毫米)")
                     decimalFormat.applyPattern("#.#")
-                    sensorInfo.initialValue.toDoubleOrNull()?.let {
+                    sensorInfo.initval.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
 
@@ -237,7 +237,7 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     mStates.extension1Title.set("X轴初始值(毫米)")
                     mStates.extension1Value.set(
                         DeviceStatusInfoProcessor.formatDoubleValue(
-                            sensorInfo.correctionValue,
+                            sensorInfo.corrval,
                             "0",
                             3
                         )
@@ -247,7 +247,7 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     mStates.extension2Title.set("Y轴初始值(毫米)")
                     mStates.extension2Value.set(
                         DeviceStatusInfoProcessor.formatDoubleValue(
-                            sensorInfo.initialValue,
+                            sensorInfo.initval,
                             "0",
                             3
                         )
@@ -271,14 +271,14 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("安装高程(米)")
                     decimalFormat.applyPattern("#.###")
-                    sensorInfo.installElevation.toDoubleOrNull()?.let {
+                    sensorInfo.tubealti.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
 
                     mStates.isExtension2Support.set(true)
                     mStates.extension2Title.set("绳长(米)")
                     decimalFormat.applyPattern("#.###")
-                    sensorInfo.wireRopeLength.toDoubleOrNull()?.let {
+                    sensorInfo.ropelen.toDoubleOrNull()?.let {
                         mStates.extension2Value.set(decimalFormat.format(it))
                     }
                 }
@@ -596,16 +596,16 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     }
 
     private fun updateSensorInfo() {
-        val sensorInfo = MDDasExternalSensorInfo()
-        sensorInfo.sensorType = iotSensorType.code
-        sensorInfo.sensorAddress = mStates.address.get()
-        sensorInfo.triggerThreshold = mStates.triggerValue.get()
-        sensorInfo.correctionValue = mStates.correctValue.get()
+        val sensorInfo = DasExternalSensorInfo()
+        sensorInfo.type = iotSensorType.code
+        sensorInfo.addr = mStates.address.get()
+        sensorInfo.threshold = mStates.triggerValue.get()
+        sensorInfo.corrval = mStates.correctValue.get()
 
         when (iotSensorType) {
             IOTSensorType.INCLINOMETER //测斜仪
             -> {
-                sensorInfo.measuringSectionLength = mStates.extension1Value.get()
+                sensorInfo.spacing = mStates.extension1Value.get()
             }
 
             IOTSensorType.LUYAN_INCLINOMETER //倾角仪
@@ -625,13 +625,13 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             IOTSensorType.SEDIMENTATION_METER,//沉降仪
             IOTSensorType.VERTICAL_COORDINATE,//垂线坐标仪
             -> {
-                sensorInfo.initialValue = mStates.extension1Value.get()
+                sensorInfo.initval = mStates.extension1Value.get()
             }
 
             IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE //数字式水位计
             -> {
-                sensorInfo.installElevation = mStates.extension1Value.get()
-                sensorInfo.wireRopeLength = mStates.extension2Value.get()
+                sensorInfo.tubealti = mStates.extension1Value.get()
+                sensorInfo.ropelen = mStates.extension2Value.get()
             }
 
             IOTSensorType.RADAR_LEVEL_GAUGE //雷达液(物)位计 设置子雷达传感器型号
@@ -646,7 +646,7 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         if (sensorListViewModel.sensorModelMap.containsKey(sensorAddr)) {
             sensorListViewModel.sensorModelMap.remove(sensorAddr)
         }
-        sensorListViewModel.sensorModelMap[sensorInfo.sensorAddress] = sensorInfo
+        sensorListViewModel.sensorModelMap[sensorInfo.addr] = sensorInfo
         sensorListViewModel.updateIsRefreshSensorList(true)
 
         nav().navigateUp()
@@ -669,7 +669,7 @@ class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             }
 
             MDCommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER -> {//获取XX采集器YY通道的传感器参数 ##101
-                val result = mdParseManager.parse<MDDasExternalSensorInfo>(
+                val result = mdParseManager.parse<DasExternalSensorInfo>(
                     cmdStr,
                     MDCommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER
                 )

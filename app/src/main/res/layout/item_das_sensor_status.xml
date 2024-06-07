@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingHorizontal="@dimen/dimen_size_10"
-        android:paddingVertical="6dp"
+        android:paddingVertical="@dimen/dimen_size_10"
         app:drawable_radius="@{4}"
         app:drawable_solidColor="@{@color/white}"
         tools:background="@color/white">
@@ -29,8 +29,8 @@
                 android:id="@+id/tv_address"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/title_text_color"
-                android:textSize="14sp"
+                android:textColor="@color/sub_title_text_color"
+                android:textSize="@dimen/text_size_13"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="通道1" />
@@ -39,7 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/device_online_platform"
-                android:textSize="13sp"
+                android:textSize="@dimen/text_size_13"
                 app:bind_sensor_errno='@{m.errno+""}'
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -51,11 +51,10 @@
             android:id="@+id/tv_sensor_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_5"
+            android:layout_marginTop="@dimen/dimen_size_6"
             android:maxLines="1"
             android:textColor="@color/title_text_color"
-            android:textSize="15sp"
-            android:textStyle="bold"
+            android:textSize="@dimen/text_size_14"
             tools:text="拉绳式裂缝计" />
 
         <View

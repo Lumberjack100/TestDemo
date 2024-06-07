@@ -7,7 +7,6 @@ import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
-import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -19,13 +18,9 @@ import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasExternalSensorEntity
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -44,21 +39,20 @@ import com.shmedo.mcloudapp.ext.formatDoubleValue
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.notNullKey
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessageDialog
 import timber.log.Timber
 
-open class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
+abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentBaseExternalDigitalSensorBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var sensorListViewModel: DasExternalSensorListViewModel<DasExternalSensorInfo>
+    protected lateinit var sensorListViewModel: DasExternalSensorListViewModel<DasExternalSensorInfo>
 
-    private val iotSensorType: IOTSensorType by lazy {
+    protected val iotSensorType: IOTSensorType by lazy {
         IOTSensorType.getSensorTypeByCollectorCode(sensorListViewModel.collectorType.get())
     }
-    private val usedAddressList = ArrayList<String>()
-    private var sensorIndex: Int = -1
-    private var sensorAddr = "-1"
+    protected val usedAddressList = ArrayList<String>()
+    protected var sensorIndex: Int = -1
+    protected var sensorAddr = "-1"
 
     //阵列测斜仪物模型
     private val modelTypeList = arrayOf("坐标模型", "ADME 模型")
@@ -117,7 +111,7 @@ open class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         initSensorInfo(externalSensorInfo)
     }
 
-    private fun initSensorInfo(sensorInfo: DasExternalSensorInfo) {
+    fun initSensorInfo(sensorInfo: DasExternalSensorInfo) {
         val groupList = mutableListOf<Any>()
         try {
             groupList.add(
@@ -209,22 +203,7 @@ open class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     }
                 }
 
-                IOTSensorType.ULTRASONIC_LEVEL_GAUGE //超声波物位计
-                -> {
-                    groupList.add(
-                        ExternalDigitalSensorParamEditItem(
-                            name = "触发值(单位:毫米)",
-                            value = sensorInfo.threshold.formatDoubleValue("", 1)
-                        )
-                    )
-                    groupList.add(
-                        ExternalDigitalSensorParamEditItem(
-                            name = "安装高程(单位:米)",
-                            value = sensorInfo.corrval.formatDoubleValue("", 3)
-                        )
-                    )
-                }
-
+                IOTSensorType.ULTRASONIC_LEVEL_GAUGE, //超声波物位计
                 IOTSensorType.RADAR_LEVEL_GAUGE //雷达物位计
                 -> {
                     groupList.add(
@@ -354,7 +333,7 @@ open class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
                             name = "修正值(单位:毫米)",
-                            value = sensorInfo.threshold.formatDoubleValue("", 3),
+                            value = sensorInfo.corrval.formatDoubleValue("", 3),
                         )
                     )
                     groupList.add(
@@ -563,36 +542,7 @@ open class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     /**
      * 重置 静力水准/沉降仪/垂线坐标仪 初始值
      */
-    private fun resetInitValue() {
-        commandItems.clear()
-
-        val address =
-            binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
-                ?.findLast { it.name.contains("传感器地址") }?.value?.trim() ?: ""
-
-        val entity = DasExternalSensorEntity().apply {
-            index = sensorIndex.toString()
-            type = iotSensorType.code
-            addr = address
-            initval =
-                if (iotSensorType == IOTSensorType.VERTICAL_COORDINATE) IOTConstants.NULL_KEY else "FFFFFFFF"
-            initvalx =
-                if (iotSensorType == IOTSensorType.VERTICAL_COORDINATE) "0" else IOTConstants.NULL_KEY
-            initvaly =
-                if (iotSensorType == IOTSensorType.VERTICAL_COORDINATE) "0" else IOTConstants.NULL_KEY
-        }
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.DAS_MD_SET_EXTERNAL_SENSOR,
-            entity.toCommandString()
-        )
-        commandItems.add(command)
-
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(
-            isStartTimeoutJob = true,
-            timeoutMillis = AppContants.Communication.DELAY_10000_MILLIS
-        )
-    }
+    protected open fun resetInitValue() {}
 
     private fun checkValueIsValidAndUpdateSensor() {
         val sensorInfo = DasExternalSensorInfo()
@@ -879,9 +829,7 @@ open class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         nav().navigateUp()
     }
 
-    override fun setResultData(cmdStr: String) {
 
-    }
 
     override fun onResume() {
         super.onResume()

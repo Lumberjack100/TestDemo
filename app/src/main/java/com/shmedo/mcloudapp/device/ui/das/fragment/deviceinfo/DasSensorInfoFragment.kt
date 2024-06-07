@@ -26,10 +26,10 @@ import com.shmedo.mcloudapp.common.widget.recyclerview.MyGridSpacingItemDecorati
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentDasSensorInfoBinding
 import com.shmedo.mcloudapp.databinding.ItemDasSensorStatusBinding
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.DasSensorSubMonitorStatusItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.DasSensorInfoViewModel
+import com.shmedo.mcloudapp.ext.formatDoubleValue
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -119,7 +119,6 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
         sensorType: IOTSensorType,
         data: String
     ): MutableList<DasSensorSubMonitorStatusItem> {
-        val decimalFormat = DecimalFormat("#.###")
         val subMonitorStatusList: MutableList<DasSensorSubMonitorStatusItem> = arrayListOf()
         when (sensorType) {
             IOTSensorType.VIBRATING_SENSOR //振弦传感器
@@ -129,9 +128,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "温度(℃)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -139,9 +136,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "模数",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[1].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -154,9 +149,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "雨量(毫米)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -169,9 +162,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "裂缝值(毫米)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -184,9 +175,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "温度(℃)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -194,9 +183,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "湿度(%RH)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[1].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -208,20 +195,16 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "X轴(毫米)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "X轴(毫米)",
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
                         )
                     )
                 }
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "Y轴(毫米)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "Y轴(毫米)",
+                            monitorValue = dataList[1].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -234,10 +217,8 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "空高值(毫米)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "空高值(毫米)",
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -249,30 +230,24 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "水深(m)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "水深(m)",
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
                         )
                     )
                 }
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "空管(m)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "空管(m)",
+                            monitorValue = dataList[1].formatDoubleValue("", 3)
                         )
                     )
                 }
                 if (dataList.size >= 3) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "水温(℃)",
-                            dataList[2].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "水温(℃)",
+                            monitorValue = dataList[2].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -284,20 +259,16 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "X轴角度(°)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "X轴角度(°)",
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
                         )
                     )
                 }
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "Y轴角度(°)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "Y轴角度(°)",
+                            monitorValue = dataList[1].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -309,35 +280,43 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "液位值(毫米)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "液位值(毫米)",
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
                         )
                     )
                 }
-//                if (dataList.size >= 2) {
-//                    subMonitorStatusList.add(
-//                        DasSensorSubMonitorStatusItem(
-//                            "Y轴角度(°)",
-//                            dataList[1]
-//                        )
-//                    )
-//                }
             }
 
             IOTSensorType.STATIC_LEVEL,//静力水准
-            IOTSensorType.SEDIMENTATION_METER ,//沉降仪
-            IOTSensorType.VERTICAL_COORDINATE ,//垂线坐标仪
+            IOTSensorType.SEDIMENTATION_METER,//沉降仪
             -> {
                 val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "沉降值(毫米)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "沉降值(毫米)",
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
+                        )
+                    )
+                }
+            }
+
+            IOTSensorType.VERTICAL_COORDINATE,//垂线坐标仪
+            -> {
+                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                if (dataList.isNotEmpty()) {
+                    subMonitorStatusList.add(
+                        DasSensorSubMonitorStatusItem(
+                            monitorType = "X轴数据(毫米)",
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
+                        )
+                    )
+                }
+                if (dataList.size >= 2) {
+                    subMonitorStatusList.add(
+                        DasSensorSubMonitorStatusItem(
+                            monitorType = "Y轴数据(毫米)",
+                            monitorValue = dataList[1].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -350,9 +329,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "风速(m/s)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -360,9 +337,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "风向(°)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[1].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -370,9 +345,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "湿度(%RH)",
-                            dataList[2].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[2].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -380,9 +353,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "温度(℃)",
-                            dataList[3].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[3].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -390,9 +361,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "气压(KPa)",
-                            dataList[4].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[4].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -405,9 +374,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "浊度(NTU)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -420,9 +387,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "水深(毫米)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -435,9 +400,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "溶氧率(mg/L)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -445,9 +408,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "浊度(NTU)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[1].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -455,9 +416,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "电导率(uS/cm)",
-                            dataList[2].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[2].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -465,9 +424,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "酸碱度(pH)",
-                            dataList[3].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[3].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -475,9 +432,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "温度(°)",
-                            dataList[4].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[4].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -485,9 +440,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "氧化还原电位(mV)",
-                            dataList[5].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[5].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -495,9 +448,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "叶绿素(ug)",
-                            dataList[6].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[6].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -505,9 +456,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "藻蓝蛋白(Kcells/mL)",
-                            dataList[7].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[7].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -515,9 +464,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "盐度(%)",
-                            dataList[8].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[8].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -530,9 +477,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "水位(m)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -540,9 +485,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "温度(℃)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[1].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -556,9 +499,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "水深(m)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -566,9 +507,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "空管(m)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[1].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -576,9 +515,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "水温(℃)",
-                            dataList[2].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[2].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -591,9 +528,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "应变(μ)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -601,9 +536,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "温度(℃)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[1].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -616,9 +549,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "轴力(KN)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[0].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -626,9 +557,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "温度(℃)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[1].formatDoubleValue("", 3)
                         )
                     )
                 }
@@ -638,9 +567,7 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                 subMonitorStatusList.add(
                     DasSensorSubMonitorStatusItem(
                         "数值",
-                        data.toDoubleOrNull()?.let {
-                            decimalFormat.format(it)
-                        } ?: "--"
+                        data
                     )
                 )
             }
