@@ -94,7 +94,8 @@ class DasSensorInfoFragment : BaseIOTDeviceFragment() {
                     val typeCode =
                         if (info.type.length > 1 && info.type.startsWith("0")) info.type.substring(1) else info.type
                     val sensorType = IOTSensorType.value(typeCode)
-                    val addressText = String.format("地址 %s", info.addr.toString())
+                    val addressText = if (IOTSensorType.isVibratingSensor(sensorType)) "通道 ${info.addr + 1}"
+                        else "地址 ${info.addr}"
 
                     val itemBinding = getBinding<ItemDasSensorStatusBinding>()
                     itemBinding.tvAddress.text = addressText

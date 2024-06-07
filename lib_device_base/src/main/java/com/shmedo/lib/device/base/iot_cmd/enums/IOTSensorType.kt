@@ -155,5 +155,14 @@ enum class IOTSensorType(val code: String, val description: String) {
             }
             return UNKNOWN_TYPE
         }
+
+        //判断是否是正弦传感器
+        @JvmStatic
+        fun isVibratingSensor(sensorType: IOTSensorType): Boolean {
+            return sensorType == VIBRATING_SENSOR || sensorType == KANG_PERCOLATE
+                    || sensorType == GUDAN_PERCOLATE || sensorType == GUDAN_SOIL_PRESSURE
+                    || sensorType == GUDAN_STRESS || sensorType == GUDAN_NOT_STRESS
+                    || sensorType == GUDAN_DISPLACEMENT_METER || sensorType == JUNXING_ZLJ_300T
+        }
     }
 }
