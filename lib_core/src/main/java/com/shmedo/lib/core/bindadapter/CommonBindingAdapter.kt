@@ -191,7 +191,8 @@ object CommonBindingAdapter {
         view.isSelected = select
     }
 
-    @BindingAdapter("layout_height")
+    @JvmStatic
+    @BindingAdapter("customLayoutHeight")
     fun setLayoutHeight(view: View, height: Int) {
         val layoutParams = view.layoutParams
         layoutParams.height = height

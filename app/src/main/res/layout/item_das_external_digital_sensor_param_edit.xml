@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="com.shmedo.mcloudapp.device.model.ExternalDigitalSensorParamEditItem" />
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/item"
+        style="@style/Common_EditItem_LayoutStyle"
+        android:background="@drawable/layer_common_click_item_with_divider">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_desc"
+            visible="@{!m.desc.empty}"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/icon_userinfo_about"
+            app:tint="@color/red" />
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/Common_ClickableItem_TitleStyle"
+            android:layout_marginStart="@dimen/dimen_size_10"
+            android:text='@{m.name}'
+            tools:text="扩展1" />
+
+        <com.shmedo.mcloudapp.common.widget.ClearEditText
+            style="@style/Common_EditItem_EditText_Style"
+            textViewEnabled="@{m.inputEnable }"
+            android:hint='@{m.inputHint}'
+            android:text="@={m.value}"
+            app:inputTypeFilter='@{m.inputTypeFilter}'
+            app:lengthFilter="@{m.inputLengthFilter}"
+            tools:hint="请输入" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/btn_extension"
+            visible="@{m.btnVisible}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_size_10"
+            android:background="@drawable/selector_button_bg"
+            android:paddingHorizontal="@dimen/dimen_size_10"
+            android:paddingVertical="@dimen/dimen_size_3"
+            android:text='@{m.btnText}'
+            tools:text="重置"
+            android:textColor="@color/white" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</layout>

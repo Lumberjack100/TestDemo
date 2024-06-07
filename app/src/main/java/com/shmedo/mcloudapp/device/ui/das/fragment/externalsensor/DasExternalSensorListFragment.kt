@@ -292,10 +292,15 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                         }
 
                         IOTSensorType.STATIC_LEVEL,//静力水准
-                        IOTSensorType.SEDIMENTATION_METER ,//沉降仪
-                        IOTSensorType.VERTICAL_COORDINATE ,//垂线坐标仪
+                        IOTSensorType.SEDIMENTATION_METER,//沉降仪
                         -> {
                             initval = sensorInfo.initval
+                        }
+
+                        IOTSensorType.VERTICAL_COORDINATE,//垂线坐标仪
+                        -> {
+                            initvalx = sensorInfo.initvalx
+                            initvaly = sensorInfo.initvaly
                         }
 
                         IOTSensorType.VIBRATING_SENSOR -> {//MCU_振弦传感器
