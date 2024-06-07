@@ -104,13 +104,13 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
                     val typeCode =
                         if (info.type.length > 1 && info.type.startsWith("0")) info.type.substring(1) else info.type
                     val sensorType = IOTSensorType.value(typeCode)
+                    val addressText = String.format("地址 %s", info.addr.toString())
 
                     val itemBinding = getBinding<ItemDasSensorStatusBinding>()
-                    itemBinding.tvAddress.text =
-                        String.format("通道 %s", (info.addr + 1).toString())
+                    itemBinding.tvAddress.text = addressText
                     itemBinding.tvSensorName.text = sensorType.description
                     itemBinding.rvSubSensorData.models =
-                        getSubMonitorStatusList(sensorType, info._val)
+                        getSubMonitorStatusList(sensorType, info.valueList)
                 }
             }
         }
@@ -118,31 +118,25 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
     private fun getSubMonitorStatusList(
         sensorType: IOTSensorType,
-        data: String
+        dataList: List<String>
     ): MutableList<DasSensorSubMonitorStatusItem> {
-        val decimalFormat = DecimalFormat("#.###")
         val subMonitorStatusList: MutableList<DasSensorSubMonitorStatusItem> = arrayListOf()
         when (sensorType) {
             IOTSensorType.VIBRATING_SENSOR //振弦传感器
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "温度(℃)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "温度(℃)",
+                            monitorValue = dataList[0]
                         )
                     )
                 }
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "模数",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "模数",
+                            monitorValue = dataList[1]
                         )
                     )
                 }
@@ -150,14 +144,11 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.RAIN_GAUGE //雨量计
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "雨量(毫米)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "雨量(毫米)",
+                            monitorValue = dataList[0]
                         )
                     )
                 }
@@ -165,14 +156,11 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.WIRE_SHIFT //拉绳式裂缝计
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "裂缝值(毫米)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "裂缝值(毫米)",
+                            monitorValue = dataList[0]
                         )
                     )
                 }
@@ -180,14 +168,11 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.SOIL_MOISTURE //土壤含水率
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "温度(℃)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[0]
                         )
                     )
                 }
@@ -195,9 +180,7 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
                             "湿度(%RH)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorValue = dataList[1]
                         )
                     )
                 }
@@ -205,24 +188,19 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.INCLINOMETER //测斜仪
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "X轴(毫米)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "X轴(毫米)",
+                            monitorValue = dataList[0]
                         )
                     )
                 }
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "Y轴(毫米)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "Y轴(毫米)",
+                            monitorValue = dataList[1]
                         )
                     )
                 }
@@ -231,14 +209,11 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
             IOTSensorType.ULTRASONIC_LEVEL_GAUGE, //超声波物位计
             IOTSensorType.RADAR_LEVEL_GAUGE //雷达物位计
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "空高值(毫米)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "空高值(毫米)",
+                            monitorValue = dataList[0]
                         )
                     )
                 }
@@ -246,34 +221,27 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.UPLIFT_PRESSURE_GAUGE //扬压力计
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "水深(m)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "水深(m)",
+                            monitorValue = dataList[0]
                         )
                     )
                 }
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "空管(m)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "空管(m)",
+                            monitorValue = dataList[1]
                         )
                     )
                 }
                 if (dataList.size >= 3) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "水温(℃)",
-                            dataList[2].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "水温(℃)",
+                            monitorValue = dataList[2]
                         )
                     )
                 }
@@ -281,24 +249,27 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.LUYAN_INCLINOMETER //倾角仪
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "X轴角度(°)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "X轴角度(°)",
+                            monitorValue = dataList[0]
                         )
                     )
                 }
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "Y轴角度(°)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "Y轴角度(°)",
+                            monitorValue = dataList[1]
+                        )
+                    )
+                }
+                if (dataList.size >= 3) {
+                    subMonitorStatusList.add(
+                        DasSensorSubMonitorStatusItem(
+                            monitorType = "Z轴角度(°)",
+                            monitorValue = dataList[2]
                         )
                     )
                 }
@@ -306,14 +277,11 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.INFRASOUND //次声传感器
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "触发值(单位:Hz)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "触发值(单位:Hz)",
+                            monitorValue = dataList[0]
                         )
                     )
                 }
@@ -321,39 +289,44 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.WEIR //量水堰
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "液位值(毫米)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "液位值(毫米)",
+                            monitorValue = dataList[0]
                         )
                     )
                 }
-//                if (dataList.size >= 2) {
-//                    subMonitorStatusList.add(
-//                        DasSensorSubMonitorStatusItem(
-//                            "Y轴角度(°)",
-//                            dataList[1]
-//                        )
-//                    )
-//                }
             }
 
             IOTSensorType.STATIC_LEVEL,//静力水准
-            IOTSensorType.SEDIMENTATION_METER ,//沉降仪
-            IOTSensorType.VERTICAL_COORDINATE ,//垂线坐标仪
+            IOTSensorType.SEDIMENTATION_METER,//沉降仪
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "沉降值(毫米)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "沉降值(毫米)",
+                            monitorValue = dataList[0]
+                        )
+                    )
+                }
+            }
+
+            IOTSensorType.VERTICAL_COORDINATE,//垂线坐标仪
+            -> {
+                if (dataList.isNotEmpty()) {
+                    subMonitorStatusList.add(
+                        DasSensorSubMonitorStatusItem(
+                            monitorType = "X轴数据(毫米)",
+                            monitorValue = dataList[0]
+                        )
+                    )
+                }
+                if (dataList.size >= 2) {
+                    subMonitorStatusList.add(
+                        DasSensorSubMonitorStatusItem(
+                            monitorType = "Y轴数据(毫米)",
+                            monitorValue = dataList[1]
                         )
                     )
                 }
@@ -361,54 +334,43 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.WEATHER_STATION //气象站
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "风速(m/s)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "风速(m/s)",
+                            monitorValue = dataList[0]
                         )
                     )
                 }
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "风向(°)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "风向(°)",
+                            monitorValue = dataList[1]
                         )
                     )
                 }
                 if (dataList.size >= 3) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "湿度(%RH)",
-                            dataList[2].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "湿度(%RH)",
+                            monitorValue = dataList[2]
                         )
                     )
                 }
                 if (dataList.size >= 4) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "温度(℃)",
-                            dataList[3].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "温度(℃)",
+                            monitorValue = dataList[3]
                         )
                     )
                 }
                 if (dataList.size >= 5) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "气压(KPa)",
-                            dataList[4].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "气压(KPa)",
+                            monitorValue = dataList[4]
                         )
                     )
                 }
@@ -416,14 +378,11 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.TURBIDITY_METER //浊度仪传感器
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "浊度(NTU)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "浊度(NTU)",
+                            monitorValue = dataList[0]
                         )
                     )
                 }
@@ -431,14 +390,11 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE //数字式水位计
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "水深(毫米)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "水深(毫米)",
+                            monitorValue = dataList[0]
                         )
                     )
                 }
@@ -446,94 +402,75 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.WATER_QUALITY_METER //多参数水质仪
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "溶氧率(mg/L)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "溶氧率(mg/L)",
+                            monitorValue = dataList[0]
                         )
                     )
                 }
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "浊度(NTU)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "浊度(NTU)",
+                            monitorValue = dataList[1]
                         )
                     )
                 }
                 if (dataList.size >= 3) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "电导率(uS/cm)",
-                            dataList[2].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "电导率(uS/cm)",
+                            monitorValue = dataList[2]
                         )
                     )
                 }
                 if (dataList.size >= 4) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "酸碱度(pH)",
-                            dataList[3].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "酸碱度(pH)",
+                            monitorValue = dataList[3]
                         )
                     )
                 }
                 if (dataList.size >= 5) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "温度(°)",
-                            dataList[4].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "温度(°)",
+                            monitorValue = dataList[4]
                         )
                     )
                 }
                 if (dataList.size >= 6) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "氧化还原电位(mV)",
-                            dataList[5].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "氧化还原电位(mV)",
+                            monitorValue = dataList[5]
                         )
                     )
                 }
                 if (dataList.size >= 7) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "叶绿素(ug)",
-                            dataList[6].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "叶绿素(ug)",
+                            monitorValue = dataList[6]
                         )
                     )
                 }
                 if (dataList.size >= 8) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "藻蓝蛋白(Kcells/mL)",
-                            dataList[7].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "藻蓝蛋白(Kcells/mL)",
+                            monitorValue = dataList[7]
                         )
                     )
                 }
                 if (dataList.size >= 9) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "盐度(%)",
-                            dataList[8].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "盐度(%)",
+                            monitorValue = dataList[8]
                         )
                     )
                 }
@@ -541,24 +478,19 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.WATER_LEVEL_GAUGE //水位(液位)计
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "水位(m)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "水位(m)",
+                            monitorValue = dataList[0]
                         )
                     )
                 }
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "温度(℃)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "温度(℃)",
+                            monitorValue = dataList[1]
                         )
                     )
                 }
@@ -567,34 +499,27 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
             IOTSensorType.KANG_PERCOLATE, //基康渗压计
             IOTSensorType.GUDAN_PERCOLATE //葛南渗压计
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "水深(m)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "水深(m)",
+                            monitorValue = dataList[0]
                         )
                     )
                 }
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "空管(m)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "空管(m)",
+                            monitorValue = dataList[1]
                         )
                     )
                 }
                 if (dataList.size >= 3) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "水温(℃)",
-                            dataList[2].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "水温(℃)",
+                            monitorValue = dataList[2]
                         )
                     )
                 }
@@ -602,24 +527,19 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.GUDAN_STRESS //葛南应变计
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "应变(μ)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "应变(μ)",
+                            monitorValue = dataList[0]
                         )
                     )
                 }
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "温度(℃)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "温度(℃)",
+                            monitorValue = dataList[1]
                         )
                     )
                 }
@@ -627,24 +547,19 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.JUNXING_ZLJ_300T //轴力计
             -> {
-                val dataList = data.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "轴力(KN)",
-                            dataList[0].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "轴力(KN)",
+                            monitorValue = dataList[0]
                         )
                     )
                 }
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "温度(℃)",
-                            dataList[1].toDoubleOrNull()?.let {
-                                decimalFormat.format(it)
-                            } ?: "--"
+                            monitorType = "温度(℃)",
+                            monitorValue = dataList[1]
                         )
                     )
                 }
@@ -653,10 +568,8 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
             else -> {
                 subMonitorStatusList.add(
                     DasSensorSubMonitorStatusItem(
-                        "数值",
-                        data.toDoubleOrNull()?.let {
-                            decimalFormat.format(it)
-                        } ?: "--"
+                        monitorType = "数值",
+                        monitorValue = dataList.joinToString(",")
                     )
                 )
             }
@@ -867,23 +780,19 @@ class BleDasSensorInfoFragment : BaseIOTDeviceFragment() {
                 mStates.isExternalSensorVisible.set(false)
                 return
             }
-
             mStates.isExternalSensorVisible.set(true)
             info.sensorStatus.forEach { tempStr ->
                 //①:②:③，其中①：传感器地址，②：传感器状态，0正常，1异常，③：传感器数据
-                val sensorStatus = tempStr.split(":").dropLastWhile { it.isEmpty() }
-                if (sensorStatus.size < 3) {
+                val tempList = tempStr.split(":").dropLastWhile { it.isEmpty() }
+                if (tempList.size < 3) {
                     return@forEach
                 }
-                val addr = sensorStatus[0].toIntOrNull() ?: 0
-                val status = sensorStatus[1].toIntOrNull() ?: 0
-                val value = sensorStatus[2]
                 dataList.add(
                     DasSensorStatusInfo(
                         type = info.collectorModel,
-                        addr = addr,
-                        errno = status,
-                        _val = value
+                        addr = tempList[0].toIntOrNull() ?: 0,
+                        errno = tempList[1].toIntOrNull() ?: 0,
+                        valueList = tempList.subList(2, tempList.size)
                     )
                 )
             }

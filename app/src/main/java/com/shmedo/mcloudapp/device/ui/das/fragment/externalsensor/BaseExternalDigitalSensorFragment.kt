@@ -7,6 +7,7 @@ import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
+import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -39,6 +40,7 @@ import com.shmedo.mcloudapp.ext.formatDoubleValue
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.notNullKey
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.ext.showMessageDialog
 import timber.log.Timber
 
@@ -109,6 +111,71 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             )
         }
         initSensorInfo(externalSensorInfo)
+        initRefresh(externalSensorInfo.addr != "-1")
+    }
+
+    private fun initRefresh(isEnable: Boolean) {
+        refreshLayout = binding.refreshLayout
+        binding.refreshLayout.setEnableLoadMore(false)
+        binding.refreshLayout.setEnableRefresh(isEnable)
+        binding.refreshLayout.onRefresh {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return@onRefresh
+            }
+            refreshData()
+        }
+    }
+
+    private fun initAdapter() {
+        binding.recyclerview.linear().setup { rv ->
+            addType<ExternalDigitalSensorParamChooseItem>(R.layout.item_das_external_digital_sensor_param_choose)
+            addType<ExternalDigitalSensorParamEditItem>(R.layout.item_das_external_digital_sensor_param_edit)
+            addType<GapItem>(R.layout.item_device_status_info_gap)
+            addType<ExternalDigitalSensorParamButtonItem>(R.layout.item_das_external_digital_sensor_param_summit_button)
+            R.id.item.onClick {
+                when (itemViewType) {
+                    R.layout.item_das_external_digital_sensor_param_choose -> {
+                        val item = getModel<ExternalDigitalSensorParamChooseItem>()
+                        when (item.name) {
+                            "模型切换" -> {
+                                onModelSwitchClick(item)
+                            }
+
+                            "雷达类型" -> {
+                                onChildSensorTypeSwitchClick(item)
+                            }
+                        }
+                    }
+
+                    else -> {
+
+                    }
+                }
+            }
+            R.id.btn_desc.onClick {
+                val item = getModel<ExternalDigitalSensorParamEditItem>()
+                showMessageDialog(item.desc)
+            }
+            R.id.btn_extension.onClick {
+                if (iotSensorType == IOTSensorType.STATIC_LEVEL
+                    || iotSensorType == IOTSensorType.SEDIMENTATION_METER
+                ) { //静力水准/沉降仪 初始值重置
+                    showResetInitValueWarningDialog()
+                }
+            }
+            R.id.btn_submit.onClick {
+                val item = getModel<ExternalDigitalSensorParamButtonItem>()
+                KeyboardUtils.hideSoftInput(binding.root)
+
+                if (item.btnText == "确定") {
+                    checkValueIsValidAndUpdateSensor()
+
+                } else if (item.btnText == "重置初始值") {
+                    showResetInitValueWarningDialog()
+                }
+            }
+        }
     }
 
     fun initSensorInfo(sensorInfo: DasExternalSensorInfo) {
@@ -368,7 +435,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     if (sensorIndex != -1) {
                         groupList.add(
                             GapItem(
-                                height = ConvertUtils.dp2px(30f)
+                                height = ConvertUtils.dp2px(100f)
                             )
                         )
                         groupList.add(
@@ -446,55 +513,6 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initAdapter() {
-        binding.recyclerview.linear().setup { rv ->
-            addType<ExternalDigitalSensorParamChooseItem>(R.layout.item_das_external_digital_sensor_param_choose)
-            addType<ExternalDigitalSensorParamEditItem>(R.layout.item_das_external_digital_sensor_param_edit)
-            addType<GapItem>(R.layout.item_device_status_info_gap)
-            addType<ExternalDigitalSensorParamButtonItem>(R.layout.item_das_external_digital_sensor_param_summit_button)
-            R.id.item.onClick {
-                when (itemViewType) {
-                    R.layout.item_das_external_digital_sensor_param_choose -> {
-                        val item = getModel<ExternalDigitalSensorParamChooseItem>()
-                        when (item.name) {
-                            "模型切换" -> {
-                                onModelSwitchClick(item)
-                            }
-
-                            "雷达类型" -> {
-                                onChildSensorTypeSwitchClick(item)
-                            }
-                        }
-                    }
-
-                    else -> {
-
-                    }
-                }
-            }
-            R.id.btn_desc.onClick {
-                val item = getModel<ExternalDigitalSensorParamEditItem>()
-                showMessageDialog(item.desc)
-            }
-            R.id.btn_extension.onClick {
-                if (iotSensorType == IOTSensorType.STATIC_LEVEL
-                    || iotSensorType == IOTSensorType.SEDIMENTATION_METER
-                    || iotSensorType == IOTSensorType.VERTICAL_COORDINATE
-                ) { //静力水准/沉降仪/垂线坐标仪 初始值重置
-                    if (sensorAddr != "-1") {
-                        Toaster.show("传感器地址不能为空!")
-                        return@onClick
-                    }
-                    resetInitValue()
-                }
-            }
-            R.id.btn_submit.onClick {
-                KeyboardUtils.hideSoftInput(binding.root)
-                checkValueIsValidAndUpdateSensor()
-            }
-        }
-    }
-
     /**
      * 阵列测斜仪选择物模型
      */
@@ -538,11 +556,6 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             )
             .show()
     }
-
-    /**
-     * 重置 静力水准/沉降仪/垂线坐标仪 初始值
-     */
-    protected open fun resetInitValue() {}
 
     private fun checkValueIsValidAndUpdateSensor() {
         val sensorInfo = DasExternalSensorInfo()
@@ -829,7 +842,33 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         nav().navigateUp()
     }
 
+    private fun showResetInitValueWarningDialog() {
+        val address =
+            binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
+                ?.findLast { it.name.contains("传感器地址") }?.value?.trim() ?: ""
 
+        showMessage(
+            "确定重置初始值吗？",
+            "温馨提示",
+            "确定",
+            {
+                //垂线坐标仪 初始值重置
+                if (address.isEmpty()) {
+                    Toaster.show("传感器地址不能为空!")
+                    return@showMessage
+                }
+                resetInitValue()
+            },
+            "取消"
+        )
+    }
+
+    /**
+     * 重置 静力水准/沉降仪/垂线坐标仪 初始值
+     */
+    protected open fun resetInitValue() {}
+
+    protected open fun refreshData() {}
 
     override fun onResume() {
         super.onResume()
@@ -855,5 +894,4 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
-
 }

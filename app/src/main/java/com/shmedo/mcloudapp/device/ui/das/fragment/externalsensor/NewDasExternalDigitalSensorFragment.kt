@@ -8,6 +8,7 @@ import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasExternalSensorE
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
@@ -59,26 +60,25 @@ class NewDasExternalDigitalSensorFragment : BaseExternalDigitalSensorFragment() 
         )
     }
 
+    /**
+     * 刷新数据
+     */
+    override fun refreshData() {
+        commandItems.clear()
+        val command =
+            IOTCommandUtil.getCommand(
+                IOTCommandType.DAS_MD_GET_EXTERNAL_SENSOR,
+                "index=$sensorIndex"
+            )
+        commandItems.add(command)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL -> {//
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "设置采集器参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {}
-                    }
-                }
-            }
-
             IOTCommandType.DAS_MD_SET_EXTERNAL_SENSOR -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-
                         val errMsg = "重置初始值出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
@@ -86,7 +86,29 @@ class NewDasExternalDigitalSensorFragment : BaseExternalDigitalSensorFragment() 
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("重置初始值成功")
+                            Toaster.show("初始值已重置")
+                        }
+                    }
+                }
+            }
+
+            IOTCommandType.DAS_MD_GET_EXTERNAL_SENSOR -> {
+                val result = iotParseManager.parse<DasExternalSensorInfo>(
+                    cmdStr,
+                    IOTCommandType.DAS_MD_GET_EXTERNAL_SENSOR
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "刷新传感器参数出错: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        //处理此通道的传感器配置参数
+                        initSensorInfo(result.data)
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
                         }
                     }
                 }

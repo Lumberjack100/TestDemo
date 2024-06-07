@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor
 
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
+import com.hjq.toast.Toaster
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
@@ -34,13 +35,22 @@ class NewBleDasExternalDigitalSensorFragment : BaseExternalDigitalSensorFragment
 
         val command =
             if (iotSensorType == IOTSensorType.STATIC_LEVEL || iotSensorType == IOTSensorType.SEDIMENTATION_METER)
-                MDCommandUtil.getCommand(MDCommandType.SENSOR_INITIAL_READING, "${MDCommandUtil.formatStringTwo(iotSensorType.code)}${MDCommandUtil.formatStringTwo(address)}FFFFFFFF")
+                MDCommandUtil.getCommand(
+                    MDCommandType.SENSOR_INITIAL_READING,
+                    "${MDCommandUtil.formatStringTwo(iotSensorType.code)}${
+                        MDCommandUtil.formatStringTwo(address)
+                    }FFFFFFFF"
+                )
             else
-                MDCommandUtil.getCommand(MDCommandType.COLLECTOR_SENSOR_REVISED, "${MDCommandUtil.formatStringTwo(iotSensorType.code)}${MDCommandUtil.formatStringTwo(address)}0,0")
+                MDCommandUtil.getCommand(
+                    MDCommandType.COLLECTOR_SENSOR_REVISED,
+                    "${MDCommandUtil.formatStringTwo(iotSensorType.code)}${
+                        MDCommandUtil.formatStringTwo(address)
+                    }0,0"
+                )
 
         commandItems.clear()
         commandItems.add(command)
-        refreshData()
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(
@@ -50,10 +60,10 @@ class NewBleDasExternalDigitalSensorFragment : BaseExternalDigitalSensorFragment
     }
 
     /**
-     * 重置静力水准初始值后 刷新数据
+     * 刷新数据
      */
-    private fun refreshData() {
-        //查询静力水准配置信息
+    override fun refreshData() {
+        commandItems.clear()
         val command = MDCommandUtil.getCommand(
             MDCommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER,
             "${MDCommandUtil.formatStringTwo(iotSensorType.code)}${
@@ -61,20 +71,38 @@ class NewBleDasExternalDigitalSensorFragment : BaseExternalDigitalSensorFragment
             }"
         )
         commandItems.add(command)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
         when (MDCommandUtil.extractCommandType(cmdStr)) {
-            MDCommandType.SENSOR_INITIAL_READING -> {//设置量水堰初始读数 171
+            MDCommandType.SENSOR_INITIAL_READING -> {//静力水准/沉降仪 重置初始值 171
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        val errMsg = "量水堰初始读数设置出错"
+                        val errMsg = "重置初始值出错"
                         handleFailureResult(errMsg)
                         return
                     }
 
                     else -> {
-                        sendCommandFromCmdList()
+                        sendCommandFromCmdList {
+                            Toaster.show("初始值已重置")
+                        }
+                    }
+                }
+            }
+            MDCommandType.COLLECTOR_SENSOR_REVISED -> {//垂线坐标仪 重置初始值 165
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "重置初始值出错"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("初始值已重置")
+                        }
                     }
                 }
             }
@@ -92,14 +120,17 @@ class NewBleDasExternalDigitalSensorFragment : BaseExternalDigitalSensorFragment
                     }
 
                     is MDCommandResult.Success -> {
+                        //处理此通道的传感器配置参数
                         initSensorInfo(result.data)
-                        sendCommandFromCmdList()
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
                     }
                 }
             }
 
             else -> {
-
+                cancelNearbyCommunicationTimeoutJob()
             }
         }
     }

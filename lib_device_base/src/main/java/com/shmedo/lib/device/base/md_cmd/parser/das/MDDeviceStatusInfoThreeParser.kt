@@ -17,7 +17,7 @@ import com.shmedo.lib.device.base.md_cmd.model.das.DeviceStatusInfoThree
  * ①:②:③，其中 ①：传感器地址，②：传感器状态，0正常，1异常，③：传感器数据<br/>
  * （5）传感器状态，和（2）格式相同，<br/>
  * 注：传感器状态可能有很多个，有接入传感器个数决定。<br/>
- * $$043,224297L,0,1,0:1:0.0
+ * $$043,224297L,0,1,0:1:0.0,1:1:0.0
  */
 class MDDeviceStatusInfoThreeParser : MDCommandParser<DeviceStatusInfoThree> {
     override fun parseInstance(values: List<String>): DeviceStatusInfoThree {

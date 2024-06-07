@@ -45,6 +45,7 @@ import java.util.Locale
  * @desc: 数字式传感器配置
  *
  */
+@Deprecated("This class is deprecated", ReplaceWith("NewBleDasExternalDigitalSensorFragment"))
 class BleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasExternalDigitalSensorBinding
     private lateinit var toolbarViewModel: ToolbarViewModel

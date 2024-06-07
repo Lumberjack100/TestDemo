@@ -474,7 +474,6 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
             IOTCommandType.DAS_MD_SET_EXTERNAL_SENSOR -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-
                         val errMsg = "保存传感器参数出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
