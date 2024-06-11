@@ -6,7 +6,7 @@ package com.shmedo.lib.device.base.md_cmd.model.das
  * 描述：  Das 倾角计信息 X、Y、Z 轴角度、加速度
  */
 data class InclinometerInfo(
-    val status: String = "",
+    val status: String = "", // 状态 0正常，1异常，2 不展示
     val xAxis: String = "",
     val yAxis: String = "",
     val zAxis: String = "",

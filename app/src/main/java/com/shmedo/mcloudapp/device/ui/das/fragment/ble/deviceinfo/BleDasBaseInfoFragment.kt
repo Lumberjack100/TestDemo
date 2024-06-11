@@ -266,7 +266,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
             )
             DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
                 groupList,
-                name = "内部电压",
+                name = "外部供电电压",
                 value = info.externalVoltage,
                 defaultValue = "0",
                 thresHold = 5.0,
@@ -315,104 +315,111 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 name = "设备位置",
                 value = "${info.longitude},${info.latitude}",
             )
-            groupList.add(DeviceStatusInfoGroupItem("太阳能控制器"))
-            groupList.add(
-                DeviceStatusInfoBasicItem(
-                    name = "状态",
-                    value = if (info.solarControllerStatus != "1") "正常" else "异常",
-                    textColorRes = if (info.solarControllerStatus != "1") ColorUtils.getColor(
-                        R.color.device_online_platform
-                    ) else ColorUtils.getColor(
-                        R.color.device_offline_platform
+
+            if (info.solarControllerStatus != "2") {
+                groupList.add(DeviceStatusInfoGroupItem("太阳能控制器"))
+                groupList.add(
+                    DeviceStatusInfoBasicItem(
+                        name = "状态",
+                        value = if (info.solarControllerStatus != "1") "正常" else "异常",
+                        textColorRes = if (info.solarControllerStatus != "1") ColorUtils.getColor(
+                            R.color.device_online_platform
+                        ) else ColorUtils.getColor(
+                            R.color.device_offline_platform
+                        )
                     )
                 )
-            )
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
-                groupList,
-                name = "太阳能板电压",
-                value = info.solarPanelVoltage,
-                defaultValue = "0",
-                thresHold = 5.0,
-                digit = 2,
-                unit = "V",
-            )
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
-                groupList,
-                name = "蓄电池电压",
-                value = info.batteryVoltage,
-                defaultValue = "0",
-                thresHold = 5.0,
-                digit = 2,
-                unit = "V",
-            )
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                groupList,
-                name = "太阳能功率",
-                value = info.dailyPowerGeneration,
-                unit = "W",
-            )
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                groupList,
-                name = "负载功率",
-                value = info.dailyPowerConsumption,
-                unit = "W",
-            )
-            groupList.add(DeviceStatusInfoGroupItem("机箱内部温湿度"))
-            groupList.add(
-                DeviceStatusInfoBasicItem(
-                    name = "状态",
-                    value = if (info.internalTempHumidityStatus != "1") "正常" else "异常",
-                    textColorRes = if (info.internalTempHumidityStatus != "1") ColorUtils.getColor(
-                        R.color.device_online_platform
-                    ) else ColorUtils.getColor(
-                        R.color.device_offline_platform
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                    groupList,
+                    name = "太阳能板电压",
+                    value = info.solarPanelVoltage,
+                    defaultValue = "0",
+                    thresHold = 5.0,
+                    digit = 2,
+                    unit = "V",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                    groupList,
+                    name = "蓄电池电压",
+                    value = info.batteryVoltage,
+                    defaultValue = "0",
+                    thresHold = 5.0,
+                    digit = 2,
+                    unit = "V",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "太阳能功率",
+                    value = info.dailyPowerGeneration,
+                    unit = "W",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "负载功率",
+                    value = info.dailyPowerConsumption,
+                    unit = "W",
+                )
+            }
+            if (info.internalTempHumidityStatus != "2") {
+                groupList.add(DeviceStatusInfoGroupItem("机箱内部温湿度"))
+                groupList.add(
+                    DeviceStatusInfoBasicItem(
+                        name = "状态",
+                        value = if (info.internalTempHumidityStatus != "1") "正常" else "异常",
+                        textColorRes = if (info.internalTempHumidityStatus != "1") ColorUtils.getColor(
+                            R.color.device_online_platform
+                        ) else ColorUtils.getColor(
+                            R.color.device_offline_platform
+                        )
                     )
                 )
-            )
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
-                groupList,
-                name = "温度",
-                value = info.internalTemperature,
-                defaultValue = "0",
-                digit = 2,
-                unit = "℃",
-            )
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
-                groupList,
-                name = "湿度",
-                value = info.internalHumidity,
-                defaultValue = "0",
-                digit = 2,
-                unit = "%",
-            )
-            groupList.add(DeviceStatusInfoGroupItem("机箱外部温湿度"))
-            groupList.add(
-                DeviceStatusInfoBasicItem(
-                    name = "状态",
-                    value = if (info.externalTempHumidityStatus != "1") "正常" else "异常",
-                    textColorRes = if (info.externalTempHumidityStatus != "1") ColorUtils.getColor(
-                        R.color.device_online_platform
-                    ) else ColorUtils.getColor(
-                        R.color.device_offline_platform
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                    groupList,
+                    name = "温度",
+                    value = info.internalTemperature,
+                    defaultValue = "0",
+                    digit = 2,
+                    unit = "℃",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                    groupList,
+                    name = "湿度",
+                    value = info.internalHumidity,
+                    defaultValue = "0",
+                    digit = 2,
+                    unit = "%",
+                )
+            }
+            if (info.externalTempHumidityStatus != "2") {
+                groupList.add(DeviceStatusInfoGroupItem("机箱外部温湿度"))
+                groupList.add(
+                    DeviceStatusInfoBasicItem(
+                        name = "状态",
+                        value = if (info.externalTempHumidityStatus != "1") "正常" else "异常",
+                        textColorRes = if (info.externalTempHumidityStatus != "1") ColorUtils.getColor(
+                            R.color.device_online_platform
+                        ) else ColorUtils.getColor(
+                            R.color.device_offline_platform
+                        )
                     )
                 )
-            )
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
-                groupList,
-                name = "温度",
-                value = info.externalTemperature,
-                defaultValue = "0",
-                digit = 2,
-                unit = "℃",
-            )
-            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
-                groupList,
-                name = "湿度",
-                value = info.externalHumidity,
-                defaultValue = "0",
-                digit = 2,
-                unit = "%",
-            )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                    groupList,
+                    name = "温度",
+                    value = info.externalTemperature,
+                    defaultValue = "0",
+                    digit = 2,
+                    unit = "℃",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                    groupList,
+                    name = "湿度",
+                    value = info.externalHumidity,
+                    defaultValue = "0",
+                    digit = 2,
+                    unit = "%",
+                )
+            }
 
             binding.recyclerview.mutable.addAll(groupList)
             binding.recyclerview.bindingAdapter.notifyDataSetChanged()

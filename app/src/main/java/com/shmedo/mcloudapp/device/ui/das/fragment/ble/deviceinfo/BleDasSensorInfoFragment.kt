@@ -226,6 +226,9 @@ class BleDasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
      */
     private fun setInclinometerInfo(info: InclinometerInfo) {
         try {
+            if (info.status == "2")
+                return
+
             val groupList = mutableListOf<Any>()
             groupList.add(DeviceStatusInfoGroupItem("倾角计"))
             groupList.add(
@@ -288,11 +291,12 @@ class BleDasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
             }
             binding.refreshLayout.showContent()
             binding.recyclerview.mutable.add(DeviceStatusInfoGroupItem("扩展传感器"))
-            info.sensorStatus.forEach { tempStr ->
-                //①:②:③，其中①：传感器地址，②：传感器状态，0正常，1异常，③：传感器数据
+            for (i in 0 until info.sensorStatus.size) {
+                val tempStr = info.sensorStatus[i]
+                //①:②:③，其中①：传感器地址，②：传感器状态，0正常，1异常，2 不展示 ③：传感器数据
                 val tempList = tempStr.split(":").dropLastWhile { it.isEmpty() }
-                if (tempList.size < 3) {
-                    return@forEach
+                if (tempList.size < 3 || tempList[1] == "2") {
+                    continue
                 }
                 binding.recyclerview.mutable.add(
                     DasSensorStatusInfo(
@@ -308,8 +312,10 @@ class BleDasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                     )
                 )
             }
-
-            binding.recyclerview.bindingAdapter.notifyDataSetChanged()
+            if (binding.recyclerview.models?.isEmpty() == true)
+                binding.refreshLayout.showEmpty()
+            else
+                binding.recyclerview.bindingAdapter.notifyDataSetChanged()
         } catch (e: Exception) {
             Timber.e(e)
             addLogItem(Log.ERROR, e.errorMsg)

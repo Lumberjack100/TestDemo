@@ -88,8 +88,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        val content: String = result.data
-                        initSolarStatus(content)
+                        initSolarStatus(result.data)
                     }
                 }
             }
@@ -110,8 +109,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        val content: String = result.data
-                        initTemperatureAndHumidityStatus(content)
+                        initTemperatureAndHumidityStatus(result.data)
                     }
                 }
             }
@@ -166,7 +164,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
             )
             DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
                 groupList,
-                name = "内部电压",
+                name = "外部供电电压",
                 value = baseInfo.outvolt,
                 defaultValue = "0",
                 thresHold = 5.0,
@@ -199,6 +197,9 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
     private fun initSolarStatus(content: String) {
         launchWithViewLifecycle {
             try {
+                if (content.isEmpty() || content == "{}") {
+                    return@launchWithViewLifecycle
+                }
                 val info = MoshiUtil.fromJson<DasSolarStatusInfo>(content)
                     ?: return@launchWithViewLifecycle
 

@@ -68,7 +68,7 @@ class LB20SBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
                     groupList,
-                    name = "内部电压",
+                    name = "外部供电电压",
                     value = stateInfo.ext_power_volt,
                     defaultValue = "0",
                     thresHold = 5.0,
