@@ -14,9 +14,9 @@
         android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dimen_size_10"
         android:orientation="vertical"
-        android:paddingHorizontal="@dimen/dimen_size_10"
-        android:paddingVertical="@dimen/dimen_size_10"
+        android:padding="@dimen/dimen_size_10"
         app:drawable_radius="@{4}"
         app:drawable_solidColor="@{@color/white}"
         tools:background="@color/white">

@@ -1,76 +1,38 @@
 package com.shmedo.mcloudapp.device.ui.das.fragment.ble.deviceinfo
 
-import android.os.Bundle
 import android.util.Log
-import com.blankj.utilcode.util.StringUtils
-import com.hjq.toast.Toaster
-import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.blankj.utilcode.util.ColorUtils
+import com.drake.brv.utils.bindingAdapter
+import com.drake.brv.utils.models
+import com.drake.brv.utils.mutable
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.device.base.md_cmd.model.das.DeviceStatusInfoOne
 import com.shmedo.lib.device.base.md_cmd.model.das.DeviceStatusInfoTwo
 import com.shmedo.lib.device.base.md_cmd.model.das.SystemRunStateInfo
 import com.shmedo.lib.device.base.md_cmd.model.das.VersionMessageInfo
 import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
-import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
-import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentDasBaseInfoBinding
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.DasBaseInfoViewModel
-import org.koin.android.ext.android.inject
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoSignalItem
+import com.shmedo.mcloudapp.device.ui.common.BaseDeviceStatusInfoFragment
+import com.shmedo.mcloudapp.ext.notNullKey
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/4/15
  * 描述： TODO
  */
-class BleDasBaseInfoFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentDasBaseInfoBinding
-    private lateinit var mStates: DasBaseInfoViewModel
-    private val mdParseManager: MDParserManager by inject()
-    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
-
-    override fun initViewModel() {
-        super.initViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
-
-    override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_das_base_info, BR.stateVM, mStates)
-    }
-
-    override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentDasBaseInfoBinding
-        initRefresh()
-    }
-
-    private fun initRefresh() {
-        refreshLayout = binding.refreshLayout
-        binding.refreshLayout.setEnableLoadMore(false)
-        binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return@onRefresh
-            }
-            queryBaseInfo()
-        }
-    }
-
-    override fun lazyLoadData() {
-        binding.refreshLayout.autoRefresh()
-    }
-
+class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
     /**
      * 获取设备的基本信息
      */
-    private fun queryBaseInfo() {
+    override fun queryStatusInfo() {
+        binding.recyclerview.models = mutableListOf()
         commandItems.clear()
 
         /**
@@ -145,6 +107,9 @@ class BleDasBaseInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        if (!isResumed) {
+            return
+        }
         when (MDCommandUtil.extractCommandType(cmdStr)) {
             MDCommandType.QUERY_DAS_STATUS_1 -> {//##041\r\n：查询设备状态1
                 val result = mdParseManager.parse<DeviceStatusInfoOne>(
@@ -183,10 +148,7 @@ class BleDasBaseInfoFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        mStates.wrapBaseInfo.get().apply {
-                            ver = result.data.firmwareVersion
-                        }
-                        mStates.wrapBaseInfo.notifyChange()
+                        initVersionInfo(result.data)
                     }
                 }
             }
@@ -239,41 +201,93 @@ class BleDasBaseInfoFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    /**
-     *
-     */
     private fun initDeviceStatusOne(info: DeviceStatusInfoOne) {
-        mStates.wrapBaseInfo.get().apply {
-            sn = deviceInfo.deviceToken
-            iccid = info.simNumber
-            imei = info.imeiNumber
-            code = "${MDCommandUtil.formatStringTwo(info.startCodeOne)}${
-                MDCommandUtil.formatStringTwo(info.startCodeTwo)
-            }"
+        try {
+            val groupList = mutableListOf<Any>()
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "设备SN",
+                value = info.snNumber,
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "设备ICCID",
+                value = info.simNumber,
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "设备IMEI",
+                value = info.imeiNumber,
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "设备启动代码",
+                value = "${MDCommandUtil.formatStringTwo(info.startCodeOne)}${
+                    MDCommandUtil.formatStringTwo(info.startCodeTwo)
+                }",
+            )
+            binding.recyclerview.mutable.addAll(groupList)
+            binding.recyclerview.bindingAdapter.notifyDataSetChanged()
+        } catch (e: Exception) {
+            Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
-        mStates.wrapBaseInfo.notifyChange()
+    }
+
+    private fun initVersionInfo(info: VersionMessageInfo) {
+        try {
+            val groupList = mutableListOf<Any>()
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "固件版本",
+                value = info.firmwareVersion,
+            )
+            binding.recyclerview.mutable.addAll(groupList)
+            binding.recyclerview.bindingAdapter.notifyDataSetChanged()
+        } catch (e: Exception) {
+            Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
+        }
     }
 
     private fun initOperatorInformation(info: SystemRunStateInfo) {
-        decimalFormat.applyPattern("#.#")
         try {
-            mStates.wrapBaseInfo.get().apply {
-                involt =
-                    if (info.batteryVoltage.contains("%")) info.batteryVoltage else getDeviceInternalBattery(
-                        info.batteryVoltage.toDoubleOrNull() ?: 0.0
+            val groupList = mutableListOf<Any>()
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                groupList,
+                name = "内部电量",
+                value = getDeviceInternalBattery(
+                    info.batteryVoltage.toDoubleOrNull() ?: 0.0
+                ).replace("%", ""),
+                defaultValue = "0",
+                thresHold = 10.0,
+                digit = 2,
+                unit = "%",
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                groupList,
+                name = "内部电压",
+                value = info.externalVoltage,
+                defaultValue = "0",
+                thresHold = 5.0,
+                digit = 2,
+                unit = "V",
+            )
+            info.gprsSignal.notNullKey {
+                val temp = it.toIntOrNull() ?: 0
+                groupList.add(
+                    DeviceStatusInfoSignalItem(
+                        name = "4G信号强度",
+                        signalValue = if (temp <= 0)
+                            temp
+                        else
+                            temp * 2 - 113
                     )
-                outvolt = info.externalVoltage.toDoubleOrNull()?.let {
-                    decimalFormat.format(it)
-                } ?: ""
+                )
             }
-            mStates.wrapBaseInfo.notifyChange()
 
-            mStates.signalValue.set(info.gprsSignal.toIntOrNull()?.let {
-                if (it <= 0)
-                    it
-                else
-                    it * 2 - 113
-            } ?: -113)
+            binding.recyclerview.mutable.addAll(groupList)
+            binding.recyclerview.bindingAdapter.notifyDataSetChanged()
         } catch (e: Exception) {
             Timber.e(e)
             addLogItem(Log.ERROR, e.errorMsg)
@@ -294,51 +308,114 @@ class BleDasBaseInfoFragment : BaseIOTDeviceFragment() {
     }
 
     private fun setDeviceStatusTwo(info: DeviceStatusInfoTwo) {
-        //设备经纬度
-        mStates.wrapBaseInfo.get().apply {
-            local = "${info.longitude},${info.latitude}"
-        }
-        mStates.wrapBaseInfo.notifyChange()
-
-        //太阳能控制器
-        decimalFormat.applyPattern("#.#")
         try {
-            mStates.errNo.set(if (info.solarControllerStatus == "1") "0" else "1")
-            mStates.solarvolt.set(info.solarPanelVoltage.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-            mStates.batvolt.set(info.batteryVoltage.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-            mStates.solarpwr.set(info.dailyPowerGeneration.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-            mStates.loadpwr.set(info.dailyPowerConsumption.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-        } catch (e: Exception) {
-            Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
-        }
+            val groupList = mutableListOf<Any>()
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "设备位置",
+                value = "${info.longitude},${info.latitude}",
+            )
+            groupList.add(DeviceStatusInfoGroupItem("太阳能控制器"))
+            groupList.add(
+                DeviceStatusInfoBasicItem(
+                    name = "状态",
+                    value = if (info.solarControllerStatus != "1") "正常" else "异常",
+                    textColorRes = if (info.solarControllerStatus != "1") ColorUtils.getColor(
+                        R.color.device_online_platform
+                    ) else ColorUtils.getColor(
+                        R.color.device_offline_platform
+                    )
+                )
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                groupList,
+                name = "太阳能板电压",
+                value = info.solarPanelVoltage,
+                defaultValue = "0",
+                thresHold = 5.0,
+                digit = 2,
+                unit = "V",
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                groupList,
+                name = "蓄电池电压",
+                value = info.batteryVoltage,
+                defaultValue = "0",
+                thresHold = 5.0,
+                digit = 2,
+                unit = "V",
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "太阳能功率",
+                value = info.dailyPowerGeneration,
+                unit = "W",
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "负载功率",
+                value = info.dailyPowerConsumption,
+                unit = "W",
+            )
+            groupList.add(DeviceStatusInfoGroupItem("机箱内部温湿度"))
+            groupList.add(
+                DeviceStatusInfoBasicItem(
+                    name = "状态",
+                    value = if (info.internalTempHumidityStatus != "1") "正常" else "异常",
+                    textColorRes = if (info.internalTempHumidityStatus != "1") ColorUtils.getColor(
+                        R.color.device_online_platform
+                    ) else ColorUtils.getColor(
+                        R.color.device_offline_platform
+                    )
+                )
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                groupList,
+                name = "温度",
+                value = info.internalTemperature,
+                defaultValue = "0",
+                digit = 2,
+                unit = "℃",
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                groupList,
+                name = "湿度",
+                value = info.internalHumidity,
+                defaultValue = "0",
+                digit = 2,
+                unit = "%",
+            )
+            groupList.add(DeviceStatusInfoGroupItem("机箱外部温湿度"))
+            groupList.add(
+                DeviceStatusInfoBasicItem(
+                    name = "状态",
+                    value = if (info.externalTempHumidityStatus != "1") "正常" else "异常",
+                    textColorRes = if (info.externalTempHumidityStatus != "1") ColorUtils.getColor(
+                        R.color.device_online_platform
+                    ) else ColorUtils.getColor(
+                        R.color.device_offline_platform
+                    )
+                )
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                groupList,
+                name = "温度",
+                value = info.externalTemperature,
+                defaultValue = "0",
+                digit = 2,
+                unit = "℃",
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                groupList,
+                name = "湿度",
+                value = info.externalHumidity,
+                defaultValue = "0",
+                digit = 2,
+                unit = "%",
+            )
 
-        //温湿度状态
-        decimalFormat.applyPattern("#.#")
-        try {
-            mStates.inthErrNo.set(if (info.internalTempHumidityStatus == "1") "0" else "1")
-            mStates.inthTemp.set(info.internalTemperature.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-            mStates.inthHumi.set(info.internalHumidity.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-
-            mStates.outthErrNo.set(if (info.externalTempHumidityStatus == "1") "0" else "1")
-            mStates.outthTemp.set(info.externalTemperature.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-            mStates.outthHumi.set(info.externalHumidity.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
+            binding.recyclerview.mutable.addAll(groupList)
+            binding.recyclerview.bindingAdapter.notifyDataSetChanged()
         } catch (e: Exception) {
             Timber.e(e)
             addLogItem(Log.ERROR, e.errorMsg)

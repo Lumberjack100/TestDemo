@@ -75,7 +75,7 @@ class LR200BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
                     groupList,
                     name = "电池电量",
-                    value = stateInfo.volt_percent,
+                    value = stateInfo.volt_percent.replace("%", ""),
                     defaultValue = "0",
                     thresHold = 10.0,
                     digit = 2,

@@ -1,5 +1,6 @@
 package com.shmedo.lib.device.base.md_cmd.parser.das
 
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.device.base.md_cmd.interfaces.MDCommandParser
 import com.shmedo.lib.device.base.md_cmd.model.das.SystemRunStateInfo
@@ -22,20 +23,20 @@ import com.shmedo.lib.device.base.md_cmd.model.das.SystemRunStateInfo
  * (9)：运营商类型<br/>
  * (10)：网络制式<br/>
  */
-class MDSystemRunStateInfoParser: MDCommandParser<SystemRunStateInfo> {
+class MDSystemRunStateInfoParser : MDCommandParser<SystemRunStateInfo> {
 
     override fun parseInstance(values: List<String>): SystemRunStateInfo {
         return SystemRunStateInfo(
-            gprsSignal = values.getOrNull(1) ?: "",
-            gpsNumber = values.getOrNull(2) ?: "",
-            systemStartUp = values.getOrNull(3) ?: "",
-            systemRestart = values.getOrNull(4) ?: "",
-            simCCID = values.getOrNull(5) ?: "",
-            internalTemperature = values.getOrNull(6) ?: "",
-            batteryVoltage = values.getOrNull(7) ?: "",
-            externalVoltage = values.getOrNull(8) ?: "",
-            operatorType = values.getOrNull(9) ?: "",
-            networkMode = values.getOrNull(10) ?: ""
+            gprsSignal = values.getOrNull(1) ?: IOTConstants.NULL_KEY,
+            gpsNumber = values.getOrNull(2) ?: IOTConstants.NULL_KEY,
+            systemStartUp = values.getOrNull(3) ?: IOTConstants.NULL_KEY,
+            systemRestart = values.getOrNull(4) ?: IOTConstants.NULL_KEY,
+            simCCID = values.getOrNull(5) ?: IOTConstants.NULL_KEY,
+            internalTemperature = values.getOrNull(6) ?: IOTConstants.NULL_KEY,
+            batteryVoltage = values.getOrNull(7) ?: IOTConstants.NULL_KEY,
+            externalVoltage = values.getOrNull(8) ?: IOTConstants.NULL_KEY,
+            operatorType = values.getOrNull(9) ?: IOTConstants.NULL_KEY,
+            networkMode = values.getOrNull(10) ?: IOTConstants.NULL_KEY
         )
     }
 
