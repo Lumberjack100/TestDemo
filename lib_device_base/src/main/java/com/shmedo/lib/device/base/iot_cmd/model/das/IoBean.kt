@@ -9,7 +9,7 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class IoBean(
-    var type: Int = 0,
-    var vaule: Float = 0f,
-    var errno: Int = 0,
+    var type: String = "",
+    var vaule: String = "",
+    var errno: String = "",
 )

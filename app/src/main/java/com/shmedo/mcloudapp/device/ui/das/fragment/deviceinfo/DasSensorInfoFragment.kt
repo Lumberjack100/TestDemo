@@ -101,156 +101,161 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
     private fun initInternalSensorData(content: String) {
         launchWithViewLifecycle {
             try {
-                val subSensorStatusInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<DasSubSensorStatusInfo>(content)
-                }
-                if (subSensorStatusInfo == null) {
-                    //binding.refreshLayout.showEmpty()
+                if (content.isEmpty() || content == "{}") {
                     return@launchWithViewLifecycle
                 }
-                //binding.refreshLayout.showContent()
-                val groupList = mutableListOf<Any>()
+                val subSensorStatusInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<DasSubSensorStatusInfo>(content)
+                } ?: return@launchWithViewLifecycle
 
+                val groupList = mutableListOf<Any>()
                 //开关量传感器
                 subSensorStatusInfo.io?.let { ioBean ->
-                    groupList.add(DeviceStatusInfoGroupItem("开关量传感器"))
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "状态",
-                            value = if (ioBean.type == 2) "未接入" else "接入",
-                            textColorRes = if (ioBean.type == 2) ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
-                                R.color.device_online_platform
-                            )
-                        )
-                    )
-                    if (ioBean.type == 1) {
+                    if (ioBean.type.isNotEmpty()) {
+                        groupList.add(DeviceStatusInfoGroupItem("开关量传感器"))
                         groupList.add(
                             DeviceStatusInfoBasicItem(
-                                name = "雨量值(毫米)",
-                                value = ioBean.vaule.toString()
-                            )
-                        )
-                    } else {
-                        groupList.add(
-                            DeviceStatusInfoBasicItem(
-                                name = "断线报警器",
-                                value = if (ioBean.vaule == 1f) "断线" else "未断线",
-                                textColorRes = if (ioBean.vaule == 1f) ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
+                                name = "状态",
+                                value = if (ioBean.type == "2") "未接入" else "接入",
+                                textColorRes = if (ioBean.type == "2") ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
                                     R.color.device_online_platform
                                 )
                             )
                         )
+                        if (ioBean.type == "1") {
+                            groupList.add(
+                                DeviceStatusInfoBasicItem(
+                                    name = "雨量值(毫米)",
+                                    value = ioBean.vaule
+                                )
+                            )
+                        } else {
+                            groupList.add(
+                                DeviceStatusInfoBasicItem(
+                                    name = "断线报警器",
+                                    value = if (ioBean.vaule == "1") "断线" else "未断线",
+                                    textColorRes = if (ioBean.vaule == "1") ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
+                                        R.color.device_online_platform
+                                    )
+                                )
+                            )
+                        }
                     }
                 }
 
                 //数字水位计
                 subSensorStatusInfo.vwp?.let { vwpBean ->
-                    groupList.add(DeviceStatusInfoGroupItem("数字水位计"))
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "状态",
-                            value = if (vwpBean.errno.toString() == "0") "正常" else SensorErrorType.getErrorMessageByCode(
-                                vwpBean.errno.toString()
-                            ),
-                            textColorRes = if (vwpBean.errno.toString() == "0") ColorUtils.getColor(
-                                R.color.device_online_platform
-                            ) else ColorUtils.getColor(
-                                R.color.device_offline_platform
+                    if (vwpBean.errno.isNotEmpty()) {
+                        groupList.add(DeviceStatusInfoGroupItem("数字水位计"))
+                        groupList.add(
+                            DeviceStatusInfoBasicItem(
+                                name = "状态",
+                                value = if (vwpBean.errno == "0") "正常" else SensorErrorType.getErrorMessageByCode(
+                                    vwpBean.errno
+                                ),
+                                textColorRes = if (vwpBean.errno == "0") ColorUtils.getColor(
+                                    R.color.device_online_platform
+                                ) else ColorUtils.getColor(
+                                    R.color.device_offline_platform
+                                )
                             )
                         )
-                    )
 
-                    val dataList = vwpBean.vaule.split(",".toRegex()).dropLastWhile { it.isEmpty() }
-                    if (dataList.isNotEmpty()) {
-                        groupList.add(
-                            DeviceStatusInfoBasicItem(
-                                name = "水深(米)",
-                                value = dataList[0]
+                        val dataList =
+                            vwpBean.vaule.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                        if (dataList.isNotEmpty()) {
+                            groupList.add(
+                                DeviceStatusInfoBasicItem(
+                                    name = "水深(米)",
+                                    value = dataList[0]
+                                )
                             )
-                        )
-                    }
-                    if (dataList.size >= 2) {
-                        groupList.add(
-                            DeviceStatusInfoBasicItem(
-                                name = "空管距离(米)",
-                                value = dataList[1]
+                        }
+                        if (dataList.size >= 2) {
+                            groupList.add(
+                                DeviceStatusInfoBasicItem(
+                                    name = "空管距离(米)",
+                                    value = dataList[1]
+                                )
                             )
-                        )
-                    }
-                    if (dataList.size >= 3) {
-                        groupList.add(
-                            DeviceStatusInfoBasicItem(
-                                name = "水温(℃)",
-                                value = dataList[2]
+                        }
+                        if (dataList.size >= 3) {
+                            groupList.add(
+                                DeviceStatusInfoBasicItem(
+                                    name = "水温(℃)",
+                                    value = dataList[2]
+                                )
                             )
-                        )
+                        }
                     }
                 }
                 //倾角计
                 subSensorStatusInfo.mems?.let { memsBean ->
-                    groupList.add(DeviceStatusInfoGroupItem("倾角计"))
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "状态",
-                            value = if (memsBean.errno.toString() == "0") "正常" else SensorErrorType.getErrorMessageByCode(
-                                memsBean.errno.toString()
-                            ),
-                            textColorRes = if (memsBean.errno.toString() == "0") ColorUtils.getColor(
-                                R.color.device_online_platform
-                            ) else ColorUtils.getColor(
-                                R.color.device_offline_platform
-                            )
-                        )
-                    )
-                    val dataList =
-                        memsBean.vaule.split(",".toRegex()).dropLastWhile { it.isEmpty() }
-                    if (dataList.isNotEmpty()) {
+                    if (memsBean.errno.isNotEmpty()) {
+                        groupList.add(DeviceStatusInfoGroupItem("倾角计"))
                         groupList.add(
                             DeviceStatusInfoBasicItem(
-                                name = "X轴角度(°)",
-                                value = dataList[0]
+                                name = "状态",
+                                value = if (memsBean.errno == "0") "正常" else SensorErrorType.getErrorMessageByCode(
+                                    memsBean.errno
+                                ),
+                                textColorRes = if (memsBean.errno == "0") ColorUtils.getColor(
+                                    R.color.device_online_platform
+                                ) else ColorUtils.getColor(
+                                    R.color.device_offline_platform
+                                )
                             )
                         )
-                    }
-                    if (dataList.size >= 2) {
-                        groupList.add(
-                            DeviceStatusInfoBasicItem(
-                                name = "Y轴角度(°)",
-                                value = dataList[1]
+                        val dataList =
+                            memsBean.vaule.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                        if (dataList.isNotEmpty()) {
+                            groupList.add(
+                                DeviceStatusInfoBasicItem(
+                                    name = "X轴角度(°)",
+                                    value = dataList[0]
+                                )
                             )
-                        )
-                    }
-                    if (dataList.size >= 3) {
-                        groupList.add(
-                            DeviceStatusInfoBasicItem(
-                                name = "Z轴角度(°)",
-                                value = dataList[2]
+                        }
+                        if (dataList.size >= 2) {
+                            groupList.add(
+                                DeviceStatusInfoBasicItem(
+                                    name = "Y轴角度(°)",
+                                    value = dataList[1]
+                                )
                             )
-                        )
-                    }
-                    if (dataList.size >= 4) {
-                        groupList.add(
-                            DeviceStatusInfoBasicItem(
-                                name = "X轴加速度(mg)",
-                                value = dataList[3]
+                        }
+                        if (dataList.size >= 3) {
+                            groupList.add(
+                                DeviceStatusInfoBasicItem(
+                                    name = "Z轴角度(°)",
+                                    value = dataList[2]
+                                )
                             )
-                        )
-                    }
-                    if (dataList.size >= 5) {
-                        groupList.add(
-                            DeviceStatusInfoBasicItem(
-                                name = "Y轴加速度(mg)",
-                                value = dataList[4]
+                        }
+                        if (dataList.size >= 4) {
+                            groupList.add(
+                                DeviceStatusInfoBasicItem(
+                                    name = "X轴加速度(mg)",
+                                    value = dataList[3]
+                                )
                             )
-                        )
-                    }
-                    if (dataList.size >= 6) {
-                        groupList.add(
-                            DeviceStatusInfoBasicItem(
-                                name = "Z轴加速度(mg)",
-                                value = dataList[5]
+                        }
+                        if (dataList.size >= 5) {
+                            groupList.add(
+                                DeviceStatusInfoBasicItem(
+                                    name = "Y轴加速度(mg)",
+                                    value = dataList[4]
+                                )
                             )
-                        )
+                        }
+                        if (dataList.size >= 6) {
+                            groupList.add(
+                                DeviceStatusInfoBasicItem(
+                                    name = "Z轴加速度(mg)",
+                                    value = dataList[5]
+                                )
+                            )
+                        }
                     }
                 }
                 binding.recyclerview.mutable.addAll(groupList)

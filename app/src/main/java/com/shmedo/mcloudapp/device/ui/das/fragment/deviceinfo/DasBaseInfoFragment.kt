@@ -203,13 +203,17 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 val info = MoshiUtil.fromJson<DasSolarStatusInfo>(content)
                     ?: return@launchWithViewLifecycle
 
+                if (info.solar.errno.isEmpty()) {
+                    return@launchWithViewLifecycle
+                }
+
                 val groupList = mutableListOf<Any>()
                 groupList.add(DeviceStatusInfoGroupItem("太阳能控制器"))
                 groupList.add(
                     DeviceStatusInfoBasicItem(
                         name = "状态",
-                        value = if (info.solar.errno.toString() == "1") "正常" else "异常",
-                        textColorRes = if (info.solar.errno.toString() == "1") ColorUtils.getColor(
+                        value = if (info.solar.errno == "1") "正常" else "异常",
+                        textColorRes = if (info.solar.errno == "1") ColorUtils.getColor(
                             R.color.device_online_platform
                         ) else ColorUtils.getColor(
                             R.color.device_offline_platform
@@ -219,7 +223,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
                     groupList,
                     name = "太阳能板电压",
-                    value = info.solar.solarvolt.toString(),
+                    value = info.solar.solarvolt,
                     defaultValue = "0",
                     thresHold = 5.0,
                     digit = 2,
@@ -228,7 +232,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
                     groupList,
                     name = "蓄电池电压",
-                    value = info.solar.batvolt.toString(),
+                    value = info.solar.batvolt,
                     defaultValue = "0",
                     thresHold = 5.0,
                     digit = 2,
@@ -237,13 +241,13 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "太阳能功率",
-                    value = info.solar.solarpwr.toString(),
+                    value = info.solar.solarpwr,
                     unit = "W",
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "负载功率",
-                    value = info.solar.loadpwr.toString(),
+                    value = info.solar.loadpwr,
                     unit = "W",
                 )
                 binding.recyclerview.mutable.addAll(groupList)
@@ -261,71 +265,73 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
     private fun initTemperatureAndHumidityStatus(content: String) {
         launchWithViewLifecycle {
             try {
-                val info = MoshiUtil.fromJson<DasTemperatureAndHumidityStatusinfo>(content)
-                if (info == null) {
-                    if (binding.recyclerview.models?.isEmpty() == true)
-                        binding.refreshLayout.showEmpty()
-
+                if (content.isEmpty() || content == "{}") {
                     return@launchWithViewLifecycle
                 }
+                val info = MoshiUtil.fromJson<DasTemperatureAndHumidityStatusinfo>(content)
+                    ?: return@launchWithViewLifecycle
 
                 val groupList = mutableListOf<Any>()
-                groupList.add(DeviceStatusInfoGroupItem("机箱内部温湿度"))
-                groupList.add(
-                    DeviceStatusInfoBasicItem(
-                        name = "状态",
-                        value = if (info.inth.errno.toString() == "1") "正常" else "异常",
-                        textColorRes = if (info.inth.errno.toString() == "1") ColorUtils.getColor(
-                            R.color.device_online_platform
-                        ) else ColorUtils.getColor(
-                            R.color.device_offline_platform
+                if (info.inth.errno.isNotEmpty()) {
+                    groupList.add(DeviceStatusInfoGroupItem("机箱内部温湿度"))
+                    groupList.add(
+                        DeviceStatusInfoBasicItem(
+                            name = "状态",
+                            value = if (info.inth.errno == "1") "正常" else "异常",
+                            textColorRes = if (info.inth.errno == "1") ColorUtils.getColor(
+                                R.color.device_online_platform
+                            ) else ColorUtils.getColor(
+                                R.color.device_offline_platform
+                            )
                         )
                     )
-                )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
-                    groupList,
-                    name = "温度",
-                    value = info.inth.temp.toString(),
-                    defaultValue = "0",
-                    digit = 2,
-                    unit = "℃",
-                )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
-                    groupList,
-                    name = "湿度",
-                    value = info.inth.humi.toString(),
-                    defaultValue = "0",
-                    digit = 2,
-                    unit = "%",
-                )
-                groupList.add(DeviceStatusInfoGroupItem("机箱外部温湿度"))
-                groupList.add(
-                    DeviceStatusInfoBasicItem(
-                        name = "状态",
-                        value = if (info.outth.errno.toString() == "1") "正常" else "异常",
-                        textColorRes = if (info.outth.errno.toString() == "1") ColorUtils.getColor(
-                            R.color.device_online_platform
-                        ) else ColorUtils.getColor(
-                            R.color.device_offline_platform
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                        groupList,
+                        name = "温度",
+                        value = info.inth.temp,
+                        defaultValue = "0",
+                        digit = 2,
+                        unit = "℃",
+                    )
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                        groupList,
+                        name = "湿度",
+                        value = info.inth.humi,
+                        defaultValue = "0",
+                        digit = 2,
+                        unit = "%",
+                    )
+                }
+                if (info.outth.errno.isNotEmpty()) {
+                    groupList.add(DeviceStatusInfoGroupItem("机箱外部温湿度"))
+                    groupList.add(
+                        DeviceStatusInfoBasicItem(
+                            name = "状态",
+                            value = if (info.outth.errno == "1") "正常" else "异常",
+                            textColorRes = if (info.outth.errno == "1") ColorUtils.getColor(
+                                R.color.device_online_platform
+                            ) else ColorUtils.getColor(
+                                R.color.device_offline_platform
+                            )
                         )
                     )
-                )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
-                    groupList,
-                    name = "温度",
-                    value = info.outth.temp.toString(),
-                    defaultValue = "0",
-                    digit = 2,
-                    unit = "℃",
-                )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
-                    groupList,
-                    name = "湿度",
-                    value = info.outth.humi.toString(),
-                    defaultValue = "0",
-                    digit = 2,
-                    unit = "%",
-                )
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                        groupList,
+                        name = "温度",
+                        value = info.outth.temp,
+                        defaultValue = "0",
+                        digit = 2,
+                        unit = "℃",
+                    )
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                        groupList,
+                        name = "湿度",
+                        value = info.outth.humi,
+                        defaultValue = "0",
+                        digit = 2,
+                        unit = "%",
+                    )
+                }
                 binding.recyclerview.mutable.addAll(groupList)
                 binding.recyclerview.bindingAdapter.notifyDataSetChanged()
             } catch (e: Exception) {

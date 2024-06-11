@@ -9,7 +9,7 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class OutthBean(
-    var errno: Int = 0,
-    var temp: Float = 0f,
-    var humi: Float = 0f,
+    var errno: String = "",
+    var temp: String = "",
+    var humi: String = "",
 )
