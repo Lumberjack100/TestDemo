@@ -29,7 +29,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentAdmeIntelligentControlBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeIntelligentControlViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
@@ -103,6 +102,10 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         mStates.brakePadControl.set(brakePadControlList[0])
+        if (productType == ProductType.ADME_HAC) {
+            mStates.isPositiveAndNegativeTestSupport.set(false)
+            mStates.isMotorPowerSupport.set(false)
+        }
     }
 
     private fun setEditable(editable: Boolean) {
@@ -399,14 +402,8 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
 
-        if (productType == ProductType.ADME_HAC) {
-            mStates.isPositiveAndNegativeTestSupport.set(false)
-            mStates.isAnthropomorphicMovementSupport.set(false)
-            mStates.isMotorPowerSupport.set(false)
-        }
-
         var command = ""
-        if (productType == ProductType.ADME) {
+        if (mStates.isPositiveAndNegativeTestSupport.get()) {
             //获取设备的步进电机正反测使能信息
             command = IOTCommandUtil.getCommand(
                 IOTCommandType.ADME_MD_GET_STEPPER_MOTOR
@@ -414,31 +411,39 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
             commandItems.add(command)
         }
 
-        //获取正反测异常智能处理使能信息
-        command = IOTCommandUtil.getCommand(
-            IOTCommandType.ADME_MD_GET_AND_NEGATIVE_TEST_EXCEPTION_HANDLING
-        )
-        commandItems.add(command)
+        if (mStates.isPositiveAndNegativeTestExceptionHandlingSupport.get()) {
+            //获取正反测异常智能处理使能信息
+            command = IOTCommandUtil.getCommand(
+                IOTCommandType.ADME_MD_GET_AND_NEGATIVE_TEST_EXCEPTION_HANDLING
+            )
+            commandItems.add(command)
+        }
 
-        //获取低功耗使能信息
-        command = IOTCommandUtil.getCommand(
-            IOTCommandType.ADME_MD_GET_LOW_ENERGY_MODE
-        )
-        commandItems.add(command)
+        if (mStates.isLowPowerAlarmSupport.get()) {
+            //获取低功耗使能信息
+            command = IOTCommandUtil.getCommand(
+                IOTCommandType.ADME_MD_GET_LOW_ENERGY_MODE
+            )
+            commandItems.add(command)
+        }
 
-        //获取拟人运动使能信息
-        command = IOTCommandUtil.getCommand(
-            IOTCommandType.ADME_MD_GET_ANTHROPOMORPHIC_MOVEMENT_MODE
-        )
-        commandItems.add(command)
+        if (mStates.isAnthropomorphicMovementSupport.get()) {
+            //获取拟人运动使能信息
+            command = IOTCommandUtil.getCommand(
+                IOTCommandType.ADME_MD_GET_ANTHROPOMORPHIC_MOVEMENT_MODE
+            )
+            commandItems.add(command)
+        }
 
-        //获取刹车片控制方式信息
-        command = IOTCommandUtil.getCommand(
-            IOTCommandType.ADME_MD_GET_BRAKE_PAD_CONTROL
-        )
-        commandItems.add(command)
+        if (mStates.isBrakePadControlSupport.get()) {
+            //获取刹车片控制方式信息
+            command = IOTCommandUtil.getCommand(
+                IOTCommandType.ADME_MD_GET_BRAKE_PAD_CONTROL
+            )
+            commandItems.add(command)
+        }
 
-        if (productType == ProductType.ADME) {
+        if (mStates.isMotorPowerSupport.get()) {
             //获取电机电源使能信息
             command = IOTCommandUtil.getCommand(
                 IOTCommandType.ADME_MD_GET_MOTOR_POWER
