@@ -31,7 +31,7 @@ enum class MDRainStation(private val state: String) {
                 "1" -> RAIN_OPEN
                 "2" -> CLOSE
                 "3" -> ALARM_OPEN
-                else -> RAIN_OPEN
+                else -> CLOSE
             }
         }
     }
