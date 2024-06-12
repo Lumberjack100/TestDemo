@@ -25,7 +25,6 @@ class ScannerRepository internal constructor( private val devicesDataStore: Devi
                 override fun onScanResult(callbackType: Int, result: ScanResult) {
                     if (result.isConnectable) {
                         devicesDataStore.addNewDevice(result)
-
                         trySend(ScanningState.DevicesDiscovered(devicesDataStore.devices))
                     }
                 }
@@ -41,7 +40,7 @@ class ScannerRepository internal constructor( private val devicesDataStore: Devi
                 }
 
                 override fun onScanFailed(errorCode: Int) {
-                    trySend(ScanningState.Error(errorCode))
+                    trySend(ScanningState.Error(errorCode.toString()))
                 }
             }
             Timber.i("scannerViewModel Start Scanning")
@@ -53,8 +52,16 @@ class ScannerRepository internal constructor( private val devicesDataStore: Devi
                 .setReportDelay(500)
                 .setUseHardwareBatchingIfSupported(false)
                 .build()
+
             val scanner = BluetoothLeScannerCompat.getScanner()
-            scanner.startScan(null, settings, scanCallback)
+
+            try {
+                scanner.startScan(null, settings, scanCallback)
+            } catch (e: Exception) {
+                trySend(ScanningState.Error("Failed to start scan: ${e.message}"))
+                awaitClose { /* No-op */ }
+                return@callbackFlow
+            }
 
             awaitClose {
                 Timber.i("scannerViewModel awaitClose")

@@ -15,7 +15,7 @@ sealed class ScanningState {
 
     data object Loading : ScanningState()
 
-    data class Error(val errorCode: Int) : ScanningState()
+    data class Error(val errorMsg: String) : ScanningState()
 
     data class DevicesDiscovered(val devices: List<DiscoveredBluetoothDevice>) : ScanningState() {
         val bonded: List<DiscoveredBluetoothDevice> = devices.filter { it.isBonded }

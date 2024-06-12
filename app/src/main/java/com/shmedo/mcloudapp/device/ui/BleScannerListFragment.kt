@@ -204,7 +204,7 @@ class BleScannerListFragment : BaseFragment() {
                 }
 
                 is ScanningState.Error -> {
-                    Timber.e("scannerViewModel.state: Error")
+                    Timber.e("scannerViewModel.state: Error: ${state.errorMsg}")
                 }
 
                 is ScanningState.DevicesDiscovered -> {
