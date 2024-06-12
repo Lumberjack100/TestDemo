@@ -9,6 +9,7 @@ import com.drake.brv.utils.mutable
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.device.base.iot_cmd.enums.IOTRainStation
 import com.shmedo.lib.device.base.iot_cmd.enums.SensorErrorType
 import com.shmedo.lib.device.base.iot_cmd.model.das.DasSensorStatusInfo
 import com.shmedo.lib.device.base.iot_cmd.model.das.DasSubSensorStatusInfo
@@ -116,13 +117,13 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         groupList.add(
                             DeviceStatusInfoBasicItem(
                                 name = "状态",
-                                value = if (ioBean.type == "2") "未接入" else "接入",
-                                textColorRes = if (ioBean.type == "2") ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
+                                value = if (ioBean.type == IOTRainStation.CLOSE.toString()) "未接入" else "接入",
+                                textColorRes = if (ioBean.type == IOTRainStation.CLOSE.toString()) ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
                                     R.color.device_online_platform
                                 )
                             )
                         )
-                        if (ioBean.type == "1") {
+                        if (ioBean.type == IOTRainStation.RAIN_OPEN.toString()) {
                             groupList.add(
                                 DeviceStatusInfoBasicItem(
                                     name = "雨量值(毫米)",
