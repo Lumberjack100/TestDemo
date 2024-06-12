@@ -53,8 +53,15 @@ class AdmeAutoMeasuringHoleDepthBottomDialog : BaseVmDbDialogFragment() {
 
     interface OnDialogFragmentClickListener {
         fun onCloseClick()
+        fun onRefresh()
         fun onStopClick()
         fun onExitClick()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!isFirst)
+            fragmentClickListener?.onRefresh()
     }
 
     companion object {

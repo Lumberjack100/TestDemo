@@ -292,8 +292,15 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                         }
 
                         IOTSensorType.STATIC_LEVEL,//静力水准
-                        IOTSensorType.SEDIMENTATION_METER -> {//沉降仪
+                        IOTSensorType.SEDIMENTATION_METER,//沉降仪
+                        -> {
                             initval = sensorInfo.initval
+                        }
+
+                        IOTSensorType.VERTICAL_COORDINATE,//垂线坐标仪
+                        -> {
+                            initvalx = sensorInfo.initvalx
+                            initvaly = sensorInfo.initvaly
                         }
 
                         IOTSensorType.VIBRATING_SENSOR -> {//MCU_振弦传感器
@@ -379,6 +386,9 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        if (isRestrictHiddenMode() && isHidden) {
+            return
+        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL -> {
                 val result = iotParseManager.parse<DasCollectorInfo>(
@@ -464,7 +474,6 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
             IOTCommandType.DAS_MD_SET_EXTERNAL_SENSOR -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-
                         val errMsg = "保存传感器参数出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return

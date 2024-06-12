@@ -45,8 +45,8 @@
                     app:allow_click_inside_cell="false"
                     app:allow_click_inside_column_header="false"
                     app:allow_click_inside_row_header="false"
-                    app:column_header_height="@dimen/mr_communication_data_table_column_header_height"
-                    app:row_header_width="@dimen/mr_communication_data_table_row_header_width" />
+                    app:column_header_height="@dimen/data_table_cell_height"
+                    app:row_header_width="@dimen/data_table_row_header_width" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.core.widget.NestedScrollView>

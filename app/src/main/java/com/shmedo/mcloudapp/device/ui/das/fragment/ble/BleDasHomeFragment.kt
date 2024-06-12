@@ -16,8 +16,6 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.md_cmd.assemble.entity.das.AuthenticationEntity
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.device.base.md_cmd.enums.MDLowEnergyModel
@@ -68,6 +66,8 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: BleDasHomeFragmentViewModel
     private lateinit var mCommandResponseStates: CommandResponseViewModel
     private val mdParseManager: MDParserManager by inject()
+
+    private var isDoSetTimeCmd = false
 
     override fun initViewModel() {
         super.initViewModel()
@@ -122,11 +122,11 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initModuleAdapter() {
-        binding.recyclerview.setup { rv ->
+        binding.rvModule.setup { rv ->
             rv.addItemDecoration(
                 MyGridSpacingItemDecoration(
                     2,
-                    ConvertUtils.dp2px(15f),
+                    ConvertUtils.dp2px(10f),
                     false
                 )
             )
@@ -226,8 +226,9 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         }
         when (module.configModule) {
             is TimeCalibrationModule -> {//时间校准
-                queryTerminalTime()
+                isDoSetTimeCmd = false
                 mCommandResponseStates.isResponseLoading.set(true)
+                queryTerminalTime()
                 showTimeCalibrationPopup()
             }
 
@@ -249,7 +250,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                         communicateWay,
                         deviceInfo,
                         bleDevice,
-                        )
+                    )
                     nav().navigate(
                         module.configModule.navId,
                         bundle
@@ -298,14 +299,17 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         popupView.setTitle("时间校准", mCommandResponseStates)
             .setClickListener(object : TimeCalibrationPopupView.OnClickListener {
                 override fun onSettingClick() {
-//                    commandItems.clear()
-//                    val command = IOTCommandUtil.getCommand(
-//                        IOTCommandType.SET_TERMINAL_TIME,
-//                        "time=${TimeUtils.getNowString()}"
-//                    )
-//                    commandItems.add(command)
-//                    showLoadingDialog(StringUtils.getString(R.string.processing))
-//                    sendCommandFromCmdList(isStartTimeoutJob = true)
+                    isDoSetTimeCmd = true
+                    commandItems.clear()
+                    val command =
+                        MDCommandUtil.getCommand(
+                            MDCommandType.LOCAL_TIME, TimeUtils.getNowString(
+                                TimeUtils.getSafeDateFormat("yyMMddHHmmss")
+                            )
+                        )
+                    commandItems.add(command)
+                    showLoadingDialog(StringUtils.getString(R.string.processing))
+                    sendCommandFromCmdList(isStartTimeoutJob = true)
                 }
             })
         XPopup.Builder(context)
@@ -456,9 +460,9 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         msg: String
     ) {
         super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, false, msg)
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_TERMINAL_TIME,
-            IOTCommandType.SET_TERMINAL_TIME -> {
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.LOCAL_TIME,
+            -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
                 mCommandResponseStates.responseContent.set("指令响应超时")
@@ -560,9 +564,8 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is MDCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "查询终端时间出错"
+                        val errMsg = "查询/设置终端时间出错"
                         Timber.e("$errMsg: ${result.message}")
-//                        Toaster.show(errMsg)
                         mCommandResponseStates.isResponseLoading.set(false)
                         mCommandResponseStates.isResponseSuccess.set(false)
                         mCommandResponseStates.responseContent.set(errMsg)
@@ -573,9 +576,13 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList()
                         mCommandResponseStates.isResponseLoading.set(false)
                         mCommandResponseStates.isResponseSuccess.set(true)
-                        mCommandResponseStates.isCalibratingSuccess.set(false)
-                        mCommandResponseStates.deviceTime.set(result.data.time)
-                        mCommandResponseStates.systemTime.set(TimeUtils.getNowString())
+                        mCommandResponseStates.isCalibratingSuccess.set(isDoSetTimeCmd)
+                        if (!isDoSetTimeCmd) {
+                            mCommandResponseStates.deviceTime.set(result.data.time)
+                            mCommandResponseStates.systemTime.set(TimeUtils.getNowString())
+                        } else {
+                            mCommandResponseStates.deviceTime.set(mCommandResponseStates.systemTime.get())
+                        }
                     }
                 }
             }
@@ -696,7 +703,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         moduleList.add(
             ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_bleDasAdvancedSettingFragment))
         )
-        binding.recyclerview.models = moduleList
+        binding.rvModule.models = moduleList
     }
 
     // 设置心跳检查

@@ -25,6 +25,11 @@ sealed class DeviceFunctionModule(
         this.isConnected = state
         notifyChange()
     }
+
+    // 增加一个方法来检查模块的支持状态
+    fun isModuleAvailable(): Boolean {
+        return isSupport && isConnected
+    }
 }
 
 class CommonModule(
@@ -33,7 +38,7 @@ class CommonModule(
     resID: Int = R.drawable.ic_device_current_state,
     navId: Int = 0,
     isSupport: Boolean = true
-) : DeviceFunctionModule(name, desc, resID, navId, isSupport)
+) : DeviceFunctionModule(name, desc, resID, navId, isSupport = isSupport)
 
 class RunningStatusModule(
     name: String = "状态",
@@ -97,7 +102,7 @@ class FirmwareUpgradeModule(
     resID: Int = R.drawable.ic_module_firmware_upgrade,
     navId: Int = 0,
     isSupport: Boolean = true
-) : DeviceFunctionModule(name, desc, resID, navId)
+) : DeviceFunctionModule(name, desc, resID, navId, isSupport = isSupport)
 
 class LoraConfigModule(
     name: String = "LORA设置",

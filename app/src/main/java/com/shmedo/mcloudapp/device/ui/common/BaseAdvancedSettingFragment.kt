@@ -42,6 +42,7 @@ import com.shmedo.mcloudapp.databinding.FragmentAdvancedSettingBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
 import com.shmedo.mcloudapp.device.model.AdvancedSettingItem
 import com.shmedo.mcloudapp.device.model.BleConnect
+import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.dialog.SyncInstallationLocationPopupView
 import com.shmedo.mcloudapp.device.viewmodel.request.LocationViewModel
@@ -96,11 +97,11 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
         binding = getBinding() as FragmentAdvancedSettingBinding
         binding.llToolbar.toolbar.title = "高级设置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
+            //mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
+            //mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         initAdapter()
@@ -142,6 +143,14 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
                 )
             )
         }
+        if (isNeedOffsetInitialization()) {
+            moduleList.add(
+                AdvancedSettingItem(
+                    "告警偏移初始化",
+                    AdvancedSettingItem.Type.OFFSET_INITIALIZATION,
+                )
+            )
+        }
         if (productType != ProductType.COLLECTOR_G_0) {
             moduleList.add(
                 AdvancedSettingItem(
@@ -150,12 +159,14 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
                 )
             )
         }
-        moduleList.add(
-            AdvancedSettingItem(
-                "固件升级",
-                AdvancedSettingItem.Type.FIRMWARE,
+        if (communicateWay is NetPlatformConnect) {
+            moduleList.add(
+                AdvancedSettingItem(
+                    "固件升级",
+                    AdvancedSettingItem.Type.FIRMWARE,
+                )
             )
-        )
+        }
 
         if (communicateWay is BleConnect) {
             moduleList.add(
@@ -172,6 +183,15 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
         return communicateWay is BleConnect && (productType == ProductType.LR200
                 || productType == ProductType.LB20S || productType == ProductType.U_D_1
                 || productType == ProductType.U_D_2 || productType == ProductType.U_R_1 || productType == ProductType.U_I_1)
+    }
+
+    /**
+     * 是否需要初始化偏移量
+     */
+    private fun isNeedOffsetInitialization(): Boolean {
+        return productType == ProductType.M20
+                || productType == ProductType.GNSS_M_1
+                || productType == ProductType.GNSS_M_2
     }
 
     override fun createObserver() {
@@ -234,6 +254,12 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
                 showSyncInstallationLocationPopup()
             }
 
+            AdvancedSettingItem.Type.OFFSET_INITIALIZATION -> {
+                showMessage("确定进行告警偏移初始化吗？", "温馨提示", "确定", {
+                    offsetInitialization()
+                }, "取消")
+            }
+
             AdvancedSettingItem.Type.REMOTE_DEBUG -> {
                 val bundle = newBundleArguments(
                     productType,
@@ -284,10 +310,38 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
                 }
             }
 
+            IOTCommandType.MD_SET_SENSOR_INITIAL -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "初始化失败: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("初始化完成")
+                        }
+                    }
+                }
+            }
+
             else -> {
                 cancelNearbyCommunicationTimeoutJob()
             }
         }
+    }
+
+    private fun offsetInitialization() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_SET_SENSOR_INITIAL,
+            "method=1&type=gnss"
+        )
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     /**

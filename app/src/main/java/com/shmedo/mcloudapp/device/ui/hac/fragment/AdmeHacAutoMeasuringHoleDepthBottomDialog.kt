@@ -38,7 +38,6 @@ class AdmeHacAutoMeasuringHoleDepthBottomDialog : BaseVmDbDialogFragment() {
         mStates.motorInfo.set("正常")
         mStates.motionPulse.set("0")
         mStates.motionDistance.set("0")
-
     }
 
     inner class ClickProxy {
@@ -62,8 +61,15 @@ class AdmeHacAutoMeasuringHoleDepthBottomDialog : BaseVmDbDialogFragment() {
 
     interface OnDialogFragmentClickListener {
         fun onCloseClick()
+        fun onRefresh()
         fun onStopClick()
         fun onExitClick()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(!isFirst)
+            fragmentClickListener?.onRefresh()
     }
 
     companion object {

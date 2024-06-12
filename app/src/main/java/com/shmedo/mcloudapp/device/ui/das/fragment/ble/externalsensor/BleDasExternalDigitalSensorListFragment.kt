@@ -3,9 +3,9 @@ package com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor
 import com.blankj.utilcode.util.StringUtils
 import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
+import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.device.base.md_cmd.enums.SaveConfigMode
-import com.shmedo.lib.device.base.md_cmd.model.das.MDDasExternalSensorInfo
 import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.R
@@ -63,7 +63,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
                 builderFirst.append(
                     "${MDCommandUtil.formatStringTwo(sensorAddress)}${
                         MDCommandUtil.formatStringTwo(
-                            sensorInfo.sensorType
+                            sensorInfo.type
                         )
                     }"
                 )
@@ -81,11 +81,13 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
         when (iotSensorType) {
             IOTSensorType.ULTRASONIC_LEVEL_GAUGE //超声波物位计
             -> {
+                //触发值
                 initMultiTriggerThreshold()
                 mStates.sensorModelMap.keys.sortedBy { addr -> addr.toInt() }
                     .forEach { sensorAddress ->
                         val sensorInfo = mStates.sensorModelMap[sensorAddress]!!
-                        initSingleTriggerThreshold(sensorInfo)
+                        //修正值
+                        initSingleCorrectionValue(sensorInfo)
                     }
             }
 
@@ -93,19 +95,48 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
                 mStates.sensorModelMap.keys.sortedBy { addr -> addr.toInt() }
                     .forEach { sensorAddress ->
                         val sensorInfo = mStates.sensorModelMap[sensorAddress]!!
-                        initSingleTriggerThreshold(sensorInfo)
-                        initSingleCorrectionValue(sensorInfo)
-                        //量水堰计需要额外设置
-                        if (iotSensorType == IOTSensorType.WEIR) {
-                            //初始值指令
-                            initSingleInitialReadingValue(sensorInfo)
-                            //量水堰计初始堰上水头指令
-                            initSingleWeirHeadValue(sensorInfo)
-                        }
-                        //静力水准/沉降仪 需要额外设置
-                        if (iotSensorType == IOTSensorType.STATIC_LEVEL || iotSensorType == IOTSensorType.SEDIMENTATION_METER) {
-                            //初始值指令
-                            initSingleInitialReadingValue(sensorInfo)
+                        when (iotSensorType) {
+                            IOTSensorType.WEIR //量水堰计
+                            -> {
+                                //触发值
+                                initSingleTriggerThreshold(sensorInfo)
+                                //修正值
+                                initSingleCorrectionValue(sensorInfo)
+                                //初始读数
+                                initSingleInitialReadingValue(sensorInfo.addr, sensorInfo.lsycsds)
+                                //初始堰上水头
+                                initSingleWeirHeadValue(sensorInfo)
+                            }
+
+                            IOTSensorType.STATIC_LEVEL,//静力水准
+                            IOTSensorType.SEDIMENTATION_METER,//沉降仪
+                            -> {
+                                //触发值
+                                initSingleTriggerThreshold(sensorInfo)
+                                //修正值
+                                initSingleCorrectionValue(sensorInfo)
+                                //初始值
+                                initSingleInitialReadingValue(sensorInfo.addr, sensorInfo.initval)
+                            }
+
+                            IOTSensorType.VERTICAL_COORDINATE,//垂线坐标仪
+                            -> {
+                                //触发值
+                                initSingleTriggerThreshold(sensorInfo)
+                                //X轴初始值、Y轴初始值
+                                initSingleInitialReadingValue2(
+                                    sensorInfo.addr,
+                                    sensorInfo.initvalx,
+                                    sensorInfo.initvaly
+                                )
+                            }
+
+                            else -> {
+                                //触发值
+                                initSingleTriggerThreshold(sensorInfo)
+                                //修正值
+                                initSingleCorrectionValue(sensorInfo)
+                            }
                         }
                     }
 
@@ -133,7 +164,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
                 val sensorInfo = mStates.sensorModelMap[sensorAddress]!!
                 triggerBuilder.append(
                     MDCommandUtil.formatStringFour(
-                        sensorInfo.triggerThreshold.toIntOrNull()?.toString() ?: "0"
+                        sensorInfo.threshold.toIntOrNull()?.toString() ?: "0"
                     )
                 )
             }
@@ -146,50 +177,78 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
         commandItems.add(command)
     }
 
-    private fun initSingleTriggerThreshold(sensorInfo: MDDasExternalSensorInfo) {
+    /**
+     * 接入传感器触发值<br/>
+     * 指令格式: ##168xx\r\n<br/>
+     */
+    private fun initSingleTriggerThreshold(sensorInfo: DasExternalSensorInfo) {
         val command = MDCommandUtil.getCommand(
             MDCommandType.COLLECTOR_SENSOR_THRESHOLD_SINGLE,
-            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${sensorInfo.sensorAddress}${sensorInfo.triggerThreshold}"
+            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${sensorInfo.addr}${sensorInfo.threshold}"
         )
-        commandDescItems.add("地址${sensorInfo.sensorAddress} 触发值")
+        commandDescItems.add("地址${sensorInfo.addr} 触发值")
         commandItems.add(command)
     }
 
-    private fun initSingleCorrectionValue(sensorInfo: MDDasExternalSensorInfo) {
+    /**
+     * 接入传感器修正值<br/>
+     * 指令格式: ##165xx\r\n<br/>
+     */
+    private fun initSingleCorrectionValue(sensorInfo: DasExternalSensorInfo) {
         val command = MDCommandUtil.getCommand(
             MDCommandType.COLLECTOR_SENSOR_REVISED,
-            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${sensorInfo.sensorAddress}${sensorInfo.correctionValue}"
+            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${sensorInfo.addr}${sensorInfo.corrval}"
         )
-        commandDescItems.add("地址${sensorInfo.sensorAddress} 修正值")
+        commandDescItems.add("地址${sensorInfo.addr} 修正值")
         commandItems.add(command)
     }
 
     /**
-     * 获取初始值指令
+     * 设置 量水堰计初始读数、静力水准/沉降仪初始值 指令
+     * 指令格式: ##171xx\r\n<br/>
      */
-    private fun initSingleInitialReadingValue(sensorInfo: MDDasExternalSensorInfo) {
+    private fun initSingleInitialReadingValue(address: String, value: String) {
         val command = MDCommandUtil.getCommand(
             MDCommandType.SENSOR_INITIAL_READING,
-            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${sensorInfo.sensorAddress}${sensorInfo.lsycsds}"
+            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${address}${value}"
         )
-        commandDescItems.add("地址${sensorInfo.sensorAddress} 初始读数")
+        commandDescItems.add("地址$address 初始读数/初始值")
         commandItems.add(command)
     }
 
     /**
-     * 获取量水堰计初始堰上水头指令
+     * 设置 垂线坐标仪初始值 指令
+     * 指令格式: ##165xx\r\n<br/>
      */
-    private fun initSingleWeirHeadValue(sensorInfo: MDDasExternalSensorInfo) {
+    private fun initSingleInitialReadingValue2(
+        address: String,
+        initvalx: String,
+        initvaly: String
+    ) {
+        val command = MDCommandUtil.getCommand(
+            MDCommandType.COLLECTOR_SENSOR_REVISED,
+            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${address}${initvalx},${initvaly}"
+        )
+        commandDescItems.add("地址$address 初始值")
+        commandItems.add(command)
+    }
+
+    /**
+     * 设置量水堰计初始堰上水头指令
+     * 指令格式: ##172xx\r\n<br/>
+     */
+    private fun initSingleWeirHeadValue(sensorInfo: DasExternalSensorInfo) {
         val command = MDCommandUtil.getCommand(
             MDCommandType.SENSOR_WEIR_HEAD,
-            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${sensorInfo.sensorAddress}${sensorInfo.lsyysst}"
+            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${sensorInfo.addr}${sensorInfo.lsyysst}"
         )
-        commandDescItems.add("地址${sensorInfo.sensorAddress} 初始堰上水头")
+        commandDescItems.add("地址${sensorInfo.addr} 初始堰上水头")
         commandItems.add(command)
     }
 
     /**
-     * 获取测斜仪的测段长指令
+     * 设置测斜仪的测段长指令
+     * 指令格式: ##166xx\r\n<br/>
      */
     private fun initMeasureLongValue() {
         val triggerBuilder = StringBuilder()
@@ -199,7 +258,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
                 val sensorInfo = mStates.sensorModelMap[sensorAddress]!!
                 triggerBuilder.append(
                     MDCommandUtil.formatStringFive(
-                        sensorInfo.measuringSectionLength.toIntOrNull()?.toString() ?: "0"
+                        sensorInfo.spacing.toIntOrNull()?.toString() ?: "0"
                     )
                 )
             }
@@ -213,6 +272,9 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
     }
 
     override fun setResultData(cmdStr: String) {
+        if (isRestrictHiddenMode() && isHidden) {
+            return
+        }
         when (MDCommandUtil.extractCommandType(cmdStr)) {
             MDCommandType.COLLECTOR_SENSOR_THRESHOLD_MULTI -> {//传感器触发阈值(多传感器设置) 162
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
@@ -231,6 +293,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
                     }
                 }
             }
+
             MDCommandType.COLLECTOR_SENSOR_THRESHOLD_SINGLE -> {//传感器触发阈值(单传感器设置) 168
                 var commandDesc = if (commandDescItems.isEmpty()) "触发值" else {
                     commandDescItems.first
@@ -253,6 +316,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
                     }
                 }
             }
+
             MDCommandType.COLLECTOR_SENSOR_REVISED -> {//传感器修正值 165
                 var commandDesc = if (commandDescItems.isEmpty()) "修正值" else {
                     commandDescItems.first
@@ -275,6 +339,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
                     }
                 }
             }
+
             MDCommandType.SENSOR_INITIAL_READING -> {//设置量水堰初始读数(单传感器设置) 171
                 var commandDesc = if (commandDescItems.isEmpty()) "初始读数" else {
                     commandDescItems.first
@@ -297,6 +362,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
                     }
                 }
             }
+
             MDCommandType.SENSOR_WEIR_HEAD -> {//设置量水堰初始堰上水头(单传感器设置) 172
                 var commandDesc = if (commandDescItems.isEmpty()) "初始堰上水头" else {
                     commandDescItems.first

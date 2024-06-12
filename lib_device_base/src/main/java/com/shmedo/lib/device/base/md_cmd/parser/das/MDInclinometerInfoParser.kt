@@ -1,5 +1,6 @@
 package com.shmedo.lib.device.base.md_cmd.parser.das
 
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.device.base.md_cmd.interfaces.MDCommandParser
 import com.shmedo.lib.device.base.md_cmd.model.das.InclinometerInfo
@@ -10,16 +11,16 @@ import com.shmedo.lib.device.base.md_cmd.model.das.InclinometerInfo
  * 描述：
  * $$046,224297L,0,0.144,0.983,-89.013,2.708,-17.306,-1000.931
  */
-class MDInclinometerInfoParser: MDCommandParser<InclinometerInfo> {
+class MDInclinometerInfoParser : MDCommandParser<InclinometerInfo> {
     override fun parseInstance(values: List<String>): InclinometerInfo {
         return InclinometerInfo(
             status = values.getOrNull(2) ?: "",
-            xAxis = values.getOrNull(3) ?: "",
-            yAxis = values.getOrNull(4) ?: "",
-            zAxis = values.getOrNull(5) ?: "",
-            xAcceleration = values.getOrNull(6) ?: "",
-            yAcceleration = values.getOrNull(7) ?: "",
-            zAcceleration = values.getOrNull(8) ?: ""
+            xAxis = values.getOrNull(3) ?: IOTConstants.NULL_KEY,
+            yAxis = values.getOrNull(4) ?: IOTConstants.NULL_KEY,
+            zAxis = values.getOrNull(5) ?: IOTConstants.NULL_KEY,
+            xAcceleration = values.getOrNull(6) ?: IOTConstants.NULL_KEY,
+            yAcceleration = values.getOrNull(7) ?: IOTConstants.NULL_KEY,
+            zAcceleration = values.getOrNull(8) ?: IOTConstants.NULL_KEY
         )
     }
 

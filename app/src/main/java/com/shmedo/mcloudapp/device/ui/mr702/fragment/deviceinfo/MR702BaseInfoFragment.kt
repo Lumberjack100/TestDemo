@@ -118,7 +118,7 @@ class MR702BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
                     groupList,
-                    name = "供电电压",
+                    name = "外部供电电压",
                     value = stateInfo.volt,
                     defaultValue = "0",
                     thresHold = 5.0,

@@ -104,6 +104,9 @@ class BleDasCommunicationInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        if (!isResumed) {
+            return
+        }
         when (MDCommandUtil.extractCommandType(cmdStr)) {
             MDCommandType.QUERY_NETWORK_STATUS -> {
                 val result = mdParseManager.parse<DeviceNetStatus>(

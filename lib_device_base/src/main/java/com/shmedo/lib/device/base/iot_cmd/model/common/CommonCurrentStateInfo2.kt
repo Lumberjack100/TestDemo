@@ -48,7 +48,7 @@ data class CommonCurrentStateInfo2(
     var amsCenterSta: String = IOTConstants.NULL_KEY, //AMS数据中心连接状态  OK/FAIL
     var starSearchSta: String = IOTConstants.NULL_KEY, //搜星状态 OK/FAIL（搜星数量小于4 -> FAIL）
     var solarInsertSta: String = IOTConstants.NULL_KEY, //太阳能控制检验 OK/FAIL
-    var extPowerVolt: String = IOTConstants.NULL_KEY, //外部电压  12.0
+    var extPowerVolt: String = IOTConstants.NULL_KEY, //外部电压  12.0  供电电压是设备自检出来的电压值
     var batPowerVolt: String = IOTConstants.NULL_KEY, //电池电压  3.7
     var emmcStorage: String = IOTConstants.NULL_KEY, //emmc存储量 14910.00
     var emmcFree: String = IOTConstants.NULL_KEY, //emmc剩余量 11566.50

@@ -103,7 +103,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
             rv.addItemDecoration(
                 MyGridSpacingItemDecoration(
                     2,
-                    ConvertUtils.dp2px(15f),
+                    ConvertUtils.dp2px(10f),
                     false
                 )
             )

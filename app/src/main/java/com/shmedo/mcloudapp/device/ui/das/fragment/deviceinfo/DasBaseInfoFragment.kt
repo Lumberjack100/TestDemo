@@ -1,69 +1,36 @@
 package com.shmedo.mcloudapp.device.ui.das.fragment.deviceinfo
 
-import android.os.Bundle
 import android.util.Log
-import com.blankj.utilcode.util.StringUtils
-import com.hjq.toast.Toaster
-import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.blankj.utilcode.util.ColorUtils
+import com.drake.brv.utils.bindingAdapter
+import com.drake.brv.utils.models
+import com.drake.brv.utils.mutable
+import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.das.DasBaseInfo
 import com.shmedo.lib.device.base.iot_cmd.model.das.DasSolarStatusInfo
 import com.shmedo.lib.device.base.iot_cmd.model.das.DasTemperatureAndHumidityStatusinfo
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
-import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentDasBaseInfoBinding
-import com.shmedo.mcloudapp.device.model.BleConnect
-import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.device.viewmodel.state.DasBaseInfoViewModel
-import org.koin.android.ext.android.inject
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoGroupItem
+import com.shmedo.mcloudapp.device.model.DeviceStatusInfoSignalItem
+import com.shmedo.mcloudapp.device.ui.common.BaseDeviceStatusInfoFragment
+import com.shmedo.mcloudapp.ext.notNullKey
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import timber.log.Timber
-import java.text.DecimalFormat
 
-class DasBaseInfoFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentDasBaseInfoBinding
-    private lateinit var mStates: DasBaseInfoViewModel
-    private val iotParseManager: IOTParserManager by inject()
-
-    override fun initViewModel() {
-        super.initViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
-
-    override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_das_base_info, BR.stateVM, mStates)
-    }
-
-    override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentDasBaseInfoBinding
-        initRefresh()
-    }
-
-    private fun initRefresh() {
-        refreshLayout = binding.refreshLayout
-        binding.refreshLayout.setEnableLoadMore(false)
-        binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return@onRefresh
-            }
-            queryBaseInfo()
-        }
-    }
-
-    override fun lazyLoadData() {
-        binding.refreshLayout.autoRefresh()
-    }
-
-    /**
-     * 获取设备的基本信息
-     */
-    private fun queryBaseInfo() {
+/**
+ * 创建者：gonghe
+ * 创建时间：2024/6/11
+ * 描述： TODO
+ */
+class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
+    override fun queryStatusInfo() {
+        binding.recyclerview.models = mutableListOf()
         commandItems.clear()
 
         var command = IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_DEVICE_BASE)
@@ -80,6 +47,9 @@ class DasBaseInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        if (!isResumed) {
+            return
+        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.DAS_MD_GET_DEVICE_BASE -> {
                 val result = iotParseManager.parse<DasBaseInfo>(
@@ -118,8 +88,7 @@ class DasBaseInfoFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        val content: String = result.data
-                        initSolarStatus(content)
+                        initSolarStatus(result.data)
                     }
                 }
             }
@@ -140,8 +109,7 @@ class DasBaseInfoFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        val content: String = result.data
-                        initTemperatureAndHumidityStatus(content)
+                        initTemperatureAndHumidityStatus(result.data)
                     }
                 }
             }
@@ -153,28 +121,70 @@ class DasBaseInfoFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initBaseInfo(baseInfo: DasBaseInfo) {
-        val decimalFormat = DecimalFormat("#.#")
         try {
-            mStates.wrapBaseInfo.get().apply {
-                sn = deviceInfo.deviceToken
-                iccid = baseInfo.iccid
-                imei = baseInfo.imei
-                code = baseInfo.code
-                ver = baseInfo.ver
-                local = baseInfo.local
-                involt = baseInfo.involt
-                outvolt = baseInfo.outvolt.toDoubleOrNull()?.let {
-                    decimalFormat.format(it)
-                } ?: ""
+            val groupList = mutableListOf<Any>()
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "设备SN",
+                value = baseInfo.sn,
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "设备ICCID",
+                value = baseInfo.iccid,
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "设备IMEI",
+                value = baseInfo.imei,
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "设备启动代码",
+                value = baseInfo.code,
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "固件版本",
+                value = baseInfo.ver,
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "设备位置",
+                value = baseInfo.local,
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                groupList,
+                name = "内部电量",
+                value = baseInfo.involt.replace("%", ""),
+                defaultValue = "0",
+                thresHold = 10.0,
+                digit = 2,
+                unit = "%",
+            )
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                groupList,
+                name = "外部供电电压",
+                value = baseInfo.outvolt,
+                defaultValue = "0",
+                thresHold = 5.0,
+                digit = 2,
+                unit = "V",
+            )
+            baseInfo.csq.notNullKey {
+                val temp = it.toIntOrNull() ?: 0
+                groupList.add(
+                    DeviceStatusInfoSignalItem(
+                        name = "4G信号强度",
+                        signalValue = if (temp <= 0)
+                            temp
+                        else
+                            temp * 2 - 113
+                    )
+                )
             }
-            mStates.wrapBaseInfo.notifyChange()
-
-            mStates.signalValue.set(baseInfo.csq.toIntOrNull()?.let {
-                if (it <= 0)
-                    it
-                else
-                    it * 2 - 113
-            } ?: -113)
+            binding.recyclerview.mutable.addAll(groupList)
+            binding.recyclerview.bindingAdapter.notifyDataSetChanged()
         } catch (e: Exception) {
             Timber.e(e)
             addLogItem(Log.ERROR, e.errorMsg)
@@ -185,17 +195,67 @@ class DasBaseInfoFragment : BaseIOTDeviceFragment() {
      * 太阳能控制器
      */
     private fun initSolarStatus(content: String) {
-        val decimalFormat = DecimalFormat("#.#")
-        try {
-            val info = MoshiUtil.fromJson<DasSolarStatusInfo>(content) ?: return
-            mStates.errNo.set(info.solar.errno.toString())
-            mStates.solarvolt.set(decimalFormat.format(info.solar.solarvolt))
-            mStates.batvolt.set(decimalFormat.format(info.solar.batvolt))
-            mStates.solarpwr.set(decimalFormat.format(info.solar.solarpwr))
-            mStates.loadpwr.set(decimalFormat.format(info.solar.loadpwr))
-        } catch (e: Exception) {
-            Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+        launchWithViewLifecycle {
+            try {
+                if (content.isEmpty() || content == "{}") {
+                    return@launchWithViewLifecycle
+                }
+                val info = MoshiUtil.fromJson<DasSolarStatusInfo>(content)
+                    ?: return@launchWithViewLifecycle
+
+                if (info.solar.errno.isEmpty()) {
+                    return@launchWithViewLifecycle
+                }
+
+                val groupList = mutableListOf<Any>()
+                groupList.add(DeviceStatusInfoGroupItem("太阳能控制器"))
+                groupList.add(
+                    DeviceStatusInfoBasicItem(
+                        name = "状态",
+                        value = if (info.solar.errno == "1") "正常" else "异常",
+                        textColorRes = if (info.solar.errno == "1") ColorUtils.getColor(
+                            R.color.device_online_platform
+                        ) else ColorUtils.getColor(
+                            R.color.device_offline_platform
+                        )
+                    )
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                    groupList,
+                    name = "太阳能板电压",
+                    value = info.solar.solarvolt,
+                    defaultValue = "0",
+                    thresHold = 5.0,
+                    digit = 2,
+                    unit = "V",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                    groupList,
+                    name = "蓄电池电压",
+                    value = info.solar.batvolt,
+                    defaultValue = "0",
+                    thresHold = 5.0,
+                    digit = 2,
+                    unit = "V",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "太阳能功率",
+                    value = info.solar.solarpwr,
+                    unit = "W",
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "负载功率",
+                    value = info.solar.loadpwr,
+                    unit = "W",
+                )
+                binding.recyclerview.mutable.addAll(groupList)
+                binding.recyclerview.bindingAdapter.notifyDataSetChanged()
+            } catch (e: Exception) {
+                Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
+            }
         }
     }
 
@@ -203,19 +263,81 @@ class DasBaseInfoFragment : BaseIOTDeviceFragment() {
      * 温湿度状态
      */
     private fun initTemperatureAndHumidityStatus(content: String) {
-        val decimalFormat = DecimalFormat("#.#")
-        try {
-            val info = MoshiUtil.fromJson<DasTemperatureAndHumidityStatusinfo>(content) ?: return
-            mStates.inthErrNo.set(info.inth.errno.toString())
-            mStates.inthTemp.set(decimalFormat.format(info.inth.temp))
-            mStates.inthHumi.set(decimalFormat.format(info.inth.humi))
+        launchWithViewLifecycle {
+            try {
+                if (content.isEmpty() || content == "{}") {
+                    return@launchWithViewLifecycle
+                }
+                val info = MoshiUtil.fromJson<DasTemperatureAndHumidityStatusinfo>(content)
+                    ?: return@launchWithViewLifecycle
 
-            mStates.outthErrNo.set(info.outth.errno.toString())
-            mStates.outthTemp.set(decimalFormat.format(info.outth.temp))
-            mStates.outthHumi.set(decimalFormat.format(info.outth.humi))
-        } catch (e: Exception) {
-            Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+                val groupList = mutableListOf<Any>()
+                if (info.inth.errno.isNotEmpty()) {
+                    groupList.add(DeviceStatusInfoGroupItem("机箱内部温湿度"))
+                    groupList.add(
+                        DeviceStatusInfoBasicItem(
+                            name = "状态",
+                            value = if (info.inth.errno == "1") "正常" else "异常",
+                            textColorRes = if (info.inth.errno == "1") ColorUtils.getColor(
+                                R.color.device_online_platform
+                            ) else ColorUtils.getColor(
+                                R.color.device_offline_platform
+                            )
+                        )
+                    )
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                        groupList,
+                        name = "温度",
+                        value = info.inth.temp,
+                        defaultValue = "0",
+                        digit = 2,
+                        unit = "℃",
+                    )
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                        groupList,
+                        name = "湿度",
+                        value = info.inth.humi,
+                        defaultValue = "0",
+                        digit = 2,
+                        unit = "%",
+                    )
+                }
+                if (info.outth.errno.isNotEmpty()) {
+                    groupList.add(DeviceStatusInfoGroupItem("机箱外部温湿度"))
+                    groupList.add(
+                        DeviceStatusInfoBasicItem(
+                            name = "状态",
+                            value = if (info.outth.errno == "1") "正常" else "异常",
+                            textColorRes = if (info.outth.errno == "1") ColorUtils.getColor(
+                                R.color.device_online_platform
+                            ) else ColorUtils.getColor(
+                                R.color.device_offline_platform
+                            )
+                        )
+                    )
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                        groupList,
+                        name = "温度",
+                        value = info.outth.temp,
+                        defaultValue = "0",
+                        digit = 2,
+                        unit = "℃",
+                    )
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                        groupList,
+                        name = "湿度",
+                        value = info.outth.humi,
+                        defaultValue = "0",
+                        digit = 2,
+                        unit = "%",
+                    )
+                }
+                binding.recyclerview.mutable.addAll(groupList)
+                binding.recyclerview.bindingAdapter.notifyDataSetChanged()
+            } catch (e: Exception) {
+                Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
+            }
         }
     }
 

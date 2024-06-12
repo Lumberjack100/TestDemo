@@ -84,31 +84,26 @@
             android:layout_height="1dp"
             android:background="@color/divider_line_bg" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             android:paddingVertical="@dimen/dimen_size_8">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_device_logo"
                 imageResId="@{vm.productLogoResId}"
-                android:layout_width="60dp"
-                android:layout_height="40dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                android:layout_width="65dp"
+                android:layout_height="50dp"
                 tools:src="@drawable/device_logo_gateway" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimen_size_5"
+                android:layout_weight="1"
                 android:gravity="center_vertical"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/iv_device_logo"
-                app:layout_constraintTop_toTopOf="parent">
+                android:orientation="vertical">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/ll_device_sn"
@@ -248,10 +243,10 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/ll_platform"
+                    visible="@{vm.isPlatformsVisible}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    visible="@{vm.isPlatformsVisible}">
+                    android:orientation="horizontal">
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tv_platform_desc"
@@ -271,7 +266,8 @@
                         tools:listitem="@layout/item_platform_label" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
+
             </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

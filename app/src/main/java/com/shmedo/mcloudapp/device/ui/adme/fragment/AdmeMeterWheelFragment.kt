@@ -331,7 +331,7 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
         val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
         try {
             mStates.encoderLineNumber.set(info.enclinenum)
-            decimalFormat.applyPattern("#")
+            decimalFormat.applyPattern("0")
             info.outline.toDoubleOrNull()?.let {
                 mStates.outerDiameter.set(decimalFormat.format(it))
             }

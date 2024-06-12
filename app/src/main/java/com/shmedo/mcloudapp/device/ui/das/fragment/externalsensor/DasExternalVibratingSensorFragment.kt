@@ -152,7 +152,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
 
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("触发值(毫米)")
-                    decimalFormat.applyPattern("#")
+                    decimalFormat.applyPattern("0")
                     sensorInfo.threshold.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
@@ -223,7 +223,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
 
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("触发值(毫米)")
-                    decimalFormat.applyPattern("#")
+                    decimalFormat.applyPattern("0")
                     sensorInfo.threshold.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
@@ -466,7 +466,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     //修正值、绳长、安装高程
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("修正值(毫米)")
-                    decimalFormat.applyPattern("#")
+                    decimalFormat.applyPattern("0")
                     mStates.extension1Value.set("0")//默认值 0
                     sensorInfo.corrval.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
@@ -474,14 +474,14 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
 
                     mStates.isExtension2Support.set(true)
                     mStates.extension2Title.set("绳长(毫米)")
-                    decimalFormat.applyPattern("#")
+                    decimalFormat.applyPattern("0")
                     sensorInfo.ropelen.toDoubleOrNull()?.let {
                         mStates.extension2Value.set(decimalFormat.format(it))
                     }
 
                     mStates.isExtension3Support.set(true)
                     mStates.extension3Title.set("安装高程(毫米)")
-                    decimalFormat.applyPattern("#")
+                    decimalFormat.applyPattern("0")
                     sensorInfo.tubealti.toDoubleOrNull()?.let {
                         mStates.extension3Value.set(decimalFormat.format(it))
                     }

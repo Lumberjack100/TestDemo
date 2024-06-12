@@ -81,11 +81,13 @@
         </RelativeLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview"
+            android:id="@+id/rv_module"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:padding="@dimen/dimen_size_15"
             android:clipToPadding="false"
+            android:paddingHorizontal="@dimen/dimen_size_12"
+            android:paddingTop="@dimen/dimen_size_10"
+            android:paddingBottom="@dimen/dimen_size_15"
             android:splitMotionEvents="false"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"

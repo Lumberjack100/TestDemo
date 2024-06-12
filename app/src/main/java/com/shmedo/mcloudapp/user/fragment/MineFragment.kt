@@ -15,11 +15,11 @@ import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.MCloudUtil
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ext.nav
-import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.request.AppUpdateViewModel
 import com.shmedo.mcloudapp.databinding.FragmentMineBinding
+import com.shmedo.mcloudapp.ext.nav
+import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.user.activity.LoginActivity
 import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.user.viewmodel.state.MineViewModel
@@ -49,7 +49,7 @@ class MineFragment : BaseFragment() {
     }
 
     override fun initData() {
-        mStates.appVersion.set(String.format("v%s", AppUtils.getAppVersionName()))
+        mStates.appVersion.set(String.format("V %s", AppUtils.getAppVersionName()))
         refreshUserInfo(userInfo)
     }
 

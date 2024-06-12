@@ -6,6 +6,7 @@ import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
+import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.shmedo.mcloudapp.R
 
 /**
@@ -19,9 +20,13 @@ class LoadingDialogFragment : DialogFragment() {
         // 创建对话框实例
         val dialog = MaterialDialog(requireContext())
             .cancelable(true)
+            .lifecycleOwner(this)
+            .cancelable(true)
             .cancelOnTouchOutside(false)
-            .cornerRadius(10f)
+            .maxWidth(R.dimen.dimen_size_200)
             .customView(R.layout.layout_custom_progress_dialog_view)
+
+        dialog.view.setBackgroundResource(R.color.transparent)
 
         // 设置消息文本，可以通过参数传递
         dialog.getCustomView()

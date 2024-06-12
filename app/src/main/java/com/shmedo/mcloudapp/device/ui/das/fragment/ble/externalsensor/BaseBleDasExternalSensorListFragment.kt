@@ -17,8 +17,8 @@ import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.device.base.iot_cmd.model.das.DasCollectorInfo
+import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
-import com.shmedo.lib.device.base.md_cmd.model.das.MDDasExternalSensorInfo
 import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
@@ -50,7 +50,7 @@ import timber.log.Timber
  */
 abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasExternalSensorListBinding
-    lateinit var mStates: DasExternalSensorListViewModel<MDDasExternalSensorInfo>
+    lateinit var mStates: DasExternalSensorListViewModel<DasExternalSensorInfo>
     val mdParseManager: MDParserManager by inject()
     lateinit var iotSensorType: IOTSensorType
     private var deleteItemIndex = 0
@@ -230,10 +230,10 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                     val sensorInfo = mStates.sensorModelMap[key]!!
                     val item = DASSensorItem(
                         isPlugin = true,
-                        addr = sensorInfo.sensorAddress,
-                        addrDesc = if (mStates.isVibratingWireSensor.get()) "通道-${sensorInfo.sensorAddress.toInt() + 1}" else "地址-${sensorInfo.sensorAddress}",
-                        sensorType = sensorInfo.sensorType,
-                        sensorName = IOTSensorType.value(sensorInfo.sensorType).description,
+                        addr = sensorInfo.addr,
+                        addrDesc = if (mStates.isVibratingWireSensor.get()) "通道-${sensorInfo.addr.toInt() + 1}" else "地址-${sensorInfo.addr}",
+                        sensorType = sensorInfo.type,
+                        sensorName = IOTSensorType.value(sensorInfo.type).description,
                     )
                     binding.rv.mutable.add(item)
                 }
@@ -310,7 +310,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             }
 
             MDCommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER -> {//获取XX采集器YY通道的传感器参数 ##101
-                val result = mdParseManager.parse<MDDasExternalSensorInfo>(
+                val result = mdParseManager.parse<DasExternalSensorInfo>(
                     cmdStr,
                     MDCommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER
                 )
@@ -397,18 +397,18 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
     /**
      *  处理获取到的单个传感器参数信息
      */
-    private fun processSensorParamsInfo(sensorInfo: MDDasExternalSensorInfo) {
-        if (mStates.sensorModelMap.containsKey(sensorInfo.sensorAddress)) {
-            mStates.sensorModelMap[sensorInfo.sensorAddress] = sensorInfo
+    private fun processSensorParamsInfo(sensorInfo: DasExternalSensorInfo) {
+        if (mStates.sensorModelMap.containsKey(sensorInfo.addr)) {
+            mStates.sensorModelMap[sensorInfo.addr] = sensorInfo
             return
         }
-        mStates.sensorModelMap[sensorInfo.sensorAddress] = sensorInfo
+        mStates.sensorModelMap[sensorInfo.addr] = sensorInfo
         val item = DASSensorItem(
             isPlugin = true,
-            addr = sensorInfo.sensorAddress,
-            addrDesc = if (mStates.isVibratingWireSensor.get()) "通道-${sensorInfo.sensorAddress.toInt() + 1}" else "地址-${sensorInfo.sensorAddress}",
-            sensorType = sensorInfo.sensorType,
-            sensorName = IOTSensorType.value(sensorInfo.sensorType).description,
+            addr = sensorInfo.addr,
+            addrDesc = if (mStates.isVibratingWireSensor.get()) "通道-${sensorInfo.addr.toInt() + 1}" else "地址-${sensorInfo.addr}",
+            sensorType = sensorInfo.type,
+            sensorName = IOTSensorType.value(sensorInfo.type).description,
         )
         if (binding.rv.models.isNullOrEmpty())
             binding.rv.models = arrayListOf()

@@ -14,5 +14,6 @@ data class DasSensorStatusInfo(
     var addr: Int = 0, //传感器地址
     var errno: Int = 0, //错误码
     @Json(name = "val")
-    var _val: String = "" //传感器数据
+    var _val: String = "", //传感器数据
+    var valueList: List<String> = emptyList()
 )

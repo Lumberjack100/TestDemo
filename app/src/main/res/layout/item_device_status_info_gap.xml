@@ -14,7 +14,8 @@
     <View
         android:id="@+id/item"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dimen_size_10"
-        android:background="@{m.colorRes==0?@color/transparent:m.colorRes}" />
+        android:layout_height="10dp"
+        android:background="@{m.colorRes==0?@color/transparent:m.colorRes}"
+        app:customLayoutHeight="@{m.height}" />
 
 </layout>

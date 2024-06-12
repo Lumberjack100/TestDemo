@@ -1,5 +1,6 @@
 package com.shmedo.lib.device.base.md_cmd.parser.das
 
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.device.base.md_cmd.interfaces.MDCommandParser
 import com.shmedo.lib.device.base.md_cmd.model.das.DeviceStatusInfoOne
@@ -19,15 +20,15 @@ import com.shmedo.lib.device.base.md_cmd.model.das.DeviceStatusInfoOne
  * 示例：
  * $$041,150000L,865860047575320,898604061918C0643348,20,1,9
  */
-class MDDeviceStatusInfoOneParser: MDCommandParser<DeviceStatusInfoOne> {
+class MDDeviceStatusInfoOneParser : MDCommandParser<DeviceStatusInfoOne> {
     override fun parseInstance(values: List<String>): DeviceStatusInfoOne {
         return DeviceStatusInfoOne(
             snNumber = values.getOrNull(1) ?: "",
-            imeiNumber = values.getOrNull(2) ?: "",
-            simNumber = values.getOrNull(3) ?: "",
-            startCodeOne = values.getOrNull(4) ?: "",
-            startCodeTwo = values.getOrNull(5) ?: "",
-            signalStrength = values.getOrNull(6) ?: ""
+            imeiNumber = values.getOrNull(2) ?: IOTConstants.NULL_KEY,
+            simNumber = values.getOrNull(3) ?: IOTConstants.NULL_KEY,
+            startCodeOne = values.getOrNull(4) ?: IOTConstants.NULL_KEY,
+            startCodeTwo = values.getOrNull(5) ?: IOTConstants.NULL_KEY,
+            signalStrength = values.getOrNull(6) ?: IOTConstants.NULL_KEY
         )
     }
 

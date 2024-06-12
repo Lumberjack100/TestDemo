@@ -36,9 +36,12 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentAdmeMeasuringHoleDepthBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
+import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacMeasuringHoleDepthFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeMeasuringHoleDepthViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ext.isViewLifecycleActive
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
@@ -502,6 +505,19 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowMsg: Boolean,
+        msg: String
+    ) {
+        if (communicateWay is BleConnect && bleViewModel.isConnected()) {
+            if (IOTCommandUtil.extractCommandType(cmdStr) == IOTCommandType.ADME_HAC_MD_GET_HOLE_MEASURE_PULSE) {
+                getMotorMotionData(DELAY_2000_MILLIS)
+            }
+        }
+    }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.ADME_MD_GET_STEPPER_MOTOR -> {
@@ -658,7 +674,9 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "获取电机的实时运动数据出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        getMotorMotionData(DELAY_2000_MILLIS)
                         return
                     }
 
@@ -667,13 +685,13 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                         updateMotorMotionDistance(result.data)
                         if (mStates.isAutoMeasuringMode.get()) {
                             autoMeasuringHoleDepthBottomDialog?.let { dialog ->
-                                if (dialog.isResumed) {
+                                if (dialog.isViewLifecycleActive()) {
                                     updateMotionData(result.data)
                                 }
                             }
                         } else {
                             manualMeasuringHoleDepthBottomDialog?.let { dialog ->
-                                if (dialog.isResumed) {
+                                if (dialog.isViewLifecycleActive()) {
                                     updateMotionData(result.data)
                                 }
                             }
@@ -715,7 +733,6 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList()
                         mStates.isClearMotionDataVisible.set(false)
                         mStates.isStopQueryMotorState.set(false)
-                        getMotorMotionData()
                     }
                 }
             }
@@ -745,6 +762,12 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             }
                             dismiss()
                         }, "取消")
+                    }
+
+                    override fun onRefresh() {
+                        if (communicateWay is BleConnect && bleViewModel.isConnected() && !mStates.isStopQueryMotorState.get()) {
+                            getMotorMotionData(AdmeHacMeasuringHoleDepthFragment.DELAY_2000_MILLIS)
+                        }
                     }
 
                     override fun onStopClick() {
@@ -804,6 +827,12 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             }
                             dismiss()
                         }, "取消")
+                    }
+
+                    override fun onRefresh() {
+                        if (communicateWay is BleConnect && bleViewModel.isConnected() && !mStates.isStopQueryMotorState.get()) {
+                            getMotorMotionData(AdmeHacMeasuringHoleDepthFragment.DELAY_2000_MILLIS)
+                        }
                     }
 
                     override fun onStopClick() {
