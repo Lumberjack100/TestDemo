@@ -22,10 +22,6 @@ enum class IOTCommandType(private val value: String) {
      */
     QUERY_DEVICE_STATUS("getstatus"),
 
-    /**
-     * 获取设备状态
-     */
-    QUERY_DEVICE_EX_STATUS("md_getExstatus"),
 
     /**
      * 获取设备自检信息
@@ -860,16 +856,6 @@ enum class IOTCommandType(private val value: String) {
     MD_MR_TAKE_PHOTOS("md_mrtakephotos"),
 
     // </editor-fold>
-
-    /**
-     * 获取设备位置
-     */
-    MD_GET_LOCATION("md_getloc"),
-
-    /**
-     * 设置设备位置
-     */
-    MD_SET_LOCATION("md_setloc"),
 
     /**
      * 语音播报

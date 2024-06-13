@@ -1,5 +1,9 @@
 package com.shmedo.mcloudapp.device.ui.hac.fragment
 
+import android.animation.Animator
+import android.animation.AnimatorInflater
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.SoundPool
@@ -7,7 +11,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.view.WindowManager
-import android.view.animation.BounceInterpolator
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import com.blankj.utilcode.constant.RegexConstants
@@ -107,20 +110,28 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     }
 
     private fun loadButtonAnimator() {
-        binding.llMeasuringDataProcedureBottom.btnAction.animate()
-            .scaleX(0.6f)
-            .scaleY(0.6f)
-            .setDuration(600)
-            .setInterpolator(BounceInterpolator())
-            .withEndAction {
-                binding.llMeasuringDataProcedureBottom.btnAction.animate()
-                    .scaleX(1f)
-                    .scaleY(1f)
-                    .setDuration(600)
-                    .setInterpolator(BounceInterpolator())
-                    .start()
+        // 加载动画资源
+        val scaleDown = AnimatorInflater.loadAnimator(requireContext(), R.animator.scale_down) as AnimatorSet
+        val scaleUp = AnimatorInflater.loadAnimator(requireContext(), R.animator.scale_up) as AnimatorSet
+
+        // 组合动画
+        val animatorSet = AnimatorSet()
+        animatorSet.playSequentially(scaleDown, scaleUp)
+
+        // 设置重复次数
+        animatorSet.addListener(object : AnimatorListenerAdapter() {
+            var repeatCount = 0
+
+            override fun onAnimationEnd(animation: Animator) {
+                repeatCount++
+                if (repeatCount < 3) {
+                    animatorSet.start()
+                }
             }
-            .start()
+        })
+        // 启动动画
+        animatorSet.setTarget(binding.llMeasuringDataProcedureBottom.btnAction)
+        animatorSet.start()
     }
 
     /**

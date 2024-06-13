@@ -327,7 +327,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
             IOTCommandType.MD_RAW -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "同步安装位置出错"
+                        val errMsg = "同步安装位置出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
