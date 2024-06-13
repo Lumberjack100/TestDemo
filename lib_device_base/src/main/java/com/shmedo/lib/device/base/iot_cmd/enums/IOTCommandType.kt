@@ -978,6 +978,11 @@ enum class IOTCommandType(private val value: String) {
     MD_SET_INSTALL_LOCATION("md_setloc"),
 
     /**
+     * 指令透传
+     */
+    MD_RAW("md_raw"),
+
+    /**
      * 自定义心跳包
      */
     HEART_BEAT("ble_keepalive"),

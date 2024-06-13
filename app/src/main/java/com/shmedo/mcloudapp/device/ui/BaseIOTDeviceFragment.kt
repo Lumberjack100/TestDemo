@@ -6,7 +6,6 @@ import androidx.annotation.CallSuper
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.PageRefreshLayout
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.PopTip
 import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
 import com.shmedo.lib.ble.communicate.service.base.ConnectingResult
 import com.shmedo.lib.ble.communicate.service.base.DisconnectedResult
@@ -358,7 +357,8 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     protected fun handleFailureResult(errMsg: String) {
         cancelNearbyCommunicationTimeoutJob()
         Timber.e(errMsg)
-        PopTip.show(errMsg).autoDismiss(4500).iconError()
+        Toaster.show(errMsg)
+        //PopTip.show(errMsg).autoDismiss(4500).iconError()
     }
 
     /**
