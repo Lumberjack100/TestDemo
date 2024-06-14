@@ -227,7 +227,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         msg: String
     ) {
         if (communicateWay is BleConnect && bleViewModel.isConnected()) {
-            getMotorMotionData(DELAY_2000_MILLIS)
+            getMotorMotionData(DELAY_3000_MILLIS)
         }
     }
 
@@ -244,14 +244,14 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                         val errMsg = "获取设备的运行状态出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
-                        getMotorMotionData(DELAY_2000_MILLIS)
+                        getMotorMotionData(DELAY_3000_MILLIS)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
                         refreshMotionState(result.data)
                         sendCommandFromCmdList {
-                            getMotorMotionData(DELAY_2000_MILLIS)
+                            getMotorMotionData(DELAY_3000_MILLIS)
                         }
                     }
                 }
@@ -277,7 +277,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.LENGTH_INVALID -> {//接收的数据格式不符合物联网指令协议，进入此逻辑处理
-                getMotorMotionData(DELAY_2000_MILLIS)
+                getMotorMotionData(DELAY_3000_MILLIS)
             }
 
             else -> {
@@ -625,7 +625,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     }
 
     companion object {
-        const val DELAY_2000_MILLIS = 2000L
+        const val DELAY_3000_MILLIS = 3000L
         const val CHECK_REVERSE: String = "check_reverse"
 
         fun newBundleArguments(
