@@ -6,12 +6,11 @@ import com.shmedo.lib.device.base.iot_cmd.model.hac.HacMotionState
 
 class AdmeHacMeasuringDataProcedureViewModel : ViewModel() {
     val isEditable = NonNullObservableField(false)
-    val isFirstQueryMotorState = NonNullObservableField(true)
     val isStopQueryMotorState = NonNullObservableField(false)
 
     val motionStateWrapper = NonNullObservableField(HacMotionState())
 
-    val isCheckReverse = NonNullObservableField(false)
+    val isCheckReverse = NonNullObservableField(false)//测斜仪反转自检
     val measureMode = NonNullObservableField("")// 测量模式
     val motorInfo = NonNullObservableField("")
     val inclinometerBattery = NonNullObservableField("") //测斜仪电量

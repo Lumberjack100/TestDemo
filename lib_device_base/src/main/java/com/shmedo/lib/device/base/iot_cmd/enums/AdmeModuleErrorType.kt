@@ -28,6 +28,8 @@ enum class AdmeModuleErrorType(val code: String, val description: String) {
     XF_EXCEED_ROPE_LENGTH("18", "下放距离超过绳长"),
     MOTOR_STOP("99", "电机停机"),
     EMPTY_ERROR("-100", "空异常"),
+
+    NORMAL("0", "正常"),
     UNKNOWN_ERROR("-200", "未知错误");
 
     companion object {

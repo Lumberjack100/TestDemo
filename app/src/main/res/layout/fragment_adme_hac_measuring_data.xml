@@ -198,6 +198,7 @@
                             style="@style/SwitchButton_ButtonStyle"
                             checkedImmediatelyNoEvent="@{stateVM.isSingleWayTest}"
                             android:enabled="@{stateVM.isEditable}"
+                            android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                             app:kswAnimationDuration="100"
                             app:kswBackDrawable="@drawable/sl_switchbutton_back"
                             app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
@@ -219,6 +220,7 @@
                             style="@style/SwitchButton_ButtonStyle"
                             checkedImmediatelyNoEvent="@{stateVM.isCheckReverse}"
                             android:enabled="@{stateVM.isEditable}"
+                            android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                             app:kswAnimationDuration="100"
                             app:kswBackDrawable="@drawable/sl_switchbutton_back"
                             app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
@@ -233,9 +235,9 @@
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onRunClick()}"
             visible="@{stateVM.isEditable }"
-            android:enabled="@{stateVM.isRunButtonEnable }"
             android:layout_marginTop="0dp"
             android:layout_marginBottom="@dimen/dimen_size_60"
+            android:enabled="@{stateVM.isRunButtonEnable }"
             android:text="@={stateVM.runButtonText}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

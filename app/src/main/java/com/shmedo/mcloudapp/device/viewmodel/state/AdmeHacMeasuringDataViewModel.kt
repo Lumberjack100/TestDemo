@@ -6,7 +6,6 @@ import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
 class AdmeHacMeasuringDataViewModel : ViewModel() {
     val isEditable = NonNullObservableField(true)
 
-
     val equipmodel = NonNullObservableField("0")//电机工作标识  0：停止  1：正常 2: 异常
     val address = NonNullObservableField("")//MAC 地址
     val holeno = NonNullObservableField("")//孔号

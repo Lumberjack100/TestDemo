@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.device.ui.hac.fragment
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.CompoundButton
 import androidx.fragment.app.setFragmentResultListener
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
@@ -13,7 +14,6 @@ import com.blankj.utilcode.util.Utils
 import com.blankj.utilcode.util.VibrateUtils
 import com.hjq.toast.Toaster
 import com.kongzue.dialogx.dialogs.MessageDialog
-import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
@@ -110,13 +110,13 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
 
     override fun createObserver() {
         super.createObserver()
-        //从编辑页面返回需要刷新事件详情页面
+        //从测量过程页面返回需要刷新状态信息
         setFragmentResultListener(AppContants.Extras.FRAGMENT_MEASURING_DATA_PROCEDURE_RESULT_REQUEST_KEY) { key, bundle ->
             (bundle.getParcelable(AppContants.Extras.MOTOR_STATE) as HacMotionState?)?.let { motionState ->
                 Timber.d("onActivityResult %s", motionState.toString())
                 mStates.isRunButtonEnable.set(motionState.motorinfo == "8" || motionState.motorinfo == "9" || motionState.motorinfo == "10")
                 mStates.runButtonText.set(
-                    if (binding.switchSingleWay.isChecked || motionState.motorinfo == "8")
+                    if (mStates.isSingleWayTest.get() || motionState.motorinfo == "8")
                         "正向测量"
                     else if (motionState.measmode == "1") "反向测量" else "正向测量"
                 )
@@ -125,7 +125,6 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
     }
 
     inner class ClickProxy : BaseClickProxy() {
-
         /**
          * 选择孔号
          */
@@ -164,6 +163,18 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
+        }
+
+        override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
+            when (button.id) {
+                R.id.switch_single_way -> { //仅用单向测量
+                    mStates.isSingleWayTest.set(isChecked)
+                }
+
+                R.id.switch_reverse -> { //测斜仪反转自检
+                    mStates.isCheckReverse.set(isChecked)
+                }
+            }
         }
 
         fun onRunClick() {
@@ -251,8 +262,8 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
             downwaitetime = mStates.decentralizationWaitingTime.get(),
             holedepth = mStates.recommendHoleDepth.get(),
             datatype = settlementMethodList.indexOf(mStates.dataSettlementMethod.get()).toString(),
-            onewaytest = if (binding.switchSingleWay.isChecked) "1" else "0",
-            checkreverse = if (binding.switchReverse.isChecked) "1" else "0"
+            onewaytest = if (mStates.isSingleWayTest.get()) "1" else "0",
+            checkreverse = if (mStates.isCheckReverse.get()) "1" else "0"
         )
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
@@ -286,7 +297,10 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE
         )
         commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(
+            isStartTimeoutJob = true,
+            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
+        )
     }
 
     override fun setResultData(cmdStr: String) {
@@ -301,10 +315,8 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "获取数据测量配置参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(3500).iconError()
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -324,10 +336,8 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "获取电机当前运动状态出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -343,17 +353,15 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM -> {//设置HAC数据测量参数,开始测量
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置数据测量参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
                             val bundle = AdmeHacMeasuringDataProcedureFragment.newBundleArguments(
-                                binding.switchReverse.isChecked,
+                                mStates.isCheckReverse.get(),
                                 productType,
                                 communicateWay,
                                 deviceInfo,
@@ -397,12 +405,10 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                     mStates.isRunButtonEnable.set(false)
                     return@launchWithViewLifecycle
                 }
-
                 holeAreaDepthInfoArrayList.clear()
-                holeAreaDepthInfoArrayList.addAll(tempHoleList)
-
                 holeNumList.clear()
                 holeAreaDepthInfoArrayList.forEach {
+                    holeAreaDepthInfoArrayList.add(it)
                     holeNumList.add(it.holeno)
                 }
                 updateHoleDepth(0)
@@ -420,15 +426,15 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
         /**
          * 逻辑处理
          * 进入数据测量页面时，查询 md_hac_getdatameasparame 和 md_hac_getmotionstate 指令，先判断 equipmodel
-        1.1 equipmodel =1(正常测量状态)：
+        1.1 equipmodel = 1(正常测量状态)：
         根据 motorinfo 控制跳转页面，motorinfo=2|3|4 进入数据测量页面状态；motorinfo=5|6 进入数据读取页面状态；motorinfo=7 进入数据上传页面状态。
-        1.2 equipmodel =0 (停止状态)：
+        1.2 equipmodel = 0 (停止状态)：
         单测时按钮显示正向测量；正反测时，motorinfo=8，按钮显示正向测量；motorinfo=9，按钮显示反向测量。
-        1.3 equipmodel =2(异常状态)，弹框提示异常信息，点击按钮开始测量时，设备自动清除异常状态标志。
+        1.3 equipmodel = 2(异常状态)，弹框提示异常信息，点击按钮开始测量时，设备自动清除异常状态标志。
          */
         if (mStates.equipmodel.get() == "1") {//表示在测量 然后根据 motorinfo 控制跳转页面
             val bundle = AdmeHacMeasuringDataProcedureFragment.newBundleArguments(
-                binding.switchReverse.isChecked,
+                mStates.isCheckReverse.get(),
                 productType,
                 communicateWay,
                 deviceInfo,
@@ -442,12 +448,12 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
         }
         //停止或异常状态下,判断是否单测模式，单测模式下显示正向测量；正反测模式下，根据 motorinfo 处理操作按钮
         mStates.runButtonText.set(
-            if (binding.switchSingleWay.isChecked)
+            if (mStates.isSingleWayTest.get())
                 "正向测量"
             else if (motionState.measmode == "1") "反向测量" else "正向测量"
         )
         //表示异常，展示异常原因
-        if (motionState.measmode == "2" && motionState.abndiasis.isNotEmpty() && motionState.abndiasis != "0") {
+        if (mStates.equipmodel.get() == "2" && motionState.abndiasis.isNotEmpty() && motionState.abndiasis != "0") {
             showAdmeErrorProtectionDialog(motionState.abndiasis)
         }
     }

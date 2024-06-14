@@ -167,10 +167,7 @@ class AdmeHacHomeFragment : UniversalDeviceHomeFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            //获取设备的运行状态
-//                            getMotorMotionData(20000)
-                        }
+                        sendCommandFromCmdList()
                         updateMotionState(result.data)
                     }
                 }

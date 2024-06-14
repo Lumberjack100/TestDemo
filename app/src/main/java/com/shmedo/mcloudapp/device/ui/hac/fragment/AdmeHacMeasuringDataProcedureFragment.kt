@@ -291,10 +291,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
      */
     private fun refreshMotionState(motionState: HacMotionState) {
         mStates.motionStateWrapper.set(motionState)
-        if (mStates.isFirstQueryMotorState.get()) {
-            mStates.isFirstQueryMotorState.set(false)
-            mStates.measureMode.set(if (motionState.measmode == "0") "正向测量" else "反向测量")
-        }
+        mStates.measureMode.set(if (motionState.measmode == "0") "正向测量" else "反向测量")
 
         //异常时，停止轮询电机运动状态，展示异常原因
         if (motionState.abndiasis.isNotEmpty() && motionState.abndiasis != "0") {
@@ -580,7 +577,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     private fun processBack(isNavUp: Boolean = true) {
         launchWithViewLifecycle {
             delay(500)
-            //巡护事件需要给上一级浏览页面传递最新的事件信息
+            //需要给上一级浏览页面传递最新的状态信息
             setFragmentResult(
                 AppContants.Extras.FRAGMENT_MEASURING_DATA_PROCEDURE_RESULT_REQUEST_KEY,
                 bundleOf(AppContants.Extras.MOTOR_STATE to mStates.motionStateWrapper.get())

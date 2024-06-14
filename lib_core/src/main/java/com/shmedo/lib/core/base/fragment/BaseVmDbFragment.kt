@@ -159,6 +159,7 @@ abstract class BaseVmDbFragment : DataBindingFragment() {
 
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
-//        Timber.i(if (hidden) "${javaClass.simpleName} 隐藏了" else "${javaClass.simpleName} 显示了")
+        val msg = if (hidden) "${javaClass.simpleName} 隐藏了" else "${javaClass.simpleName} 显示了"
+        Timber.i("onHiddenChanged,$msg")
     }
 }
