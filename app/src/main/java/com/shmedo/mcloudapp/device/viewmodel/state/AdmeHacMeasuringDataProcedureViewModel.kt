@@ -26,7 +26,7 @@ class AdmeHacMeasuringDataProcedureViewModel : ViewModel() {
     val runButtonText = NonNullObservableField("结束测量")
 
     val isVerticalProgressBarVisible = NonNullObservableField(true)
-    val isCurDepthVisible = NonNullObservableField(true)
+    val isCurDepthVisible = NonNullObservableField(false)
     val verticalProgress = NonNullObservableField(0)
     val verticalMaxProgress = NonNullObservableField(0)
     val curDepth = NonNullObservableField("")

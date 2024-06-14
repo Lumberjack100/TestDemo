@@ -110,7 +110,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
 
     override fun createObserver() {
         super.createObserver()
-        //从测量过程页面返回需要刷新状态信息
+        //从测量过程页面返回需要刷新运行状态信息
         setFragmentResultListener(AppContants.Extras.FRAGMENT_MEASURING_DATA_PROCEDURE_RESULT_REQUEST_KEY) { key, bundle ->
             (bundle.getParcelable(AppContants.Extras.MOTOR_STATE) as HacMotionState?)?.let { motionState ->
                 Timber.d("onActivityResult %s", motionState.toString())

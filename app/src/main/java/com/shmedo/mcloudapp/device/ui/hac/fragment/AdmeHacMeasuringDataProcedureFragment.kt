@@ -240,7 +240,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-//                        cancelNearbyCommunicationTimeoutJob()
+                        //cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "获取设备的运行状态出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
@@ -295,7 +295,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
         //异常时，停止轮询电机运动状态，展示异常原因
         if (motionState.abndiasis.isNotEmpty() && motionState.abndiasis != "0") {
-            cancelNearbyCommunicationTimeoutJob()
+            stopQueryMotorState()
             showAdmeErrorProtectionDialog(motionState.abndiasis)
         }
 
@@ -320,46 +320,46 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             mStates.isWaitTimeVisible.set(false)
             when (AdmeCTRMotionState.valueByCode(motionState.motorinfo)) {
                 AdmeCTRMotionState.NOZZLE_WAITING -> {//上拉至管口等待
+                    mStates.motorInfo.set("上拉至管口...")
                     mStates.isCurDepthVisible.set(false)
                     initVerticalProgress(motionState.measpoint)
-                    mStates.motorInfo.set("上拉至管口...")
                 }
 
                 AdmeCTRMotionState.PAIR_SETTING_PARAM -> {//测斜仪配对
-                    mStates.isCurDepthVisible.set(false)
-                    initVerticalProgress(motionState.measpoint)
                     val msg =
                         if (motionState.measmode == "1" && mStates.isCheckReverse.get()) "测斜仪配对,反转自检..." else "测斜仪配对中..."
                     mStates.motorInfo.set(msg)
+                    mStates.isCurDepthVisible.set(false)
+                    initVerticalProgress(motionState.measpoint)
                 }
 
                 AdmeCTRMotionState.DOWN,//测斜仪下放
                 AdmeCTRMotionState.BOTTOM_WAITING -> {//管底等待
                     mStates.isCurDepthVisible.set(false)
                     mStates.isWaitTimeVisible.set(true)
-                    initVerticalProgress(motionState.measpoint)
                     mStates.motorInfo.set(
                         if (motionState.motorinfo == "2")
                             "测斜仪下放中..."
                         else
                             "管底等待中..."
                     )
+                    mStates.waittime.set(String.format("%s分钟", getMinTime()))
                     mStates.waittimedesc.set(
                         if (motionState.motorinfo == "2")
                             "下放结束预计"
                         else
                             "距离开始测量预计"
                     )
-                    mStates.waittime.set(String.format("%s分钟", getMinTime()))
+                    initVerticalProgress(motionState.measpoint)
                 }
 
                 AdmeCTRMotionState.POINT_MEASUREMENT -> {//测点测量
                     mStates.isCurDepthVisible.set(true)
                     mStates.isWaitTimeVisible.set(true)
-                    updateVerticalProgress(motionState.measpoint)
                     mStates.motorInfo.set("测点测量中...")
-                    mStates.waittimedesc.set("测量结束预计")
                     mStates.waittime.set(String.format("%s分钟", getMinTime()))
+                    mStates.waittimedesc.set("测量结束预计")
+                    updateVerticalProgress(motionState.measpoint)
                 }
 
                 AdmeCTRMotionState.MEASUREMENT_OVER -> {//测点结束
@@ -369,21 +369,21 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
                 AdmeCTRMotionState.READ_DATA -> {//数据读取中
                     mStates.isVerticalProgressBarVisible.set(false)
-                    mStates.isWaitTimeVisible.set(true)
                     mStates.isHorizontalProgressBarReadingData.set(true)//读取数据进度条颜色
-                    updateHorizontalProgress(motionState.measpoint)
+                    mStates.isWaitTimeVisible.set(true)
                     mStates.motorInfo.set("数据读取中...")
-                    mStates.waittimedesc.set("数据读取结束预计")
                     mStates.waittime.set(String.format("%s分钟", getMinTime()))
+                    mStates.waittimedesc.set("数据读取结束预计")
                     mStates.isRunButtonVisible.set(false)
+                    updateHorizontalProgress(motionState.measpoint)
                 }
 
                 AdmeCTRMotionState.UPLOAD_DATA -> {//数据上传中
                     mStates.isVerticalProgressBarVisible.set(false)
                     mStates.isHorizontalProgressBarReadingData.set(false)//上传数据进度条颜色
-                    updateHorizontalProgress(motionState.measpoint)
                     mStates.motorInfo.set("数据上传中...")
                     mStates.isRunButtonVisible.set(false)
+                    updateHorizontalProgress(motionState.measpoint)
                 }
 
                 AdmeCTRMotionState.WAITING_NEXT_TESTING,//等待下一次测量
@@ -395,7 +395,6 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                     mStates.motorInfo.set(if (motionState.motorinfo == "9") "测量完成,等待反向测量" else "测量完成")
                     mStates.isRunButtonVisible.set(true)
                     mStates.runButtonText.set("下一步")
-                    //VibrateUtils.vibrate(100);
                     if (voiceMeasureSuccess != 0) {
                         playSound(voiceMeasureSuccess)
                     }
@@ -416,7 +415,6 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 else -> {
                 }
             }
-
         } catch (e: Exception) {
             Timber.e(e)
         }
