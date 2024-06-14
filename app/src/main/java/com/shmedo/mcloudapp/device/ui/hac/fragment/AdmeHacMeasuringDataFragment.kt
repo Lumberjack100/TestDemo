@@ -407,7 +407,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                 }
                 holeAreaDepthInfoArrayList.clear()
                 holeNumList.clear()
-                holeAreaDepthInfoArrayList.forEach {
+                tempHoleList.forEach {
                     holeAreaDepthInfoArrayList.add(it)
                     holeNumList.add(it.holeno)
                 }
