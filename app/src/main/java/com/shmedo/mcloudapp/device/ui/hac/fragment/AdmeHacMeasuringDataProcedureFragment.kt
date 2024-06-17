@@ -291,7 +291,10 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
      */
     private fun refreshMotionState(motionState: HacMotionState) {
         mStates.motionStateWrapper.set(motionState)
-        mStates.measureMode.set(if (motionState.measmode == "0") "正向测量" else "反向测量")
+        if (mStates.isFirstQueryMotorState.get()) {
+            mStates.isFirstQueryMotorState.set(false)
+            mStates.measureMode.set(if (motionState.measmode == "0") "正向测量" else "反向测量")
+        }
 
         //异常时，停止轮询电机运动状态，展示异常原因
         if (motionState.abndiasis.isNotEmpty() && motionState.abndiasis != "0") {

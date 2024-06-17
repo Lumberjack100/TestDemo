@@ -6,6 +6,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.hac.HacMotionState
 
 class AdmeHacMeasuringDataProcedureViewModel : ViewModel() {
     val isEditable = NonNullObservableField(false)
+    val isFirstQueryMotorState = NonNullObservableField(true)
     val isStopQueryMotorState = NonNullObservableField(false)
 
     val motionStateWrapper = NonNullObservableField(HacMotionState())
