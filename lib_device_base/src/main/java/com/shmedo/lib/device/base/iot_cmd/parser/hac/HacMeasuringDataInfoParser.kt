@@ -18,8 +18,8 @@ class HacMeasuringDataInfoParser : IOTCommandParser<HacMeasuringDataInfo> {
             datatype = keyValueMap.getOrDefault("datatype", datatype)
             onewaytest = keyValueMap.getOrDefault("onewaytest", onewaytest)
             checkreverse = keyValueMap.getOrDefault("checkreverse", checkreverse)
-            holelist = keyValueMap.getOrDefault("holelist", holelist)
             currhole = keyValueMap.getOrDefault("currhole", currhole)
+            holelist = keyValueMap.getOrDefault("holelist", holelist)
         }
     }
 

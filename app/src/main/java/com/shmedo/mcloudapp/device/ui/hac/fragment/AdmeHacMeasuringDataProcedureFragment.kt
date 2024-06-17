@@ -50,6 +50,7 @@ import com.shmedo.mcloudapp.ext.showAdmeErrorProtectionDialog
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -66,7 +67,8 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     private var soundPool: SoundPool? = null
     private var voiceMeasureFail = 0
     private var voiceMeasureSuccess = 0
-    private var curCommandType = IOTCommandType.UNKNOWN_TYPE
+
+    private var queryMotionStateJob: Job? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,8 +113,10 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
     private fun loadButtonAnimator() {
         // 加载动画资源
-        val scaleDown = AnimatorInflater.loadAnimator(requireContext(), R.animator.scale_down) as AnimatorSet
-        val scaleUp = AnimatorInflater.loadAnimator(requireContext(), R.animator.scale_up) as AnimatorSet
+        val scaleDown =
+            AnimatorInflater.loadAnimator(requireContext(), R.animator.scale_down) as AnimatorSet
+        val scaleUp =
+            AnimatorInflater.loadAnimator(requireContext(), R.animator.scale_up) as AnimatorSet
 
         // 组合动画
         val animatorSet = AnimatorSet()
@@ -140,13 +144,13 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     private fun getMotorMotionData(timeMillis: Long = 0L) {
         if (mStates.isStopQueryMotorState.get()) return
 
-        launchWithViewLifecycle {
+        // 启动一个新的协程作为超时Job
+        queryMotionStateJob?.cancel()
+        queryMotionStateJob = launchWithViewLifecycle {
             delay(timeMillis)
 
             commandItems.clear()
-            curCommandType = IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE
-
-            val command = IOTCommandUtil.getCommand(curCommandType)
+            val command = IOTCommandUtil.getCommand(IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE)
             commandItems.add(command)
             sendCommandFromCmdList(
                 isStartTimeoutJob = true,
@@ -166,9 +170,8 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             equipmodel = "0",
         )
         commandItems.clear()
-        curCommandType = IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM
         val command = IOTCommandUtil.getCommand(
-            curCommandType,
+            IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -216,6 +219,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     }
 
     private fun stopQueryMotorState() {
+        queryMotionStateJob?.cancel()
         mStates.isStopQueryMotorState.set(true)
         cancelNearbyCommunicationTimeoutJob()
     }
@@ -609,8 +613,8 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             .build()
 
         soundPool?.let {
-            voiceMeasureFail = it.load(context, R.raw.measure_fail, 1)
             voiceMeasureSuccess = it.load(context, R.raw.measure_success, 1)
+            voiceMeasureFail = it.load(context, R.raw.measure_fail, 1)
         }
     }
 

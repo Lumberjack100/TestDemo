@@ -30,6 +30,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.hac.HacMotionState
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -412,7 +413,9 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                     holeAreaDepthInfoArrayList.add(it)
                     holeNumList.add(it.holeno)
                 }
-                updateHoleDepth(info.currhole.toIntOrNull() ?: 0)
+                holeNumList.indexOf(MDCommandUtil.formatStringTwo(info.currhole)).let {
+                    updateHoleDepth(if (it in holeNumList.indices) it else 0)
+                }
             } catch (e: Exception) {
                 Timber.e(e)
                 addLogItem(Log.ERROR, e.errorMsg)
