@@ -19,6 +19,7 @@ class HacMeasuringDataInfoParser : IOTCommandParser<HacMeasuringDataInfo> {
             onewaytest = keyValueMap.getOrDefault("onewaytest", onewaytest)
             checkreverse = keyValueMap.getOrDefault("checkreverse", checkreverse)
             holelist = keyValueMap.getOrDefault("holelist", holelist)
+            currhole = keyValueMap.getOrDefault("currhole", currhole)
         }
     }
 

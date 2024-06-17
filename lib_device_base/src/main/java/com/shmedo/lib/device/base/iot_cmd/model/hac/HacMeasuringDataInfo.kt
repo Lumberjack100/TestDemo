@@ -13,4 +13,5 @@ data class HacMeasuringDataInfo(
     var onewaytest: String = "", //单向测量 0 :关闭 1:开启
     var holelist: String = "",
     var checkreverse: String = "", //反转自检
+    var currhole: String = "", //当前孔号
 )

@@ -198,7 +198,8 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
     }
 
     private fun updateHoleDepth(position: Int) {
-        val holeAreaDepthInfo = holeAreaDepthInfoArrayList[position]
+        val holeAreaDepthInfo =
+            holeAreaDepthInfoArrayList[if (position in holeAreaDepthInfoArrayList.indices) position else 0]
 
         mStates.holeno.set(holeAreaDepthInfo.holeno)
         mStates.areano.set(holeAreaDepthInfo.areano)
@@ -411,7 +412,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                     holeAreaDepthInfoArrayList.add(it)
                     holeNumList.add(it.holeno)
                 }
-                updateHoleDepth(0)
+                updateHoleDepth(info.currhole.toIntOrNull() ?: 0)
             } catch (e: Exception) {
                 Timber.e(e)
                 addLogItem(Log.ERROR, e.errorMsg)
