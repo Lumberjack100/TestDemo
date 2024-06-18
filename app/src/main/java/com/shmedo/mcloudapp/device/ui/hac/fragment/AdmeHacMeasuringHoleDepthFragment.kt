@@ -45,6 +45,7 @@ import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.ext.showMessageDialog
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -66,6 +67,9 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         null
     private var manualMeasuringHoleDepthBottomDialog: AdmeHacManualMeasuringHoleDepthBottomDialog? =
         null
+
+    private var queryMotionStateJob: Job? = null
+
 
 
     override fun initViewModel() {
@@ -396,7 +400,9 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     private fun getMotorMotionData(timeMillis: Long = 0L) {
         if (mStates.isStopQueryMotorState.get()) return
 
-        launchWithViewLifecycle {
+        // 启动一个新的协程作为超时Job
+        queryMotionStateJob?.cancel()
+        queryMotionStateJob = launchWithViewLifecycle {
             delay(timeMillis)
 
             commandItems.clear()
@@ -435,12 +441,16 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     private fun stopMotorMotion() {
         stopQueryMotorState()
 
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.ADME_MD_STOP_MEASURING_HOLEDEPTH
-        )
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        launchWithViewLifecycle {
+            delay(500)
+
+            commandItems.clear()
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.ADME_MD_STOP_MEASURING_HOLEDEPTH
+            )
+            commandItems.add(command)
+            sendCommandFromCmdList(isStartTimeoutJob = true)
+        }
     }
 
     override fun lazyLoadData() {
@@ -690,7 +700,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                         }
                         mStates.isExitButtonVisible.set(true)
                         stopMotorMotion()
-                        showLoadingDialog(StringUtils.getString(R.string.processing))
                     }
 
                     override fun onExitClick() {
@@ -837,8 +846,9 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     }
 
     private fun stopQueryMotorState() {
-        cancelNearbyCommunicationTimeoutJob()
+        queryMotionStateJob?.cancel()
         mStates.isStopQueryMotorState.set(true)
+        cancelNearbyCommunicationTimeoutJob()
     }
 
     override fun onResume() {

@@ -24,7 +24,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentAdmeGuideGrooveCalibrationBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeGuideGrooveCalibrationViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
@@ -34,6 +33,7 @@ import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.ext.showMessageDialog
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -58,6 +58,8 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
     private var repeatPollNum = 0 //当查询电机脉冲数重复超过一定次数时，判定电机停止
 
     private var motorMotionAngleFragmentBottomDialog: AdmeMotorMotionAngleBottomDialog? = null
+    private var queryMotionStateJob: Job? = null
+
 
 
     override fun initViewModel() {
@@ -216,7 +218,9 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
     private fun getMotorMotionData(timeMillis: Long = 0L) {
         if (mStates.isStopQueryMotorState.get()) return
 
-        launchWithViewLifecycle {
+        // 启动一个新的协程作为超时Job
+        queryMotionStateJob?.cancel()
+        queryMotionStateJob = launchWithViewLifecycle {
             delay(timeMillis)
 
             commandItems.clear()
@@ -234,12 +238,15 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
     private fun stopMotorMotion() {
         stopQueryMotorState()
 
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.ADME_MD_STOP_GUIDE_GROOVE_CALIBRATION
-        )
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        launchWithViewLifecycle {
+            delay(500)
+            commandItems.clear()
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.ADME_MD_STOP_GUIDE_GROOVE_CALIBRATION
+            )
+            commandItems.add(command)
+            sendCommandFromCmdList(isStartTimeoutJob = true)
+        }
     }
 
     /**
@@ -480,7 +487,6 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
                         }
                         mStates.isExitButtonVisible.set(mStates.isDoStopAction.get())
                         stopMotorMotion()
-                        showLoadingDialog(StringUtils.getString(R.string.processing))
                     }
 
                     override fun onPauseClick() {
@@ -578,6 +584,7 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
     }
 
     private fun stopQueryMotorState() {
+        queryMotionStateJob?.cancel()
         mStates.isStopQueryMotorState.set(true)
         cancelNearbyCommunicationTimeoutJob()
     }

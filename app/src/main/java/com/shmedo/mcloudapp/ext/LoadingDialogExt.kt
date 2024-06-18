@@ -10,7 +10,8 @@ import com.shmedo.mcloudapp.common.fragment.LoadingDialogFragment
 fun FragmentActivity.showLoadingDialog(message: String = "请求网络中") {
     val fragmentManager = supportFragmentManager
     if (fragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) == null) {
-        LoadingDialogFragment.newInstance(message).showNow(fragmentManager, LoadingDialogFragment.TAG)
+        LoadingDialogFragment.newInstance(message)
+            .showNow(fragmentManager, LoadingDialogFragment.TAG)
     }
 }
 
@@ -23,15 +24,14 @@ fun FragmentActivity.dismissLoadingDialog() {
 // 公共扩展函数：显示加载对话框（用于Fragment）
 fun Fragment.showLoadingDialog(message: String = "请求网络中") {
     if (isAdded && childFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) == null) {
-        LoadingDialogFragment.newInstance(message).showNow(childFragmentManager, LoadingDialogFragment.TAG)
+        LoadingDialogFragment.newInstance(message)
+            .showNow(childFragmentManager, LoadingDialogFragment.TAG)
     }
 }
 
 fun Fragment.dismissLoadingDialog() {
-    if (isAdded) {
-        childFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG)?.let {
-            (it as? DialogFragment)?.dismissAllowingStateLoss()
-        }
+    childFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG)?.let {
+        (it as? DialogFragment)?.dismissAllowingStateLoss()
     }
 }
 
