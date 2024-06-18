@@ -511,11 +511,17 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         isShowMsg: Boolean,
         msg: String
     ) {
-        if (communicateWay is BleConnect && bleViewModel.isConnected()) {
-            if (IOTCommandUtil.extractCommandType(cmdStr) == IOTCommandType.ADME_HAC_MD_GET_HOLE_MEASURE_PULSE) {
-                getMotorMotionData(DELAY_2000_MILLIS)
+            when (IOTCommandUtil.extractCommandType(cmdStr)) {
+                IOTCommandType.ADME_MD_GET_MEASURING_HOLEDEPTH_PULSE,
+                -> {
+                    super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, false, msg)
+                    getMotorMotionData(DELAY_2000_MILLIS)
+                }
+
+                else -> {
+                    super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, isShowMsg, msg)
+                }
             }
-        }
     }
 
     override fun setResultData(cmdStr: String) {
@@ -710,13 +716,12 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList()
-                        stopQueryMotorState()
-                        //电机停止,更新运动状态页面
-                        if (mStates.isAutoMeasuringMode.get()) {
-                            mStates.isExitButtonVisible.set(true)
-                        } else {
-                            mStates.isExitButtonVisible.set(mStates.isDoManualStopAction.get())
-                        }
+//                        //电机停止,更新运动状态页面
+//                        if (mStates.isAutoMeasuringMode.get()) {
+//                            mStates.isExitButtonVisible.set(true)
+//                        } else {
+//                            mStates.isExitButtonVisible.set(mStates.isDoManualStopAction.get())
+//                        }
                     }
                 }
             }
@@ -775,7 +780,9 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                             return
                         }
+                        mStates.isExitButtonVisible.set(true)
                         stopMotorMotion()
+                        showLoadingDialog(StringUtils.getString(R.string.processing))
                     }
 
                     override fun onExitClick() {
@@ -840,7 +847,9 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                             return
                         }
+                        mStates.isExitButtonVisible.set(mStates.isDoManualStopAction.get())
                         stopMotorMotion()
+                        showLoadingDialog(StringUtils.getString(R.string.processing))
                     }
 
                     override fun onPauseClick() {

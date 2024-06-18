@@ -38,7 +38,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentAdmeHacMeasuringDataProcedureBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
@@ -175,11 +174,9 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             entity.toCommandString()
         )
         commandItems.add(command)
-
-        showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
+            timeoutMillis = AppContants.Communication.DELAY_5000_MILLIS
         )
     }
 
@@ -215,6 +212,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     fun showStopWarnDialog() {
         showMessage("确定停止电机运动？", "温馨提示", "确定", {
             stopMeasureAction()
+            showLoadingDialog(StringUtils.getString(R.string.processing))
         }, "取消")
     }
 
@@ -230,8 +228,26 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         isShowMsg: Boolean,
         msg: String
     ) {
-        if (communicateWay is BleConnect && bleViewModel.isConnected()) {
-            getMotorMotionData(DELAY_3000_MILLIS)
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr,
+            isDismissLoadingDialog,
+            false,
+            msg
+        )
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE,
+            -> {
+                getMotorMotionData(DELAY_3000_MILLIS)
+            }
+
+            IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM,
+            -> {
+                stopMeasureAction()
+            }
+
+            else -> {
+
+            }
         }
     }
 
@@ -302,8 +318,18 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
         //异常时，停止轮询电机运动状态，展示异常原因
         if (motionState.abndiasis.isNotEmpty() && motionState.abndiasis != "0") {
-            stopQueryMotorState()
-            showAdmeErrorProtectionDialog(motionState.abndiasis)
+            stopMeasureAction()
+            showAdmeErrorProtectionDialog(motionState.abndiasis) {
+                mStates.motionStateWrapper.get().motorinfo = "10"
+                mStates.motorInfo.set("测量失败")
+                mStates.isRunButtonVisible.set(true)
+                mStates.runButtonText.set("下一步")
+                if (voiceMeasureFail != 0) {
+                    playSound(voiceMeasureFail)
+                }
+                loadButtonAnimator()
+            }
+            return
         }
 
         try {
