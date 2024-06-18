@@ -758,7 +758,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                         }
                         mStates.isExitButtonVisible.set(mStates.isDoManualStopAction.get())
                         stopMotorMotion()
-                        showLoadingDialog(StringUtils.getString(R.string.processing))
                     }
 
                     override fun onPauseClick() {
