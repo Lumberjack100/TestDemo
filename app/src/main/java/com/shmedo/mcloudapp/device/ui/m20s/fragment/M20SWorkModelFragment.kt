@@ -104,7 +104,6 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
                     null, selectedIndex,
                     { position, text ->
                         mStates.model.set(text)
-                        mStates.isFrontCalcVisible.set(text == "移动站")
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
