@@ -86,7 +86,7 @@ class MedoBleRepository private constructor(
         }
     }
 
-    suspend fun sendData(command: String) {
+    fun sendData(command: String) {
         medoBleManager?.sendData(command)
     }
 
