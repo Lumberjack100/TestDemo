@@ -159,18 +159,13 @@ class AdmeHacHomeFragment : UniversalDeviceHomeFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "获取设备的运行状态出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            //获取设备的运行状态
-//                            getMotorMotionData(20000)
-                        }
+                        sendCommandFromCmdList()
                         updateMotionState(result.data)
                     }
                 }

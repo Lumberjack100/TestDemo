@@ -13,6 +13,8 @@ import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.blankj.utilcode.util.ColorUtils
 import com.kongzue.dialogx.dialogs.MessageDialog
 import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
+import com.lxj.xpopup.interfaces.SimpleCallback
 import com.shmedo.lib.device.base.iot_cmd.enums.AdmeModuleErrorType
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
@@ -207,7 +209,10 @@ fun Fragment.showMessageDialog(
     )
 }
 
-fun BaseFragment.showAdmeErrorProtectionDialog(abndiasis: String) {
+fun BaseFragment.showAdmeErrorProtectionDialog(
+    abndiasis: String,
+    onDismissAction: () -> Unit = {}
+) {
     val errorMsg = getAdmeErrorMsg(abndiasis)
     if (errorMsg.isEmpty()) {
         return
@@ -220,6 +225,12 @@ fun BaseFragment.showAdmeErrorProtectionDialog(abndiasis: String) {
         .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
         .enableDrag(false)
         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+        .setPopupCallback(object : SimpleCallback() {
+            override fun onDismiss(popupView: BasePopupView?) {
+                super.onDismiss(popupView)
+                onDismissAction.invoke()
+            }
+        })
         .asCustom(popupView)
         .show()
 }
@@ -235,7 +246,7 @@ fun BaseFragment.getAdmeErrorMsg(abndiasis: String, delimiters: String = "\n"): 
     abndiasis.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
         .forEach { code ->
             val errorType = AdmeModuleErrorType.valueByCode(code)
-            if (errorType != AdmeModuleErrorType.EMPTY_ERROR) {
+            if (errorType != AdmeModuleErrorType.NORMAL && errorType != AdmeModuleErrorType.EMPTY_ERROR) {
                 stringBuilder.append(if (errorType == AdmeModuleErrorType.UNKNOWN_ERROR) "未知异常,异常代码: $code" else errorType.description)
                 stringBuilder.append(delimiters)
             }

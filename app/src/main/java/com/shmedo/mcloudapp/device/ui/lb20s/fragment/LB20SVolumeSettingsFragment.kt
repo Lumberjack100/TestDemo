@@ -135,10 +135,8 @@ class LB20SVolumeSettingsFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_VOICE_BROADCAST_VOLUME_RESPONSE -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

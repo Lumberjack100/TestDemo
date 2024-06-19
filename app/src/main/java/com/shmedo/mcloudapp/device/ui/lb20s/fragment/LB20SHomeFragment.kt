@@ -179,10 +179,8 @@ class LB20SHomeFragment : UniversalDeviceHomeFragment() {
             IOTCommandType.MD_SET_VOICE_BROADCAST_VOLUME_OFF -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "关闭语音播报失败:" + result.message
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

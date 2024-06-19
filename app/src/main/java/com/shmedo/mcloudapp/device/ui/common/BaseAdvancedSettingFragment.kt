@@ -35,6 +35,7 @@ import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
@@ -58,7 +59,6 @@ import com.shmedo.mcloudapp.utils.map.JZLocationConverter
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
-import timber.log.Timber
 import java.util.Locale
 
 /**
@@ -73,6 +73,8 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
     private lateinit var mStates: AdvancedSettingViewModel
     private lateinit var locationViewModel: LocationViewModel
     private val iotParseManager: IOTParserManager by inject()
+    private val mdParseManager: MDParserManager by inject()
+
 
     private var gcjLatLng: AMapLocation? = null //当前定位经纬度,中国国测局地理坐标（GCJ-02）
     private var geocoderSearch: GeocodeSearch? = null
@@ -277,10 +279,9 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
             IOTCommandType.RESET -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = StringUtils.getString(R.string.reset_failed) + result.message
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        val errMsg =
+                            StringUtils.getString(R.string.reset_failed) + result.message
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -295,10 +296,8 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
             IOTCommandType.MD_SET_INSTALL_LOCATION -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "同步安装位置出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -321,6 +320,21 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("初始化完成")
+                        }
+                    }
+                }
+            }
+            IOTCommandType.MD_RAW -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "同步安装位置出错: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("同步安装位置成功")
                         }
                     }
                 }
@@ -377,10 +391,15 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
 
     private fun setInstallationLocation() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_INSTALL_LOCATION,
-            "lat=${mStates.latitude.get()}&lng=${mStates.longitude.get()}"
-        )
+        val command =
+            if (productType == ProductType.U_R_1 || productType == ProductType.U_I_1)
+                IOTCommandUtil.getCommand(
+                    IOTCommandType.MD_RAW, "content=##9161${mStates.location.get()}"
+                )
+            else IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_INSTALL_LOCATION,
+                "lat=${mStates.latitude.get()}&lng=${mStates.longitude.get()}"
+            )
         commandItems.add(command)
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)

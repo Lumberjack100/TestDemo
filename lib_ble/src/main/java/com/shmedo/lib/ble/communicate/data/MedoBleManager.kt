@@ -229,7 +229,7 @@ class MedoBleManager(
         notifyCharacteristic = null
     }
 
-    suspend fun sendData(command: String) {
+    fun sendData(command: String) {
         try {
             writeCharacteristic?.let {
                 Timber.v(
@@ -245,7 +245,10 @@ class MedoBleManager(
                     // Outgoing data can use automatic splitting.
                     //.split() with no parameters uses the default MTU splitter.
                     .split()
-                    .suspend()
+                    .enqueue()
+
+                //用于解决同时发送多条指令过快导致设备处理不过来响应数据丢失的问题
+                sleep(1000).enqueue()
             }
         } catch (e: Exception) {
             // 处理异常

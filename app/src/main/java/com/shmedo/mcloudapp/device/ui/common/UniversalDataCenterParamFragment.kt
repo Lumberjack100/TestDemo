@@ -36,7 +36,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentDataCenterParamBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
@@ -400,10 +399,8 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询数据中心参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -425,10 +422,8 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 //                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置数据中心参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -482,6 +477,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                 mStates.platformType.set(platformList[it])
             }
         }
+
         //MQTT 协议参数
         mStates.productId.set(data.projid)
         mStates.deviceId.set(data.deviceid)
@@ -489,6 +485,9 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.registerCode.set(data.regcode)
         mStates.registerAddress.set(data.httpaddr)
         mStates.registerPort.set(data.httpport)
+        //重庆地灾平台不显示注册码、注册地址、注册端口号
+        mStates.isRigisterVisible.set(!mStates.platformType.get().contains("重庆地灾"))
+
 
         //SL651 水文协议参数
         mStates.stationType.set(StationCode.valueByCode(data.type_code).description)

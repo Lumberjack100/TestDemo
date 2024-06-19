@@ -114,32 +114,51 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                 subSensorStatusInfo.io?.let { ioBean ->
                     if (ioBean.type.isNotEmpty()) {
                         groupList.add(DeviceStatusInfoGroupItem("开关量传感器"))
-                        groupList.add(
-                            DeviceStatusInfoBasicItem(
-                                name = "状态",
-                                value = if (ioBean.type == IOTRainStation.CLOSE.toString()) "未接入" else "接入",
-                                textColorRes = if (ioBean.type == IOTRainStation.CLOSE.toString()) ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
-                                    R.color.device_online_platform
-                                )
-                            )
-                        )
-                        if (ioBean.type == IOTRainStation.RAIN_OPEN.toString()) {
-                            groupList.add(
-                                DeviceStatusInfoBasicItem(
-                                    name = "雨量值(毫米)",
-                                    value = ioBean.vaule
-                                )
-                            )
-                        } else {
-                            groupList.add(
-                                DeviceStatusInfoBasicItem(
-                                    name = "断线报警器",
-                                    value = if (ioBean.vaule == "1") "断线" else "未断线",
-                                    textColorRes = if (ioBean.vaule == "1") ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
-                                        R.color.device_online_platform
+                        when (IOTRainStation.value(ioBean.type)) {
+                            IOTRainStation.CLOSE -> {//关闭
+                                groupList.add(
+                                    DeviceStatusInfoBasicItem(
+                                        name = "状态",
+                                        value = "未接入",
+                                        textColorRes = ColorUtils.getColor(R.color.device_offline_platform)
                                     )
                                 )
-                            )
+                            }
+
+                            IOTRainStation.RAIN_OPEN -> {//雨量计
+                                groupList.add(
+                                    DeviceStatusInfoBasicItem(
+                                        name = "状态",
+                                        value = "接入",
+                                        textColorRes = ColorUtils.getColor(R.color.device_online_platform)
+                                    )
+                                )
+                                groupList.add(
+                                    DeviceStatusInfoBasicItem(
+                                        name = "雨量值(毫米)",
+                                        value = ioBean.vaule
+                                    )
+                                )
+                            }
+
+                            IOTRainStation.ALARM_OPEN -> {//断线报警器
+                                groupList.add(
+                                    DeviceStatusInfoBasicItem(
+                                        name = "状态",
+                                        value = "接入",
+                                        textColorRes = ColorUtils.getColor(R.color.device_online_platform)
+                                    )
+                                )
+                                groupList.add(
+                                    DeviceStatusInfoBasicItem(
+                                        name = "断线报警器",
+                                        value = if (ioBean.vaule == "1") "断线" else "未断线",
+                                        textColorRes = if (ioBean.vaule == "1") ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
+                                            R.color.device_online_platform
+                                        )
+                                    )
+                                )
+                            }
                         }
                     }
                 }

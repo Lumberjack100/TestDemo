@@ -11,7 +11,7 @@ class AdmeHacMeasuringDataProcedureViewModel : ViewModel() {
 
     val motionStateWrapper = NonNullObservableField(HacMotionState())
 
-    val isCheckReverse = NonNullObservableField(false)
+    val isCheckReverse = NonNullObservableField(false)//测斜仪反转自检
     val measureMode = NonNullObservableField("")// 测量模式
     val motorInfo = NonNullObservableField("")
     val inclinometerBattery = NonNullObservableField("") //测斜仪电量
@@ -27,7 +27,7 @@ class AdmeHacMeasuringDataProcedureViewModel : ViewModel() {
     val runButtonText = NonNullObservableField("结束测量")
 
     val isVerticalProgressBarVisible = NonNullObservableField(true)
-    val isCurDepthVisible = NonNullObservableField(true)
+    val isCurDepthVisible = NonNullObservableField(false)
     val verticalProgress = NonNullObservableField(0)
     val verticalMaxProgress = NonNullObservableField(0)
     val curDepth = NonNullObservableField("")

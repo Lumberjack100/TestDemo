@@ -328,10 +328,8 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_MR_DEL_RS485_PORT1_SENSOR -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "移除传感器出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

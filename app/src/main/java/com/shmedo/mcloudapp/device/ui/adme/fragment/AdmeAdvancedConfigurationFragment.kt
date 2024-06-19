@@ -63,6 +63,8 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initModuleAdapter() {
+        // 获取具体的尺寸值，以像素（px）为单位
+        //val dimenSizeInPx = Utils.getApp().resources.getDimension(R.dimen.device_home_module_item_space)
         binding.rvModule.setup { rv ->
             rv.addItemDecoration(
                 MyGridSpacingItemDecoration(

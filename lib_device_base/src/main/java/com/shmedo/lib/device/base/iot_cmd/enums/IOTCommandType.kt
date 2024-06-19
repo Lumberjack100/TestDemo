@@ -22,10 +22,6 @@ enum class IOTCommandType(private val value: String) {
      */
     QUERY_DEVICE_STATUS("getstatus"),
 
-    /**
-     * 获取设备状态
-     */
-    QUERY_DEVICE_EX_STATUS("md_getExstatus"),
 
     /**
      * 获取设备自检信息
@@ -862,16 +858,6 @@ enum class IOTCommandType(private val value: String) {
     // </editor-fold>
 
     /**
-     * 获取设备位置
-     */
-    MD_GET_LOCATION("md_getloc"),
-
-    /**
-     * 设置设备位置
-     */
-    MD_SET_LOCATION("md_setloc"),
-
-    /**
      * 语音播报
      */
     MD_BROADCAST("broadcast"),
@@ -976,6 +962,11 @@ enum class IOTCommandType(private val value: String) {
      */
     MD_GET_INSTALL_LOCATION("md_getloc"),
     MD_SET_INSTALL_LOCATION("md_setloc"),
+
+    /**
+     * 指令透传
+     */
+    MD_RAW("md_raw"),
 
     /**
      * 自定义心跳包

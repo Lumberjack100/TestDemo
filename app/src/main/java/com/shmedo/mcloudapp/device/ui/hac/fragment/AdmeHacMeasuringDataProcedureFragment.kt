@@ -1,5 +1,9 @@
 package com.shmedo.mcloudapp.device.ui.hac.fragment
 
+import android.animation.Animator
+import android.animation.AnimatorInflater
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.SoundPool
@@ -7,7 +11,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.view.WindowManager
-import android.view.animation.BounceInterpolator
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import com.blankj.utilcode.constant.RegexConstants
@@ -35,7 +38,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentAdmeHacMeasuringDataProcedureBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.CommunicateWay
 import com.shmedo.mcloudapp.device.model.NetPlatformConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
@@ -47,6 +49,7 @@ import com.shmedo.mcloudapp.ext.showAdmeErrorProtectionDialog
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -63,7 +66,8 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     private var soundPool: SoundPool? = null
     private var voiceMeasureFail = 0
     private var voiceMeasureSuccess = 0
-    private var curCommandType = IOTCommandType.UNKNOWN_TYPE
+
+    private var queryMotionStateJob: Job? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -107,20 +111,30 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     }
 
     private fun loadButtonAnimator() {
-        binding.llMeasuringDataProcedureBottom.btnAction.animate()
-            .scaleX(0.6f)
-            .scaleY(0.6f)
-            .setDuration(600)
-            .setInterpolator(BounceInterpolator())
-            .withEndAction {
-                binding.llMeasuringDataProcedureBottom.btnAction.animate()
-                    .scaleX(1f)
-                    .scaleY(1f)
-                    .setDuration(600)
-                    .setInterpolator(BounceInterpolator())
-                    .start()
+        // 加载动画资源
+        val scaleDown =
+            AnimatorInflater.loadAnimator(requireContext(), R.animator.scale_down) as AnimatorSet
+        val scaleUp =
+            AnimatorInflater.loadAnimator(requireContext(), R.animator.scale_up) as AnimatorSet
+
+        // 组合动画
+        val animatorSet = AnimatorSet()
+        animatorSet.playSequentially(scaleDown, scaleUp)
+
+        // 设置重复次数
+        animatorSet.addListener(object : AnimatorListenerAdapter() {
+            var repeatCount = 0
+
+            override fun onAnimationEnd(animation: Animator) {
+                repeatCount++
+                if (repeatCount < 3) {
+                    animatorSet.start()
+                }
             }
-            .start()
+        })
+        // 启动动画
+        animatorSet.setTarget(binding.llMeasuringDataProcedureBottom.btnAction)
+        animatorSet.start()
     }
 
     /**
@@ -129,13 +143,13 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     private fun getMotorMotionData(timeMillis: Long = 0L) {
         if (mStates.isStopQueryMotorState.get()) return
 
-        launchWithViewLifecycle {
+        // 启动一个新的协程作为超时Job
+        queryMotionStateJob?.cancel()
+        queryMotionStateJob = launchWithViewLifecycle {
             delay(timeMillis)
 
             commandItems.clear()
-            curCommandType = IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE
-
-            val command = IOTCommandUtil.getCommand(curCommandType)
+            val command = IOTCommandUtil.getCommand(IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE)
             commandItems.add(command)
             sendCommandFromCmdList(
                 isStartTimeoutJob = true,
@@ -155,17 +169,14 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             equipmodel = "0",
         )
         commandItems.clear()
-        curCommandType = IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM
         val command = IOTCommandUtil.getCommand(
-            curCommandType,
+            IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
-
-        showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
+            timeoutMillis = AppContants.Communication.DELAY_5000_MILLIS
         )
     }
 
@@ -201,10 +212,12 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     fun showStopWarnDialog() {
         showMessage("确定停止电机运动？", "温馨提示", "确定", {
             stopMeasureAction()
+            showLoadingDialog(StringUtils.getString(R.string.processing))
         }, "取消")
     }
 
     private fun stopQueryMotorState() {
+        queryMotionStateJob?.cancel()
         mStates.isStopQueryMotorState.set(true)
         cancelNearbyCommunicationTimeoutJob()
     }
@@ -215,8 +228,26 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         isShowMsg: Boolean,
         msg: String
     ) {
-        if (communicateWay is BleConnect && bleViewModel.isConnected()) {
-            getMotorMotionData(DELAY_2000_MILLIS)
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr,
+            isDismissLoadingDialog,
+            false,
+            msg
+        )
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE,
+            -> {
+                getMotorMotionData(DELAY_3000_MILLIS)
+            }
+
+            IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM,
+            -> {
+                stopMeasureAction()
+            }
+
+            else -> {
+
+            }
         }
     }
 
@@ -229,18 +260,18 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-//                        cancelNearbyCommunicationTimeoutJob()
+                        //cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "获取设备的运行状态出错: ${result.message}"
                         Timber.e(errMsg)
                         Toaster.show(errMsg)
-                        getMotorMotionData(DELAY_2000_MILLIS)
+                        getMotorMotionData(DELAY_3000_MILLIS)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
                         refreshMotionState(result.data)
                         sendCommandFromCmdList {
-                            getMotorMotionData(DELAY_2000_MILLIS)
+                            getMotorMotionData(DELAY_3000_MILLIS)
                         }
                     }
                 }
@@ -249,10 +280,8 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM -> {//设置HAC数据测量参数
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "停止电机出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -266,7 +295,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.LENGTH_INVALID -> {//接收的数据格式不符合物联网指令协议，进入此逻辑处理
-                getMotorMotionData(DELAY_2000_MILLIS)
+                getMotorMotionData(DELAY_3000_MILLIS)
             }
 
             else -> {
@@ -287,8 +316,18 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
         //异常时，停止轮询电机运动状态，展示异常原因
         if (motionState.abndiasis.isNotEmpty() && motionState.abndiasis != "0") {
-            cancelNearbyCommunicationTimeoutJob()
-            showAdmeErrorProtectionDialog(motionState.abndiasis)
+            stopMeasureAction()
+            showAdmeErrorProtectionDialog(motionState.abndiasis) {
+                mStates.motionStateWrapper.get().motorinfo = "10"
+                mStates.motorInfo.set("测量失败")
+                mStates.isRunButtonVisible.set(true)
+                mStates.runButtonText.set("下一步")
+                if (voiceMeasureFail != 0) {
+                    playSound(voiceMeasureFail)
+                }
+                loadButtonAnimator()
+            }
+            return
         }
 
         try {
@@ -312,46 +351,46 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             mStates.isWaitTimeVisible.set(false)
             when (AdmeCTRMotionState.valueByCode(motionState.motorinfo)) {
                 AdmeCTRMotionState.NOZZLE_WAITING -> {//上拉至管口等待
+                    mStates.motorInfo.set("上拉至管口...")
                     mStates.isCurDepthVisible.set(false)
                     initVerticalProgress(motionState.measpoint)
-                    mStates.motorInfo.set("上拉至管口...")
                 }
 
                 AdmeCTRMotionState.PAIR_SETTING_PARAM -> {//测斜仪配对
-                    mStates.isCurDepthVisible.set(false)
-                    initVerticalProgress(motionState.measpoint)
                     val msg =
                         if (motionState.measmode == "1" && mStates.isCheckReverse.get()) "测斜仪配对,反转自检..." else "测斜仪配对中..."
                     mStates.motorInfo.set(msg)
+                    mStates.isCurDepthVisible.set(false)
+                    initVerticalProgress(motionState.measpoint)
                 }
 
                 AdmeCTRMotionState.DOWN,//测斜仪下放
                 AdmeCTRMotionState.BOTTOM_WAITING -> {//管底等待
                     mStates.isCurDepthVisible.set(false)
                     mStates.isWaitTimeVisible.set(true)
-                    initVerticalProgress(motionState.measpoint)
                     mStates.motorInfo.set(
                         if (motionState.motorinfo == "2")
                             "测斜仪下放中..."
                         else
                             "管底等待中..."
                     )
+                    mStates.waittime.set(String.format("%s分钟", getMinTime()))
                     mStates.waittimedesc.set(
                         if (motionState.motorinfo == "2")
                             "下放结束预计"
                         else
                             "距离开始测量预计"
                     )
-                    mStates.waittime.set(String.format("%s分钟", getMinTime()))
+                    initVerticalProgress(motionState.measpoint)
                 }
 
                 AdmeCTRMotionState.POINT_MEASUREMENT -> {//测点测量
                     mStates.isCurDepthVisible.set(true)
                     mStates.isWaitTimeVisible.set(true)
-                    updateVerticalProgress(motionState.measpoint)
                     mStates.motorInfo.set("测点测量中...")
-                    mStates.waittimedesc.set("测量结束预计")
                     mStates.waittime.set(String.format("%s分钟", getMinTime()))
+                    mStates.waittimedesc.set("测量结束预计")
+                    updateVerticalProgress(motionState.measpoint)
                 }
 
                 AdmeCTRMotionState.MEASUREMENT_OVER -> {//测点结束
@@ -361,21 +400,21 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
                 AdmeCTRMotionState.READ_DATA -> {//数据读取中
                     mStates.isVerticalProgressBarVisible.set(false)
-                    mStates.isWaitTimeVisible.set(true)
                     mStates.isHorizontalProgressBarReadingData.set(true)//读取数据进度条颜色
-                    updateHorizontalProgress(motionState.measpoint)
+                    mStates.isWaitTimeVisible.set(true)
                     mStates.motorInfo.set("数据读取中...")
-                    mStates.waittimedesc.set("数据读取结束预计")
                     mStates.waittime.set(String.format("%s分钟", getMinTime()))
+                    mStates.waittimedesc.set("数据读取结束预计")
                     mStates.isRunButtonVisible.set(false)
+                    updateHorizontalProgress(motionState.measpoint)
                 }
 
                 AdmeCTRMotionState.UPLOAD_DATA -> {//数据上传中
                     mStates.isVerticalProgressBarVisible.set(false)
                     mStates.isHorizontalProgressBarReadingData.set(false)//上传数据进度条颜色
-                    updateHorizontalProgress(motionState.measpoint)
                     mStates.motorInfo.set("数据上传中...")
                     mStates.isRunButtonVisible.set(false)
+                    updateHorizontalProgress(motionState.measpoint)
                 }
 
                 AdmeCTRMotionState.WAITING_NEXT_TESTING,//等待下一次测量
@@ -387,7 +426,6 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                     mStates.motorInfo.set(if (motionState.motorinfo == "9") "测量完成,等待反向测量" else "测量完成")
                     mStates.isRunButtonVisible.set(true)
                     mStates.runButtonText.set("下一步")
-                    //VibrateUtils.vibrate(100);
                     if (voiceMeasureSuccess != 0) {
                         playSound(voiceMeasureSuccess)
                     }
@@ -408,7 +446,6 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 else -> {
                 }
             }
-
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -569,7 +606,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     private fun processBack(isNavUp: Boolean = true) {
         launchWithViewLifecycle {
             delay(500)
-            //巡护事件需要给上一级浏览页面传递最新的事件信息
+            //需要给上一级浏览页面传递最新的状态信息
             setFragmentResult(
                 AppContants.Extras.FRAGMENT_MEASURING_DATA_PROCEDURE_RESULT_REQUEST_KEY,
                 bundleOf(AppContants.Extras.MOTOR_STATE to mStates.motionStateWrapper.get())
@@ -600,8 +637,8 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             .build()
 
         soundPool?.let {
-            voiceMeasureFail = it.load(context, R.raw.measure_fail, 1)
             voiceMeasureSuccess = it.load(context, R.raw.measure_success, 1)
+            voiceMeasureFail = it.load(context, R.raw.measure_fail, 1)
         }
     }
 
@@ -619,7 +656,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     }
 
     companion object {
-        const val DELAY_2000_MILLIS = 2000L
+        const val DELAY_3000_MILLIS = 3000L
         const val CHECK_REVERSE: String = "check_reverse"
 
         fun newBundleArguments(

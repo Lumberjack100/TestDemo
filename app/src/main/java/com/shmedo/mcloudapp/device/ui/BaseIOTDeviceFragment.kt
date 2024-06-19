@@ -6,7 +6,6 @@ import androidx.annotation.CallSuper
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.PageRefreshLayout
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.PopTip
 import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
 import com.shmedo.lib.ble.communicate.service.base.ConnectingResult
 import com.shmedo.lib.ble.communicate.service.base.DisconnectedResult
@@ -286,6 +285,12 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
         } else {
+            if (isBleDisconnected()) {
+                Toaster.show("蓝牙已断开，请重新连接")
+                cancelNearbyCommunicationTimeoutJob()
+                finishAction()
+                return
+            }
             //发送物联网指令
             if (command.startsWith(IOTConstants.COMMAND_HEADER)) {
                 bleViewModel.sendIOTCommand(command, deviceInfo.apikey, delaySendMillis)
@@ -339,10 +344,10 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         isShowMsg: Boolean = true,
         msg: String = ""
     ) {
-        Timber.i("${javaClass.simpleName} 发送指令超时")
-        addLogItem(Log.ERROR, "发送指令超时")
+        Timber.i("${javaClass.simpleName} 指令响应超时")
+        addLogItem(Log.ERROR, "指令响应超时")
         if (isShowMsg) {
-            Toaster.show(msg.ifEmpty { "发送指令超时,请稍后尝试" })
+            Toaster.show(msg.ifEmpty { "指令响应超时" })
         }
         if (isDismissLoadingDialog) {
             dismissLoadingDialog()
@@ -358,7 +363,8 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     protected fun handleFailureResult(errMsg: String) {
         cancelNearbyCommunicationTimeoutJob()
         Timber.e(errMsg)
-        PopTip.show(errMsg).autoDismiss(4500).iconError()
+        Toaster.show(errMsg)
+        //PopTip.show(errMsg).autoDismiss(4500).iconError()
     }
 
     /**
