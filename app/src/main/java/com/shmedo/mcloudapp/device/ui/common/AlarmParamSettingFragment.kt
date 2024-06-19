@@ -525,10 +525,8 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置语音参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -543,10 +541,8 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置报警阈值出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -561,10 +557,8 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_ALRAM_BROADCAST_REPORT_INTERVAL -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置报警间隔出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

@@ -507,10 +507,8 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "获取测量孔深配置参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(3500).iconError()
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -543,10 +541,8 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_HAC_MD_SET_HOLE_MEASURE_PARAM -> {//设置孔深测量参数,开始测量
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置孔深测量参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -622,10 +618,8 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_STOP_MEASURING_HOLEDEPTH -> {//停止电机运动
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "停止电机出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

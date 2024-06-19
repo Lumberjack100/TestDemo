@@ -480,10 +480,8 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
             IOTCommandType.REBOOT -> {//重启设备
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = StringUtils.getString(R.string.reboot_failed) + result.message
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

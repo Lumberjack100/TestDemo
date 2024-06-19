@@ -544,7 +544,6 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询执行机构参数出错: ${result.message}"
                         handleFailureResult(errMsg)
                         //设备版本不支持，隐藏编辑按钮
@@ -593,10 +592,8 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询步进电机参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        PopTip.show(errMsg).autoDismiss(4500).iconError()
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -612,10 +609,8 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_BASIC -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置基础配置参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -649,10 +644,8 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_LOCKED_ROTOR_DETECTION -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置堵转参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -665,10 +658,8 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_STEPPER_MOTOR -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置步进电机参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -681,10 +672,8 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SAVE_CONFIG_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "保存出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
