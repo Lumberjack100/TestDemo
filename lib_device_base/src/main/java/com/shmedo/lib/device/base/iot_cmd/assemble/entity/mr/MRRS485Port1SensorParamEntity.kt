@@ -37,6 +37,6 @@ data class MRRS485Port1SensorParamEntity(
 
         return jsonMap.entries
             .filterNot { it.value == IOTConstants.NULL_KEY }
-            .joinToString("&") { "${it.key}=${it.value}" }
+            .joinToString("&") { "${it.key}=${it.value.toString().trim()}" }
     }
 }

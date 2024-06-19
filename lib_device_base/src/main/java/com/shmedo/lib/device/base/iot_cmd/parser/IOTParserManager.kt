@@ -2,6 +2,7 @@ package com.shmedo.lib.device.base.iot_cmd.parser
 
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
+import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 
 /**
@@ -16,13 +17,13 @@ class IOTParserManager constructor(
         parsers.associateBy { it.commandType() }
 
     fun <T> parse(
-        result: String,
+        resultCmdStr: String,
         cmdType: IOTCommandType = IOTCommandType.COMMON_SETTING_COMMAND
     ): IOTCommandResult<T> {
 
         //检查响应指令是否包含表示错误的字段
-        if (result.contains(IOTConstants.ERROR_FLAG)) {
-            val reason = extractFailureReason(result)
+        if (resultCmdStr.contains(IOTConstants.ERROR_FLAG)) {
+            val reason = extractFailureReason(resultCmdStr)
             return IOTCommandResult.Failure(reason, cmdType)
         }
 
@@ -31,13 +32,13 @@ class IOTParserManager constructor(
             cmdType
         )
         //在调用 parse 进行正式解析前，先对响应指令字符串做个基础检查
-        val validationResult = parser.validCheckBeforeParse(result)
-        if (!validationResult.isValid) {
+        val validationResult = parser.validCheckBeforeParse(resultCmdStr)
+        if (!validationResult.isValid)
             return IOTCommandResult.Failure(
                 validationResult.errorMessage ?: "指令字符串格式验证失败", cmdType
             )
-        }
-        return when (val parseResult = parser.parse(result)) {
+
+        return when (val parseResult = parser.parse(resultCmdStr)) {
             is ParseResult.Success -> {
                 @Suppress("UNCHECKED_CAST")
                 IOTCommandResult.Success(parseResult.data as T, cmdType)
@@ -50,22 +51,19 @@ class IOTParserManager constructor(
     /**
      * 从响应指令中提取错误原因
      */
-    private fun extractFailureReason(result: String): String {
-        val reasonPair = result.split("&").find { it.startsWith("reason=") }
+    private fun extractFailureReason(resultCmdStr: String): String {
+        val reasonPair = resultCmdStr.split("&").find { it.startsWith("reason=") }
         val reason = reasonPair?.substringAfter("reason=", "未知错误") ?: "未知错误"
-        //将 reason 中的"unsupported"转换为可读的中文"设备版本不支持","equimodel_err"转换为"设备模式错误"
-        return when (reason) {
-            "unsupported" -> "设备版本不支持"
-            "state not ready" -> "状态未就绪"
-
-            else -> reason
-        }
+        //将 reason 中的"unsupported"转换为可读的中文"设备版本不支持"
+        return IOTCommandUtil.convertErrorReason(
+            reason,
+            IOTCommandUtil.extractCommandType(resultCmdStr)
+        )
     }
 
 //    companion object {
 //        @Volatile
 //        private var INSTANCE: IOTParserManager? = null
-//
 //        fun getInstance(parsers: List<IOTCommandParser<*>>): IOTParserManager =
 //            INSTANCE ?: synchronized(this) {
 //                INSTANCE ?: IOTParserManager(parsers).also { INSTANCE = it }

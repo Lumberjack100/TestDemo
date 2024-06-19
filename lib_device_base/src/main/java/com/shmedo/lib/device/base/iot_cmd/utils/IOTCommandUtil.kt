@@ -36,4 +36,31 @@ object IOTCommandUtil {
     fun <T> getCommand(commandType: IOTCommandType, parameter: T): String {
         return IOTCommandAssemble(commandType, parameter).toString()
     }
+
+    /**
+     * 将英文错误原因转换为中文
+     */
+    fun convertErrorReason(
+        reason: String,
+        cmdType: IOTCommandType = IOTCommandType.COMMON_SETTING_COMMAND
+    ): String {
+        return when (reason) {
+            "unsupported" -> "设备版本不支持"
+            "state not ready" -> "状态未就绪"
+            "equimodel_err" -> "设备模式错误"
+            else -> {
+                when (cmdType) {
+                    IOTCommandType.MD_MR_SET_RS485_PORT1_SENSOR_PARAM -> {
+                        when (reason) {
+                            "swtoken" -> "水文标识错误"
+
+                            else -> reason
+                        }
+                    }
+
+                    else -> reason
+                }
+            }
+        }
+    }
 }
