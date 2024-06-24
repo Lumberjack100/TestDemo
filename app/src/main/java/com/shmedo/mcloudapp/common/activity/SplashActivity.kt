@@ -6,6 +6,7 @@ import android.os.Looper
 import android.text.TextUtils
 import com.amap.api.location.AMapLocationClient
 import com.gyf.immersionbar.ktx.immersionBar
+import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
@@ -77,6 +78,7 @@ class SplashActivity : BaseActivity() {
         loginRequestViewModel.loginResult.observe(this) { dataResult: DataResult<String> ->
             if (!dataResult.responseStatus.isSuccess) {
                 dismissLoadingDialog()
+                Toaster.show("登录失败: " + dataResult.responseStatus.errorMessage)
                 redirectToLoginActivity(500)
                 return@observe
             }
