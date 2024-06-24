@@ -14,6 +14,7 @@ import com.shmedo.lib.core.base.model.UserWrapperInfo
 import com.shmedo.lib.core.base.viewmodel.BaseRequestViewModel
 import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
 import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.lib.network.ext.errorCode
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.lib.network.response.ResponseStatus
@@ -23,7 +24,6 @@ import com.shmedo.mcloudapp.BuildConfig
 import com.shmedo.mcloudapp.data.repository.remote.NetDataRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONException
 import org.json.JSONObject
 import timber.log.Timber
 
@@ -64,28 +64,16 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
      */
     fun requestSendSmsCode(mobile: String) {
         viewModelScope.launch {
-            val jsonObjectRequest = JSONObject()//接口请求参数
-            try {
-                jsonObjectRequest.put("phone", mobile)
-            } catch (e: JSONException) {
-                Timber.e(e)
+            val jsonObjectRequest = JSONObject().apply {
+                put("phone", mobile)
             }
             val data: String =
                 NetDataRepository.instance.sendSmsCode(jsonObjectRequest.toString()) { error: Throwable ->
-                    error.printStackTrace()
-                    val msg =
-                        "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/SendSmsCode error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
-                    addLogItem(
-                        sessionId = MmkvCacheUtil.getAppLogSessionId(),
-                        priority = Log.ERROR,
-                        data = msg
+                    handleError(
+                        _sendCodeResult,
+                        error,
+                        "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/SendSmsCode"
                     )
-
-                    val responseStatus = ResponseStatus()
-                    responseStatus.isSuccess = false
-                    responseStatus.errorMessage = error.errorMsg
-                    responseStatus.source = ResultSource.NETWORK
-                    _sendCodeResult.setValue(DataResult(responseStatus = responseStatus))
                 } ?: return@launch
 
             val responseStatus = ResponseStatus()
@@ -97,195 +85,144 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
     }
 
     /**
+     * 通过token登录
+     */
+    fun requestLoginByToken() {
+        viewModelScope.launch {
+            handleLogin(
+                loginMethod = { getBasicUserInfoByToken() },
+                onTokenReceived = {
+                }
+            )
+        }
+    }
+
+    /**
      * 通过账户密码登录
      */
-    fun requestLogin(mAccount: String, mPassword: String) {
+    fun requestLoginByAccount(mAccount: String, mPassword: String) {
         viewModelScope.launch {
-            val token: String = loginByAccount(mAccount, mPassword) ?: return@launch
-            MmkvCacheUtil.setAccount(mAccount)
-            MmkvCacheUtil.setPassword(mPassword)
-            MmkvCacheUtil.setToken(token)
-
-            val basicUserInfo: BasicUserInfo = getUserByToken() ?: return@launch
-            MmkvCacheUtil.setUserId(basicUserInfo.subjectID)
-            MmkvCacheUtil.setUserCompanyId(basicUserInfo.companyID)
-            MmkvCacheUtil.setUserRealName(basicUserInfo.subjectName)
-
-            val userWrapperInfo: UserWrapperInfo =
-                queryUserByID(basicUserInfo.companyID, basicUserInfo.subjectID) ?: return@launch
-            MmkvCacheUtil.setUser(userWrapperInfo.user)
-
-            val iotPermissionList =
-                queryAllPermissionInService(basicUserInfo.companyID) ?: return@launch
-            MmkvCacheUtil.setUserPermissionList(iotPermissionList)
-            iotPermissionList.forEach {
-                if (it.permissionToken == "ListSuperInfo") {
-                    MmkvCacheUtil.setHasListSuperInfoPermission(true)
+            handleLogin(
+                loginMethod = { loginByAccount(mAccount, mPassword) },
+                onTokenReceived = { token ->
+                    MmkvCacheUtil.setAccount(mAccount)
+                    MmkvCacheUtil.setPassword(mPassword)
+                    MmkvCacheUtil.setToken(token.toString())
                 }
-            }
-
-            val responseStatus = ResponseStatus()
-            responseStatus.isSuccess = true
-            responseStatus.responseCode = "0"
-            responseStatus.source = ResultSource.NETWORK
-            _loginResult.setValue(DataResult(token, responseStatus = responseStatus))
+            )
         }
     }
 
     /**
      * 通过手机验证码登录
      */
-    fun requestQuickLogin(phone: String, code: String) {
+    fun requestLoginByPhoneCaptcha(phone: String, captcha: String) {
         viewModelScope.launch {
-            val token: String = loginByPhone(phone, code) ?: return@launch
-            MmkvCacheUtil.setToken(token)
-
-            val basicUserInfo: BasicUserInfo = getUserByToken() ?: return@launch
-            MmkvCacheUtil.setUserId(basicUserInfo.subjectID)
-            MmkvCacheUtil.setUserCompanyId(basicUserInfo.companyID)
-
-            val userWrapperInfo: UserWrapperInfo =
-                queryUserByID(basicUserInfo.companyID, basicUserInfo.subjectID) ?: return@launch
-            MmkvCacheUtil.setUser(userWrapperInfo.user)
-
-            val iotPermissionList =
-                queryAllPermissionInService(basicUserInfo.companyID) ?: return@launch
-            MmkvCacheUtil.setUserPermissionList(iotPermissionList)
-            iotPermissionList.forEach {
-                if (it.permissionToken == "ListSuperInfo") {
-                    MmkvCacheUtil.setHasListSuperInfoPermission(true)
+            handleLogin(
+                loginMethod = { loginByPhone(phone, captcha) },
+                onTokenReceived = { token ->
+                    MmkvCacheUtil.setToken(token.toString())
                 }
-            }
-
-            val responseStatus = ResponseStatus()
-            responseStatus.isSuccess = true
-            responseStatus.responseCode = "0"
-            responseStatus.source = ResultSource.NETWORK
-            _loginResult.setValue(DataResult(token, responseStatus = responseStatus))
+            )
         }
     }
 
+    private suspend fun handleLogin(
+        loginMethod: suspend () -> Any?,
+        onTokenReceived: (Any) -> Unit
+    ) {
+        val tokenOrBasicUserInfo = loginMethod() ?: return
+        onTokenReceived(tokenOrBasicUserInfo)
+
+        val basicUserInfo = when (tokenOrBasicUserInfo) {
+            is BasicUserInfo -> tokenOrBasicUserInfo
+            is String -> getBasicUserInfoByToken() ?: return
+            else -> throw IllegalArgumentException("Unexpected return type from login method")
+        }
+        MmkvCacheUtil.setUserId(basicUserInfo.subjectID)
+        MmkvCacheUtil.setUserCompanyId(basicUserInfo.companyID)
+        MmkvCacheUtil.setUserRealName(basicUserInfo.subjectName.trim())
+
+        val userWrapperInfo: UserWrapperInfo =
+            queryUserByID(basicUserInfo.companyID, basicUserInfo.subjectID) ?: return
+        MmkvCacheUtil.setUser(userWrapperInfo.user)
+
+        val iotPermissionList =
+            queryAllPermissionInService(basicUserInfo.companyID) ?: return
+        MmkvCacheUtil.setUserPermissionList(iotPermissionList)
+        iotPermissionList.forEach {
+            if (it.permissionToken == "ListSuperInfo") {
+                MmkvCacheUtil.setHasListSuperInfoPermission(true)
+            }
+        }
+
+        val responseStatus = ResponseStatus()
+        responseStatus.isSuccess = true
+        responseStatus.responseCode = "0"
+        responseStatus.source = ResultSource.NETWORK
+        _loginResult.value = DataResult("success", responseStatus = responseStatus)
+    }
+
     private suspend fun loginByAccount(mAccount: String, mPassword: String): String? {
-        val jsonObjectRequest = JSONObject()//接口请求参数
-        try {
-            jsonObjectRequest.put("account", mAccount)
-            jsonObjectRequest.put("password", mPassword)
-        } catch (e: JSONException) {
-            Timber.e(e)
+        val jsonObjectRequest = JSONObject().apply {
+            put("account", mAccount)
+            put("password", mPassword)
         }
         return NetDataRepository.instance.loginByAccount(jsonObjectRequest.toString()) { error: Throwable ->
-            error.printStackTrace()
-            val msg =
-                "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/SignIn error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
-            addLogItem(
-                sessionId = MmkvCacheUtil.getAppLogSessionId(),
-                priority = Log.ERROR,
-                data = msg
-            )
-
-            val responseStatus = ResponseStatus()
-            responseStatus.isSuccess = false
-            responseStatus.errorMessage = error.errorMsg
-            responseStatus.source = ResultSource.NETWORK
-            _loginResult.setValue(DataResult(responseStatus = responseStatus))
+            handleError(_loginResult, error, "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/SignIn")
         }
     }
 
     private suspend fun loginByPhone(phone: String, code: String): String? {
-        val jsonObjectRequest = JSONObject()//接口请求参数
-        try {
-            jsonObjectRequest.put("phone", phone)
-            jsonObjectRequest.put("code", code)
-        } catch (e: JSONException) {
-            Timber.e(e)
+        val jsonObjectRequest = JSONObject().apply {
+            put("phone", phone)
+            put("code", code)
         }
         return NetDataRepository.instance.loginByPhone(jsonObjectRequest.toString()) { error: Throwable ->
-            error.printStackTrace()
-            val msg =
-                "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/SmsLogin error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
-            addLogItem(
-                sessionId = MmkvCacheUtil.getAppLogSessionId(),
-                priority = Log.ERROR,
-                data = msg
+            handleError(
+                _loginResult,
+                error,
+                "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/SmsLogin"
             )
-
-            val responseStatus = ResponseStatus()
-            responseStatus.isSuccess = false
-            responseStatus.errorMessage = error.errorMsg
-            responseStatus.source = ResultSource.NETWORK
-            _loginResult.setValue(DataResult(responseStatus = responseStatus))
         }
     }
 
-    private suspend fun getUserByToken(): BasicUserInfo? =
+    private suspend fun getBasicUserInfoByToken(): BasicUserInfo? =
         NetDataRepository.instance.getUserByToken { error: Throwable ->
-            error.printStackTrace()
-            val msg =
-                "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/GetUserByToken error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
-            addLogItem(
-                sessionId = MmkvCacheUtil.getAppLogSessionId(),
-                priority = Log.ERROR,
-                data = msg
+            handleError(
+                _loginResult,
+                error,
+                "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/GetUserByToken"
             )
-
-            val responseStatus = ResponseStatus()
-            responseStatus.isSuccess = false
-            responseStatus.errorMessage = error.errorMsg
-            responseStatus.source = ResultSource.NETWORK
-            _loginResult.setValue(DataResult(responseStatus = responseStatus))
         }
 
     private suspend fun queryUserByID(companyID: Int = 0, userID: Int = 0): UserWrapperInfo? {
-        val jsonObjectRequest = JSONObject()
-        try {
-            jsonObjectRequest.put("companyID", companyID)
-            jsonObjectRequest.put("userID", userID)
-        } catch (e: JSONException) {
-            Timber.e(e)
+        val jsonObjectRequest = JSONObject().apply {
+            put("companyID", companyID)
+            put("userID", userID)
         }
 
         return NetDataRepository.instance.queryUserByID(jsonObjectRequest.toString()) { error: Throwable ->
-            error.printStackTrace()
-            val msg =
-                "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/QueryUserByID error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
-            addLogItem(
-                sessionId = MmkvCacheUtil.getAppLogSessionId(),
-                priority = Log.ERROR,
-                data = msg
+            handleError(
+                _loginResult,
+                error,
+                "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/QueryUserByID"
             )
-
-            val responseStatus = ResponseStatus()
-            responseStatus.isSuccess = false
-            responseStatus.errorMessage = error.errorMsg
-            responseStatus.source = ResultSource.NETWORK
-            _loginResult.setValue(DataResult(responseStatus = responseStatus))
         }
     }
 
     private suspend fun queryAllPermissionInService(companyID: Int = 0): List<UserPermissionInfo>? {
-        val jsonObjectRequest = JSONObject()
-        try {
-            jsonObjectRequest.put("companyID", companyID)
-            jsonObjectRequest.put("serviceName", "iot")
-        } catch (e: JSONException) {
-            Timber.e(e)
+        val jsonObjectRequest = JSONObject().apply {
+            put("companyID", companyID)
+            put("serviceName", "iot")
         }
 
         return NetDataRepository.instance.queryAllPermissionInService(jsonObjectRequest.toString()) { error: Throwable ->
-            error.printStackTrace()
-            val msg =
-                "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/QueryAllPermissionInService error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
-            addLogItem(
-                sessionId = MmkvCacheUtil.getAppLogSessionId(),
-                priority = Log.ERROR,
-                data = msg
+            handleError(
+                _loginResult,
+                error,
+                "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/QueryAllPermissionInService"
             )
-
-            val responseStatus = ResponseStatus()
-            responseStatus.isSuccess = false
-            responseStatus.errorMessage = error.errorMsg
-            responseStatus.source = ResultSource.NETWORK
-            _loginResult.setValue(DataResult(responseStatus = responseStatus))
         }
     }
 
@@ -293,20 +230,11 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
         viewModelScope.launch {
             val data: String =
                 NetDataRepository.instance.updateUserInfo(jsonParam) { error: Throwable ->
-                    error.printStackTrace()
-                    val msg =
-                        "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/UpdateUser error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
-                    addLogItem(
-                        sessionId = MmkvCacheUtil.getAppLogSessionId(),
-                        priority = Log.ERROR,
-                        data = msg
+                    handleError(
+                        _updateUserInfoResult,
+                        error,
+                        "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/UpdateUser"
                     )
-
-                    val responseStatus = ResponseStatus()
-                    responseStatus.isSuccess = false
-                    responseStatus.errorMessage = error.errorMsg
-                    responseStatus.source = ResultSource.NETWORK
-                    _updateUserInfoResult.setValue(DataResult(responseStatus = responseStatus))
                 } ?: return@launch
 
             val responseStatus = ResponseStatus()
@@ -321,20 +249,11 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
         viewModelScope.launch {
             val data: String =
                 NetDataRepository.instance.uploadUserAvatar(jsonParam) { error: Throwable ->
-                    error.printStackTrace()
-                    val msg =
-                        "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/UploadUserAvatar error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
-                    addLogItem(
-                        sessionId = MmkvCacheUtil.getAppLogSessionId(),
-                        priority = Log.ERROR,
-                        data = msg
+                    handleError(
+                        _uploadUserAvataResult,
+                        error,
+                        "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/UploadUserAvatar"
                     )
-
-                    val responseStatus = ResponseStatus()
-                    responseStatus.isSuccess = false
-                    responseStatus.errorMessage = error.errorMsg
-                    responseStatus.source = ResultSource.NETWORK
-                    _uploadUserAvataResult.setValue(DataResult(responseStatus = responseStatus))
                 } ?: return@launch
 
             val responseStatus = ResponseStatus()
@@ -347,29 +266,17 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
 
     fun refreshUserInfo(companyID: Int = 0, userID: Int = 0) {
         viewModelScope.launch {
-            val jsonObjectRequest = JSONObject()
-            try {
-                jsonObjectRequest.put("companyID", companyID)
-                jsonObjectRequest.put("userID", userID)
-            } catch (e: JSONException) {
-                Timber.e(e)
+            val jsonObjectRequest = JSONObject().apply {
+                put("companyID", companyID)
+                put("userID", userID)
             }
             val userWrapperInfo: UserWrapperInfo =
                 NetDataRepository.instance.queryUserByID(jsonObjectRequest.toString()) { error: Throwable ->
-                    error.printStackTrace()
-                    val msg =
-                        "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/QueryUserByID error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
-                    addLogItem(
-                        sessionId = MmkvCacheUtil.getAppLogSessionId(),
-                        priority = Log.ERROR,
-                        data = msg
+                    handleError(
+                        _userWrapperInfoResult,
+                        error,
+                        "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/QueryUserByID"
                     )
-
-                    val responseStatus = ResponseStatus()
-                    responseStatus.isSuccess = false
-                    responseStatus.errorMessage = error.errorMsg
-                    responseStatus.source = ResultSource.NETWORK
-                    _userWrapperInfoResult.setValue(DataResult(responseStatus = responseStatus))
                 } ?: return@launch
             MmkvCacheUtil.setUser(userWrapperInfo.user)
 
@@ -388,28 +295,17 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
 
     fun queryCompanyInfoByID(companyID: Int = 0) {
         viewModelScope.launch {
-            val jsonObjectRequest = JSONObject()
-            try {
-                jsonObjectRequest.put("companyID", companyID)
-            } catch (e: JSONException) {
-                Timber.e(e)
+            val jsonObjectRequest = JSONObject().apply {
+                put("companyID", companyID)
             }
 
             val companyInfo: CompanyInfo =
                 NetDataRepository.instance.queryCompanyInfoByID(jsonObjectRequest.toString()) { error: Throwable ->
-                    error.printStackTrace()
-                    val msg =
-                        "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/GetCompanyInfo error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
-                    addLogItem(
-                        sessionId = MmkvCacheUtil.getAppLogSessionId(),
-                        priority = Log.ERROR,
-                        data = msg
+                    handleError(
+                        _companyInfoResult,
+                        error,
+                        "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/GetCompanyInfo"
                     )
-                    val responseStatus = ResponseStatus()
-                    responseStatus.isSuccess = false
-                    responseStatus.errorMessage = error.errorMsg
-                    responseStatus.source = ResultSource.NETWORK
-                    _companyInfoResult.setValue(DataResult(responseStatus = responseStatus))
                 } ?: return@launch
 
             val responseStatus = ResponseStatus()
@@ -425,6 +321,58 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
         }
     }
 
+    fun requestUpdatePassword(
+        companyID: Int,
+        userID: Int,
+        newPassword: String,
+        confirmPassword: String
+    ) {
+        viewModelScope.launch {
+            val jsonObjectRequest = JSONObject().apply {
+                put("companyID", companyID)
+                put("userID", userID)
+                put("newPassword", newPassword)
+                put("confirmPassword", confirmPassword)
+            }
+
+            val data: String =
+                NetDataRepository.instance.resetPassword(jsonObjectRequest.toString()) { error: Throwable ->
+                    handleError(
+                        _updatePasswordResult,
+                        error,
+                        "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/ResetPassword"
+                    )
+                } ?: return@launch
+
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = true
+            responseStatus.responseCode = "0"
+            responseStatus.source = ResultSource.NETWORK
+            _updatePasswordResult.setValue(DataResult(data, responseStatus))
+        }
+    }
+
+    private fun <T> handleError(
+        result: MutableResult<DataResult<T>> = MutableResult(),
+        error: Throwable,
+        url: String
+    ) {
+        error.printStackTrace()
+        val msg = "$url error: ${error.errorMsg}"
+        addLogItem(
+            sessionId = MmkvCacheUtil.getAppLogSessionId(),
+            priority = Log.ERROR,
+            data = msg
+        )
+
+        val responseStatus = ResponseStatus().apply {
+            isSuccess = false
+            responseCode = error.errorCode.toString()
+            errorMessage = error.errorMsg
+            source = ResultSource.NETWORK
+        }
+        result.value = DataResult(responseStatus = responseStatus)
+    }
     //<editor-fold desc="孙建伟通用配置接口">
     /**
      * 加载外部配置

@@ -199,6 +199,20 @@ class NetDataRepository private constructor() {
             .tryAwait(onCatch)
 
     /**
+     * 重置用户密码
+     */
+    suspend fun resetPassword(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): String? =
+        RxHttp.postJson("/ResetPassword")
+            .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
+            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addAll(jsonParam)
+            .toAwaitResponse<String>()
+            .tryAwait(onCatch)
+
+    /**
      * 查询用户在某公司某服务中的所有权限
      */
     suspend fun queryAllPermissionInService(

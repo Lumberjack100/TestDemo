@@ -101,7 +101,7 @@ class MineFragment : BaseFragment() {
          * 修改密码
          */
         fun onModifyPasswordClick() {
-//            nav().navigate(R.id.action_mainFragment_to_ResetPasswordFragment)
+            nav().navigate(R.id.action_mainFragment_to_resetPasswordFragment)
         }
 
         /**

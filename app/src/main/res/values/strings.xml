@@ -57,6 +57,9 @@
 
     <!-- 我的模块-->
     <string name="company_intro">上海米度测控科技有限公司成立于2012年2月3日，是一家集GNSS产品研发、生产、销售、服务于一体的综合性高新技术企业。</string>
+    <string name="hint_new_password">新密码</string>
+    <string name="hint_confirm_password">确认密码</string>
+    <string name="user_password_help_text">密码为8-30位字符，至少同时包含大小写字母、数字以及 _!@#¥%^&amp;* 之一</string>
 
     <!-- 设备模块 -->
     <string name="device_online">在线</string>
