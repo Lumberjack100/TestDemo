@@ -36,7 +36,7 @@ abstract class BaseFragment : BaseVmDbFragment() {
         isNavigationBarDarkIcon: Boolean = true,
         navigationBarColor: Int = R.color.white,
         statusBarColor: Int = -1,
-        isKeyboardEnable: Boolean = true,
+        isKeyboardEnable: Boolean = false,
 
         ) {
         immersionBar {
