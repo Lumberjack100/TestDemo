@@ -16,7 +16,7 @@ class DeviceInfo(
     val companyID: Int = 0,//所在公司编号
     val companyName: String = "",//设备ID
     var deviceToken: String = "",//设备SN
-    val deviceName: String = "",//设备名称
+    var deviceName: String = "",//设备名称
     val deviceDesc: String = "",//设备描述信息
     val installLocation: String = "",//设备安装位置
     val gpsLocation: String = "",//设备GPS位置
@@ -24,11 +24,11 @@ class DeviceInfo(
     val deviceStatus: String = "",//启用状态
     val allowWarn: Boolean = false,//是否推送预警
     val exValues: String = "",//设备拓展属性
-    val apikey: String = "",//设备密钥
+    var apikey: String = "",//设备密钥
     val productID: Int = 0,//所属产品编号
-    val productToken: String = "",//所属产品标识
-    val productName: String = "",//所属产品名称
-    val productType: String = "",//所属产品的产品类型
+    var productToken: String = "",//所属产品标识
+    var productName: String = "",//所属产品名称
+    var productType: String = "",//所属产品的产品类型
     val productKey: String = "",//所属产品密钥（产品注册码）
     val firmwareVersion: String = "",//固件版本
     val lastActiveTime: String = "",//最后交互时间

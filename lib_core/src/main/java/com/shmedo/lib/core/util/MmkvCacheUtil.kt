@@ -110,7 +110,7 @@ object MmkvCacheUtil {
         val kv = MMKV.defaultMMKV()
         val userStr = kv.decodeString("user_info")
 
-        return if (userStr.isNullOrEmpty()) null
+        return if (userStr.isNullOrEmpty()) UserInfo()
         else MoshiUtil.fromJson<UserInfo>(userStr)
     }
 

@@ -5,6 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import com.amap.api.location.AMapLocationClient
+import com.blankj.utilcode.util.NetworkUtils
 import com.gyf.immersionbar.ktx.immersionBar
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -88,6 +89,11 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun goToLogin() {
+        if (!NetworkUtils.isConnected()) {
+            redirectToMainActivity(500)
+            return
+        }
+
         //自动登录
         if (!TextUtils.isEmpty(getToken())) {
             loginRequestViewModel.requestLoginByToken()
