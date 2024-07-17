@@ -15,7 +15,6 @@ import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.Utils
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
@@ -34,14 +33,12 @@ import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentAdmeExecutiveAgencyBinding
 import com.shmedo.mcloudapp.device.common.BaseAdmeExecutiveAgencyClickProxy
 import com.shmedo.mcloudapp.device.model.AdmeTimeItem
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.adme.adapter.AdmeTimeAdapter
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeExecutiveAgencyViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessageDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -99,7 +96,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
 //                mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
-        toolbarViewModel.toolbarIvActionVisible.set(mMessenger.admeDeviceMode.get() == "0")
+        toolbarViewModel.toolbarIvActionVisible.set(true)
         toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
         toolbarViewModel.toolbarTvActionText.set("取消")
         initRefresh()
@@ -335,10 +332,6 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         }
         try {
             val value = mStates.measurementCompensationTime.get().toDouble()
-            if (value < 1) {
-                Toaster.show("请输入正确的测量补偿时间!")
-                return
-            }
         } catch (ex: Exception) {
             Toaster.show("请输入正确的测量补偿时间!")
             return
@@ -574,8 +567,8 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         command = IOTCommandUtil.getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM)
         commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+//        showLoadingDialog(StringUtils.getString(R.string.processing))
+//        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun lazyLoadData() {
