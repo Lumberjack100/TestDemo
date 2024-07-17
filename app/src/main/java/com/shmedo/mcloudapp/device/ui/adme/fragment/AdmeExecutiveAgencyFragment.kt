@@ -39,6 +39,7 @@ import com.shmedo.mcloudapp.device.viewmodel.state.AdmeExecutiveAgencyViewModel
 import com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessageDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -96,7 +97,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
 //                mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
-        toolbarViewModel.toolbarIvActionVisible.set(true)
+        toolbarViewModel.toolbarIvActionVisible.set(mMessenger.admeDeviceMode.get() == "0")
         toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
         toolbarViewModel.toolbarTvActionText.set("取消")
         initRefresh()
@@ -567,8 +568,8 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         command = IOTCommandUtil.getCommand(IOTCommandType.MD_SAVE_CONFIG_PARAM)
         commandItems.add(command)
 
-//        showLoadingDialog(StringUtils.getString(R.string.processing))
-//        sendCommandFromCmdList(isStartTimeoutJob = true)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun lazyLoadData() {
