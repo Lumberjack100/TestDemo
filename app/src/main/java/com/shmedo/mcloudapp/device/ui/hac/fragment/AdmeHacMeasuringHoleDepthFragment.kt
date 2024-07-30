@@ -286,12 +286,12 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             }
             try {
                 val value = mStates.speed.get().toDouble()
-                if (value < 1 || value > 100) {
-                    showMessageDialog("电机速度数值范围[1,100]!")
+                if (value < 1 || value > 200) {
+                    showMessageDialog("电机速度数值范围[1,200]!")
                     return
                 }
             } catch (ex: Exception) {
-                showMessageDialog("电机速度数值范围[1,100]!")
+                showMessageDialog("电机速度数值范围[1,200]!")
                 return
             }
             if (mStates.distanceGoal.get().isEmpty()) {
