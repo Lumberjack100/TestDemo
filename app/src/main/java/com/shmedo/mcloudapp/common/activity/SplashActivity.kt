@@ -5,13 +5,15 @@ import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
 import com.amap.api.location.AMapLocationClient
+import com.blankj.utilcode.util.NetworkUtils
 import com.gyf.immersionbar.ktx.immersionBar
+import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.util.MmkvCacheUtil.getAccount
-import com.shmedo.lib.core.util.MmkvCacheUtil.getPassword
+import com.shmedo.lib.core.util.MmkvCacheUtil.getToken
 import com.shmedo.lib.core.util.MmkvCacheUtil.getUserRealName
 import com.shmedo.lib.core.util.MmkvCacheUtil.isAgreePrivate
 import com.shmedo.lib.network.response.DataResult
@@ -77,6 +79,7 @@ class SplashActivity : BaseActivity() {
         loginRequestViewModel.loginResult.observe(this) { dataResult: DataResult<String> ->
             if (!dataResult.responseStatus.isSuccess) {
                 dismissLoadingDialog()
+                Toaster.show("登录失败: " + dataResult.responseStatus.errorMessage)
                 redirectToLoginActivity(500)
                 return@observe
             }
@@ -86,11 +89,14 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun goToLogin() {
-        val mAccount = getAccount()
-        val mPassword = getPassword()
+        if (!NetworkUtils.isConnected()) {
+            redirectToMainActivity(500)
+            return
+        }
+
         //自动登录
-        if (!TextUtils.isEmpty(mAccount) && !TextUtils.isEmpty(mPassword)) {
-            loginRequestViewModel.requestLogin(mAccount, mPassword)
+        if (!TextUtils.isEmpty(getToken())) {
+            loginRequestViewModel.requestLoginByToken()
         } else {
             redirectToLoginActivity(500)
         }

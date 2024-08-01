@@ -15,7 +15,6 @@ import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.Utils
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
-import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
@@ -34,7 +33,6 @@ import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentAdmeExecutiveAgencyBinding
 import com.shmedo.mcloudapp.device.common.BaseAdmeExecutiveAgencyClickProxy
 import com.shmedo.mcloudapp.device.model.AdmeTimeItem
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.adme.adapter.AdmeTimeAdapter
 import com.shmedo.mcloudapp.device.viewmodel.state.AdmeExecutiveAgencyViewModel
@@ -335,10 +333,6 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         }
         try {
             val value = mStates.measurementCompensationTime.get().toDouble()
-            if (value < 1) {
-                Toaster.show("请输入正确的测量补偿时间!")
-                return
-            }
         } catch (ex: Exception) {
             Toaster.show("请输入正确的测量补偿时间!")
             return

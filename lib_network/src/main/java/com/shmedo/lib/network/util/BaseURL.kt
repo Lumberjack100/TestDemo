@@ -11,17 +11,17 @@ enum class BaseURL(@JvmField var baseUrl: String) {
     /**
      * 物联网权限服务地址
      */
-    AUTHORITY_SERVICE_ADDRESS("https://mdiotbff.shmedo.cn/api/v1/auth/"),
+    AUTHORITY_SERVICE_ADDRESS("https://opengw.shmedo.cn/base/auth/api/v1/"),
 
     /**
      * 物联网设备管理服务地址
      */
-    IOT_MANAGER_SERVICE_ADDRESS("https://mdiotbff.shmedo.cn/api/v1/iot/"),
+    IOT_MANAGER_SERVICE_ADDRESS("https://opengw.shmedo.cn/iot/manager/api/v1/"),
 
     /**
      * 物联网指令交互服务地址
      */
-    IOT_INTERACTIVE_SERVICE_ADDRESS("https://mdiotbff.shmedo.cn/api/v1/interactive/"),
+    IOT_INTERACTIVE_SERVICE_ADDRESS("https://opengw.shmedo.cn/iot/interactive/api/v1/"),
 
     /**
      * 云平台原始数据地址

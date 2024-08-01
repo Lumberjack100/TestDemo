@@ -17,14 +17,13 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/ll_search_placeholder"
+            onClickWithDebouncing="@{() -> click.onGoToSearch()}"
             android:layout_width="match_parent"
             android:layout_height="36dp"
-            android:layout_marginStart="@dimen/dimen_size_16"
-            android:layout_marginTop="@dimen/dimen_size_15"
-            android:layout_marginEnd="@dimen/dimen_size_16"
+            android:layout_marginVertical="@dimen/dimen_size_10"
+            android:layout_marginHorizontal="@dimen/dimen_size_16"
             android:background="@drawable/bg_search_project_device_gray"
-            android:gravity="center_vertical"
-            onClickWithDebouncing="@{() -> click.onGoToSearch()}">
+            android:gravity="center_vertical">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="16dp"

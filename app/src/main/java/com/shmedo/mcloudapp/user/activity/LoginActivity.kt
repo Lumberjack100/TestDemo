@@ -31,6 +31,7 @@ import com.shmedo.mcloudapp.common.widget.MyCountDownTimer
 import com.shmedo.mcloudapp.databinding.ActivityLoginBinding
 import com.shmedo.mcloudapp.ext.dismissLoadingDialog
 import com.shmedo.mcloudapp.ext.showLoadingDialog
+import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.user.model.ContentType
 import com.shmedo.mcloudapp.user.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.user.viewmodel.state.LoginViewModel
@@ -100,7 +101,30 @@ class LoginActivity : BaseActivity() {
         loginRequestViewModel.loginResult.observe(this) { dataResult: DataResult<String> ->
             dismissLoadingDialog()
             if (!dataResult.responseStatus.isSuccess) {
-                Toaster.show("登录失败: " + dataResult.responseStatus.errorMessage)
+                //32 用户已限制登录   36 本次登录 IP 与常登录 IP 不符合  37 密码超过 90天过期
+                when (dataResult.responseStatus.responseCode) {
+                    "32", "36" -> {
+                        showMessage(
+                            "登录失败: ${dataResult.responseStatus.errorMessage},请用手机号登录",
+                            "温馨提示",
+                            "确定",
+                            {
+                                mStates.isAccountLogin.set(false)
+                            })
+                    }
+
+                    "37" -> {
+                        showMessage(
+                            "登录失败: 密码超过 90 天已过期,请用手机号登录后修改密码",
+                            "温馨提示",
+                            "确定",
+                            {
+                                mStates.isAccountLogin.set(false)
+                            })
+                    }
+
+                    else -> Toaster.show("登录失败: " + dataResult.responseStatus.errorMessage)
+                }
                 return@observe
             }
             CrashReport.setUserId(MmkvCacheUtil.getAccount()) //该用户本次启动后的异常日志用户account
@@ -153,7 +177,7 @@ class LoginActivity : BaseActivity() {
                     return
                 }
                 showLoadingDialog("正在登录...")
-                loginRequestViewModel.requestLogin(mStates.name.get(), mStates.password.get())
+                loginRequestViewModel.requestLoginByAccount(mStates.name.get(), mStates.password.get())
             } else {
                 //验证码登录
                 if (TextUtils.isEmpty(mStates.phone.get())) {
@@ -171,7 +195,7 @@ class LoginActivity : BaseActivity() {
                     return
                 }
                 showLoadingDialog("正在登录...")
-                loginRequestViewModel.requestQuickLogin(mStates.phone.get(), mStates.code.get())
+                loginRequestViewModel.requestLoginByPhoneCaptcha(mStates.phone.get(), mStates.code.get())
             }
         }
     }

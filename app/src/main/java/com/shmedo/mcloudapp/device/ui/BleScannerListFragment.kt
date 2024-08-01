@@ -24,7 +24,6 @@ import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
 import com.shmedo.lib.core.util.permission.PermissionInterceptor
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -167,18 +166,17 @@ class BleScannerListFragment : BaseFragment() {
         }
         deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
-                discoveredBluetoothDevice?.name?.let { token ->
+                discoveredBluetoothDevice?.name?.let { deviceToken ->
                     //CG0 自组网报警网关 特殊处理
-                    if (!token.endsWith(ProductType.COLLECTOR_G_0.newSuffix)) {
-                        showMessageDialog("获取设备信息失败!${dataResult.responseStatus.errorMessage}")
-                        return@observe
-                    }
+//                    if (!token.endsWith(ProductType.COLLECTOR_G_0.newSuffix)) {
+//                        showMessageDialog("获取设备信息失败!${dataResult.responseStatus.errorMessage}")
+//                        return@observe
+//                    }
                     DeviceHomeActivity.start(
                         mActivity,
                         DeviceInfo(
-                            productName = ProductType.COLLECTOR_G_0.productName,
-                            deviceToken = token,
-                            deviceName = "MD-GW100",
+                            deviceToken = deviceToken.replaceFirst(Regex("^MD-?"), ""),
+                            deviceName = deviceToken.replaceFirst(Regex("^MD-?"), ""),
                         ),
                         discoveredBluetoothDevice,
                         BleConnect

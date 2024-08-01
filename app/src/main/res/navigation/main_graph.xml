@@ -44,6 +44,14 @@
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
             app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
+            android:id="@+id/action_mainFragment_to_resetPasswordFragment"
+            app:destination="@id/resetPasswordFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
     </fragment>
 
     <fragment
@@ -107,6 +115,12 @@
         tools:layout="@layout/fragment_about">
 
     </fragment>
+
+    <fragment
+        android:id="@+id/resetPasswordFragment"
+        android:name="com.shmedo.mcloudapp.user.fragment.ResetPasswordFragment"
+        android:label="ResetPasswordFragment"
+        tools:layout="@layout/fragment_reset_password" />
 
     <action
         android:id="@+id/action_global_to_followDeviceListFragment"

@@ -185,6 +185,10 @@ class DeviceHomeActivity : BaseActivity() {
                     }
                 }
             }
+
+            deviceInfo.productName = deviceInfo.productName.ifEmpty { type.productName }
+            deviceInfo.deviceName = deviceInfo.deviceName.ifEmpty { type.deviceName }
+
             val intent = Intent(context, DeviceHomeActivity::class.java).apply {
                 putExtra(AppContants.Extras.PRODUCT_TYPE, type as Parcelable)
                 putExtra(AppContants.Extras.COMMUNICATION_WAY, communicateWay)

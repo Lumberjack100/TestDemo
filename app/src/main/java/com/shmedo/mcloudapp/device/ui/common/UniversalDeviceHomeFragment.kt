@@ -121,7 +121,8 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
         mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
         mHeadStates.productName.set(deviceInfo.productName)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
-        mHeadStates.deviceName.set(if (deviceInfo.deviceName == deviceInfo.deviceToken) deviceInfo.productToken else deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
+        val deviceName = if (deviceInfo.deviceName == deviceInfo.deviceToken) deviceInfo.productToken else deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken }
+        mHeadStates.deviceName.set(deviceName.replace("BHY-RDS","BHY-3S"))
         mHeadStates.firmwareVersion.set(deviceInfo.firmwareVersion.ifEmpty { "--" })
         mHeadStates.isRunningStateVisible.set(false)
         mHeadStates.isPlatformsVisible.set(false)

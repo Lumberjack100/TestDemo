@@ -21,7 +21,7 @@ dependencyResolutionManagement {
 
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "mCloudapp_Kotlin"
+rootProject.name = "mCloudapp"
 include(":app")
 include(":lib_tcp")
 include(":lib_core")
