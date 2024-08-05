@@ -35,12 +35,9 @@ android {
 }
 
 dependencies {
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
     implementation(project(":lib_core"))
     implementation(libs.kotlin.stdlib.jdk8)
+
     //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
     implementation(libs.timber)
     implementation(libs.utilcodex)
@@ -50,4 +47,8 @@ dependencies {
 
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }

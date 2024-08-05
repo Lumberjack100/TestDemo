@@ -39,10 +39,6 @@ android {
 }
 
 dependencies {
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
     implementation(project(":lib_core"))
     implementation(libs.kotlin.stdlib.jdk8)
 
@@ -52,7 +48,7 @@ dependencies {
     ksp(libs.rxhttp.compiler)
     implementation(libs.rxhttp.converter.moshi)
 
-    // 一个轻量级、高可用性的Android版本更新框架
+    //一个轻量级、高可用性的Android版本更新框架
     api(libs.xuexiangjys.xupdate)
 
     //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
@@ -62,4 +58,8 @@ dependencies {
 
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }

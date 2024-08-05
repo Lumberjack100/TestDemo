@@ -162,24 +162,21 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.legacy.support)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
     implementation(project(":lib_device_base"))
     implementation(project(":lib_ble"))
     implementation(project(":lib_tcp"))
     implementation(project(":lib_network"))
     implementation(project(":lib_core"))
-    implementation(libs.kotlin.stdlib.jdk8)
-    implementation(libs.androidx.constraintlayout)
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
+
     implementation(libs.flexbox)
-    implementation(libs.androidx.appcompat)
+    implementation(libs.kotlin.stdlib.jdk8)
     implementation(libs.material)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.legacy.support)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     //通过 exclude 把对官方 java 包的依赖排除了，引用默认指向 smooth-Navigation
@@ -191,14 +188,11 @@ dependencies {
     implementation(libs.kunminx.strict.databinding)
     implementation(libs.kunminx.smooth.navigation)
 
-    //依赖注入框架
-    implementation(libs.koin.android)
-
     //透明系统栏设置基础依赖包，必须要依赖
     implementation(libs.immersionbar)
     implementation(libs.immersionbar.ktx)
 
-    // 权限请求框架：https://github.com/getActivity/XXPermissions
+    //权限请求框架：https://github.com/getActivity/XXPermissions
     implementation(libs.getActivity.xxpermission)
     //Material Dialog
     implementation(libs.bundles.material.dialogs)
@@ -217,7 +211,7 @@ dependencies {
 
     //开关 Button
     implementation(libs.switchbutton.library)
-    // 一款美观强大的支持单向、双向范围选择、分步、垂直、高度自定义的SeekBar
+    //一款美观强大的支持单向、双向范围选择、分步、垂直、高度自定义的SeekBar
     implementation(libs.rangeSeekBar)
     //Android Library to handle software keyboard visibility change event.
     implementation(libs.keyboardvisibilityevent)
@@ -245,10 +239,17 @@ dependencies {
     implementation(libs.utilcodex)
     implementation(libs.mmkv)
 
+    //依赖注入框架
+    implementation(libs.koin.android)
+
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
 
     //高德地图
     implementation(libs.amap.location)
     implementation(libs.amap.search)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }

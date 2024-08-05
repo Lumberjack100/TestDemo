@@ -7,8 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.blankj.utilcode.util.StringUtils
-import com.hjq.permissions.IPermissionInterceptor
 import com.hjq.permissions.OnPermissionCallback
+import com.hjq.permissions.OnPermissionInterceptor
 import com.hjq.permissions.OnPermissionPageCallback
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
@@ -21,7 +21,7 @@ import com.shmedo.lib.core.R
  * 创建时间:  2023/7/25 <br/>
  * 描述：     TODO
  */
-class PermissionInterceptor : IPermissionInterceptor {
+class PermissionInterceptor : OnPermissionInterceptor {
     override fun grantedPermissionRequest(
         activity: Activity,
         allPermissions: MutableList<String>,
