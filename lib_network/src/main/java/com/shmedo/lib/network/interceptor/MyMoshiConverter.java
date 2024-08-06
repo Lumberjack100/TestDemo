@@ -1,9 +1,9 @@
 package com.shmedo.lib.network.interceptor;
 
-import com.shmedo.lib.core.util.NullBooleanAdapter;
-import com.shmedo.lib.core.util.NullDoubleAdapter;
-import com.shmedo.lib.core.util.NullIntAdapter;
-import com.shmedo.lib.core.util.NullStringAdapter;
+import com.shmedo.lib.core.util.jsonhelper.NullBooleanAdapter;
+import com.shmedo.lib.core.util.jsonhelper.NullDoubleAdapter;
+import com.shmedo.lib.core.util.jsonhelper.NullIntAdapter;
+import com.shmedo.lib.core.util.jsonhelper.NullStringAdapter;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonDataException;
 import com.squareup.moshi.JsonReader;

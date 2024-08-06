@@ -4,7 +4,7 @@ import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.models
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.core.util.MoshiUtil
+import com.shmedo.lib.core.util.jsonhelper.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil

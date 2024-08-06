@@ -16,7 +16,7 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.core.util.MoshiUtil
+import com.shmedo.lib.core.util.jsonhelper.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRRS485Port2CollectionParamEntity
 import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRSerialPortParamEntity
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType

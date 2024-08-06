@@ -1,4 +1,4 @@
-package com.shmedo.lib.core.util
+package com.shmedo.lib.core.util.jsonhelper
 
 
 import com.squareup.moshi.JsonAdapter

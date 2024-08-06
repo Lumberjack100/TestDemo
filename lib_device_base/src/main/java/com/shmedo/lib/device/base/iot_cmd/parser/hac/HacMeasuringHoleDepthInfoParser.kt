@@ -1,6 +1,6 @@
 package com.shmedo.lib.device.base.iot_cmd.parser.hac
 
-import com.shmedo.lib.core.util.MoshiUtil
+import com.shmedo.lib.core.util.jsonhelper.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.device.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.device.base.iot_cmd.model.hac.HacHoleAreaDepthInfo

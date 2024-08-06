@@ -1,4 +1,4 @@
-package com.shmedo.lib.core.util
+package com.shmedo.lib.core.util.jsonhelper
 
 import com.squareup.moshi.FromJson
 import com.squareup.moshi.JsonReader
@@ -14,18 +14,18 @@ import com.squareup.moshi.ToJson
  *
  *
  */
-object NullBooleanAdapter {
+object NullIntAdapter {
     @FromJson
-    fun fromJson(reader: JsonReader): Boolean {
+    fun fromJson(reader: JsonReader): Int {
         if (reader.peek() != JsonReader.Token.NULL) {
-            return reader.nextBoolean()
+            return reader.nextInt()
         }
         reader.nextNull<Unit>()
-        return false
+        return 0
     }
 
     @ToJson
-    fun toJson(writer: JsonWriter, value: Boolean?) {
+    fun toJson(writer: JsonWriter, value: Int?) {
         writer.value(value)
     }
 }

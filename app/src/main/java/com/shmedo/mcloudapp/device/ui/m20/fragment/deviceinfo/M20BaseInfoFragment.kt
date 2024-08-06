@@ -6,7 +6,7 @@ import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.core.util.MoshiUtil
+import com.shmedo.lib.core.util.jsonhelper.MoshiUtil
 import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg

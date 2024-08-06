@@ -3,25 +3,10 @@ package com.shmedo.lib.core.util
 import com.shmedo.lib.core.base.model.AppConfigInfo
 import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.base.model.UserPermissionInfo
+import com.shmedo.lib.core.util.jsonhelper.MoshiUtil
 import com.tencent.mmkv.MMKV
 
 object MmkvCacheUtil {
-
-    /**
-     * 是否是第一次打开 APP
-     */
-    fun isFirst(): Boolean {
-        val kv = MMKV.defaultMMKV()
-        return kv.decodeBool("first", true)
-    }
-
-    /**
-     * 是否是第一次打开 APP
-     */
-    fun setFirst(first: Boolean): Boolean {
-        val kv = MMKV.defaultMMKV()
-        return kv.encode("first", first)
-    }
 
     fun isAgreePrivate(): Boolean {
         val kv = MMKV.defaultMMKV()
@@ -121,13 +106,6 @@ object MmkvCacheUtil {
         }
     }
 
-    fun getUserPermissionList(): List<UserPermissionInfo>? {
-        val kv = MMKV.defaultMMKV()
-        val userStr = kv.decodeString("user_permission_list")
-
-        return if (userStr.isNullOrEmpty()) null
-        else MoshiUtil.fromJson<List<UserPermissionInfo>>(userStr)
-    }
 
     fun setUserPermissionList(list: List<UserPermissionInfo>?) {
         val kv = MMKV.defaultMMKV()
