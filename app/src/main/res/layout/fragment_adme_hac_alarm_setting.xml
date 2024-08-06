@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeHacAlarmSettingViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.AdmeHacAlarmSettingViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.common.BaseClickProxy" />
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
 
     </data>
 
@@ -64,7 +64,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="X轴相对位移量最小值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.firstLevelXAxisMin}"
@@ -82,7 +82,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="X轴相对位移量最大值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.firstLevelXAxisMax}"
@@ -99,7 +99,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="Y轴相对位移量最小值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.firstLevelYAxisMin}"
@@ -117,7 +117,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="Y轴相对位移量最大值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.firstLevelYAxisMax}"
@@ -136,7 +136,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="X轴相对位移量最小值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.secondLevelXAxisMin}"
@@ -154,7 +154,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="X轴相对位移量最大值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.secondLevelXAxisMax}"
@@ -171,7 +171,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="Y轴相对位移量最小值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.secondLevelYAxisMin}"
@@ -189,7 +189,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="Y轴相对位移量最大值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.secondLevelYAxisMax}"
@@ -208,7 +208,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="X轴相对位移量最小值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.thirdLevelXAxisMin}"
@@ -226,7 +226,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="X轴相对位移量最大值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.thirdLevelXAxisMax}"
@@ -243,7 +243,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="Y轴相对位移量最小值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.thirdLevelYAxisMin}"
@@ -261,7 +261,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="Y轴相对位移量最大值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.thirdLevelYAxisMax}"

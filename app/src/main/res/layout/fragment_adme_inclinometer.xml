@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeInclinometerViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.AdmeInclinometerViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeInclinometerFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.adme.fragment.AdmeInclinometerFragment.ClickProxy" />
 
     </data>
 
@@ -146,7 +146,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="扭转角γ" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[-90,90]"
@@ -165,7 +165,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="Mac地址" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.address}"
@@ -183,7 +183,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="采集器采集间隔(秒)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.collectionInterval}"
@@ -201,7 +201,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="采集器解算间隔(秒)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.solvingInterval}"
@@ -219,7 +219,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="休眠时间(秒)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.sleepTime}"
@@ -237,7 +237,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测斜仪修正值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.correctionValue}"

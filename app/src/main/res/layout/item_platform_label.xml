@@ -6,7 +6,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.device.model.PlatformLable" />
+            type="com.shmedo.mcloudapp.model.PlatformLable" />
     </data>
 
     <FrameLayout

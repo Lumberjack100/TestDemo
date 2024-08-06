@@ -13,7 +13,7 @@
 
     <fragment
         android:id="@+id/mR702HomeFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702HomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702HomeFragment"
         android:label="MR702HomeFragment"
         tools:layout="@layout/fragment_mr702_home">
 
@@ -61,13 +61,13 @@
 
     <fragment
         android:id="@+id/mR702DeviceInfoFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.common.CommonDeviceStatusInfoParentFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.CommonDeviceStatusInfoParentFragment"
         android:label="MR702DeviceInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_parent" />
 
     <fragment
         android:id="@+id/mR702DataCenterHomeFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702DataCenterHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702DataCenterHomeFragment"
         android:label="MR702DataCenterHomeFragment"
         tools:layout="@layout/fragment_mr702_data_center_home">
 
@@ -83,13 +83,13 @@
 
     <fragment
         android:id="@+id/mR702DataCenterParamFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702DataCenterParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702DataCenterParamFragment"
         android:label="MR702DataCenterParamFragment"
         tools:layout="@layout/fragment_mr702_data_center_param" />
 
     <fragment
         android:id="@+id/mR702PortHomeFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.port.MR702PortHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702PortHomeFragment"
         android:label="MR702PortHomeFragment"
         tools:layout="@layout/fragment_mr702_port_home">
 
@@ -128,49 +128,49 @@
 
     <fragment
         android:id="@+id/mR702RS485Port1SensorAddParamFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.port.MR702RS485Port1SensorAddParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SensorAddParamFragment"
         android:label="MR702RS485Port1SensorAddParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port1_sensor_add_param" />
 
     <fragment
         android:id="@+id/mR702RS485Port1SensorParamFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.port.MR702RS485Port1SensorParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SensorParamFragment"
         android:label="MR702RS485Port1SensorParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port1_sensor_param" />
 
     <fragment
         android:id="@+id/mR702RS485Port2SensorParamFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.port.MR702RS485Port2SensorParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port2SensorParamFragment"
         android:label="MR702RS485Port2SensorParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port2_sensor_param" />
 
     <fragment
         android:id="@+id/mR702RS485Port3SensorParamFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.port.MR702RS485Port3SensorParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port3SensorParamFragment"
         android:label="MR702RS485Port3SensorParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port3_sensor_param" />
 
     <fragment
         android:id="@+id/mR702TerminalParameterFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702TerminalParameterFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702TerminalParameterFragment"
         android:label="MR702TerminalParameterFragment"
         tools:layout="@layout/fragment_mr702_terminal_parameter" />
 
     <fragment
         android:id="@+id/mR702NetworkCommunicationFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702NetworkCommunicationFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702NetworkCommunicationFragment"
         android:label="MR702NetworkCommunicationFragment"
         tools:layout="@layout/fragment_mr702_network_communication" />
 
     <fragment
         android:id="@+id/mR702EquipmentOperationFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702EquipmentOperationFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702EquipmentOperationFragment"
         android:label="MR702EquipmentOperationFragment"
         tools:layout="@layout/fragment_mr702_equipment_operation" />
 
     <fragment
         android:id="@+id/advancedSettingFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.common.BaseAdvancedSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.BaseAdvancedSettingFragment"
         android:label="BaseAdvancedSettingFragment"
         tools:layout="@layout/fragment_advanced_setting" />
 

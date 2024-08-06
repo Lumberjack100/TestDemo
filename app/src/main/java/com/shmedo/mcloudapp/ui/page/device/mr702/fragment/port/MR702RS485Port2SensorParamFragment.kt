@@ -1,0 +1,340 @@
+package com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port
+
+import android.os.Bundle
+import android.util.Log
+import android.view.View
+import androidx.activity.OnBackPressedCallback
+import com.blankj.utilcode.util.StringUtils
+import com.hjq.toast.Toaster
+import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRRS485Port2SensorParamEntity
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRRS485Port2SensorParam
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.network.ext.errorMsg
+import com.shmedo.mcloudapp.BR
+import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port2SensorParamBinding
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.model.MRRS485Port2
+import com.shmedo.mcloudapp.model.CommunicateWay
+import com.shmedo.mcloudapp.model.MRSensorItem
+import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port2SensorParamViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessageDialog
+import kotlinx.coroutines.delay
+import org.koin.android.ext.android.inject
+import timber.log.Timber
+
+class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentMr702Rs485Port2SensorParamBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: MR702RS485Port2SensorParamViewModel
+    private val iotParseManager: IOTParserManager by inject()
+
+    private var isAdd: Boolean = false
+    private lateinit var sensorItem: MRSensorItem
+
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
+
+    override fun getDataBindingConfig(): DataBindingConfig {
+        return DataBindingConfig(
+            R.layout.fragment_mr702_rs485_port2_sensor_param,
+            BR.stateVM,
+            mStates
+        )
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, ClickProxy())
+    }
+
+    override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentMr702Rs485Port2SensorParamBinding
+        binding.llToolbar.toolbar.title = "RS485-2"
+        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
+            processBack(true)
+        }
+        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                processBack(true)
+            }
+        })
+        initRefresh()
+    }
+
+    private fun initRefresh() {
+        refreshLayout = binding.refreshLayout
+        binding.refreshLayout.setEnableLoadMore(false)
+        binding.refreshLayout.onRefresh {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return@onRefresh
+            }
+            queryData()
+        }
+    }
+
+    override fun initData() {
+        super.initData()
+        arguments?.let {
+            isAdd = it.getBoolean(ADD_SENSOR)
+            sensorItem = it.getParcelable(SENSOR_MODEL_ITEM)!!
+        }
+        mStates.isAdd.set(isAdd)
+        if (isAdd) {
+            binding.refreshLayout.setEnableRefresh(false)
+            mStates.isEditable.set(true)
+        }
+        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
+        toolbarViewModel.toolbarTvActionText.set("取消")
+        toolbarViewModel.toolbarIvActionVisible.set(!isAdd)
+
+        mStates.sensorType.set(sensorItem.sensorType)
+        mStates.sensorName.set(sensorItem.sensorName)
+        mStates.modelToken.set(sensorItem.modelToken)
+
+        resetModelField()
+    }
+
+    /**
+     * 重置采集项
+     */
+    private fun resetModelField() {
+        mStates.channelNumber.set("")//通道编号
+        mStates.hydrologicalIdentification.set("")//水文标识
+        mStates.filterCoefficient.set("2")//滤波系数 2
+        mStates.triggerValue.set("0")//触发值 0
+        mStates.upperLimit.set("1000")//上限值 1000
+        mStates.lowerLimit.set("0")//下限值 0
+        mStates.correctValue.set("0")//修正值 0
+    }
+
+    private fun setEditable(editable: Boolean) {
+        toolbarViewModel.toolbarIvActionVisible.set(!editable)
+        toolbarViewModel.toolbarTvActionVisible.set(editable)
+        mStates.isEditable.set(editable)
+    }
+
+    inner class ClickProxy : BaseClickProxy() {
+        override fun onToolbarIvClick() {
+            setEditable(true)
+        }
+
+        override fun onToolbarTvClick() {
+            setEditable(false)
+        }
+
+        fun onSubmitClick() {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            initSaveCommand()
+        }
+    }
+
+    private fun initSaveCommand() {
+        commandItems.clear()
+        if (mStates.modelToken.get().isEmpty()) {
+            showMessageDialog("请输入物模型")
+            return
+        }
+        if (mStates.channelNumber.get().isEmpty()) {
+            showMessageDialog("请输入通道编号")
+            return
+        }
+        try {
+            val value = mStates.channelNumber.get().toInt()
+            if (value < 1 || value > 16) {
+                showMessageDialog("通道编号数值范围[1,16]!")
+                return
+            }
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的通道编号!")
+            return
+        }
+        if (mStates.hydrologicalIdentification.get().isEmpty()) {
+            showMessageDialog("请输入水文标识")
+            return
+        }
+        if (mStates.filterCoefficient.get().isEmpty()) {
+            showMessageDialog("请输入滤波系数")
+            return
+        }
+        if (mStates.triggerValue.get().isEmpty()) {
+            showMessageDialog("请输入触发值")
+            return
+        }
+        if (mStates.upperLimit.get().isEmpty()) {
+            showMessageDialog("请输入上限值")
+            return
+        }
+        if (mStates.lowerLimit.get().isEmpty()) {
+            showMessageDialog("请输入下限值")
+            return
+        }
+        if (mStates.correctValue.get().isEmpty()) {
+            showMessageDialog("请输入修正值")
+            return
+        }
+        val entity = MRRS485Port2SensorParamEntity(
+            sensortype = mStates.sensorType.get(),
+            chl = mStates.channelNumber.get(),
+            model = mStates.modelToken.get() + "_" + mStates.channelNumber.get(),
+            swtoken = if (mStates.sensorParamWrapper.get().swtoken == mStates.hydrologicalIdentification.get()) IOTConstants.NULL_KEY else mStates.hydrologicalIdentification.get(),
+            filtercnt = if (mStates.sensorParamWrapper.get().filtercnt == mStates.filterCoefficient.get()) IOTConstants.NULL_KEY else mStates.filterCoefficient.get(),
+            gateval = if (mStates.sensorParamWrapper.get().gateval == mStates.triggerValue.get()) IOTConstants.NULL_KEY else mStates.triggerValue.get(),
+            uplimit = if (mStates.sensorParamWrapper.get().uplimit == mStates.upperLimit.get()) IOTConstants.NULL_KEY else mStates.upperLimit.get(),
+            lowlimit = if (mStates.sensorParamWrapper.get().lowlimit == mStates.lowerLimit.get()) IOTConstants.NULL_KEY else mStates.lowerLimit.get(),
+            corrvalue = if (mStates.sensorParamWrapper.get().corrvalue == mStates.correctValue.get()) IOTConstants.NULL_KEY else mStates.correctValue.get(),
+        )
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_MR_SET_RS485_PORT2_SENSOR_PARAM,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    override fun lazyLoadData() {
+        if (isAdd) return
+        binding.refreshLayout.autoRefresh()
+    }
+
+    private fun queryData() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_MR_GET_RS485_PORT2_SENSOR_PARAM,
+            "chl=${sensorItem.chl}"
+        )
+        commandItems.add(command)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    override fun setResultData(cmdStr: String) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_MR_GET_RS485_PORT2_SENSOR_PARAM -> {
+                val result = iotParseManager.parse<MRRS485Port2SensorParam>(
+                    cmdStr,
+                    IOTCommandType.MD_MR_GET_RS485_PORT2_SENSOR_PARAM
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询参数出错: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initParamData(result.data)
+                    }
+                }
+            }
+
+            IOTCommandType.MD_MR_SET_RS485_PORT2_SENSOR_PARAM -> {
+                setEditable(false)
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "设置参数出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("保存成功")
+                            processBack()
+                        }
+                    }
+                }
+            }
+
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
+        }
+    }
+
+    private fun initParamData(sensorParam: MRRS485Port2SensorParam) {
+        try {
+            mStates.sensorParamWrapper.set(sensorParam)
+
+            mStates.sensorType.set(sensorParam.sensortype)
+            mStates.modelToken.set(sensorParam.model.substring(0, sensorParam.model.indexOf("_")))
+            mStates.channelNumber.set(sensorParam.chl)
+            mStates.hydrologicalIdentification.set(sensorParam.swtoken)
+            mStates.filterCoefficient.set(sensorParam.filtercnt)
+            mStates.triggerValue.set(sensorParam.gateval)
+            mStates.upperLimit.set(sensorParam.uplimit)
+            mStates.lowerLimit.set(sensorParam.lowlimit)
+            mStates.correctValue.set(sensorParam.corrvalue)
+        } catch (e: Exception) {
+            Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    private fun processBack(isPressBackBtn: Boolean = false) {
+        launchWithViewLifecycle {
+            if (isPressBackBtn) {
+                mMessenger.requestStatusBarColor(if (statusBarColor == 0) R.color.colorPrimary else statusBarColor)
+                nav().navigateUp()
+                return@launchWithViewLifecycle
+            }
+            delay(1000)
+            //需要给上一级浏览页面传递最新的事件信息
+            mMessenger.requestMR702Rs485PortSensorRefresh(MRRS485Port2)
+            nav().navigateUp()
+        }
+    }
+
+    companion object {
+        const val SENSOR_MODEL_ITEM = "sensor_model_item"
+        const val ADD_SENSOR = "add_sensor"
+
+        fun newBundleArguments(
+            sensorItem: MRSensorItem,
+            isAdd: Boolean = false,
+            type: ProductType = ProductType.UnKnown,
+            communicateWay: CommunicateWay = NetPlatformConnect,
+            deviceInfo: com.shmedo.core.model.DeviceInfo,
+            bleDevice: DiscoveredBluetoothDevice? = null,
+            statusBarColor: Int = R.color.white
+        ): Bundle = Bundle().apply {
+            putParcelable(SENSOR_MODEL_ITEM, sensorItem)
+            putBoolean(ADD_SENSOR, isAdd)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+        }
+    }
+}

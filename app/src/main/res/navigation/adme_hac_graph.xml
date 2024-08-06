@@ -12,7 +12,7 @@
 
     <fragment
         android:id="@+id/admeHacHomeFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.hac.fragment.AdmeHacHomeFragment"
         android:label="AdmeHacHomeFragment"
         tools:layout="@layout/fragment_universal_device_home">
 
@@ -27,13 +27,13 @@
 
     <fragment
         android:id="@+id/admeCurrentStateFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeCurrentStateFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.adme.fragment.AdmeCurrentStateFragment"
         android:label="AdmeCurrentStateFragment"
         tools:layout="@layout/fragment_adme_current_state" />
 
     <fragment
         android:id="@+id/admeAdvancedConfigurationFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeAdvancedConfigurationFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.adme.fragment.AdmeAdvancedConfigurationFragment"
         android:label="AdmeAdvancedConfigurationFragment"
         tools:layout="@layout/fragment_adme_advanced_configuration">
 
@@ -97,73 +97,73 @@
 
     <fragment
         android:id="@+id/admeMeterWheelFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeMeterWheelFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.adme.fragment.AdmeMeterWheelFragment"
         android:label="AdmeMeterWheelFragment"
         tools:layout="@layout/fragment_adme_meter_wheel" />
 
     <fragment
         android:id="@+id/admeInclinometerFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeInclinometerFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.adme.fragment.AdmeInclinometerFragment"
         android:label="AdmeInclinometerFragment"
         tools:layout="@layout/fragment_adme_inclinometer" />
 
     <fragment
         android:id="@+id/admeHacExecutiveAgencyFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacExecutiveAgencyFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.hac.fragment.AdmeHacExecutiveAgencyFragment"
         android:label="AdmeHacExecutiveAgencyFragment"
         tools:layout="@layout/fragment_adme_executive_agency" />
 
     <fragment
         android:id="@+id/admeLockedRotorDetectionFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeLockedRotorDetectionFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.adme.fragment.AdmeLockedRotorDetectionFragment"
         android:label="AdmeLockedRotorDetectionFragment"
         tools:layout="@layout/fragment_adme_locked_rotor_detection" />
 
     <fragment
         android:id="@+id/admeIntelligentControlFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeIntelligentControlFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.adme.fragment.AdmeIntelligentControlFragment"
         android:label="AdmeIntelligentControlFragment"
         tools:layout="@layout/fragment_adme_intelligent_control" />
 
     <fragment
         android:id="@+id/admeThresholdFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeThresholdFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.adme.fragment.AdmeThresholdFragment"
         android:label="AdmeThresholdFragment"
         tools:layout="@layout/fragment_adme_threshold" />
 
     <fragment
         android:id="@+id/admeHacAlarmSettingFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacAlarmSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.hac.fragment.AdmeHacAlarmSettingFragment"
         android:label="AdmeHacAlarmSettingFragment"
         tools:layout="@layout/fragment_adme_hac_alarm_setting" />
 
     <fragment
         android:id="@+id/admeHacMeasuringHoleDepthFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacMeasuringHoleDepthFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.hac.fragment.AdmeHacMeasuringHoleDepthFragment"
         android:label="AdmeHacMeasuringHoleDepthFragment"
         tools:layout="@layout/fragment_adme_hac_measuring_hole_depth" />
 
     <fragment
         android:id="@+id/admeHacMeasuringDataFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacMeasuringDataFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.hac.fragment.AdmeHacMeasuringDataFragment"
         android:label="AdmeHacMeasuringDataFragment"
         tools:layout="@layout/fragment_adme_hac_measuring_data" />
 
     <fragment
         android:id="@+id/admeHacMeasuringDataProcedureFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacMeasuringDataProcedureFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.hac.fragment.AdmeHacMeasuringDataProcedureFragment"
         android:label="AdmeHacMeasuringDataProcedureFragment"
         tools:layout="@layout/fragment_adme_hac_measuring_data_procedure" />
 
     <fragment
         android:id="@+id/admeHacMeasuringDataResultsFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacMeasuringDataResultsFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.hac.fragment.AdmeHacMeasuringDataResultsFragment"
         android:label="AdmeHacMeasuringDataResultsFragment"
         tools:layout="@layout/fragment_adme_hac_measuring_data_results" />
 
     <fragment
         android:id="@+id/admeAdvancedSettingFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeAdvancedSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.adme.fragment.AdmeAdvancedSettingFragment"
         android:label="AdmeAdvancedSettingFragment"
         tools:layout="@layout/fragment_adme_advanced_setting" />
 

@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.device.model.RVEmptyFooter" />
+            type="com.shmedo.mcloudapp.model.RVEmptyFooter" />
     </data>
 
     <FrameLayout

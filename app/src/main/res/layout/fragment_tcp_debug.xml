@@ -7,11 +7,11 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.TcpDebugViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.TcpDebugViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.common.TcpDebugFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.common.TcpDebugFragment.ClickProxy" />
 
     </data>
 

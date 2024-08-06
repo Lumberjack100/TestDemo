@@ -2,8 +2,8 @@ package com.shmedo.mcloudapp.utils
 
 import com.blankj.utilcode.util.ColorUtils
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem
-import com.shmedo.mcloudapp.ext.notNullKey
+import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
+import com.shmedo.mcloudapp.extensions.notNullKey
 import java.text.DecimalFormat
 
 /**

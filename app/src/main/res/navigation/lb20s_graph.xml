@@ -16,7 +16,7 @@
 
     <fragment
         android:id="@+id/lB20SHomeFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.lb20s.fragment.LB20SHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.lb20s.fragment.LB20SHomeFragment"
         android:label="LB20SHomeFragment"
         tools:layout="@layout/fragment_universal_device_home">
 
@@ -32,19 +32,19 @@
 
     <fragment
         android:id="@+id/lB20SAdHocNetworkSettingsFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.lb20s.fragment.LB20SAdHocNetworkSettingsFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.lb20s.fragment.LB20SAdHocNetworkSettingsFragment"
         android:label="LB20SAdHocNetworkSettingsFragment"
         tools:layout="@layout/fragment_lb20s_ad_hoc_network_settings" />
 
     <fragment
         android:id="@+id/radioSettingsFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.common.RadioSettingsFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.RadioSettingsFragment"
         android:label="RadioSettingsFragment"
         tools:layout="@layout/fragment_radio_settings" />
 
     <fragment
         android:id="@+id/lB20SAlarmTestFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.lb20s.fragment.LB20SAlarmTestFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.lb20s.fragment.LB20SAlarmTestFragment"
         android:label="LB20SAlarmTestFragment"
         tools:layout="@layout/fragment_lb20s_alarm_test">
         <action
@@ -57,12 +57,12 @@
     </fragment>
     <fragment
         android:id="@+id/lB20SVolumeSettingsFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.lb20s.fragment.LB20SVolumeSettingsFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.lb20s.fragment.LB20SVolumeSettingsFragment"
         android:label="LB20SVolumeSettingsFragment"
         tools:layout="@layout/fragment_lb20s_volume_settings" />
     <fragment
         android:id="@+id/lB20SCustomAlarmTestFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.lb20s.fragment.LB20SCustomAlarmTestFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.lb20s.fragment.LB20SCustomAlarmTestFragment"
         android:label="LB20SCustomAlarmTestFragment"
         tools:layout="@layout/fragment_lb20s_custom_alarm_test" />
 
@@ -124,7 +124,7 @@
 
     <fragment
         android:id="@+id/advancedSettingFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.common.BaseAdvancedSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.BaseAdvancedSettingFragment"
         android:label="BaseAdvancedSettingFragment"
         tools:layout="@layout/fragment_advanced_setting" />
 

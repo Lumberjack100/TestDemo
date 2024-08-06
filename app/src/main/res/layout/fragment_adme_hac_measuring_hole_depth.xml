@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeHacMeasuringHoleDepthViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.AdmeHacMeasuringHoleDepthViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacMeasuringHoleDepthFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.hac.fragment.AdmeHacMeasuringHoleDepthFragment.ClickProxy" />
 
     </data>
 
@@ -62,7 +62,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测斜仪Mac地址" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="XXXXXXXXXXXX"
@@ -81,7 +81,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="孔号" />
 
-                        <com.shmedo.mcloudapp.common.widget.kmpautotextview.KMPAutoComplTextView
+                        <com.shmedo.mcloudapp.ui.widget.kmpautotextview.KMPAutoComplTextView
                             android:id="@+id/et_hole_num"
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
@@ -108,7 +108,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="区号" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-99]"
@@ -148,7 +148,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="下放速度(r/min)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_down_speed"
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
@@ -247,7 +247,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="电机速度(r/min)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_motor_speed"
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
@@ -268,7 +268,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="设定运动距离(米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.distanceGoal}"

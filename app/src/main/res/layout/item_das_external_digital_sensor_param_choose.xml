@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.device.model.ExternalDigitalSensorParamChooseItem" />
+            type="com.shmedo.mcloudapp.model.ExternalDigitalSensorParamChooseItem" />
 
     </data>
 

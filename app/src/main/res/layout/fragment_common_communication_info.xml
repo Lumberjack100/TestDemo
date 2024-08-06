@@ -8,7 +8,7 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.CommonCommunicationInfoViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.CommonCommunicationInfoViewModel" />
     </data>
 
     <com.drake.brv.PageRefreshLayout
@@ -41,7 +41,7 @@
                         android:text='@{stateVM.signalValue==0?"--dBm":stateVM.signalValue+"dBm" }'
                         tools:text="-51dBm" />
 
-                    <com.shmedo.mcloudapp.common.widget.SignalView
+                    <com.shmedo.mcloudapp.ui.widget.SignalView
                         android:id="@+id/signal"
                         android:layout_width="wrap_content"
                         android:layout_height="22dp"

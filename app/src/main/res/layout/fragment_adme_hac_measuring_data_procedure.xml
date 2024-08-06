@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeHacMeasuringDataProcedureViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.AdmeHacMeasuringDataProcedureViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacMeasuringDataProcedureFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.hac.fragment.AdmeHacMeasuringDataProcedureFragment.ClickProxy" />
 
     </data>
 

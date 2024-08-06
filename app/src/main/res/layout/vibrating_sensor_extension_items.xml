@@ -7,11 +7,11 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.DasExternalVibratingSensorViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalVibratingSensorViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.common.BaseDasExternalVibratingSensorClickProxy" />
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseDasExternalVibratingSensorClickProxy" />
 
     </data>
 
@@ -32,7 +32,7 @@
                 tools:text="扩展1"
                 tools:textColor="@color/title_text_color" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.extension1ValueEnable }"
                 android:hint="请输入"
@@ -53,7 +53,7 @@
                 tools:text="扩展2"
                 tools:textColor="@color/title_text_color" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.extension2ValueEnable }"
                 android:hint="请输入"
@@ -74,7 +74,7 @@
                 tools:text="扩展3"
                 tools:textColor="@color/title_text_color" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.extension3ValueEnable }"
                 android:hint="请输入"
@@ -94,7 +94,7 @@
                 tools:text="扩展4"
                 tools:textColor="@color/title_text_color" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.extension4ValueEnable }"
                 android:hint="请输入"
@@ -113,7 +113,7 @@
                 tools:text="扩展5"
                 tools:textColor="@color/title_text_color" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.extension5ValueEnable }"
                 android:hint="请输入"
@@ -132,7 +132,7 @@
                 tools:text="扩展6"
                 tools:textColor="@color/title_text_color" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.extension6ValueEnable }"
                 android:hint="请输入"
@@ -151,7 +151,7 @@
                 tools:text="扩展7"
                 tools:textColor="@color/title_text_color" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.extension7ValueEnable }"
                 android:hint="请输入"
@@ -170,7 +170,7 @@
                 tools:text="扩展8"
                 tools:textColor="@color/title_text_color" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.extension8ValueEnable }"
                 android:hint="请输入"
@@ -189,7 +189,7 @@
                 tools:text="扩展9"
                 tools:textColor="@color/title_text_color" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.extension9ValueEnable }"
                 android:hint="请输入"
@@ -208,7 +208,7 @@
                 tools:text="扩展10"
                 tools:textColor="@color/title_text_color" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.extension10ValueEnable }"
                 android:hint="请输入"

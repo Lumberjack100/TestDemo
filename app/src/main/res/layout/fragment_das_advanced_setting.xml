@@ -6,11 +6,11 @@
     <data>
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.common.BaseDasAdvancedSettingClickProxy" />
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseDasAdvancedSettingClickProxy" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

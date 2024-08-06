@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.shmedo.mcloudapp.common.fragment.MainFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.main.MainFragment"
         android:label="MainFragment"
         tools:layout="@layout/fragment_main">
         <action
@@ -56,19 +56,19 @@
 
     <fragment
         android:id="@+id/userInfoHomeFragment"
-        android:name="com.shmedo.mcloudapp.user.fragment.UserInfoHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.userprofile.UserInfoHomeFragment"
         android:label="UserInfoHomeFragment"
         tools:layout="@layout/fragment_user_info_home" />
 
     <fragment
         android:id="@+id/companyHomeFragment"
-        android:name="com.shmedo.mcloudapp.user.fragment.CompanyHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.userprofile.CompanyHomeFragment"
         android:label="CompanyHomeFragment"
         tools:layout="@layout/fragment_company_home" />
 
     <fragment
         android:id="@+id/deviceSearchFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.DeviceSearchFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.DeviceSearchFragment"
         android:label="DeviceSearchFragment"
         tools:layout="@layout/fragment_device_search">
         <action
@@ -82,19 +82,19 @@
 
     <fragment
         android:id="@+id/deviceSearchResultFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.DeviceSearchResultFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.DeviceSearchResultFragment"
         android:label="DeviceSearchResultFragment"
         tools:layout="@layout/fragment_device_search_result" />
 
     <fragment
         android:id="@+id/followDeviceListFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.FollowDeviceListFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.FollowDeviceListFragment"
         android:label="FollowDeviceListFragment"
         tools:layout="@layout/fragment_follow_device_list" />
 
     <fragment
         android:id="@+id/settingFragment"
-        android:name="com.shmedo.mcloudapp.user.fragment.SettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.userprofile.SettingFragment"
         android:label="SettingFragment"
         tools:layout="@layout/fragment_setting">
 
@@ -110,7 +110,7 @@
 
     <fragment
         android:id="@+id/aboutFragment"
-        android:name="com.shmedo.mcloudapp.user.fragment.AboutFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.userprofile.AboutFragment"
         android:label="AboutFragment"
         tools:layout="@layout/fragment_about">
 
@@ -118,7 +118,7 @@
 
     <fragment
         android:id="@+id/resetPasswordFragment"
-        android:name="com.shmedo.mcloudapp.user.fragment.ResetPasswordFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.userprofile.ResetPasswordFragment"
         android:label="ResetPasswordFragment"
         tools:layout="@layout/fragment_reset_password" />
 

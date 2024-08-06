@@ -3,7 +3,7 @@ package com.shmedo.lib.ble.communicate.service
 import android.content.Intent
 import android.os.Build
 import androidx.lifecycle.LifecycleService
-import com.shmedo.lib.core.util.ForegroundNotification
+import com.shmedo.lib.ble.communicate.utils.ForegroundNotification
 import timber.log.Timber
 
 /**
@@ -19,7 +19,7 @@ abstract class BleNotificationService : LifecycleService()  {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val result = super.onStartCommand(intent, flags, startId)
-        ForegroundNotification.startBleConnectForeground(this)
+       ForegroundNotification.startBleConnectForeground(this)
         return result
     }
 

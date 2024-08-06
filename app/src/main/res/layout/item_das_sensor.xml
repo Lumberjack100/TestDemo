@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.device.model.DASSensorItem" />
+            type="com.shmedo.mcloudapp.model.DASSensorItem" />
     </data>
 
     <FrameLayout

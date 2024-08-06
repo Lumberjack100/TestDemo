@@ -7,11 +7,11 @@
 
         <variable
             name="vm"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ScanQRCodeResultPopupViewViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ScanQRCodeResultPopupViewViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.common.fragment.DeviceManageHomeFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.main.DeviceManageHomeFragment.ClickProxy" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

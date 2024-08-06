@@ -162,11 +162,12 @@ android {
 }
 
 dependencies {
+    implementation(project(":core_data"))
+    implementation(project(":lib_network"))
     implementation(project(":lib_cmd"))
     implementation(project(":lib_ble"))
     implementation(project(":lib_tcp"))
-    implementation(project(":lib_network"))
-    implementation(project(":lib_base"))
+
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
 
     implementation(libs.flexbox)

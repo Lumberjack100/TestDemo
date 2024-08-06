@@ -1,0 +1,30 @@
+package com.shmedo.mcloudapp.ui.viewmodel.state
+
+import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
+
+/**
+ * 创建者：gonghe
+ *
+ * 创建时间：2023/12/6
+ *
+ * 描述： TODO
+ *
+ *
+ */
+class MR702EquipmentOperationViewModel : CommandResponseViewModel() {
+    //人工置数
+    val isManualSetting = NonNullObservableField(false)//是否正在下发人工置数指令
+    val observationTime = NonNullObservableField("")//观测时间
+    val unit = NonNullObservableField("")//单位
+
+    //设备数据上传
+    val isDeviceDataUploading = NonNullObservableField(false)//是否正在下发设备数据上传指令
+
+    //参数导出
+    val isParamExporting = NonNullObservableField(false)//是否正在下发参数导出指令
+
+    //参数导入
+    val isParamImporting = NonNullObservableField(false)//是否正在下发参数导入指令
+    val sn = NonNullObservableField("")
+    val deviceId = NonNullObservableField("")
+}

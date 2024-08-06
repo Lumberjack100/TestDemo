@@ -7,11 +7,11 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port3SensorParamViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port3SensorParamViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.mr702.fragment.port.MR702RS485Port3SensorParamFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port3SensorParamFragment.ClickProxy" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -29,7 +29,7 @@
                 android:text="播放时长(秒)"
                 tools:textColor="@color/title_text_color" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:hint="请输入"
@@ -49,7 +49,7 @@
                 android:text="切换间隔(毫秒)"
                 tools:textColor="@color/title_text_color" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:hint="请输入"
@@ -112,7 +112,7 @@
                 android:text="一级报警(毫米)"
                 tools:textColor="@color/title_text_color" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="@={stateVM.rainTriggerValueLevel1}"
@@ -131,7 +131,7 @@
                 android:text="二级报警(毫米)"
                 tools:textColor="@color/title_text_color" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="@={stateVM.rainTriggerValueLevel2}"
@@ -150,7 +150,7 @@
                 android:text="三级报警(毫米)"
                 tools:textColor="@color/title_text_color" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="@={stateVM.rainTriggerValueLevel3}"
@@ -173,7 +173,7 @@
                 android:text="一级报警(毫米)"
                 tools:textColor="@color/title_text_color" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="@={stateVM.waterTriggerValueLevel1}"
@@ -192,7 +192,7 @@
                 android:text="二级报警(毫米)"
                 tools:textColor="@color/title_text_color" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="@={stateVM.waterTriggerValueLevel2}"
@@ -211,7 +211,7 @@
                 android:text="三级报警(毫米)"
                 tools:textColor="@color/title_text_color" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="@={stateVM.waterTriggerValueLevel3}"

@@ -15,7 +15,7 @@
 
     <fragment
         android:id="@+id/m20HomeFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.m20.fragment.M20HomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m20.fragment.M20HomeFragment"
         android:label="M20HomeFragment"
         tools:layout="@layout/fragment_universal_device_home">
 
@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/advancedSettingFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.common.BaseAdvancedSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.BaseAdvancedSettingFragment"
         android:label="BaseAdvancedSettingFragment"
         tools:layout="@layout/fragment_advanced_setting" />
 

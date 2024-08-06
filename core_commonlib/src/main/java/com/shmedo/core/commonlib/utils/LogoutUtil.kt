@@ -9,11 +9,16 @@ import com.blankj.utilcode.util.ActivityUtils
  * @Description :描述
  */
 object LogoutUtil {
+
     /**
      * 注销用户登录。
      */
     fun logout() {
-//        AuthMMKVOwner.clear()
+        MmkvCacheUtil.setToken("")
+        MmkvCacheUtil.setPassword("")
+        MmkvCacheUtil.setUserId(0)
+        MmkvCacheUtil.setUserCompanyId(0)
+        MmkvCacheUtil.setUser(null)
         ActivityUtils.finishAllActivities()
     }
 }

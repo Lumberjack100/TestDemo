@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.LB20SCustomAlarmTestViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.LB20SCustomAlarmTestViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.lb20s.fragment.LB20SCustomAlarmTestFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.lb20s.fragment.LB20SCustomAlarmTestFragment.ClickProxy" />
 
     </data>
 
@@ -69,7 +69,7 @@
                 textViewEnabled="@{stateVM.isEditable}"
                 android:text="播报内容" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.isEditable }"
                 android:text="@={stateVM.broadcastContent}"

@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.RadioSettingsViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.RadioSettingsViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.common.RadioSettingsFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.common.RadioSettingsFragment.ClickProxy" />
 
     </data>
 
@@ -157,7 +157,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站1编号" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode1}"
@@ -175,7 +175,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站2编号" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode2}"
@@ -193,7 +193,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站3编号" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode3}"
@@ -211,7 +211,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站4编号" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode4}"
@@ -228,7 +228,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站5编号" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode5}"
@@ -245,7 +245,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站6编号" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode6}"
@@ -262,7 +262,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站7编号" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode7}"
@@ -279,7 +279,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站8编号" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode8}"
@@ -296,7 +296,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站9编号" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode9}"
@@ -313,7 +313,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站10编号" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode10}"

@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/universalDataCenterHomeFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.common.UniversalDataCenterHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment"
         android:label="UniversalDataCenterHomeFragment"
         tools:layout="@layout/fragment_universal_data_center_home" />
 
     <fragment
         android:id="@+id/dataCenterParamFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.common.UniversalDataCenterParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment"
         android:label="DataCenterParamFragment"
         tools:layout="@layout/fragment_data_center_param" />
 

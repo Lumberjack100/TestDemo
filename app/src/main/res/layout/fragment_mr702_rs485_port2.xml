@@ -8,15 +8,15 @@
 
         <variable
             name="homeVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port2ViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port2ViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.mr702.fragment.port.MR702RS485Port2Fragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port2Fragment.ClickProxy" />
     </data>
 
     <com.drake.brv.PageRefreshLayout
@@ -65,7 +65,7 @@
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="采集频率(秒)" />
 
-                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.acquisitionFrequency}"
@@ -83,7 +83,7 @@
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="采集次数(N)" />
 
-                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.collectionTimes}"
@@ -101,7 +101,7 @@
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="无应答次数" />
 
-                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.noResponseTimes}"
@@ -119,7 +119,7 @@
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="延时时间(秒)" />
 
-                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.delayDuration}"
@@ -170,7 +170,7 @@
                         android:text="采集器地址"
                         tools:textColor="@color/title_text_color" />
 
-                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:hint="请输入"
@@ -190,7 +190,7 @@
                         android:text="波特率(Bps)"
                         tools:textColor="@color/title_text_color" />
 
-                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:hint="请输入"

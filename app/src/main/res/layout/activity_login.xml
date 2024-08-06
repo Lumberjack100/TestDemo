@@ -7,11 +7,11 @@
 
         <variable
             name="vm"
-            type="com.shmedo.mcloudapp.user.viewmodel.state.LoginViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.LoginViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.user.activity.LoginActivity.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.login.LoginActivity.ClickProxy" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -107,7 +107,7 @@
                             android:layout_marginStart="23dp"
                             android:src="@drawable/icon_account" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/accountET"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -141,7 +141,7 @@
                             android:layout_marginStart="23dp"
                             android:src="@drawable/icon_pwd" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/passwordET"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -192,7 +192,7 @@
                             android:layout_marginStart="23dp"
                             android:src="@drawable/icon_phone" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/phoneET"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
@@ -220,7 +220,7 @@
                         android:background="@drawable/login_edittext_shape"
                         android:gravity="center_vertical">
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/codeET"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"

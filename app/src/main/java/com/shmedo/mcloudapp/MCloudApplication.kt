@@ -11,12 +11,11 @@ import com.kongzue.dialogx.DialogX
 import com.scwang.smart.refresh.footer.ClassicsFooter
 import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
-import com.shmedo.lib.core.base.BaseApp
-import com.shmedo.lib.core.util.CrashReportingTree
+import com.shmedo.mcloudapp.utils.CrashReportingTree
 import com.shmedo.lib.network.RxHttpManager
-import com.shmedo.mcloudapp.common.activity.ErrorActivity
-import com.shmedo.mcloudapp.common.activity.SplashActivity
-import com.shmedo.mcloudapp.di.appKoinModule
+import com.shmedo.mcloudapp.koin.appKoinModule
+import com.shmedo.mcloudapp.ui.page.base.activity.ErrorActivity
+import com.shmedo.mcloudapp.ui.page.welcome.SplashActivity
 import com.tencent.bugly.crashreport.CrashReport
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger

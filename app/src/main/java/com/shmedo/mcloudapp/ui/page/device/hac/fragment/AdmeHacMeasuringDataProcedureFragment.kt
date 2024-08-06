@@ -1,0 +1,676 @@
+package com.shmedo.mcloudapp.ui.page.device.hac.fragment
+
+import android.animation.Animator
+import android.animation.AnimatorInflater
+import android.animation.AnimatorListenerAdapter
+import android.animation.AnimatorSet
+import android.media.AudioAttributes
+import android.media.AudioManager
+import android.media.SoundPool
+import android.os.Bundle
+import android.text.TextUtils
+import android.view.View
+import android.view.WindowManager
+import androidx.core.os.bundleOf
+import androidx.fragment.app.setFragmentResult
+import com.blankj.utilcode.constant.RegexConstants
+import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.KeyboardUtils
+import com.blankj.utilcode.util.RegexUtils
+import com.blankj.utilcode.util.StringUtils
+import com.hjq.toast.Toaster
+import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.hac.HacMeasuringDataEntity
+import com.shmedo.lib.cmd.base.iot_cmd.enums.AdmeCTRMotionState
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.model.hac.HacMotionState
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.mcloudapp.BR
+import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.databinding.FragmentAdmeHacMeasuringDataProcedureBinding
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.model.CommunicateWay
+import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeHacMeasuringDataProcedureViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.showAdmeErrorProtectionDialog
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessage
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import org.koin.android.ext.android.inject
+import timber.log.Timber
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
+import java.util.Locale
+
+class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentAdmeHacMeasuringDataProcedureBinding
+    private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: AdmeHacMeasuringDataProcedureViewModel
+    private val iotParseManager: IOTParserManager by inject()
+
+    private var soundPool: SoundPool? = null
+    private var voiceMeasureFail = 0
+    private var voiceMeasureSuccess = 0
+
+    private var queryMotionStateJob: Job? = null
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initSoundPool()
+    }
+
+    override fun initViewModel() {
+        super.initViewModel()
+        toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
+    }
+
+    override fun getDataBindingConfig(): DataBindingConfig {
+        return DataBindingConfig(
+            R.layout.fragment_adme_hac_measuring_data_procedure,
+            BR.stateVM,
+            mStates
+        )
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, ClickProxy())
+    }
+
+    override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentAdmeHacMeasuringDataProcedureBinding
+        binding.llToolbar.toolbar.title = "数据测量"
+        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
+            processBack()
+        }
+        registerOnBackPressedDispatcher {
+            processBack()
+        }
+        toolbarViewModel.toolbarIvActionVisible.set(false)
+    }
+
+    override fun initData() {
+        super.initData()
+        arguments?.let {
+            mStates.isCheckReverse.set(it.getBoolean(CHECK_REVERSE))
+        }
+    }
+
+    private fun loadButtonAnimator() {
+        // 加载动画资源
+        val scaleDown =
+            AnimatorInflater.loadAnimator(requireContext(), R.animator.scale_down) as AnimatorSet
+        val scaleUp =
+            AnimatorInflater.loadAnimator(requireContext(), R.animator.scale_up) as AnimatorSet
+
+        // 组合动画
+        val animatorSet = AnimatorSet()
+        animatorSet.playSequentially(scaleDown, scaleUp)
+
+        // 设置重复次数
+        animatorSet.addListener(object : AnimatorListenerAdapter() {
+            var repeatCount = 0
+
+            override fun onAnimationEnd(animation: Animator) {
+                repeatCount++
+                if (repeatCount < 3) {
+                    animatorSet.start()
+                }
+            }
+        })
+        // 启动动画
+        animatorSet.setTarget(binding.llMeasuringDataProcedureBottom.btnAction)
+        animatorSet.start()
+    }
+
+    /**
+     * 获取电机的运行状态
+     */
+    private fun getMotorMotionData(timeMillis: Long = 0L) {
+        if (mStates.isStopQueryMotorState.get()) return
+
+        // 启动一个新的协程作为超时Job
+        queryMotionStateJob?.cancel()
+        queryMotionStateJob = launchWithViewLifecycle {
+            delay(timeMillis)
+
+            commandItems.clear()
+            val command = IOTCommandUtil.getCommand(IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE)
+            commandItems.add(command)
+            sendCommandFromCmdList(
+                isStartTimeoutJob = true,
+                timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_10000_MILLIS
+            )
+        }
+    }
+
+    /**
+     * 停止测量
+     */
+    private fun stopMeasureAction() {
+        stopQueryMotorState()
+
+        //数据测量配置参数
+        val entity = HacMeasuringDataEntity(
+            equipmodel = "0",
+        )
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
+        sendCommandFromCmdList(
+            isStartTimeoutJob = true,
+            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_5000_MILLIS
+        )
+    }
+
+    override fun lazyLoadData() {
+        mStates.isStopQueryMotorState.set(false)
+        getMotorMotionData()
+    }
+
+    inner class ClickProxy : BaseClickProxy() {
+        fun onActionClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            if (mStates.runButtonText.get() == "结束测量") {
+                showStopWarnDialog()
+
+            } else if (mStates.runButtonText.get() == "下一步") {
+                if (mStates.motionStateWrapper.get().motorinfo == "8") {
+                    processBack(false)
+                    //等待下次测量,进入测量结果展示页面
+                    nav().navigate(
+                        R.id.action_global_to_admeHacMeasuringDataResultsFragment
+                    )
+                } else {
+                    processBack(true)
+                }
+            }
+        }
+    }
+
+    fun showStopWarnDialog() {
+        showMessage("确定停止电机运动？", "温馨提示", "确定", {
+            stopMeasureAction()
+            showLoadingDialog(StringUtils.getString(R.string.processing))
+        }, "取消")
+    }
+
+    private fun stopQueryMotorState() {
+        queryMotionStateJob?.cancel()
+        mStates.isStopQueryMotorState.set(true)
+        cancelNearbyCommunicationTimeoutJob()
+    }
+
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowMsg: Boolean,
+        msg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr,
+            isDismissLoadingDialog,
+            false,
+            msg
+        )
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE,
+            -> {
+                getMotorMotionData(DELAY_3000_MILLIS)
+            }
+
+            IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM,
+            -> {
+                stopMeasureAction()
+            }
+
+            else -> {
+
+            }
+        }
+    }
+
+    override fun setResultData(cmdStr: String) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE -> {//获取ADME的运行状态
+                val result = iotParseManager.parse<HacMotionState>(
+                    cmdStr,
+                    IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        //cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "获取设备的运行状态出错: ${result.message}"
+                        Timber.e(errMsg)
+                        Toaster.show(errMsg)
+                        getMotorMotionData(DELAY_3000_MILLIS)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        refreshMotionState(result.data)
+                        sendCommandFromCmdList {
+                            getMotorMotionData(DELAY_3000_MILLIS)
+                        }
+                    }
+                }
+            }
+
+            IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM -> {//设置HAC数据测量参数
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "停止电机出错: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            mStates.isRunButtonVisible.set(false)
+                            mStates.motorInfo.set("本轮测量已停止,预计 ${getMinTime()} 分钟后可重新测量")
+                        }
+                    }
+                }
+            }
+
+            IOTCommandType.LENGTH_INVALID -> {//接收的数据格式不符合物联网指令协议，进入此逻辑处理
+                getMotorMotionData(DELAY_3000_MILLIS)
+            }
+
+            else -> {
+
+            }
+        }
+    }
+
+    /**
+     * 实时刷新电机运动状态
+     */
+    private fun refreshMotionState(motionState: HacMotionState) {
+        mStates.motionStateWrapper.set(motionState)
+        if (mStates.isFirstQueryMotorState.get()) {
+            mStates.isFirstQueryMotorState.set(false)
+            mStates.measureMode.set(if (motionState.measmode == "0") "正向测量" else "反向测量")
+        }
+
+        //异常时，停止轮询电机运动状态，展示异常原因
+        if (motionState.abndiasis.isNotEmpty() && motionState.abndiasis != "0") {
+            stopMeasureAction()
+            showAdmeErrorProtectionDialog(motionState.abndiasis) {
+                mStates.motionStateWrapper.get().motorinfo = "10"
+                mStates.motorInfo.set("测量失败")
+                mStates.isRunButtonVisible.set(true)
+                mStates.runButtonText.set("下一步")
+                if (voiceMeasureFail != 0) {
+                    playSound(voiceMeasureFail)
+                }
+                loadButtonAnimator()
+            }
+            return
+        }
+
+        try {
+            mStates.inclinometerBattery.set(motionState.incvoltage + "%")
+            motionState.incvoltage.toDoubleOrNull()?.let {
+                mStates.inclinometerBatteryColorRes.set(
+                    if (it <= 20) ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
+                        R.color.device_online_platform
+                    )
+                )
+            }
+            mStates.deviceBattery.set(motionState.driveinputv + "%")
+            motionState.driveinputv.toDoubleOrNull()?.let {
+                mStates.deviceBatteryColorRes.set(
+                    if (it <= 20) ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
+                        R.color.device_online_platform
+                    )
+                )
+            }
+            mStates.isVerticalProgressBarVisible.set(true)
+            mStates.isWaitTimeVisible.set(false)
+            when (AdmeCTRMotionState.valueByCode(motionState.motorinfo)) {
+                AdmeCTRMotionState.NOZZLE_WAITING -> {//上拉至管口等待
+                    mStates.motorInfo.set("上拉至管口...")
+                    mStates.isCurDepthVisible.set(false)
+                    initVerticalProgress(motionState.measpoint)
+                }
+
+                AdmeCTRMotionState.PAIR_SETTING_PARAM -> {//测斜仪配对
+                    val msg =
+                        if (motionState.measmode == "1" && mStates.isCheckReverse.get()) "测斜仪配对,反转自检..." else "测斜仪配对中..."
+                    mStates.motorInfo.set(msg)
+                    mStates.isCurDepthVisible.set(false)
+                    initVerticalProgress(motionState.measpoint)
+                }
+
+                AdmeCTRMotionState.DOWN,//测斜仪下放
+                AdmeCTRMotionState.BOTTOM_WAITING -> {//管底等待
+                    mStates.isCurDepthVisible.set(false)
+                    mStates.isWaitTimeVisible.set(true)
+                    mStates.motorInfo.set(
+                        if (motionState.motorinfo == "2")
+                            "测斜仪下放中..."
+                        else
+                            "管底等待中..."
+                    )
+                    mStates.waittime.set(String.format("%s分钟", getMinTime()))
+                    mStates.waittimedesc.set(
+                        if (motionState.motorinfo == "2")
+                            "下放结束预计"
+                        else
+                            "距离开始测量预计"
+                    )
+                    initVerticalProgress(motionState.measpoint)
+                }
+
+                AdmeCTRMotionState.POINT_MEASUREMENT -> {//测点测量
+                    mStates.isCurDepthVisible.set(true)
+                    mStates.isWaitTimeVisible.set(true)
+                    mStates.motorInfo.set("测点测量中...")
+                    mStates.waittime.set(String.format("%s分钟", getMinTime()))
+                    mStates.waittimedesc.set("测量结束预计")
+                    updateVerticalProgress(motionState.measpoint)
+                }
+
+                AdmeCTRMotionState.MEASUREMENT_OVER -> {//测点结束
+                    mStates.verticalProgress.set(mStates.verticalMaxProgress.get())
+                    mStates.motorInfo.set("准备读取数据...")
+                }
+
+                AdmeCTRMotionState.READ_DATA -> {//数据读取中
+                    mStates.isVerticalProgressBarVisible.set(false)
+                    mStates.isHorizontalProgressBarReadingData.set(true)//读取数据进度条颜色
+                    mStates.isWaitTimeVisible.set(true)
+                    mStates.motorInfo.set("数据读取中...")
+                    mStates.waittime.set(String.format("%s分钟", getMinTime()))
+                    mStates.waittimedesc.set("数据读取结束预计")
+                    mStates.isRunButtonVisible.set(false)
+                    updateHorizontalProgress(motionState.measpoint)
+                }
+
+                AdmeCTRMotionState.UPLOAD_DATA -> {//数据上传中
+                    mStates.isVerticalProgressBarVisible.set(false)
+                    mStates.isHorizontalProgressBarReadingData.set(false)//上传数据进度条颜色
+                    mStates.motorInfo.set("数据上传中...")
+                    mStates.isRunButtonVisible.set(false)
+                    updateHorizontalProgress(motionState.measpoint)
+                }
+
+                AdmeCTRMotionState.WAITING_NEXT_TESTING,//等待下一次测量
+                AdmeCTRMotionState.WAITING_BACK_TESTING -> {//等待反测
+                    stopQueryMotorState()
+                    mStates.isVerticalProgressBarVisible.set(false)
+                    mStates.isHorizontalProgressBarReadingData.set(motionState.motorinfo == "9")//正反测模式下，正测阶段只有读取数据过程，没有上传数据，所以不展示上传数据进度框
+                    setHorizontalMaxProgress()
+                    mStates.motorInfo.set(if (motionState.motorinfo == "9") "测量完成,等待反向测量" else "测量完成")
+                    mStates.isRunButtonVisible.set(true)
+                    mStates.runButtonText.set("下一步")
+                    if (voiceMeasureSuccess != 0) {
+                        playSound(voiceMeasureSuccess)
+                    }
+                    loadButtonAnimator()
+                }
+
+                AdmeCTRMotionState.FAILED -> {//测量失败
+                    stopQueryMotorState()
+                    mStates.motorInfo.set("测量失败")
+                    mStates.isRunButtonVisible.set(true)
+                    mStates.runButtonText.set("下一步")
+                    if (voiceMeasureFail != 0) {
+                        playSound(voiceMeasureFail)
+                    }
+                    loadButtonAnimator()
+                }
+
+                else -> {
+                }
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
+
+    private fun initVerticalProgress(measurePoint: String) {
+        if (measurePoint.isEmpty() || !measurePoint.contains("|"))
+            return
+
+        try {
+            val values = measurePoint.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
+            if (values.size > 1 && !TextUtils.isEmpty(values[1])) {
+                val depth = values[1].toDouble()
+                if (depth == 0.0) {
+                    mStates.holeDepth.set("测斜管深度 -- 米")
+                    return
+                }
+                mStates.holeDepthValue.set(depth)
+                mStates.holeDepth.set(
+                    "测斜管深度 ${
+                        DeviceStatusInfoProcessor.formatDoubleValue(
+                            depth.toString(),
+                            "0",
+                            1
+                        )
+                    } 米"
+                )
+                mStates.verticalMaxProgress.set((depth * 10).toInt())
+            }
+            mStates.verticalProgress.set(0)
+
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
+
+    private fun updateVerticalProgress(measurePoint: String) {
+        if (measurePoint.isEmpty() || !measurePoint.contains("|"))
+            return
+
+        try {
+            var depth = mStates.holeDepthValue.get()
+            val values =
+                measurePoint.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
+            if (mStates.holeDepthValue.get() <= 0.0) {
+                if (values.size > 1 && !TextUtils.isEmpty(values[1])) {
+                    depth = values[1].toDouble()
+                    if (depth <= 0.0) {
+                        mStates.holeDepth.set("测斜管深度 -- 米")
+                        return
+                    }
+                    mStates.holeDepthValue.set(depth)
+                    mStates.holeDepth.set(
+                        "测斜管深度 ${
+                            DeviceStatusInfoProcessor.formatDoubleValue(
+                                depth.toString(),
+                                "0",
+                                1
+                            )
+                        } 米"
+                    )
+                    mStates.verticalMaxProgress.set((depth * 10).toInt())
+                }
+            }
+            if (TextUtils.isEmpty(values[0])) {
+                mStates.verticalProgress.set(0)
+            } else {
+                val value = values[0].toDouble()
+                mStates.curDepth.set(
+                    "当前测点位置 ${
+                        DeviceStatusInfoProcessor.formatDoubleValue(
+                            (depth - value).toString(),
+                            "0",
+                            1
+                        )
+                    } 米"
+                )
+                mStates.verticalProgress.set((value * 10).toInt())
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
+
+    private fun updateHorizontalProgress(measurePoint: String) {
+        if (measurePoint.isEmpty() || !measurePoint.contains("|"))
+            return
+
+        try {
+            var progress = 0
+            val values = measurePoint.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
+            if (values.size > 1 && !TextUtils.isEmpty(values[1]) && RegexUtils.isMatch(
+                    RegexConstants.REGEX_INTEGER,
+                    values[1]
+                )
+            ) {
+                mStates.horizontalMaxProgress.set(values[1].toInt())
+            }
+            if (!TextUtils.isEmpty(values[0])) {
+                progress = values[0].toInt()
+                mStates.horizontalProgress.set(progress)
+            }
+            mStates.processDataNum.set("${values[0]}/${values[1]}")
+            val result =
+                if ((mStates.horizontalMaxProgress.get() == 0)) 0f else progress.toFloat() / mStates.horizontalMaxProgress.get()
+            mStates.processDataPercent.set(
+                "${
+                    DeviceStatusInfoProcessor.formatDoubleValue(
+                        (result * 100).toString(),
+                        "0",
+                        0
+                    )
+                } %"
+            )
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+    }
+
+    private fun setHorizontalMaxProgress() {
+        mStates.horizontalProgress.set(mStates.horizontalMaxProgress.get())
+        mStates.processDataNum.set(
+            "${mStates.horizontalMaxProgress.get()}/${mStates.horizontalMaxProgress.get()}"
+        )
+        mStates.processDataPercent.set("100%")
+    }
+
+
+    private fun getMinTime(): String {
+        val decimalFormat = DecimalFormat("#", DecimalFormatSymbols(Locale.getDefault()))
+        mStates.motionStateWrapper.get().let { motionState ->
+            if (TextUtils.isEmpty(motionState.waittime)) return "--"
+            try {
+                val second = motionState.waittime.toInt()
+                val min = second.toFloat() / 60 + 1
+
+                return decimalFormat.format(min.toDouble())
+            } catch (exception: Exception) {
+                Timber.e(exception)
+                return "--"
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // 启用屏幕长亮
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // 禁用屏幕长亮
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    private fun processBack(isNavUp: Boolean = true) {
+        launchWithViewLifecycle {
+            delay(500)
+            //需要给上一级浏览页面传递最新的状态信息
+            setFragmentResult(
+                com.shmedo.core.commonlib.utils.AppContants.Extras.FRAGMENT_MEASURING_DATA_PROCEDURE_RESULT_REQUEST_KEY,
+                bundleOf(com.shmedo.core.commonlib.utils.AppContants.Extras.MOTOR_STATE to mStates.motionStateWrapper.get())
+            )
+            if (isNavUp)
+                nav().navigateUp()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        releaseSoundPool()
+    }
+
+    /**
+     * 测量完成或失败后播放的提示音初始化
+     */
+    private fun initSoundPool() {
+        //AudioAttributes是一个封装音频各种属性的方法
+        val audioAttrs = AudioAttributes.Builder()
+            .setLegacyStreamType(AudioManager.STREAM_MUSIC)
+            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+            .setUsage(AudioAttributes.USAGE_MEDIA)
+            .build()
+        soundPool = SoundPool.Builder()
+            .setMaxStreams(1)
+            .setAudioAttributes(audioAttrs)
+            .build()
+
+        soundPool?.let {
+            voiceMeasureSuccess = it.load(context, R.raw.measure_success, 1)
+            voiceMeasureFail = it.load(context, R.raw.measure_fail, 1)
+        }
+    }
+
+    private fun playSound(soundId: Int) {
+        soundPool?.let {
+            if (soundId != 0) {
+                it.play(soundId, 1.0f, 1.0f, 1, 0, 1.0f)
+            }
+        }
+    }
+
+    private fun releaseSoundPool() {
+        soundPool?.release()
+        soundPool = null
+    }
+
+    companion object {
+        const val DELAY_3000_MILLIS = 3000L
+        const val CHECK_REVERSE: String = "check_reverse"
+
+        fun newBundleArguments(
+            isCheckReverse: Boolean,
+            type: ProductType = ProductType.UnKnown,
+            communicateWay: CommunicateWay = NetPlatformConnect,
+            deviceInfo: com.shmedo.core.model.DeviceInfo,
+            bleDevice: DiscoveredBluetoothDevice? = null,
+            statusBarColor: Int = R.color.white
+        ): Bundle = Bundle().apply {
+            putBoolean(CHECK_REVERSE, isCheckReverse)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+        }
+    }
+}

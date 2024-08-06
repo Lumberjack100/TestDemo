@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeHacMeasuringDataViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.AdmeHacMeasuringDataViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.hac.fragment.AdmeHacMeasuringDataFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.hac.fragment.AdmeHacMeasuringDataFragment.ClickProxy" />
 
     </data>
 
@@ -62,7 +62,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测斜仪Mac地址" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="XXXXXXXXXXXX"
@@ -135,7 +135,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="推荐测斜管孔深(米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.recommendHoleDepth}"
@@ -153,7 +153,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="下放等待时间(分钟)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-32]"

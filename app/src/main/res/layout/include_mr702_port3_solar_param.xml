@@ -7,7 +7,7 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702RS485Port3SensorParamViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port3SensorParamViewModel" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat

@@ -35,8 +35,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":core_data"))
 
-    implementation(project(":lib_base"))
     implementation(libs.kotlin.stdlib.jdk8)
 
     //A logger with a small, extensible API which provides utility on top of Android's normal Log class.

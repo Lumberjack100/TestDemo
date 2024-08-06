@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeThresholdViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.AdmeThresholdViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeThresholdFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.adme.fragment.AdmeThresholdFragment.ClickProxy" />
 
     </data>
 
@@ -64,7 +64,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="驱动器标压阈值(V)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.driveStandardVoltageThreshold}"
@@ -82,7 +82,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="驱动器低压阈值(V)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.driveLowVoltageThreshold}"
@@ -100,7 +100,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="驱动器欠压阈值(V)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.driveUnderVoltageThreshold}"
@@ -122,7 +122,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测斜仪标压阈值(V)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.inclinometerStandardVoltageThreshold}"
@@ -140,7 +140,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测斜仪低压阈值(V)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.inclinometerLowVoltageThreshold}"
@@ -158,7 +158,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测斜仪欠压阈值(V)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.inclinometerUnderVoltageThreshold}"
@@ -180,7 +180,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="钢丝绳长度(米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.wireRopeLength}"
@@ -204,7 +204,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="防冻距离(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="0 表示关闭防冻"

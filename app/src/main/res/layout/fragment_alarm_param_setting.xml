@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.AlarmParamSettingViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.AlarmParamSettingViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.common.AlarmParamSettingFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.common.AlarmParamSettingFragment.ClickProxy" />
 
     </data>
 
@@ -84,7 +84,7 @@
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="播报次数" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[0-255]"
@@ -103,7 +103,7 @@
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="一级报警语音编号" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
@@ -121,7 +121,7 @@
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="二级报警语音编号" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
@@ -139,7 +139,7 @@
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="三级报警语音编号" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
@@ -157,7 +157,7 @@
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="四级报警语音编号" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
@@ -180,7 +180,7 @@
                             android:text="@{stateVM.firstAlarmThresholdTitle}"
                             tools:text="一级报警阈值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
@@ -199,7 +199,7 @@
                             android:text="@{stateVM.secondAlarmThresholdTitle}"
                             tools:text="二级报警阈值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
@@ -218,7 +218,7 @@
                             android:text="@{stateVM.thirdAlarmThresholdTitle}"
                             tools:text="三级报警阈值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
@@ -237,7 +237,7 @@
                             android:text="@{stateVM.fourthAlarmThresholdTitle}"
                             tools:text="四级报警阈值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
@@ -260,7 +260,7 @@
                             android:text="@{stateVM.firstAlarmReportIntervalTitle}"
                             tools:text="一级报警间隔(秒)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
@@ -279,7 +279,7 @@
                             android:text="@{stateVM.secondAlarmReportIntervalTitle}"
                             tools:text="二级报警间隔(秒)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
@@ -298,7 +298,7 @@
                             android:text="@{stateVM.thirdAlarmReportIntervalTitle}"
                             tools:text="三级报警间隔(秒)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
@@ -317,7 +317,7 @@
                             android:text="@{stateVM.fourthAlarmReportIntervalTitle}"
                             tools:text="四级报警间隔(秒)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"

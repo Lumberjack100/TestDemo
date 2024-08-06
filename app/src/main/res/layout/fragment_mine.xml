@@ -7,11 +7,11 @@
 
         <variable
             name="vm"
-            type="com.shmedo.mcloudapp.user.viewmodel.state.MineViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.MineViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.user.fragment.MineFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.userprofile.MineFragment.ClickProxy" />
     </data>
 
     <androidx.core.widget.NestedScrollView

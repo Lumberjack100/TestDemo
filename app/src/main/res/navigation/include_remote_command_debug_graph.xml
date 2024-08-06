@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/tcpDebugFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.common.TcpDebugFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.TcpDebugFragment"
         android:label="TcpDebugFragment"
         tools:layout="@layout/fragment_tcp_debug" />
 
