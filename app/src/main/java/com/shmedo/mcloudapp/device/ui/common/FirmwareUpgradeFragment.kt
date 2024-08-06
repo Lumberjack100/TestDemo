@@ -11,16 +11,15 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.scwang.smart.refresh.layout.constant.RefreshState
-import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.core.util.MmkvCacheUtil
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.FirmWareEntity
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.FirmWareEntity
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -54,7 +53,7 @@ class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
     private lateinit var deviceRequestViewModel: DeviceRequestViewModel
     private val iotParseManager: IOTParserManager by inject()
 
-    private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
+    private val userInfo: com.shmedo.core.model.UserInfo by lazy { MmkvCacheUtil.getUser()!! }
     private val firmwareStatusList: MutableList<String> = arrayListOf("全部", "测试", "运营")
 
 

@@ -15,7 +15,7 @@ import com.shmedo.lib.core.base.model.SessionInfo
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.fragment.BaseFragment

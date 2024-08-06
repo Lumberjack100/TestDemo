@@ -6,7 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.blankj.utilcode.util.ColorUtils
 import com.kyleduo.switchbutton.SwitchButton
-import com.shmedo.lib.device.base.iot_cmd.enums.SensorErrorType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.SensorErrorType
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.SignalView
 
@@ -171,7 +171,7 @@ object IOTDeviceBindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("app:progressDrawableReadingData")
+    @BindingAdapter("progressDrawableReadingData")
     fun setProgressDrawableReadingData(progressBar: ProgressBar, isReadingData: Boolean) {
         val drawableResId = if (isReadingData) R.drawable.custom_progress_horizontal_blue else R.drawable.custom_progress_horizontal_green
         progressBar.progressDrawable = ContextCompat.getDrawable(progressBar.context, drawableResId)

@@ -5,20 +5,18 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.core.util.jsonhelper.MoshiUtil
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo2
-import com.shmedo.lib.device.base.iot_cmd.model.lb20s.LB20SCurrentStateInfo
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
+import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo2
+import com.shmedo.lib.cmd.base.iot_cmd.model.lb20s.LB20SCurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentCommonCommunicationInfoBinding
@@ -324,16 +322,16 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
             centerNum: Int = 1,
             type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: DeviceInfo,
+            deviceInfo: com.shmedo.core.model.DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
             putInt(CENTER_NUM_PARAM, centerNum)
-            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
 
         fun newInstance() = CommonCommunicationInfoFragment()

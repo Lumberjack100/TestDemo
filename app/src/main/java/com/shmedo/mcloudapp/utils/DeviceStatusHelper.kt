@@ -1,8 +1,8 @@
 package com.shmedo.mcloudapp.utils
 
-import com.shmedo.lib.device.base.iot_cmd.enums.AdmeModuleErrorType
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonCurrentStateInfo2
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.cmd.base.iot_cmd.enums.AdmeModuleErrorType
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo2
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 
 /**
  * 创建者：gonghe

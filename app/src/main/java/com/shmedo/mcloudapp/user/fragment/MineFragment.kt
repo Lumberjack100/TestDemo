@@ -6,11 +6,8 @@ import androidx.fragment.app.setFragmentResultListener
 import com.blankj.utilcode.util.AppUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.core.base.model.UserInfo
-import com.shmedo.lib.core.base.model.UserWrapperInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.MCloudUtil
@@ -30,7 +27,7 @@ class MineFragment : BaseFragment() {
     private lateinit var mStates: MineViewModel
     private lateinit var appUpdateViewModel: AppUpdateViewModel
     private lateinit var loginRequestViewModel: LoginRequestViewModel
-    private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
+    private val userInfo: com.shmedo.core.model.UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
 
     override fun initViewModel() {
@@ -53,7 +50,7 @@ class MineFragment : BaseFragment() {
         refreshUserInfo(userInfo)
     }
 
-    private fun refreshUserInfo(info: UserInfo) {
+    private fun refreshUserInfo(info: com.shmedo.core.model.UserInfo) {
         if (!TextUtils.isEmpty(info.headPhotoPath))
             mStates.imageUrl.set(info.headPhotoPath)
         mStates.name.set(info.name)
@@ -62,7 +59,7 @@ class MineFragment : BaseFragment() {
     }
 
     override fun createObserver() {
-        loginRequestViewModel.userWrapperInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<UserWrapperInfo> ->
+        loginRequestViewModel.userWrapperInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<com.shmedo.core.model.UserWrapperInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe
@@ -71,7 +68,7 @@ class MineFragment : BaseFragment() {
         }
         //从编辑页面返回需要刷新事件详情页面
         setFragmentResultListener(requestKey) { key, bundle ->
-            val refresh = bundle.getBoolean(AppContants.Extras.IS_REFRESH_USER_INFO)
+            val refresh = bundle.getBoolean(com.shmedo.core.commonlib.utils.AppContants.Extras.IS_REFRESH_USER_INFO)
             if (refresh)
                 loginRequestViewModel.refreshUserInfo(userInfo.companyID, userInfo.userID)
         }

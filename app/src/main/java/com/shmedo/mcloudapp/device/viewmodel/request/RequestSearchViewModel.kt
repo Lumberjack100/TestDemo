@@ -2,10 +2,10 @@ package com.shmedo.mcloudapp.device.viewmodel.request
 
 
 import com.kunminx.architecture.domain.message.MutableResult
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
 import com.shmedo.lib.core.base.viewmodel.BaseRequestViewModel
 import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
 import com.shmedo.lib.core.ext.launch
-import com.shmedo.lib.core.util.MmkvCacheUtil
 
 /**
  * 作者　:

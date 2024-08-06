@@ -14,17 +14,16 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.enums.ServerOne
-import com.shmedo.lib.device.base.iot_cmd.enums.ServerThree
-import com.shmedo.lib.device.base.iot_cmd.enums.ServerTwo
-import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
-import com.shmedo.lib.device.base.md_cmd.enums.SaveConfigMode
-import com.shmedo.lib.device.base.md_cmd.model.common.DeviceNetStatus
-import com.shmedo.lib.device.base.md_cmd.model.das.DasBaseConfigInfo
-import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
-import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
-import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerOne
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerThree
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerTwo
+import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.cmd.base.md_cmd.enums.SaveConfigMode
+import com.shmedo.lib.cmd.base.md_cmd.model.common.DeviceNetStatus
+import com.shmedo.lib.cmd.base.md_cmd.model.das.DasBaseConfigInfo
+import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
+import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
+import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
@@ -126,8 +125,8 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
     override fun createObserver() {
         super.createObserver()
         //从编辑页面返回需要刷新事件详情页面
-        setFragmentResultListener(AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { key, bundle ->
-            val centerNumber = bundle.getInt(AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
+        setFragmentResultListener(com.shmedo.core.commonlib.utils.AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { key, bundle ->
+            val centerNumber = bundle.getInt(com.shmedo.core.commonlib.utils.AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
 
             commandItems.clear()
             val command = MDCommandUtil.getCommand(MDCommandType.QUERY_NETWORK_STATUS, centerNumber.toString())

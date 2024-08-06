@@ -28,17 +28,16 @@ import com.shmedo.lib.ble.communicate.service.base.MissingServiceResult
 import com.shmedo.lib.ble.communicate.service.base.ReadyResult
 import com.shmedo.lib.ble.communicate.service.base.SuccessResult
 import com.shmedo.lib.ble.communicate.service.base.UnknownErrorResult
-import com.shmedo.lib.core.base.model.DebugCmdLogInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
-import com.shmedo.lib.device.base.md_cmd.enums.MDLogOutputStatus
-import com.shmedo.lib.device.base.md_cmd.enums.MDWorkModel
-import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
-import com.shmedo.lib.device.base.md_cmd.utils.MDConstants
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.cmd.base.md_cmd.enums.MDLogOutputStatus
+import com.shmedo.lib.cmd.base.md_cmd.enums.MDWorkModel
+import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
+import com.shmedo.lib.cmd.base.md_cmd.utils.MDConstants
 import com.shmedo.lib.tcp.TcpConnectClosed
 import com.shmedo.lib.tcp.TcpConnectError
 import com.shmedo.lib.tcp.TcpConnectedResult
@@ -109,8 +108,8 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
 
     private fun initLogAdapter() {
         binding.recyclerview.setup { rv ->
-            addType<DebugCmdLogInfo>(R.layout.item_debug_cmd_log)
-        }.models = mutableListOf<DebugCmdLogInfo>()
+            addType<com.shmedo.core.model.DebugCmdLogInfo>(R.layout.item_debug_cmd_log)
+        }.models = mutableListOf<com.shmedo.core.model.DebugCmdLogInfo>()
     }
 
     override fun initData() {
@@ -434,7 +433,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
         cmdStr: String,
         colorRes: Int = ColorUtils.getColor(R.color.send_data_color)
     ) {
-        val logInfo = DebugCmdLogInfo(
+        val logInfo = com.shmedo.core.model.DebugCmdLogInfo(
             logTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm:ss.SSS")),
             content = cmdStr.replace(MDConstants.COMMAND_FOOTER, ""),
             colorRes = colorRes,
@@ -455,7 +454,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
             binding.recyclerview.models?.let { logList ->
                 val logContent = StringBuilder()
                 logList.forEach { logInfo ->
-                    (logInfo as DebugCmdLogInfo).apply {
+                    (logInfo as com.shmedo.core.model.DebugCmdLogInfo).apply {
                         logContent.append(logTime)
                         logContent.append(" ")
                         logContent.append(content)

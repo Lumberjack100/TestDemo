@@ -13,21 +13,18 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.model.AppConfigInfo
-import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.core.util.MmkvCacheUtil
-import com.shmedo.lib.core.util.jsonhelper.MoshiUtil
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.mr.MRRS485Port1SensorParamEntity
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
+import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRRS485Port1SensorParamEntity
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -436,7 +433,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                 mStates.curSensorModel
 
             withContext(Dispatchers.IO) {
-                val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
+                val localAppConfigInfo: com.shmedo.core.model.AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
                 val jsonStr = localAppConfigInfo.configPara.replace("\\", "")
                 MoshiUtil.fromJson<AppConfigContent>(jsonStr)
                     ?.let { appConfigContent: AppConfigContent ->
@@ -469,16 +466,16 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
             sensorItem: MRSensorItem,
             type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: DeviceInfo,
+            deviceInfo: com.shmedo.core.model.DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
             putParcelable(SENSOR_MODEL_ITEM, sensorItem)
-            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

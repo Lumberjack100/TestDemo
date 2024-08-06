@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.lib.device.base.iot_cmd.model.das.DasSensorStatusInfo" />
+            type="com.shmedo.lib.cmd.base.iot_cmd.model.das.DasSensorStatusInfo" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat

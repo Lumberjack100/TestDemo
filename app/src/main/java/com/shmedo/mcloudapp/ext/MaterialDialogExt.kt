@@ -15,7 +15,7 @@ import com.kongzue.dialogx.dialogs.MessageDialog
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
-import com.shmedo.lib.device.base.iot_cmd.enums.AdmeModuleErrorType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.AdmeModuleErrorType
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.device.ui.hac.fragment.HacErrorProtectionTip

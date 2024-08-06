@@ -8,7 +8,7 @@ import com.amap.api.location.AMapLocationListener
 import com.blankj.utilcode.util.Utils
 import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
 import com.shmedo.lib.core.ext.getLogItem
-import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

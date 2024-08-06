@@ -5,7 +5,7 @@
 
     <data>
 
-        <import type="com.shmedo.lib.device.base.iot_cmd.enums.IOTRainStation" />
+        <import type="com.shmedo.lib.cmd.base.iot_cmd.enums.IOTRainStation" />
 
         <variable
             name="stateVM"

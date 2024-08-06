@@ -2,17 +2,7 @@ package com.shmedo.mcloudapp.data.repository.remote
 
 import android.annotation.SuppressLint
 import com.blankj.utilcode.util.AppUtils
-import com.shmedo.lib.core.base.model.AppConfigInfo
-import com.shmedo.lib.core.base.model.BasicUserInfo
-import com.shmedo.lib.core.base.model.CompanyInfo
-import com.shmedo.lib.core.base.model.DeviceBackupInfo
-import com.shmedo.lib.core.base.model.DeviceDetailInfo
-import com.shmedo.lib.core.base.model.DeviceInfo
-import com.shmedo.lib.core.base.model.DeviceStatisticInfo
-import com.shmedo.lib.core.base.model.ProductInfo
-import com.shmedo.lib.core.base.model.UserPermissionInfo
-import com.shmedo.lib.core.base.model.UserWrapperInfo
-import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
 import com.shmedo.lib.network.parser.CloudPlatformApiResponseParser
 import com.shmedo.lib.network.parser.PgyerApiResponseParser
 import com.shmedo.lib.network.response.PageList
@@ -55,11 +45,11 @@ class NetDataRepository private constructor() {
      */
     suspend fun queryConfigInfoItem(
         onCatch: ((Throwable) -> Unit)? = null
-    ): AppConfigInfo? =
+    ): com.shmedo.core.model.AppConfigInfo? =
         RxHttp.postJson("/QueryConfigInfoItem")
             .setDomainIfAbsent(BaseURL.AMS_CONFIG_ADDRESS.baseUrl)
             .addHeader("Authorization", MmkvCacheUtil.getAmsToken())
-            .toAwaitResponse<AppConfigInfo>()
+            .toAwaitResponse<com.shmedo.core.model.AppConfigInfo>()
             .tryAwait(onCatch)
 
     /**
@@ -138,11 +128,11 @@ class NetDataRepository private constructor() {
     /**
      * 通过token获取用户基本信息
      */
-    suspend fun getUserByToken(onCatch: ((Throwable) -> Unit)? = null): BasicUserInfo? =
+    suspend fun getUserByToken(onCatch: ((Throwable) -> Unit)? = null): com.shmedo.core.model.BasicUserInfo? =
         RxHttp.get("/GetUserByToken")
             .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
             .addHeader("Authorization", MmkvCacheUtil.getToken())
-            .toAwaitResponse<BasicUserInfo>()
+            .toAwaitResponse<com.shmedo.core.model.BasicUserInfo>()
             .tryAwait(onCatch)
 
     /**
@@ -151,12 +141,12 @@ class NetDataRepository private constructor() {
     suspend fun queryUserByID(
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
-    ): UserWrapperInfo? =
+    ): com.shmedo.core.model.UserWrapperInfo? =
         RxHttp.postJson("/QueryUserByID")
             .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
             .addHeader("Authorization", MmkvCacheUtil.getToken())
             .addAll(jsonParam)
-            .toAwaitResponse<UserWrapperInfo>()
+            .toAwaitResponse<com.shmedo.core.model.UserWrapperInfo>()
             .tryAwait(onCatch)
 
     /**
@@ -190,12 +180,12 @@ class NetDataRepository private constructor() {
     suspend fun queryCompanyInfoByID(
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
-    ): CompanyInfo? =
+    ): com.shmedo.core.model.CompanyInfo? =
         RxHttp.postJson("/GetCompanyInfo")
             .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
             .addHeader("Authorization", MmkvCacheUtil.getToken())
             .addAll(jsonParam)
-            .toAwaitResponse<CompanyInfo>()
+            .toAwaitResponse<com.shmedo.core.model.CompanyInfo>()
             .tryAwait(onCatch)
 
     /**
@@ -218,12 +208,12 @@ class NetDataRepository private constructor() {
     suspend fun queryAllPermissionInService(
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
-    ): List<UserPermissionInfo>? =
+    ): List<com.shmedo.core.model.UserPermissionInfo>? =
         RxHttp.postJson("/QueryAllPermissionInService")
             .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
             .addHeader("Authorization", MmkvCacheUtil.getToken())
             .addAll(jsonParam)
-            .toAwaitResponse<List<UserPermissionInfo>>()
+            .toAwaitResponse<List<com.shmedo.core.model.UserPermissionInfo>>()
             .tryAwait(onCatch)
     // </editor-fold>
 
@@ -237,12 +227,12 @@ class NetDataRepository private constructor() {
         jsonParam: String,
         isHasListSuperInfoPermission: Boolean = false,
         onCatch: ((Throwable) -> Unit)? = null
-    ): DeviceStatisticInfo? =
+    ): com.shmedo.core.model.DeviceStatisticInfo? =
         RxHttp.postJson(if (isHasListSuperInfoPermission) "/ListSuperDeviceStat" else "/GetDeviceStatByCompanyID")
             .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
             .addHeader("Authorization", MmkvCacheUtil.getToken())
             .addAll(jsonParam)
-            .toAwaitResponse<DeviceStatisticInfo>()
+            .toAwaitResponse<com.shmedo.core.model.DeviceStatisticInfo>()
             .tryAwait(onCatch)
 
     /**
@@ -251,12 +241,12 @@ class NetDataRepository private constructor() {
     suspend fun getProductList(
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
-    ): PageList<ProductInfo>? =
+    ): PageList<com.shmedo.core.model.ProductInfo>? =
         RxHttp.postJson("/QueryProduct")
             .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
             .addHeader("Authorization", MmkvCacheUtil.getToken())
             .addAll(jsonParam)
-            .toAwaitResponse<PageList<ProductInfo>>()
+            .toAwaitResponse<PageList<com.shmedo.core.model.ProductInfo>>()
             .tryAwait(onCatch)
 
     /**
@@ -265,12 +255,12 @@ class NetDataRepository private constructor() {
     suspend fun getUserCompanyProductList(
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
-    ): PageList<ProductInfo>? =
+    ): PageList<com.shmedo.core.model.ProductInfo>? =
         RxHttp.postJson("/ListUserCompanyProduct")
             .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
             .addHeader("Authorization", MmkvCacheUtil.getToken())
             .addAll(jsonParam)
-            .toAwaitResponse<PageList<ProductInfo>>()
+            .toAwaitResponse<PageList<com.shmedo.core.model.ProductInfo>>()
             .tryAwait(onCatch)
 
     /**
@@ -280,12 +270,12 @@ class NetDataRepository private constructor() {
         jsonParam: String,
         isHasListSuperInfoPermission: Boolean = false,
         onCatch: ((Throwable) -> Unit)? = null
-    ): PageList<DeviceInfo>? =
+    ): PageList<com.shmedo.core.model.DeviceInfo>? =
         RxHttp.postJson(if (isHasListSuperInfoPermission) "/ListSuperDevice" else "/QueryDeviceList")
             .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
             .addHeader("Authorization", MmkvCacheUtil.getToken())
             .addAll(jsonParam)
-            .toAwaitResponse<PageList<DeviceInfo>>()
+            .toAwaitResponse<PageList<com.shmedo.core.model.DeviceInfo>>()
             .tryAwait(onCatch)
 
     /**
@@ -294,12 +284,12 @@ class NetDataRepository private constructor() {
     suspend fun queryFollowDeviceList(
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
-    ): PageList<DeviceInfo>? =
+    ): PageList<com.shmedo.core.model.DeviceInfo>? =
         RxHttp.postJson("/QueryUserFollowDeviceList")
             .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
             .addHeader("Authorization", MmkvCacheUtil.getToken())
             .addAll(jsonParam)
-            .toAwaitResponse<PageList<DeviceInfo>>()
+            .toAwaitResponse<PageList<com.shmedo.core.model.DeviceInfo>>()
             .tryAwait(onCatch)
 
     /**
@@ -336,12 +326,12 @@ class NetDataRepository private constructor() {
     suspend fun getDeviceDetailInfo(
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
-    ): DeviceDetailInfo? =
+    ): com.shmedo.core.model.DeviceDetailInfo? =
         RxHttp.postJson("/GetDeviceDetail")
             .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
             .addHeader("Authorization", MmkvCacheUtil.getToken())
             .addAll(jsonParam)
-            .toAwaitResponse<DeviceDetailInfo>()
+            .toAwaitResponse<com.shmedo.core.model.DeviceDetailInfo>()
             .tryAwait(onCatch)
 
     /**
@@ -350,12 +340,12 @@ class NetDataRepository private constructor() {
     suspend fun queryDeviceBackupListWithPage(
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
-    ): PageList<DeviceBackupInfo>? =
+    ): PageList<com.shmedo.core.model.DeviceBackupInfo>? =
         RxHttp.postJson("/QueryDeviceBackup")
             .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
             .addHeader("Authorization", MmkvCacheUtil.getToken())
             .addAll(jsonParam)
-            .toAwaitResponse<PageList<DeviceBackupInfo>>()
+            .toAwaitResponse<PageList<com.shmedo.core.model.DeviceBackupInfo>>()
             .tryAwait(onCatch)
 
     /**

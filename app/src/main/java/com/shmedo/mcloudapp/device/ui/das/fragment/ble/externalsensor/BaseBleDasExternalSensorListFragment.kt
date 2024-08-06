@@ -11,17 +11,15 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.device.base.iot_cmd.model.das.DasCollectorInfo
-import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
-import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
-import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
-import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
-import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasCollectorInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasExternalSensorInfo
+import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
+import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
+import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -260,7 +258,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
         Timber.d("查询采集器配置信息===%s", command)
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
+            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_15000_MILLIS
         )
     }
 
@@ -445,16 +443,16 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             collectorModel: String,
             type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: DeviceInfo,
+            deviceInfo: com.shmedo.core.model.DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
             putString(BleDasSensorHomeFragment.COLLECTOR_MODEL, collectorModel)
-            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

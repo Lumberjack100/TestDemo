@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.lib.core.base.model.DebugCmdLogInfo" />
+            type="com.shmedo.core.model.DebugCmdLogInfo" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat

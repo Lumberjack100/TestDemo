@@ -5,7 +5,7 @@ import com.shmedo.lib.ble.communicate.service.MedoBleRepository
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.core.base.viewmodel.BaseRequestViewModel
 import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
-import com.shmedo.lib.device.base.md_cmd.utils.MDConstants
+import com.shmedo.lib.cmd.base.md_cmd.utils.MDConstants
 import com.shmedo.mcloudapp.device.common.MedoViewState
 import com.shmedo.mcloudapp.device.common.WorkingState
 import kotlinx.coroutines.delay

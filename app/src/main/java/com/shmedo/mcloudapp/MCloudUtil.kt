@@ -1,7 +1,7 @@
 package com.shmedo.mcloudapp
 
 import com.blankj.utilcode.util.ActivityUtils
-import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
 
 /**
  * 创建者：gonghe

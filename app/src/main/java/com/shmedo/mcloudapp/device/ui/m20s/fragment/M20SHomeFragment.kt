@@ -1,8 +1,8 @@
 package com.shmedo.mcloudapp.device.ui.m20s.fragment
 
 import com.drake.brv.utils.models
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.device.model.AlarmConfigModule

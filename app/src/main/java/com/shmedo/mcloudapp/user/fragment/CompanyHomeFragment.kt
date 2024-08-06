@@ -5,10 +5,8 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.core.base.model.CompanyInfo
-import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -25,7 +23,7 @@ class CompanyHomeFragment : BaseFragment() {
     private lateinit var binding: FragmentCompanyHomeBinding
     private lateinit var mStates: CompanyHomeViewModel
     private lateinit var loginRequestViewModel: LoginRequestViewModel
-    private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
+    private val userInfo: com.shmedo.core.model.UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
 
     override fun initViewModel() {
@@ -63,7 +61,7 @@ class CompanyHomeFragment : BaseFragment() {
     }
 
     override fun createObserver() {
-        loginRequestViewModel.companyInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<CompanyInfo> ->
+        loginRequestViewModel.companyInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<com.shmedo.core.model.CompanyInfo> ->
             dismissLoadingDialog()
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)
@@ -78,7 +76,7 @@ class CompanyHomeFragment : BaseFragment() {
         loginRequestViewModel.queryCompanyInfoByID(userInfo.companyID)
     }
 
-    private fun updateView(info: CompanyInfo) {
+    private fun updateView(info: com.shmedo.core.model.CompanyInfo) {
         mStates.companyName.set(info.fullName)
         mStates.companyType.set(info.nature)
         mStates.industryName.set(info.industry)

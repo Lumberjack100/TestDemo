@@ -8,11 +8,8 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.core.base.model.DeviceInfo
-import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -38,7 +35,7 @@ class DeviceSearchResultFragment : BaseFragment() {
     private lateinit var binding: FragmentDeviceSearchResultBinding
     private lateinit var mStates: EmptyViewModel
     private lateinit var deviceRequestViewModel: DeviceRequestViewModel
-    private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
+    private val userInfo: com.shmedo.core.model.UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
     private var statusBarColor = 0
     private lateinit var keyWord: String
@@ -76,13 +73,13 @@ class DeviceSearchResultFragment : BaseFragment() {
                     false
                 )
             )
-            addType<DeviceInfo>(R.layout.item_device_info)
+            addType<com.shmedo.core.model.DeviceInfo>(R.layout.item_device_info)
             R.id.item.onClick {
-                val deviceInfo = getModel<DeviceInfo>()
+                val deviceInfo = getModel<com.shmedo.core.model.DeviceInfo>()
                 DeviceHomeActivity.start(mActivity, deviceInfo)
             }
             R.id.item.onLongClick {
-                val deviceInfo = getModel<DeviceInfo>()
+                val deviceInfo = getModel<com.shmedo.core.model.DeviceInfo>()
                 val dataList = if (deviceInfo.followTime.isNullOrEmpty()) arrayListOf(
                     "查看数据",
                     "收藏"
@@ -122,14 +119,14 @@ class DeviceSearchResultFragment : BaseFragment() {
 
     override fun initData() {
         arguments?.let {
-            keyWord = it.getString(AppContants.Extras.DEVICE_SEARCH_KEYWORD, "")
-            statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
+            keyWord = it.getString(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_SEARCH_KEYWORD, "")
+            statusBarColor = it.getInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR)
             binding.llToolbar.toolbar.title = keyWord
         }
     }
 
     override fun createObserver() {
-        deviceRequestViewModel.deviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<DeviceInfo>> ->
+        deviceRequestViewModel.deviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<com.shmedo.core.model.DeviceInfo>> ->
             if (!listDataResult.responseStatus.isSuccess) {
                 Toaster.show(listDataResult.responseStatus.errorMessage)
                 return@observe
@@ -191,8 +188,8 @@ class DeviceSearchResultFragment : BaseFragment() {
             keyWord: String,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
-            putString(AppContants.Extras.DEVICE_SEARCH_KEYWORD, keyWord)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putString(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_SEARCH_KEYWORD, keyWord)
+            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

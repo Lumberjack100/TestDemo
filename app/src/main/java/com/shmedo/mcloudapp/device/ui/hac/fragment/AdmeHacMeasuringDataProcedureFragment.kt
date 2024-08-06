@@ -21,19 +21,17 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.hac.HacMeasuringDataEntity
-import com.shmedo.lib.device.base.iot_cmd.enums.AdmeCTRMotionState
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.device.base.iot_cmd.model.hac.HacMotionState
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.hac.HacMeasuringDataEntity
+import com.shmedo.lib.cmd.base.iot_cmd.enums.AdmeCTRMotionState
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.model.hac.HacMotionState
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentAdmeHacMeasuringDataProcedureBinding
@@ -153,7 +151,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             commandItems.add(command)
             sendCommandFromCmdList(
                 isStartTimeoutJob = true,
-                timeoutMillis = AppContants.Communication.DELAY_10000_MILLIS
+                timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_10000_MILLIS
             )
         }
     }
@@ -176,7 +174,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         commandItems.add(command)
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = AppContants.Communication.DELAY_5000_MILLIS
+            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_5000_MILLIS
         )
     }
 
@@ -608,8 +606,8 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             delay(500)
             //需要给上一级浏览页面传递最新的状态信息
             setFragmentResult(
-                AppContants.Extras.FRAGMENT_MEASURING_DATA_PROCEDURE_RESULT_REQUEST_KEY,
-                bundleOf(AppContants.Extras.MOTOR_STATE to mStates.motionStateWrapper.get())
+                com.shmedo.core.commonlib.utils.AppContants.Extras.FRAGMENT_MEASURING_DATA_PROCEDURE_RESULT_REQUEST_KEY,
+                bundleOf(com.shmedo.core.commonlib.utils.AppContants.Extras.MOTOR_STATE to mStates.motionStateWrapper.get())
             )
             if (isNavUp)
                 nav().navigateUp()
@@ -663,16 +661,16 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             isCheckReverse: Boolean,
             type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: DeviceInfo,
+            deviceInfo: com.shmedo.core.model.DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
             putBoolean(CHECK_REVERSE, isCheckReverse)
-            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

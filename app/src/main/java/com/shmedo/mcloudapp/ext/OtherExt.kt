@@ -1,6 +1,6 @@
 package com.shmedo.mcloudapp.ext
 
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import java.nio.charset.Charset
 
 /**

@@ -5,9 +5,8 @@ import android.text.TextUtils
 import androidx.activity.OnBackPressedCallback
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -23,7 +22,7 @@ class ResetPasswordFragment : BaseFragment() {
     private lateinit var binding: FragmentResetPasswordBinding
     private lateinit var mStates: ResetPasswordViewModel
     private lateinit var mAccountRequester: LoginRequestViewModel
-    private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
+    private val userInfo: com.shmedo.core.model.UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
 
     override fun initViewModel() {

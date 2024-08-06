@@ -1,13 +1,12 @@
 package com.shmedo.mcloudapp.device.ui.hac.fragment
 
 import com.drake.brv.utils.models
-import com.hjq.toast.Toaster
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.device.base.iot_cmd.enums.AdmeCTRMotionState
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.hac.HacMotionState
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.enums.AdmeCTRMotionState
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.model.hac.HacMotionState
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.device.model.BleConnect
@@ -22,7 +21,6 @@ import com.shmedo.mcloudapp.device.ui.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.device.ui.common.UniversalDeviceHomeFragment
 import com.shmedo.mcloudapp.ext.nav
 import kotlinx.coroutines.delay
-import timber.log.Timber
 
 /**
  * 创建者：gonghe

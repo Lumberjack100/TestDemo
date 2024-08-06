@@ -7,7 +7,7 @@
 
         <import type="android.text.TextUtils" />
 
-        <import type="com.shmedo.lib.device.base.iot_cmd.enums.ProductType" />
+        <import type="com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType" />
 
         <variable
             name="m"

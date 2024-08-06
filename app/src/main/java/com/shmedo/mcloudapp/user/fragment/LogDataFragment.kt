@@ -28,7 +28,6 @@ import com.shmedo.lib.core.base.model.SessionInfo
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.core.util.AppContants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
@@ -95,7 +94,7 @@ class LogDataFragment : BaseFragment() {
     override fun initData() {
         arguments?.let {
             sessionInfo = it.getParcelable(SESSION_INFO)!!
-            statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
+            statusBarColor = it.getInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR)
         }
         binding.toolbar.title = sessionInfo.name
         binding.toolbar.subtitle = sessionInfo.key
@@ -252,7 +251,7 @@ class LogDataFragment : BaseFragment() {
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
             putParcelable(SESSION_INFO, sessionInfo)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

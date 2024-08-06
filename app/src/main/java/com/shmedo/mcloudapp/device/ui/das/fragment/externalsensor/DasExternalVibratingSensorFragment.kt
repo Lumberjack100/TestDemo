@@ -8,14 +8,12 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasExternalSensorInfo
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
@@ -113,7 +111,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
     override fun initData() {
         super.initData()
         arguments?.let {
-            sensorChannel = it.getString(AppContants.Extras.SENSOR_CHANNEL, "-1")
+            sensorChannel = it.getString(com.shmedo.core.commonlib.utils.AppContants.Extras.SENSOR_CHANNEL, "-1")
         }
         unUsedChannelList.clear()
         unUsedChannelList.addAll(allChannelList)
@@ -1110,16 +1108,16 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
             sensorChannel: String,
             type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: DeviceInfo,
+            deviceInfo: com.shmedo.core.model.DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
-            putString(AppContants.Extras.SENSOR_CHANNEL, sensorChannel)
-            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putString(com.shmedo.core.commonlib.utils.AppContants.Extras.SENSOR_CHANNEL, sensorChannel)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

@@ -15,13 +15,11 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -93,8 +91,8 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         super.initData()
         binding.llToolbar.toolbar.title = iotSensorType.description
         arguments?.let {
-            sensorIndex = it.getInt(AppContants.Extras.SENSOR_INDEX, -1)
-            sensorAddr = it.getString(AppContants.Extras.SENSOR_ADDR, "-1")
+            sensorIndex = it.getInt(com.shmedo.core.commonlib.utils.AppContants.Extras.SENSOR_INDEX, -1)
+            sensorAddr = it.getString(com.shmedo.core.commonlib.utils.AppContants.Extras.SENSOR_ADDR, "-1")
         }
         usedAddressList.clear()
         sensorListViewModel.sensorModelMap.keys.filterNot { it == sensorAddr }
@@ -881,17 +879,17 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             sensorAddr: String,
             type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: DeviceInfo,
+            deviceInfo: com.shmedo.core.model.DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
-            putInt(AppContants.Extras.SENSOR_INDEX, index)
-            putString(AppContants.Extras.SENSOR_ADDR, sensorAddr)
-            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.SENSOR_INDEX, index)
+            putString(com.shmedo.core.commonlib.utils.AppContants.Extras.SENSOR_ADDR, sensorAddr)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

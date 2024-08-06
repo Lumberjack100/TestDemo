@@ -9,9 +9,9 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.AppContants.Extras.Companion.SENSOR_CHANNEL
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
-import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
+import com.shmedo.core.commonlib.utils.AppContants.Extras.Companion.SENSOR_CHANNEL
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
+import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.fragment.BaseFragment

@@ -17,18 +17,17 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.IOTRegexContants
-import com.shmedo.lib.core.util.MmkvCacheUtil
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.hac.HacMeasuringHoleDepthInfoEntity
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.device.base.iot_cmd.model.hac.HacHoleAreaDepthInfo
-import com.shmedo.lib.device.base.iot_cmd.model.hac.HacMeasuringHoleDepthInfo
-import com.shmedo.lib.device.base.iot_cmd.model.hac.HacMotorMotionDistanceInfo
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.hac.HacMeasuringHoleDepthInfoEntity
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.model.hac.HacHoleAreaDepthInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.hac.HacMeasuringHoleDepthInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.hac.HacMotorMotionDistanceInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentAdmeHacMeasuringHoleDepthBinding
@@ -334,7 +333,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
+            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_15000_MILLIS
         )
     }
 

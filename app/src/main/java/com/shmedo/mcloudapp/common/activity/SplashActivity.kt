@@ -12,10 +12,10 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
 import com.shmedo.lib.core.ext.getAppViewModel
-import com.shmedo.lib.core.util.MmkvCacheUtil.getAccount
-import com.shmedo.lib.core.util.MmkvCacheUtil.getToken
-import com.shmedo.lib.core.util.MmkvCacheUtil.getUserRealName
-import com.shmedo.lib.core.util.MmkvCacheUtil.isAgreePrivate
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil.getAccount
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil.getToken
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil.getUserRealName
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil.isAgreePrivate
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R

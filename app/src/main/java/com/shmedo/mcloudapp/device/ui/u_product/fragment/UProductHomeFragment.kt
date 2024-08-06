@@ -3,10 +3,9 @@ package com.shmedo.mcloudapp.device.ui.u_product.fragment
 import com.blankj.utilcode.util.TimeUtils
 import com.drake.brv.utils.models
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.device.model.AlarmConfigModule
@@ -241,7 +240,7 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
     private fun setupHeartbeat() {
         launchWithViewLifecycle {
             lastCommunicationTime
-                .debounce(AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
+                .debounce(com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
                 .collect { lastUpdateTime ->
                     val updateTime = TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
                     Timber.d("startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")

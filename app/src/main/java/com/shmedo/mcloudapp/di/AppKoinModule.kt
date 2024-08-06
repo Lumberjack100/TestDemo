@@ -2,7 +2,7 @@ package com.shmedo.mcloudapp.di
 
 import com.shmedo.lib.ble.di.bleKoinModule
 import com.shmedo.lib.core.di.coreKoinModule
-import com.shmedo.lib.device.base.di.deviceBaseKoinModule
+import com.shmedo.lib.cmd.base.di.deviceBaseKoinModule
 import com.shmedo.lib.tcp.di.tcpKoinModule
 import org.koin.dsl.module
 

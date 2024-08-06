@@ -5,16 +5,15 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.drake.brv.utils.models
-import com.hjq.toast.Toaster
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeEquipModelEntity
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeBaseInfo
-import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeMotionState
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.adme.AdmeEquipModelEntity
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeBaseInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeMotionState
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.device.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.device.model.BasicConfigModule
@@ -32,7 +31,6 @@ import com.shmedo.mcloudapp.device.ui.common.UniversalDeviceHomeFragment
 import com.shmedo.mcloudapp.ext.nav
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import kotlinx.coroutines.delay
-import timber.log.Timber
 
 /**
  * @author：gonghe

@@ -12,10 +12,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
@@ -39,7 +37,7 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private var productType = ProductType.UnKnown
     private var statusBarColor = 0
     private var communicateWay: CommunicateWay = NetPlatformConnect
-    private lateinit var deviceInfo: DeviceInfo
+    private lateinit var deviceInfo: com.shmedo.core.model.DeviceInfo
     private var bleDevice: DiscoveredBluetoothDevice? = null
 
     private var tabNames = arrayListOf<String>()
@@ -71,11 +69,11 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
     override fun initData() {
         arguments?.let {
-            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
-            communicateWay = it.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
-            deviceInfo = it.getParcelable(AppContants.Extras.DEVICE_INFO)!!
-            bleDevice = it.getParcelable(AppContants.Extras.BLE_DEVICE)
-            statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
+            productType = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE)!!
+            communicateWay = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY)!!
+            deviceInfo = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO)!!
+            bleDevice = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE)
+            statusBarColor = it.getInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR)
         }
 
         tabNames.clear()

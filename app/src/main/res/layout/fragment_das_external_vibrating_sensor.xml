@@ -17,7 +17,7 @@
             name="click"
             type="com.shmedo.mcloudapp.device.common.BaseDasExternalVibratingSensorClickProxy" />
 
-        <import type="com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType" />
+        <import type="com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType" />
 
     </data>
 

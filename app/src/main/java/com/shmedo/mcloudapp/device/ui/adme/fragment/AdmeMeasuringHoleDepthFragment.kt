@@ -17,21 +17,20 @@ import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.core.util.MmkvCacheUtil
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeAutoMeasuringHoleDepthEntity
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeLockedRotorDetectionEntity
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeMeasuringHoleDepthEntity
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.adme.AdmeStepperMotorEntity
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeLockedRotorDetectionInfo
-import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeMeasuringHoleDepthInfo
-import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeMotorMotionDistanceInfo
-import com.shmedo.lib.device.base.iot_cmd.model.adme.AdmeStepperMotorInfo
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.adme.AdmeAutoMeasuringHoleDepthEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.adme.AdmeLockedRotorDetectionEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.adme.AdmeMeasuringHoleDepthEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.adme.AdmeStepperMotorEntity
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeLockedRotorDetectionInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeMeasuringHoleDepthInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeMotorMotionDistanceInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeStepperMotorInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentAdmeMeasuringHoleDepthBinding
@@ -367,7 +366,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
+            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_15000_MILLIS
         )
     }
 

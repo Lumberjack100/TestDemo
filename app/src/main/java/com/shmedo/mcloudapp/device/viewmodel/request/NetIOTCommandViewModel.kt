@@ -3,7 +3,7 @@ package com.shmedo.mcloudapp.device.viewmodel.request
 import androidx.lifecycle.viewModelScope
 import com.shmedo.lib.core.base.viewmodel.BaseRequestViewModel
 import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
-import com.shmedo.lib.core.util.jsonhelper.MoshiUtil
+import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.data.repository.remote.NetDataRepository
 import com.shmedo.mcloudapp.device.common.CmdDispatch

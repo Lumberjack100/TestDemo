@@ -4,14 +4,10 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
-import com.shmedo.lib.core.base.model.DeviceDetailInfo
-import com.shmedo.lib.core.base.model.DeviceInfo
-import com.shmedo.lib.core.base.model.DeviceStatisticInfo
-import com.shmedo.lib.core.base.model.ProductInfo
 import com.shmedo.lib.core.base.viewmodel.BaseRequestViewModel
 import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
-import com.shmedo.lib.core.util.MmkvCacheUtil
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.lib.network.response.PageList
@@ -44,24 +40,24 @@ import timber.log.Timber
 class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) :
     BaseRequestViewModel(loggerRepositoryImp) {
 
-    private val _deviceStatisticInfoResult = MutableResult<DataResult<DeviceStatisticInfo>>()
-    val deviceStatisticInfoResult: Result<DataResult<DeviceStatisticInfo>> =
+    private val _deviceStatisticInfoResult = MutableResult<DataResult<com.shmedo.core.model.DeviceStatisticInfo>>()
+    val deviceStatisticInfoResult: Result<DataResult<com.shmedo.core.model.DeviceStatisticInfo>> =
         _deviceStatisticInfoResult
 
     private val _allProductTabResultFlow: MutableSharedFlow<DataResult<List<SingleSelectionItem>>> =
         MutableSharedFlow()
     val allProductTabResultFlow = _allProductTabResultFlow.asSharedFlow()
 
-    private val _productListResult = MutableResult<DataResult<List<ProductInfo>>>()
-    val productListResult: Result<DataResult<List<ProductInfo>>> =
+    private val _productListResult = MutableResult<DataResult<List<com.shmedo.core.model.ProductInfo>>>()
+    val productListResult: Result<DataResult<List<com.shmedo.core.model.ProductInfo>>> =
         _productListResult
 
-    private val _deviceListResult = MutableResult<DataResult<List<DeviceInfo>>>()
-    val deviceListResult: Result<DataResult<List<DeviceInfo>>> =
+    private val _deviceListResult = MutableResult<DataResult<List<com.shmedo.core.model.DeviceInfo>>>()
+    val deviceListResult: Result<DataResult<List<com.shmedo.core.model.DeviceInfo>>> =
         _deviceListResult
 
-    private val _followDeviceListResult = MutableResult<DataResult<List<DeviceInfo>>>()
-    val followDeviceListResult: Result<DataResult<List<DeviceInfo>>> =
+    private val _followDeviceListResult = MutableResult<DataResult<List<com.shmedo.core.model.DeviceInfo>>>()
+    val followDeviceListResult: Result<DataResult<List<com.shmedo.core.model.DeviceInfo>>> =
         _followDeviceListResult
 
     private val _followDeviceResult = MutableResult<DataResult<String>>()
@@ -70,8 +66,8 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     private val _cancelFollowDeviceResult = MutableResult<DataResult<String>>()
     val cancelFollowDeviceResult: Result<DataResult<String>> = _cancelFollowDeviceResult
 
-    private val _deviceInfoResult = MutableResult<DataResult<DeviceInfo>>()
-    val deviceInfoResult: Result<DataResult<DeviceInfo>> =
+    private val _deviceInfoResult = MutableResult<DataResult<com.shmedo.core.model.DeviceInfo>>()
+    val deviceInfoResult: Result<DataResult<com.shmedo.core.model.DeviceInfo>> =
         _deviceInfoResult
 
     private val _cloudDeviceDataListResult = MutableResult<DataResult<List<CloudDeviceData>>>()
@@ -90,7 +86,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             val jsonObjectRequest = JSONObject()
             jsonObjectRequest.put("companyID", companyID)
 
-            val data: DeviceStatisticInfo =
+            val data: com.shmedo.core.model.DeviceStatisticInfo =
                 NetDataRepository.instance.getDeviceStatByCompanyID(
                     jsonObjectRequest.toString(),
                     isHasListSuperInfoPermission
@@ -116,7 +112,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     fun getAllProductTabList(companyID: Int) {
         viewModelScope.launch {
             val pageSize = 100
-            val tempList = mutableListOf<ProductInfo>()
+            val tempList = mutableListOf<com.shmedo.core.model.ProductInfo>()
             val filterList = mutableListOf<SingleSelectionItem>()
 
             val responseStatus = ResponseStatus().apply {
@@ -134,7 +130,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                         put("currentPage", currentPage)
                     }
 
-                    val data: PageList<ProductInfo>? = withContext(Dispatchers.IO) {
+                    val data: PageList<com.shmedo.core.model.ProductInfo>? = withContext(Dispatchers.IO) {
                         try {
                             NetDataRepository.instance.getUserCompanyProductList(jsonObjectRequest.toString())
                         } catch (error: Throwable) {
@@ -227,7 +223,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             jsonObjectRequest.put("currentPage", currentPage)
             jsonObjectRequest.put("pageSize", pageSize)
 
-            val data: PageList<DeviceInfo> =
+            val data: PageList<com.shmedo.core.model.DeviceInfo> =
                 NetDataRepository.instance.queryDeviceList(
                     jsonObjectRequest.toString(),
                     isHasListSuperInfoPermission
@@ -275,7 +271,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             jsonObjectRequest.put("currentPage", currentPage)
             jsonObjectRequest.put("pageSize", pageSize)
 
-            val data: PageList<DeviceInfo> =
+            val data: PageList<com.shmedo.core.model.DeviceInfo> =
                 NetDataRepository.instance.queryFollowDeviceList(
                     jsonObjectRequest.toString()
                 ) { error: Throwable ->
@@ -376,7 +372,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             val jsonObjectRequest = JSONObject()
             jsonObjectRequest.put("deviceToken", deviceToken)
 
-            val data: DeviceDetailInfo =
+            val data: com.shmedo.core.model.DeviceDetailInfo =
                 NetDataRepository.instance.getDeviceDetailInfo(jsonObjectRequest.toString()) { error: Throwable ->
                     Timber.e(error)
                     addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
@@ -404,7 +400,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     suspend fun getDeviceDetailInfo(
         deviceToken: String = "",
         onCatch: ((Throwable) -> Unit)? = null
-    ): DeviceDetailInfo? {
+    ): com.shmedo.core.model.DeviceDetailInfo? {
         val jsonObjectRequest = JSONObject()
         jsonObjectRequest.put("deviceToken", deviceToken)
 

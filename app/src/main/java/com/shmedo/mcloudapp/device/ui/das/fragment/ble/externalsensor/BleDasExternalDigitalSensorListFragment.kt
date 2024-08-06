@@ -1,13 +1,12 @@
 package com.shmedo.mcloudapp.device.ui.das.fragment.ble.externalsensor
 
 import com.blankj.utilcode.util.StringUtils
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType
-import com.shmedo.lib.device.base.iot_cmd.model.das.DasExternalSensorInfo
-import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
-import com.shmedo.lib.device.base.md_cmd.enums.SaveConfigMode
-import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
-import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
+import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasExternalSensorInfo
+import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.cmd.base.md_cmd.enums.SaveConfigMode
+import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
+import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.ext.showLoadingDialog
 import timber.log.Timber
@@ -35,7 +34,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = AppContants.Communication.DELAY_40000_MILLIS
+            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_40000_MILLIS
         )
     }
 

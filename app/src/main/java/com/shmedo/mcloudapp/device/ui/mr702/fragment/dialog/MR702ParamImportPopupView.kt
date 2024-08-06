@@ -8,8 +8,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.hjq.toast.Toaster
 import com.lxj.xpopup.core.CenterPopupView
-import com.shmedo.lib.core.base.model.DeviceBackupInfo
-import com.shmedo.lib.core.base.model.DeviceDetailInfo
+import com.shmedo.core.model.DeviceBackupInfo
+import com.shmedo.core.model.DeviceDetailInfo
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.lib.network.response.PageList
 import com.shmedo.lib.network.response.ResponseStatus
@@ -39,8 +39,8 @@ class MR702ParamImportPopupView(context: Context) : CenterPopupView(context) {
     private var title: String = ""
     private var deviceSn: String = ""
     private var deviceId: String = ""
-    private val backupInfoList: ArrayList<DeviceBackupInfo> = arrayListOf()
-    private var selectedBackupInfo: DeviceBackupInfo? = null
+    private val backupInfoList: ArrayList<com.shmedo.core.model.DeviceBackupInfo> = arrayListOf()
+    private var selectedBackupInfo: com.shmedo.core.model.DeviceBackupInfo? = null
     private var clickListener: OnClickListener? = null
 
 
@@ -138,7 +138,7 @@ class MR702ParamImportPopupView(context: Context) : CenterPopupView(context) {
         }
     }
 
-    private suspend fun getDeviceDetailInfo(deviceToken: String = ""): DeviceDetailInfo? {
+    private suspend fun getDeviceDetailInfo(deviceToken: String = ""): com.shmedo.core.model.DeviceDetailInfo? {
         val jsonObjectRequest = JSONObject()
         try {
             jsonObjectRequest.put("deviceToken", deviceToken)
@@ -154,7 +154,7 @@ class MR702ParamImportPopupView(context: Context) : CenterPopupView(context) {
         deviceID: String,
         currentPage: Int = 1,
         pageSize: Int = 100
-    ): PageList<DeviceBackupInfo>? {
+    ): PageList<com.shmedo.core.model.DeviceBackupInfo>? {
         val jsonObjectRequest = JSONObject()
         try {
             jsonObjectRequest.put("deviceID", deviceID)

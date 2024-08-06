@@ -6,10 +6,8 @@ import com.drake.brv.PageRefreshLayout
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.core.base.model.DeviceInfo
-import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -25,7 +23,7 @@ class NetProductDeviceListFragment : BaseFragment() {
     private lateinit var binding: FragmentNetProductDeviceListBinding
     private lateinit var mStates: EmptyViewModel
     private lateinit var deviceRequestViewModel: DeviceRequestViewModel
-    private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
+    private val userInfo: com.shmedo.core.model.UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
     private var productID = -1
 
@@ -53,9 +51,9 @@ class NetProductDeviceListFragment : BaseFragment() {
                     false
                 )
             )
-            addType<DeviceInfo>(R.layout.item_device_info)
+            addType<com.shmedo.core.model.DeviceInfo>(R.layout.item_device_info)
             R.id.item.onClick {
-                val deviceInfo = getModel<DeviceInfo>()
+                val deviceInfo = getModel<com.shmedo.core.model.DeviceInfo>()
                 DeviceHomeActivity.start(mActivity, deviceInfo)
             }
         }
@@ -75,7 +73,7 @@ class NetProductDeviceListFragment : BaseFragment() {
     }
 
     override fun createObserver() {
-        deviceRequestViewModel.deviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<DeviceInfo>> ->
+        deviceRequestViewModel.deviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<com.shmedo.core.model.DeviceInfo>> ->
             if (!listDataResult.responseStatus.isSuccess) {
                 Toaster.show(listDataResult.responseStatus.errorMessage)
                 return@observe

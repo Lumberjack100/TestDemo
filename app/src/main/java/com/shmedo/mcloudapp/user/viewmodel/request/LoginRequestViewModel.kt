@@ -6,14 +6,9 @@ import com.blankj.utilcode.util.ResourceUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
-import com.shmedo.lib.core.base.model.AppConfigInfo
-import com.shmedo.lib.core.base.model.BasicUserInfo
-import com.shmedo.lib.core.base.model.CompanyInfo
-import com.shmedo.lib.core.base.model.UserPermissionInfo
-import com.shmedo.lib.core.base.model.UserWrapperInfo
 import com.shmedo.lib.core.base.viewmodel.BaseRequestViewModel
 import com.shmedo.lib.core.data.repository.LoggerRepositoryImp
-import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
 import com.shmedo.lib.network.ext.errorCode
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.lib.network.response.DataResult
@@ -44,8 +39,8 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
     private val _loginResult = MutableResult<DataResult<String>>()
     val loginResult: Result<DataResult<String>> = _loginResult
 
-    private val _userWrapperInfoResult = MutableResult<DataResult<UserWrapperInfo>>()
-    val userWrapperInfoResult: Result<DataResult<UserWrapperInfo>> = _userWrapperInfoResult
+    private val _userWrapperInfoResult = MutableResult<DataResult<com.shmedo.core.model.UserWrapperInfo>>()
+    val userWrapperInfoResult: Result<DataResult<com.shmedo.core.model.UserWrapperInfo>> = _userWrapperInfoResult
 
     private val _uploadUserAvataResult = MutableResult<DataResult<String>>()
     val uploadUserAvataResult: Result<DataResult<String>> = _uploadUserAvataResult
@@ -53,8 +48,8 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
     private val _updateUserInfoResult = MutableResult<DataResult<String>>()
     val updateUserInfoResult: Result<DataResult<String>> = _updateUserInfoResult
 
-    private val _companyInfoResult = MutableResult<DataResult<CompanyInfo>>()
-    val companyInfoResult: Result<DataResult<CompanyInfo>> = _companyInfoResult
+    private val _companyInfoResult = MutableResult<DataResult<com.shmedo.core.model.CompanyInfo>>()
+    val companyInfoResult: Result<DataResult<com.shmedo.core.model.CompanyInfo>> = _companyInfoResult
 
     private val _updatePasswordResult = MutableResult<DataResult<String>>()
     val updatePasswordResult: Result<DataResult<String>> = _updatePasswordResult
@@ -135,7 +130,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
         onTokenReceived(tokenOrBasicUserInfo)
 
         val basicUserInfo = when (tokenOrBasicUserInfo) {
-            is BasicUserInfo -> tokenOrBasicUserInfo
+            is com.shmedo.core.model.BasicUserInfo -> tokenOrBasicUserInfo
             is String -> getBasicUserInfoByToken() ?: return
             else -> throw IllegalArgumentException("Unexpected return type from login method")
         }
@@ -143,7 +138,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
         MmkvCacheUtil.setUserCompanyId(basicUserInfo.companyID)
         MmkvCacheUtil.setUserRealName(basicUserInfo.subjectName.trim())
 
-        val userWrapperInfo: UserWrapperInfo =
+        val userWrapperInfo: com.shmedo.core.model.UserWrapperInfo =
             queryUserByID(basicUserInfo.companyID, basicUserInfo.subjectID) ?: return
         MmkvCacheUtil.setUser(userWrapperInfo.user)
 
@@ -187,7 +182,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
         }
     }
 
-    private suspend fun getBasicUserInfoByToken(): BasicUserInfo? =
+    private suspend fun getBasicUserInfoByToken(): com.shmedo.core.model.BasicUserInfo? =
         NetDataRepository.instance.getUserByToken { error: Throwable ->
             handleError(
                 _loginResult,
@@ -196,7 +191,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             )
         }
 
-    private suspend fun queryUserByID(companyID: Int = 0, userID: Int = 0): UserWrapperInfo? {
+    private suspend fun queryUserByID(companyID: Int = 0, userID: Int = 0): com.shmedo.core.model.UserWrapperInfo? {
         val jsonObjectRequest = JSONObject().apply {
             put("companyID", companyID)
             put("userID", userID)
@@ -211,7 +206,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
         }
     }
 
-    private suspend fun queryAllPermissionInService(companyID: Int = 0): List<UserPermissionInfo>? {
+    private suspend fun queryAllPermissionInService(companyID: Int = 0): List<com.shmedo.core.model.UserPermissionInfo>? {
         val jsonObjectRequest = JSONObject().apply {
             put("companyID", companyID)
             put("serviceName", "iot")
@@ -270,7 +265,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
                 put("companyID", companyID)
                 put("userID", userID)
             }
-            val userWrapperInfo: UserWrapperInfo =
+            val userWrapperInfo: com.shmedo.core.model.UserWrapperInfo =
                 NetDataRepository.instance.queryUserByID(jsonObjectRequest.toString()) { error: Throwable ->
                     handleError(
                         _userWrapperInfoResult,
@@ -299,7 +294,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
                 put("companyID", companyID)
             }
 
-            val companyInfo: CompanyInfo =
+            val companyInfo: com.shmedo.core.model.CompanyInfo =
                 NetDataRepository.instance.queryCompanyInfoByID(jsonObjectRequest.toString()) { error: Throwable ->
                     handleError(
                         _companyInfoResult,
@@ -387,8 +382,8 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
                 val amsToken: String = appConfigLogin() ?: return@launch
                 MmkvCacheUtil.setAmsToken(amsToken)
 
-                val remoteAppConfigInfo: AppConfigInfo = queryConfigInfoItem() ?: return@launch
-                val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
+                val remoteAppConfigInfo: com.shmedo.core.model.AppConfigInfo = queryConfigInfoItem() ?: return@launch
+                val localAppConfigInfo: com.shmedo.core.model.AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
 
                 val remoteDate = TimeUtils.string2Date(remoteAppConfigInfo.lastTime)
                 val localDate = TimeUtils.string2Date(localAppConfigInfo.lastTime)
@@ -435,7 +430,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
         }
     }
 
-    private suspend fun queryConfigInfoItem(): AppConfigInfo? =
+    private suspend fun queryConfigInfoItem(): com.shmedo.core.model.AppConfigInfo? =
         NetDataRepository.instance.queryConfigInfoItem { error: Throwable ->
             error.printStackTrace()
             val msg =

@@ -18,7 +18,6 @@ import com.shmedo.lib.ble.permission.viewmodel.PermissionViewModel
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.ble.scanner.repository.ScanningState
 import com.shmedo.lib.ble.scanner.viewmodel.ScannerViewModel
-import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchAndRepeatWithViewLifecycle
@@ -164,7 +163,7 @@ class BleScannerListFragment : BaseFragment() {
             mStates.keyWords.value = sn
             startScanningSearchDeviceTimeoutJob()
         }
-        deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceInfo> ->
+        deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<com.shmedo.core.model.DeviceInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
                 discoveredBluetoothDevice?.name?.let { deviceToken ->
                     //CG0 自组网报警网关 特殊处理
@@ -174,7 +173,7 @@ class BleScannerListFragment : BaseFragment() {
 //                    }
                     DeviceHomeActivity.start(
                         mActivity,
-                        DeviceInfo(
+                        com.shmedo.core.model.DeviceInfo(
                             deviceToken = deviceToken.replaceFirst(Regex("^MD-?"), ""),
                             deviceName = deviceToken.replaceFirst(Regex("^MD-?"), ""),
                         ),

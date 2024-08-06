@@ -2,7 +2,7 @@ package com.shmedo.mcloudapp.device.viewmodel.state
 
 import androidx.lifecycle.ViewModel
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTRainStation
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTRainStation
 
 class DasIOSensorViewModel : ViewModel() {
     val switchType = NonNullObservableField(IOTRainStation.CLOSE)//

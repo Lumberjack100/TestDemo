@@ -15,20 +15,19 @@ import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.md_cmd.assemble.entity.das.AuthenticationEntity
-import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
-import com.shmedo.lib.device.base.md_cmd.enums.MDLowEnergyModel
-import com.shmedo.lib.device.base.md_cmd.model.common.DeviceTimeInfo
-import com.shmedo.lib.device.base.md_cmd.model.das.AuthenticationInfo
-import com.shmedo.lib.device.base.md_cmd.model.das.AuthenticationResultInfo
-import com.shmedo.lib.device.base.md_cmd.model.das.DasBaseConfigInfo
-import com.shmedo.lib.device.base.md_cmd.parser.MDCommandResult
-import com.shmedo.lib.device.base.md_cmd.parser.MDParserManager
-import com.shmedo.lib.device.base.md_cmd.utils.DesUtil
-import com.shmedo.lib.device.base.md_cmd.utils.HexUtils
-import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
-import com.shmedo.lib.device.base.md_cmd.utils.MDConstants
+import com.shmedo.lib.cmd.base.md_cmd.assemble.entity.das.AuthenticationEntity
+import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.cmd.base.md_cmd.enums.MDLowEnergyModel
+import com.shmedo.lib.cmd.base.md_cmd.model.common.DeviceTimeInfo
+import com.shmedo.lib.cmd.base.md_cmd.model.das.AuthenticationInfo
+import com.shmedo.lib.cmd.base.md_cmd.model.das.AuthenticationResultInfo
+import com.shmedo.lib.cmd.base.md_cmd.model.das.DasBaseConfigInfo
+import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
+import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
+import com.shmedo.lib.cmd.base.md_cmd.utils.DesUtil
+import com.shmedo.lib.cmd.base.md_cmd.utils.HexUtils
+import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
+import com.shmedo.lib.cmd.base.md_cmd.utils.MDConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -710,7 +709,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     private fun setupHeartbeat() {
         launchWithViewLifecycle {
             lastCommunicationTime
-                .debounce(AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
+                .debounce(com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
                 .collect { lastUpdateTime ->
                     val updateTime = TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
                     Timber.d("startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")

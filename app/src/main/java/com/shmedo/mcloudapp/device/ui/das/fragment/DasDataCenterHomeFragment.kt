@@ -16,25 +16,23 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.common.CenterNumberEntity
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.das.DasBdTerminalEntity
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.enums.ServerOne
-import com.shmedo.lib.device.base.iot_cmd.enums.ServerThree
-import com.shmedo.lib.device.base.iot_cmd.enums.ServerTwo
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.device.base.iot_cmd.model.common.DataCenterStatus
-import com.shmedo.lib.device.base.iot_cmd.model.das.DasBdTerminalInfo
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.CenterNumberEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.das.DasBdTerminalEntity
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerOne
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerThree
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerTwo
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.DataCenterStatus
+import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasBdTerminalInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentDasDataCenterHomeBinding
 import com.shmedo.mcloudapp.device.common.BaseClickProxy
-import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.common.UniversalDataCenterParamFragment
@@ -46,7 +44,6 @@ import com.shmedo.mcloudapp.ext.showLoadingDialog
 import com.shmedo.mcloudapp.ext.showMessage
 import com.shmedo.mcloudapp.ext.showMessageDialog
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasDataCenterHomeBinding
@@ -128,9 +125,9 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
     override fun createObserver() {
         super.createObserver()
         //从编辑页面返回需要刷新事件详情页面
-        setFragmentResultListener(AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { key, bundle ->
+        setFragmentResultListener(com.shmedo.core.commonlib.utils.AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { key, bundle ->
             val centerNumber =
-                bundle.getInt(AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
+                bundle.getInt(com.shmedo.core.commonlib.utils.AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
             commandItems.clear()
 
             val entity = CenterNumberEntity(centerNumber.toString())

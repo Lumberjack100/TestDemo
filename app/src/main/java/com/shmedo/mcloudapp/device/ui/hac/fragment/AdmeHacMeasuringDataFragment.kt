@@ -18,19 +18,18 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.core.util.AppContants
 import com.shmedo.lib.core.util.IOTRegexContants
-import com.shmedo.lib.core.util.jsonhelper.MoshiUtil
-import com.shmedo.lib.device.base.iot_cmd.assemble.entity.hac.HacMeasuringDataEntity
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.device.base.iot_cmd.model.hac.HacHoleAreaDepthInfo
-import com.shmedo.lib.device.base.iot_cmd.model.hac.HacMeasuringDataInfo
-import com.shmedo.lib.device.base.iot_cmd.model.hac.HacMotionState
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.device.base.iot_cmd.parser.IOTParserManager
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
+import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.hac.HacMeasuringDataEntity
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.model.hac.HacHoleAreaDepthInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.hac.HacMeasuringDataInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.hac.HacMotionState
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -112,8 +111,8 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
     override fun createObserver() {
         super.createObserver()
         //从测量过程页面返回需要刷新运行状态信息
-        setFragmentResultListener(AppContants.Extras.FRAGMENT_MEASURING_DATA_PROCEDURE_RESULT_REQUEST_KEY) { key, bundle ->
-            (bundle.getParcelable(AppContants.Extras.MOTOR_STATE) as HacMotionState?)?.let { motionState ->
+        setFragmentResultListener(com.shmedo.core.commonlib.utils.AppContants.Extras.FRAGMENT_MEASURING_DATA_PROCEDURE_RESULT_REQUEST_KEY) { key, bundle ->
+            (bundle.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.MOTOR_STATE) as HacMotionState?)?.let { motionState ->
                 Timber.d("onActivityResult %s", motionState.toString())
                 mStates.isRunButtonEnable.set(motionState.motorinfo == "8" || motionState.motorinfo == "9" || motionState.motorinfo == "10")
                 mStates.runButtonText.set(
@@ -277,7 +276,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
+            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_15000_MILLIS
         )
     }
 
@@ -301,7 +300,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
         commandItems.add(command)
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
+            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_15000_MILLIS
         )
     }
 

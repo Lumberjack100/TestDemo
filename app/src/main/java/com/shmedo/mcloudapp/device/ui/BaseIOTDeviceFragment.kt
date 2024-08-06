@@ -16,17 +16,15 @@ import com.shmedo.lib.ble.communicate.service.base.ReadyResult
 import com.shmedo.lib.ble.communicate.service.base.SuccessResult
 import com.shmedo.lib.ble.communicate.service.base.UnknownErrorResult
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.ext.getLogItem
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.core.util.MmkvCacheUtil
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.fragment.BaseFragment
 import com.shmedo.mcloudapp.common.viewmodel.state.PageMessenger
@@ -69,7 +67,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     protected var productType = ProductType.UnKnown
     protected var statusBarColor = 0
     protected var communicateWay: CommunicateWay = NetPlatformConnect
-    protected lateinit var deviceInfo: DeviceInfo
+    protected lateinit var deviceInfo: com.shmedo.core.model.DeviceInfo
     protected var bleDevice: DiscoveredBluetoothDevice? = null
     private var timeoutJob: Job? = null
     protected var commandItems = LinkedList<String>()
@@ -79,7 +77,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     // 检查是否超时
     protected fun isNearbyCommunicationTimeout(lastUpdateTime: Long): Boolean {
-        return (System.currentTimeMillis() - lastUpdateTime) >= AppContants.Communication.DELAY_10000_MILLIS
+        return (System.currentTimeMillis() - lastUpdateTime) >= com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_10000_MILLIS
     }
 
     // 更新最后通信时间
@@ -98,11 +96,11 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     @CallSuper
     override fun initData() {
         arguments?.let {
-            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
-            communicateWay = it.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
-            deviceInfo = it.getParcelable(AppContants.Extras.DEVICE_INFO)!!
-            bleDevice = it.getParcelable(AppContants.Extras.BLE_DEVICE)
-            statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
+            productType = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE)!!
+            communicateWay = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY)!!
+            deviceInfo = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO)!!
+            bleDevice = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE)
+            statusBarColor = it.getInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR)
         }
     }
 
@@ -269,7 +267,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     protected inline fun sendCommandFromCmdList(
         delaySendMillis: Long = 0,//默认不延迟发送
         isStartTimeoutJob: Boolean = false,//默认不启动超时Job
-        timeoutMillis: Long = AppContants.Communication.DELAY_10000_MILLIS,//默认10秒超时
+        timeoutMillis: Long = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_10000_MILLIS,//默认10秒超时
         crossinline finishAction: () -> Unit = {}
     ) {
         if (commandItems.size <= 0) {
@@ -309,7 +307,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
      */
     fun startNearbyCommunicationTimeoutJob(
         cmdStr: String = "",
-        timeMillis: Long = AppContants.Communication.DELAY_10000_MILLIS
+        timeMillis: Long = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_10000_MILLIS
     ) {
         // 启动一个新的协程作为超时Job
         timeoutJob?.cancel()
@@ -405,15 +403,15 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         fun newBundleArguments(
             type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: DeviceInfo,
+            deviceInfo: com.shmedo.core.model.DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
-            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

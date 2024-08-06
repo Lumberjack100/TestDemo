@@ -1,7 +1,7 @@
 package com.shmedo.mcloudapp.device.ui.common
 
 import androidx.fragment.app.Fragment
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.device.model.BleConnect
 import com.shmedo.mcloudapp.device.ui.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.device.ui.das.fragment.ble.deviceinfo.BleDasBaseInfoFragment

@@ -20,7 +20,7 @@ import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.enums.PopupAnimation
-import com.shmedo.lib.core.base.model.DeviceInfo
+import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.core.ext.getAppViewModel
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.util.permission.PermissionInterceptor
@@ -89,7 +89,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
                 scanResult(obj.originalValue)
             }
         }
-        deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceInfo> ->
+        deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<com.shmedo.core.model.DeviceInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
                 showMessageDialog("获取设备信息失败!${dataResult.responseStatus.errorMessage}")
                 return@observe

@@ -26,20 +26,18 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.model.DebugCmdLogInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.model.DebugCmdLogInfo
-import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.device.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.device.base.md_cmd.enums.MDCommandType
-import com.shmedo.lib.device.base.md_cmd.enums.MDLogOutputStatus
-import com.shmedo.lib.device.base.md_cmd.enums.MDWorkModel
-import com.shmedo.lib.device.base.md_cmd.utils.MDCommandUtil
-import com.shmedo.lib.device.base.md_cmd.utils.MDConstants
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.cmd.base.md_cmd.enums.MDLogOutputStatus
+import com.shmedo.lib.cmd.base.md_cmd.enums.MDWorkModel
+import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
+import com.shmedo.lib.cmd.base.md_cmd.utils.MDConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentBleCustomCommandLogPrintBinding
@@ -307,7 +305,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         cmdStr: String,
         colorRes: Int = ColorUtils.getColor(R.color.send_data_color)
     ) {
-        val logInfo = DebugCmdLogInfo(
+        val logInfo = com.shmedo.core.model.DebugCmdLogInfo(
             logTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm:ss.SSS")),
             content = cmdStr.replace(MDConstants.COMMAND_FOOTER, ""),
             colorRes = colorRes,
@@ -352,7 +350,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
             binding.recyclerview.models?.let { logList ->
                 val logContent = StringBuilder()
                 logList.forEach { logInfo ->
-                    (logInfo as DebugCmdLogInfo).apply {
+                    (logInfo as com.shmedo.core.model.DebugCmdLogInfo).apply {
                         logContent.append(logTime)
                         logContent.append(" ")
                         logContent.append(content)
@@ -372,7 +370,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
             binding.recyclerview.models?.let { logList ->
                 val logContent = StringBuilder()
                 logList.forEach { logInfo ->
-                    (logInfo as DebugCmdLogInfo).apply {
+                    (logInfo as com.shmedo.core.model.DebugCmdLogInfo).apply {
                         logContent.append(logTime)
                         logContent.append(" ")
                         logContent.append(content)
@@ -448,16 +446,16 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
             isIotCmd: Boolean = true,
             type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: DeviceInfo,
+            deviceInfo: com.shmedo.core.model.DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
             putBoolean(IOT_CMD, isIotCmd)
-            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

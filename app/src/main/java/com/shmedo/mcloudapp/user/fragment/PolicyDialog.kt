@@ -18,7 +18,7 @@ import com.blankj.utilcode.util.StringUtils
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.core.base.fragment.BaseVmDbDialogFragment
 import com.shmedo.lib.core.ext.getAppViewModel
-import com.shmedo.lib.core.util.MmkvCacheUtil.setAgreePrivate
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil.setAgreePrivate
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.activity.WebviewActivity

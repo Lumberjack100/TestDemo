@@ -5,7 +5,7 @@
 
     <data>
 
-        <import type="com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants" />
+        <import type="com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants" />
 
         <variable
             name="toolbarVM"

@@ -11,12 +11,9 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.core.base.model.DeviceStatisticInfo
-import com.shmedo.lib.core.base.model.ProductInfo
-import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.ext.withArguments
-import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.core.commonlib.extensions.withArguments
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -35,7 +32,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentNetDeviceListBinding
     private lateinit var mStates: NetDeviceListViewModel
     private lateinit var deviceRequestViewModel: DeviceRequestViewModel
-    private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
+    private val userInfo: com.shmedo.core.model.UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
     private val activeBg: Int = R.drawable.bg_product_tab_checked
     private val normalBg: Int = R.drawable.bg_product_tab_normal
@@ -44,7 +41,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private val activeSize: Float = 15f
     private val normalSize: Float = 15f
 
-    private val productInfoList = mutableListOf<ProductInfo>()
+    private val productInfoList = mutableListOf<com.shmedo.core.model.ProductInfo>()
     private var companyID = -100
     private var productID = -1
 
@@ -98,7 +95,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     }
 
     override fun createObserver() {
-        deviceRequestViewModel.deviceStatisticInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceStatisticInfo> ->
+        deviceRequestViewModel.deviceStatisticInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<com.shmedo.core.model.DeviceStatisticInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe
@@ -111,7 +108,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                 updateTopView(rate)
             }
         }
-        deviceRequestViewModel.productListResult.observe(viewLifecycleOwner) { dataResult: DataResult<List<ProductInfo>> ->
+        deviceRequestViewModel.productListResult.observe(viewLifecycleOwner) { dataResult: DataResult<List<com.shmedo.core.model.ProductInfo>> ->
             if (!dataResult.responseStatus.isSuccess) {
                 binding.page.showError()
                 Toaster.show(dataResult.responseStatus.errorMessage)

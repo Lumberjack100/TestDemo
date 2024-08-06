@@ -13,10 +13,8 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.adapter.PageAdapter
@@ -40,7 +38,7 @@ abstract class BaseDeviceStatusInfoParentFragment : BaseFragment(),
     protected var productType = ProductType.UnKnown
     protected var statusBarColor = 0
     protected var communicateWay: CommunicateWay = NetPlatformConnect
-    protected lateinit var deviceInfo: DeviceInfo
+    protected lateinit var deviceInfo: com.shmedo.core.model.DeviceInfo
     protected var bleDevice: DiscoveredBluetoothDevice? = null
 
     protected val tabs = mutableListOf("基本信息", "通讯状态", "传感器")
@@ -75,11 +73,11 @@ abstract class BaseDeviceStatusInfoParentFragment : BaseFragment(),
     @CallSuper
     override fun initData() {
         arguments?.let {
-            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
-            communicateWay = it.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
-            deviceInfo = it.getParcelable(AppContants.Extras.DEVICE_INFO)!!
-            bleDevice = it.getParcelable(AppContants.Extras.BLE_DEVICE)
-            statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
+            productType = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE)!!
+            communicateWay = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY)!!
+            deviceInfo = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO)!!
+            bleDevice = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE)
+            statusBarColor = it.getInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR)
         }
         mStates.productName.set(deviceInfo.productName)
         mStates.productType.set("型号：${deviceInfo.deviceName}")

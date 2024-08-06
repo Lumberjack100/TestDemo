@@ -2,7 +2,7 @@ package com.shmedo.mcloudapp.device.viewmodel.state
 
 import androidx.lifecycle.ViewModel
 import com.shmedo.lib.core.base.viewmodel.NonNullObservableField
-import com.shmedo.lib.device.base.md_cmd.model.das.MDDasDigitalPiezometerInfo
+import com.shmedo.lib.cmd.base.md_cmd.model.das.MDDasDigitalPiezometerInfo
 
 class DasDigitalOsmometerViewModel : ViewModel() {
     val isOpened = NonNullObservableField(false)

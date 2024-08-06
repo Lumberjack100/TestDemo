@@ -15,12 +15,9 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.core.base.model.DeviceInfo
-import com.shmedo.lib.core.base.model.DeviceStatisticInfo
-import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
 import com.shmedo.lib.core.ext.launchWithViewLifecycle
-import com.shmedo.lib.core.util.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -46,7 +43,7 @@ class NewNetDeviceListFragment : BaseFragment() {
     private lateinit var binding: FragmentNewNetDeviceListBinding
     private lateinit var mStates: NetDeviceListViewModel
     private lateinit var deviceRequestViewModel: DeviceRequestViewModel
-    private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
+    private val userInfo: com.shmedo.core.model.UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
     private val productTabList = mutableListOf<SingleSelectionItem>()
     private val onlineStatusList = mutableListOf<SingleSelectionItem>()
@@ -176,13 +173,13 @@ class NewNetDeviceListFragment : BaseFragment() {
                     false
                 )
             )
-            addType<DeviceInfo>(R.layout.item_device_info)
+            addType<com.shmedo.core.model.DeviceInfo>(R.layout.item_device_info)
             R.id.item.onClick {
-                val deviceInfo = getModel<DeviceInfo>()
+                val deviceInfo = getModel<com.shmedo.core.model.DeviceInfo>()
                 DeviceHomeActivity.start(mActivity, deviceInfo)
             }
             R.id.item.onLongClick {
-                val deviceInfo = getModel<DeviceInfo>()
+                val deviceInfo = getModel<com.shmedo.core.model.DeviceInfo>()
                 val dataList = if (deviceInfo.followTime.isNullOrEmpty()) arrayListOf(
                     "查看数据",
                     "收藏"
@@ -304,7 +301,7 @@ class NewNetDeviceListFragment : BaseFragment() {
     }
 
     override fun createObserver() {
-        deviceRequestViewModel.deviceStatisticInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceStatisticInfo> ->
+        deviceRequestViewModel.deviceStatisticInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<com.shmedo.core.model.DeviceStatisticInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
                 binding.page.showError()
                 Toaster.show(dataResult.responseStatus.errorMessage)
@@ -331,7 +328,7 @@ class NewNetDeviceListFragment : BaseFragment() {
                 }
             }
         }
-        deviceRequestViewModel.deviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<DeviceInfo>> ->
+        deviceRequestViewModel.deviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<com.shmedo.core.model.DeviceInfo>> ->
             if (!listDataResult.responseStatus.isSuccess) {
                 Toaster.show(listDataResult.responseStatus.errorMessage)
                 return@observe

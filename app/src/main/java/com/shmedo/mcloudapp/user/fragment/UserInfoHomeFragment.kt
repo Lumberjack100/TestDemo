@@ -21,10 +21,8 @@ import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.PictureFileUtils
-import com.shmedo.lib.core.base.model.UserInfo
 import com.shmedo.lib.core.ext.getFragmentScopeViewModel
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.core.util.MmkvCacheUtil
+import com.shmedo.core.commonlib.utils.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -50,7 +48,7 @@ class UserInfoHomeFragment : BaseFragment() {
     private lateinit var binding: FragmentUserInfoHomeBinding
     private lateinit var mStates: UserInfoHomeViewModel
     private lateinit var loginRequestViewModel: LoginRequestViewModel
-    private val userInfo: UserInfo by lazy { MmkvCacheUtil.getUser()!! }
+    private val userInfo: com.shmedo.core.model.UserInfo by lazy { MmkvCacheUtil.getUser()!! }
 
 
     override fun initViewModel() {
@@ -110,7 +108,7 @@ class UserInfoHomeFragment : BaseFragment() {
             Toaster.show("头像已上传")
             setFragmentResult(
                 MineFragment.requestKey,
-                bundleOf(AppContants.Extras.IS_REFRESH_USER_INFO to true)
+                bundleOf(com.shmedo.core.commonlib.utils.AppContants.Extras.IS_REFRESH_USER_INFO to true)
             )
         }
         loginRequestViewModel.updateUserInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<String> ->
@@ -122,7 +120,7 @@ class UserInfoHomeFragment : BaseFragment() {
             Toaster.show("保存成功")
             setFragmentResult(
                 MineFragment.requestKey,
-                bundleOf(AppContants.Extras.IS_REFRESH_USER_INFO to true)
+                bundleOf(com.shmedo.core.commonlib.utils.AppContants.Extras.IS_REFRESH_USER_INFO to true)
             )
             ThreadUtils.runOnUiThreadDelayed({
 //                mMessenger.requestStatusBarColor(R.color.colorPrimary)

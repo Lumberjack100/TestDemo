@@ -7,11 +7,9 @@ import android.os.Parcelable
 import androidx.navigation.findNavController
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.core.base.model.DeviceInfo
 import com.shmedo.lib.core.base.viewmodel.LogViewModel
 import com.shmedo.lib.core.ext.getActivityScopeViewModel
-import com.shmedo.lib.core.util.AppContants
-import com.shmedo.lib.device.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.common.activity.BaseActivity
@@ -35,7 +33,7 @@ class QuickFunctionActivity : BaseActivity() {
 
     private var productType = ProductType.UnKnown
     private var communicateWay: CommunicateWay = NetPlatformConnect
-    private var deviceInfo: DeviceInfo? = null
+    private var deviceInfo: com.shmedo.core.model.DeviceInfo? = null
     private var bleDevice: DiscoveredBluetoothDevice? = null
 
     override fun initViewModel() {
@@ -56,10 +54,10 @@ class QuickFunctionActivity : BaseActivity() {
 
     override fun initData() {
         intent.extras?.let { bundle ->
-            productType = bundle.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
-            communicateWay = bundle.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
-            deviceInfo = bundle.getParcelable(AppContants.Extras.DEVICE_INFO)
-            bleDevice = bundle.getParcelable(AppContants.Extras.BLE_DEVICE)
+            productType = bundle.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE)!!
+            communicateWay = bundle.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY)!!
+            deviceInfo = bundle.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO)
+            bleDevice = bundle.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE)
         }
         binding.deviceHomeHostFragment.post {
             setGraph()
@@ -81,7 +79,7 @@ class QuickFunctionActivity : BaseActivity() {
     companion object {
         fun start(
             context: Context,
-            deviceInfo: DeviceInfo,
+            deviceInfo: com.shmedo.core.model.DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             communicateWay: CommunicateWay = NetPlatformConnect
         ) {
@@ -100,10 +98,10 @@ class QuickFunctionActivity : BaseActivity() {
                 }
             }
             val intent = Intent(context, QuickFunctionActivity::class.java).apply {
-                putExtra(AppContants.Extras.PRODUCT_TYPE, type as Parcelable)
-                putExtra(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-                putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo)
-                putExtra(AppContants.Extras.BLE_DEVICE, bleDevice)
+                putExtra(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type as Parcelable)
+                putExtra(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+                putExtra(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
+                putExtra(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             }
             context.startActivity(intent)
