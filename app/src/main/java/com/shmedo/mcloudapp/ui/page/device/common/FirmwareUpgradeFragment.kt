@@ -11,9 +11,9 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.scwang.smart.refresh.layout.constant.RefreshState
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
+import com.shmedo.core.model.FirmWareInfo
+import com.shmedo.core.model.UserInfo
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.FirmWareEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -23,19 +23,20 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentFirmwareUpgradeBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.model.BleConnect
-import com.shmedo.mcloudapp.model.FirmWareInfo
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.FirmwareUpgradeViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.databinding.FragmentFirmwareUpgradeBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
+import com.shmedo.mcloudapp.model.BleConnect
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.FirmwareUpgradeViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import timber.log.Timber
@@ -53,7 +54,7 @@ class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
     private lateinit var deviceRequestViewModel: DeviceRequestViewModel
     private val iotParseManager: IOTParserManager by inject()
 
-    private val userInfo: com.shmedo.core.model.UserInfo by lazy { MmkvCacheUtil.getUser()!! }
+    private val userInfo: UserInfo by lazy {  AuthMMKVOwner.userInfo!! }
     private val firmwareStatusList: MutableList<String> = arrayListOf("全部", "测试", "运营")
 
 

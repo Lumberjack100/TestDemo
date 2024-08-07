@@ -6,8 +6,10 @@ import androidx.fragment.app.setFragmentResultListener
 import com.blankj.utilcode.util.AppUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.commonlib.utils.LogoutUtil
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil
+import com.shmedo.core.model.UserInfo
+import com.shmedo.core.model.UserWrapperInfo
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -27,7 +29,7 @@ class MineFragment : BaseFragment() {
     private lateinit var mStates: MineViewModel
     private lateinit var appUpdateViewModel: AppUpdateViewModel
     private lateinit var loginRequestViewModel: LoginRequestViewModel
-    private val userInfo: com.shmedo.core.model.UserInfo by lazy { MmkvCacheUtil.getUser()!! }
+    private val userInfo: UserInfo by lazy {  AuthMMKVOwner.userInfo!! }
 
 
     override fun initViewModel() {
@@ -50,7 +52,7 @@ class MineFragment : BaseFragment() {
         refreshUserInfo(userInfo)
     }
 
-    private fun refreshUserInfo(info: com.shmedo.core.model.UserInfo) {
+    private fun refreshUserInfo(info: UserInfo) {
         if (!TextUtils.isEmpty(info.headPhotoPath))
             mStates.imageUrl.set(info.headPhotoPath)
         mStates.name.set(info.name)
@@ -59,7 +61,7 @@ class MineFragment : BaseFragment() {
     }
 
     override fun createObserver() {
-        loginRequestViewModel.userWrapperInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<com.shmedo.core.model.UserWrapperInfo> ->
+        loginRequestViewModel.userWrapperInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<UserWrapperInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe

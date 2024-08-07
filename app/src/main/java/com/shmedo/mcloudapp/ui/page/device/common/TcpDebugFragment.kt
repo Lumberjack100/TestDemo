@@ -19,6 +19,7 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kongzue.dialogx.dialogs.BottomMenu
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.model.DebugCmdLogInfo
 import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
 import com.shmedo.lib.ble.communicate.service.base.ConnectingResult
 import com.shmedo.lib.ble.communicate.service.base.DisconnectedResult
@@ -28,8 +29,6 @@ import com.shmedo.lib.ble.communicate.service.base.MissingServiceResult
 import com.shmedo.lib.ble.communicate.service.base.ReadyResult
 import com.shmedo.lib.ble.communicate.service.base.SuccessResult
 import com.shmedo.lib.ble.communicate.service.base.UnknownErrorResult
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -45,8 +44,12 @@ import com.shmedo.lib.tcp.TcpIdleResult
 import com.shmedo.lib.tcp.TcpSuccessResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentTcpDebugBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseCommandLogPrintClickProxy
+import com.shmedo.mcloudapp.databinding.FragmentTcpDebugBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.NoDeviceState
 import com.shmedo.mcloudapp.model.WorkingState
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
@@ -54,8 +57,6 @@ import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.TcpViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.TcpDebugViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.extensions.showMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -108,8 +109,8 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
 
     private fun initLogAdapter() {
         binding.recyclerview.setup { rv ->
-            addType<com.shmedo.core.model.DebugCmdLogInfo>(R.layout.item_debug_cmd_log)
-        }.models = mutableListOf<com.shmedo.core.model.DebugCmdLogInfo>()
+            addType<DebugCmdLogInfo>(R.layout.item_debug_cmd_log)
+        }.models = mutableListOf<DebugCmdLogInfo>()
     }
 
     override fun initData() {
@@ -433,7 +434,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
         cmdStr: String,
         colorRes: Int = ColorUtils.getColor(R.color.send_data_color)
     ) {
-        val logInfo = com.shmedo.core.model.DebugCmdLogInfo(
+        val logInfo = DebugCmdLogInfo(
             logTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm:ss.SSS")),
             content = cmdStr.replace(MDConstants.COMMAND_FOOTER, ""),
             colorRes = colorRes,
@@ -454,7 +455,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
             binding.recyclerview.models?.let { logList ->
                 val logContent = StringBuilder()
                 logList.forEach { logInfo ->
-                    (logInfo as com.shmedo.core.model.DebugCmdLogInfo).apply {
+                    (logInfo as DebugCmdLogInfo).apply {
                         logContent.append(logTime)
                         logContent.append(" ")
                         logContent.append(content)

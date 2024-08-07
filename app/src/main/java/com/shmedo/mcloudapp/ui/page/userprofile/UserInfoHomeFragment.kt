@@ -21,22 +21,23 @@ import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnResultCallbackListener
 import com.luck.picture.lib.utils.MediaUtils
 import com.luck.picture.lib.utils.PictureFileUtils
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
+import com.shmedo.core.model.UserInfo
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.databinding.FragmentUserInfoHomeBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
+import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.UserInfoHomeViewModel
 import com.shmedo.mcloudapp.utils.image.GlideEngine
 import com.shmedo.mcloudapp.utils.image.ImageFileCompressEngine
 import com.shmedo.mcloudapp.utils.image.MeOnCameraInterceptListener
 import com.shmedo.mcloudapp.utils.image.MeSandboxFileEngine
-import com.shmedo.mcloudapp.databinding.FragmentUserInfoHomeBinding
-import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.UserInfoHomeViewModel
 import org.json.JSONException
 import org.json.JSONObject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -48,7 +49,7 @@ class UserInfoHomeFragment : BaseFragment() {
     private lateinit var binding: FragmentUserInfoHomeBinding
     private lateinit var mStates: UserInfoHomeViewModel
     private lateinit var loginRequestViewModel: LoginRequestViewModel
-    private val userInfo: com.shmedo.core.model.UserInfo by lazy { MmkvCacheUtil.getUser()!! }
+    private val userInfo: UserInfo by lazy {  AuthMMKVOwner.userInfo!! }
 
 
     override fun initViewModel() {
@@ -158,8 +159,8 @@ class UserInfoHomeFragment : BaseFragment() {
             }
             val jsonObjectRequest = JSONObject()
             try {
-                jsonObjectRequest.put("companyID", MmkvCacheUtil.getUserCompanyId())
-                jsonObjectRequest.put("userID", MmkvCacheUtil.getUserId())
+                jsonObjectRequest.put("companyID", AuthMMKVOwner.companyID)
+                jsonObjectRequest.put("userID", AuthMMKVOwner.userID)
                 jsonObjectRequest.put("name", mStates.name.get())
                 if (mStates.post.get().isNotEmpty())
                     jsonObjectRequest.put("position", mStates.post.get())
@@ -181,8 +182,8 @@ class UserInfoHomeFragment : BaseFragment() {
         }
         val jsonObjectRequest = JSONObject()
         try {
-            jsonObjectRequest.put("companyID", MmkvCacheUtil.getUserCompanyId())
-            jsonObjectRequest.put("userID", MmkvCacheUtil.getUserId())
+            jsonObjectRequest.put("companyID", AuthMMKVOwner.companyID)
+            jsonObjectRequest.put("userID", AuthMMKVOwner.userID)
             jsonObjectRequest.put("content", fileContent)
             jsonObjectRequest.put("extension", "png")
         } catch (e: JSONException) {

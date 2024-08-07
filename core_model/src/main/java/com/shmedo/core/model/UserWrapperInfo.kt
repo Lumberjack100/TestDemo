@@ -12,5 +12,5 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class UserWrapperInfo(
     val user: UserInfo? = null,
-    val departments: List<com.shmedo.core.model.DepartmentInfo>? = ArrayList()
+    val departments: List<DepartmentInfo>? = ArrayList()
 )

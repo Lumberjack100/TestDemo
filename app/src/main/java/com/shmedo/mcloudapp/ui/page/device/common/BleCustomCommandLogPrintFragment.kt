@@ -27,6 +27,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.model.DebugCmdLogInfo
+import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
@@ -36,12 +37,12 @@ import com.shmedo.lib.cmd.base.md_cmd.enums.MDLogOutputStatus
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDWorkModel
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDConstants
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseCommandLogPrintClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentBleCustomCommandLogPrintBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommunicateWay
@@ -305,7 +306,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         cmdStr: String,
         colorRes: Int = ColorUtils.getColor(R.color.send_data_color)
     ) {
-        val logInfo = com.shmedo.core.model.DebugCmdLogInfo(
+        val logInfo = DebugCmdLogInfo(
             logTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm:ss.SSS")),
             content = cmdStr.replace(MDConstants.COMMAND_FOOTER, ""),
             colorRes = colorRes,
@@ -350,7 +351,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
             binding.recyclerview.models?.let { logList ->
                 val logContent = StringBuilder()
                 logList.forEach { logInfo ->
-                    (logInfo as com.shmedo.core.model.DebugCmdLogInfo).apply {
+                    (logInfo as DebugCmdLogInfo).apply {
                         logContent.append(logTime)
                         logContent.append(" ")
                         logContent.append(content)
@@ -370,7 +371,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
             binding.recyclerview.models?.let { logList ->
                 val logContent = StringBuilder()
                 logList.forEach { logInfo ->
-                    (logInfo as com.shmedo.core.model.DebugCmdLogInfo).apply {
+                    (logInfo as DebugCmdLogInfo).apply {
                         logContent.append(logTime)
                         logContent.append(" ")
                         logContent.append(content)
@@ -446,7 +447,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
             isIotCmd: Boolean = true,
             type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: com.shmedo.core.model.DeviceInfo,
+            deviceInfo: DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {

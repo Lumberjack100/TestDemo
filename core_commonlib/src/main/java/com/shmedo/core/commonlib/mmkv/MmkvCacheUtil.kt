@@ -1,6 +1,8 @@
-package com.shmedo.core.commonlib.utils
+package com.shmedo.core.commonlib.mmkv
 
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.model.AppConfigInfo
+import com.shmedo.core.model.UserPermissionInfo
 import com.tencent.mmkv.MMKV
 
 object MmkvCacheUtil {
@@ -54,71 +56,11 @@ object MmkvCacheUtil {
         kv.encode("token", token)
     }
 
-    fun getUserId(): Int {
-        val kv = MMKV.defaultMMKV()
-        return kv.decodeInt("user_id", 0)
-    }
-
-    fun setUserId(value: Int) {
-        val kv = MMKV.defaultMMKV()
-        kv.encode("user_id", value)
-    }
-
-    fun getUserCompanyId(): Int {
-        val kv = MMKV.defaultMMKV()
-        return kv.decodeInt("user_company_id", 0)
-    }
-
-    fun setUserCompanyId(value: Int) {
-        val kv = MMKV.defaultMMKV()
-        kv.encode("user_company_id", value)
-    }
-
-    fun getUserRealName(): String {
-        val kv = MMKV.defaultMMKV()
-        val value = kv.decodeString("user_real_name")
-        return value ?: ""
-    }
-
-    fun setUserRealName(value: String) {
-        val kv = MMKV.defaultMMKV()
-        kv.encode("user_real_name", value)
-    }
-
-    /**
-     * 获取保存的用户信息
-     */
-    fun getUser(): com.shmedo.core.model.UserInfo? {
-        val kv = MMKV.defaultMMKV()
-        val userStr = kv.decodeString("user_info")
-
-        return if (userStr.isNullOrEmpty()) com.shmedo.core.model.UserInfo()
-        else MoshiUtil.fromJson<com.shmedo.core.model.UserInfo>(userStr)
-    }
-
-    fun setUser(info: com.shmedo.core.model.UserInfo?) {
-        val kv = MMKV.defaultMMKV()
-        info?.let {
-            kv.encode("user_info", MoshiUtil.toJson(it))
-        }
-    }
-
-
-    fun setUserPermissionList(list: List<com.shmedo.core.model.UserPermissionInfo>?) {
+    fun setUserPermissionList(list: List<UserPermissionInfo>?) {
         val kv = MMKV.defaultMMKV()
         list?.let {
             kv.encode("user_permission_list", MoshiUtil.toJson(it))
         }
-    }
-
-    fun isHasListSuperInfoPermission(): Boolean {
-        val kv = MMKV.defaultMMKV()
-        return kv.decodeBool("iot_listsuperinfo_permission", false)
-    }
-
-    fun setHasListSuperInfoPermission(flag: Boolean): Boolean {
-        val kv = MMKV.defaultMMKV()
-        return kv.encode("iot_listsuperinfo_permission", flag)
     }
 
     /**
@@ -219,15 +161,15 @@ object MmkvCacheUtil {
         kv.encode("ams_token", token)
     }
 
-    fun getAppConfigInfo(): com.shmedo.core.model.AppConfigInfo? {
+    fun getAppConfigInfo(): AppConfigInfo? {
         val kv = MMKV.defaultMMKV()
         val userStr = kv.decodeString("ams_app_config_info")
 
         return if (userStr.isNullOrEmpty()) null
-        else MoshiUtil.fromJson<com.shmedo.core.model.AppConfigInfo>(userStr)
+        else MoshiUtil.fromJson<AppConfigInfo>(userStr)
     }
 
-    fun setAppConfigInfo(info: com.shmedo.core.model.AppConfigInfo?) {
+    fun setAppConfigInfo(info: AppConfigInfo?) {
         val kv = MMKV.defaultMMKV()
         info?.let {
             kv.encode("ams_app_config_info", MoshiUtil.toJson(it))
@@ -241,31 +183,4 @@ object MmkvCacheUtil {
         }
     }
 
-    /**
-     * 获取保存的应用日志 session id
-     */
-    fun getAppLogSessionId(): String {
-        val kv = MMKV.defaultMMKV()
-        val value = kv.decodeString("app_log_session_id")
-        return value ?: ""
-    }
-
-    fun setAppLogSessionId(value: String) {
-        val kv = MMKV.defaultMMKV()
-        kv.encode("app_log_session_id", value)
-    }
-
-    /**
-     * 获取保存的物联网设备日志 session id
-     */
-    fun getIOTDeviceLogSessionId(): String {
-        val kv = MMKV.defaultMMKV()
-        val value = kv.decodeString("iot_device_log_session_id")
-        return value ?: ""
-    }
-
-    fun setIOTDeviceLogSessionId(value: String) {
-        val kv = MMKV.defaultMMKV()
-        kv.encode("iot_device_log_session_id", value)
-    }
 }

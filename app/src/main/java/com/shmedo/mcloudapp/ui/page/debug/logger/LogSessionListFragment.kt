@@ -14,7 +14,7 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil
+import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.data.source.local.entity.LogSession
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R

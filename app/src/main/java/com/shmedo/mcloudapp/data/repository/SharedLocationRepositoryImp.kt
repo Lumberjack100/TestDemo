@@ -6,8 +6,7 @@ import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
 import com.amap.api.location.AMapLocationListener
 import com.blankj.utilcode.util.Utils
-
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.data.extensions.getLogItem
 import com.shmedo.core.data.repository.LoggerRepositoryImp
 import kotlinx.coroutines.CoroutineScope
@@ -133,7 +132,7 @@ class SharedLocationRepositoryImp(private val loggerRepositoryImp: LoggerReposit
         managerScope.launch {
             loggerRepositoryImp.insertLog(
                 getLogItem(
-                    sessionId = MmkvCacheUtil.getAppLogSessionId(),
+                    sessionId = CommonMMKVOwner.appLogSessionId,
                     priority = level,
                     data = message
                 )

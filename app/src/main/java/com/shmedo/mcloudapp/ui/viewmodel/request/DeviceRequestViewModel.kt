@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil
 import com.shmedo.core.data.repository.LoggerRepositoryImp
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.network.ext.errorMsg
@@ -15,10 +15,14 @@ import com.shmedo.lib.network.response.ResponseStatus
 import com.shmedo.lib.network.response.ResultSource
 import com.shmedo.lib.network.util.BaseURL
 import com.shmedo.mcloudapp.BuildConfig
-import com.shmedo.mcloudapp.data.repository.remote.NetDataRepository
-import com.shmedo.mcloudapp.model.CloudDeviceData
-import com.shmedo.mcloudapp.model.DeviceDebugAddress
-import com.shmedo.mcloudapp.model.FirmWareInfo
+import com.shmedo.core.data.repository.NetDataRepository
+import com.shmedo.core.model.CloudDeviceData
+import com.shmedo.core.model.DeviceDebugAddress
+import com.shmedo.core.model.DeviceDetailInfo
+import com.shmedo.core.model.DeviceInfo
+import com.shmedo.core.model.DeviceStatisticInfo
+import com.shmedo.core.model.FirmWareInfo
+import com.shmedo.core.model.ProductInfo
 import com.shmedo.mcloudapp.model.SingleSelectionItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -40,24 +44,24 @@ import timber.log.Timber
 class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) :
     BaseRequestViewModel(loggerRepositoryImp) {
 
-    private val _deviceStatisticInfoResult = MutableResult<DataResult<com.shmedo.core.model.DeviceStatisticInfo>>()
-    val deviceStatisticInfoResult: Result<DataResult<com.shmedo.core.model.DeviceStatisticInfo>> =
+    private val _deviceStatisticInfoResult = MutableResult<DataResult<DeviceStatisticInfo>>()
+    val deviceStatisticInfoResult: Result<DataResult<DeviceStatisticInfo>> =
         _deviceStatisticInfoResult
 
     private val _allProductTabResultFlow: MutableSharedFlow<DataResult<List<SingleSelectionItem>>> =
         MutableSharedFlow()
     val allProductTabResultFlow = _allProductTabResultFlow.asSharedFlow()
 
-    private val _productListResult = MutableResult<DataResult<List<com.shmedo.core.model.ProductInfo>>>()
-    val productListResult: Result<DataResult<List<com.shmedo.core.model.ProductInfo>>> =
+    private val _productListResult = MutableResult<DataResult<List<ProductInfo>>>()
+    val productListResult: Result<DataResult<List<ProductInfo>>> =
         _productListResult
 
-    private val _deviceListResult = MutableResult<DataResult<List<com.shmedo.core.model.DeviceInfo>>>()
-    val deviceListResult: Result<DataResult<List<com.shmedo.core.model.DeviceInfo>>> =
+    private val _deviceListResult = MutableResult<DataResult<List<DeviceInfo>>>()
+    val deviceListResult: Result<DataResult<List<DeviceInfo>>> =
         _deviceListResult
 
-    private val _followDeviceListResult = MutableResult<DataResult<List<com.shmedo.core.model.DeviceInfo>>>()
-    val followDeviceListResult: Result<DataResult<List<com.shmedo.core.model.DeviceInfo>>> =
+    private val _followDeviceListResult = MutableResult<DataResult<List<DeviceInfo>>>()
+    val followDeviceListResult: Result<DataResult<List<DeviceInfo>>> =
         _followDeviceListResult
 
     private val _followDeviceResult = MutableResult<DataResult<String>>()
@@ -66,8 +70,8 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     private val _cancelFollowDeviceResult = MutableResult<DataResult<String>>()
     val cancelFollowDeviceResult: Result<DataResult<String>> = _cancelFollowDeviceResult
 
-    private val _deviceInfoResult = MutableResult<DataResult<com.shmedo.core.model.DeviceInfo>>()
-    val deviceInfoResult: Result<DataResult<com.shmedo.core.model.DeviceInfo>> =
+    private val _deviceInfoResult = MutableResult<DataResult<DeviceInfo>>()
+    val deviceInfoResult: Result<DataResult<DeviceInfo>> =
         _deviceInfoResult
 
     private val _cloudDeviceDataListResult = MutableResult<DataResult<List<CloudDeviceData>>>()
@@ -86,13 +90,13 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             val jsonObjectRequest = JSONObject()
             jsonObjectRequest.put("companyID", companyID)
 
-            val data: com.shmedo.core.model.DeviceStatisticInfo =
+            val data: DeviceStatisticInfo =
                 NetDataRepository.instance.getDeviceStatByCompanyID(
                     jsonObjectRequest.toString(),
                     isHasListSuperInfoPermission
                 ) { error: Throwable ->
                     Timber.e(error)
-                    addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
+                    addLogItem(CommonMMKVOwner.appLogSessionId, Log.ERROR, error.errorMsg)
 
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
@@ -112,7 +116,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     fun getAllProductTabList(companyID: Int) {
         viewModelScope.launch {
             val pageSize = 100
-            val tempList = mutableListOf<com.shmedo.core.model.ProductInfo>()
+            val tempList = mutableListOf<ProductInfo>()
             val filterList = mutableListOf<SingleSelectionItem>()
 
             val responseStatus = ResponseStatus().apply {
@@ -130,13 +134,13 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                         put("currentPage", currentPage)
                     }
 
-                    val data: PageList<com.shmedo.core.model.ProductInfo>? = withContext(Dispatchers.IO) {
+                    val data: PageList<ProductInfo>? = withContext(Dispatchers.IO) {
                         try {
                             NetDataRepository.instance.getUserCompanyProductList(jsonObjectRequest.toString())
                         } catch (error: Throwable) {
                             Timber.e(error)
                             addLogItem(
-                                MmkvCacheUtil.getAppLogSessionId(),
+                                CommonMMKVOwner.appLogSessionId,
                                 Log.ERROR,
                                 error.errorMsg
                             )
@@ -184,7 +188,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                 )
             } catch (error: Throwable) {
                 Timber.e(error)
-                addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
+                addLogItem(CommonMMKVOwner.appLogSessionId, Log.ERROR, error.errorMsg)
                 responseStatus.apply {
                     isSuccess = false
                     errorMessage = error.errorMsg
@@ -223,13 +227,13 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             jsonObjectRequest.put("currentPage", currentPage)
             jsonObjectRequest.put("pageSize", pageSize)
 
-            val data: PageList<com.shmedo.core.model.DeviceInfo> =
+            val data: PageList<DeviceInfo> =
                 NetDataRepository.instance.queryDeviceList(
                     jsonObjectRequest.toString(),
                     isHasListSuperInfoPermission
                 ) { error: Throwable ->
                     Timber.e(error)
-                    addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
+                    addLogItem(CommonMMKVOwner.appLogSessionId, Log.ERROR, error.errorMsg)
 
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
@@ -271,12 +275,12 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             jsonObjectRequest.put("currentPage", currentPage)
             jsonObjectRequest.put("pageSize", pageSize)
 
-            val data: PageList<com.shmedo.core.model.DeviceInfo> =
+            val data: PageList<DeviceInfo> =
                 NetDataRepository.instance.queryFollowDeviceList(
                     jsonObjectRequest.toString()
                 ) { error: Throwable ->
                     Timber.e(error)
-                    addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
+                    addLogItem(CommonMMKVOwner.appLogSessionId, Log.ERROR, error.errorMsg)
 
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
@@ -312,7 +316,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                 val msg =
                     "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/AddUserFollowDevice error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
                 addLogItem(
-                    sessionId = MmkvCacheUtil.getAppLogSessionId(),
+                    sessionId = CommonMMKVOwner.appLogSessionId,
                     priority = Log.ERROR,
                     data = msg
                 )
@@ -344,7 +348,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                 val msg =
                     "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/CancelUserFollowDevice error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
                 addLogItem(
-                    sessionId = MmkvCacheUtil.getAppLogSessionId(),
+                    sessionId = CommonMMKVOwner.appLogSessionId,
                     priority = Log.ERROR,
                     data = msg
                 )
@@ -372,10 +376,10 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             val jsonObjectRequest = JSONObject()
             jsonObjectRequest.put("deviceToken", deviceToken)
 
-            val data: com.shmedo.core.model.DeviceDetailInfo =
+            val data: DeviceDetailInfo =
                 NetDataRepository.instance.getDeviceDetailInfo(jsonObjectRequest.toString()) { error: Throwable ->
                     Timber.e(error)
-                    addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
+                    addLogItem(CommonMMKVOwner.appLogSessionId, Log.ERROR, error.errorMsg)
 
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
@@ -400,7 +404,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     suspend fun getDeviceDetailInfo(
         deviceToken: String = "",
         onCatch: ((Throwable) -> Unit)? = null
-    ): com.shmedo.core.model.DeviceDetailInfo? {
+    ): DeviceDetailInfo? {
         val jsonObjectRequest = JSONObject()
         jsonObjectRequest.put("deviceToken", deviceToken)
 
@@ -450,7 +454,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                     jsonObjectRequest.toString()
                 ) { error: Throwable ->
                     Timber.e(error)
-                    addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
+                    addLogItem(CommonMMKVOwner.appLogSessionId, Log.ERROR, error.errorMsg)
 
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
@@ -503,7 +507,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                     jsonObjectRequest.toString()
                 ) { error: Throwable ->
                     Timber.e(error)
-                    addLogItem(MmkvCacheUtil.getAppLogSessionId(), Log.ERROR, error.errorMsg)
+                    addLogItem(CommonMMKVOwner.appLogSessionId, Log.ERROR, error.errorMsg)
 
                     val responseStatus = ResponseStatus()
                     responseStatus.isSuccess = false
@@ -554,7 +558,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             val msg =
                 "${BaseURL.AMS_CONFIG_ADDRESS.baseUrl}/Login error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
             addLogItem(
-                sessionId = MmkvCacheUtil.getAppLogSessionId(),
+                sessionId = CommonMMKVOwner.appLogSessionId,
                 priority = Log.ERROR,
                 data = msg
             )

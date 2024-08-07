@@ -20,7 +20,7 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil
+import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -32,7 +32,7 @@ import com.shmedo.mcloudapp.databinding.ActivityLoginBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
-import com.shmedo.mcloudapp.model.ContentType
+import com.shmedo.core.model.ContentType
 import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.LoginViewModel
 import com.tencent.bugly.crashreport.CrashReport

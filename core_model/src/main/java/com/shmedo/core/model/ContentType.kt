@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.model
+package com.shmedo.core.model
 
 /**
  * 创建者:   gonghe <br></br>

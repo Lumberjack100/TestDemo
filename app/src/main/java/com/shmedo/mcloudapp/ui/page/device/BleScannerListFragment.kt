@@ -164,7 +164,7 @@ class BleScannerListFragment : BaseFragment() {
             mStates.keyWords.value = sn
             startScanningSearchDeviceTimeoutJob()
         }
-        deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<com.shmedo.core.model.DeviceInfo> ->
+        deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
                 discoveredBluetoothDevice?.name?.let { deviceToken ->
                     //CG0 自组网报警网关 特殊处理

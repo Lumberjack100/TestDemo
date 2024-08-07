@@ -11,24 +11,25 @@ import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.adapter.PageAdapter
-import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
-import com.shmedo.mcloudapp.databinding.FragmentDasSensorHomeBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.databinding.FragmentDasSensorHomeBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.ui.adapter.PageAdapter
+import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor.DasExternalSensorListFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.internalsensor.DasDigitalOsmometerFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.internalsensor.DasIOSensorFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.internalsensor.DasMCUAddressFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.extensions.nav
 
 class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentDasSensorHomeBinding
@@ -37,7 +38,7 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private var productType = ProductType.UnKnown
     private var statusBarColor = 0
     private var communicateWay: CommunicateWay = NetPlatformConnect
-    private lateinit var deviceInfo: com.shmedo.core.model.DeviceInfo
+    private lateinit var deviceInfo: DeviceInfo
     private var bleDevice: DiscoveredBluetoothDevice? = null
 
     private var tabNames = arrayListOf<String>()

@@ -39,7 +39,8 @@ android {
 }
 
 dependencies {
-    implementation(project(":core_data"))
+    implementation(project(":core_model"))
+    implementation(project(":core_commonlib"))
 
     implementation(libs.kotlin.stdlib.jdk8)
     implementation(libs.okhttp)

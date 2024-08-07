@@ -16,7 +16,7 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil
+import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R

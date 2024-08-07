@@ -1,6 +1,8 @@
 package com.shmedo.core.model
 
+import android.os.Parcelable
 import com.squareup.moshi.JsonClass
+import kotlinx.parcelize.Parcelize
 
 /**
  * 创建者：gonghe
@@ -11,6 +13,7 @@ import com.squareup.moshi.JsonClass
  *
  *
  */
+@Parcelize
 @JsonClass(generateAdapter = true)
 data class UserInfo(
     val userID: Int = 0,
@@ -33,4 +36,4 @@ data class UserInfo(
     val expireTime: String = "",
     val ssoUser: Boolean = false,
     val ssoToken: String = ""
-) : java.io.Serializable
+) : Parcelable

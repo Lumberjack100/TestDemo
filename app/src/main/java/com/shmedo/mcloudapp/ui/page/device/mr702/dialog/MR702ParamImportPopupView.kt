@@ -8,12 +8,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.lifecycleScope
 import com.hjq.toast.Toaster
 import com.lxj.xpopup.core.CenterPopupView
+import com.shmedo.core.data.repository.NetDataRepository
+import com.shmedo.core.model.DeviceBackupInfo
+import com.shmedo.core.model.DeviceDetailInfo
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.lib.network.response.PageList
 import com.shmedo.lib.network.response.ResponseStatus
 import com.shmedo.lib.network.response.ResultSource
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.data.repository.remote.NetDataRepository
 import com.shmedo.mcloudapp.databinding.CustomMr702ParamImportPopupBinding
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702EquipmentOperationViewModel
 import kotlinx.coroutines.launch
@@ -37,8 +39,8 @@ class MR702ParamImportPopupView(context: Context) : CenterPopupView(context) {
     private var title: String = ""
     private var deviceSn: String = ""
     private var deviceId: String = ""
-    private val backupInfoList: ArrayList<com.shmedo.core.model.DeviceBackupInfo> = arrayListOf()
-    private var selectedBackupInfo: com.shmedo.core.model.DeviceBackupInfo? = null
+    private val backupInfoList: ArrayList<DeviceBackupInfo> = arrayListOf()
+    private var selectedBackupInfo: DeviceBackupInfo? = null
     private var clickListener: OnClickListener? = null
 
 
@@ -136,7 +138,7 @@ class MR702ParamImportPopupView(context: Context) : CenterPopupView(context) {
         }
     }
 
-    private suspend fun getDeviceDetailInfo(deviceToken: String = ""): com.shmedo.core.model.DeviceDetailInfo? {
+    private suspend fun getDeviceDetailInfo(deviceToken: String = ""): DeviceDetailInfo? {
         val jsonObjectRequest = JSONObject()
         try {
             jsonObjectRequest.put("deviceToken", deviceToken)
@@ -152,7 +154,7 @@ class MR702ParamImportPopupView(context: Context) : CenterPopupView(context) {
         deviceID: String,
         currentPage: Int = 1,
         pageSize: Int = 100
-    ): PageList<com.shmedo.core.model.DeviceBackupInfo>? {
+    ): PageList<DeviceBackupInfo>? {
         val jsonObjectRequest = JSONObject()
         try {
             jsonObjectRequest.put("deviceID", deviceID)

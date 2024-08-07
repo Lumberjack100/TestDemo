@@ -17,7 +17,7 @@ import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil
+import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.adme.AdmeAutoMeasuringHoleDepthEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.adme.AdmeLockedRotorDetectionEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.adme.AdmeMeasuringHoleDepthEntity

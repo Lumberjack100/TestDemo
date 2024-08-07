@@ -20,7 +20,7 @@ import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.enums.PopupAnimation
-import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
+import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -41,6 +41,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.ui.viewmodel.state.ScanQRCodeResultPopupViewViewModel
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper.REQUEST_CODE_SCAN
+import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import timber.log.Timber
 
@@ -90,7 +91,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
                 scanResult(obj.originalValue)
             }
         }
-        deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<com.shmedo.core.model.DeviceInfo> ->
+        deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
                 showMessageDialog("获取设备信息失败!${dataResult.responseStatus.errorMessage}")
                 return@observe

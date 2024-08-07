@@ -1,6 +1,8 @@
 package com.shmedo.core.commonlib.utils
 
 import com.blankj.utilcode.util.ActivityUtils
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
+import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 
 /**
  * @Author      : gonghe
@@ -16,9 +18,7 @@ object LogoutUtil {
     fun logout() {
         MmkvCacheUtil.setToken("")
         MmkvCacheUtil.setPassword("")
-        MmkvCacheUtil.setUserId(0)
-        MmkvCacheUtil.setUserCompanyId(0)
-        MmkvCacheUtil.setUser(null)
+        AuthMMKVOwner.clear()
         ActivityUtils.finishAllActivities()
     }
 }

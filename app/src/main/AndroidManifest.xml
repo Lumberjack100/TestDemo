@@ -167,6 +167,16 @@
             android:name=".utils.AppContentProvider"
             android:authorities="${applicationId}.appContentProvider"
             android:exported="false" />
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="com.shmedo.core.commonlib.mmkv.MMKVInitializer"
+                tools:node="remove" />
+        </provider>
     </application>
 
 </manifest>

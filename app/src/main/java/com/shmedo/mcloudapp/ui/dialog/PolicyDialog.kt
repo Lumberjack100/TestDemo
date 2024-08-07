@@ -16,13 +16,13 @@ import com.amap.api.location.AMapLocationClient
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.StringUtils
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil.setAgreePrivate
+import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil.setAgreePrivate
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseVmDbDialogFragment
 import com.shmedo.mcloudapp.extensions.getAppViewModel
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.PrivacyDialogBinding
-import com.shmedo.mcloudapp.model.ContentType
+import com.shmedo.core.model.ContentType
 import com.shmedo.mcloudapp.ui.page.webview.WebviewActivity
 import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.ui.viewmodel.state.PolicyViewModel

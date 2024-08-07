@@ -16,16 +16,15 @@
 
 package com.shmedo.mcloudapp.koin
 
-import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
+
 import com.shmedo.mcloudapp.ui.viewmodel.request.AppUpdateViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.NetIOTCommandViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.RequestSearchViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.TcpViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
-
-
+import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -37,7 +36,7 @@ val viewModelModule = module {
     viewModel { NetIOTCommandViewModel(get()) }
     viewModel { DeviceRequestViewModel(get()) }
     viewModel { RequestSearchViewModel(get()) }
-    viewModel { AppUpdateViewModel(get()) }
+    viewModel { AppUpdateViewModel(get(), get()) }
     viewModel { LoginRequestViewModel(get()) }
 
 //  viewModel { (posterId: Long) -> PosterDetailViewModel(posterId, get()) }

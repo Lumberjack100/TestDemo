@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.model.CloudDeviceData" />
+            type="com.shmedo.core.model.CloudDeviceData" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat

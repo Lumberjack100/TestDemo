@@ -9,6 +9,7 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.model.DeviceInfo
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
@@ -63,15 +64,15 @@ class FollowDeviceListFragment : BaseFragment() {
                     false
                 )
             )
-            addType<com.shmedo.core.model.DeviceInfo>(R.layout.item_device_info)
+            addType<DeviceInfo>(R.layout.item_device_info)
             R.id.item.onClick {
-                val deviceInfo = getModel<com.shmedo.core.model.DeviceInfo>().apply {
+                val deviceInfo = getModel<DeviceInfo>().apply {
                     deviceToken = deviceToken.ifEmpty { deviceSn }
                 }
                 DeviceHomeActivity.start(mActivity, deviceInfo)
             }
             R.id.item.onLongClick {
-                val deviceInfo = getModel<com.shmedo.core.model.DeviceInfo>().apply {
+                val deviceInfo = getModel<DeviceInfo>().apply {
                     deviceToken = deviceToken.ifEmpty { deviceSn }
                 }
                 val dataList = if (deviceInfo.followTime.isNullOrEmpty()) arrayListOf(
@@ -109,7 +110,7 @@ class FollowDeviceListFragment : BaseFragment() {
     }
 
     override fun createObserver() {
-        deviceRequestViewModel.followDeviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<com.shmedo.core.model.DeviceInfo>> ->
+        deviceRequestViewModel.followDeviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<DeviceInfo>> ->
             if (!listDataResult.responseStatus.isSuccess) {
                 Toaster.show(listDataResult.responseStatus.errorMessage)
                 return@observe

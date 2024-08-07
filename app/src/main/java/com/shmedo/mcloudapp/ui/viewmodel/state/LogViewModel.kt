@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.TimeUtils
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
+import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
+import com.shmedo.core.commonlib.utils.LogHelper
 import com.shmedo.core.data.extensions.getIOTDeviceLogSession
 import com.shmedo.core.data.extensions.getLogItem
 import com.shmedo.core.data.extensions.getSystemLogSession
@@ -39,13 +41,13 @@ class LogViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) : ViewM
             loggerRepositoryImp.insertSession(newSession)
             loggerRepositoryImp.insertLog(
                 getLogItem(
-                    sessionId = MmkvCacheUtil.getAppLogSessionId(),
+                    sessionId = CommonMMKVOwner.appLogSessionId,
                     priority = Log.INFO,
-                    data = com.shmedo.core.commonlib.utils.LogHelper.printDeviceInfo()
+                    data = LogHelper.printDeviceInfo()
                 )
             )
         } else {
-            MmkvCacheUtil.setAppLogSessionId(sessionList[0].id)
+            CommonMMKVOwner.appLogSessionId = sessionList[0].id
         }
     }
 
@@ -64,7 +66,7 @@ class LogViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) : ViewM
                 val newSession = getIOTDeviceLogSession(mKey, mName)
                 loggerRepositoryImp.insertSession(newSession)
             } else {
-                MmkvCacheUtil.setIOTDeviceLogSessionId(sessionList[0].id)
+                CommonMMKVOwner.iotDeviceLogSessionId = sessionList[0].id
             }
         }
 

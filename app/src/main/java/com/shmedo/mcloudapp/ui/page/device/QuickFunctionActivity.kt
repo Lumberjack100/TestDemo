@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.navigation.findNavController
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
@@ -15,6 +16,7 @@ import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
+
 import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
 import com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
@@ -33,7 +35,7 @@ class QuickFunctionActivity : BaseActivity() {
 
     private var productType = ProductType.UnKnown
     private var communicateWay: CommunicateWay = NetPlatformConnect
-    private var deviceInfo: com.shmedo.core.model.DeviceInfo? = null
+    private var deviceInfo: DeviceInfo? = null
     private var bleDevice: DiscoveredBluetoothDevice? = null
 
     override fun initViewModel() {
@@ -79,7 +81,7 @@ class QuickFunctionActivity : BaseActivity() {
     companion object {
         fun start(
             context: Context,
-            deviceInfo: com.shmedo.core.model.DeviceInfo,
+            deviceInfo: DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             communicateWay: CommunicateWay = NetPlatformConnect
         ) {

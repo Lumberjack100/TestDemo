@@ -8,18 +8,20 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
+import com.shmedo.core.model.DeviceInfo
+import com.shmedo.core.model.UserInfo
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
-import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentDeviceSearchResultBinding
-import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
+import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
+import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 /**
@@ -35,7 +37,7 @@ class DeviceSearchResultFragment : BaseFragment() {
     private lateinit var binding: FragmentDeviceSearchResultBinding
     private lateinit var mStates: EmptyViewModel
     private lateinit var deviceRequestViewModel: DeviceRequestViewModel
-    private val userInfo: com.shmedo.core.model.UserInfo by lazy { MmkvCacheUtil.getUser()!! }
+    private val userInfo: UserInfo by lazy {  AuthMMKVOwner.userInfo!! }
 
     private var statusBarColor = 0
     private lateinit var keyWord: String
@@ -73,13 +75,13 @@ class DeviceSearchResultFragment : BaseFragment() {
                     false
                 )
             )
-            addType<com.shmedo.core.model.DeviceInfo>(R.layout.item_device_info)
+            addType<DeviceInfo>(R.layout.item_device_info)
             R.id.item.onClick {
-                val deviceInfo = getModel<com.shmedo.core.model.DeviceInfo>()
+                val deviceInfo = getModel<DeviceInfo>()
                 DeviceHomeActivity.start(mActivity, deviceInfo)
             }
             R.id.item.onLongClick {
-                val deviceInfo = getModel<com.shmedo.core.model.DeviceInfo>()
+                val deviceInfo = getModel<DeviceInfo>()
                 val dataList = if (deviceInfo.followTime.isNullOrEmpty()) arrayListOf(
                     "查看数据",
                     "收藏"
@@ -126,7 +128,7 @@ class DeviceSearchResultFragment : BaseFragment() {
     }
 
     override fun createObserver() {
-        deviceRequestViewModel.deviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<com.shmedo.core.model.DeviceInfo>> ->
+        deviceRequestViewModel.deviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<DeviceInfo>> ->
             if (!listDataResult.responseStatus.isSuccess) {
                 Toaster.show(listDataResult.responseStatus.errorMessage)
                 return@observe
@@ -165,7 +167,7 @@ class DeviceSearchResultFragment : BaseFragment() {
             deviceToken = keyWord,
             currentPage = binding.refreshLayout.index,
             pageSize = PAGE_SIZE,
-            isHasListSuperInfoPermission = MmkvCacheUtil.isHasListSuperInfoPermission()
+            isHasListSuperInfoPermission = AuthMMKVOwner.listSuperInfoPermission
         )
     }
 

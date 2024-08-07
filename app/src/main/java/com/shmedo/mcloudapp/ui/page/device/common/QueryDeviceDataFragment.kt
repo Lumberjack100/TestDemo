@@ -21,7 +21,7 @@ import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentQueryDeviceDataBinding
 import com.shmedo.mcloudapp.databinding.ItemDeviceDataBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.model.CloudDeviceData
+import com.shmedo.core.model.CloudDeviceData
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.QueryDeviceDataViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel

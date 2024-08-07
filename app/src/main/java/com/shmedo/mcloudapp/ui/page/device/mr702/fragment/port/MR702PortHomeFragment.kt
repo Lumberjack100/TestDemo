@@ -12,27 +12,29 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
+import com.shmedo.core.model.AppConfigInfo
+import com.shmedo.core.model.DeviceInfo
+import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.adapter.PageAdapter
-import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
-import com.shmedo.mcloudapp.databinding.FragmentMr702PortHomeBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.databinding.FragmentMr702PortHomeBinding
+import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.model.AppConfigContent
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.ui.adapter.PageAdapter
+import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.MR702PortSelectionPartShadowPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.MR702PortSelectionPartShadowPopupView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
@@ -47,7 +49,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private var productType = ProductType.UnKnown
     private var statusBarColor = 0
     private var communicateWay: CommunicateWay = NetPlatformConnect
-    private lateinit var deviceInfo: com.shmedo.core.model.DeviceInfo
+    private lateinit var deviceInfo: DeviceInfo
     private var bleDevice: DiscoveredBluetoothDevice? = null
 
     private val activeBg: Int = R.drawable.bg_mr702_port_tab_checked
@@ -191,7 +193,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private fun loadSensorModeConfig() {
         launchWithViewLifecycle {
             try {
-                val localAppConfigInfo: com.shmedo.core.model.AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
+                val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
                 val jsonStr = localAppConfigInfo.configPara.replace("\\", "")
                 //Timber.d("configPara = $jsonStr")
                 // 在IO线程中解析JSON

@@ -6,16 +6,18 @@ import com.drake.brv.PageRefreshLayout
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
+import com.shmedo.core.model.DeviceInfo
+import com.shmedo.core.model.UserInfo
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.databinding.FragmentNetProductDeviceListBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
+import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
-import com.shmedo.mcloudapp.databinding.FragmentNetProductDeviceListBinding
-import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 @Deprecated("This class is deprecated")
@@ -23,7 +25,7 @@ class NetProductDeviceListFragment : BaseFragment() {
     private lateinit var binding: FragmentNetProductDeviceListBinding
     private lateinit var mStates: EmptyViewModel
     private lateinit var deviceRequestViewModel: DeviceRequestViewModel
-    private val userInfo: com.shmedo.core.model.UserInfo by lazy { MmkvCacheUtil.getUser()!! }
+    private val userInfo: UserInfo by lazy {  AuthMMKVOwner.userInfo!! }
 
     private var productID = -1
 
@@ -51,9 +53,9 @@ class NetProductDeviceListFragment : BaseFragment() {
                     false
                 )
             )
-            addType<com.shmedo.core.model.DeviceInfo>(R.layout.item_device_info)
+            addType<DeviceInfo>(R.layout.item_device_info)
             R.id.item.onClick {
-                val deviceInfo = getModel<com.shmedo.core.model.DeviceInfo>()
+                val deviceInfo = getModel<DeviceInfo>()
                 DeviceHomeActivity.start(mActivity, deviceInfo)
             }
         }
@@ -73,7 +75,7 @@ class NetProductDeviceListFragment : BaseFragment() {
     }
 
     override fun createObserver() {
-        deviceRequestViewModel.deviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<com.shmedo.core.model.DeviceInfo>> ->
+        deviceRequestViewModel.deviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<DeviceInfo>> ->
             if (!listDataResult.responseStatus.isSuccess) {
                 Toaster.show(listDataResult.responseStatus.errorMessage)
                 return@observe
@@ -98,7 +100,7 @@ class NetProductDeviceListFragment : BaseFragment() {
             productID = productID.toString(),
             currentPage = binding.refreshLayout.index,
             pageSize = PAGE_SIZE,
-            isHasListSuperInfoPermission = MmkvCacheUtil.isHasListSuperInfoPermission(),
+            isHasListSuperInfoPermission = AuthMMKVOwner.listSuperInfoPermission,
             onlineStatus = ""
         )
     }

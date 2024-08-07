@@ -11,18 +11,20 @@ import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.adapter.PageAdapter
-import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
-import com.shmedo.mcloudapp.databinding.FragmentDasSensorHomeBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.databinding.FragmentDasSensorHomeBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.ui.adapter.PageAdapter
+import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BaseBleDasExternalSensorListFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BleDasExternalDigitalSensorListFragment
@@ -30,7 +32,6 @@ import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BleDa
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.internalsensor.BleDasDigitalOsmometerFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.internalsensor.BleDasIOSensorFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.extensions.nav
 
 /**
  * 创建者：gonghe
@@ -45,7 +46,7 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     private var productType = ProductType.UnKnown
     private var statusBarColor = 0
     private var communicateWay: CommunicateWay = NetPlatformConnect
-    private lateinit var deviceInfo: com.shmedo.core.model.DeviceInfo
+    private lateinit var deviceInfo: DeviceInfo
     private var bleDevice: DiscoveredBluetoothDevice? = null
 
     private val tabNames = arrayListOf<String>("开关量", "数字式水位计", "扩展传感器")
@@ -186,7 +187,7 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
             collectorModel: String,
             type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: com.shmedo.core.model.DeviceInfo,
+            deviceInfo: DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {

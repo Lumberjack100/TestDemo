@@ -9,24 +9,24 @@ import com.blankj.utilcode.util.NetworkUtils
 import com.gyf.immersionbar.ktx.immersionBar
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil.getAccount
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil.getToken
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil.getUserRealName
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil.isAgreePrivate
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
-import com.shmedo.mcloudapp.extensions.getAppViewModel
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
+import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil.getAccount
+import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil.getToken
+import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil.isAgreePrivate
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
-import com.shmedo.mcloudapp.ui.page.main.MainActivity
-import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
-import com.shmedo.mcloudapp.ui.page.login.LoginActivity
-import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
+import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
+import com.shmedo.mcloudapp.extensions.getAppViewModel
 import com.shmedo.mcloudapp.ui.dialog.PolicyDialog
+import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
+import com.shmedo.mcloudapp.ui.page.login.LoginActivity
+import com.shmedo.mcloudapp.ui.page.main.MainActivity
+import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
 import com.tencent.bugly.crashreport.CrashReport
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -85,7 +85,7 @@ class SplashActivity : BaseActivity() {
                 redirectToLoginActivity(500)
                 return@observe
             }
-            CrashReport.setUserId("${getAccount()}/${getUserRealName()}") //该用户本次启动后的异常日志用户account
+            CrashReport.setUserId("${getAccount()}/${AuthMMKVOwner.realName}") //该用户本次启动后的异常日志用户account
             redirectToMainActivity(500)
         }
     }

@@ -12,18 +12,19 @@ import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.adapter.PageAdapter
-import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.databinding.FragmentBaseDeviceStatusInfoParentBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.ui.adapter.PageAdapter
+import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.BaseDeviceStatusInfoParentViewModel
-import com.shmedo.mcloudapp.extensions.nav
 
 /**
  * 创建者：gonghe
@@ -38,7 +39,7 @@ abstract class BaseDeviceStatusInfoParentFragment : BaseFragment(),
     protected var productType = ProductType.UnKnown
     protected var statusBarColor = 0
     protected var communicateWay: CommunicateWay = NetPlatformConnect
-    protected lateinit var deviceInfo: com.shmedo.core.model.DeviceInfo
+    protected lateinit var deviceInfo: DeviceInfo
     protected var bleDevice: DiscoveredBluetoothDevice? = null
 
     protected val tabs = mutableListOf("基本信息", "通讯状态", "传感器")

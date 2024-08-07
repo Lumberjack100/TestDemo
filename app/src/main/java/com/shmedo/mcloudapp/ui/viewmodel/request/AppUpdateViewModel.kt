@@ -7,12 +7,13 @@ import com.blankj.utilcode.util.CleanUtils
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
+import com.shmedo.core.data.repository.AppUpdateRepositoryImp
 import com.shmedo.core.data.repository.LoggerRepositoryImp
-import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
+import com.shmedo.core.model.CheckSoftModel
 import com.shmedo.lib.network.ext.errorMsg
+import com.shmedo.mcloudapp.BuildConfig
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.model.CheckSoftModel
-import com.shmedo.mcloudapp.data.repository.remote.NetDataRepository
+import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
 import com.xuexiang.xupdate.XUpdate
 import com.xuexiang.xupdate.entity.UpdateEntity
 import com.xuexiang.xupdate.utils.UpdateUtils
@@ -29,13 +30,19 @@ import timber.log.Timber
  *
  *
  */
-class AppUpdateViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) :
+class AppUpdateViewModel(
+    private val appUpdateRepositoryImp: AppUpdateRepositoryImp,
+    private val loggerRepositoryImp: LoggerRepositoryImp
+) :
     BaseRequestViewModel(loggerRepositoryImp) {
 
     fun requestCheckAppVersion(isShowToast: Boolean = false) {
         viewModelScope.launch(Dispatchers.Default) {
             val model: CheckSoftModel =
-                NetDataRepository.instance.checkAppVersion() { error: Throwable ->
+                appUpdateRepositoryImp.checkAppVersion(
+                    BuildConfig.PGY_API_KEY,
+                    BuildConfig.PGY_APP_KEY
+                ) { error: Throwable ->
                     Timber.d("检查版本失败：${error.errorMsg}")
                     if (isShowToast && !TextUtils.isEmpty(error.errorMsg))
                         Toaster.show(error.errorMsg)

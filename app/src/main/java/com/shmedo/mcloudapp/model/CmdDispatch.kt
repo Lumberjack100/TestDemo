@@ -1,5 +1,7 @@
 package com.shmedo.mcloudapp.model
 
+import com.shmedo.core.model.QueryCmdResult
+
 /**
  * 创建者：gonghe
  *

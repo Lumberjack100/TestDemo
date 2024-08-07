@@ -48,6 +48,7 @@ android {
 dependencies {
     api(project(":core_model"))
     api(project(":core_commonlib"))
+    api(project(":lib_network"))
 
     implementation(libs.kotlin.stdlib.jdk8)
     implementation(libs.material)

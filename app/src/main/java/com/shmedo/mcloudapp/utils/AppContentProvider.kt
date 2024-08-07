@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.shmedo.core.commonlib.utils.AppLifeObserver
 import com.shmedo.mcloudapp.utils.network.NetworkStateReceive
-import com.tencent.mmkv.MMKV
 
 /**
  * 作者　: hegaojian
@@ -37,9 +36,6 @@ class AppContentProvider : ContentProvider() {
         ContextCompat.registerReceiver(application, mNetworkStateReceive, IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION), ContextCompat.RECEIVER_EXPORTED)
         if (watchAppLife)
             ProcessLifecycleOwner.get().lifecycle.addObserver(AppLifeObserver)
-
-        //初始化MMKV
-        MMKV.initialize(application)
     }
 
     override fun insert(uri: Uri, values: ContentValues?): Uri? = null

@@ -11,19 +11,22 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.core.commonlib.extensions.withArguments
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
+import com.shmedo.core.model.DeviceStatisticInfo
+import com.shmedo.core.model.ProductInfo
+import com.shmedo.core.model.UserInfo
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.databinding.FragmentNetDeviceListBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.ui.adapter.PageAdapter
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
-import com.shmedo.mcloudapp.databinding.FragmentNetDeviceListBinding
-import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.NetDeviceListViewModel
-import com.shmedo.mcloudapp.extensions.nav
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.text.DecimalFormat
 
@@ -32,7 +35,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentNetDeviceListBinding
     private lateinit var mStates: NetDeviceListViewModel
     private lateinit var deviceRequestViewModel: DeviceRequestViewModel
-    private val userInfo: com.shmedo.core.model.UserInfo by lazy { MmkvCacheUtil.getUser()!! }
+    private val userInfo: UserInfo by lazy {  AuthMMKVOwner.userInfo!! }
 
     private val activeBg: Int = R.drawable.bg_product_tab_checked
     private val normalBg: Int = R.drawable.bg_product_tab_normal
@@ -41,7 +44,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private val activeSize: Float = 15f
     private val normalSize: Float = 15f
 
-    private val productInfoList = mutableListOf<com.shmedo.core.model.ProductInfo>()
+    private val productInfoList = mutableListOf<ProductInfo>()
     private var companyID = -100
     private var productID = -1
 
@@ -95,7 +98,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     }
 
     override fun createObserver() {
-        deviceRequestViewModel.deviceStatisticInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<com.shmedo.core.model.DeviceStatisticInfo> ->
+        deviceRequestViewModel.deviceStatisticInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceStatisticInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe
@@ -108,7 +111,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                 updateTopView(rate)
             }
         }
-        deviceRequestViewModel.productListResult.observe(viewLifecycleOwner) { dataResult: DataResult<List<com.shmedo.core.model.ProductInfo>> ->
+        deviceRequestViewModel.productListResult.observe(viewLifecycleOwner) { dataResult: DataResult<List<ProductInfo>> ->
             if (!dataResult.responseStatus.isSuccess) {
                 binding.page.showError()
                 Toaster.show(dataResult.responseStatus.errorMessage)
@@ -201,7 +204,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         }
         deviceRequestViewModel.getDeviceStatByCompanyID(
             userInfo.companyID,
-            MmkvCacheUtil.isHasListSuperInfoPermission()
+            AuthMMKVOwner.listSuperInfoPermission
         )
     }
 

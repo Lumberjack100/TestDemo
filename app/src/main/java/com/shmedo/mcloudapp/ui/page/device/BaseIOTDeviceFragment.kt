@@ -6,6 +6,8 @@ import androidx.annotation.CallSuper
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.PageRefreshLayout
 import com.hjq.toast.Toaster
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
+import com.shmedo.core.data.extensions.getLogItem
 import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
 import com.shmedo.lib.ble.communicate.service.base.ConnectingResult
 import com.shmedo.lib.ble.communicate.service.base.DisconnectedResult
@@ -16,33 +18,31 @@ import com.shmedo.lib.ble.communicate.service.base.ReadyResult
 import com.shmedo.lib.ble.communicate.service.base.SuccessResult
 import com.shmedo.lib.ble.communicate.service.base.UnknownErrorResult
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
-import com.shmedo.mcloudapp.extensions.getAppViewModel
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil
-import com.shmedo.core.data.extensions.getLogItem
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
+import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
+import com.shmedo.mcloudapp.extensions.getAppViewModel
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CmdResponseResultError
 import com.shmedo.mcloudapp.model.CmdResponseResultSuccess
 import com.shmedo.mcloudapp.model.CmdResponseResultTimeOut
+import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.DispatchFailed
 import com.shmedo.mcloudapp.model.DispatchSuccess
+import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.NoDeviceState
 import com.shmedo.mcloudapp.model.WorkingState
-
+import com.shmedo.core.model.DeviceInfo
+import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.NetIOTCommandViewModel
-import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.model.BleConnect
-import com.shmedo.mcloudapp.model.CommunicateWay
-import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -68,7 +68,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     protected var productType = ProductType.UnKnown
     protected var statusBarColor = 0
     protected var communicateWay: CommunicateWay = NetPlatformConnect
-    protected lateinit var deviceInfo: com.shmedo.core.model.DeviceInfo
+    protected lateinit var deviceInfo: DeviceInfo
     protected var bleDevice: DiscoveredBluetoothDevice? = null
     private var timeoutJob: Job? = null
     protected var commandItems = LinkedList<String>()
@@ -381,7 +381,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     fun addLogItem(priority: Int, data: String) {
         logViewModel.insertLog(
             getLogItem(
-                sessionId = MmkvCacheUtil.getIOTDeviceLogSessionId(),
+                sessionId = CommonMMKVOwner.iotDeviceLogSessionId,
                 priority = priority,
                 data = data
             )
@@ -404,7 +404,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         fun newBundleArguments(
             type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: com.shmedo.core.model.DeviceInfo,
+            deviceInfo: DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {

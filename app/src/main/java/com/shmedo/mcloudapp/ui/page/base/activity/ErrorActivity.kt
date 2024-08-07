@@ -5,12 +5,12 @@ import android.util.Log
 import cat.ereza.customactivityoncrash.CustomActivityOnCrash
 import com.blankj.utilcode.util.ClickUtils
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.core.commonlib.utils.MmkvCacheUtil
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.data.extensions.getLogItem
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.ActivityErrorBinding
+import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -50,7 +50,7 @@ class ErrorActivity : BaseActivity() {
         CustomActivityOnCrash.getStackTraceFromIntent(intent)?.let {
             logViewModel.insertLog(
                 getLogItem(
-                    sessionId = MmkvCacheUtil.getAppLogSessionId(),
+                    sessionId = CommonMMKVOwner.appLogSessionId,
                     priority = Log.ERROR,
                     data = it
                 )

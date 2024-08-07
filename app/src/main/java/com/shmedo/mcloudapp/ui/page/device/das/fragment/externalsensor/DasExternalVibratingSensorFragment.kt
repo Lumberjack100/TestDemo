@@ -7,26 +7,27 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
-import com.shmedo.mcloudapp.databinding.FragmentDasExternalVibratingSensorBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseDasExternalVibratingSensorClickProxy
-import com.shmedo.mcloudapp.model.CommunicateWay
-import com.shmedo.mcloudapp.model.NetPlatformConnect
-import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalSensorListViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalVibratingSensorViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.databinding.FragmentDasExternalVibratingSensorBinding
+import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showMessageDialog
+import com.shmedo.mcloudapp.model.CommunicateWay
+import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalSensorListViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalVibratingSensorViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -1108,7 +1109,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
             sensorChannel: String,
             type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: com.shmedo.core.model.DeviceInfo,
+            deviceInfo: DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
