@@ -17,10 +17,12 @@
 package com.shmedo.core.data.koin
 
 import com.shmedo.core.data.repository.AppUpdateRepositoryImp
+import com.shmedo.core.data.repository.LocationRepositoryImp
 import com.shmedo.core.data.repository.LoggerRepositoryImp
 import org.koin.dsl.module
 
 val repositoryModule = module {
     single { LoggerRepositoryImp(get()) }
     single { AppUpdateRepositoryImp() }
+    single { LocationRepositoryImp(get()) }
 }

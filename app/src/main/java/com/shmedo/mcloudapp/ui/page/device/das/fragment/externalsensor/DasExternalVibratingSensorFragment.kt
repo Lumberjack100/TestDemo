@@ -7,6 +7,7 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
@@ -112,7 +113,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
     override fun initData() {
         super.initData()
         arguments?.let {
-            sensorChannel = it.getString(com.shmedo.core.commonlib.utils.AppContants.Extras.SENSOR_CHANNEL, "-1")
+            sensorChannel = it.getString(AppContants.Extras.SENSOR_CHANNEL, "-1")
         }
         unUsedChannelList.clear()
         unUsedChannelList.addAll(allChannelList)
@@ -1113,7 +1114,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
-            putString(com.shmedo.core.commonlib.utils.AppContants.Extras.SENSOR_CHANNEL, sensorChannel)
+            putString(AppContants.Extras.SENSOR_CHANNEL, sensorChannel)
             putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
             putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
             putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)

@@ -19,6 +19,7 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.mcloudapp.utils.IOTRegexContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.hac.HacMeasuringDataEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
@@ -111,8 +112,8 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
     override fun createObserver() {
         super.createObserver()
         //从测量过程页面返回需要刷新运行状态信息
-        setFragmentResultListener(com.shmedo.core.commonlib.utils.AppContants.Extras.FRAGMENT_MEASURING_DATA_PROCEDURE_RESULT_REQUEST_KEY) { key, bundle ->
-            (bundle.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.MOTOR_STATE) as HacMotionState?)?.let { motionState ->
+        setFragmentResultListener(AppContants.Extras.FRAGMENT_MEASURING_DATA_PROCEDURE_RESULT_REQUEST_KEY) { key, bundle ->
+            (bundle.getParcelable(AppContants.Extras.MOTOR_STATE) as HacMotionState?)?.let { motionState ->
                 Timber.d("onActivityResult %s", motionState.toString())
                 mStates.isRunButtonEnable.set(motionState.motorinfo == "8" || motionState.motorinfo == "9" || motionState.motorinfo == "10")
                 mStates.runButtonText.set(
@@ -276,7 +277,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_15000_MILLIS
+            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
         )
     }
 
@@ -300,7 +301,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
         commandItems.add(command)
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_15000_MILLIS
+            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
         )
     }
 

@@ -14,6 +14,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
@@ -103,7 +104,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         arguments?.let {
-            statusItem = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.SERVER_NUMBER)!!
+            statusItem = it.getParcelable(AppContants.Extras.SERVER_NUMBER)!!
         }
         mStates.centerName.set(statusItem.name)
         mStates.centerStatus.set(statusItem.status)
@@ -420,7 +421,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_20000_MILLIS
+            timeoutMillis = AppContants.Communication.DELAY_20000_MILLIS
         )
     }
 

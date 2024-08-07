@@ -20,7 +20,6 @@ import com.hjq.permissions.XXPermissions
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
@@ -41,14 +40,15 @@ import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.dialog.SyncInstallat
 import com.shmedo.mcloudapp.ui.viewmodel.request.LocationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.AdvancedSettingViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.utils.map.CustomLatLng
+import com.shmedo.mcloudapp.utils.map.JZLocationConverter
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper.isLocationEnabled
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper.showGPSSettingDialog
-import com.shmedo.mcloudapp.utils.map.CustomLatLng
-import com.shmedo.mcloudapp.utils.map.JZLocationConverter
+import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.util.Locale
 
 /**
@@ -61,7 +61,7 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment(),
     private lateinit var binding: FragmentBleDasAdvancedSettingBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: AdvancedSettingViewModel
-    private lateinit var locationViewModel: LocationViewModel
+    private val locationViewModel: LocationViewModel by activityViewModel()
     private val mdParseManager: MDParserManager by inject()
 
     private var gcjLatLng: AMapLocation? = null //当前定位经纬度,中国国测局地理坐标（GCJ-02）
@@ -72,7 +72,6 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment(),
         super.initViewModel()
         toolbarViewModel = getFragmentScopeViewModel()
         mStates = getFragmentScopeViewModel()
-        locationViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -198,7 +197,7 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment(),
             .setClickListener(object : SyncInstallationLocationPopupView.OnClickListener {
                 override fun onRefreshingLocationClick() {
                     gcjLatLng = null
-                    locationViewModel.refreshLocation()
+                    locationViewModel.requestImmediateLocationUpdate()
                     mStates.isRefreshingLocation.set(true)
                 }
 
@@ -225,7 +224,7 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment(),
             .show()
 
         gcjLatLng = null
-        locationViewModel.refreshLocation()
+        locationViewModel.requestImmediateLocationUpdate()
         mStates.isRefreshingLocation.set(true)
     }
 
@@ -334,7 +333,7 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment(),
                     if (!allGranted) {
                         return
                     }
-                    locationViewModel.refreshLocation()
+                    locationViewModel.requestImmediateLocationUpdate()
                 }
             })
     }
@@ -347,7 +346,7 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment(),
 
     override fun onDestroy() {
         super.onDestroy()
-        locationViewModel.clearLocation()
+        locationViewModel.stopLocation()
         geocoderSearch?.setOnGeocodeSearchListener(null)
         geocoderSearch = null
     }

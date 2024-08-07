@@ -20,6 +20,7 @@ import com.blankj.utilcode.util.RegexUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.hac.HacMeasuringDataEntity
@@ -152,7 +153,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             commandItems.add(command)
             sendCommandFromCmdList(
                 isStartTimeoutJob = true,
-                timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_10000_MILLIS
+                timeoutMillis = AppContants.Communication.DELAY_10000_MILLIS
             )
         }
     }
@@ -175,7 +176,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         commandItems.add(command)
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_5000_MILLIS
+            timeoutMillis = AppContants.Communication.DELAY_5000_MILLIS
         )
     }
 
@@ -607,8 +608,8 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             delay(500)
             //需要给上一级浏览页面传递最新的状态信息
             setFragmentResult(
-                com.shmedo.core.commonlib.utils.AppContants.Extras.FRAGMENT_MEASURING_DATA_PROCEDURE_RESULT_REQUEST_KEY,
-                bundleOf(com.shmedo.core.commonlib.utils.AppContants.Extras.MOTOR_STATE to mStates.motionStateWrapper.get())
+                AppContants.Extras.FRAGMENT_MEASURING_DATA_PROCEDURE_RESULT_REQUEST_KEY,
+                bundleOf(AppContants.Extras.MOTOR_STATE to mStates.motionStateWrapper.get())
             )
             if (isNavUp)
                 nav().navigateUp()
@@ -667,9 +668,9 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
             putBoolean(CHECK_REVERSE, isCheckReverse)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
             putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
             putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }

@@ -15,6 +15,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.CenterNumberEntity
@@ -109,7 +110,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         arguments?.let {
-            statusItem = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.SERVER_NUMBER)!!
+            statusItem = it.getParcelable(AppContants.Extras.SERVER_NUMBER)!!
         }
         mStates.centerName.set(statusItem.name)
         mStates.centerStatus.set(statusItem.status)
@@ -514,8 +515,8 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             delay(1000)
             //巡护事件需要给上一级浏览页面传递最新的事件信息
             setFragmentResult(
-                com.shmedo.core.commonlib.utils.AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY,
-                bundleOf(com.shmedo.core.commonlib.utils.AppContants.Extras.REFRESH_DATA_CENTER_STATUS to statusItem.centerid)
+                AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY,
+                bundleOf(AppContants.Extras.REFRESH_DATA_CENTER_STATUS to statusItem.centerid)
             )
             nav().navigateUp()
         }
@@ -530,12 +531,12 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.SERVER_NUMBER, item)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putParcelable(AppContants.Extras.SERVER_NUMBER, item)
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

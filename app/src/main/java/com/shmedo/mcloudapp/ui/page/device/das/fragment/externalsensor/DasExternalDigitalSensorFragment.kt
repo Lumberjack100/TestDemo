@@ -11,6 +11,7 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.commonlib.utils.AppContants.Extras.Companion.SENSOR_ADDR
 import com.shmedo.core.commonlib.utils.AppContants.Extras.Companion.SENSOR_INDEX
 import com.shmedo.core.model.DeviceInfo
@@ -461,7 +462,7 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_10000_MILLIS
+            timeoutMillis = AppContants.Communication.DELAY_10000_MILLIS
         )
     }
 
@@ -723,7 +724,7 @@ class DasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
-            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.SENSOR_INDEX, index)
+            putInt(AppContants.Extras.SENSOR_INDEX, index)
             putString(com.shmedo.core.commonlib.utils.AppContants.Extras.SENSOR_ADDR, sensorAddr)
             putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
             putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)

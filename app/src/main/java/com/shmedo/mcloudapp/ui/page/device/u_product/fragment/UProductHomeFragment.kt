@@ -2,11 +2,13 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment
 
 import com.blankj.utilcode.util.TimeUtils
 import com.drake.brv.utils.models
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.model.AlarmConfigModule
 import com.shmedo.mcloudapp.model.BleConnect
@@ -23,7 +25,6 @@ import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDeviceHomeFragment
-import com.shmedo.mcloudapp.extensions.nav
 import kotlinx.coroutines.flow.debounce
 import timber.log.Timber
 
@@ -240,7 +241,7 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
     private fun setupHeartbeat() {
         launchWithViewLifecycle {
             lastCommunicationTime
-                .debounce(com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
+                .debounce(AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
                 .collect { lastUpdateTime ->
                     val updateTime = TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
                     Timber.d("startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")

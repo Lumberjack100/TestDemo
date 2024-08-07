@@ -51,37 +51,23 @@ dependencies {
     api(project(":lib_network"))
 
     implementation(libs.kotlin.stdlib.jdk8)
-    implementation(libs.material)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.activity.ktx)
-    implementation(libs.androidx.fragment.ktx)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
-
-    implementation(libs.kunminx.unpeek.livedata)
-    implementation(libs.kunminx.strict.databinding)
-
-    implementation(libs.glide)
-
-    //权限请求框架：https://github.com/getActivity/XXPermissions
-    implementation(libs.getActivity.xxpermission)
-    //Material Dialog
-    implementation(libs.bundles.material.dialogs)
-    //Toast 吐司
-    implementation(libs.toastutils)
-
-    //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
-    implementation(libs.timber)
-    implementation(libs.utilcodex)
-    implementation(libs.mmkv)
 
     //依赖注入框架
     implementation(libs.koin.android)
 
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
+
+    //AndroidUtilCode 是一个强大易用的安卓工具类库
+    implementation(libs.utilcodex)
+    //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
+    implementation(libs.timber)
+
+    //高德地图
+    api(libs.amap.location)
+    api(libs.amap.search)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

@@ -13,6 +13,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.scwang.smart.refresh.layout.constant.RefreshState
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
@@ -135,8 +136,8 @@ class QueryDeviceDataFragment : BaseFragment() {
 
     override fun initData() {
         arguments?.let {
-            val keyWord = it.getString(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_SEARCH_KEYWORD, "")
-            statusBarColor = it.getInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR)
+            val keyWord = it.getString(AppContants.Extras.DEVICE_SEARCH_KEYWORD, "")
+            statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
             mHeadStates.sn.set(keyWord)
         }
         mHeadStates.platformType.set(platformList[0])
@@ -311,8 +312,8 @@ class QueryDeviceDataFragment : BaseFragment() {
             keyWord: String,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
-            putString(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_SEARCH_KEYWORD, keyWord)
-            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putString(AppContants.Extras.DEVICE_SEARCH_KEYWORD, keyWord)
+            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

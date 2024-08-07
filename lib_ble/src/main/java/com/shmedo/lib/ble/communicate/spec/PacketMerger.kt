@@ -1,5 +1,6 @@
 package com.shmedo.lib.ble.communicate.spec
 
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import no.nordicsemi.android.ble.data.DataMerger
 import no.nordicsemi.android.ble.data.DataStream
 import timber.log.Timber
@@ -31,8 +32,10 @@ class PacketMerger : DataMerger {
         )
         output.write(lastPacket)
 
-        val mergeDataPacket = output.toByteArray()
+        // If the command is in debug mode, the command will not be merged
+        if (CommonMMKVOwner.isCommandDebugMode) return true
 
+        val mergeDataPacket = output.toByteArray()
         //每条响应命令结尾以&&(物联网指令)或\r\n(##指令)作为分隔符
         return if (mergeDataPacket.size < 2) false
         else

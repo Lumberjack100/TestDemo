@@ -18,6 +18,7 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
@@ -191,7 +192,7 @@ class DeviceSearchFragment : BaseFragment() {
         fun newBundleArguments(
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
-            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

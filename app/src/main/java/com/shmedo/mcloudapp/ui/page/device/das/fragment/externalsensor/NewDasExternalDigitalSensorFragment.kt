@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.das.DasExternalSensorEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
@@ -55,7 +56,7 @@ class NewDasExternalDigitalSensorFragment : BaseExternalDigitalSensorFragment() 
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_10000_MILLIS
+            timeoutMillis = AppContants.Communication.DELAY_10000_MILLIS
         )
     }
 

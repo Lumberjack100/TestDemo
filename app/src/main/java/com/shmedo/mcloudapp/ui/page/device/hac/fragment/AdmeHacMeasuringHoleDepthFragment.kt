@@ -15,10 +15,8 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
-import com.shmedo.mcloudapp.utils.IOTRegexContants
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.hac.HacMeasuringHoleDepthInfoEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -30,21 +28,24 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentAdmeHacMeasuringHoleDepthBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.model.BleConnect
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeHacMeasuringHoleDepthViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.databinding.FragmentAdmeHacMeasuringHoleDepthBinding
 import com.shmedo.mcloudapp.extensions.getAdmeErrorMsg
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.isViewLifecycleActive
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
+import com.shmedo.mcloudapp.model.BleConnect
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.hac.dialog.AdmeHacAutoMeasuringHoleDepthBottomDialog
 import com.shmedo.mcloudapp.ui.page.device.hac.dialog.AdmeHacManualMeasuringHoleDepthBottomDialog
+import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeHacMeasuringHoleDepthViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.utils.IOTRegexContants
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
@@ -335,7 +336,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_15000_MILLIS
+            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
         )
     }
 

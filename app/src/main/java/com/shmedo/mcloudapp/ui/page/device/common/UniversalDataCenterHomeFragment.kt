@@ -12,6 +12,7 @@ import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.CenterNumberEntity
@@ -137,9 +138,9 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
     override fun createObserver() {
         super.createObserver()
         //从编辑页面返回需要刷新事件详情页面
-        setFragmentResultListener(com.shmedo.core.commonlib.utils.AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { key, bundle ->
+        setFragmentResultListener(AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { key, bundle ->
             val centerNumber =
-                bundle.getInt(com.shmedo.core.commonlib.utils.AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
+                bundle.getInt(AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
             commandItems.clear()
 
             val entity = CenterNumberEntity(centerNumber.toString())
@@ -331,11 +332,11 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
             putInt(CENTER_NUM, centerNum)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

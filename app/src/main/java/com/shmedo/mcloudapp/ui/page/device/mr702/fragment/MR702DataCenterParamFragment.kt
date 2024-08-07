@@ -14,6 +14,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.CenterNumberEntity
@@ -104,7 +105,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         arguments?.let {
-            statusItem = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.SERVER_NUMBER)!!
+            statusItem = it.getParcelable(AppContants.Extras.SERVER_NUMBER)!!
         }
         mStates.centerName.set(statusItem.name)
         mStates.centerStatus.set(statusItem.status)
@@ -579,12 +580,12 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.SERVER_NUMBER, item)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putParcelable(AppContants.Extras.SERVER_NUMBER, item)
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

@@ -15,6 +15,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.CenterNumberEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.das.DasBdTerminalEntity
@@ -125,9 +126,9 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
     override fun createObserver() {
         super.createObserver()
         //从编辑页面返回需要刷新事件详情页面
-        setFragmentResultListener(com.shmedo.core.commonlib.utils.AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { key, bundle ->
+        setFragmentResultListener(AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { key, bundle ->
             val centerNumber =
-                bundle.getInt(com.shmedo.core.commonlib.utils.AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
+                bundle.getInt(AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
             commandItems.clear()
 
             val entity = CenterNumberEntity(centerNumber.toString())

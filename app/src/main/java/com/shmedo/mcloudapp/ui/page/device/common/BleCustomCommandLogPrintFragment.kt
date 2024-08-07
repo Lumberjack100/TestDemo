@@ -26,6 +26,8 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DebugCmdLogInfo
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
@@ -94,13 +96,11 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         binding.toolbar.title = "指令调试"
         binding.toolbar.setNavigationOnClickListener { v: View? ->
             closeDebugMode()
-            //mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 closeDebugMode()
-                //mMessenger.requestStatusBarColor(R.color.colorPrimary)
                 nav().navigateUp()
             }
         })
@@ -115,6 +115,8 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        //开启命令调试模式
+        CommonMMKVOwner.isCommandDebugMode = true
         arguments?.let {
             isIotCmd = it.getBoolean(IOT_CMD)
         }
@@ -316,7 +318,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
             mutable.add(logInfo)
             notifyItemInserted(itemCount)
         }
-        binding.recyclerview.scrollToPosition(binding.recyclerview.bindingAdapter.itemCount - 1)
+//        binding.recyclerview.scrollToPosition(binding.recyclerview.bindingAdapter.itemCount - 1)
     }
 
     private fun addMenu() {
@@ -432,11 +434,11 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.toolbar, isKeyboardEnable = true)
-//        val windowInsetsController = WindowCompat.getInsetsController(mActivity.window, mActivity.window.decorView)
-//        windowInsetsController.isAppearanceLightStatusBars = true
     }
 
     override fun onDestroy() {
+        //关闭命令调试模式
+        CommonMMKVOwner.isCommandDebugMode = false
         closeDebugMode()
         super.onDestroy()
     }
@@ -452,11 +454,20 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
             putBoolean(IOT_CMD, isIotCmd)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(
+                AppContants.Extras.COMMUNICATION_WAY,
+                communicateWay
+            )
+            putParcelable(
+                AppContants.Extras.DEVICE_INFO,
+                deviceInfo
+            )
+            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(
+                AppContants.Extras.STATUS_BAR_COLOR,
+                statusBarColor
+            )
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.ui.page.device
 
+
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -7,23 +8,23 @@ import android.os.Parcelable
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
-import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
+import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
+import com.shmedo.core.commonlib.utils.AppContants
+import com.shmedo.core.model.DeviceInfo
+import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
-import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
+import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
-import com.shmedo.core.model.DeviceInfo
-
-
+import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
+import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.getViewModel
@@ -53,11 +54,13 @@ class DeviceHomeActivity : BaseActivity() {
     }
 
     override fun initData() {
+        //关闭命令调试模式
+        CommonMMKVOwner.isCommandDebugMode = false
         intent.extras?.let { bundle ->
-            productType = bundle.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE)!!
-            communicateWay = bundle.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY)!!
-            deviceInfo = bundle.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO)
-            bleDevice = bundle.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE)
+            productType = bundle.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
+            communicateWay = bundle.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
+            deviceInfo = bundle.getParcelable(AppContants.Extras.DEVICE_INFO)
+            bleDevice = bundle.getParcelable(AppContants.Extras.BLE_DEVICE)
         }
         addHistoryList()
         deviceInfo?.let {
@@ -191,10 +194,10 @@ class DeviceHomeActivity : BaseActivity() {
             deviceInfo.deviceName = deviceInfo.deviceName.ifEmpty { type.deviceName }
 
             val intent = Intent(context, DeviceHomeActivity::class.java).apply {
-                putExtra(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type as Parcelable)
-                putExtra(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-                putExtra(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
-                putExtra(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
+                putExtra(AppContants.Extras.PRODUCT_TYPE, type as Parcelable)
+                putExtra(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+                putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo)
+                putExtra(AppContants.Extras.BLE_DEVICE, bleDevice)
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             }
             context.startActivity(intent)

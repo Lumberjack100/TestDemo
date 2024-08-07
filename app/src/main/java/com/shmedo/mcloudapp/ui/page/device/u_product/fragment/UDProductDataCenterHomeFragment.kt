@@ -11,9 +11,8 @@ import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
@@ -22,17 +21,19 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
-import com.shmedo.mcloudapp.databinding.FragmentUniversalDataCenterHomeBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.model.DataCenterStatusItem
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment
-import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.UniversalDataCenterHomeViewModel
+import com.shmedo.mcloudapp.databinding.FragmentUniversalDataCenterHomeBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.model.DataCenterStatusItem
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.UniversalDataCenterHomeViewModel
+import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -132,7 +133,7 @@ class UDProductDataCenterHomeFragment : BaseIOTDeviceFragment() {
     override fun createObserver() {
         super.createObserver()
         //从编辑页面返回需要刷新事件详情页面
-        setFragmentResultListener(com.shmedo.core.commonlib.utils.AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { key, bundle ->
+        setFragmentResultListener(AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { key, bundle ->
             binding.refreshLayout.autoRefresh()
         }
     }

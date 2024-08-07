@@ -12,6 +12,7 @@ import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
@@ -74,11 +75,11 @@ abstract class BaseDeviceStatusInfoParentFragment : BaseFragment(),
     @CallSuper
     override fun initData() {
         arguments?.let {
-            productType = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE)!!
-            communicateWay = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY)!!
-            deviceInfo = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO)!!
-            bleDevice = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE)
-            statusBarColor = it.getInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR)
+            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
+            communicateWay = it.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
+            deviceInfo = it.getParcelable(AppContants.Extras.DEVICE_INFO)!!
+            bleDevice = it.getParcelable(AppContants.Extras.BLE_DEVICE)
+            statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
         }
         mStates.productName.set(deviceInfo.productName)
         mStates.productType.set("型号：${deviceInfo.deviceName}")

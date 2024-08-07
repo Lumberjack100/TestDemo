@@ -10,6 +10,7 @@ import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.das.DasCollectorEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.das.DasExternalSensorEntity
@@ -214,7 +215,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_15000_MILLIS
+            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
         )
     }
 

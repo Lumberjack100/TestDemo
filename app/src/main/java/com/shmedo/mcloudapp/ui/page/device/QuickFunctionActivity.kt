@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Parcelable
 import androidx.navigation.findNavController
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
@@ -56,10 +57,10 @@ class QuickFunctionActivity : BaseActivity() {
 
     override fun initData() {
         intent.extras?.let { bundle ->
-            productType = bundle.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE)!!
-            communicateWay = bundle.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY)!!
-            deviceInfo = bundle.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO)
-            bleDevice = bundle.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE)
+            productType = bundle.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
+            communicateWay = bundle.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
+            deviceInfo = bundle.getParcelable(AppContants.Extras.DEVICE_INFO)
+            bleDevice = bundle.getParcelable(AppContants.Extras.BLE_DEVICE)
         }
         binding.deviceHomeHostFragment.post {
             setGraph()
@@ -100,10 +101,10 @@ class QuickFunctionActivity : BaseActivity() {
                 }
             }
             val intent = Intent(context, QuickFunctionActivity::class.java).apply {
-                putExtra(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type as Parcelable)
-                putExtra(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-                putExtra(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
-                putExtra(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
+                putExtra(AppContants.Extras.PRODUCT_TYPE, type as Parcelable)
+                putExtra(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+                putExtra(AppContants.Extras.DEVICE_INFO, deviceInfo)
+                putExtra(AppContants.Extras.BLE_DEVICE, bleDevice)
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             }
             context.startActivity(intent)

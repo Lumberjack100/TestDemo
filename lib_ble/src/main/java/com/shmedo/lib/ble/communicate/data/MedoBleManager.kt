@@ -251,9 +251,8 @@ class MedoBleManager(
                 sleep(1000).enqueue()
             }
         } catch (e: Exception) {
-            // 处理异常
+            //处理异常
             Timber.e(e, "发送数据时出现异常")
-            // 根据需要决定是否抛出异常或进行其他处理
         }
     }
 

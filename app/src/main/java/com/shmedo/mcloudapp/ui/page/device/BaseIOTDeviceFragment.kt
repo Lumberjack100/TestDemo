@@ -7,7 +7,9 @@ import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.PageRefreshLayout
 import com.hjq.toast.Toaster
 import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.data.extensions.getLogItem
+import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
 import com.shmedo.lib.ble.communicate.service.base.ConnectingResult
 import com.shmedo.lib.ble.communicate.service.base.DisconnectedResult
@@ -37,7 +39,6 @@ import com.shmedo.mcloudapp.model.DispatchSuccess
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.NoDeviceState
 import com.shmedo.mcloudapp.model.WorkingState
-import com.shmedo.core.model.DeviceInfo
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.NetIOTCommandViewModel
@@ -78,7 +79,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     // 检查是否超时
     protected fun isNearbyCommunicationTimeout(lastUpdateTime: Long): Boolean {
-        return (System.currentTimeMillis() - lastUpdateTime) >= com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_10000_MILLIS
+        return (System.currentTimeMillis() - lastUpdateTime) >= AppContants.Communication.DELAY_10000_MILLIS
     }
 
     // 更新最后通信时间
@@ -97,11 +98,11 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     @CallSuper
     override fun initData() {
         arguments?.let {
-            productType = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE)!!
-            communicateWay = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY)!!
-            deviceInfo = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO)!!
-            bleDevice = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE)
-            statusBarColor = it.getInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR)
+            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
+            communicateWay = it.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
+            deviceInfo = it.getParcelable(AppContants.Extras.DEVICE_INFO)!!
+            bleDevice = it.getParcelable(AppContants.Extras.BLE_DEVICE)
+            statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
         }
     }
 
@@ -268,7 +269,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     protected inline fun sendCommandFromCmdList(
         delaySendMillis: Long = 0,//默认不延迟发送
         isStartTimeoutJob: Boolean = false,//默认不启动超时Job
-        timeoutMillis: Long = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_10000_MILLIS,//默认10秒超时
+        timeoutMillis: Long = AppContants.Communication.DELAY_10000_MILLIS,//默认10秒超时
         crossinline finishAction: () -> Unit = {}
     ) {
         if (commandItems.size <= 0) {
@@ -308,7 +309,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
      */
     fun startNearbyCommunicationTimeoutJob(
         cmdStr: String = "",
-        timeMillis: Long = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_10000_MILLIS
+        timeMillis: Long = AppContants.Communication.DELAY_10000_MILLIS
     ) {
         // 启动一个新的协程作为超时Job
         timeoutJob?.cancel()
@@ -408,11 +409,11 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

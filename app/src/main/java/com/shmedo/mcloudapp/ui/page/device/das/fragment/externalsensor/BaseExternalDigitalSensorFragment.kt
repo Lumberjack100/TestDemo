@@ -14,6 +14,7 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
@@ -92,8 +93,8 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         super.initData()
         binding.llToolbar.toolbar.title = iotSensorType.description
         arguments?.let {
-            sensorIndex = it.getInt(com.shmedo.core.commonlib.utils.AppContants.Extras.SENSOR_INDEX, -1)
-            sensorAddr = it.getString(com.shmedo.core.commonlib.utils.AppContants.Extras.SENSOR_ADDR, "-1")
+            sensorIndex = it.getInt(AppContants.Extras.SENSOR_INDEX, -1)
+            sensorAddr = it.getString(AppContants.Extras.SENSOR_ADDR, "-1")
         }
         usedAddressList.clear()
         sensorListViewModel.sensorModelMap.keys.filterNot { it == sensorAddr }
@@ -884,11 +885,11 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
-            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.SENSOR_INDEX, index)
-            putString(com.shmedo.core.commonlib.utils.AppContants.Extras.SENSOR_ADDR, sensorAddr)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putInt(AppContants.Extras.SENSOR_INDEX, index)
+            putString(AppContants.Extras.SENSOR_ADDR, sensorAddr)
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
             putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
             putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }

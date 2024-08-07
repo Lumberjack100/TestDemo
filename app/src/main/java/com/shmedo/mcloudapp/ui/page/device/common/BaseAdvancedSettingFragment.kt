@@ -26,14 +26,12 @@ import com.hjq.permissions.XXPermissions
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
@@ -53,12 +51,13 @@ import com.shmedo.mcloudapp.ui.viewmodel.request.LocationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.AdvancedSettingViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
-import com.shmedo.mcloudapp.utils.permission.PermissionHelper
 import com.shmedo.mcloudapp.utils.map.CustomLatLng
 import com.shmedo.mcloudapp.utils.map.JZLocationConverter
+import com.shmedo.mcloudapp.utils.permission.PermissionHelper
+import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.util.Locale
 
 /**
@@ -71,9 +70,8 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
     protected lateinit var binding: FragmentAdvancedSettingBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: AdvancedSettingViewModel
-    private lateinit var locationViewModel: LocationViewModel
+    private val locationViewModel: LocationViewModel by activityViewModel()
     private val iotParseManager: IOTParserManager by inject()
-    private val mdParseManager: MDParserManager by inject()
 
 
     private var gcjLatLng: AMapLocation? = null //当前定位经纬度,中国国测局地理坐标（GCJ-02）
@@ -83,7 +81,6 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
         super.initViewModel()
         toolbarViewModel = getFragmentScopeViewModel()
         mStates = getFragmentScopeViewModel()
-        locationViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -367,7 +364,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
             .setClickListener(object : SyncInstallationLocationPopupView.OnClickListener {
                 override fun onRefreshingLocationClick() {
                     gcjLatLng = null
-                    locationViewModel.refreshLocation()
+                    locationViewModel.requestImmediateLocationUpdate()
                     mStates.isRefreshingLocation.set(true)
                 }
 
@@ -385,7 +382,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
             .show()
 
         gcjLatLng = null
-        locationViewModel.refreshLocation()
+        locationViewModel.requestImmediateLocationUpdate()
         mStates.isRefreshingLocation.set(true)
     }
 
@@ -470,7 +467,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
                     if (!allGranted) {
                         return
                     }
-                    locationViewModel.refreshLocation()
+                    locationViewModel.requestImmediateLocationUpdate()
                 }
             })
     }
@@ -483,7 +480,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
 
     override fun onDestroy() {
         super.onDestroy()
-        locationViewModel.clearLocation()
+        locationViewModel.stopLocation()
         geocoderSearch?.setOnGeocodeSearchListener(null)
         geocoderSearch = null
     }
