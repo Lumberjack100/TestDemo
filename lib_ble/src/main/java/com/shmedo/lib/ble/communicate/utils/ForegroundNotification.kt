@@ -12,7 +12,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
-import com.shmedo.lib.core.R
+import com.shmedo.lib.ble.R
 
 /**
  * 创建者：gonghe
@@ -71,7 +71,7 @@ object ForegroundNotification {
         channelID: String,
         channelName: String,
         importance: Int = NotificationManager.IMPORTANCE_DEFAULT,
-        descriptionContent: String? = StringUtils.getString(R.string.app_name)
+        descriptionContent: String? = "米易通"
     ) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
 

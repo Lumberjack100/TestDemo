@@ -33,11 +33,10 @@ android {
 dependencies {
     implementation(project(":core_model"))
 
-    implementation(libs.material)
     implementation(libs.androidx.appcompat)
     implementation(libs.androidx.startup.runtime)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation (libs.androidx.lifecycle.process)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.kunminx.unpeek.livedata)
 
     // json parsing

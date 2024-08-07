@@ -163,7 +163,6 @@ android {
 
 dependencies {
     implementation(project(":core_data"))
-    implementation(project(":lib_network"))
     implementation(project(":lib_cmd"))
     implementation(project(":lib_ble"))
     implementation(project(":lib_tcp"))
@@ -206,6 +205,8 @@ dependencies {
 
     //Android 快速构建 RecyclerView, 比 BRVAH 更简单强大 https://github.com/liangjingkanji/BRV
     implementation(libs.liangjingkanji.brv)
+    //A ListView-like FastScroller for Android’s RecyclerView.
+    implementation (libs.fastscroll)
     implementation(libs.tableview)
 
     implementation(libs.agentweb.core)
@@ -228,16 +229,13 @@ dependencies {
     //异常信息上报组件
     implementation(libs.bugly.crashreport)
 
-    // For debug builds only
-//    debugImplementation(libs.leakcanary.android)
-//    debugImplementation(libs.getActivity.logcat)
-
     implementation(libs.glide)
     implementation(libs.bundles.pictureselector)
 
+    //AndroidUtilCode 是一个强大易用的安卓工具类库
+    implementation(libs.utilcodex)
     //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
     implementation(libs.timber)
-    implementation(libs.utilcodex)
     implementation(libs.mmkv)
 
     //依赖注入框架
@@ -245,6 +243,10 @@ dependencies {
 
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
+
+    // For debug builds only
+//    debugImplementation(libs.leakcanary.android)
+//    debugImplementation(libs.getActivity.logcat)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

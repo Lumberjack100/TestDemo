@@ -42,7 +42,6 @@ dependencies {
     implementation(project(":core_model"))
     implementation(project(":core_commonlib"))
 
-    implementation(libs.kotlin.stdlib.jdk8)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging.interceptor)
     api(libs.rxhttp)
@@ -52,13 +51,13 @@ dependencies {
     //一个轻量级、高可用性的Android版本更新框架
     api(libs.xuexiangjys.xupdate)
 
-    //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
-    implementation(libs.timber)
-    implementation(libs.utilcodex)
-    implementation(libs.mmkv)
-
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
+
+    //AndroidUtilCode 是一个强大易用的安卓工具类库
+    implementation(libs.utilcodex)
+    //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
+    implementation(libs.timber)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

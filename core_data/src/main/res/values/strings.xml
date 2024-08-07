@@ -15,7 +15,6 @@
   -->
 
 <resources translatable="false">
-    <string name="app_name">米易通</string>
 
     <string name="common_permission_alert">授权提醒</string>
     <string name="common_permission_background_location_fail_hint">获取后台定位权限失败，\n请您选择《%s》选项</string>
@@ -61,11 +60,5 @@
     <string name="common_permission_ignore_battery_optimize">忽略电池优化权限</string>
     <string name="common_permission_picture_in_picture">画中画权限</string>
     <string name="common_permission_vpn">\tVPN\t权限</string>
-
-
-
-    <string name="ble_channel_connected_devices_title">蓝牙连接</string>
-    <string name="ble_channel_connected_devices_description">Shows a notification when a device is connected in background.</string>
-    <string name="ble_notification_connected_message">%s is connected.</string>
 
 </resources>

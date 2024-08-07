@@ -13,7 +13,6 @@ import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.FileIOUtils
-import com.blankj.utilcode.util.IntentUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -343,26 +342,6 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
                 }
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-    }
-
-    /**
-     * 分享日志
-     */
-    private fun shareLogText() {
-        launchWithViewLifecycle {
-            binding.recyclerview.models?.let { logList ->
-                val logContent = StringBuilder()
-                logList.forEach { logInfo ->
-                    (logInfo as DebugCmdLogInfo).apply {
-                        logContent.append(logTime)
-                        logContent.append(" ")
-                        logContent.append(content)
-                        logContent.append("\n")
-                    }
-                }
-                startActivity(IntentUtils.getShareTextIntent(logContent.toString()))
-            }
-        }
     }
 
     /**

@@ -35,19 +35,18 @@ android {
 }
 
 dependencies {
-    implementation(project(":core_data"))
-
-    implementation(libs.kotlin.stdlib.jdk8)
-
-    //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
-    implementation(libs.timber)
-    implementation(libs.utilcodex)
+    implementation(project(":core_commonlib"))
 
     //依赖注入框架
     implementation(libs.koin.android)
 
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
+
+    //AndroidUtilCode 是一个强大易用的安卓工具类库
+    implementation(libs.utilcodex)
+    //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
+    implementation(libs.timber)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)

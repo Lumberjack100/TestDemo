@@ -34,17 +34,15 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-
     implementation(libs.netty.all)
-
-    //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
-    implementation(libs.timber)
-    implementation(libs.utilcodex)
 
     //依赖注入框架
     implementation(libs.koin.android)
+
+    //AndroidUtilCode 是一个强大易用的安卓工具类库
+    implementation(libs.utilcodex)
+    //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
+    implementation(libs.timber)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
