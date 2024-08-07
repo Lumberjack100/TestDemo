@@ -1,7 +1,5 @@
 package com.shmedo.lib.ble.koin
 
-import com.shmedo.lib.ble.permission.koin.blePermissionKoinModule
-import com.shmedo.lib.ble.scanner.koin.bleScannerKoinModule
 import org.koin.dsl.module
 
 /**
@@ -14,6 +12,6 @@ val bleKoinModule = module {
     includes(
         blePermissionKoinModule,
         bleScannerKoinModule,
-
-        )
+        bleCommunicateKoinModule
+    )
 }

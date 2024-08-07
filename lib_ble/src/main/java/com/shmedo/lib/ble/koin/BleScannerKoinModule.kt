@@ -1,4 +1,4 @@
-package com.shmedo.lib.ble.scanner.koin
+package com.shmedo.lib.ble.koin
 
 import com.shmedo.lib.ble.scanner.repository.DevicesDataStore
 import com.shmedo.lib.ble.scanner.repository.ScannerRepository
@@ -13,7 +13,6 @@ import org.koin.dsl.module
  */
 val bleScannerKoinModule = module {
     single { DevicesDataStore() }
-
     single { ScannerRepository(get()) }
 
     viewModel { ScannerViewModel(get()) }

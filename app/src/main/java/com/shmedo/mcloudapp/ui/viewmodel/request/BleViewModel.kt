@@ -4,10 +4,10 @@ import androidx.lifecycle.viewModelScope
 import com.shmedo.core.data.repository.LoggerRepositoryImp
 import com.shmedo.lib.ble.communicate.service.MedoBleRepository
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDConstants
 import com.shmedo.mcloudapp.model.MedoViewState
 import com.shmedo.mcloudapp.model.WorkingState
+import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -25,7 +25,10 @@ import java.util.UUID
  *
  *
  */
-class BleViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) :
+class BleViewModel(
+    private val medoBleRepository: MedoBleRepository,
+    private val loggerRepositoryImp: LoggerRepositoryImp
+) :
     BaseRequestViewModel(loggerRepositoryImp) {
     //    private val _state = MutableStateFlow<MedoViewState>(NoDeviceState)
 //    val state = _state.asStateFlow()
@@ -34,22 +37,22 @@ class BleViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) :
 
 
     init {
-        MedoBleRepository.instance.data.onEach {
+        medoBleRepository.data.onEach {
 //            _state.value = WorkingState(it)
             _state.emit(WorkingState(it))
         }.launchIn(viewModelScope)
     }
 
     fun launch(device: DiscoveredBluetoothDevice) {
-        MedoBleRepository.instance.launch(device)
+        medoBleRepository.launch(device)
     }
 
     fun disconnect() {
-        MedoBleRepository.instance.disconnect()
+        medoBleRepository.disconnect()
     }
 
     fun isConnected(): Boolean {
-        return MedoBleRepository.instance.isConnected()
+        return medoBleRepository.isConnected()
     }
 
     fun sendIOTCommand(
@@ -67,7 +70,7 @@ class BleViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) :
                 )
             } else cmdStr
 
-            MedoBleRepository.instance.sendData(command + MDConstants.COMMAND_FOOTER)
+            medoBleRepository.sendData(command + MDConstants.COMMAND_FOOTER)
         }
     }
 
@@ -80,7 +83,7 @@ class BleViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) :
             val command = if (!cmdStr.endsWith(MDConstants.COMMAND_FOOTER)) {
                 cmdStr.plus(MDConstants.COMMAND_FOOTER)
             } else cmdStr
-            MedoBleRepository.instance.sendData(command)
+            medoBleRepository.sendData(command)
         }
     }
 }

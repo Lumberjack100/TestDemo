@@ -31,7 +31,7 @@ import org.koin.dsl.module
 val viewModelModule = module {
 
     viewModel { LogViewModel(get()) }
-    viewModel { BleViewModel(get()) }
+    viewModel { BleViewModel(get(), get()) }
     viewModel { TcpViewModel(get(), get()) }
     viewModel { NetIOTCommandViewModel(get()) }
     viewModel { DeviceRequestViewModel(get()) }

@@ -32,7 +32,6 @@
 package com.shmedo.lib.ble.communicate.service
 
 import android.content.Context
-import com.blankj.utilcode.util.Utils
 import com.shmedo.lib.ble.communicate.data.CommandData
 import com.shmedo.lib.ble.communicate.data.MedoBleManager
 import com.shmedo.lib.ble.communicate.service.base.BleManagerResult
@@ -49,17 +48,14 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-class MedoBleRepository private constructor(
+class MedoBleRepository(
     private val context: Context,
     private val serviceManager: ServiceManager
 ) {
     private var medoBleManager: MedoBleManager? = null
 
-    //    private val _data = MutableStateFlow<BleManagerResult<IOTCmdData>>(IdleResult())
-//    val data = _data.asStateFlow()
     private val _data = MutableSharedFlow<BleManagerResult<CommandData>>()
     val data = _data.asSharedFlow()
-
 
     val hasBeenDisconnected = data.map { it.hasBeenDisconnected() }
 
@@ -72,9 +68,7 @@ class MedoBleRepository private constructor(
         this.medoBleManager = manager
 
         manager.data.onEach {
-//            _data.value = it
             _data.emit(it)
-
         }.launchIn(scope)
 
         val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
@@ -99,9 +93,4 @@ class MedoBleRepository private constructor(
         return medoBleManager?.isReady ?: false
     }
 
-    companion object {
-        val instance: MedoBleRepository by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) {
-            MedoBleRepository(Utils.getApp(), ServiceManager(Utils.getApp()))
-        }
-    }
 }

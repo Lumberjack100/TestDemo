@@ -348,7 +348,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
      * 分享日志到文件
      */
     private fun shareLogToFile() {
-        launchWithViewLifecycle {
+        launchWithViewLifecycle(Dispatchers.IO) {
             binding.recyclerview.models?.let { logList ->
                 val logContent = StringBuilder()
                 logList.forEach { logInfo ->
@@ -371,13 +371,10 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
                 }.txt"
                 val file = File(Utils.getApp().cacheDir.path, fileName)
                 try {
-                    // 在IO线程进行文件写入操作
-                    withContext(Dispatchers.IO) {
-                        if (FileIOUtils.writeFileFromString(file, logContent.toString())) {
-                            // 切换回主线程进行文件分享
-                            withContext(Dispatchers.Main) {
-                                shareFile(file)
-                            }
+                    if (FileIOUtils.writeFileFromString(file, logContent.toString())) {
+                        // 切换回主线程进行文件分享
+                        withContext(Dispatchers.Main) {
+                            shareFile(file)
                         }
                     }
                 } catch (e: Exception) {

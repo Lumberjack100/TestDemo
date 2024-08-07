@@ -1,4 +1,4 @@
-package com.shmedo.lib.ble.permission.koin
+package com.shmedo.lib.ble.koin
 
 import com.shmedo.lib.ble.permission.bluetooth.BluetoothStateManager
 import com.shmedo.lib.ble.permission.location.LocationStateManager
