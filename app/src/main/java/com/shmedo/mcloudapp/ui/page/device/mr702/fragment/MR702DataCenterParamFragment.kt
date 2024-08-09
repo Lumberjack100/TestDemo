@@ -27,6 +27,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRDataCenterParam
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
@@ -56,9 +57,10 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
 
     private val communicateWayList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_communicate_way) }
     private val ipLevelList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_ip_level) }
-    private val transferProtocolList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_ip_protocol) }
+
+    private val transferProtocolList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_transfer_protocol) }
     private val dataProtocolList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_data_protocol) }
-    private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_register_platform) }
+    private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
 
 
     override fun initViewModel() {
@@ -107,10 +109,25 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         arguments?.let {
             statusItem = it.getParcelable(AppContants.Extras.SERVER_NUMBER)!!
         }
+        initDefaultParam()
+    }
+
+    /**
+     * 初始化默认参数
+     */
+    private fun initDefaultParam() {
         mStates.centerName.set(statusItem.name)
         mStates.centerStatus.set(statusItem.status)
         mStates.isCenterOpened.set(statusItem.status != "0")
-        binding.llDataCenterParamHead.statusSB.setCheckedImmediatelyNoEvent(statusItem.status != "0")
+
+        mStates.communicateWay.set(communicateWayList[0])
+        mStates.ipLeve.set(ipLevelList[0])
+        mStates.transferProtocol.set(transferProtocolList[0])
+        mStates.dataProtocol.set(dataProtocolList[0])
+        mStates.platformType.set(platformList[0])
+
+        mStates.stationType.set(StationCode.values()[0].description)
+        mStates.hourlyReport.set(true)
     }
 
     private fun setEditable(editable: Boolean) {
@@ -184,7 +201,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
          * 网络协议
          */
         fun onIPTypeChooseClick() {
-            val selectedIndex = ipLevelList.indexOf(mStates.ipType.get())
+            val selectedIndex = ipLevelList.indexOf(mStates.ipLeve.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
@@ -194,7 +211,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                     "请选择网络协议", ipLevelList,
                     null, selectedIndex,
                     { position, text ->
-                        mStates.ipType.set(text)
+                        mStates.ipLeve.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -246,7 +263,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                                 mStates.isSL651ItemVisible.set(false)
                             }
 
-                            else -> {//SL651
+                            else -> {//SL651、SZY206
                                 mStates.isMqttItemVisible.set(false)
                                 mStates.isSL651ItemVisible.set(true)
                             }
@@ -354,42 +371,41 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             switch = "1",
             addr = mStates.centerServerAddress.get(),
             port = mStates.centerServerPort.get(),
-            line = if (mStates.communicateWay.get() == communicateWayList[0]) "1" else "2",
-            level = if (mStates.ipType.get() == ipLevelList[0]) "1" else "2",
-            type = if (mStates.transferProtocol.get() == transferProtocolList[0]) "1" else "2",
-            datatype = when (mStates.dataProtocol.get()) {
-                dataProtocolList[0] -> "1"
-                dataProtocolList[1] -> "2"
-                else -> "3"
-            },
-            plattype = when (mStates.platformType.get()) {
-                platformList[0] -> "0"
-                platformList[1] -> "1"
-                platformList[2] -> "2"
-                platformList[3] -> "3"
-                platformList[4] -> "4"
-                else -> "5"
-            }
+            line = (communicateWayList.indexOf(mStates.communicateWay.get()) + 1).toString(),
+            level = (ipLevelList.indexOf(mStates.ipLeve.get()) + 1).toString(),
+            type = (transferProtocolList.indexOf(mStates.transferProtocol.get()) + 1).toString(),
+            datatype = (dataProtocolList.indexOf(mStates.dataProtocol.get()) + 1).toString(),
+            plattype = platformList.indexOf(mStates.platformType.get()).toString()
         )
         if (mStates.dataProtocol.get() == dataProtocolList[0]) {//MQTT
             //当设备 ID、产品 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
-            if (mStates.deviceId.get().isEmpty() && mStates.deviceKey.get().isEmpty()) {
-                if (mStates.registerCode.get().isEmpty()) {
-                    showMessageDialog("请输入设备注册码!")
-                    return
-                }
-                if (mStates.registerAddress.get().isEmpty()) {
-                    showMessageDialog("请输入设备注册地址!")
-                    return
-                }
-                if (mStates.centerServerPort.get().isEmpty()) {
-                    showMessageDialog("请输入设备注册端口号!")
-                    return
-                }
+            if (mStates.productId.get().isEmpty()) {
+                showMessageDialog("请输入产品 ID!")
+                return
+            }
+            if (mStates.deviceId.get().isEmpty()) {
+                showMessageDialog("请输入设备 ID!")
+                return
+            }
+            if (mStates.deviceKey.get().isEmpty()) {
+                showMessageDialog("请输入设备 Key!")
+                return
+            }
+            if (mStates.registerCode.get().isEmpty()) {
+                showMessageDialog("请输入设备注册码!")
+                return
+            }
+            if (mStates.registerAddress.get().isEmpty()) {
+                showMessageDialog("请输入设备注册地址!")
+                return
+            }
+            if (mStates.registerPort.get().isEmpty()) {
+                showMessageDialog("请输入设备注册端口号!")
+                return
             }
             if (mStates.registerPort.get().isNotEmpty()) {
                 try {
-                    val port: Int = mStates.centerServerPort.get().toInt()
+                    val port: Int = mStates.registerPort.get().toInt()
                     if (port < 0 || port > 65535) {
                         showMessageDialog("设备注册端口号数值范围[0,65535]!")
                         return
@@ -405,9 +421,13 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             entity.regcode = mStates.registerCode.get()
             entity.httpaddr = mStates.registerAddress.get()
             entity.httpport = mStates.registerPort.get()
-        } else if (mStates.dataProtocol.get() == dataProtocolList[2]) {//SL651
-            entity.type_code = StationCode.valueByDescription(mStates.stationType.get()).code
-            entity.co_address = mStates.centerStationAddr.get()
+        } else if (mStates.dataProtocol.get() == dataProtocolList[2] || mStates.dataProtocol.get() == dataProtocolList[3]) {//SL651
+            entity.type_code =
+                if (mStates.dataProtocol.get() == dataProtocolList[2]) StationCode.valueByDescription(
+                    mStates.stationType.get()
+                ).code else IOTConstants.NULL_KEY
+            entity.co_address =
+                if (mStates.dataProtocol.get() == dataProtocolList[2]) mStates.centerStationAddr.get() else IOTConstants.NULL_KEY
             entity.password = mStates.password.get()
             entity.taddress = mStates.telemetryStationAddr.get()
             entity.hour_report = if (mStates.hourlyReport.get()) "1" else "0"
@@ -490,12 +510,26 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
     private fun initDataCenterParam(data: MRDataCenterParam) {
         mStates.isDataNetOpened.set(data.datanet == "1")
         mStates.isWiredNetOpened.set(data.wirednet == "1")
+
         mStates.centerServerAddress.set(data.addr)
         mStates.centerServerPort.set(data.port)
-        mStates.communicateWay.set(if (data.line == "1") communicateWayList[0] else communicateWayList[1])
-        mStates.ipType.set(if (data.level == "1") ipLevelList[0] else ipLevelList[1])
 
-        mStates.transferProtocol.set(if (data.type == "1") transferProtocolList[0] else transferProtocolList[1])
+        data.line.toIntOrNull()?.let {
+            if (it in 1..communicateWayList.size) {
+                mStates.communicateWay.set(communicateWayList[it - 1])
+            }
+        }
+        data.level.toIntOrNull()?.let {
+            if (it in 1..ipLevelList.size) {
+                mStates.ipLeve.set(ipLevelList[it - 1])
+            }
+        }
+
+        data.type.toIntOrNull()?.let {
+            if (it in 1..transferProtocolList.size) {
+                mStates.transferProtocol.set(transferProtocolList[it - 1])
+            }
+        }
         mStates.dataProtocol.set(
             when (data.datatype) {
                 "1" -> {//MQTT
@@ -510,23 +544,25 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                     dataProtocolList[1]
                 }
 
-                else -> {//SL651
+                "3" -> {//SL651
                     mStates.isMqttItemVisible.set(false)
                     mStates.isSL651ItemVisible.set(true)
                     dataProtocolList[2]
                 }
+
+                else -> {//SZY206
+                    mStates.isMqttItemVisible.set(false)
+                    mStates.isSL651ItemVisible.set(true)
+                    dataProtocolList[3]
+                }
             }
         )
-        mStates.platformType.set(
-            when (data.plattype) {
-                "0" -> platformList[0]
-                "1" -> platformList[1]
-                "2" -> platformList[2]
-                "3" -> platformList[3]
-                "4" -> platformList[4]
-                else -> platformList[5]
+        data.plattype.toIntOrNull()?.let {
+            if (it in platformList.indices) {
+                mStates.platformType.set(platformList[it])
             }
-        )
+        }
+
         //MQTT 协议参数
         mStates.productId.set(data.projid)
         mStates.deviceId.set(data.deviceid)
@@ -535,11 +571,13 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.registerAddress.set(data.httpaddr)
         mStates.registerPort.set(data.httpport)
 
-        //SL651 水文协议参数
-        mStates.stationType.set(StationCode.valueByCode(data.type_code).description)
-        mStates.centerStationAddr.set(data.co_address)
+        //SL651/SZY206 协议参数
+        if (mStates.dataProtocol.get() == dataProtocolList[2]) {
+            mStates.stationType.set(StationCode.valueByCode(data.type_code).description)//测站分类编码
+            mStates.centerStationAddr.set(data.co_address)
+        }
         mStates.password.set(data.password)
-        mStates.telemetryStationAddr.set(data.taddress)
+        mStates.telemetryStationAddr.set(data.taddress)//遥测站地址/测站编码
         mStates.hourlyReport.set(data.hour_report == "1")
         mStates.timingReport.set(data.timed_report == "1")
         mStates.addReport.set(data.add_report == "1")

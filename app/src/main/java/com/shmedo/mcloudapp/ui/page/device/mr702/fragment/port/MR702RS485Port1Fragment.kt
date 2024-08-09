@@ -144,7 +144,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
     private fun showAddSensorPopup() {
         val sensorList = mInterfaceHomeViewModel.portSensorModelListMap["485port1"] ?: listOf()
         val selectionPopupView = MR702SensorSelectionPopupView(requireContext())
-        selectionPopupView.setData("请选择物模型", sensorList, true)
+        selectionPopupView.setData("请选择传感器", sensorList, true)
             .setSelectListener(object : MR702SensorSelectionPopupView.OnSelectListener {
                 override fun onSelect(sensorModel: SensorModel) {
                     val bundle = MR702RS485Port1SensorAddParamFragment.newBundleArguments(
@@ -394,7 +394,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                         addr = strs[1],
                         addrDesc = "地址-${strs[1]}",
                         sensorName = mInterfaceHomeViewModel.sensorModelMap[strs[0]]?.sensorName
-                            ?: "自定义物模型",
+                            ?: "自定义传感器",
                         modelToken = strs[0],
                         modelFieldList = mInterfaceHomeViewModel.sensorModelMap[strs[0]]?.modelFieldList
                             ?: listOf()

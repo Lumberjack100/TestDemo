@@ -13,6 +13,7 @@ open class BaseDataCenterParamViewModel : ViewModel() {
     val isCenterOpened = NonNullObservableField(true)
     val centerName = NonNullObservableField("")
     val centerStatus = NonNullObservableField("已开启")
+
     val centerServerAddress = NonNullObservableField("")//数据服务器地址
     val centerServerPort = NonNullObservableField("")//数据服务器端口
     val transferProtocol = NonNullObservableField("")//传输协议

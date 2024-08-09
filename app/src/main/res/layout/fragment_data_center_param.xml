@@ -394,7 +394,7 @@
                                 app:drawable_solidColor="@{@color/gray_f5f6f8}"
                                 tools:background="@color/gray_f5f6f8">
 
-                                <CheckBox
+                               <com.google.android.material.checkbox.MaterialCheckBox
                                     android:id="@+id/hourlyReportCheckBox"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"

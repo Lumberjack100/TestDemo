@@ -23,6 +23,13 @@ class MRRS485Port2SensorParamParser : IOTCommandParser<MRRS485Port2SensorParam> 
             uplimit = keyValueMap.getOrDefault("uplimit", uplimit)
             lowlimit = keyValueMap.getOrDefault("lowlimit", lowlimit)
             corrvalue = keyValueMap.getOrDefault("corrvalue", corrvalue)
+            calctype = keyValueMap.getOrDefault("calctype", calctype)
+            kvalue = keyValueMap.getOrDefault("kvalue", kvalue)
+            bvalue = keyValueMap.getOrDefault("bvalue", bvalue)
+            r0value = keyValueMap.getOrDefault("r0value", r0value)
+            t0value = keyValueMap.getOrDefault("t0value", t0value)
+            l0value = keyValueMap.getOrDefault("l0value", l0value)
+            lvalue = keyValueMap.getOrDefault("lvalue", lvalue)
         }
     }
 

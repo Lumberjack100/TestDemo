@@ -7,7 +7,7 @@ class MR702DataCenterParamViewModel : BaseDataCenterParamViewModel() {
     val isWiredNetOpened = NonNullObservableField(true)//有线 是否开启
 
     val communicateWay = NonNullObservableField("有线")//通信方式
-    val ipType = NonNullObservableField("IPV4")
+    val ipLeve = NonNullObservableField("IPV4")
 
     /**
      * SL651 水文协议特有配置参数
@@ -18,7 +18,7 @@ class MR702DataCenterParamViewModel : BaseDataCenterParamViewModel() {
     val password = NonNullObservableField("")//密码
     val telemetryStationAddr = NonNullObservableField("")//测站编码(遥测站地址)
     val isAdvancedItemVisible = NonNullObservableField(false)//高级设置是否可见
-    val hourlyReport = NonNullObservableField(false)//小时报开启标识
+    val hourlyReport = NonNullObservableField(true)//小时报开启标识
     val timingReport = NonNullObservableField(false)//定时报开启标识
     val addReport = NonNullObservableField(false)//加报报开启标识
     val maintainReport = NonNullObservableField(false)//维持报开启标识

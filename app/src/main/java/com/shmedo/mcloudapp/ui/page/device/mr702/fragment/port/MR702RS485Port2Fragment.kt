@@ -160,7 +160,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     private fun showAddSensorPopup() {
         val sensorList = mInterfaceHomeViewModel.portSensorModelListMap["485port2"] ?: listOf()
         val selectionPopupView = MR702SensorSelectionPopupView(requireContext())
-        selectionPopupView.setData("请选择物模型", sensorList)
+        selectionPopupView.setData("请选择传感器", sensorList)
             .setSelectListener(object : MR702SensorSelectionPopupView.OnSelectListener {
                 override fun onSelect(sensorModel: SensorModel) {
                     val bundle = MR702RS485Port2SensorParamFragment.newBundleArguments(

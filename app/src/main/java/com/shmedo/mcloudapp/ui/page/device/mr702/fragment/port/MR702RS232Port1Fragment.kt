@@ -11,8 +11,6 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRRS232Port1ParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRRS232Port2ParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
@@ -24,14 +22,16 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentMr702Rs232Port1Binding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS232Port1ViewModel
+import com.shmedo.mcloudapp.databinding.FragmentMr702Rs232Port1Binding
+import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS232Port1ViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -79,7 +79,20 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        initDefaultParam()
+    }
+
+    /**
+     * 初始化默认参数
+     */
+    private fun initDefaultParam() {
+        mStates.cameraModel.set(cameraModelList[0])
+        mStates.cameraResolution.set(cameraResolutionList[0])
+        mStates.photoInterval.set("65535")
+        mStates.baudRate.set("115200")
         mStates.dataBit.set(dataBitList[3])
+        mStates.checkBit.set(checkBitList[0])
+        mStates.stopBit.set(stopBitList[0])
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -224,7 +237,7 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
         val entity = MRRS232Port1ParamEntity(
             switch = "1",
             type = cameraModelList.indexOf(mStates.cameraModel.get()).toString(),
-            resolut = cameraResolutionList.indexOf(mStates.cameraResolution.get()).toString(),
+            resolut = (cameraResolutionList.indexOf(mStates.cameraResolution.get()) + 1).toString(),
             interval = mStates.photoInterval.get(),
             baud = mStates.baudRate.get(),
             databit = mStates.dataBit.get(),
@@ -242,7 +255,6 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
-//        testData()
     }
 
     private fun queryInfo() {
@@ -310,8 +322,9 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
                 }
             }
             sensorParam.resolut.toInt().let {
-                if (it in cameraResolutionList.indices) {
-                    mStates.cameraResolution.set(cameraResolutionList[it])
+                val index = it - 1
+                if (index in cameraResolutionList.indices) {
+                    mStates.cameraResolution.set(cameraResolutionList[index])
                 }
             }
             mStates.photoInterval.set(sensorParam.interval)

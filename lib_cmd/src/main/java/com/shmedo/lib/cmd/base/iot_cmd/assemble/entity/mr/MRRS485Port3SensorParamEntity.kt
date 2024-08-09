@@ -39,7 +39,7 @@ data class MRRS485Port3SensorParamEntity(
     var wlevel3: String = IOTConstants.NULL_KEY,//水位三级报警值 mm 数字
 
     //LED屏
-    var type: String = IOTConstants.NULL_KEY,//显示配置   1 类型1  2 类型2
+    var type: String = IOTConstants.NULL_KEY,//显示配置   1 P10  4 P5
     var stime: String = IOTConstants.NULL_KEY,//熄屏时长 s  数字
 ) {
     fun toCommandString(): String {

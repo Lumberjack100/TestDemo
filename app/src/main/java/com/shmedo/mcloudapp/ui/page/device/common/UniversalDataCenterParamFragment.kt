@@ -58,10 +58,11 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 
     private lateinit var statusItem: DataCenterStatusItem
 
-    private val transferProtocolList: MutableList<String> =
-        arrayListOf("TCP-C", "TCP-S", "MQTT", "SL651")
-    private val dataProtocolList: MutableList<String> =
+    private val transferProtocolList = arrayListOf("TCP-C", "TCP-S", "MQTT", "SL651")
+
+    private val dataProtocolList =
         arrayListOf("CMD", "NMEA", "DIFF_IN", "DIFF_OUT", "RAW_OUT", "RES_OUT")
+
     private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
 
 
@@ -112,12 +113,20 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         arguments?.let {
             statusItem = it.getParcelable(AppContants.Extras.SERVER_NUMBER)!!
         }
+        initDefaultParam()
+    }
+
+    /**
+     * 初始化默认参数
+     */
+    private fun initDefaultParam() {
         mStates.centerName.set(statusItem.name)
         mStates.centerStatus.set(statusItem.status)
         mStates.isCenterOpened.set(statusItem.status != "0")
         mStates.isDataProtocolVisible.set(
             productType == ProductType.GNSS_E_1 || productType == ProductType.GNSS_E_2 || productType == ProductType.GNSS_E_3
         )
+
         mStates.transferProtocol.set(transferProtocolList[2])
         mStates.dataProtocol.set(dataProtocolList[5])
         mStates.platformType.set(platformList[0])

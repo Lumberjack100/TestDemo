@@ -125,6 +125,165 @@
                             app:lengthFilter="@{6}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/ll_advanced_items"
+                        visible='@{stateVM.modelToken.contains("10066")}'
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_ClickableItem_LayoutStyle"
+                            onClickWithDebouncing="@{()->click.onIsCalculateChooseClick()}"
+                            android:background="@drawable/layer_common_click_item_with_divider"
+                            android:enabled="@{stateVM.isEditable }">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                style="@style/Common_ClickableItem_TitleStyle"
+                                textViewEnabled="@{stateVM.isEditable }"
+                                android:text="是否计算" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                style="@style/Common_ClickableItem_ValueStyle"
+                                textViewEnabled="@{stateVM.isEditable }"
+                                android:drawableEnd="@drawable/ic_arrow_down"
+                                android:text="@{stateVM.calculate}"
+                                tools:text="是" />
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_ClickableItem_LayoutStyle"
+                            onClickWithDebouncing="@{()->click.onCalculateFormulaChooseClick()}"
+                            android:background="@drawable/layer_common_click_item_with_divider"
+                            android:enabled="@{stateVM.isEditable }">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                style="@style/Common_ClickableItem_TitleStyle"
+                                textViewEnabled="@{stateVM.isEditable }"
+                                android:text="计算公式" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                style="@style/Common_ClickableItem_ValueStyle"
+                                textViewEnabled="@{stateVM.isEditable }"
+                                android:drawableEnd="@drawable/ic_arrow_down"
+                                android:text="@{stateVM.calculateFormula}"
+                                tools:text="直线式" />
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_LayoutStyle"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                style="@style/Common_ClickableItem_TitleStyle"
+                                textViewEnabled="@{stateVM.isEditable }"
+                                android:text="灵敏度K值" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable}"
+                                android:hint="请输入"
+                                android:text="@={stateVM.sensitivityK}"
+                                android:inputType="numberDecimal|numberSigned"
+                                android:maxLength="10" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_LayoutStyle"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                style="@style/Common_ClickableItem_TitleStyle"
+                                textViewEnabled="@{stateVM.isEditable }"
+                                android:text="温度修正系数b值" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable}"
+                                android:hint="请输入"
+                                android:text="@={stateVM.temperatureCorrectionCoefficientB}"
+                                android:inputType="numberDecimal|numberSigned"
+                                android:maxLength="17" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_LayoutStyle"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                style="@style/Common_ClickableItem_TitleStyle"
+                                textViewEnabled="@{stateVM.isEditable }"
+                                android:text="初始频率F0值" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable}"
+                                android:hint="请输入"
+                                android:text="@={stateVM.initialFrequencyF0}"
+                                app:lengthFilter="@{20}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_LayoutStyle"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                style="@style/Common_ClickableItem_TitleStyle"
+                                textViewEnabled="@{stateVM.isEditable }"
+                                android:text="初始温度T0值" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable}"
+                                android:hint="请输入"
+                                android:text="@={stateVM.initialTemperatureT0}"
+                                app:lengthFilter="@{20}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_LayoutStyle"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                style="@style/Common_ClickableItem_TitleStyle"
+                                textViewEnabled="@{stateVM.isEditable }"
+                                android:text="初始水位值(米)" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable}"
+                                android:hint="请输入"
+                                android:inputType="numberDecimal|numberSigned"
+                                android:maxLength="5"
+                                android:text="@={stateVM.initialWaterLevel}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_LayoutStyle"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                style="@style/Common_ClickableItem_TitleStyle"
+                                textViewEnabled="@{stateVM.isEditable }"
+                                android:text="堰角高度值(米)" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable}"
+                                android:hint="请输入"
+                                android:inputType="numberDecimal|numberSigned"
+                                android:maxLength="5"
+                                android:text="@={stateVM.weirHeight}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
                     <androidx.appcompat.widget.AppCompatTextView
                         style="@style/Common_GroupName_Style"
                         android:text="通道采集数据处理" />

@@ -10,15 +10,16 @@
 
     <!-- 注册平台-->
     <string-array name="data_center_register_platform">
-        <item>地灾一期</item>
-        <item>成都理工平台</item>
-        <item>米度平台</item>
-        <item>地灾二期</item>
+        <item>地大平台</item>
+        <item>中移物联平台</item>
+        <item>米度物联平台</item>
+        <item>地大平台2</item>
         <item>河南水利平台</item>
         <item>米度水文平台</item>
-        <item>AMS平台</item>
-        <item>重庆地灾</item>
-        <item>广东水利地灾</item>
+        <item>AMS解算平台</item>
+        <item>重庆地灾平台</item>
+        <item>广东水利平台</item>
+        <item>广西水文平台</item>
     </string-array>
 
     <string-array name="baud_rates">
@@ -139,7 +140,7 @@
         <item>IPV6</item>
     </string-array>
 
-    <string-array name="mr_ip_protocol">
+    <string-array name="mr_transfer_protocol">
         <item>TCP</item>
         <item>UDP</item>
     </string-array>
@@ -148,15 +149,7 @@
         <item>MQTT</item>
         <item>TCP-C</item>
         <item>SL651</item>
-    </string-array>
-
-    <string-array name="mr_register_platform">
-        <item>地灾一期</item>
-        <item>成都理工平台</item>
-        <item>米度平台</item>
-        <item>地灾二期</item>
-        <item>河南水利平台</item>
-        <item>米度水文平台</item>
+        <item>SZY206</item>
     </string-array>
 
     <!-- 数据类型-->
@@ -195,19 +188,26 @@
         <item>MCU-16通道</item>
     </string-array>
 
+    <string-array name="mr_rs485_port3_volume">
+        <item>高</item>
+        <item>中</item>
+        <item>低</item>
+    </string-array>
+
     <string-array name="mr_rs485_port3_led_type">
-        <item>类型1</item>
-        <item>类型2</item>
+        <item>P10</item>
+        <item>P5</item>
     </string-array>
 
     <string-array name="mr_rs232_port1_camera_model">
         <item>SXH232-H200</item>
+        <item>PTC052</item>
     </string-array>
 
     <string-array name="mr_rs232_port2_camera_resolution">
-        <item>320*240</item>
         <item>640*480</item>
-        <item>1280*960</item>
+        <item>1280*720</item>
+        <item>1920*1080</item>
     </string-array>
 
     <string-array name="mr_data_bit">

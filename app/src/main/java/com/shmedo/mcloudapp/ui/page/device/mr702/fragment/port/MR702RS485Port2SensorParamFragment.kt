@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
@@ -48,6 +51,9 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
 
     private var isAdd: Boolean = false
     private lateinit var sensorItem: MRSensorItem
+
+    private val calculateList = mutableListOf("不计算", "计算")
+    private val calculateFormulaList = mutableListOf("直线式")
 
 
     override fun initViewModel() {
@@ -111,15 +117,19 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
         mStates.sensorName.set(sensorItem.sensorName)
         mStates.modelToken.set(sensorItem.modelToken)
 
-        resetModelField()
+        initDefaultParam()
     }
 
     /**
      * 重置采集项
      */
-    private fun resetModelField() {
+    private fun initDefaultParam() {
         mStates.channelNumber.set("")//通道编号
         mStates.hydrologicalIdentification.set("")//水文标识
+
+        mStates.calculate.set(calculateList[0])//是否计算
+        mStates.calculateFormula.set(calculateFormulaList[0])//计算公式
+
         mStates.filterCoefficient.set("2")//滤波系数 2
         mStates.triggerValue.set("0")//触发值 0
         mStates.upperLimit.set("1000")//上限值 1000
@@ -140,6 +150,46 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
 
         override fun onToolbarTvClick() {
             setEditable(false)
+        }
+
+        /**
+         * 是否计算
+         */
+        fun onIsCalculateChooseClick() {
+            val selectedIndex = calculateList.indexOf(mStates.calculate.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "", calculateList.toTypedArray(),
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.calculate.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        /**
+         * 计算公式
+         */
+        fun onCalculateFormulaChooseClick() {
+            val selectedIndex = calculateFormulaList.indexOf(mStates.calculateFormula.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "请选择计算公式", calculateFormulaList.toTypedArray(),
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.calculateFormula.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
         }
 
         fun onSubmitClick() {
@@ -205,6 +255,15 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
             uplimit = if (mStates.sensorParamWrapper.get().uplimit == mStates.upperLimit.get()) IOTConstants.NULL_KEY else mStates.upperLimit.get(),
             lowlimit = if (mStates.sensorParamWrapper.get().lowlimit == mStates.lowerLimit.get()) IOTConstants.NULL_KEY else mStates.lowerLimit.get(),
             corrvalue = if (mStates.sensorParamWrapper.get().corrvalue == mStates.correctValue.get()) IOTConstants.NULL_KEY else mStates.correctValue.get(),
+
+            calctype = if (mStates.modelToken.get() == "10066") calculateList.indexOf(mStates.calculate.get())
+                .toString() else IOTConstants.NULL_KEY,
+            kvalue = if (mStates.modelToken.get() == "10066") mStates.sensitivityK.get() else IOTConstants.NULL_KEY,
+            bvalue = if (mStates.modelToken.get() == "10066") mStates.temperatureCorrectionCoefficientB.get() else IOTConstants.NULL_KEY,
+            r0value = if (mStates.modelToken.get() == "10066") mStates.initialFrequencyF0.get() else IOTConstants.NULL_KEY,
+            t0value = if (mStates.modelToken.get() == "10066") mStates.initialTemperatureT0.get() else IOTConstants.NULL_KEY,
+            l0value = if (mStates.modelToken.get() == "10066") mStates.initialWaterLevel.get() else IOTConstants.NULL_KEY,
+            lvalue = if (mStates.modelToken.get() == "10066") mStates.weirHeight.get() else IOTConstants.NULL_KEY
         )
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RS485_PORT2_SENSOR_PARAM,
@@ -217,6 +276,7 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
 
     override fun lazyLoadData() {
         if (isAdd) return
+
         binding.refreshLayout.autoRefresh()
     }
 
@@ -292,6 +352,14 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
             mStates.upperLimit.set(sensorParam.uplimit)
             mStates.lowerLimit.set(sensorParam.lowlimit)
             mStates.correctValue.set(sensorParam.corrvalue)
+
+            mStates.calculate.set(if (sensorParam.calctype == "1") calculateList[1] else calculateList[0])
+            mStates.sensitivityK.set(sensorParam.kvalue)
+            mStates.temperatureCorrectionCoefficientB.set(sensorParam.bvalue)
+            mStates.initialFrequencyF0.set(sensorParam.r0value)
+            mStates.initialTemperatureT0.set(sensorParam.t0value)
+            mStates.initialWaterLevel.set(sensorParam.l0value)
+            mStates.weirHeight.set(sensorParam.lvalue)
         } catch (e: Exception) {
             Timber.e(e)
             addLogItem(Log.ERROR, e.errorMsg)

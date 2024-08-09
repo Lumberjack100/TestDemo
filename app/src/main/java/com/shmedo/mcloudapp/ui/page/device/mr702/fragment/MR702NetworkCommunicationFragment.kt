@@ -13,7 +13,6 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRWiredNetEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRWirelessNetEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
@@ -26,12 +25,13 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.databinding.FragmentMr702NetworkCommunicationBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.databinding.FragmentMr702NetworkCommunicationBinding
-import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702NetworkCommunicationViewModel
@@ -239,19 +239,19 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                     showMessageDialog("请输入有效的首选DNS!")
                     return
                 }
-                if (!RegexUtils.isIP(mStates.alternateDNS.get())) {
-                    showMessageDialog("请输入有效的备用DNS!")
-                    return
-                }
+//                if (!RegexUtils.isIP(mStates.alternateDNS.get())) {
+//                    showMessageDialog("请输入有效的备用DNS!")
+//                    return
+//                }
             }
             val wiredNetEntity = MRWiredNetEntity(
                 switch = "1",
-                dhcp = if (mStates.ipMode.get() == "自动") "0" else "1",
+                dhcp = if (mStates.ipMode.get() == "手动") "0" else "1",
                 ipaddr = mStates.ip.get(),
                 mask = mStates.subnetMask.get(),
                 gateway = mStates.gateway.get(),
                 dns = mStates.preferredDNS.get(),
-                dnss = mStates.alternateDNS.get()
+//                dnss = mStates.alternateDNS.get()
             )
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_MR_SET_WIRED_NETWORK,
@@ -369,13 +369,13 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
 
     private fun initWiredData(mrWiredNet: MRWiredNet) {
         mStates.isEthernetOpened.set(mrWiredNet.switch == "1")
-        mStates.ipMode.set(ipModeList[if (mrWiredNet.dhcp == "0") 0 else 1])
-        mStates.isManualVisible.set(mrWiredNet.dhcp == "1")
+        mStates.ipMode.set(ipModeList[if (mrWiredNet.dhcp == "1") 0 else 1])
+        mStates.isManualVisible.set(mrWiredNet.dhcp == "0")
         mStates.ip.set(mrWiredNet.ipaddr)
         mStates.subnetMask.set(mrWiredNet.mask)
         mStates.gateway.set(mrWiredNet.gateway)
         mStates.preferredDNS.set(mrWiredNet.dns)
-        mStates.alternateDNS.set(mrWiredNet.dnss)
+//        mStates.alternateDNS.set(mrWiredNet.dnss)
     }
 
     override fun onResume() {

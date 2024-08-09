@@ -62,6 +62,8 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
     private val dataBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_data_bit) }
     private val checkBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_check_bit) }
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
+
+    private val volumeList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs485_port3_volume) }
     private val ledTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs485_port3_led_type) }
 
     private val decimalFormat = DecimalFormat("#.#")
@@ -119,9 +121,19 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
             mStates.sensorType.set(sensorType)
             mStates.sensorName.set(if (sensorType == 1) "太阳能控制器" else if (sensorType == 2) "声光报警器" else "LED屏")
         }
+        initDefaultParam()
+    }
+
+    /**
+     * 初始化默认参数
+     */
+    private fun initDefaultParam() {
+        mStates.baudRate.set("9600")
         mStates.dataBit.set(dataBitList[3])
         mStates.checkBit.set(checkBitList[0])
         mStates.stopBit.set(stopBitList[0])
+
+        mStates.volume.set(volumeList[0])
         mStates.ledType.set(ledTypeList[0])
     }
 
@@ -208,7 +220,24 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        fun onSwitchLedTypeClick() {
+        fun onVolumeChooseClick() {
+            val selectedIndex = volumeList.indexOf(mStates.volume.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "请选择音量", volumeList,
+                    null, selectedIndex,
+                    { _, text ->
+                        mStates.volume.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        fun onLedTypeChooseClick() {
             val selectedIndex = ledTypeList.indexOf(mStates.ledType.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
@@ -216,7 +245,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "请选择LED", ledTypeList,
+                    "请选择屏幕规格", ledTypeList,
                     null, selectedIndex,
                     { _, text ->
                         mStates.ledType.set(text)
@@ -328,7 +357,12 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
                 }
                 entity.duration = mStates.duration.get()
                 entity.interval = mStates.interval.get()
-                entity.volume = mStates.volume.get().toString()
+                entity.volume = when (mStates.volume.get()) {
+                    volumeList[0] -> "16"
+                    volumeList[1] -> "10"
+                    volumeList[2] -> "4"
+                    else -> "16"
+                }
                 entity.rlevel1 = mStates.rainTriggerValueLevel1.get()
                 entity.rlevel2 = mStates.rainTriggerValueLevel2.get()
                 entity.rlevel3 = mStates.rainTriggerValueLevel3.get()
@@ -350,7 +384,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
                     showMessageDialog("请输入熄屏时长")
                     return
                 }
-                entity.type = (ledTypeList.indexOf(mStates.ledType.get()) + 1).toString()
+                entity.type = if (mStates.ledType.get() == "P10") "1" else "4"
                 entity.duration = mStates.duration.get()
                 entity.interval = mStates.interval.get()
                 entity.stime = mStates.screenTime.get()
@@ -462,7 +496,11 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
                 2 -> {
                     mStates.duration.set(sensorParam.duration)
                     mStates.interval.set(sensorParam.interval)
-                    mStates.volume.set(sensorParam.volume.toInt())
+                    when (sensorParam.volume.toInt()) {
+                        16 -> mStates.volume.set(volumeList[0])
+                        10 -> mStates.volume.set(volumeList[1])
+                        4 -> mStates.volume.set(volumeList[2])
+                    }
                     //判断 sensorParam.rlevel1 是否可以转为 double
                     sensorParam.rlevel1.toDoubleOrNull()?.let {
                         mStates.rainTriggerValueLevel1.set(decimalFormat.format(it))
@@ -479,11 +517,11 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
                 }
 
                 else -> {
-                    sensorParam.type.toInt().let {
-                        if (it in 1..ledTypeList.size) {
-                            mStates.ledType.set(ledTypeList[it - 1])
-                        }
-                    }
+                    if (sensorParam.type.toInt() == 1)
+                        mStates.ledType.set(ledTypeList[0])
+                    else
+                        mStates.ledType.set(ledTypeList[1])
+
                     mStates.duration.set(sensorParam.duration)
                     mStates.interval.set(sensorParam.interval)
                     mStates.screenTime.set(sensorParam.stime)

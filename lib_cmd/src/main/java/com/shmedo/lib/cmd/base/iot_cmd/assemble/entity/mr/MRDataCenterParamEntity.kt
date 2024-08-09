@@ -18,8 +18,8 @@ data class MRDataCenterParamEntity(
     val type: String = "", //协议类型 1:TCP 2:UDP
     val addr: String = "",//数据中心地址
     val port: String = "", //数据中心端口
-    val plattype: String = "", //平台类型 DIDA:地大平台  ZYWL:成都理工平台  GHIOT:米度平台 DIDA2:地大平台2 HWPEC:河南水利 MDSW:米度水文
-    val datatype: String = "", //数据协议,1：TCP-C 2:MQTT 3:SL651水文协议
+    val plattype: String = "", //平台类型
+    val datatype: String = "", //数据协议,1：TCP-C 2:MQTT 3:SL651水文协议 4:SZY206
 
     /**
      * MQTT 协议特有配置参数
