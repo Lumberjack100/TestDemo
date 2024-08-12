@@ -171,15 +171,15 @@ enum class ProductType(
         newSuffix = "UD1",
         productName = "雷达计",
         deviceName = "",
-        description = "水位,对应MD-DR030"
+        description = "泥位,对应MD-LD30"
     ),
     U_D_2(
         prefix = "",
         oldSuffix = "",
         newSuffix = "UD2",
-        productName = "雷达计",
+        productName = "一体化雷达液位计",
         deviceName = "",
-        description = "泥位,对应MD-LD30"
+        description = "水位,对应MD-DR030"
     ),
 
     //INTEGRATION(一体化传感器产品线) L(裂缝计)

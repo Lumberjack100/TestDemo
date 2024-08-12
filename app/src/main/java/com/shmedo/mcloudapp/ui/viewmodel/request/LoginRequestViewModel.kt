@@ -387,6 +387,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
                     )
                     return@launch
                 }
+
                 //更新本地配置
                 MmkvCacheUtil.setAppConfigInfo(remoteAppConfigInfo)
             } catch (e: Exception) {

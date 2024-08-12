@@ -113,8 +113,8 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
                 mStates.fourthAlarmReportIntervalTitle.set("四级报警间隔(秒)")
             }
 
-            ProductType.U_D_1,//水位
-            ProductType.U_D_2 -> {//泥位
+            ProductType.U_D_1,//
+            ProductType.U_D_2 -> {//一体化雷达液位计
                 mStates.firstAlarmThresholdTitle.set("一级报警阈值(米)")
                 mStates.secondAlarmThresholdTitle.set("二级报警阈值(米)")
                 mStates.thirdAlarmThresholdTitle.set("三级报警阈值(米)")

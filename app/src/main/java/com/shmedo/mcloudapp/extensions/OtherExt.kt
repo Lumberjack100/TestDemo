@@ -26,6 +26,12 @@ inline fun <reified T> T.notNullKey(action: (T) -> Unit) {
     }
 }
 
+inline fun <reified T> T.notNullKeyEmpty(action: (T) -> Unit) {
+    if (this != IOTConstants.NULL_KEY && this != "") {
+        action.invoke(this)
+    }
+}
+
 fun String.stringToGBK16UByteString(): String {
     val gbkBytes = stringToGBKByteArray()
     return gbkBytes.joinToString(separator = "") { it.toUByte().toString(16).padStart(2, '0') }.uppercase()

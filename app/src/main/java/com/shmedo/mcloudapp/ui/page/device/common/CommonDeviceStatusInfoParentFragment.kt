@@ -94,8 +94,8 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                 )
             }
 
-            ProductType.U_D_1,//水位
-            ProductType.U_D_2 -> {//泥位
+            ProductType.U_D_1,//
+            ProductType.U_D_2 -> {//一体化雷达液位计
                 fragmentList.add(
                     UProductBaseInfoFragment.newInstance().apply {
                         arguments = bundle

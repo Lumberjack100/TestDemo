@@ -38,8 +38,8 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
     override fun initData() {
         super.initData()
         when (productType) {
-            ProductType.U_D_1,//水位
-            ProductType.U_D_2 -> {//泥位
+            ProductType.U_D_1,//
+            ProductType.U_D_2 -> {//一体化雷达液位计
                 mHeadStates.productLightResId.set(R.drawable.device_logo_niweiji)
                 mHeadStates.productGrayResId.set(R.drawable.device_logo_niweiji_gray)
                 mHeadStates.isIOTPlatformStateVisible.set(false)
@@ -138,8 +138,8 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
             is SensorConfigModule -> {
                 var navId = configModule.navId
                 when (productType) {
-                    ProductType.U_D_1,//水位
-                    ProductType.U_D_2 -> {//泥位
+                    ProductType.U_D_1,//
+                    ProductType.U_D_2 -> {//一体化雷达液位计
                         navId = R.id.action_uProductHomeFragment_to_uDProductSensorParamFragment
                     }
 
@@ -172,8 +172,8 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
                 var navId = configModule.navId
                 var centerNum = 3
                 when (productType) {
-                    ProductType.U_D_1,//水位
-                    ProductType.U_D_2 -> {//泥位
+                    ProductType.U_D_1,//
+                    ProductType.U_D_2 -> {//一体化雷达液位计
                         navId = R.id.action_uProductHomeFragment_to_uDProductDataCenterHomeFragment
                         centerNum = 3
                     }

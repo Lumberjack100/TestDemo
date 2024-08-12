@@ -11,7 +11,6 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.utils.AppContants
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.das.DasCollectorEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.das.DasExternalSensorEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
@@ -25,17 +24,18 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
-import com.shmedo.mcloudapp.databinding.FragmentDasExternalSensorListBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.model.DASSensorItem
-import com.shmedo.mcloudapp.model.RVEmptyFooter
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalSensorListViewModel
+import com.shmedo.mcloudapp.databinding.FragmentDasExternalSensorListBinding
+import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
+import com.shmedo.mcloudapp.model.DASSensorItem
+import com.shmedo.mcloudapp.model.RVEmptyFooter
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalSensorListViewModel
+import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -100,7 +100,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                     R.layout.item_das_sensor -> {
                         val item = getModel<DASSensorItem>()
                         if (!mStates.isVibratingWireSensor.get()) {
-                            val bundle = DasExternalDigitalSensorFragment.newBundleArguments(
+                            val bundle = BaseExternalDigitalSensorFragment.newBundleArguments(
                                 index = modelPosition,
                                 sensorAddr = item.addr,
                                 productType,
@@ -129,7 +129,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
 
                     else -> {//新增传感器
                         if (!mStates.isVibratingWireSensor.get()) {
-                            val bundle = DasExternalDigitalSensorFragment.newBundleArguments(
+                            val bundle = BaseExternalDigitalSensorFragment.newBundleArguments(
                                 index = -1,
                                 sensorAddr = "-1",
                                 productType,

@@ -20,6 +20,7 @@ import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasExternalSensorInfo
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -29,7 +30,7 @@ import com.shmedo.mcloudapp.extensions.formatDoubleValue
 import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.extensions.notNullKey
+import com.shmedo.mcloudapp.extensions.notNullKeyEmpty
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
@@ -102,14 +103,17 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
         val externalSensorInfo = if (sensorListViewModel.sensorModelMap.containsKey(sensorAddr))
             sensorListViewModel.sensorModelMap[sensorAddr]!!
-        else {
-            DasExternalSensorInfo(
-                addr = "-1",
-                type = iotSensorType.code,
-                threshold = "",
-                corrval = ""
-            )
-        }
+        else //新建传感器 采用第一个传感器的信息，没有则使用默认信息
+            sensorListViewModel.sensorModelMap.values.firstOrNull()?.apply {
+                addr = "-1"
+            }
+                ?: DasExternalSensorInfo(
+                    addr = "-1",
+                    type = iotSensorType.code,
+                    threshold = "",
+                    corrval = ""
+                )
+
         initSensorInfo(externalSensorInfo)
         initRefresh(externalSensorInfo.addr != "-1")
     }
@@ -184,7 +188,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             groupList.add(
                 ExternalDigitalSensorParamEditItem(
                     name = "传感器地址",
-                    value = sensorInfo.addr,
+                    value = if (sensorInfo.addr == "-1") "" else sensorInfo.addr,
                     inputTypeFilter = "number",
                     inputLengthFilter = 3,
                 )
@@ -243,7 +247,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                             value = sensorInfo.spacing.formatDoubleValue("", 1)
                         )
                     )
-                    sensorInfo.model_type.notNullKey { type ->
+                    sensorInfo.model_type.notNullKeyEmpty { type ->
                         type.toIntOrNull()?.let { typeIndex ->
                             groupList.add(
                                 0,
@@ -285,7 +289,8 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                             value = sensorInfo.corrval.formatDoubleValue("", 3)
                         )
                     )
-                    sensorInfo.child_type.notNullKey { type ->
+                    sensorInfo.child_type.notNullKeyEmpty { type ->
+
                         type.toIntOrNull()?.let { typeIndex ->
                             groupList.add(
                                 0,
@@ -360,7 +365,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                             desc = "修正浮子高度"
                         )
                     )
-                    sensorInfo.lsycsds.notNullKey {
+                    sensorInfo.lsycsds.notNullKeyEmpty {
                         groupList.add(
                             ExternalDigitalSensorParamEditItem(
                                 name = "初始读数(毫米)",
@@ -369,7 +374,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                             )
                         )
                     }
-                    sensorInfo.lsyysst.notNullKey {
+                    sensorInfo.lsyysst.notNullKeyEmpty {
                         groupList.add(
                             ExternalDigitalSensorParamEditItem(
                                 name = "初始堰上水头(毫米)",
@@ -378,7 +383,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                             )
                         )
                     }
-                    sensorInfo.caddr.notNullKey {
+                    sensorInfo.caddr.notNullKeyEmpty {
                         groupList.add(
                             ExternalDigitalSensorParamEditItem(
                                 name = "测站编码",
@@ -584,6 +589,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                 }
                 sensorInfo.addr = item.value
             }
+
         //触发值
         binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
             ?.findLast { it.name.contains("触发值") }?.let { item ->
@@ -599,7 +605,9 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                 }
                 sensorInfo.threshold = item.value
             }
+
         //修正值
+        sensorInfo.corrval = IOTConstants.NULL_KEY
         binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
             ?.findLast { it.name.contains("修正值") }?.let { item ->
                 if (item.value.isEmpty()) {
@@ -614,10 +622,12 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                 }
                 sensorInfo.corrval = item.value
             }
+
         when (iotSensorType) {
             IOTSensorType.INCLINOMETER //测斜仪
             -> {
                 //测段长
+                sensorInfo.spacing = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
                     ?.findLast { it.name.contains("测段长") }?.let { item ->
                         if (item.value.isEmpty()) {
@@ -634,6 +644,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     }
 
                 //模型切换
+                sensorInfo.model_type = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamChooseItem>()
                     ?.findLast { it.name.contains("模型切换") }?.let { item ->
                         sensorInfo.model_type = modelTypeList.indexOf(item.value).toString()
@@ -643,6 +654,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             IOTSensorType.RADAR_LEVEL_GAUGE //雷达液(物)位计 设置子雷达传感器型号
             -> {
                 //雷达类型
+                sensorInfo.child_type = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamChooseItem>()
                     ?.findLast { it.name.contains("雷达类型") }?.let { item ->
                         sensorInfo.child_type = childRadarTypeList.indexOf(item.value).toString()
@@ -652,6 +664,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             IOTSensorType.LUYAN_INCLINOMETER //倾角仪
             -> {
                 //X轴初始角度
+                sensorInfo.initvalx = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
                     ?.findLast { it.name.contains("X轴初始角度") }?.let { item ->
                         if (item.value.isEmpty()) {
@@ -666,7 +679,9 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                         }
                         sensorInfo.initvalx = item.value
                     }
+
                 //Y轴初始角度
+                sensorInfo.initvaly = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
                     ?.findLast { it.name.contains("Y轴初始角度") }?.let { item ->
                         if (item.value.isEmpty()) {
@@ -681,7 +696,9 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                         }
                         sensorInfo.initvaly = item.value
                     }
+
                 //Z轴初始角度
+                sensorInfo.initvalz = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
                     ?.findLast { it.name.contains("Z轴初始角度") }?.let { item ->
                         if (item.value.isEmpty()) {
@@ -701,6 +718,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             IOTSensorType.WEIR //量水堰计
             -> {
                 //初始读数
+                sensorInfo.lsycsds = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
                     ?.findLast { it.name.contains("初始读数") }?.let { item ->
                         if (item.value.isEmpty()) {
@@ -715,7 +733,9 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                         }
                         sensorInfo.lsycsds = item.value
                     }
+
                 //初始堰上水头
+                sensorInfo.lsyysst = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
                     ?.findLast { it.name.contains("初始堰上水头") }?.let { item ->
                         if (item.value.isEmpty()) {
@@ -730,7 +750,9 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                         }
                         sensorInfo.lsyysst = item.value
                     }
+
                 //测站编码
+                sensorInfo.caddr = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
                     ?.findLast { it.name.contains("测站编码") }?.let { item ->
                         if (item.value.isEmpty()) {
@@ -745,6 +767,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             IOTSensorType.SEDIMENTATION_METER,//沉降仪
             -> {
                 //初始值
+                sensorInfo.initval = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
                     ?.findLast { it.name.contains("初始值") }?.let { item ->
                         if (item.value.isEmpty()) {
@@ -764,6 +787,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             IOTSensorType.VERTICAL_COORDINATE,//垂线坐标仪
             -> {
                 //X轴初始值
+                sensorInfo.initvalx = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
                     ?.findLast { it.name.contains("X轴初始值") }?.let { item ->
                         if (item.value.isEmpty()) {
@@ -778,7 +802,9 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                         }
                         sensorInfo.initvalx = item.value
                     }
+
                 //Y轴初始值
+                sensorInfo.initvaly = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
                     ?.findLast { it.name.contains("Y轴初始值") }?.let { item ->
                         if (item.value.isEmpty()) {
@@ -798,6 +824,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE //数字式水位计
             -> {
                 //安装高程
+                sensorInfo.tubealti = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
                     ?.findLast { it.name.contains("安装高程") }?.let { item ->
                         if (item.value.isEmpty()) {
@@ -812,7 +839,9 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                         }
                         sensorInfo.tubealti = item.value
                     }
+
                 //绳长
+                sensorInfo.ropelen = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
                     ?.findLast { it.name.contains("绳长") }?.let { item ->
                         if (item.value.isEmpty()) {
@@ -890,8 +919,11 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
             putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
             putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(
+                AppContants.Extras.STATUS_BAR_COLOR,
+                statusBarColor
+            )
         }
     }
 }

@@ -35,7 +35,7 @@ import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.RVEmptyFooter
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.BleDasSensorHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor.DasExternalDigitalSensorFragment
+import com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor.BaseExternalDigitalSensorFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor.DasExternalVibratingSensorFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalSensorListViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
@@ -126,7 +126,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                     R.layout.item_das_sensor -> {
                         val item = getModel<DASSensorItem>()
                         if (!mStates.isVibratingWireSensor.get()) {
-                            val bundle = DasExternalDigitalSensorFragment.newBundleArguments(
+                            val bundle = BaseExternalDigitalSensorFragment.newBundleArguments(
                                 index = modelPosition,
                                 sensorAddr = item.addr,
                                 productType,
@@ -155,7 +155,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
 
                     else -> {//添加传感器
                         if (!mStates.isVibratingWireSensor.get()) {
-                            val bundle = DasExternalDigitalSensorFragment.newBundleArguments(
+                            val bundle = BaseExternalDigitalSensorFragment.newBundleArguments(
                                 index = -1,
                                 sensorAddr = "-1",
                                 productType,
