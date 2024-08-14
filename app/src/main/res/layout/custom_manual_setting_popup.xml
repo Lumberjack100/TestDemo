@@ -7,7 +7,7 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702EquipmentOperationViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702EquipmentOperationViewModel" />
 
     </data>
 
@@ -118,7 +118,7 @@
                     app:drawable_solidColor="@{@color/gray_f5f6f8}"
                     tools:background="@color/gray_f5f6f8">
 
-                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         android:id="@+id/et_collect_data"
                         style="@style/MR702_Terminal_Param_EditText_Style"
                         app:inputTypeFilter='@{"numberDecimal"}'

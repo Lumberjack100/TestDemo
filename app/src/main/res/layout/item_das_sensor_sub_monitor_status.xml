@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.device.model.DasSensorSubMonitorStatusItem" />
+            type="com.shmedo.mcloudapp.model.DasSensorSubMonitorStatusItem" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat

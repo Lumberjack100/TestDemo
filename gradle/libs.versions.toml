@@ -14,23 +14,23 @@
 ## limitations under the License.
 ##
 [versions]
-agp = "8.1.2"
-activityKtx = "1.9.0"
+activityKtx = "1.9.1"
+agp = "8.3.2"
 agentweb = "v5.0.6-androidx"
-appcompat = "1.6.1"
+appcompat = "1.7.0"
 amapLocation = "6.4.3"
 amapSearch = "9.7.0"
 baseRecyclerView = "1.5.8"
 compileSdk = "34"
 constraintLayout = "2.1.4"
-coroutines = "1.8.0"
 crashreport = "4.1.9.2"
 customactivityoncrash = "2.4.0"
 dateTimePicker = "0.6.3"
 dialogX = "0.0.48"
-espresso = "3.5.1"
+espresso = "3.6.1"
+fastscroll = "2.1.0"
 flexbox = "3.0.0"
-fragmentKtx = "1.6.2"
+fragmentKtx = "1.8.2"
 getActivityLogcat = "11.8"
 glide = "4.16.0"
 hmsScan = "2.12.0.301"
@@ -41,13 +41,13 @@ kotlin = "1.9.23"
 keyboardvisibilityevent = "3.0.0-RC3"
 ksp = "1.9.23-1.0.19"
 leakcanary = "2.12"
-lifecycle = "2.7.0"
+lifecycle = "2.8.4"
 legacyV4 = "1.0.0"
-material = "1.11.0"
+material = "1.12.0"
 materialDialogs = "3.3.0"
 minSdk = "24"
-moshiVersion = "1.15.1"
 mmkv = "1.3.4"
+moshiVersion = "1.15.1"
 navigation = "2.7.7"
 nettyAll = "4.1.110.Final"
 nordicsemiBleKtx = "2.7.5"
@@ -55,22 +55,23 @@ nordicsemiScanner = "1.6.0"
 okhttpVersion = "4.12.0"
 pictureselector = "v3.11.1"
 rangeSeekBar = "v3.0.0"
-rxhttp = "3.2.4"
-tableView = "v0.8.9.4"
-xpopup = "2.9.19"
 room = "2.6.1"
+rxhttp = "3.2.7"
 share2 = "0.9.3"
 smoothNavigation = "4.0.0"
+startupRuntime = "1.1.1"
 strictDatabinding = "6.2.0"
 switchbutton = "2.1.0"
+tableView = "v0.8.9.4"
 targetSdk = "34"
-testExtJunit = "1.1.5"
+testExtJunit = "1.2.1"
 timber = "5.0.1"
-toastUtils = "12.5"
+toastUtils = "12.6"
 unpeekLivedata = "7.8.0"
 utilcodex = "1.31.1"
+xpopup = "2.9.19"
 xUpdate = "2.1.5"
-xxPermission = "18.5"
+xxPermission = "18.63"
 
 [libraries]
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
@@ -79,12 +80,15 @@ androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayo
 androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso" }
 androidx-fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
 androidx-lifecycle-livedata-ktx = { module = "androidx.lifecycle:lifecycle-livedata-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycle" }
+androidx-lifecycle-service = { module = "androidx.lifecycle:lifecycle-service", version.ref = "lifecycle" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 androidx-legacy-support = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacyV4" }
 androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
 #androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+androidx-startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "startupRuntime" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "testExtJunit" }
 agentweb-core = { module = "com.github.Justson.AgentWeb:agentweb-core", version.ref = "agentweb" }
 amap-location = { module = "com.amap.api:location", version.ref = "amapLocation" }
@@ -93,6 +97,7 @@ bugly-crashreport = { module = "com.tencent.bugly:crashreport", version.ref = "c
 customactivityoncrash = { module = "cat.ereza:customactivityoncrash", version.ref = "customactivityoncrash" }
 datetime-picker = { module = "com.github.loper7:DateTimePicker", version.ref = "dateTimePicker" }
 dialogx = { module = "com.kongzue.dialogx:DialogX", version.ref = "dialogX" }
+fastscroll = { module = "io.github.l4digital:fastscroll", version.ref = "fastscroll" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 #getActivity-logcat = { module = "com.github.getActivity:Logcat", version.ref = "getActivityLogcat" }
 getActivity-xxpermission = { module = "com.github.getActivity:XXPermissions", version.ref = "xxPermission" }
@@ -104,8 +109,6 @@ junit = { module = "junit:junit", version.ref = "junit" }
 keyboardvisibilityevent = { module = "net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent", version.ref = "keyboardvisibilityevent" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroid" }
 kotlin-stdlib-jdk8 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
-#kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
-#kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 kunminx-unpeek-livedata = { module = "com.kunminx.arch:unpeek-livedata", version.ref = "unpeekLivedata" }
 kunminx-smooth-navigation = { module = "com.kunminx.arch:smooth-navigation", version.ref = "smoothNavigation" }
 kunminx-strict-databinding = { module = "com.github.KunMinX.Strict-DataBinding:strict_databinding", version.ref = "strictDatabinding" }

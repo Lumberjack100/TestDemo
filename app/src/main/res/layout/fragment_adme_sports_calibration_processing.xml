@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeSportsCalibrationProcessingViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.AdmeSportsCalibrationProcessingViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeSportsCalibrationProcessingFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.adme.fragment.AdmeSportsCalibrationProcessingFragment.ClickProxy" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -83,7 +83,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="归零差(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.zeroDifference}"
@@ -103,7 +103,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="定位误差区间(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.positioningErrorInterval}"
@@ -121,7 +121,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="尝试次数" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.tryNumber}"
@@ -163,7 +163,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="k值阈值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.kValueThreshold}"
@@ -183,7 +183,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="中误差阈值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.middleErrorThreshold}"
@@ -201,7 +201,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="尝试次数" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.kTryNumber}"
@@ -243,7 +243,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="累加值差值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.accumulatedDifference}"

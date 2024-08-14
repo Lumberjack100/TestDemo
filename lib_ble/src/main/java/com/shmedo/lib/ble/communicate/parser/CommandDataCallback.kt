@@ -1,6 +1,7 @@
 package com.shmedo.lib.ble.communicate.parser
 
 import android.bluetooth.BluetoothDevice
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import no.nordicsemi.android.ble.callback.profile.ProfileReadResponse
 import no.nordicsemi.android.ble.data.Data
 import timber.log.Timber
@@ -17,7 +18,7 @@ import timber.log.Timber
 abstract class CommandDataCallback : ProfileReadResponse(), CommandCallback {
     override fun onDataReceived(device: BluetoothDevice, data: Data) {
         super.onDataReceived(device, data)
-        if (data.size() < 2) {
+        if (data.size() < 2 && !CommonMMKVOwner.isCommandDebugMode) {
             onInvalidDataReceived(device, data)
             return
         }
@@ -29,6 +30,11 @@ abstract class CommandDataCallback : ProfileReadResponse(), CommandCallback {
                 data.size(),
                 cmdContent
             )
+            if (CommonMMKVOwner.isCommandDebugMode) {
+                onResponseReceived(device, cmdResult = cmdContent)
+                return
+            }
+
             if (cmdContent.contains("\$\$")) {
                 cmdContent.split("\r\n".toRegex()).filter { it.isNotEmpty() }
                     .forEach { tempCmd ->

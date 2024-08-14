@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.UDProductSensorParamViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.UDProductSensorParamViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.u_product.fragment.UDProductSensorParamFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.UDProductSensorParamFragment.ClickProxy" />
 
     </data>
 
@@ -64,7 +64,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="安装高度(米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="请输入"

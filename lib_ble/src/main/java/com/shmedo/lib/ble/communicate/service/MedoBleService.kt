@@ -37,26 +37,27 @@ import com.shmedo.lib.ble.communicate.service.base.DEVICE_DATA
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 import timber.log.Timber
 
 internal class MedoBleService : BleNotificationService() {
+    private val medoBleRepository: MedoBleRepository by inject { parametersOf(this) }
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Timber.v("MedoBleService onStartCommand")
         super.onStartCommand(intent, flags, startId)
 
         val device = intent!!.getParcelableExtra<DiscoveredBluetoothDevice>(DEVICE_DATA)!!
-        MedoBleRepository.instance.startConnect(device, lifecycleScope)
+        medoBleRepository.startConnect(device, lifecycleScope)
 
-        MedoBleRepository.instance.hasBeenDisconnected.onEach {
+        medoBleRepository.hasBeenDisconnected.onEach {
             if (it) {
-                Timber.i( "MedoBleService call stopSelf" )
+                Timber.i("MedoBleService call stopSelf")
                 stopSelf()
             }
         }.launchIn(lifecycleScope)
 
-        return START_REDELIVER_INTENT
+        return START_NOT_STICKY
     }
-
 }

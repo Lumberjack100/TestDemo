@@ -5,19 +5,19 @@
 
     <data>
 
-        <import type="com.shmedo.lib.device.base.iot_cmd.utils.IOTConstants" />
+        <import type="com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants" />
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeExecutiveAgencyViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.AdmeExecutiveAgencyViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.common.BaseAdmeExecutiveAgencyClickProxy" />
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseAdmeExecutiveAgencyClickProxy" />
 
     </data>
 
@@ -127,7 +127,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="每轮等待时间(分钟)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.waitingIntervalPerRound}"
@@ -186,7 +186,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="间隔时间(天)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.intervalDays}"
@@ -234,7 +234,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="数据读取间隔(秒)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.dataReadingInterval}"
@@ -253,7 +253,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测量补偿时间(秒)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.measurementCompensationTime}"
@@ -272,7 +272,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测斜管孔深(米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-180]"
@@ -292,7 +292,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="电机驱动器地址" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[0-99]"
@@ -312,7 +312,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="电机下放速度(r/min)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-180]"
@@ -332,7 +332,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="下放等待时间(分钟)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-32]"
@@ -352,7 +352,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="电机上拉速度(r/min)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-180]"
@@ -372,7 +372,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="上拉归零速度(r/min)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-10]"
@@ -392,7 +392,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测量间距(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.measuringDistance}"
@@ -411,7 +411,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测量间隔时间(秒)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.measurementIntervalTime}"
@@ -430,7 +430,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测量基准深度(米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.measuringReferenceDepth}"
@@ -449,7 +449,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="管口安全距离(米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.intervalCompensation}"
@@ -468,7 +468,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="管底安全距离(米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[-10-10]"
@@ -488,7 +488,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="数据拟合区间h2(米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[0-10]"
@@ -508,7 +508,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测点偏移距离(米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[0-0.5]"

@@ -15,7 +15,7 @@
 
     <fragment
         android:id="@+id/m20SHomeFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.m20s.fragment.M20SHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m20s.fragment.M20SHomeFragment"
         android:label="M20SHomeFragment"
         tools:layout="@layout/fragment_universal_device_home">
 
@@ -38,19 +38,19 @@
 
     <fragment
         android:id="@+id/m20SWorkModelFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.m20s.fragment.M20SWorkModelFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m20s.fragment.M20SWorkModelFragment"
         android:label="M20SWorkModelFragment"
         tools:layout="@layout/fragment_m20s_work_model" />
 
     <fragment
         android:id="@+id/m20SRadioSettingFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.m20s.fragment.M20SRadioSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m20s.fragment.M20SRadioSettingFragment"
         android:label="M20SRadioSettingFragment"
         tools:layout="@layout/fragment_m20s_radio_setting" />
 
     <fragment
         android:id="@+id/advancedSettingFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.common.BaseAdvancedSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.BaseAdvancedSettingFragment"
         android:label="BaseAdvancedSettingFragment"
         tools:layout="@layout/fragment_advanced_setting" />
 

@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/alarmSettingFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.common.AlarmSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.AlarmSettingFragment"
         android:label="AlarmSettingFragment"
         tools:layout="@layout/fragment_alarm_setting" />
 
     <fragment
         android:id="@+id/alarmParamSettingFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.common.AlarmParamSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.AlarmParamSettingFragment"
         android:label="AlarmParamSettingFragment"
         tools:layout="@layout/fragment_alarm_param_setting" />
 

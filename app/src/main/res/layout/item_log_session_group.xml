@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.user.model.HoverHeaderModel" />
+            type="com.shmedo.mcloudapp.model.HoverHeaderModel" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat

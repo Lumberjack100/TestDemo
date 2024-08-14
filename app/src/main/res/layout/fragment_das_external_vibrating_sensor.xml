@@ -7,17 +7,17 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.DasExternalVibratingSensorViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalVibratingSensorViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.common.BaseDasExternalVibratingSensorClickProxy" />
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseDasExternalVibratingSensorClickProxy" />
 
-        <import type="com.shmedo.lib.device.base.iot_cmd.enums.IOTSensorType" />
+        <import type="com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType" />
 
     </data>
 

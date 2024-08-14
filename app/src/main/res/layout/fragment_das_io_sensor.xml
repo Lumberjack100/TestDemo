@@ -5,15 +5,15 @@
 
     <data>
 
-        <import type="com.shmedo.lib.device.base.iot_cmd.enums.IOTRainStation" />
+        <import type="com.shmedo.lib.cmd.base.iot_cmd.enums.IOTRainStation" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.DasIOSensorViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.DasIOSensorViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.common.BaseDasIOSensorClickProxy" />
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseDasIOSensorClickProxy" />
 
     </data>
 
@@ -123,7 +123,7 @@
                         android:text="翻斗翻转最小间隔(秒)"
                         tools:textColor="@color/title_text_color" />
 
-                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         android:hint="请输入"
                         android:text="@={stateVM.dumpMinTime}"

@@ -11,7 +11,7 @@
 
     <fragment
         android:id="@+id/dasHomeFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.DasHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.DasHomeFragment"
         android:label="DasHomeFragment"
         tools:layout="@layout/fragment_universal_device_home">
 
@@ -50,19 +50,19 @@
 
     <fragment
         android:id="@+id/dasCollectorSettingFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.DasCollectorSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.DasCollectorSettingFragment"
         android:label="DasCollectorSettingFragment"
         tools:layout="@layout/fragment_das_collector_setting" />
 
     <fragment
         android:id="@+id/dasTerminalParameterFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.DasTerminalParameterFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.DasTerminalParameterFragment"
         android:label="DasTerminalParameterFragment"
         tools:layout="@layout/fragment_das_terminal_parameter" />
 
     <fragment
         android:id="@+id/dasDataCenterHomeFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.DasDataCenterHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.DasDataCenterHomeFragment"
         android:label="DasDataCenterHomeFragment"
         tools:layout="@layout/fragment_das_data_center_home">
 
@@ -78,13 +78,13 @@
 
     <fragment
         android:id="@+id/dataCenterParamFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.common.UniversalDataCenterParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment"
         android:label="DataCenterParamFragment"
         tools:layout="@layout/fragment_data_center_param" />
 
     <fragment
         android:id="@+id/dasSensorHomeFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.DasSensorHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.DasSensorHomeFragment"
         android:label="DasSensorHomeFragment"
         tools:layout="@layout/fragment_das_sensor_home">
 
@@ -107,19 +107,19 @@
 
     <fragment
         android:id="@+id/dasExternalDigitalSensorFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.NewDasExternalDigitalSensorFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor.DasExternalDigitalSensorFragment"
         android:label="DasExternalDigitalSensorFragment"
         tools:layout="@layout/fragment_das_external_digital_sensor" />
 
     <fragment
         android:id="@+id/dasExternalVibratingSensorFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.externalsensor.DasExternalVibratingSensorFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor.DasExternalVibratingSensorFragment"
         android:label="DasExternalVibratingSensorFragment"
         tools:layout="@layout/fragment_das_external_vibrating_sensor" />
 
     <fragment
         android:id="@+id/dasAdvancedSettingFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.DasAdvancedSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.DasAdvancedSettingFragment"
         android:label="DasAdvancedSettingFragment"
         tools:layout="@layout/fragment_das_advanced_setting">
 
@@ -134,7 +134,7 @@
 
     <fragment
         android:id="@+id/dasAudibleAlarmFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.das.fragment.DasAudibleAlarmFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.DasAudibleAlarmFragment"
         android:label="DasAudibleAlarmFragment"
         tools:layout="@layout/fragment_das_audible_alarm" />
 

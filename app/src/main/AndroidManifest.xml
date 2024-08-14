@@ -57,8 +57,9 @@
         android:required="true" />
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-    <uses-feature android:name="android.hardware.camera.any" />
-    <uses-feature android:name="android.hardware.usb.host" /> <!-- 适配Android R包可见性 开始 -->
+    <uses-feature android:name="android.hardware.camera.any" /> <!-- 适配Android R包可见性 开始 -->
+    <uses-feature android:name="android.hardware.usb.host" />
+
     <queries package="${applicationId}">
         <intent>
             <action android:name="android.media.action.IMAGE_CAPTURE" />
@@ -77,7 +78,7 @@
         android:icon="@mipmap/logo"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
-        android:theme="@style/AppTheme"
+        android:theme="@style/Theme.mCloudApp"
         android:usesCleartextTraffic="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,UnusedAttribute,LockedOrientationActivity"
         tools:replace="android:name">
@@ -102,7 +103,7 @@
             android:value="false" />
 
         <activity
-            android:name=".common.activity.SplashActivity"
+            android:name=".ui.page.welcome.SplashActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:screenOrientation="portrait">
@@ -113,13 +114,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".user.activity.LoginActivity"
+            android:name=".ui.page.login.LoginActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity
-            android:name=".common.activity.MainActivity"
+            android:name=".ui.page.main.MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:exported="false"
             android:launchMode="singleTask"
@@ -127,25 +128,25 @@
             android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
 
         <activity
-            android:name=".device.ui.DeviceHomeActivity"
+            android:name=".ui.page.device.DeviceHomeActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
 
         <activity
-            android:name=".device.ui.QuickFunctionActivity"
+            android:name=".ui.page.device.QuickFunctionActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/LightStatusBarActivity" />
 
         <activity
-            android:name=".common.activity.WebviewActivity"
+            android:name=".ui.page.webview.WebviewActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".common.activity.ErrorActivity"
+            android:name=".ui.page.base.activity.ErrorActivity"
             android:label="错误界面"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
@@ -163,9 +164,19 @@
         </provider>
 
         <provider
-            android:name="com.shmedo.lib.core.base.AppContentProvider"
+            android:name=".utils.AppContentProvider"
             android:authorities="${applicationId}.appContentProvider"
             android:exported="false" />
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="com.shmedo.core.commonlib.mmkv.MMKVInitializer"
+                tools:node="remove" />
+        </provider>
     </application>
 
 </manifest>

@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.device.model.DeviceStatusInfoSignalItem" />
+            type="com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem" />
 
     </data>
 
@@ -27,7 +27,7 @@
             android:text='@{m.signalValue==0?"--dBm":m.signalValue+"dBm" }'
             tools:text="-51dBm" />
 
-        <com.shmedo.mcloudapp.common.widget.SignalView
+        <com.shmedo.mcloudapp.ui.widget.SignalView
             android:id="@+id/signal"
             android:layout_width="wrap_content"
             android:layout_height="22dp"

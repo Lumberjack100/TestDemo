@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeGuideGrooveCalibrationViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.AdmeGuideGrooveCalibrationViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeGuideGrooveCalibrationFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.adme.fragment.AdmeGuideGrooveCalibrationFragment.ClickProxy" />
 
     </data>
 
@@ -81,7 +81,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="电机速度(r/min)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_motor_speed"
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
@@ -101,7 +101,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="运动脉冲(p)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.pulseGoal}"

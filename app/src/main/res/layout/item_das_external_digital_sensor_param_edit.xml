@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.device.model.ExternalDigitalSensorParamEditItem" />
+            type="com.shmedo.mcloudapp.model.ExternalDigitalSensorParamEditItem" />
 
     </data>
 
@@ -31,7 +31,7 @@
             android:text='@{m.name}'
             tools:text="扩展1" />
 
-        <com.shmedo.mcloudapp.common.widget.ClearEditText
+        <com.shmedo.mcloudapp.ui.widget.ClearEditText
             style="@style/Common_EditItem_EditText_Style"
             textViewEnabled="@{m.inputEnable }"
             android:hint='@{m.inputHint}'

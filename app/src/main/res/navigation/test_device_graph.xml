@@ -12,7 +12,7 @@
 
     <fragment
         android:id="@+id/testDeviceHomeFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.common.TestDeviceHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.TestDeviceHomeFragment"
         android:label="TestDeviceHomeFragment">
 
     </fragment>

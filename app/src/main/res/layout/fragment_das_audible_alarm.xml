@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.DasAudibleAlarmViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.DasAudibleAlarmViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.das.fragment.DasAudibleAlarmFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.das.fragment.DasAudibleAlarmFragment.ClickProxy" />
 
     </data>
 
@@ -107,7 +107,7 @@
                             android:text="地址"
                             tools:textColor="@color/title_text_color" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:hint="请输入"
@@ -127,7 +127,7 @@
                             android:text="播放时长(秒)"
                             tools:textColor="@color/title_text_color" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:hint="请输入10~300之间数值"
@@ -147,7 +147,7 @@
                             android:text="切换间隔(秒)"
                             tools:textColor="@color/title_text_color" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:hint="请输入5~300之间数值"
@@ -210,7 +210,7 @@
                             android:text="一级报警(毫米)"
                             tools:textColor="@color/title_text_color" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="@={stateVM.triggerValueLevel1}"
@@ -229,7 +229,7 @@
                             android:text="二级报警(毫米)"
                             tools:textColor="@color/title_text_color" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="@={stateVM.triggerValueLevel2}"
@@ -248,7 +248,7 @@
                             android:text="三级报警(毫米)"
                             tools:textColor="@color/title_text_color" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="@={stateVM.triggerValueLevel3}"
@@ -289,7 +289,7 @@
                             android:text="地址"
                             tools:textColor="@color/title_text_color" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isScreenOpened}"
                             android:hint="请输入"
@@ -309,7 +309,7 @@
                             android:text="显示时长(秒)"
                             tools:textColor="@color/title_text_color" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isScreenOpened}"
                             android:hint="请输入"
@@ -329,7 +329,7 @@
                             android:text="显示间隔(秒)"
                             tools:textColor="@color/title_text_color" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isScreenOpened}"
                             android:hint="请输入"

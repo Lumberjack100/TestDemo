@@ -7,7 +7,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.common.BaseClickProxy" />
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
     </data>
 
     <FrameLayout

@@ -1,0 +1,24 @@
+package com.shmedo.core.commonlib.utils
+
+import com.blankj.utilcode.util.ActivityUtils
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
+import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
+
+/**
+ * @Author      : gonghe
+ * @Email       : xxxxx@qq.com
+ * @Date        : on 2023-11-16 11:19.
+ * @Description :描述
+ */
+object LogoutUtil {
+
+    /**
+     * 注销用户登录。
+     */
+    fun logout() {
+        MmkvCacheUtil.setToken("")
+        MmkvCacheUtil.setPassword("")
+        AuthMMKVOwner.clear()
+        ActivityUtils.finishAllActivities()
+    }
+}

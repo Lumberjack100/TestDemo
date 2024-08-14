@@ -6,7 +6,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.device.model.SensorModelFieldItem" />
+            type="com.shmedo.mcloudapp.model.SensorModelFieldItem" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat

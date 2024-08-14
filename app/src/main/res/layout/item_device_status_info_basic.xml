@@ -7,7 +7,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.device.model.DeviceStatusInfoBasicItem" />
+            type="com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem" />
 
     </data>
 
@@ -31,7 +31,7 @@
             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
             visible='@{ !m.clickable}'
             android:layout_width="wrap_content"
-            android:background='@{m.clipboard?@color/bg_gray_15:@color/transparent}'
+            android:background="@{m.clipboard?@color/gray_15:@color/transparent}"
             android:text="@{m.value}"
             android:textColor="@{m.textColorRes==0?@color/title_text_color:m.textColorRes}"
             tools:text="1212" />

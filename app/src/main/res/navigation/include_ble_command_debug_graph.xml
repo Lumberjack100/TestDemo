@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/bleCustomCommandLogPrintFragment"
-        android:name="com.shmedo.mcloudapp.device.ui.common.BleCustomCommandLogPrintFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment"
         android:label="BleCustomCommandLogPrintFragment"
         tools:layout="@layout/fragment_ble_custom_command_log_print" />
 

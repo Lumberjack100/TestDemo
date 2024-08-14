@@ -6,7 +6,7 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.device.model.RVEmptyItem" />
+            type="com.shmedo.mcloudapp.model.RVEmptyItem" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat

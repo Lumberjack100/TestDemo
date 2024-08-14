@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeMeterWheelViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.AdmeMeterWheelViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeMeterWheelFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.adme.fragment.AdmeMeterWheelFragment.ClickProxy" />
 
     </data>
 
@@ -61,7 +61,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="编码器线数" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.encoderLineNumber}"
@@ -79,7 +79,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="外径(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.outerDiameter}"
@@ -107,7 +107,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="一次修正参数" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.upCorrectionParametersOne}"
@@ -125,7 +125,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="二次修正参数" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.upCorrectionParametersTwo}"
@@ -143,7 +143,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="常数" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.upConstant}"
@@ -161,7 +161,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="滤波器系数" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围 0-F"
@@ -190,7 +190,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="一次修正参数" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.downCorrectionParametersOne}"
@@ -208,7 +208,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="二次修正参数" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.downCorrectionParametersTwo}"
@@ -226,7 +226,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="常数" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.downConstant}"
@@ -244,7 +244,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="滤波器系数" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围 0-F"

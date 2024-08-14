@@ -1,0 +1,13 @@
+package com.shmedo.core.model
+
+/**
+ * 创建者：gonghe
+ * 创建时间：2024/2/29
+ * 描述： TODO
+ */
+data class DebugCmdLogInfo(
+    var logTime: String = "",
+    var content: String = "",
+    var colorRes: Int = 0,
+    var byteCount: Int = 0
+)

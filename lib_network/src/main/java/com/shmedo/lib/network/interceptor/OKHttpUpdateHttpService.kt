@@ -15,7 +15,6 @@
  */
 package com.shmedo.lib.network.interceptor
 
-import com.shmedo.lib.network.ext.toDownloadFlow
 import com.xuexiang.xupdate.proxy.IUpdateHttpService
 import com.xuexiang.xupdate.proxy.IUpdateHttpService.DownloadCallback
 import com.xuexiang.xupdate.utils.FileUtils
@@ -24,6 +23,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import rxhttp.RxHttpPlugins
+import rxhttp.toDownloadFlow
 import rxhttp.wrapper.param.RxHttp
 import timber.log.Timber
 
@@ -38,28 +38,25 @@ class OKHttpUpdateHttpService : IUpdateHttpService {
         url: String,
         params: Map<String, Any>,
         callBack: IUpdateHttpService.Callback
-    ) {
-    }
+    ) {}
 
     override fun asyncPost(
         url: String,
         params: Map<String, Any>,
         callBack: IUpdateHttpService.Callback
-    ) {
-    }
+    ) {}
 
     override fun download(url: String, path: String, fileName: String, callback: DownloadCallback) {
-//        val DOWNLOAD_URL = "https://apk-ssl.tancdn.com/3.5.3_276/%E6%8E%A2%E6%8E%A2.apk"
-
         //如果想使用RxJava或Await下载，更改以下代码即可
         CoroutineScope(Dispatchers.Main).launch {
-            callback.onStart()
-            Timber.tag("RxHttpActivity").i("开始下载")
-
+            Timber.i("开始下载")
             val destPath = "${path}/${fileName}"
+            callback.onStart()
+
             RxHttp.get(url)
                 .tag(url)
-                .toDownloadFlow(destPath) {
+                .toDownloadFlow(destPath, true)
+                .onProgress {
                     val currentProgress = it.progress //当前进度 0-100
                     val currentSize = it.currentSize //当前已下载的字节大小
                     val totalSize = it.totalSize //要下载的总字节大小
@@ -69,7 +66,7 @@ class OKHttpUpdateHttpService : IUpdateHttpService {
                     callback.onError(it)
                 }.collect {
                     callback.onSuccess(FileUtils.getFileByPath(destPath))
-                    Timber.tag("RxHttpActivity").i("下载完成")
+                    Timber.i("下载完成")
                 }
         }
     }

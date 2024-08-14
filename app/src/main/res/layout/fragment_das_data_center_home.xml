@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.DasSensorHomeViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.DasSensorHomeViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.das.fragment.DasDataCenterHomeFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.das.fragment.DasDataCenterHomeFragment.ClickProxy" />
 
     </data>
 
@@ -114,7 +114,7 @@
                             android:text="目标地址"
                             tools:textColor="@color/title_text_color" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isBdOpened}"
                             android:hint="请输入"

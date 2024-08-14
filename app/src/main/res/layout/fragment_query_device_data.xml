@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.QueryDeviceDataViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.QueryDeviceDataViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.common.QueryDeviceDataFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment.ClickProxy" />
 
     </data>
 
@@ -51,7 +51,7 @@
                 android:text="设备SN号"
                 android:textSize="@dimen/text_size_14" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 android:id="@+id/snET"
                 style="@style/Common_EditItem_EditText_Style"
                 android:text="@={stateVM.sn}"
@@ -139,7 +139,7 @@
                 android:text="数据过滤"
                 android:textSize="@dimen/text_size_14" />
 
-            <com.shmedo.mcloudapp.common.widget.ClearEditText
+            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
                 android:gravity="center_vertical|start"
                 android:text="@={stateVM.regexContent}"

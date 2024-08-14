@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeStepperMotorViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.AdmeStepperMotorViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeStepperMotorFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.adme.fragment.AdmeStepperMotorFragment.ClickProxy" />
 
     </data>
 
@@ -61,7 +61,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="绝对精度修正值(p)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.accuracyCorrectionValue}"
@@ -79,7 +79,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="步进电机运动速度(r/min)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1,600]"
@@ -98,7 +98,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="步进电机力矩" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.motorTorque}"

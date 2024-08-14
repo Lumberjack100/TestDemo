@@ -7,11 +7,11 @@
 
         <variable
             name="vm"
-            type="com.shmedo.mcloudapp.user.viewmodel.state.UserInfoHomeViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.UserInfoHomeViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.user.fragment.UserInfoHomeFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.userprofile.UserInfoHomeFragment.ClickProxy" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -102,7 +102,7 @@
                         android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_14" />
 
-                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         android:id="@+id/nameET"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -134,7 +134,7 @@
                         android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_14" />
 
-                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         android:id="@+id/postET"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -166,7 +166,7 @@
                         android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_14" />
 
-                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         android:id="@+id/phoneET"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -199,7 +199,7 @@
                         android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_14" />
 
-                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         android:id="@+id/emailET"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"

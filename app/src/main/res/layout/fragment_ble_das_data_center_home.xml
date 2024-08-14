@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.BleDasDataCenterHomeViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.BleDasDataCenterHomeViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.das.fragment.ble.BleDasDataCenterHomeFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.BleDasDataCenterHomeFragment.ClickProxy" />
 
     </data>
 
@@ -109,7 +109,7 @@
                             android:text="上报间隔(分钟)"
                             tools:textColor="@color/title_text_color" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             android:hint="请输入"
                             android:text="@={stateVM.reportingInterval}"
@@ -129,7 +129,7 @@
                             android:text="北斗目标卡号"
                             tools:textColor="@color/title_text_color" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             android:hint="请输入"
                             android:text="@={stateVM.bdCardNumber}"

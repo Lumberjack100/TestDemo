@@ -7,11 +7,11 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.NetDeviceListViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.NetDeviceListViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.NetDeviceListFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.NetDeviceListFragment.ClickProxy" />
 
     </data>
 

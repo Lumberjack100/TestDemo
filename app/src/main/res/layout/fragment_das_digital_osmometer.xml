@@ -7,11 +7,11 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.DasDigitalOsmometerViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.DasDigitalOsmometerViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.common.BaseClickProxy" />
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
 
     </data>
 
@@ -65,7 +65,7 @@
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="地址" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[0-255]"
@@ -84,7 +84,7 @@
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="水位报警值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:text="@={stateVM.triggerValue}"
@@ -102,7 +102,7 @@
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="水深修正值(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:text="@={stateVM.correctValue}"
@@ -120,7 +120,7 @@
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="绳长(米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:text="@={stateVM.wireRopeLength}"
@@ -138,7 +138,7 @@
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="安装高程值(米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:text="@={stateVM.installElevation}"

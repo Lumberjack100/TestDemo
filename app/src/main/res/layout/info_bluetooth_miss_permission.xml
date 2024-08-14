@@ -7,7 +7,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.BleScannerListFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.BleScannerListFragment.ClickProxy" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat

@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702TerminalParameterViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702TerminalParameterViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702TerminalParameterFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702TerminalParameterFragment.ClickProxy" />
 
     </data>
 

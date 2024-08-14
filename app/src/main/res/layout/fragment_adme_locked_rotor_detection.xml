@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.AdmeLockedRotorDetectionViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.AdmeLockedRotorDetectionViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.adme.fragment.AdmeLockedRotorDetectionFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.adme.fragment.AdmeLockedRotorDetectionFragment.ClickProxy" />
 
     </data>
 
@@ -83,7 +83,7 @@
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
                             android:text="单位时间脉冲数(p/s)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
                             android:hint="数值范围[1,10000]"
@@ -102,7 +102,7 @@
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
                             android:text="检测判断时间(秒)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
                             android:hint="数值范围[0.1,10.0]"
@@ -121,7 +121,7 @@
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
                             android:text="下放加速距离(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_down_slow_start_interval"
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
@@ -140,7 +140,7 @@
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
                             android:text="下放减速距离(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_down_slow_stop_interval"
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
@@ -264,7 +264,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="力矩堵转阈值(A)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:hint="数值范围[0.00,2.00]"
@@ -283,7 +283,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="力矩检测判断时间(秒)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:hint="数值范围[0.01,5.00]"
@@ -325,7 +325,7 @@
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.pullUpEnable}"
                             android:text="上拉加速距离(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_pull_up_slow_start_interval"
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.pullUpEnable}"
@@ -344,7 +344,7 @@
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.pullUpEnable}"
                             android:text="上拉减速距离(毫米)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_pull_up_slow_stop_interval"
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.pullUpEnable}"
@@ -413,7 +413,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="力矩堵转阈值(A)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1.00,8.00]"
@@ -432,7 +432,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="力矩检测判断时间(秒)" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:hint="数值范围[0.01,5.00]"

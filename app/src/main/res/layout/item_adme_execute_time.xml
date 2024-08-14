@@ -17,7 +17,7 @@
         android:textSize="16sp"
         tools:text="13:00:00" />
 
-    <com.shmedo.mcloudapp.common.widget.CircleImageView
+    <com.shmedo.mcloudapp.ui.widget.CircleImageView
         android:id="@+id/iv_add_time"
         android:layout_width="45dp"
         android:layout_height="45dp"

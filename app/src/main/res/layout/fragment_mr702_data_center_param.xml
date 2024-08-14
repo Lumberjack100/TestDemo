@@ -7,15 +7,15 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702DataCenterParamViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702DataCenterParamViewModel" />
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.mr702.fragment.MR702DataCenterParamFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702DataCenterParamFragment.ClickProxy" />
 
     </data>
 
@@ -67,7 +67,7 @@
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="数据中心地址" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_data_server_address"
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
@@ -83,7 +83,7 @@
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="数据中心端口" />
 
-                        <com.shmedo.mcloudapp.common.widget.ClearEditText
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_data_server_port"
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
@@ -95,10 +95,10 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
+                        onClickWithDebouncing="@{()->click.onCommunicateWayChooseClick()}"
                         android:layout_marginTop="@dimen/dimen_size_8"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                        onClickWithDebouncing="@{()->click.onCommunicateWayChooseClick()}">
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -115,8 +115,8 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                        onClickWithDebouncing="@{()->click.onIPTypeChooseClick()}">
+                        onClickWithDebouncing="@{()->click.onIPTypeChooseClick()}"
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -127,16 +127,16 @@
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
-                            android:text="@{stateVM.ipType}"
+                            android:text="@{stateVM.ipLeve}"
                             tools:text="IPV6" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
+                        onClickWithDebouncing="@{()->click.onTransferProtocolChooseClick()}"
                         android:layout_marginTop="@dimen/dimen_size_8"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                        onClickWithDebouncing="@{()->click.onTransferProtocolChooseClick()}">
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -153,9 +153,9 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
+                        onClickWithDebouncing="@{()->click.onDataProtocolChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                        onClickWithDebouncing="@{()->click.onDataProtocolChooseClick()}">
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -172,8 +172,8 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                        onClickWithDebouncing="@{()->click.onPlatformTypeChooseClick()}">
+                        onClickWithDebouncing="@{()->click.onPlatformTypeChooseClick()}"
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -206,7 +206,7 @@
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="产品ID" />
 
-                            <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.productId}"
@@ -223,7 +223,7 @@
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="设备ID" />
 
-                            <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.deviceId}"
@@ -240,7 +240,7 @@
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="设备Key" />
 
-                            <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.deviceKey}"
@@ -257,7 +257,7 @@
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="设备注册码" />
 
-                            <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.registerCode}"
@@ -274,7 +274,7 @@
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="设备注册地址" />
 
-                            <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.registerAddress}"
@@ -282,7 +282,8 @@
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
-                        <androidx.appcompat.widget.LinearLayoutCompat style="@style/Common_EditItem_LayoutStyle"
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_LayoutStyle"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <androidx.appcompat.widget.AppCompatTextView
@@ -290,11 +291,11 @@
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="设备注册端口" />
 
-                            <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                app:inputTypeFilter='@{"number"}'
                                 android:text="@={stateVM.registerPort}"
+                                app:inputTypeFilter='@{"number"}'
                                 app:lengthFilter="@{5}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -308,7 +309,7 @@
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="心跳间隔(秒)" />
 
-                            <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.maintainReportInterval}"
@@ -321,17 +322,18 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/ll_sl651"
+                        visible="@{stateVM.isSL651ItemVisible}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        visible="@{stateVM.isSL651ItemVisible}"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:paddingTop="@dimen/dimen_size_8">
 
                         <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_ClickableItem_LayoutStyle"
-                            android:layout_marginTop="@dimen/dimen_size_8"
+                            onClickWithDebouncing="@{()->click.onStationClassificationChooseClick()}"
+                            visible='@{stateVM.dataProtocol.contains("SL651")}'
                             android:background="@drawable/layer_common_click_item_with_divider"
-                            android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            onClickWithDebouncing="@{()->click.onStationClassificationChooseClick()}">
+                            android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 style="@style/Common_ClickableItem_TitleStyle"
@@ -348,6 +350,7 @@
 
                         <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_EditItem_LayoutStyle"
+                            visible='@{stateVM.dataProtocol.contains("SL651")}'
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <androidx.appcompat.widget.AppCompatTextView
@@ -355,7 +358,7 @@
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="中心站地址" />
 
-                            <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.centerStationAddr}"
@@ -373,7 +376,7 @@
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="密码" />
 
-                            <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.password}"
@@ -391,7 +394,7 @@
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="测站编码" />
 
-                            <com.shmedo.mcloudapp.common.widget.ClearEditText
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.telemetryStationAddr}"
@@ -402,10 +405,10 @@
 
                         <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_ClickableItem_LayoutStyle"
+                            onClickWithDebouncing="@{()->click.onToggleAdvancedClick()}"
                             android:layout_marginTop="@dimen/dimen_size_8"
                             android:background="@drawable/layer_common_click_item_with_divider"
-                            android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            onClickWithDebouncing="@{()->click.onToggleAdvancedClick()}">
+                            android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 style="@style/Common_ClickableItem_TitleStyle"
@@ -446,7 +449,7 @@
                                 app:drawable_solidColor="@{@color/gray_f5f6f8}"
                                 tools:background="@color/gray_f5f6f8">
 
-                                <CheckBox
+                                <com.google.android.material.checkbox.MaterialCheckBox
                                     android:id="@+id/hourlyReportCheckBox"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -459,7 +462,7 @@
                                     app:layout_constraintTop_toTopOf="parent"
                                     tools:checked="true" />
 
-                                <CheckBox
+                               <com.google.android.material.checkbox.MaterialCheckBox
                                     android:id="@+id/timingReportCheckBox"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -472,7 +475,7 @@
                                     app:layout_constraintStart_toEndOf="@+id/hourlyReportCheckBox"
                                     app:layout_constraintTop_toTopOf="parent" />
 
-                                <CheckBox
+                               <com.google.android.material.checkbox.MaterialCheckBox
                                     android:id="@+id/addReportCheckBox"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -485,7 +488,7 @@
                                     app:layout_constraintStart_toEndOf="@+id/timingReportCheckBox"
                                     app:layout_constraintTop_toTopOf="parent" />
 
-                                <CheckBox
+                               <com.google.android.material.checkbox.MaterialCheckBox
                                     android:id="@+id/maintainReportCheckBox"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -516,7 +519,7 @@
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:text="维持上报间隔(秒)" />
 
-                                <com.shmedo.mcloudapp.common.widget.ClearEditText
+                                <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:text="@={stateVM.maintainReportInterval}"
@@ -534,7 +537,7 @@
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:text="数据补发有效时间(日)" />
 
-                                <com.shmedo.mcloudapp.common.widget.ClearEditText
+                                <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:text="@={stateVM.reissuingDataValidDays}"
@@ -552,7 +555,7 @@
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:text="数据补发间隔(分钟)" />
 
-                                <com.shmedo.mcloudapp.common.widget.ClearEditText
+                                <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:text="@={stateVM.reissuingDataInterval}"

@@ -7,15 +7,15 @@
 
         <variable
             name="homeVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702PortHomeViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.MR702RS232Port2ViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS232Port2ViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.mr702.fragment.port.MR702RS232Port2Fragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS232Port2Fragment.ClickProxy" />
     </data>
 
     <com.drake.brv.PageRefreshLayout
@@ -98,7 +98,7 @@
                         android:text="目的地址"
                         tools:textColor="@color/title_text_color" />
 
-                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                         android:hint="请输入"
@@ -117,7 +117,7 @@
                         android:text="波特率(Bps)"
                         tools:textColor="@color/title_text_color" />
 
-                    <com.shmedo.mcloudapp.common.widget.ClearEditText
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                         android:hint="请输入"

@@ -7,11 +7,11 @@
 
         <variable
             name="vm"
-            type="com.shmedo.mcloudapp.user.viewmodel.state.SettingViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.SettingViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.user.fragment.SettingFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.userprofile.SettingFragment.ClickProxy" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

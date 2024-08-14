@@ -7,15 +7,15 @@
 
         <variable
             name="toolbarVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.ToolbarViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.device.viewmodel.state.LR200InitialValueViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.LR200InitialValueViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.device.ui.u_product.fragment.LR200InitialValueFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.LR200InitialValueFragment.ClickProxy" />
 
     </data>
 
@@ -79,7 +79,7 @@
                     android:textSize="@dimen/text_size_16"
                     tools:drawableStart="@drawable/ic_radio_checked" />
 
-                <com.shmedo.mcloudapp.common.widget.ClearEditText
+                <com.shmedo.mcloudapp.ui.widget.ClearEditText
                     style="@style/Common_EditItem_EditText_Style"
                     textViewEnabled="@{!stateVM.isAutoInit }"
                     android:hint="请输入"

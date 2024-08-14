@@ -162,24 +162,21 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.legacy.support)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
-    implementation(project(":lib_device_base"))
+    implementation(project(":core_data"))
+    implementation(project(":lib_cmd"))
     implementation(project(":lib_ble"))
     implementation(project(":lib_tcp"))
-    implementation(project(":lib_network"))
-    implementation(project(":lib_core"))
-    implementation(libs.kotlin.stdlib.jdk8)
-    implementation(libs.androidx.constraintlayout)
+
+    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar", "*.aar"))))
+
     implementation(libs.flexbox)
-    implementation(libs.androidx.appcompat)
+    implementation(libs.kotlin.stdlib.jdk8)
     implementation(libs.material)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.legacy.support)
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     //通过 exclude 把对官方 java 包的依赖排除了，引用默认指向 smooth-Navigation
@@ -191,14 +188,11 @@ dependencies {
     implementation(libs.kunminx.strict.databinding)
     implementation(libs.kunminx.smooth.navigation)
 
-    //依赖注入框架
-    implementation(libs.koin.android)
-
     //透明系统栏设置基础依赖包，必须要依赖
     implementation(libs.immersionbar)
     implementation(libs.immersionbar.ktx)
 
-    // 权限请求框架：https://github.com/getActivity/XXPermissions
+    //权限请求框架：https://github.com/getActivity/XXPermissions
     implementation(libs.getActivity.xxpermission)
     //Material Dialog
     implementation(libs.bundles.material.dialogs)
@@ -211,13 +205,15 @@ dependencies {
 
     //Android 快速构建 RecyclerView, 比 BRVAH 更简单强大 https://github.com/liangjingkanji/BRV
     implementation(libs.liangjingkanji.brv)
+    //A ListView-like FastScroller for Android’s RecyclerView.
+    implementation (libs.fastscroll)
     implementation(libs.tableview)
 
     implementation(libs.agentweb.core)
 
     //开关 Button
     implementation(libs.switchbutton.library)
-    // 一款美观强大的支持单向、双向范围选择、分步、垂直、高度自定义的SeekBar
+    //一款美观强大的支持单向、双向范围选择、分步、垂直、高度自定义的SeekBar
     implementation(libs.rangeSeekBar)
     //Android Library to handle software keyboard visibility change event.
     implementation(libs.keyboardvisibilityevent)
@@ -233,22 +229,26 @@ dependencies {
     //异常信息上报组件
     implementation(libs.bugly.crashreport)
 
-    // For debug builds only
-//    debugImplementation(libs.leakcanary.android)
-//    debugImplementation(libs.getActivity.logcat)
-
     implementation(libs.glide)
     implementation(libs.bundles.pictureselector)
 
+    //AndroidUtilCode 是一个强大易用的安卓工具类库
+    implementation(libs.utilcodex)
     //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
     implementation(libs.timber)
-    implementation(libs.utilcodex)
     implementation(libs.mmkv)
+
+    //依赖注入框架
+    implementation(libs.koin.android)
 
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
 
-    //高德地图
-    implementation(libs.amap.location)
-    implementation(libs.amap.search)
+    // For debug builds only
+//    debugImplementation(libs.leakcanary.android)
+//    debugImplementation(libs.getActivity.logcat)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.ext.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }
