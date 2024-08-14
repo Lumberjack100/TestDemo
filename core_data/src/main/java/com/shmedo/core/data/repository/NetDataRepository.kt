@@ -274,7 +274,7 @@ class NetDataRepository private constructor() {
         isHasListSuperInfoPermission: Boolean = false,
         onCatch: ((Throwable) -> Unit)? = null
     ): PageList<com.shmedo.core.model.DeviceInfo>? =
-        RxHttp.postJson(if (isHasListSuperInfoPermission) "/ListSuperDevice" else "/QueryDeviceList")
+        RxHttp.postJson(if (isHasListSuperInfoPermission) "/ListSuperDevice" else "/GetDeviceList")
             .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
             .addHeader("Authorization", MmkvCacheUtil.getToken())
             .addAll(jsonParam)
