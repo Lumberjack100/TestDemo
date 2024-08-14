@@ -150,21 +150,17 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.l4digital.fastscroll.FastScrollRecyclerView
             android:id="@+id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:clipToPadding="false"
             android:paddingBottom="@dimen/dimen_size_20"
-            android:splitMotionEvents="false"
-            app:fastScrollEnabled="true"
-            app:fastScrollHorizontalThumbDrawable="@drawable/fast_scroll_thumb"
-            app:fastScrollHorizontalTrackDrawable="@drawable/fast_scroll_track"
-            app:fastScrollVerticalThumbDrawable="@drawable/fast_scroll_thumb"
-            app:fastScrollVerticalTrackDrawable="@drawable/fast_scroll_track"
+            app:handleColor="@color/fastscroll_handle"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layoutCount"
+            app:showBubble="false"
             tools:itemCount="4"
             tools:listitem="@layout/item_debug_cmd_log" />
 

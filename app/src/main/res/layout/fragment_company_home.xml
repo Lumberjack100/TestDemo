@@ -11,7 +11,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.userprofile.CompanyHomeFragment" />
+            type="com.shmedo.mcloudapp.ui.page.userprofile.CompanyHomeFragment.ClickProxy" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

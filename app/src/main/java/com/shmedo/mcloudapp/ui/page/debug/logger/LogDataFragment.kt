@@ -15,9 +15,7 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.lifecycle.Lifecycle
 import com.blankj.utilcode.util.FileIOUtils
-import com.blankj.utilcode.util.IntentUtils
 import com.blankj.utilcode.util.Utils
-import com.drake.brv.PageRefreshLayout
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -25,16 +23,15 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.data.source.local.entity.LogItem
 import com.shmedo.core.data.source.local.entity.LogLevel
 import com.shmedo.core.data.source.local.entity.LogSession
-
-import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.databinding.FragmentLogDataBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
-import com.shmedo.mcloudapp.databinding.FragmentLogDataBinding
-import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
 import java.text.SimpleDateFormat
@@ -48,6 +45,8 @@ class LogDataFragment : BaseFragment() {
 
     private var statusBarColor = 0
     private lateinit var sessionInfo: LogSession
+    private var logLevel = Log.VERBOSE
+
 
     private val logLevelList by lazy { Utils.getApp().resources.getStringArray(R.array.log_levels) }
 
@@ -76,14 +75,7 @@ class LogDataFragment : BaseFragment() {
                 nav().navigateUp()
             }
         })
-        initRefresh()
         initAdapter()
-    }
-
-    private fun initRefresh() {
-        PageRefreshLayout.startIndex = 1
-        binding.refreshLayout.setEnableRefresh(false)
-        binding.refreshLayout.setEnableLoadMore(false)
     }
 
     private fun initAdapter() {
@@ -102,16 +94,16 @@ class LogDataFragment : BaseFragment() {
         loadLogList()
     }
 
-    private fun loadLogList(level: Int = Log.DEBUG) {
+    private fun loadLogList() {
         launchWithViewLifecycle {
             logViewModel.getLogListBySessionId(
                 sessionInfo.id,
-                level
+                logLevel
             ).let { logList ->
                 if (logList.isEmpty()) {
-                    binding.refreshLayout.showEmpty()
+                    binding.stateLayout.showEmpty()
                 } else {
-                    binding.refreshLayout.showContent()
+                    binding.stateLayout.showContent()
                     binding.recyclerview.models = logList
                 }
             }
@@ -136,7 +128,15 @@ class LogDataFragment : BaseFragment() {
                             )
                         )
                         setOnItemClickListener { _, _, position, _ ->
-                            loadLogList(position)
+                            logLevel = when (position) {
+                                0 -> Log.VERBOSE
+                                1 -> Log.DEBUG
+                                2 -> Log.INFO
+                                3 -> Log.WARN
+                                4 -> Log.ERROR
+                                else -> Log.VERBOSE
+                            }
+                            loadLogList()
                         }
                         setText(logLevelList[0], false)
                     }
@@ -155,28 +155,6 @@ class LogDataFragment : BaseFragment() {
                 }
             }
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
-    }
-
-    /**
-     * 分享日志
-     */
-    private fun shareLog() {
-        launchWithViewLifecycle {
-            binding.recyclerview.models?.let { logList ->
-                val logContent = StringBuilder()
-                logList.forEach { logInfo ->
-                    (logInfo as LogItem).apply {
-                        logContent.append(LogLevel.getTag(logLevel))
-                        logContent.append(" ")
-                        logContent.append(createTime)
-                        logContent.append(" ")
-                        logContent.append(data)
-                        logContent.append("\n")
-                    }
-                }
-                startActivity(IntentUtils.getShareTextIntent(logContent.toString()))
-            }
-        }
     }
 
     /**
