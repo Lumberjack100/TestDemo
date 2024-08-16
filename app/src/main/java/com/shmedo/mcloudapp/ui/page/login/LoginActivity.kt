@@ -19,22 +19,22 @@ import com.blankj.utilcode.util.RegexUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
+import com.shmedo.core.model.ContentType
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.databinding.ActivityLoginBinding
+import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
+import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
 import com.shmedo.mcloudapp.ui.page.main.MainActivity
 import com.shmedo.mcloudapp.ui.page.webview.WebviewActivity
-import com.shmedo.mcloudapp.ui.widget.MyCountDownTimer
-import com.shmedo.mcloudapp.databinding.ActivityLoginBinding
-import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.extensions.showMessage
-import com.shmedo.core.model.ContentType
 import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.LoginViewModel
+import com.shmedo.mcloudapp.ui.widget.MyCountDownTimer
 import com.tencent.bugly.crashreport.CrashReport
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -56,7 +56,7 @@ class LoginActivity : BaseActivity() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as ActivityLoginBinding
-        initImmersionBar(binding.statusBarView, false)
+        initImmersionBar(binding.statusBarView, isTitleBar = false, isStatusBarDarkFont = false)
     }
 
     override fun initData() {

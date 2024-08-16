@@ -20,6 +20,8 @@
         <item>重庆地灾平台</item>
         <item>广东水利平台</item>
         <item>广西水文平台</item>
+        <item>湖北水文平台</item>
+        <item>湖北生态流量平台</item>
     </string-array>
 
     <string-array name="baud_rates">

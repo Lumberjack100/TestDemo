@@ -29,7 +29,7 @@ open class BaseRequestViewModel(private val loggerRepositoryImp: LoggerRepositor
         methodUrl: String
     ): ResponseStatus {
         error.printStackTrace()
-        val msg = "$methodUrl error: ${error.errorMsg}"
+        val msg = "$methodUrl  error: ${error.stackTraceToString()}"
         addLogItem(
             sessionId = CommonMMKVOwner.appLogSessionId,
             priority = Log.ERROR,

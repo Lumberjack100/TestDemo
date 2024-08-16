@@ -185,7 +185,7 @@ class DeviceSearchFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar, false)
+        initImmersionBar(binding.llToolbar.toolbar, isStatusBarDarkFont = false)
     }
 
     companion object {

@@ -31,20 +31,26 @@ abstract class BaseFragment : BaseVmDbFragment() {
 
     open fun initImmersionBar(
         statusBar: View,
+        isTitleBar: Boolean = true,
         isStatusBarDarkFont: Boolean = true,
         isNavigationBarDarkIcon: Boolean = true,
-        navigationBarColor: Int = R.color.white,
         statusBarColor: Int = -1,
-        isKeyboardEnable: Boolean = false,
-
-        ) {
+        navigationBarColor: Int = R.color.white,
+        isKeyboardEnable: Boolean = false
+    ) {
+        if (isHidden) return
         immersionBar {
-            titleBar(statusBar)
+            if (isTitleBar)
+                titleBar(statusBar)
+            else
+                statusBarView(statusBar)
+
             statusBarDarkFont(isStatusBarDarkFont)
             navigationBarDarkIcon(isNavigationBarDarkIcon)
-            navigationBarColor(navigationBarColor)
             if (statusBarColor != -1)
                 statusBarColor(statusBarColor)
+            if (navigationBarColor != -1)
+                navigationBarColor(navigationBarColor)
             keyboardEnable(isKeyboardEnable)
         }
     }
