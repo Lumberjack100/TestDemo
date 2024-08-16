@@ -19,6 +19,7 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kongzue.dialogx.dialogs.BottomMenu
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.model.DebugCmdLogInfo
 import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
 import com.shmedo.lib.ble.communicate.service.base.ConnectingResult
@@ -116,6 +117,8 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         isIotCmd = productType != ProductType.COLLECTOR_R_1 && productType != ProductType.DAS && productType != ProductType.BHY
+        //开启命令调试模式
+        CommonMMKVOwner.isCommandDebugMode = true
     }
 
     override fun lazyLoadData() {
@@ -444,7 +447,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
             mutable.add(logInfo)
             notifyItemInserted(itemCount)
         }
-        binding.recyclerview.scrollToPosition(binding.recyclerview.bindingAdapter.itemCount - 1)
+//        binding.recyclerview.scrollToPosition(binding.recyclerview.bindingAdapter.itemCount - 1)
     }
 
     /**
@@ -527,6 +530,8 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
     }
 
     override fun onDestroy() {
+        //关闭命令调试模式
+        CommonMMKVOwner.isCommandDebugMode = false
         closeDebugMode()
         super.onDestroy()
     }
