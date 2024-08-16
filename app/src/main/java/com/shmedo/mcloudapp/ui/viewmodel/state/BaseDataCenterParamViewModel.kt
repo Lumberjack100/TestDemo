@@ -17,6 +17,7 @@ open class BaseDataCenterParamViewModel : ViewModel() {
     val centerServerAddress = NonNullObservableField("")//数据服务器地址
     val centerServerPort = NonNullObservableField("")//数据服务器端口
     val transferProtocol = NonNullObservableField("")//传输协议
+    val dataType = NonNullObservableField("")//数据类型  GNSS 特有参数
     val dataProtocol = NonNullObservableField("")//数据协议
     val platformType = NonNullObservableField("")//平台类型
 

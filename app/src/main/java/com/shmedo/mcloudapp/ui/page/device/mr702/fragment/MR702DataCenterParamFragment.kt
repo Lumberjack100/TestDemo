@@ -57,8 +57,8 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
 
     private val communicateWayList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_communicate_way) }
     private val ipLevelList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_ip_level) }
-
     private val transferProtocolList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_transfer_protocol) }
+
     private val dataProtocolList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_data_protocol) }
     private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
 
@@ -120,14 +120,18 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.centerStatus.set(statusItem.status)
         mStates.isCenterOpened.set(statusItem.status != "0")
 
-        mStates.communicateWay.set(communicateWayList[0])
-        mStates.ipLeve.set(ipLevelList[0])
-        mStates.transferProtocol.set(transferProtocolList[0])
-        mStates.dataProtocol.set(dataProtocolList[0])
-        mStates.platformType.set(platformList[0])
+        mStates.communicateWay.set(communicateWayList[0])//默认选择4G
+        mStates.ipLeve.set(ipLevelList[0])//默认选择IPV4
+        mStates.transferProtocol.set(transferProtocolList[0])//默认选择TCP
+        mStates.dataProtocol.set(dataProtocolList[1])//默认选择TCP-C
+        mStates.platformType.set(platformList[2])//默认选择米度物联平台
 
-        mStates.stationType.set(StationCode.values()[0].description)
-        mStates.hourlyReport.set(true)
+        mStates.stationType.set(StationCode.RESERVOIR.description)//默认选择水库(湖泊)
+        mStates.timingReport.set(true)
+        mStates.maintainReport.set(true)
+        mStates.maintainReportInterval.set("30")//维持上报间隔（秒）
+        mStates.reissuingDataValidDays.set("180")//数据补发有效天数
+        mStates.reissuingDataInterval.set("30")//数据补发间隔(分钟)
     }
 
     private fun setEditable(editable: Boolean) {

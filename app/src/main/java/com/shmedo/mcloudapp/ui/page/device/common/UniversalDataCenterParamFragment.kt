@@ -58,11 +58,9 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 
     private lateinit var statusItem: DataCenterStatusItem
 
-    private val transferProtocolList = arrayListOf("TCP-C", "TCP-S", "MQTT", "SL651")
-
-    private val dataProtocolList =
+    private val dataTypeList =
         arrayListOf("CMD", "NMEA", "DIFF_IN", "DIFF_OUT", "RAW_OUT", "RES_OUT")
-
+    private val dataProtocolList = arrayListOf("TCP-C", "TCP-S", "MQTT", "SL651")
     private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
 
 
@@ -123,13 +121,20 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.centerName.set(statusItem.name)
         mStates.centerStatus.set(statusItem.status)
         mStates.isCenterOpened.set(statusItem.status != "0")
-        mStates.isDataProtocolVisible.set(
+        mStates.isDataTypeVisible.set(
             productType == ProductType.GNSS_E_1 || productType == ProductType.GNSS_E_2 || productType == ProductType.GNSS_E_3
         )
 
-        mStates.transferProtocol.set(transferProtocolList[2])
-        mStates.dataProtocol.set(dataProtocolList[5])
-        mStates.platformType.set(platformList[0])
+        mStates.dataType.set(dataTypeList[5])
+        mStates.dataProtocol.set(dataProtocolList[0])//默认选择TCP-C
+        mStates.platformType.set(platformList[2])//默认选择米度物联平台
+
+        mStates.stationType.set(StationCode.RESERVOIR.description)//默认选择水库(湖泊)
+//        mStates.timingReport.set(true)
+        mStates.maintainReport.set(true)
+        mStates.maintainReportInterval.set("30")//维持上报间隔（秒）
+        mStates.reissuingDataValidDays.set("180")//数据补发有效天数
+        mStates.reissuingDataInterval.set("30")//数据补发间隔(分钟)
     }
 
     /* private fun setEditable(editable: Boolean) {
@@ -165,20 +170,40 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         }
 
         /**
-         * 传输协议
+         * 数据类型
          */
-        fun onTransferProtocolChooseClick() {
-            val selectedIndex = transferProtocolList.indexOf(mStates.transferProtocol.get())
+        fun onDataTypeChooseClick() {
+            val selectedIndex = dataTypeList.indexOf(mStates.dataType.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "请选择传输协议", transferProtocolList.toTypedArray(),
+                    "请选择数据类型", dataTypeList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
-                        mStates.transferProtocol.set(text)
+                        mStates.dataType.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        /**
+         * 数据协议
+         */
+        fun onDataProtocolChooseClick() {
+            val selectedIndex = dataProtocolList.indexOf(mStates.dataProtocol.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "请选择数据协议", dataProtocolList.toTypedArray(),
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.dataProtocol.set(text)
                         when (text) {
                             "TCP-C" -> {//TCP-C
                                 mStates.isMqttItemVisible.set(false)
@@ -200,26 +225,6 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                                 mStates.isSL651ItemVisible.set(true)
                             }
                         }
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
-        }
-
-        /**
-         * 数据协议
-         */
-        fun onDataProtocolChooseClick() {
-            val selectedIndex = dataProtocolList.indexOf(mStates.dataProtocol.get())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "请选择数据协议", dataProtocolList.toTypedArray(),
-                    null, selectedIndex,
-                    { position, text ->
-                        mStates.dataProtocol.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -323,13 +328,13 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             centerid = statusItem.centerid.toString(),
             addr = mStates.centerServerAddress.get(),
             port = mStates.centerServerPort.get(),
-            protocol = mStates.transferProtocol.get(),
             datatype = if (productType == ProductType.GNSS_E_1 || productType == ProductType.GNSS_E_2 || productType == ProductType.GNSS_E_3)
-                (dataProtocolList.indexOf(mStates.dataProtocol.get()) + 1).toString()
+                (dataTypeList.indexOf(mStates.dataType.get()) + 1).toString()
             else IOTConstants.NULL_KEY,
+            protocol = mStates.dataProtocol.get(),
             plattype = platformList.indexOf(mStates.platformType.get()).toString()
         )
-        if (mStates.transferProtocol.get() == "MQTT") {//MQTT
+        if (mStates.dataProtocol.get() == "MQTT") {//MQTT
             //当设备 ID、产品 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
             if (mStates.isRigisterVisible.get() && mStates.deviceId.get()
                     .isEmpty() && mStates.deviceKey.get().isEmpty()
@@ -367,7 +372,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                 if (mStates.isRigisterVisible.get()) mStates.registerAddress.get() else ""
             entity.httpport =
                 if (mStates.isRigisterVisible.get()) mStates.registerPort.get() else ""
-        } else if (mStates.transferProtocol.get() == "SL651") {//SL651
+        } else if (mStates.dataProtocol.get() == "SL651") {//SL651
             entity.type_code = StationCode.valueByDescription(mStates.stationType.get()).code
             entity.co_address = mStates.centerStationAddr.get()
             entity.password = mStates.password.get()
@@ -454,7 +459,13 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
     private fun initDataCenterParam(data: DataCenterInfo) {
         mStates.centerServerAddress.set(data.addr)
         mStates.centerServerPort.set(data.port)
-        mStates.transferProtocol.set(data.protocol)
+
+        data.datatype.toIntOrNull()?.let {
+            if (it in 1..dataTypeList.size) {
+                mStates.dataType.set(dataTypeList[it - 1])
+            }
+        }
+        mStates.dataProtocol.set(data.protocol)
         when (data.protocol) {
             "MQTT" -> {//MQTT
                 mStates.isMqttItemVisible.set(true)
@@ -474,11 +485,6 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             else -> {//SL651
                 mStates.isMqttItemVisible.set(false)
                 mStates.isSL651ItemVisible.set(true)
-            }
-        }
-        data.datatype.toIntOrNull()?.let {
-            if (it in 1..dataProtocolList.size) {
-                mStates.dataProtocol.set(dataProtocolList[it - 1])
             }
         }
         data.plattype.toIntOrNull()?.let {
