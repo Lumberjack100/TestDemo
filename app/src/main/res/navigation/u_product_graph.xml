@@ -121,6 +121,12 @@
         android:label="BaseAdvancedSettingFragment"
         tools:layout="@layout/fragment_advanced_setting" />
 
+    <fragment
+        android:id="@+id/capturedPictureViewFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.CapturedPictureViewFragment"
+        android:label="CapturedPictureViewFragment"
+        tools:layout="@layout/fragment_captured_picture_view" />
+
     <action
         android:id="@+id/action_global_to_queryDeviceDataFragment"
         app:destination="@id/query_data_graph"
@@ -156,6 +162,14 @@
     <action
         android:id="@+id/action_global_to_alarmSettingFragment"
         app:destination="@id/alarm_setting_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_capturedPictureViewFragment"
+        app:destination="@id/capturedPictureViewFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

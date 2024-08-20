@@ -31,7 +31,7 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/4/26
- * 描述： INTEGRATION(一体化传感器产品线)
+ * 描述： INTEGRATION(一体化传感器产品线) 设备主页面
  */
 class UProductHomeFragment : UniversalDeviceHomeFragment() {
 
