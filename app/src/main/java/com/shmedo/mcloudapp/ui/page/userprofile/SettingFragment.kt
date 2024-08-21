@@ -5,17 +5,17 @@ import androidx.activity.OnBackPressedCallback
 import com.blankj.utilcode.util.CleanUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
+import com.shmedo.mcloudapp.BR
+import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.databinding.FragmentSettingBinding
 import com.shmedo.mcloudapp.extensions.getAppViewModel
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
-import com.shmedo.mcloudapp.BR
-import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.page.webview.WebviewActivity
-import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
-import com.shmedo.mcloudapp.databinding.FragmentSettingBinding
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
+import com.shmedo.mcloudapp.ui.page.webview.WebviewActivity
+import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.ui.viewmodel.state.SettingViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -79,13 +79,6 @@ class SettingFragment : BaseFragment() {
         }
 
         /**
-         * 应用日志查看
-         */
-        fun onViewLogClick() {
-            nav().navigate(R.id.action_global_to_logSessionListFragment)
-        }
-
-        /**
          * 服务协议
          */
         fun onUserProtocolClick() {
@@ -113,6 +106,14 @@ class SettingFragment : BaseFragment() {
         fun onAboutUsClick() {
             nav().navigate(R.id.action_settingFragment_to_aboutFragment)
         }
+
+        /**
+         * 应用日志查看
+         */
+        fun onViewLogClick() {
+            nav().navigate(R.id.action_global_to_logSessionListFragment)
+        }
+
     }
 
     override fun onResume() {

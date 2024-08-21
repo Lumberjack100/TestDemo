@@ -29,7 +29,7 @@ class MineFragment : BaseFragment() {
     private lateinit var mStates: MineViewModel
     private lateinit var appUpdateViewModel: AppUpdateViewModel
     private lateinit var loginRequestViewModel: LoginRequestViewModel
-    private val userInfo: UserInfo by lazy {  AuthMMKVOwner.userInfo!! }
+    private val userInfo: UserInfo by lazy { AuthMMKVOwner.userInfo!! }
 
 
     override fun initViewModel() {
@@ -70,7 +70,8 @@ class MineFragment : BaseFragment() {
         }
         //从编辑页面返回需要刷新事件详情页面
         setFragmentResultListener(requestKey) { key, bundle ->
-            val refresh = bundle.getBoolean(com.shmedo.core.commonlib.utils.AppContants.Extras.IS_REFRESH_USER_INFO)
+            val refresh =
+                bundle.getBoolean(com.shmedo.core.commonlib.utils.AppContants.Extras.IS_REFRESH_USER_INFO)
             if (refresh)
                 loginRequestViewModel.refreshUserInfo(userInfo.companyID, userInfo.userID)
         }
@@ -78,7 +79,7 @@ class MineFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        initImmersionBar(binding.statusBarView, true)
+        initImmersionBar(binding.statusBarView, isTitleBar = false, isStatusBarDarkFont = true)
     }
 
     inner class ClickProxy {

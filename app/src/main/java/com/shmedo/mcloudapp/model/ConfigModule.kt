@@ -12,6 +12,10 @@ data class ConfigModule(
     val configModule: DeviceFunctionModule
 )
 
+data class ConfigModuleTree(
+    val configModules: MutableList<DeviceFunctionModule> = arrayListOf(),
+)
+
 sealed class DeviceFunctionModule(
     val name: String = "",
     val desc: String = "",

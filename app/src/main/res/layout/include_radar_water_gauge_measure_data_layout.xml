@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.CommonDeviceHomeViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        onClickWithDebouncing="@{()->click.onAdmeModeChooseClick()}"
+        android:paddingStart="@dimen/dimen_size_15"
+        android:paddingTop="@dimen/dimen_size_15"
+        android:paddingEnd="@dimen/dimen_size_15">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_switch_adme_config_model" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_config_model"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
+            android:text="@{vm.admeModeText}"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_17"
+            tools:text="设备配置模式" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_adme_home_down_triangle" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

@@ -156,7 +156,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
 
     override fun onResume() {
         super.onResume()
-        initImmersionBar(binding.toolbar, true)
+        initImmersionBar(binding.toolbar, isStatusBarDarkFont = true)
     }
 
     inner class ClickProxy {

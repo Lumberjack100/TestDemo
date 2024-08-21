@@ -8,7 +8,7 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
  * 描述： TODO
  */
 class DataCenterParamViewModel: BaseDataCenterParamViewModel() {
-    val isDataProtocolVisible = NonNullObservableField(false)
+    val isDataTypeVisible = NonNullObservableField(false)
     val isRigisterVisible = NonNullObservableField(false)
 
 

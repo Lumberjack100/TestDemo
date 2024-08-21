@@ -290,7 +290,6 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                         )
                     )
                     sensorInfo.child_type.notNullKeyEmpty { type ->
-
                         type.toIntOrNull()?.let { typeIndex ->
                             groupList.add(
                                 0,
@@ -653,6 +652,23 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
             IOTSensorType.RADAR_LEVEL_GAUGE //雷达液(物)位计 设置子雷达传感器型号
             -> {
+                //安装高程
+                sensorInfo.corrval = IOTConstants.NULL_KEY
+                binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamEditItem>()
+                    ?.findLast { it.name.contains("安装高程") }?.let { item ->
+                        if (item.value.isEmpty()) {
+                            showMessageDialog("请输入安装高程!")
+                            return
+                        }
+                        try {
+                            val value = item.value.toDouble()
+                        } catch (ex: Exception) {
+                            showMessageDialog("请输入正确的安装高程!")
+                            return
+                        }
+                        sensorInfo.corrval = item.value
+                    }
+
                 //雷达类型
                 sensorInfo.child_type = IOTConstants.NULL_KEY
                 binding.recyclerview.models?.filterIsInstance<ExternalDigitalSensorParamChooseItem>()

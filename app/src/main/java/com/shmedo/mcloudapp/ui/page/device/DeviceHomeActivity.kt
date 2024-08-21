@@ -147,6 +147,13 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
+//            ProductType.U_D_1, ProductType.U_D_2 -> {
+//                navController.setGraph(
+//                    R.navigation.ud_graph,
+//                    bundle2
+//                )
+//            }
+
             ProductType.LB20S -> {
                 navController.setGraph(
                     R.navigation.lb20s_graph,

@@ -6,7 +6,6 @@ import android.view.View
 import androidx.appcompat.widget.Toolbar
 import com.blankj.utilcode.util.KeyboardUtils
 import com.gyf.immersionbar.ktx.immersionBar
-import com.shmedo.mcloudapp.ui.page.base.activity.BaseVmDbActivity
 import com.shmedo.mcloudapp.R
 
 /**
@@ -41,16 +40,27 @@ abstract class BaseActivity : BaseVmDbActivity() {
     }
 
     open fun initImmersionBar(
-        bar: View,
-        isDarkFont: Boolean = true,
-        isDarkIcon: Boolean = true,
-        navigationBarColor: Int = R.color.white
-    ) {
+        statusBar: View,
+        isTitleBar: Boolean = true,
+        isStatusBarDarkFont: Boolean = true,
+        isNavigationBarDarkIcon: Boolean = true,
+        statusBarColor: Int = -1,
+        navigationBarColor: Int = R.color.white,
+        isKeyboardEnable: Boolean = true,
+
+        ) {
         immersionBar {
-            titleBar(bar)
-            statusBarDarkFont(isDarkFont)
-            navigationBarDarkIcon(isDarkIcon)
-            navigationBarColor(navigationBarColor)
+            if (isTitleBar)
+                titleBar(statusBar)
+            else
+                statusBarView(statusBar)
+            statusBarDarkFont(isStatusBarDarkFont)
+            navigationBarDarkIcon(isNavigationBarDarkIcon)
+            if (statusBarColor != -1)
+                statusBarColor(statusBarColor)
+            if (navigationBarColor != -1)
+                navigationBarColor(navigationBarColor)
+            keyboardEnable(isKeyboardEnable)
         }
     }
 

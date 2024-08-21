@@ -6,11 +6,11 @@ import android.os.Bundle
 import android.widget.LinearLayout
 import com.just.agentweb.AgentWeb
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
 import com.shmedo.mcloudapp.databinding.ActivityWebviewBinding
+import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
+import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
 
 class WebviewActivity : BaseActivity() {
@@ -57,15 +57,15 @@ class WebviewActivity : BaseActivity() {
         super.onResume()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        mAgentWeb.webLifeCycle.onDestroy()
-    }
-
     override fun onBackPressed() {
         if (mAgentWeb.webCreator.webView.canGoBack()) {
             mAgentWeb.webCreator.webView.goBack()
         } else super.onBackPressed()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mAgentWeb.webLifeCycle.onDestroy()
     }
 
     companion object {
