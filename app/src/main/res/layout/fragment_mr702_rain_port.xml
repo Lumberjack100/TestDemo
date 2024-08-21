@@ -44,11 +44,11 @@
                     style="@style/Common_ClickableItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="状态" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@null"
                         android:text="@{stateVM.status}"
@@ -59,7 +59,7 @@
 
                 <RelativeLayout style="@style/SwitchButton_LayoutStyle">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/SwitchButton_TitleStyle"
                         android:text="雨量计"
                         android:textColor="@{homeVM.isEditable?@color/title_text_color:@color/sub_title_text_color}"
@@ -92,12 +92,12 @@
                     android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                     onClickWithDebouncing="@{()->click.onChooseResolutionClick()}">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                         android:text="分辨率" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                         android:drawableEnd="@drawable/ic_arrow_down"
@@ -109,7 +109,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                         android:text="消抖系数(秒/次)"
@@ -124,7 +124,7 @@
                         app:lengthFilter="@{6}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/btn_confirm"
                     style="@style/SubmitButton_ColorPrimary"
                     onClickWithDebouncing="@{()->click.onSubmitClick()}"

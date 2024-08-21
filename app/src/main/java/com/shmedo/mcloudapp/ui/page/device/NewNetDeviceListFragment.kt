@@ -74,8 +74,8 @@ class NewNetDeviceListFragment : BaseFragment() {
     }
 
     private fun initPageRefresh() {
-        binding.page.onRefresh {
-            refreshPage()
+        binding.pageRoot.onRefresh {
+            refreshDeviceStatus()
             binding.refreshLayout.showLoading()
         }
     }
@@ -265,7 +265,7 @@ class NewNetDeviceListFragment : BaseFragment() {
         )
     }
 
-    private fun refreshPage() {
+    private fun refreshDeviceStatus() {
         deviceRequestViewModel.getDeviceStatByCompanyID(
             userInfo.companyID,
             AuthMMKVOwner.listSuperInfoPermission
@@ -292,9 +292,7 @@ class NewNetDeviceListFragment : BaseFragment() {
     }
 
     override fun lazyLoadData() {
-        binding.page.showLoading(refresh = false)
-        refreshPage()
-        refreshDeviceList()
+        binding.pageRoot.autoRefresh()
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -308,7 +306,7 @@ class NewNetDeviceListFragment : BaseFragment() {
     override fun createObserver() {
         deviceRequestViewModel.deviceStatisticInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceStatisticInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
-                binding.page.showError()
+                binding.pageRoot.showError()
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe
             }
@@ -318,7 +316,7 @@ class NewNetDeviceListFragment : BaseFragment() {
                 val df = DecimalFormat("#.##") //格式化小数
                 val rate: String = df.format(it.onlinePercent) + "%"
                 updateTopView(rate)
-                binding.page.showContent(false)
+                binding.pageRoot.showContent(false)
             }
         }
         launchWithViewLifecycle {

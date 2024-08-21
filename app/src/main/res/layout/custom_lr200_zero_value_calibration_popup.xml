@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_calibration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
                     tools:text="立即\n校准"
                     tools:textColor="@color/title_text_color" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_size_15"
@@ -61,7 +61,7 @@
                     android:textSize="@dimen/text_size_14"
                     app:drawableLeftCompat="@drawable/ic_dispatch_cmd_response_small_circle" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_device_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
                     android:layout_marginBottom="@dimen/dimen_size_12"
                     android:background="@color/divider_line_bg" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_size_15"
@@ -90,7 +90,7 @@
                     android:textSize="@dimen/text_size_14"
                     app:drawableLeftCompat="@drawable/ic_dispatch_cmd_response_small_circle" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_system_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

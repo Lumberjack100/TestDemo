@@ -56,7 +56,7 @@
                     app:stateVM="@{stateVM}"
                     tools:background="@color/white" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/btn_confirm"
                     style="@style/SubmitButton_ColorPrimary"
                     onClickWithDebouncing="@{()->click.onSubmitClick()}"

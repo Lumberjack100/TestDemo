@@ -29,6 +29,7 @@ import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.getAppViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CmdResponseResultError
 import com.shmedo.mcloudapp.model.CmdResponseResultSuccess
@@ -360,11 +361,19 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     protected fun isBleDisconnected() = communicateWay is BleConnect && !bleViewModel.isConnected()
 
-    protected fun handleFailureResult(errMsg: String) {
+    protected fun handleFailureResult(
+        errMsg: String,
+        isShowErrMsg: Boolean = true,
+        isMessageDialog: Boolean = false
+    ) {
         cancelNearbyCommunicationTimeoutJob()
         Timber.e(errMsg)
-        Toaster.show(errMsg)
-        //PopTip.show(errMsg).autoDismiss(4500).iconError()
+        if (isShowErrMsg) {
+            if (isMessageDialog)
+                showMessageDialog(errMsg)
+            else
+                Toaster.show(errMsg)
+        }
     }
 
     /**

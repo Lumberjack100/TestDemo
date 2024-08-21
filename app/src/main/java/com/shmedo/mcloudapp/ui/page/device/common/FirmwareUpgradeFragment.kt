@@ -210,10 +210,8 @@ class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
                 val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "升级失败: ${result.message}"
-                        Timber.e(result.message)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

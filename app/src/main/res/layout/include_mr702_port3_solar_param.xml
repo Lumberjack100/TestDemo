@@ -19,11 +19,11 @@
             style="@style/Common_ClickableItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 android:text="太阳能板电压(V)" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_ValueStyle"
                 android:drawableEnd="@null"
                 android:text="@{stateVM.solarVoltage}"
@@ -35,11 +35,11 @@
             style="@style/Common_ClickableItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 android:text="蓄电池电压(V)" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_ValueStyle"
                 android:drawableEnd="@null"
                 android:text="@{stateVM.batteryVoltage}"
@@ -51,11 +51,11 @@
             style="@style/Common_ClickableItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 android:text="太阳能板功率(W)" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_ValueStyle"
                 android:drawableEnd="@null"
                 android:text="@{stateVM.solarPower}"
@@ -67,11 +67,11 @@
             style="@style/Common_ClickableItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 android:text="负载功率(W)" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_ValueStyle"
                 android:drawableEnd="@null"
                 android:text="@{stateVM.loadPower}"

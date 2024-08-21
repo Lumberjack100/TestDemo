@@ -49,7 +49,7 @@
                     android:layout_marginTop="@dimen/dimen_size_1"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/SwitchButton_TitleStyle"
                         android:text="报警启用" />
 
@@ -69,7 +69,7 @@
                     android:layout_height="40dp"
                     android:background="@color/transparent">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -92,7 +92,7 @@
                     android:layout_height="3dp"
                     android:background="@color/white" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_GroupName_Style"
                     android:text="报警测试" />
 
@@ -100,7 +100,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         enabledTextColor="@{@color/colorPrimary}"
                         onClickWithDebouncing="@{()->click.onTestFirstAlarmClick()}"
@@ -114,7 +114,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         enabledTextColor="@{@color/colorPrimary}"
                         onClickWithDebouncing="@{()->click.onTestSecondAlarmClick()}"
@@ -129,7 +129,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         enabledTextColor="@{@color/colorPrimary}"
                         onClickWithDebouncing="@{()->click.onTestThirdAlarmClick()}"
@@ -143,7 +143,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         enabledTextColor="@{@color/colorPrimary}"
                         onClickWithDebouncing="@{()->click.onTestFourthAlarmClick()}"

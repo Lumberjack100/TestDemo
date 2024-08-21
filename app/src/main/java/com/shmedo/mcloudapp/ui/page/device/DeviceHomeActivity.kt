@@ -140,19 +140,19 @@ class DeviceHomeActivity : BaseActivity() {
                 bundle2
             )
 
-            ProductType.LR200, ProductType.U_D_1, ProductType.U_D_2, ProductType.U_I_1, ProductType.U_R_1 -> {
+            ProductType.LR200, ProductType.U_I_1, ProductType.U_R_1 -> {
                 navController.setGraph(
                     R.navigation.u_product_graph,
                     bundle2
                 )
             }
 
-//            ProductType.U_D_1, ProductType.U_D_2 -> {
-//                navController.setGraph(
-//                    R.navigation.ud_graph,
-//                    bundle2
-//                )
-//            }
+            ProductType.U_D_1, ProductType.U_D_2 -> {
+                navController.setGraph(
+                    R.navigation.ud_graph,
+                    bundle2
+                )
+            }
 
             ProductType.LB20S -> {
                 navController.setGraph(

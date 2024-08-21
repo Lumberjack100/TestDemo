@@ -17,7 +17,7 @@
         android:gravity="center"
         android:background="@drawable/bg_mr702_port_tab_normal">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tabText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

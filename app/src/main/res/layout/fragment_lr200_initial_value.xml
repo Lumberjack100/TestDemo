@@ -42,7 +42,7 @@
             android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/auto_init"
                 onClickWithDebouncing="@{(textView)->click.onModeCheckedChanged(textView)}"
                 android:layout_width="wrap_content"
@@ -66,7 +66,7 @@
                 style="@style/Common_EditItem_LayoutStyle"
                 android:background="@drawable/layer_common_click_item_with_divider">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/manual_init"
                     onClickWithDebouncing="@{(textView)->click.onModeCheckedChanged(textView)}"
                     android:layout_width="wrap_content"
@@ -89,7 +89,7 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"

@@ -223,7 +223,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
             return
         }
-        when (module.configModule) {
+        when (module.functionModule) {
             is TimeCalibrationModule -> {//时间校准
                 isDoSetTimeCmd = false
                 mCommandResponseStates.isResponseLoading.set(true)
@@ -242,7 +242,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             }
 
             is CollectorConfigModule -> {//采集器配置
-                if (module.configModule.navId != 0) {
+                if (module.functionModule.navId != 0) {
                     val bundle = BleDasCollectorSettingFragment.newBundleArguments(
                         mStates.collectorModel.get(),
                         productType,
@@ -251,14 +251,14 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                         bleDevice,
                     )
                     nav().navigate(
-                        module.configModule.navId,
+                        module.functionModule.navId,
                         bundle
                     )
                 }
             }
 
             is SensorConfigModule -> {//传感器配置
-                if (module.configModule.navId != 0) {
+                if (module.functionModule.navId != 0) {
                     val bundle = BleDasSensorHomeFragment.newBundleArguments(
                         mStates.collectorModel.get(),
                         productType,
@@ -267,14 +267,14 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                         bleDevice,
                     )
                     nav().navigate(
-                        module.configModule.navId,
+                        module.functionModule.navId,
                         bundle
                     )
                 }
             }
 
             else -> {
-                if (module.configModule.navId != 0) {
+                if (module.functionModule.navId != 0) {
                     val bundle = BaseIOTDeviceFragment.newBundleArguments(
                         productType,
                         communicateWay,
@@ -282,7 +282,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                         bleDevice
                     )
                     nav().navigate(
-                        module.configModule.navId,
+                        module.functionModule.navId,
                         bundle
                     )
                 }

@@ -25,7 +25,7 @@ class PageMessenger : ViewModel(){
     private val _mr702Rs485PortSensorRefresh = MutableResult<MRPortSensorRefreshResult>()
     val mr702Rs485PortSensorRefresh: Result<MRPortSensorRefreshResult> = _mr702Rs485PortSensorRefresh
 
-    // 是否同意隐私政策
+    //是否同意隐私政策
     private val _isAgreePolicy = MutableResult<Boolean>()
     val isAgreePolicy: Result<Boolean> = _isAgreePolicy
 

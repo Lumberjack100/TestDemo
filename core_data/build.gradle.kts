@@ -66,7 +66,7 @@ dependencies {
     implementation(libs.timber)
 
     //高德地图
-    api(libs.amap.location)
+    api(libs.amap.a3dmap)
     api(libs.amap.search)
 
     testImplementation(libs.junit)

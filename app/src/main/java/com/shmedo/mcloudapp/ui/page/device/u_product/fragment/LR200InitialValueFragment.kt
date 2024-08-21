@@ -159,10 +159,8 @@ class LR200InitialValueFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_LF_INITIAL_VALUE -> {//设置
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "初始化出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

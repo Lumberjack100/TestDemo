@@ -26,7 +26,7 @@
             visible="@{stateVM.isExtension1Support}"
             android:background="@drawable/layer_common_click_item_with_divider">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 android:text="@{stateVM.extension1Title}"
                 tools:text="扩展1"
@@ -47,7 +47,7 @@
             visible="@{stateVM.isExtension2Support}"
             android:background="@drawable/layer_common_click_item_with_divider">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 android:text="@{stateVM.extension2Title}"
                 tools:text="扩展2"
@@ -68,7 +68,7 @@
             visible="@{stateVM.isExtension3Support}"
             android:background="@drawable/layer_common_click_item_with_divider">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 android:text="@{stateVM.extension3Title}"
                 tools:text="扩展3"
@@ -88,7 +88,7 @@
             visible="@{stateVM.isExtension4Support}"
             android:background="@drawable/layer_common_click_item_with_divider">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 android:text="@{stateVM.extension4Title}"
                 tools:text="扩展4"
@@ -107,7 +107,7 @@
             visible="@{stateVM.isExtension5Support}"
             android:background="@drawable/layer_common_click_item_with_divider">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 android:text="@{stateVM.extension5Title}"
                 tools:text="扩展5"
@@ -126,7 +126,7 @@
             visible="@{stateVM.isExtension6Support}"
             android:background="@drawable/layer_common_click_item_with_divider">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 android:text="@{stateVM.extension6Title}"
                 tools:text="扩展6"
@@ -145,7 +145,7 @@
             visible="@{stateVM.isExtension7Support}"
             android:background="@drawable/layer_common_click_item_with_divider">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 android:text="@{stateVM.extension7Title}"
                 tools:text="扩展7"
@@ -164,7 +164,7 @@
             visible="@{stateVM.isExtension8Support}"
             android:background="@drawable/layer_common_click_item_with_divider">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 android:text="@{stateVM.extension8Title}"
                 tools:text="扩展8"
@@ -183,7 +183,7 @@
             visible="@{stateVM.isExtension9Support}"
             android:background="@drawable/layer_common_click_item_with_divider">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 android:text="@{stateVM.extension9Title}"
                 tools:text="扩展9"
@@ -202,7 +202,7 @@
             visible="@{stateVM.isExtension10Support}"
             android:background="@drawable/layer_common_click_item_with_divider">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 android:text="@{stateVM.extension10Title}"
                 tools:text="扩展10"

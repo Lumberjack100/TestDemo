@@ -443,15 +443,13 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_HAC_MD_SET_EXECUTIVE_AGENCY -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         var errMsg = "设置执行机构参数出错: ${result.message}"
-                        Timber.e(errMsg)
                         if (errMsg.contains("time_err"))
                             errMsg = errMsg.replaceFirst(
                                 "(time_err)(:?)".toRegex(),
                                 "一轮测量时间不能少于"
                             ) + "小时"
-                        showMessageDialog(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 

@@ -170,7 +170,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         //刷新模块状态
         binding.rvModule.models?.forEach {
             if (it is ConfigModule) {
-                it.configModule.refreshStatus(isConnected)
+                it.functionModule.refreshStatus(isConnected)
             }
         }
     }
@@ -227,7 +227,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
             return
         }
-        when (module.configModule) {
+        when (module.functionModule) {
             is RebootModule -> {
                 showMessage("确定重启设备吗？", "温馨提示", "确定", {
                     reboot()
@@ -235,7 +235,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                if (module.configModule.navId != 0) {
+                if (module.functionModule.navId != 0) {
                     val bundle = BaseIOTDeviceFragment.newBundleArguments(
                         productType,
                         communicateWay,
@@ -243,7 +243,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                         bleDevice
                     )
                     nav().navigate(
-                        module.configModule.navId,
+                        module.functionModule.navId,
                         bundle
                     )
                 }
@@ -351,10 +351,8 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             IOTCommandType.SET_WORK_MODE -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置工作模式出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

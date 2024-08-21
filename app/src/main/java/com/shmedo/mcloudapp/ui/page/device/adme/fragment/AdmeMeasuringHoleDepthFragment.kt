@@ -692,8 +692,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "获取电机的实时运动数据出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         getMotorMotionData(DELAY_2000_MILLIS)
                         return
                     }

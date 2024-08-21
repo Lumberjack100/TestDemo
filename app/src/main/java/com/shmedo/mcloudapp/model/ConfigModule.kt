@@ -9,11 +9,11 @@ import com.shmedo.mcloudapp.R
  * 描述：   配置模块
  */
 data class ConfigModule(
-    val configModule: DeviceFunctionModule
+    val functionModule: DeviceFunctionModule
 )
 
 data class ConfigModuleTree(
-    val configModules: MutableList<DeviceFunctionModule> = arrayListOf(),
+    val configModules: MutableList<ConfigModule> = arrayListOf(),
 )
 
 sealed class DeviceFunctionModule(

@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.model
 
 import androidx.databinding.BaseObservable
 import com.drake.brv.item.ItemHover
+import com.shmedo.mcloudapp.R
 
 /**
  * 创建者:   gonghe <br/>
@@ -10,6 +11,7 @@ import com.drake.brv.item.ItemHover
  */
 data class DeviceStatusInfoGroupItem(
     val name: String = "",
+    val iconResId: Int = R.drawable.ic_mr702_device_info_serial_port_status
 ) : BaseObservable(), ItemHover {
 
     override var itemHover: Boolean = true

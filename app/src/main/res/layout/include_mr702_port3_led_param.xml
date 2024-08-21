@@ -25,12 +25,12 @@
             android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
             onClickWithDebouncing="@{()->click.onLedTypeChooseClick()}">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="屏幕规格" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_ValueStyle"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:drawableEnd="@drawable/ic_arrow_down"
@@ -42,7 +42,7 @@
             style="@style/Common_EditItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="显示时长(分钟)"
@@ -62,7 +62,7 @@
             style="@style/Common_EditItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="更新间隔(秒)"
@@ -82,7 +82,7 @@
             style="@style/Common_EditItem_LayoutStyle"
             android:background="@drawable/layer_common_click_item_with_divider">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="熄屏时长(分钟)"

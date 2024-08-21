@@ -16,7 +16,7 @@
     </data>
 
     <com.drake.brv.PageRefreshLayout
-        android:id="@+id/page"
+        android:id="@+id/page_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/main_bg_gray"

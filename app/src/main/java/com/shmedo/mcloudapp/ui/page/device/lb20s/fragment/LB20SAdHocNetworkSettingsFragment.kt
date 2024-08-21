@@ -311,8 +311,7 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        Timber.e(result.message)
+                        handleFailureResult(result.message, isShowErrMsg = false)
                         mCommandResponseStates.isResponseLoading.set(false)
                         mCommandResponseStates.isResponseSuccess.set(false)
                         mCommandResponseStates.responseContent.set(result.message)
@@ -333,8 +332,7 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
             IOTCommandType.SET_TERMINAL_TIME -> {//设置终端时间
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        Timber.e(result.message)
+                        handleFailureResult(result.message, isShowErrMsg = false)
                         mCommandResponseStates.isResponseLoading.set(false)
                         mCommandResponseStates.isResponseSuccess.set(false)
                         mCommandResponseStates.responseContent.set(result.message)
@@ -370,10 +368,8 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
             IOTCommandType.RESET -> {//恢复出厂设置
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = StringUtils.getString(R.string.reset_failed) + result.message
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

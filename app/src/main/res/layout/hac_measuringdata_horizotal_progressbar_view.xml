@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:paddingHorizontal="@dimen/text_size_16">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_data_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="(-/-)" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_data_percent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
