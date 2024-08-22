@@ -37,7 +37,7 @@
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_reset"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <androidx.core.widget.NestedScrollView
@@ -47,9 +47,9 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/dimen_size_25">
+                    android:paddingBottom="200dp">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_GroupName_Style"
@@ -335,12 +335,11 @@
             onClickWithDebouncing="@{()->click.onResetClick()}"
             visible="@{stateVM.isOpened }"
             android:layout_marginTop="0dp"
-            android:layout_marginBottom="35dp"
+            android:layout_marginBottom="30dp"
             android:text="@string/button_reset_text"
             app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/refreshLayout" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_confirm"
@@ -348,12 +347,11 @@
             onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
             visible="@{stateVM.isOpened }"
             android:layout_marginTop="0dp"
-            android:layout_marginBottom="55dp"
+            android:layout_marginBottom="35dp"
             android:text="@string/button_save_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_reset" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -11,9 +11,10 @@ import com.shmedo.mcloudapp.R
  */
 data class DeviceStatusInfoGroupItem(
     val name: String = "",
-    val iconResId: Int = R.drawable.ic_mr702_device_info_serial_port_status
+    val iconResId: Int = R.drawable.ic_mr702_device_info_serial_port_status,
+    val hover: Boolean = true
 ) : BaseObservable(), ItemHover {
 
-    override var itemHover: Boolean = true
+    override var itemHover: Boolean = hover
 
 }

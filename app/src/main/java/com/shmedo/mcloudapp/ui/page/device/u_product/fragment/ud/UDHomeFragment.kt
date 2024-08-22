@@ -1,13 +1,10 @@
 package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
 import android.os.Bundle
-import android.view.View
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
-import com.drake.brv.listener.OnHoverAttachListener
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -31,18 +28,19 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
+import com.shmedo.mcloudapp.model.AlarmConfigModule
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
 import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
-import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
+import com.shmedo.mcloudapp.model.LoraConfigModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.RebootModule
-import com.shmedo.mcloudapp.model.RunningStatusModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
+import com.shmedo.mcloudapp.model.WorkModeModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment
@@ -118,8 +116,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         toolbarViewModel.toolbarIvActionVisible.set(true)
-        mHeadStates.productLightResId.set(R.drawable.ic_mr702)
-        mHeadStates.productGrayResId.set(R.drawable.ic_mr702)
+        mHeadStates.productLightResId.set(R.drawable.device_logo_niweiji)
+        mHeadStates.productGrayResId.set(R.drawable.device_logo_niweiji_gray)
         mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
         mHeadStates.productName.set(deviceInfo.productName)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
@@ -172,7 +170,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     private fun initModuleAdapter() {
         binding.rvModule.linear().setup { rv ->
             addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group)
-            addType<DeviceStatusInfoBasicItem>(R.layout.item_device_status_info_basic)
             addType<ConfigModuleTree>(R.layout.item_sub_config_module)
             onCreate {
                 when (itemViewType) {
@@ -210,34 +207,16 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            //可选项, 粘性监听器
-            onHoverAttachListener = object : OnHoverAttachListener {
-                override fun attachHover(v: View) {
-                    ViewCompat.setElevation(v, 10F) // 悬停时显示阴影
-                }
-
-                override fun detachHover(v: View) {
-                    ViewCompat.setElevation(v, 0F) // 非悬停时隐藏阴影
-                }
-            }
-
         }.models = getModuleList()
     }
 
     private fun getModuleList(): MutableList<Any> {
         val groupList = mutableListOf<Any>()
-
-        groupList.add(
-            DeviceStatusInfoGroupItem(
-                "测量数据",
-                iconResId = R.drawable.ic_mr702_device_info_serial_port_status
-            )
-        )
-
         groupList.add(
             DeviceStatusInfoGroupItem(
                 "设备信息",
-                iconResId = R.drawable.ic_mr702_device_info_serial_port_status
+                iconResId = R.drawable.ic_mr702_device_info_serial_port_status,
+                hover = false
             )
         )
         groupList.add(
@@ -247,7 +226,15 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         CommonModule(
                             name = "基本信息",
                             desc = "",
-                            resID = R.drawable.ic_sample,
+                            resID = R.drawable.ic_module_current_state,
+                            navId = R.id.action_global_to_commonRunningDeviceInfoFragment
+                        )
+                    ),
+                    ConfigModule(
+                        CommonModule(
+                            name = "网络信息",
+                            desc = "",
+                            resID = R.drawable.ic_module_network_info,
                             navId = R.id.action_global_to_commonRunningDeviceInfoFragment
                         )
                     ),
@@ -255,7 +242,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         CommonModule(
                             name = "状态信息",
                             desc = "",
-                            resID = R.drawable.ic_sample,
+                            resID = R.drawable.ic_basic_config,
                             navId = R.id.action_global_to_commonRunningDeviceInfoFragment
                         )
                     ),
@@ -263,15 +250,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         CommonModule(
                             name = "位置信息",
                             desc = "",
-                            resID = R.drawable.ic_sample,
-                            navId = R.id.action_global_to_commonRunningDeviceInfoFragment
-                        )
-                    ),
-                    ConfigModule(
-                        CommonModule(
-                            name = "传感信息",
-                            desc = "",
-                            resID = R.drawable.ic_sample,
+                            resID = R.drawable.ic_module_location_info,
                             navId = R.id.action_global_to_commonRunningDeviceInfoFragment
                         )
                     )
@@ -288,26 +267,26 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         val configModuleTree = ConfigModuleTree(
             configModules = arrayListOf(
                 ConfigModule(
-                    RunningStatusModule(
+                    WorkModeModule(
                         name = "工作模式",
                         desc = "",
-                        resID = R.drawable.ic_sample,
-                        navId = 0
+                        resID = R.drawable.ic_module_work_model,
+                        navId = R.id.action_m20SHomeFragment_to_m20SWorkModelFragment
                     )
                 ),
                 ConfigModule(
                     CommonModule(
                         name = "网络配置",
                         desc = "",
-                        resID = R.drawable.ic_sample,
-                        navId = 0
+                        resID = R.drawable.ic_module_network_setting,
+                        navId = R.id.action_global_udMobileNetworkParamFragment
                     )
                 ),
                 ConfigModule(
                     CommonModule(
                         name = "链路配置",
                         desc = "",
-                        resID = R.drawable.ic_sample,
+                        resID = R.drawable.ic_module_datacenter,
                         navId = 0
                     )
                 ),
@@ -315,7 +294,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     CommonModule(
                         name = "RTK测高",
                         desc = "",
-                        resID = R.drawable.ic_sample,
+                        resID = R.drawable.ic_module_satellite_communications,
                         navId = 0
                     )
                 ),
@@ -323,31 +302,31 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     CommonModule(
                         name = "传感配置",
                         desc = "",
-                        resID = R.drawable.ic_sample,
+                        resID = R.drawable.ic_module_sensor_setting,
                         navId = 0
                     )
                 ),
                 ConfigModule(
-                    CommonModule(
+                    LoraConfigModule(
                         name = "电台配置",
                         desc = "",
-                        resID = R.drawable.ic_sample,
-                        navId = 0
+                        resID = R.drawable.ic_module_lora,
+                        navId = R.id.action_global_to_loraSettingFragment
                     )
                 ),
                 ConfigModule(
-                    CommonModule(
+                    AlarmConfigModule(
                         name = "报警配置",
                         desc = "",
-                        resID = R.drawable.ic_sample,
-                        navId = 0
+                        resID = R.drawable.ic_module_alarm,
+                        navId = R.id.action_global_to_alarmSettingFragment
                     )
                 ),
                 ConfigModule(
                     TimeCalibrationModule(
                         name = "时间校准",
                         desc = "",
-                        resID = R.drawable.ic_time_calibration,
+                        resID = R.drawable.ic_module_time_calibration,
                         navId = 0
                     )
                 ),

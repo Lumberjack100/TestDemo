@@ -147,7 +147,7 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/icon_userinfo_check_version" />
+                    android:src="@drawable/ic_check_update_version" />
 
                 <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_ClickableItem_TitleStyle"

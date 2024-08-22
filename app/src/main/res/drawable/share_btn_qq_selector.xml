@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Button按下时的背景 -->
-    <item android:drawable="@drawable/share_qq_friend_pressed" android:state_pressed="true" />
-
-    <!-- Button正常状态下的背景 -->
-    <item android:drawable="@drawable/share_qq_friend" />
-</selector>

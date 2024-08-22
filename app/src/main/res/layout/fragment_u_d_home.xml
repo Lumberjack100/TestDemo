@@ -44,17 +44,47 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar"
             app:vm="@{stateVM}" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_module"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:clipToPadding="false"
-            android:paddingBottom="@dimen/dimen_size_15"
-            android:splitMotionEvents="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_device_info"
-            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_device_config_module" />
+            android:scrollbars="vertical">
 
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="@dimen/dimen_size_10"
+                    android:layout_marginStart="@dimen/dimen_size_10"
+                    android:drawablePadding="-80dp"
+                    android:singleLine="true"
+                    android:text="测量数据"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_17"
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/ic_mr702_device_info_serial_port_status" />
+
+                <include
+                    layout="@layout/include_radar_water_gauge_measure_data_layout"
+                    app:click="@{click}"
+                    app:stateVM="@{stateVM}" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_module"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:paddingBottom="@dimen/dimen_size_15"
+                    android:splitMotionEvents="false"
+                    tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_sub_config_module" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.core.widget.NestedScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

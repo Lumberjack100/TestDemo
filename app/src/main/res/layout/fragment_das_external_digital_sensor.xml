@@ -118,14 +118,14 @@
                         app:inputTypeFilter='@{"numberDecimal"}'
                         app:lengthFilter="@{10}" />
 
-                    <ImageView
+                     <androidx.appcompat.widget.AppCompatImageView
                         onClickWithDebouncing="@{()->click.onTriggerTipBtnClick()}"
                         visible="@{stateVM.isTriggerTipBtnSupport}"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/icon_userinfo_about"
+                        android:src="@drawable/ic_tip"
                         app:tint="@color/red" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -147,14 +147,14 @@
                         app:inputTypeFilter='@{"numberDecimal"}'
                         app:lengthFilter="@{10}" />
 
-                    <ImageView
+                     <androidx.appcompat.widget.AppCompatImageView
                         onClickWithDebouncing="@{()->click.onCorrectTipBtnClick()}"
                         visible="@{stateVM.isCorrectTipBtnSupport}"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/icon_userinfo_about"
+                        android:src="@drawable/ic_tip"
                         app:tint="@color/red" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -177,14 +177,14 @@
                         app:inputTypeFilter='@{"numberDecimal"}'
                         app:lengthFilter="@{10}" />
 
-                    <ImageView
+                     <androidx.appcompat.widget.AppCompatImageView
                         onClickWithDebouncing="@{()->click.onExtension1TipBtnClick()}"
                         visible="@{stateVM.isExtension1TipBtnSupport}"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/icon_userinfo_about"
+                        android:src="@drawable/ic_tip"
                         app:tint="@color/red" />
 
                     <com.google.android.material.textview.MaterialTextView
@@ -221,14 +221,14 @@
                         app:inputTypeFilter='@{"numberDecimal"}'
                         app:lengthFilter="@{10}" />
 
-                    <ImageView
+                     <androidx.appcompat.widget.AppCompatImageView
                         onClickWithDebouncing="@{()->click.onExtension2TipBtnClick()}"
                         visible="@{stateVM.isExtension2TipBtnSupport}"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/icon_userinfo_about"
+                        android:src="@drawable/ic_tip"
                         app:tint="@color/red" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -251,14 +251,14 @@
                         android:text="@={stateVM.extension3Value}"
                         app:lengthFilter="@{10}" />
 
-                    <ImageView
+                     <androidx.appcompat.widget.AppCompatImageView
                         onClickWithDebouncing="@{()->click.onExtension3TipBtnClick()}"
                         visible="@{stateVM.isExtension3TipBtnSupport}"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/icon_userinfo_about"
+                        android:src="@drawable/ic_tip"
                         app:tint="@color/red" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -281,14 +281,14 @@
                         app:inputTypeFilter='@{"numberDecimal"}'
                         app:lengthFilter="@{10}" />
 
-                    <ImageView
+                     <androidx.appcompat.widget.AppCompatImageView
                         onClickWithDebouncing="@{()->click.onExtension4TipBtnClick()}"
                         visible="@{stateVM.isExtension4TipBtnSupport}"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/icon_userinfo_about"
+                        android:src="@drawable/ic_tip"
                         app:tint="@color/red" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -310,14 +310,14 @@
                         app:inputTypeFilter='@{"numberDecimal"}'
                         app:lengthFilter="@{10}" />
 
-                    <ImageView
+                     <androidx.appcompat.widget.AppCompatImageView
                         onClickWithDebouncing="@{()->click.onExtension5TipBtnClick()}"
                         visible="@{stateVM.isExtension5TipBtnSupport}"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/icon_userinfo_about"
+                        android:src="@drawable/ic_tip"
                         app:tint="@color/red" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 

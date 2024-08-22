@@ -292,7 +292,7 @@ class NewNetDeviceListFragment : BaseFragment() {
     }
 
     override fun lazyLoadData() {
-        binding.pageRoot.autoRefresh()
+        binding.pageRoot.showLoading()
     }
 
     inner class ClickProxy : BaseClickProxy() {

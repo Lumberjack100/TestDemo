@@ -6,46 +6,140 @@
     <data>
 
         <variable
-            name="vm"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.CommonDeviceHomeViewModel" />
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.UDHomeViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDHomeFragment.ClickProxy" />
     </data>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackground"
-        android:gravity="center_vertical"
-        onClickWithDebouncing="@{()->click.onAdmeModeChooseClick()}"
-        android:paddingStart="@dimen/dimen_size_15"
-        android:paddingTop="@dimen/dimen_size_15"
-        android:paddingEnd="@dimen/dimen_size_15">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_switch_adme_config_model" />
+        android:layout_marginHorizontal="@dimen/dimen_size_10"
+        android:padding="@dimen/dimen_size_8"
+        app:drawable_radius="@{3}"
+        app:drawable_solidColor="@{@color/white}"
+        tools:background="@color/white">
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_config_model"
+            android:id="@+id/tv_water_surface_elevation_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="8dp"
-            android:text="@{vm.admeModeText}"
+            android:text="水面高程："
+            android:textColor="@color/text_color_666666"
+            android:textSize="@dimen/text_size_14"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_water_surface_elevation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{stateVM.waterSurfaceElevation}"
             android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_17"
-            tools:text="设备配置模式" />
+            android:textSize="@dimen/text_size_14"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/tv_water_surface_elevation_title"
+            app:layout_constraintTop_toTopOf="@+id/tv_water_surface_elevation_title"
+            tools:text="5.333m" />
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_air_distance_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_adme_home_down_triangle" />
+            android:layout_marginTop="5dp"
+            android:text="空高距离："
+            android:textColor="@color/text_color_666666"
+            android:textSize="@dimen/text_size_14"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_water_surface_elevation_title" />
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_air_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{stateVM.airDistance}"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_14"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/tv_air_distance_title"
+            app:layout_constraintTop_toTopOf="@+id/tv_air_distance_title"
+            tools:text="45.326m" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_installation_angle_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="安装角度："
+            android:textColor="@color/text_color_666666"
+            android:textSize="@dimen/text_size_14"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_air_distance_title" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_installation_angle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{stateVM.installationAngle}"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_14"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/tv_installation_angle_title"
+            app:layout_constraintTop_toTopOf="@+id/tv_installation_angle_title"
+            tools:text="89.3°" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_measurement_time_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="测量时间："
+            android:textColor="@color/text_color_666666"
+            android:textSize="@dimen/text_size_14"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_installation_angle_title" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_measurement_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@{stateVM.measurementTime}"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_14"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/tv_measurement_time_title"
+            app:layout_constraintTop_toTopOf="@+id/tv_measurement_time_title"
+            tools:text="2023-08-07 12:36:00" />
+
+        <!--        <com.google.android.material.textview.MaterialTextView-->
+        <!--            onClickWithDebouncing="@{()->click.onViewPointInMapClick()}"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:gravity="center"-->
+        <!--            android:paddingStart="12dp"-->
+        <!--            android:paddingTop="4dp"-->
+        <!--            android:paddingEnd="12dp"-->
+        <!--            android:paddingBottom="4dp"-->
+        <!--            android:text="查看"-->
+        <!--            android:textColor="@color/text_color_done"-->
+        <!--            android:textSize="@dimen/text_size_13"-->
+        <!--            app:drawable_radius="@{20}"-->
+        <!--            app:drawable_strokeColor="@{@color/text_color_done}"-->
+        <!--            app:drawable_strokeWidth="@{1}"-->
+        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+        <!--            app:layout_constraintEnd_toEndOf="parent" />-->
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

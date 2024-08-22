@@ -29,7 +29,7 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginStart="13dp"
-                android:src="@drawable/ic_search_project" />
+                android:src="@drawable/ic_search_device" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_search_hint"

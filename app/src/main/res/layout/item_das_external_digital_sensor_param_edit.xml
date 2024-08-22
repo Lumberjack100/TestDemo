@@ -22,7 +22,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/icon_userinfo_about"
+            android:src="@drawable/ic_tip"
             app:tint="@color/red" />
 
         <com.google.android.material.textview.MaterialTextView
