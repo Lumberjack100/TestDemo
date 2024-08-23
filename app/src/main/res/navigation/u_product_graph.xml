@@ -21,14 +21,6 @@
         tools:layout="@layout/fragment_universal_device_home">
 
         <action
-            android:id="@+id/action_uProductHomeFragment_to_uDProductSensorParamFragment"
-            app:destination="@id/uDProductSensorParamFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
             android:id="@+id/action_uProductHomeFragment_to_uIProductSensorParamFragment"
             app:destination="@id/uIProductSensorParamFragment"
             app:enterAnim="@anim/activity_open_enter"
@@ -43,6 +35,7 @@
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
             app:popExitAnim="@anim/activity_close_exit" />
+
         <action
             android:id="@+id/action_uProductHomeFragment_to_lR200SensorParamFragment"
             app:destination="@id/lR200SensorParamFragment"
@@ -51,35 +44,26 @@
             app:popEnterAnim="@anim/activity_close_enter"
             app:popExitAnim="@anim/activity_close_exit" />
 
-        <action
-            android:id="@+id/action_uProductHomeFragment_to_uDProductDataCenterHomeFragment"
-            app:destination="@id/uDProductDataCenterHomeFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
     </fragment>
-    <fragment
-        android:id="@+id/uDProductSensorParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.UDProductSensorParamFragment"
-        android:label="UDProductSensorParamFragment"
-        tools:layout="@layout/fragment_u_d_product_sensor_param" />
+
     <fragment
         android:id="@+id/uIProductSensorParamFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.UIProductSensorParamFragment"
         android:label="UIProductSensorParamFragment"
         tools:layout="@layout/fragment_u_i_product_sensor_param" />
+
     <fragment
         android:id="@+id/uRProductSensorParamFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.URProductSensorParamFragment"
         android:label="URProductSensorParamFragment"
         tools:layout="@layout/fragment_u_d_product_sensor_param" />
+
     <fragment
         android:id="@+id/lR200SensorParamFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.LR200SensorParamFragment"
         android:label="LR200SensorParamFragment"
         tools:layout="@layout/fragment_lr200_sensor_param">
+
         <action
             android:id="@+id/action_lR200SensorParamFragment_to_lR200InitialValueFragment"
             app:destination="@id/lR200InitialValueFragment"
@@ -87,6 +71,7 @@
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
             app:popExitAnim="@anim/activity_close_exit" />
+
     </fragment>
 
     <fragment
@@ -96,36 +81,10 @@
         tools:layout="@layout/fragment_lr200_initial_value" />
 
     <fragment
-        android:id="@+id/uDProductDataCenterHomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.UDProductDataCenterHomeFragment"
-        android:label="UDProductDataCenterHomeFragment"
-        tools:layout="@layout/fragment_universal_data_center_home">
-        <action
-            android:id="@+id/action_uDProductDataCenterHomeFragment_to_dataCenterParamFragment"
-            app:destination="@id/dataCenterParamFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-    </fragment>
-
-    <fragment
-        android:id="@+id/dataCenterParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment"
-        android:label="DataCenterParamFragment"
-        tools:layout="@layout/fragment_data_center_param" />
-
-    <fragment
         android:id="@+id/advancedSettingFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.common.BaseAdvancedSettingFragment"
         android:label="BaseAdvancedSettingFragment"
         tools:layout="@layout/fragment_advanced_setting" />
-
-    <fragment
-        android:id="@+id/capturedPictureViewFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.CapturedPictureViewFragment"
-        android:label="CapturedPictureViewFragment"
-        tools:layout="@layout/fragment_captured_picture_view" />
 
     <action
         android:id="@+id/action_global_to_queryDeviceDataFragment"
@@ -144,7 +103,7 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_universalDataCenterHomeFragment"
+        android:id="@+id/action_global_to_universalDataCenterHomeFragment"
         app:destination="@id/data_center_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
@@ -162,14 +121,6 @@
     <action
         android:id="@+id/action_global_to_alarmSettingFragment"
         app:destination="@id/alarm_setting_graph"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <action
-        android:id="@+id/action_global_to_capturedPictureViewFragment"
-        app:destination="@id/capturedPictureViewFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

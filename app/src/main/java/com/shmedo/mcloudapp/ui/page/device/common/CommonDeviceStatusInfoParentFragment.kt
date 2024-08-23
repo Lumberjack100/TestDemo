@@ -55,7 +55,7 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
             }
 
             ProductType.U_D_1,
-            ProductType.U_D_2 -> {//一体化雷达液位计
+            ProductType.U_D_2 -> {//一体化雷达泥位计
                 tabs.clear()
                 tabs.addAll(listOf("基本信息", "状态信息", "位置信息", "传感信息"))
             }
@@ -102,7 +102,7 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
             }
 
             ProductType.U_D_1,//
-            ProductType.U_D_2 -> {//一体化雷达液位计
+            ProductType.U_D_2 -> {//一体化雷达泥位计
                 fragmentList.add(
                     UProductBaseInfoFragment.newInstance().apply {
                         arguments = bundle

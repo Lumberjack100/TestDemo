@@ -34,6 +34,7 @@ import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
 import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
+import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.LoraConfigModule
@@ -44,6 +45,7 @@ import com.shmedo.mcloudapp.model.WorkModeModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment
+import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -119,6 +121,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         mHeadStates.productLightResId.set(R.drawable.device_logo_niweiji)
         mHeadStates.productGrayResId.set(R.drawable.device_logo_niweiji_gray)
         mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
+
         mHeadStates.productName.set(deviceInfo.productName)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
         mHeadStates.deviceName.set(if (deviceInfo.deviceName == deviceInfo.deviceToken) deviceInfo.productToken else deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
@@ -215,7 +218,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         groupList.add(
             DeviceStatusInfoGroupItem(
                 "设备信息",
-                iconResId = R.drawable.ic_mr702_device_info_serial_port_status,
+                iconResId = R.drawable.ic_mr702_device_info_running_data,
                 hover = false
             )
         )
@@ -260,7 +263,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         groupList.add(
             DeviceStatusInfoGroupItem(
                 "设备配置",
-                iconResId = R.drawable.ic_mr702_device_info_serial_port_status
+                iconResId = R.drawable.ic_mr702_interface_info_sensor_config
             )
         )
 
@@ -271,7 +274,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         name = "工作模式",
                         desc = "",
                         resID = R.drawable.ic_module_work_model,
-                        navId = R.id.action_m20SHomeFragment_to_m20SWorkModelFragment
+                        navId = R.id.action_global_to_udWorkModelParamFragment
                     )
                 ),
                 ConfigModule(
@@ -279,15 +282,14 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         name = "网络配置",
                         desc = "",
                         resID = R.drawable.ic_module_network_setting,
-                        navId = R.id.action_global_udMobileNetworkParamFragment
+                        navId = R.id.action_global_to_udMobileNetworkParamFragment
                     )
                 ),
                 ConfigModule(
-                    CommonModule(
-                        name = "链路配置",
+                    DataCenterModule(
                         desc = "",
                         resID = R.drawable.ic_module_datacenter,
-                        navId = 0
+                        navId = R.id.action_global_to_udProductDataCenterHomeFragment
                     )
                 ),
                 ConfigModule(
@@ -303,7 +305,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         name = "传感配置",
                         desc = "",
                         resID = R.drawable.ic_module_sensor_setting,
-                        navId = 0
+                        navId = R.id.action_global_to_udProductSensorParamFragment
                     )
                 ),
                 ConfigModule(
@@ -311,7 +313,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         name = "电台配置",
                         desc = "",
                         resID = R.drawable.ic_module_lora,
-                        navId = R.id.action_global_to_loraSettingFragment
+                        navId = R.id.action_global_to_udRadioParamFragment
                     )
                 ),
                 ConfigModule(
@@ -327,15 +329,19 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         name = "时间校准",
                         desc = "",
                         resID = R.drawable.ic_module_time_calibration,
-                        navId = 0
                     )
                 ),
-                ConfigModule(RebootModule(resID = R.drawable.ic_module_reboot)),
-                ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_advancedSettingFragment))
+                ConfigModule(RebootModule(desc = "", resID = R.drawable.ic_module_reboot)),
+                ConfigModule(
+                    AdvancedSettingsModule(
+                        desc = "",
+                        navId = R.id.action_global_to_advancedSettingFragment
+                    )
+                )
             )
         )
         if (communicateWay is BleConnect) {
-            configModuleTree.configModules.add(ConfigModule(CommandDebugConfigModule()))
+            configModuleTree.configModules.add(ConfigModule(CommandDebugConfigModule(desc = "")))
         }
         groupList.add(configModuleTree)
 
@@ -380,7 +386,20 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 queryTerminalTime()
             }
 
-            is CommandDebugConfigModule -> {
+            is DataCenterModule -> {
+                nav().navigate(
+                    module.navId,
+                    UniversalDataCenterHomeFragment.newBundleArguments(
+                        centerNum = 4,
+                        productType,
+                        communicateWay,
+                        deviceInfo,
+                        bleDevice
+                    )
+                )
+            }
+
+            is CommandDebugConfigModule -> {//指令调试
                 val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
                     true,
                     productType,

@@ -5,16 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
 import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
-import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
 import com.shmedo.core.data.repository.LoggerRepositoryImp
-import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.network.ext.errorMsg
-import com.shmedo.lib.network.response.DataResult
-import com.shmedo.lib.network.response.PageList
-import com.shmedo.lib.network.response.ResponseStatus
-import com.shmedo.lib.network.response.ResultSource
-import com.shmedo.lib.network.util.BaseURL
-import com.shmedo.mcloudapp.BuildConfig
 import com.shmedo.core.data.repository.NetDataRepository
 import com.shmedo.core.model.CloudDeviceData
 import com.shmedo.core.model.DeviceDebugAddress
@@ -23,7 +14,15 @@ import com.shmedo.core.model.DeviceInfo
 import com.shmedo.core.model.DeviceStatisticInfo
 import com.shmedo.core.model.FirmWareInfo
 import com.shmedo.core.model.ProductInfo
+import com.shmedo.lib.network.ext.errorMsg
+import com.shmedo.lib.network.response.DataResult
+import com.shmedo.lib.network.response.PageList
+import com.shmedo.lib.network.response.ResponseStatus
+import com.shmedo.lib.network.response.ResultSource
+import com.shmedo.lib.network.util.BaseURL
+import com.shmedo.mcloudapp.BuildConfig
 import com.shmedo.mcloudapp.model.SingleSelectionItem
+import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -113,7 +112,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
         }
     }
 
-    fun getAllProductTabList(companyID: Int) {
+    fun getAllProductTabList() {
         viewModelScope.launch {
             val pageSize = 100
             val tempList = mutableListOf<ProductInfo>()
@@ -167,8 +166,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                         add(SingleSelectionItem(name = "全部产品", isChecked = true))
 
                         tempList.filter { product ->
-                            product.deviceNum > 0 && // Filter out products with 0 devices
-                                    ProductType.valueByPrefix(product.productToken.uppercase()) != ProductType.UnKnown // Filter out unknown product types
+                            product.deviceNum > 0  // Filter out products with 0 devices
                         }.sortedBy { it.productName }
                             .mapTo(this) { product ->
                                 SingleSelectionItem(

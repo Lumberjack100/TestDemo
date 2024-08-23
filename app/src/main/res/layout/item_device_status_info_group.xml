@@ -19,6 +19,7 @@
         android:gravity="center_vertical">
 
         <com.google.android.material.textview.MaterialTextView
+            drawableStartResId='@{m.iconResId}'
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/dimen_size_10"
@@ -29,7 +30,7 @@
             android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_17"
             android:textStyle="bold"
-            app:drawableStartCompat="@drawable/ic_mr702_device_info_serial_port_status"
+            tools:drawableStartCompat="@drawable/ic_mr702_device_info_serial_port_status"
             tools:text="2023-12-27" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>

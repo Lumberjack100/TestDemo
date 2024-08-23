@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.u_product.fragment
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
 import android.graphics.Bitmap
 import android.graphics.Matrix

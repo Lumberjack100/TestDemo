@@ -45,7 +45,6 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.MR702HomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 /**
  * 创建者:   gonghe <br></br>
@@ -427,7 +426,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             ConfigModule(MR702TerminalParameterModule(navId = R.id.action_mR702HomeFragment_to_mR702TerminalParameterFragment))
         )
         moduleList.add(
-            ConfigModule(DeviceOperationModule(navId = R.id.action_global_mR702EquipmentOperationFragment))
+            ConfigModule(DeviceOperationModule(navId = R.id.action_global_to_mR702EquipmentOperationFragment))
         )
         moduleList.add(
             ConfigModule(NetworkCommunicationModule(navId = R.id.action_mR702HomeFragment_to_mR702NetworkCommunicationFragment))

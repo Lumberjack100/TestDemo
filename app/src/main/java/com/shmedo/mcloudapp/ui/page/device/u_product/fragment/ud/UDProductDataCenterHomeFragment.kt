@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.u_product.fragment
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
 import android.os.Bundle
 import android.view.View
@@ -123,7 +123,7 @@ class UDProductDataCenterHomeFragment : BaseIOTDeviceFragment() {
                     bleDevice
                 )
                 nav().navigate(
-                    R.id.action_uDProductDataCenterHomeFragment_to_dataCenterParamFragment,
+                    R.id.action_global_to_dataCenterParamFragment,
                     bundle
                 )
             }

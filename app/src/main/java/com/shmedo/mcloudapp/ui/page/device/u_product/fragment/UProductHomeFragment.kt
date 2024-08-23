@@ -38,13 +38,6 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
     override fun initData() {
         super.initData()
         when (productType) {
-            ProductType.U_D_1,//
-            ProductType.U_D_2 -> {//一体化雷达液位计
-                mHeadStates.productLightResId.set(R.drawable.device_logo_niweiji)
-                mHeadStates.productGrayResId.set(R.drawable.device_logo_niweiji_gray)
-                mHeadStates.isIOTPlatformStateVisible.set(false)
-            }
-
             ProductType.U_I_1 -> {//倾斜仪
                 mHeadStates.productLightResId.set(R.drawable.device_logo_qingxieyi)
                 mHeadStates.productGrayResId.set(R.drawable.device_logo_qingxieyi_gray)
@@ -112,7 +105,7 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
             ConfigModule(
                 DataCenterModule(
                     resID = R.drawable.ic_module_datacenter,
-                    navId = R.id.action_global_universalDataCenterHomeFragment
+                    navId = R.id.action_global_to_universalDataCenterHomeFragment
                 )
             )
         )
@@ -138,11 +131,6 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
             is SensorConfigModule -> {
                 var navId = configModule.navId
                 when (productType) {
-                    ProductType.U_D_1,//
-                    ProductType.U_D_2 -> {//一体化雷达液位计
-                        navId = R.id.action_uProductHomeFragment_to_uDProductSensorParamFragment
-                    }
-
                     ProductType.U_I_1 -> {//倾斜仪
                         navId = R.id.action_uProductHomeFragment_to_uIProductSensorParamFragment
                     }
@@ -169,15 +157,9 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
             }
 
             is DataCenterModule -> {
-                var navId = configModule.navId
+                val navId = configModule.navId
                 var centerNum = 3
                 when (productType) {
-                    ProductType.U_D_1,//
-                    ProductType.U_D_2 -> {//一体化雷达液位计
-                        navId = R.id.action_uProductHomeFragment_to_uDProductDataCenterHomeFragment
-                        centerNum = 3
-                    }
-
                     ProductType.U_I_1,//倾斜仪
                     ProductType.U_R_1 //一体化雨量计
                     -> {

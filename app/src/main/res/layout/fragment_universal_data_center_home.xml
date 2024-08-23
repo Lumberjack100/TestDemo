@@ -80,7 +80,7 @@
                         android:layout_marginBottom="@dimen/dimen_size_3"
                         android:text="* 通过外接的北斗数传终端，传输采集的传感器数据"
                         android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_11" />
+                        android:textSize="@dimen/text_size_12" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"

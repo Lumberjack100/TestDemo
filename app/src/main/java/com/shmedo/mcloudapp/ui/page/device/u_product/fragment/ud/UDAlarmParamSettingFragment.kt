@@ -1,7 +1,8 @@
-package com.shmedo.mcloudapp.ui.page.device.common
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -11,12 +12,10 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.AlarmMonitorPointEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.AlarmReportIntervalEntity
-import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.AlarmTriggerValueEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.AlarmMonitorPointInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.AlarmReportIntervalInfo
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.AlarmTriggerValueInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
@@ -24,39 +23,39 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentAlarmParamSettingBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.databinding.FragmentUdAlarmParamSettingBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.AlarmParamSettingViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.UDAlarmParamSettingViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
 
-class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentAlarmParamSettingBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: AlarmParamSettingViewModel
+/**
+ * @author：gonghe
+ * @time: 2024/8/23
+ * @desc: 一体化雷达泥位计报警参数设置
+ *
+ */
+class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentUdAlarmParamSettingBinding
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: UDAlarmParamSettingViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val monitorPointList: List<String> = (1..10).map { it.toString() }
-    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
+
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_alarm_param_setting,
+            R.layout.fragment_ud_alarm_param_setting,
             BR.stateVM,
             mStates
         )
@@ -65,14 +64,12 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentAlarmParamSettingBinding
+        binding = getBinding() as FragmentUdAlarmParamSettingBinding
         binding.llToolbar.toolbar.title = "报警参数设置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         initRefresh()
@@ -98,27 +95,8 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
     private fun initTitles() {
         when (productType) {
-            ProductType.GNSS_M_1,//M20S
-            ProductType.GNSS_M_2,
-            ProductType.U_R_1 //一体化雨量计
-            -> {
-                mStates.firstAlarmThresholdTitle.set("一级报警阈值(毫米)")
-                mStates.secondAlarmThresholdTitle.set("二级报警阈值(毫米)")
-                mStates.thirdAlarmThresholdTitle.set("三级报警阈值(毫米)")
-                mStates.fourthAlarmThresholdTitle.set("四级报警阈值(毫米)")
-
-                mStates.firstAlarmReportIntervalTitle.set("一级报警间隔(秒)")
-                mStates.secondAlarmReportIntervalTitle.set("二级报警间隔(秒)")
-                mStates.thirdAlarmReportIntervalTitle.set("三级报警间隔(秒)")
-                mStates.fourthAlarmReportIntervalTitle.set("四级报警间隔(秒)")
-            }
-
-            ProductType.U_I_1 -> {//倾斜仪
-                mStates.firstAlarmThresholdTitle.set("一级报警阈值(度)")
-                mStates.secondAlarmThresholdTitle.set("二级报警阈值(度)")
-                mStates.thirdAlarmThresholdTitle.set("三级报警阈值(度)")
-                mStates.fourthAlarmThresholdTitle.set("四级报警阈值(度)")
-
+            ProductType.U_D_1,//
+            ProductType.U_D_2 -> {//一体化雷达泥位计
                 mStates.firstAlarmReportIntervalTitle.set("一级报警间隔(秒)")
                 mStates.secondAlarmReportIntervalTitle.set("二级报警间隔(秒)")
                 mStates.thirdAlarmReportIntervalTitle.set("三级报警间隔(秒)")
@@ -179,15 +157,6 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         //三级报警语音编号  [1~255] 默认 2
         mStates.thirdAlarmVoice.set("2")
         //四级报警语音编号  [1~255] 默认 1
-
-        //一级报警阈值 默认40
-        mStates.firstAlarmThreshold.set("40")
-        //二级报警阈值 默认20
-        mStates.secondAlarmThreshold.set("20")
-        //三级报警阈值 默认10
-        mStates.thirdAlarmThreshold.set("10")
-        //四级报警阈值 默认5
-        mStates.fourthAlarmThreshold.set("5")
 
         //一级报警上报间隔 默认60,单位s
         mStates.firstAlarmReportInterval.set("60")
@@ -275,50 +244,6 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
             return
         }
 
-        if (mStates.firstAlarmThreshold.get().isEmpty()) {
-            showMessageDialog("请输入一级报警阈值!")
-            return
-        }
-        try {
-            val value = mStates.firstAlarmThreshold.get().toDouble()
-        } catch (ex: Exception) {
-            showMessageDialog("请输入正确的一级报警阈值!")
-            return
-        }
-
-        if (mStates.secondAlarmThreshold.get().isEmpty()) {
-            showMessageDialog("请输入二级报警阈值!")
-            return
-        }
-        try {
-            val value = mStates.secondAlarmThreshold.get().toDouble()
-        } catch (ex: Exception) {
-            showMessageDialog("请输入正确的二级报警阈值!")
-            return
-        }
-
-        if (mStates.thirdAlarmThreshold.get().isEmpty()) {
-            showMessageDialog("请输入三级报警阈值!")
-            return
-        }
-        try {
-            val value = mStates.thirdAlarmThreshold.get().toDouble()
-        } catch (ex: Exception) {
-            showMessageDialog("请输入正确的三级报警阈值!")
-            return
-        }
-
-        if (mStates.fourthAlarmThreshold.get().isEmpty()) {
-            showMessageDialog("请输入四级报警阈值!")
-            return
-        }
-        try {
-            val value = mStates.fourthAlarmThreshold.get().toDouble()
-        } catch (ex: Exception) {
-            showMessageDialog("请输入正确的四级报警阈值!")
-            return
-        }
-
         if (mStates.firstAlarmReportInterval.get().isEmpty()) {
             showMessageDialog("请输入一级报警上报间隔!")
             return
@@ -379,26 +304,6 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         )
         commandItems.add(command)
 
-        val triggerValueEntity =
-            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) AlarmTriggerValueEntity(
-                devlevel1 = mStates.firstAlarmThreshold.get(),
-                devlevel2 = mStates.secondAlarmThreshold.get(),
-                devlevel3 = mStates.thirdAlarmThreshold.get(),
-                devlevel4 = mStates.fourthAlarmThreshold.get()
-            )
-            else
-                AlarmTriggerValueEntity(
-                    level1 = mStates.firstAlarmThreshold.get(),
-                    level2 = mStates.secondAlarmThreshold.get(),
-                    level3 = mStates.thirdAlarmThreshold.get(),
-                    level4 = mStates.fourthAlarmThreshold.get()
-                )
-        val triggerValueCommand = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE,
-            triggerValueEntity.toCommandString()
-        )
-        commandItems.add(triggerValueCommand)
-
         val reportIntervalEntity = AlarmReportIntervalEntity(
             level1 = mStates.firstAlarmReportInterval.get(),
             level2 = mStates.secondAlarmReportInterval.get(),
@@ -424,11 +329,6 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
         var command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL
-        )
-        commandItems.add(command)
-
-        command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE
         )
         commandItems.add(command)
 
@@ -463,27 +363,6 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE -> {
-                val result = iotParseManager.parse<AlarmTriggerValueInfo>(
-                    cmdStr,
-                    IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE
-                )
-                when (result) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "查询报警阈值出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        initAlarmTriggerValueData(result.data)
-                    }
-                }
-            }
-
             IOTCommandType.MD_GET_ALRAM_BROADCAST_REPORT_INTERVAL -> {
                 val result = iotParseManager.parse<AlarmReportIntervalInfo>(
                     cmdStr,
@@ -509,22 +388,6 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置语音参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("保存成功")
-                        }
-                    }
-                }
-            }
-
-            IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE -> {//
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "设置报警阈值出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -570,40 +433,6 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
             mStates.fourthAlarmVoice.set(info.level4)
         } catch (e: Exception) {
             Timber.e(e)
-        }
-    }
-
-    /**
-     * 初始化报警阈值数据
-     */
-    private fun initAlarmTriggerValueData(info: AlarmTriggerValueInfo) {
-        decimalFormat.applyPattern("#.###")
-        if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) {
-            info.devlevel1.toDoubleOrNull()?.let {
-                mStates.firstAlarmThreshold.set(decimalFormat.format(it))
-            }
-            info.devlevel2.toDoubleOrNull()?.let {
-                mStates.secondAlarmThreshold.set(decimalFormat.format(it))
-            }
-            info.devlevel3.toDoubleOrNull()?.let {
-                mStates.thirdAlarmThreshold.set(decimalFormat.format(it))
-            }
-            info.devlevel4.toDoubleOrNull()?.let {
-                mStates.fourthAlarmThreshold.set(decimalFormat.format(it))
-            }
-        } else {
-            info.level1.toDoubleOrNull()?.let {
-                mStates.firstAlarmThreshold.set(decimalFormat.format(it))
-            }
-            info.level2.toDoubleOrNull()?.let {
-                mStates.secondAlarmThreshold.set(decimalFormat.format(it))
-            }
-            info.level3.toDoubleOrNull()?.let {
-                mStates.thirdAlarmThreshold.set(decimalFormat.format(it))
-            }
-            info.level4.toDoubleOrNull()?.let {
-                mStates.fourthAlarmThreshold.set(decimalFormat.format(it))
-            }
         }
     }
 

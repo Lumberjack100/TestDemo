@@ -46,8 +46,8 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
     private var radioChannelList: List<String> = emptyList()
-    private val transmitPowerList: List<String> = (0..22).map { it.toString() }//发射功率
-    private val airSpeedList: List<String> = arrayListOf("0", "1", "2")//空中速率
+    private val transmitPowerList: List<String> = (10..22).map { it.toString() }//发射功率
+    private val airSpeedList: List<String> = (1..3).map { it.toString() }//空中速率
 
     override fun initViewModel() {
         super.initViewModel()
@@ -77,6 +77,10 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        //451.15-470.15，1MHz步进
+        radioChannelList = (451150..470150 step 1000).map {
+            (it.toFloat() / 1000).toString() + "MHz"
+        }
         resetParams()
     }
 
@@ -201,36 +205,14 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun resetParams() {
-        when (productType) {
-            ProductType.COLLECTOR_G_0 -> {//自组网网关 载波频率以 450.15Mhz 为起始，间隔 1Mhz，进行信道划分，共划分 20 个信道
-                //发送默认 13 即 463.15MHz
-                mStates.sendChannel.set(radioChannelList[13])
-                //接收默认 6 即 456.15MHz
-                mStates.receiveChannel.set(radioChannelList[6])
-            }
-
-            ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {//M20S 载波频率以 450.15Mhz 为起始，间隔 1Mhz，进行信道划分，共划分 20 个信道
-                //发送默认 6 即 456.15MHz
-                mStates.sendChannel.set(radioChannelList[6])
-                //接收默认 13 即 463.15MHz
-                mStates.receiveChannel.set(radioChannelList[13])
-            }
-
-            ProductType.LB20S -> {//LB20S 载波频率以 451.125 为起始，间隔 1Mhz，进行信道划分，共划分 30 个信道
-                //发送默认 10 即 461.125MHz
-                mStates.sendChannel.set(radioChannelList[10])
-                //接收默认 20 即 471.125MHz
-                mStates.receiveChannel.set(radioChannelList[20])
-            }
-
-            else -> {
-
-            }
-        }
-        //发射功率 [0~22] 默认22
+        //发送默认 10 即 461.125MHz
+        mStates.sendChannel.set(radioChannelList[0])
+        //接收默认 20 即 471.125MHz
+        mStates.receiveChannel.set(radioChannelList[0])
+        //发射功率 [10~22] 默认22
         mStates.transmitPower.set(transmitPowerList[transmitPowerList.lastIndex])
-        //空中速率  [0~2] 默认1
-        mStates.airSpeed.set(airSpeedList[1])
+        //空中速率  [1~3] 默认1
+        mStates.airSpeed.set(airSpeedList[0])
     }
 
     /**
@@ -238,19 +220,14 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
      */
     private fun disableOrEnable(sw: String = "1") {
         commandItems.clear()
-        val command =
-            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL,
-                "sw=$sw"
-            )
-            else IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_ALRAM_BROADCAST_SWITCH,
-                "sw=$sw"
-            )
-        commandItems.add(command)
+//        val command = IOTCommandUtil.getCommand(
+//            IOTCommandType.MD_SET_ALRAM_BROADCAST_SWITCH,
+//            "sw=$sw"
+//        )
+//        commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+//        showLoadingDialog(StringUtils.getString(R.string.processing))
+//        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun initSaveCommand() {
@@ -262,23 +239,10 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
             airbaud = mStates.airSpeed.get(),
         )
         //devicetype  添加且赋值为1时，表示配置自组网网关
-        var command = if (productType == ProductType.LB20S) IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_RADIO_CTRL,
-            "${entity.toCommandString()}&devicetype=1"
-        ) else IOTCommandUtil.getCommand(
+        val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_SET_RADIO_CTRL,
             entity.toCommandString()
         )
-        commandItems.add(command)
-
-        command = if (productType == ProductType.LB20S) IOTCommandUtil.getCommand(
-            IOTCommandType.MD_DEL_TERMINAL_ID,
-            "type=0&devicetype=1"
-        ) else
-            IOTCommandUtil.getCommand(
-                IOTCommandType.MD_DEL_TERMINAL_ID,
-                "type=0"
-            )
         commandItems.add(command)
 
 

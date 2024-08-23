@@ -1,8 +1,9 @@
-package com.shmedo.mcloudapp.ui.page.device.u_product.fragment
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -10,8 +11,6 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.MudLevelMeterSensorEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
@@ -23,15 +22,16 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentUDProductSensorParamBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.UDProductSensorParamViewModel
+import com.shmedo.mcloudapp.databinding.FragmentUDProductSensorParamBinding
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.UDSensorParamViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -46,23 +46,19 @@ import java.util.Locale
  * @desc: 泥位计传感参数
  *
  */
-class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
+class UDSensorParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUDProductSensorParamBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: UDProductSensorParamViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: UDSensorParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
     private val decimalFormat = DecimalFormat("#.###", DecimalFormatSymbols(Locale.getDefault()))
 
-    private val measureIntervalList = arrayListOf("1", "2", "5", "10")
-    private val averageTimesList = arrayListOf("2", "3", "5", "10")
-    private val triggerCaptureLevelList =
-        arrayListOf("无触发", "一级报警", "二级报警", "三级报警", "四级报警")
-    private val imageResolutionList = arrayListOf("640x480", "1920x1080", "2560x1920")
+    private val captureFrequencyList =
+        arrayListOf("15分钟/次", "30分钟/次", "1小时/次", " 2 小时/次")
+    private val imageResolutionList = arrayListOf("1025x768", "1280x960", "1600x1200", "1920x1080")
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -79,11 +75,9 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentUDProductSensorParamBinding
         binding.llToolbar.toolbar.title = "传感设置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         initRefresh()
@@ -108,43 +102,10 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
 
     inner class ClickProxy : BaseClickProxy() {
         /**
-         * 测量间隔
+         * 海拔高度
          */
-        fun onMeasureIntervalClick() {
-            val selectedIndex = measureIntervalList.indexOf(mStates.measureInterval.get())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "", measureIntervalList.toTypedArray(),
-                    null, selectedIndex,
-                    { position, text ->
-                        mStates.measureInterval.set(text)
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
-        }
+        fun onGoToAltitudeClick() {
 
-        /**
-         * 平均次数
-         */
-        fun onAverageTimesClick() {
-            val selectedIndex = averageTimesList.indexOf(mStates.averageTimes.get())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "", averageTimesList.toTypedArray(),
-                    null, selectedIndex,
-                    { position, text ->
-                        mStates.averageTimes.set(text)
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
         }
 
         /**
@@ -168,20 +129,20 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
         }
 
         /**
-         * 触发抓拍级别
+         * 抓拍频率
          */
-        fun onTriggerCaptureLevelClick() {
-            val selectedIndex = triggerCaptureLevelList.indexOf(mStates.triggerCaptureLevel.get())
+        fun onCaptureFrequencyClick() {
+            val selectedIndex = captureFrequencyList.indexOf(mStates.captureFrequency.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", triggerCaptureLevelList.toTypedArray(),
+                    "", captureFrequencyList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
-                        mStates.triggerCaptureLevel.set(text)
+                        mStates.captureFrequency.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -225,30 +186,37 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun resetParams() {
-        mStates.measureInterval.set(measureIntervalList[0])//测量间隔：1s、2s、5s、10s；默认为1s，当前置灰不可配置
-        mStates.averageTimes.set(averageTimesList[2])
-        mStates.triggerCaptureLevel.set(triggerCaptureLevelList[triggerCaptureLevelList.lastIndex])
-        mStates.imageResolution.set(imageResolutionList[1])
+        mStates.measureInterval.set("5")//测量间隔
+        mStates.installAngleOffsetThreshold.set("3")//安装角度偏移阈值
+        mStates.captureFrequency.set(captureFrequencyList[captureFrequencyList.lastIndex])
+        mStates.imageResolution.set(imageResolutionList[2])
     }
 
     private fun initSaveCommand() {
-        if (mStates.installHeight.get().isEmpty()) {
-            showMessageDialog("请输入安装高度!")
+        if (mStates.measureInterval.get().isEmpty()) {
+            showMessageDialog("请输入测量间隔!")
+            return
+        }
+        if (mStates.installAngleOffsetThreshold.get().isEmpty()) {
+            showMessageDialog("请输入安装角度偏移阈值!")
             return
         }
         try {
-            val value = mStates.installHeight.get().toDouble()
-
+            val value = mStates.installAngleOffsetThreshold.get().toInt()
+            if (value > 360) {
+                showMessageDialog("安装角度偏移阈值不能大于360!")
+                return
+            }
         } catch (ex: Exception) {
-            showMessageDialog("请输入正确的安装高度!")
+            showMessageDialog("请输入正确的安装角度偏移阈值!")
             return
         }
 
         val entity = MudLevelMeterSensorEntity(
-            height = mStates.installHeight.get(),
+
             //gap = mStates.measureInterval.get(),  当前置灰不可配置
             //times = mStates.averageTimes.get(),  当前置灰不可配置
-            capture_level = triggerCaptureLevelList.indexOf(mStates.triggerCaptureLevel.get())
+            capture_level = captureFrequencyList.indexOf(mStates.captureFrequency.get())
                 .toString(),
             pixx = mStates.imageResolution.get().split("x")[0],
             pixy = mStates.imageResolution.get().split("x")[1]
@@ -316,7 +284,7 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_SET_SENSOR_INITIAL -> {//设置开关量传感器
+            IOTCommandType.MD_SET_SENSOR_INITIAL -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
 
@@ -351,12 +319,12 @@ class UDProductSensorParamFragment : BaseIOTDeviceFragment() {
                     return@launchWithViewLifecycle
                 }
                 val info = commonCurrentStateInfoList[0]
-                info.height.toDoubleOrNull()?.let {
-                    mStates.installHeight.set(decimalFormat.format(it))
-                }
+//                info.height.toDoubleOrNull()?.let {
+//                    mStates.installHeight.set(decimalFormat.format(it))
+//                }
                 //mStates.measureInterval.set(info.gap)
                 //mStates.averageTimes.set(info.times)
-                mStates.triggerCaptureLevel.set(if (info.capture_level.toInt() < triggerCaptureLevelList.size) triggerCaptureLevelList[info.capture_level.toInt()] else triggerCaptureLevelList.last())
+                mStates.captureFrequency.set(if (info.capture_level.toInt() < captureFrequencyList.size) captureFrequencyList[info.capture_level.toInt()] else captureFrequencyList.last())
                 mStates.imageResolution.set("${info.pixx}x${info.pixy}")
 
             } catch (e: Exception) {

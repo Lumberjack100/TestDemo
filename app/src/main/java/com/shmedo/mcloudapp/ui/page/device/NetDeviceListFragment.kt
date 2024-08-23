@@ -66,7 +66,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     override fun initData() {
         companyID = userInfo.companyID
         productID = -1
-        deviceRequestViewModel.getAllProductTabList(userInfo.companyID)
+        deviceRequestViewModel.getAllProductTabList()
         binding.page.showLoading(false)
     }
 
@@ -200,7 +200,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         if (companyID != userInfo.companyID) {
             companyID = userInfo.companyID
             productID = -1
-            deviceRequestViewModel.getAllProductTabList(userInfo.companyID)
+            deviceRequestViewModel.getAllProductTabList()
         }
         deviceRequestViewModel.getDeviceStatByCompanyID(
             userInfo.companyID,
