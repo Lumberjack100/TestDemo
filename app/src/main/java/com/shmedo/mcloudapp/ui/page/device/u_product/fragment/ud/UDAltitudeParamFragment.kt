@@ -8,7 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDAltitudeParamViewModel
-
+/**
+ * @author：gonghe
+ * @time: 2024/4/26
+ * @desc: 泥位计传感参数
+ *
+ */
 class UDAltitudeParamFragment : Fragment() {
 
     companion object {
@@ -17,11 +22,6 @@ class UDAltitudeParamFragment : Fragment() {
 
     private val viewModel: UDAltitudeParamViewModel by viewModels()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        // TODO: Use the ViewModel
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
