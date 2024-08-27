@@ -454,7 +454,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
             mStates.curSensorModel.apply {
                 nickName = "自定义传感器-${mStates.modelName.get()}"
                 sensorType = mStates.modelToken.get()
-                sensorName = "自定义传感器$customSize-${mStates.modelName.get()}"
+                sensorName = "自定义传感器${customSize + 1}-${mStates.modelName.get()}"
                 modelToken = mStates.modelToken.get()
                 modelName = mStates.modelName.get()
             }

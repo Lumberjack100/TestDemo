@@ -128,7 +128,6 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            android:enabled="false"
                             android:hint="请输入"
                             android:text="@={stateVM.address}"
                             app:inputTypeFilter='@{"number"}'
