@@ -1,22 +1,26 @@
 package com.shmedo.mcloudapp.ui.viewmodel.state
 
 import androidx.lifecycle.ViewModel
-import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRRS485Port1SensorParam
+import com.shmedo.mcloudapp.model.SensorModel
+import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 class MR702RS485Port1SensorParamViewModel : ViewModel() {
-    val sensorParamWrapper= NonNullObservableField(MRRS485Port1SensorParam())
-
     val isEditable = NonNullObservableField(false)
-    val sensorAddress = NonNullObservableField("")
-    val sensorType = NonNullObservableField("")
-    val sensorName = NonNullObservableField("")
+    val sensorParamWrapper= NonNullObservableField(MRRS485Port1SensorParam())
+    var curSensorModel: SensorModel = SensorModel()
+
+
+    val modelName = NonNullObservableField("")
     val modelToken = NonNullObservableField("")
+    val address = NonNullObservableField("")
     val baudRate = NonNullObservableField("")
     val dataBit = NonNullObservableField("")
     val checkBit = NonNullObservableField("")
     val stopBit = NonNullObservableField("")
 
+    val modelFieldName = NonNullObservableField("")//采集项名称
+    val modelFieldUnit = NonNullObservableField("")//采集项单位
     val hydrologicalIdentification = NonNullObservableField("")//水文识别
     val collectionInstructions= NonNullObservableField("")//采集指令
     val ratio = NonNullObservableField("9600")// 倍率

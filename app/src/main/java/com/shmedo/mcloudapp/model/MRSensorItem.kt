@@ -17,6 +17,5 @@ data class MRSensorItem(
     val sensorType: String = "",//传感器类型
     val sensorName: String = "",//传感器名称
     val modelToken: String = "",//物模型
-    var modelFieldList: List<ModelField> = listOf(),//物模型字段
     var isShowDel: Boolean = false,//是否显示删除按钮
 ) : Parcelable

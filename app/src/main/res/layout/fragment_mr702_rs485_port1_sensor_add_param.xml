@@ -68,7 +68,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         android:enabled="@{stateVM.isCustomSensor &amp;&amp; stateVM.isFirstModelField}"
                         android:hint="请输入"
-                        android:text="@={stateVM.sensorName}"
+                        android:text="@={stateVM.modelName}"
                         android:textColor="@color/colorPrimary"
                         app:lengthFilter="@{10}"
                         tools:text="MODO渗压计" />
@@ -107,7 +107,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         android:enabled="@{ stateVM.isFirstModelField}"
                         android:hint="请输入"
-                        android:text="@={stateVM.sensorAddress}"
+                        android:text="@={stateVM.address}"
                         app:inputTypeFilter='@{"number"}'
                         app:lengthFilter="@{5}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -205,6 +205,7 @@
                         tools:text="水位" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
+
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">

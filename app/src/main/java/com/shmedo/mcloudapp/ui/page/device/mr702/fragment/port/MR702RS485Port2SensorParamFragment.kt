@@ -114,16 +114,16 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
         toolbarViewModel.toolbarIvActionVisible.set(!isAdd)
 
         mStates.sensorType.set(sensorItem.sensorType)
-        mStates.sensorName.set(sensorItem.sensorName)
+        mStates.modelName.set(sensorItem.sensorName)
         mStates.modelToken.set(sensorItem.modelToken)
 
-        initDefaultParam()
+        resetDefaultParam()
     }
 
     /**
      * 重置采集项
      */
-    private fun initDefaultParam() {
+    private fun resetDefaultParam() {
         mStates.channelNumber.set("")//通道编号
         mStates.hydrologicalIdentification.set("")//水文标识
 

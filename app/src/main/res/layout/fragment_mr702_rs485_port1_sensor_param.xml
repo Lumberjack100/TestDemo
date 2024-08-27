@@ -95,7 +95,7 @@
                         <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             android:drawableEnd="@null"
-                            android:text="@{stateVM.sensorName}"
+                            android:text="@{stateVM.modelName}"
                             tools:text="MODO渗压计" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -130,7 +130,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             android:enabled="false"
                             android:hint="请输入"
-                            android:text="@={stateVM.sensorAddress}"
+                            android:text="@={stateVM.address}"
                             app:inputTypeFilter='@{"number"}'
                             app:lengthFilter="@{5}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
