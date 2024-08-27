@@ -101,7 +101,6 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            android:enabled="@{stateVM.isAdd}"
                             android:hint="数值范围[1-16]"
                             android:text="@={stateVM.channelNumber}"
                             app:inputTypeFilter='@{"number"}'

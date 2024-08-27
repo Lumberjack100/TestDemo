@@ -6,6 +6,7 @@ import com.blankj.utilcode.util.ResourceUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
+import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
@@ -365,19 +366,31 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
     fun loadExternalConfig() {
         viewModelScope.launch(Dispatchers.Default) {
             try {
+                val originalConfigJson = ResourceUtils.readAssets2String("app_config.json")
+                val originalConfigInfo =
+                    MoshiUtil.fromJson<AppConfigInfo>(originalConfigJson) ?: AppConfigInfo()
                 if (MmkvCacheUtil.getAppConfigInfo() == null) {
-                    val originalConfigJson = ResourceUtils.readAssets2String("app_config.json")
                     MmkvCacheUtil.setAppConfigInfo(originalConfigJson)
+                } else {
+                    val cacheAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
+                    val originalDate = TimeUtils.string2Date(originalConfigInfo.lastTime)
+                    val cacheDate = TimeUtils.string2Date(cacheAppConfigInfo.lastTime)
+                    //资源配置文件较新，则更新本地缓存配置
+                    if (cacheDate.before(originalDate)) {
+                        MmkvCacheUtil.setAppConfigInfo(originalConfigJson)
+                    }
                 }
+
+                //与远程配置文件比较
                 val amsToken: String = appConfigLogin() ?: return@launch
                 MmkvCacheUtil.setAmsToken(amsToken)
 
                 val remoteAppConfigInfo: AppConfigInfo = queryConfigInfoItem() ?: return@launch
-                val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
+                val cacheAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
 
                 val remoteDate = TimeUtils.string2Date(remoteAppConfigInfo.lastTime)
-                val localDate = TimeUtils.string2Date(localAppConfigInfo.lastTime)
-                //本地配置文件最新，则更新远程配置
+                val localDate = TimeUtils.string2Date(cacheAppConfigInfo.lastTime)
+                //本地配置文件较新，则更新远程配置
                 if (remoteAppConfigInfo.configPara.isEmpty()
                     || remoteAppConfigInfo.configPara == "{}"
                     || remoteDate.before(localDate)
@@ -385,12 +398,12 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
                     //更新远程配置
                     updateConfigInfoItem(
                         remoteAppConfigInfo.id,
-                        localAppConfigInfo.configPara.replace("\\", "")
+                        cacheAppConfigInfo.configPara.replace("\\", "")
                     )
                     return@launch
                 }
 
-                //远程配置文件最新，则更新本地配置
+                //远程配置文件较新，则更新本地配置
                 MmkvCacheUtil.setAppConfigInfo(remoteAppConfigInfo)
             } catch (e: Exception) {
                 Timber.e(e)

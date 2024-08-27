@@ -95,6 +95,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
         mStates.collectionTimes.set("3")//采集次数
         mStates.noResponseTimes.set("3")//无应答次数
         mStates.delayDuration.set("10")//延时时间
+
         mStates.collectorType.set(collectorTypeList[0])
         mStates.collectorAddress.set("1")//采集器地址
         mStates.baudRate.set("9600")  //默认波特率
