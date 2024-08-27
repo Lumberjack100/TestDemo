@@ -34,6 +34,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorParamBinding
+import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -44,6 +45,7 @@ import com.shmedo.mcloudapp.model.MRRS485Port1
 import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port1SensorParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.Dispatchers
@@ -57,6 +59,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     private lateinit var binding: FragmentMr702Rs485Port1SensorParamBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: MR702RS485Port1SensorParamViewModel
+    private lateinit var portHomeViewModel: MR702PortHomeViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private lateinit var sensorItem: MRSensorItem
@@ -79,6 +82,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
         super.initViewModel()
         toolbarViewModel = getFragmentScopeViewModel()
         mStates = getFragmentScopeViewModel()
+        portHomeViewModel = getActivityScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -132,20 +136,23 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
         }
         binding.llToolbar.toolbar.title = "RS485-1-${sensorItem.sensorName}"
 
-        if (sensorItem.modelFieldList.isNotEmpty()) {
+        portHomeViewModel.modelTokenToSensorModelMap[sensorItem.modelToken]?.let {
+            mStates.curSensorModel = it
+        }
+        if (mStates.curSensorModel.modelFieldList.isNotEmpty()) {
             tabList.clear()
-            tabList.addAll(sensorItem.modelFieldList.map { it.fieldName })
+            tabList.addAll(mStates.curSensorModel.modelFieldList.map { it.fieldName })
             initTabLayout()
         }
-        mStates.sensorName.set(sensorItem.sensorName)
+        mStates.modelName.set(sensorItem.sensorName)
         mStates.modelToken.set(sensorItem.modelToken)
+        mStates.address.set("1")//传感器地址,默认1
         resetDefaultModelField()
     }
     /**
      * 重置采集项
      */
     private fun resetDefaultModelField() {
-        mStates.sensorAddress.set("")//传感器地址
         mStates.baudRate.set("9600")  //默认波特率
         mStates.dataBit.set(dataBitList[3])//默认数据位 8
         mStates.checkBit.set(checkBitList[0])//默认校验位 无
@@ -312,7 +319,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
             showMessageDialog("请输入物模型编号")
             return
         }
-        if (mStates.sensorAddress.get().isEmpty()) {
+        if (mStates.address.get().isEmpty()) {
             showMessageDialog("请输入地址")
             return
         }
@@ -355,7 +362,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
         val entity = MRRS485Port1SensorParamEntity(
             c_model = "0",
             num = selectedFieldIndex.toString(),
-            model = mStates.modelToken.get() + "_" + mStates.sensorAddress.get(),
+            model = mStates.modelToken.get() + "_" + mStates.address.get(),
             baud = if (mStates.sensorParamWrapper.get().baud == mStates.baudRate.get()) IOTConstants.NULL_KEY else mStates.baudRate.get(),
             databit = if (mStates.sensorParamWrapper.get().databit == mStates.dataBit.get()) IOTConstants.NULL_KEY else mStates.dataBit.get(),
             parity = if (mStates.sensorParamWrapper.get().parity.toInt() == checkBitList.indexOf(
@@ -466,7 +473,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                 val sensorParamWrapper = withContext(Dispatchers.IO) {
                     MoshiUtil.fromJson<MRRS485Port1SensorParamWrapper>(content)
                 } ?: return@launchWithViewLifecycle
-                if (sensorItem.modelFieldList.isEmpty() && selectedFieldIndex == 0) {
+                if (mStates.curSensorModel.modelFieldList.isEmpty() && selectedFieldIndex == 0) {
                     tabList.clear()
                     for (i in 0..sensorParamWrapper.indexnum.toInt()) {
                         tabList.add("采集项${i + 1}")
@@ -478,7 +485,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                     mStates.sensorParamWrapper.set(sensorParam)
 
                     val strs = sensorParam.model.split("_")
-                    mStates.sensorAddress.set(strs[1])
+                    mStates.address.set(strs[1])
                     mStates.modelToken.set(strs[0])
                     mStates.baudRate.set(sensorParam.baud)
                     mStates.dataBit.set(sensorParam.databit)

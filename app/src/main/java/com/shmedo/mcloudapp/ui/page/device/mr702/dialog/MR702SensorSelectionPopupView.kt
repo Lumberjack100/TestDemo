@@ -31,12 +31,15 @@ class MR702SensorSelectionPopupView(context: Context) : CenterPopupView(context)
     ): MR702SensorSelectionPopupView {
         this.title = title
         this.sensorList.addAll(list)
+
         if (isSupportedCustom) {
             this.sensorList.add(
                 SensorModel(
-                    sensorName = "自定义传感器",
+                    nickName = "自定义传感器",
                     sensorType = "000",
-                    modelToken = "000"
+                    sensorName = "自定义传感器",
+                    modelToken = "",
+                    modelName = "",
                 )
             )
         }

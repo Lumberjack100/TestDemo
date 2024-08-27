@@ -11,7 +11,6 @@ import com.drake.brv.utils.setup
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.XXPermissions
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.permission.util.Available
 import com.shmedo.lib.ble.permission.util.FeatureNotAvailableReason
@@ -36,6 +35,7 @@ import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.BleScannerListViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
+import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -95,6 +95,7 @@ class BleScannerListFragment : BaseFragment() {
                 discoveredBluetoothDevice = getModel<DiscoveredBluetoothDevice>()
                 discoveredBluetoothDevice?.name?.replaceFirst(Regex("^MD-?"), "")
                     ?.let { deviceToken ->
+                        showLoadingDialog("")
                         deviceRequestViewModel.getDeviceDetailInfo(deviceToken)
                     }
             }
@@ -165,6 +166,7 @@ class BleScannerListFragment : BaseFragment() {
             startScanningSearchDeviceTimeoutJob()
         }
         deviceRequestViewModel.deviceInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceInfo> ->
+            dismissLoadingDialog()
             if (!dataResult.responseStatus.isSuccess) {
                 discoveredBluetoothDevice?.name?.let { deviceToken ->
                     //CG0 自组网报警网关 特殊处理

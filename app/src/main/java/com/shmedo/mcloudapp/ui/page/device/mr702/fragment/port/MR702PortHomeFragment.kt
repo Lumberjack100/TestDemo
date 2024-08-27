@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -13,12 +14,15 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.commonlib.utils.AppContants
+import com.shmedo.core.data.extensions.getLogItem
 import com.shmedo.core.model.AppConfigInfo
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
@@ -34,16 +38,18 @@ import com.shmedo.mcloudapp.ui.adapter.PageAdapter
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.MR702PortSelectionPartShadowPopupView
+import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import org.koin.androidx.viewmodel.ext.android.getViewModel
 import timber.log.Timber
 
 class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentMr702PortHomeBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: MR702PortHomeViewModel
+    private lateinit var logViewModel: LogViewModel
 
     private var mLayoutMediator: TabLayoutMediator? = null
 
@@ -66,6 +72,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     override fun initViewModel() {
         toolbarViewModel = getFragmentScopeViewModel()
         mStates = getActivityScopeViewModel()
+        logViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -78,12 +85,10 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         binding = getBinding() as FragmentMr702PortHomeBinding
         binding.llToolbar.toolbar.title = "接口配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
                 nav().navigateUp()
             }
         })
@@ -93,6 +98,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     }
 
     override fun initData() {
+        loadSensorModeConfig()
         arguments?.let {
             productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
             communicateWay = it.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
@@ -103,7 +109,6 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         mStates.interfaceName.set("RS485-1 Modbus")
         mStates.interfaceDesc.set("最多支持32支传感器接入")
         initViewPager()
-        loadSensorModeConfig()
     }
 
     private fun initViewPager() {
@@ -192,25 +197,34 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     }
 
     private fun loadSensorModeConfig() {
-        launchWithViewLifecycle {
+        launchWithViewLifecycle(Dispatchers.IO) {
             try {
                 val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
                 val jsonStr = localAppConfigInfo.configPara.replace("\\", "")
                 //Timber.d("configPara = $jsonStr")
-                // 在IO线程中解析JSON
-                val appConfigContent: AppConfigContent = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson(jsonStr)
-                } ?: return@launchWithViewLifecycle
+                val appConfigContent: AppConfigContent =
+                    MoshiUtil.fromJson(jsonStr) ?: return@launchWithViewLifecycle
 
                 appConfigContent.mr702.forEach { mPort ->
-                    mStates.portSensorModelListMap[mPort.portName] = mPort.sensors.toMutableList()
-                    mPort.sensors.forEach { model ->
-                        mStates.sensorModelMap[model.sensorType] = model
+                    mStates.configPortSensorModelListMap[mPort.portName] =
+                        mPort.sensorModelList.toMutableList()
+                }
+                mStates.configPortSensorModelListMap["485port1"]?.let { modelList ->
+                    modelList.onEachIndexed { index, sensorModel ->
+                        mStates.configPort4851SensorNameToSensorModelMap[sensorModel.sensorName] =
+                            sensorModel
+                        mStates.modelTokenToSensorModelMap[sensorModel.modelToken] = sensorModel
                     }
                 }
-
+                mStates.configPortSensorModelListMap["485port2"]?.let { modelList ->
+                    modelList.onEachIndexed { index, sensorModel ->
+                        mStates.configPort4852SensorTypeToSensorModelMap[sensorModel.sensorType] =
+                            sensorModel
+                    }
+                }
             } catch (e: Exception) {
                 Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }
@@ -274,6 +288,16 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                 .asCustom(selectionPopupView)
                 .show()
         }
+    }
+
+    fun addLogItem(priority: Int, data: String) {
+        logViewModel.insertLog(
+            getLogItem(
+                sessionId = CommonMMKVOwner.iotDeviceLogSessionId,
+                priority = priority,
+                data = data
+            )
+        )
     }
 
     override fun onResume() {

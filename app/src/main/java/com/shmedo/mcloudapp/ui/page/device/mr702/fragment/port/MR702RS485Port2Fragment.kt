@@ -13,9 +13,6 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRRS485Port2CollectionParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRSerialPortParamEntity
@@ -30,21 +27,24 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
-import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port2Binding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port2Binding
+import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessage
+import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.MRRS485Port2
 import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.model.RVEmptyFooter
 import com.shmedo.mcloudapp.model.SensorModel
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.MR702SensorSelectionPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port2ViewModel
-import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.extensions.showMessage
-import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.MR702SensorSelectionPopupView
+import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -52,7 +52,7 @@ import timber.log.Timber
 
 class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port2Binding
-    private lateinit var mInterfaceHomeViewModel: MR702PortHomeViewModel
+    private lateinit var portHomeViewModel: MR702PortHomeViewModel
     private lateinit var mStates: MR702RS485Port2ViewModel
     private val iotParseManager: IOTParserManager by inject()
 
@@ -67,12 +67,12 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     override fun initViewModel() {
         super.initViewModel()
         mStates = getFragmentScopeViewModel()
-        mInterfaceHomeViewModel = getActivityScopeViewModel()
+        portHomeViewModel = getActivityScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_rs485_port2, BR.stateVM, mStates)
-            .addBindingParam(BR.homeVM, mInterfaceHomeViewModel)
+            .addBindingParam(BR.homeVM, portHomeViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
 
@@ -158,7 +158,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     }
 
     private fun showAddSensorPopup() {
-        val sensorList = mInterfaceHomeViewModel.portSensorModelListMap["485port2"] ?: listOf()
+        val sensorList = portHomeViewModel.configPortSensorModelListMap["485port2"] ?: listOf()
         val selectionPopupView = MR702SensorSelectionPopupView(requireContext())
         selectionPopupView.setData("请选择传感器", sensorList)
             .setSelectListener(object : MR702SensorSelectionPopupView.OnSelectListener {
@@ -168,7 +168,6 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                             sensorType = sensorModel.sensorType,
                             sensorName = sensorModel.sensorName,
                             modelToken = sensorModel.modelToken,
-                            modelFieldList = sensorModel.modelFieldList
                         ),
                         true,
                         productType,
@@ -559,13 +558,11 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                         isPlugin = sensorStatus.sta == "0",
                         chl = sensorStatus.chl,
                         addrDesc = "通道-${sensorStatus.chl}",
-                        sensorName = mInterfaceHomeViewModel.sensorModelMap[sensorStatus.sensortype]?.sensorName
+                        sensorName = portHomeViewModel.configPort4851SensorNameToSensorModelMap[sensorStatus.sensortype]?.sensorName
                             ?: "未知类型",
                         sensorType = sensorStatus.sensortype,
-                        modelToken = mInterfaceHomeViewModel.sensorModelMap[sensorStatus.sensortype]?.modelToken
+                        modelToken = portHomeViewModel.configPort4851SensorNameToSensorModelMap[sensorStatus.sensortype]?.modelToken
                             ?: "",
-                        modelFieldList = mInterfaceHomeViewModel.sensorModelMap[sensorStatus.sensortype]?.modelFieldList
-                            ?: listOf()
                     )
                 }
                 withContext(Dispatchers.Main) {

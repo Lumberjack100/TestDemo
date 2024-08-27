@@ -377,7 +377,9 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
 
                 val remoteDate = TimeUtils.string2Date(remoteAppConfigInfo.lastTime)
                 val localDate = TimeUtils.string2Date(localAppConfigInfo.lastTime)
-                if (remoteAppConfigInfo.configPara.isEmpty() || remoteAppConfigInfo.configPara == "{}"
+                //本地配置文件最新，则更新远程配置
+                if (remoteAppConfigInfo.configPara.isEmpty()
+                    || remoteAppConfigInfo.configPara == "{}"
                     || remoteDate.before(localDate)
                 ) {
                     //更新远程配置
@@ -388,7 +390,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
                     return@launch
                 }
 
-                //更新本地配置
+                //远程配置文件最新，则更新本地配置
                 MmkvCacheUtil.setAppConfigInfo(remoteAppConfigInfo)
             } catch (e: Exception) {
                 Timber.e(e)

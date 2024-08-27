@@ -1,24 +1,23 @@
 package com.shmedo.mcloudapp.ui.viewmodel.state
 
 import androidx.lifecycle.ViewModel
-import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 import com.shmedo.mcloudapp.model.ModelField
 import com.shmedo.mcloudapp.model.SensorModel
+import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 class MR702RS485Port1SensorAddParamViewModel : ViewModel() {
-    val curSensorModel: SensorModel = SensorModel()
+    var curSensorModel: SensorModel = SensorModel()
     val curModelFieldList: MutableList<ModelField> = mutableListOf()
 
     val isCustomSensor = NonNullObservableField(false)//是否自定义传感器
     val isFirstModelField = NonNullObservableField(true)//是否第一个采集项
-    val isSaveModelFieldBtnVisible = NonNullObservableField(true)
+    val isSaveModelFieldBtnVisible = NonNullObservableField(true)//是否显示保存采集项按钮
     val saveModelFieldBtnText = NonNullObservableField("保存此采集项")
-    val isConfirmBtnVisible = NonNullObservableField(false)
+    val isConfirmBtnVisible = NonNullObservableField(false)//是否显示确认按钮
 
-    val sensorType = NonNullObservableField("")
-    val sensorName = NonNullObservableField("")//物模型/传感器名称
+    val modelName = NonNullObservableField("")//物模型/传感器名称
     val modelToken = NonNullObservableField("")//物模型编码
-    val sensorAddress = NonNullObservableField("")
+    val address = NonNullObservableField("")
     val baudRate = NonNullObservableField("9600")//波特率
     val dataBit = NonNullObservableField("8")
     val checkBit = NonNullObservableField("")

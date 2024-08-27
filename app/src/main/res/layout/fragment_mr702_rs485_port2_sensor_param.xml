@@ -68,7 +68,7 @@
                         <androidx.appcompat.widget.AppCompatTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             android:drawableEnd="@null"
-                            android:text="@{stateVM.sensorName}"
+                            android:text="@{stateVM.modelName}"
                             tools:text="MODO渗压计" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
