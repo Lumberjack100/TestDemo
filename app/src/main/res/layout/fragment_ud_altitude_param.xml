@@ -11,7 +11,7 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.UDReportModelParamViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.UDAltitudeParamViewModel" />
 
         <variable
             name="click"
@@ -33,154 +33,57 @@
             app:layout_constraintTop_toTopOf="parent"
             app:vm="@{toolbarVM}" />
 
-        <com.drake.brv.PageRefreshLayout
-            android:id="@+id/refreshLayout"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
-            <androidx.core.widget.NestedScrollView
-                android:id="@+id/scrollView"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="200dp">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingBottom="200dp">
+                    style="@style/Common_ClickableItem_LayoutStyle"
+                    android:layout_marginTop="@dimen/dimen_size_1"
+                    android:background="@drawable/layer_common_click_item_with_divider"
+                    android:onClick="@{()->click.onModelChooseClick()}">
 
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
-                        android:layout_marginTop="@dimen/dimen_size_1"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:onClick="@{()->click.onModelChooseClick()}">
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="模式" />
 
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            android:text="模式" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
-                            android:drawableEnd="@drawable/ic_arrow_down"
-                            android:text="@{stateVM.reportModel}"
-                            tools:text="自动" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        visible='@{stateVM.reportModel == "自动"}'
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
-                            android:background="@drawable/layer_common_click_item_with_divider">
-
-                            <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
-                                textViewEnabled="@{stateVM.alarmEnable}"
-                                android:text="@{stateVM.firstAlarmThresholdTitle}"
-                                tools:text="一级报警阈值(毫米)" />
-
-                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                                style="@style/Common_EditItem_EditText_Style"
-                                textViewEnabled="@{stateVM.alarmEnable }"
-                                android:hint="请输入"
-                                android:text="@={stateVM.firstAlarmThreshold}"
-                                app:inputTypeFilter='@{"numberDecimal"}'
-                                app:lengthFilter="@{10}" />
-                        </androidx.appcompat.widget.LinearLayoutCompat>
-
-                        <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
-                            android:background="@drawable/layer_common_click_item_with_divider">
-
-                            <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
-                                textViewEnabled="@{stateVM.alarmEnable}"
-                                android:text="@{stateVM.secondAlarmThresholdTitle}"
-                                tools:text="二级报警阈值(毫米)" />
-
-                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                                style="@style/Common_EditItem_EditText_Style"
-                                textViewEnabled="@{stateVM.alarmEnable }"
-                                android:hint="请输入"
-                                android:text="@={stateVM.secondAlarmThreshold}"
-                                app:inputTypeFilter='@{"numberDecimal"}'
-                                app:lengthFilter="@{10}" />
-                        </androidx.appcompat.widget.LinearLayoutCompat>
-
-                        <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
-                            android:background="@drawable/layer_common_click_item_with_divider">
-
-                            <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
-                                textViewEnabled="@{stateVM.alarmEnable}"
-                                android:text="@{stateVM.thirdAlarmThresholdTitle}"
-                                tools:text="三级报警阈值(毫米)" />
-
-                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                                style="@style/Common_EditItem_EditText_Style"
-                                textViewEnabled="@{stateVM.alarmEnable }"
-                                android:hint="请输入"
-                                android:text="@={stateVM.thirdAlarmThreshold}"
-                                app:inputTypeFilter='@{"numberDecimal"}'
-                                app:lengthFilter="@{10}" />
-                        </androidx.appcompat.widget.LinearLayoutCompat>
-
-                        <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
-                            android:background="@drawable/layer_common_click_item_with_divider">
-
-                            <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
-                                textViewEnabled="@{stateVM.alarmEnable}"
-                                android:text="@{stateVM.fourthAlarmThresholdTitle}"
-                                tools:text="四级报警阈值(毫米)" />
-
-                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                                style="@style/Common_EditItem_EditText_Style"
-                                textViewEnabled="@{stateVM.alarmEnable }"
-                                android:hint="请输入"
-                                android:text="@={stateVM.fourthAlarmThreshold}"
-                                app:inputTypeFilter='@{"numberDecimal"}'
-                                app:lengthFilter="@{10}" />
-                        </androidx.appcompat.widget.LinearLayoutCompat>
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        visible='@{stateVM.reportModel == "手动"}'
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_ClickableItem_LayoutStyle"
-                            android:background="@drawable/layer_common_click_item_with_divider"
-                            android:onClick="@{()->click.onReportFrequencyChooseClick()}">
-
-                            <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
-                                android:text="上报频率" />
-
-                            <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_ValueStyle"
-                                android:drawableEnd="@drawable/ic_arrow_down"
-                                android:text="@{stateVM.reportFrequency}"
-                                tools:text="自动" />
-                        </androidx.appcompat.widget.LinearLayoutCompat>
-                    </androidx.appcompat.widget.LinearLayoutCompat>
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_ValueStyle"
+                        android:drawableEnd="@drawable/ic_arrow_down"
+                        android:text="@{stateVM.model}"
+                        tools:text="自动" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
-            </androidx.core.widget.NestedScrollView>
-        </com.drake.brv.PageRefreshLayout>
 
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_LayoutStyle"
+                    visible='@{stateVM.model == "手动"}'
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_TitleStyle"
+                        android:text="海拔高度(米)" />
+
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:hint="请输入"
+                        android:inputType="numberDecimal"
+                        android:maxLength="10"
+                        android:text="@={stateVM.altitude}" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.core.widget.NestedScrollView>
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_reset"
             style="@style/ResetButton_ColorPrimary"
-            visible='@{!(stateVM.reportModel == "自动" &amp;&amp; !stateVM.alarmEnable)}'
             android:layout_marginTop="0dp"
             android:layout_marginBottom="35dp"
             android:onClick="@{()->click.onResetClick()}"
@@ -193,7 +96,6 @@
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-            visible='@{!(stateVM.reportModel == "自动" &amp;&amp; !stateVM.alarmEnable)}'
             android:layout_marginTop="0dp"
             android:layout_marginBottom="55dp"
             android:text="@string/button_save_text"

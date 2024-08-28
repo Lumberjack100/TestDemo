@@ -50,10 +50,10 @@
         tools:layout="@layout/fragment_data_center_param" />
 
     <fragment
-        android:id="@+id/udProductRTKParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDSensorParamFragment"
-        android:label="UDProductSensorParamFragment"
-        tools:layout="@layout/fragment_u_d_product_sensor_param" />
+        android:id="@+id/udCORSParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDCORSParamFragment"
+        android:label="UDCORSParamFragment"
+        tools:layout="@layout/fragment_ud_cors_param" />
 
     <fragment
         android:id="@+id/udProductSensorParamFragment"
@@ -131,8 +131,8 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_rtk"
-        app:destination="@id/udProductSensorParamFragment"
+        android:id="@+id/action_global_to_udCORSParamFragment"
+        app:destination="@id/udCORSParamFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

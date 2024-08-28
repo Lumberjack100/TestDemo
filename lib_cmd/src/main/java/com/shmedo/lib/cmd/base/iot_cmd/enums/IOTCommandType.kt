@@ -639,15 +639,6 @@ enum class IOTCommandType(private val value: String) {
      */
     E40_MD_GET_SATELITTE("md_getsatelitte"),
 
-    /**
-     * 获取E40 的 RTK
-     */
-    E40_MD_GET_RTK("md_getrtk"),
-
-    /**
-     * 设置E40 的 RTK
-     */
-    E40_MD_SET_RTK("md_setrtk"),
 
     /**
      * 获取E40 的 CORS 服务参数
@@ -925,10 +916,25 @@ enum class IOTCommandType(private val value: String) {
     MD_SET_SENSOR_INITIAL("md_cfginitval"),
 
     /**
+     * 获取RTK
+     */
+    MD_GET_RTK("md_getrtk"),
+
+    /**
+     * 设置 RTK
+     */
+    MD_SET_RTK("md_setrtk"),
+
+    /**
      * 米度一体式泥位计上报模式配置
      */
     MD_GET_MUD_LEVEL_METER_SENSOR("md_getsense"),
     MD_SET_MUD_LEVEL_METER_SENSOR("md_setsense"),
+
+    /**
+     * 米度一体式泥位计定位模式
+     */
+    MD_SET_MUD_LEVEL_METER_LOCATE("md_setlocate"),
 
     /**
      * 米度一体式裂缝计零位校准

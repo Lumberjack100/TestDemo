@@ -297,7 +297,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         name = "RTK测高",
                         desc = "",
                         resID = R.drawable.ic_module_satellite_communications,
-                        navId = 0
+                        navId = R.id.action_global_to_udCORSParamFragment
                     )
                 ),
                 ConfigModule(

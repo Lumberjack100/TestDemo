@@ -14,4 +14,10 @@ class UDSensorParamViewModel : ViewModel() {
     val captureFrequency = NonNullObservableField("")//抓拍频率
     //图片分辨率 640*480、1920*1080、2560*1920；默认为1920*1080
     val imageResolution = NonNullObservableField("")
+
+    //图片水平分辨率
+    val pixX = NonNullObservableField("")
+
+    //图片垂直分辨率
+    val pixY = NonNullObservableField("")
 }

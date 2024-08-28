@@ -70,7 +70,7 @@
                 <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_ClickableItem_ValueStyle"
                     textViewEnabled="@{stateVM.isEditable }"
-                    android:drawableEnd="@drawable/icon_arrow_right" />
+                    android:drawableEnd="@drawable/ic_arrow_right" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.constraintlayout.widget.ConstraintLayout>

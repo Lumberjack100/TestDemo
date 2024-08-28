@@ -106,10 +106,9 @@
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
-                                android:text="@={stateVM.firstAlarmThreshold}"
                                 android:inputType="numberDecimal"
                                 android:maxLength="6"
-                                />
+                                android:text="@={stateVM.firstAlarmThreshold}" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
@@ -126,9 +125,9 @@
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
-                                android:text="@={stateVM.secondAlarmThreshold}"
                                 android:inputType="numberDecimal"
-                                android:maxLength="6" />
+                                android:maxLength="6"
+                                android:text="@={stateVM.secondAlarmThreshold}" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
@@ -145,9 +144,9 @@
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
-                                android:text="@={stateVM.thirdAlarmThreshold}"
                                 android:inputType="numberDecimal"
-                                android:maxLength="6"/>
+                                android:maxLength="6"
+                                android:text="@={stateVM.thirdAlarmThreshold}" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
@@ -164,9 +163,9 @@
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
-                                android:text="@={stateVM.fourthAlarmThreshold}"
                                 android:inputType="numberDecimal"
-                                android:maxLength="6"/>
+                                android:maxLength="6"
+                                android:text="@={stateVM.fourthAlarmThreshold}" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -199,7 +198,6 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_reset"
             style="@style/ResetButton_ColorPrimary"
-            visible='@{!(stateVM.reportModel == "自动" &amp;&amp; !stateVM.alarmEnable)}'
             android:layout_marginTop="0dp"
             android:layout_marginBottom="35dp"
             android:onClick="@{()->click.onResetClick()}"
@@ -212,7 +210,6 @@
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-            visible='@{!(stateVM.reportModel == "自动" &amp;&amp; !stateVM.alarmEnable)}'
             android:layout_marginTop="0dp"
             android:layout_marginBottom="55dp"
             android:text="@string/button_save_text"
