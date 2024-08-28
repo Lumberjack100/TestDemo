@@ -69,11 +69,6 @@ class UDMobileNetworkParamFragment : BaseIOTDeviceFragment() {
         initRefresh()
     }
 
-    override fun initData() {
-        super.initData()
-        resetParams()
-    }
-
     private fun initRefresh() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
@@ -86,12 +81,23 @@ class UDMobileNetworkParamFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    override fun initData() {
+        super.initData()
+        resetDefaultParams()
+    }
+
+    private fun resetDefaultParams() {
+        mStates.apnName.set("")
+        mStates.userName.set("")
+        mStates.pwd.set("")
+    }
+
     inner class ClickProxy : BaseClickProxy() {
         /**
          * 恢复默认配置
          */
         fun onResetClick() {
-            resetParams()
+            resetDefaultParams()
         }
 
         override fun onSubmitButtonClick() {
@@ -102,12 +108,6 @@ class UDMobileNetworkParamFragment : BaseIOTDeviceFragment() {
             }
             initSaveCommand()
         }
-    }
-
-    private fun resetParams() {
-        mStates.apnName.set("")
-        mStates.userName.set("")
-        mStates.pwd.set("")
     }
 
     private fun initSaveCommand() {

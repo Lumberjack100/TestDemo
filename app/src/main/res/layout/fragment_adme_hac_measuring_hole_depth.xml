@@ -67,8 +67,8 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="XXXXXXXXXXXX"
                             android:inputType="textCapCharacters"
-                            android:text="@={stateVM.address}"
-                            app:lengthFilter="@{12}" />
+                            android:maxLength="12"
+                            android:text="@={stateVM.address}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -90,12 +90,11 @@
                             android:completionThreshold="1"
                             android:hint="1-99"
                             android:inputType="number"
+                            android:maxLength="2"
                             app:completionHighlightColor="@color/colorPrimary"
                             app:completionIgnoreCase="true"
                             app:completionTextColor="@color/title_text_color"
-                            app:completionTextSize="16sp"
-                            app:inputTypeFilter='@{"number"}'
-                            app:lengthFilter="@{2}" />
+                            app:completionTextSize="16sp" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -112,10 +111,9 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-99]"
-                            android:inputType="textCapCharacters"
-                            android:text="@={stateVM.areano}"
-                            app:inputTypeFilter='@{"number"}'
-                            app:lengthFilter="@{2}" />
+                            android:inputType="phone"
+                            android:maxLength="2"
+                            android:text="@={stateVM.areano}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

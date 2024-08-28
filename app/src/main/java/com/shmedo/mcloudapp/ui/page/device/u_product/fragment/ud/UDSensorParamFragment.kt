@@ -12,7 +12,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
-import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.MudLevelMeterSensorEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.u_product.MudLevelMeterSensorEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult

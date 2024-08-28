@@ -67,8 +67,8 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="XXXXXXXXXXXX"
                             android:inputType="textCapCharacters"
-                            android:text="@={stateVM.address}"
-                            app:lengthFilter="@{12}" />
+                            android:maxLength="12"
+                            android:text="@={stateVM.address}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

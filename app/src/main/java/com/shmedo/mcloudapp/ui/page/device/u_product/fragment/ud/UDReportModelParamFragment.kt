@@ -13,12 +13,14 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.AlarmTriggerValueEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.u_product.UDAlarmReportModeEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.AlarmSwitchInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.AlarmTriggerValueInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.UDCommonCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -26,14 +28,17 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentUdWorkmodelParamBinding
+import com.shmedo.mcloudapp.databinding.FragmentUdReportModelParamBinding
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.UDWorkModelParamViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.UDReportModelParamViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -43,18 +48,19 @@ import java.util.Locale
 /**
  * @author：gonghe
  * @time: 2024/8/23
- * @desc: 一体化雷达泥位计工作模式参数设置
- *
+ * @desc: 一体化雷达泥位计上报工作模式参数设置
  */
-class UDWorkModelParamFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentUdWorkmodelParamBinding
+class UDReportModelParamFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentUdReportModelParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: UDWorkModelParamViewModel by viewModels()
+    private val mStates: UDReportModelParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val modelList = arrayListOf("自动", "手动")
     private val reportFrequencyList =
-        arrayListOf("15分钟/次", "30分钟/次", "1小时/次", " 2 小时/次")//上报频率
+        arrayListOf("15分钟/次", "30分钟/次", "1小时/次", "2小时/次")//上报频率
+    private val reportFrequencyMinList =
+        arrayListOf("15", "30", "60", "120")//上报频率
     private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
 
@@ -64,7 +70,7 @@ class UDWorkModelParamFragment : BaseIOTDeviceFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_ud_workmodel_param,
+            R.layout.fragment_ud_report_model_param,
             BR.stateVM,
             mStates
         )
@@ -73,7 +79,7 @@ class UDWorkModelParamFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentUdWorkmodelParamBinding
+        binding = getBinding() as FragmentUdReportModelParamBinding
         binding.llToolbar.toolbar.title = "工作模式"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
@@ -82,12 +88,6 @@ class UDWorkModelParamFragment : BaseIOTDeviceFragment() {
             nav().navigateUp()
         }
         initRefresh()
-    }
-
-    override fun initData() {
-        super.initData()
-        initTitles()
-        resetParams()
     }
 
     private fun initRefresh() {
@@ -102,7 +102,13 @@ class UDWorkModelParamFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initTitles() {
+    override fun initData() {
+        super.initData()
+        initThresholdTitles()
+        resetDefaultParams()
+    }
+
+    private fun initThresholdTitles() {
         when (productType) {
             ProductType.U_D_1,
             ProductType.U_D_2
@@ -112,17 +118,29 @@ class UDWorkModelParamFragment : BaseIOTDeviceFragment() {
                 mStates.thirdAlarmThresholdTitle.set("三级报警阈值(毫米)")
                 mStates.fourthAlarmThresholdTitle.set("四级报警阈值(毫米)")
             }
-
             else -> {}
         }
     }
 
+    private fun resetDefaultParams() {
+        mStates.reportModel.set("自动")
+        //一级报警阈值
+        mStates.firstAlarmThreshold.set("20")
+        //二级报警阈值
+        mStates.secondAlarmThreshold.set("50")
+        //三级报警阈值
+        mStates.thirdAlarmThreshold.set("100")
+        //四级报警阈值
+        mStates.fourthAlarmThreshold.set("200")
+        mStates.reportFrequency.set(reportFrequencyList[0])
+    }
+
     inner class ClickProxy : BaseClickProxy() {
         /**
-         * 选择模式
+         * 选择上报模式
          */
         fun onModelChooseClick() {
-            val selectedIndex = modelList.indexOf(mStates.model.get())
+            val selectedIndex = modelList.indexOf(mStates.reportModel.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
@@ -132,7 +150,7 @@ class UDWorkModelParamFragment : BaseIOTDeviceFragment() {
                     "", modelList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
-                        mStates.model.set(text)
+                        mStates.reportModel.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -145,7 +163,6 @@ class UDWorkModelParamFragment : BaseIOTDeviceFragment() {
                 return
             }
             mStates.alarmEnable.set(isChecked)
-            disableOrEnable(if (isChecked) "1" else "0")
         }
 
         /**
@@ -172,7 +189,7 @@ class UDWorkModelParamFragment : BaseIOTDeviceFragment() {
          * 恢复默认配置
          */
         fun onResetClick() {
-            resetParams()
+            resetDefaultParams()
         }
 
         override fun onSubmitButtonClick() {
@@ -185,38 +202,28 @@ class UDWorkModelParamFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun resetParams() {
-        mStates.model.set("自动")
-        //一级报警阈值
-        mStates.firstAlarmThreshold.set("20")
-        //二级报警阈值
-        mStates.secondAlarmThreshold.set("50")
-        //三级报警阈值
-        mStates.thirdAlarmThreshold.set("100")
-        //四级报警阈值
-        mStates.fourthAlarmThreshold.set("200")
-        mStates.reportFrequency.set(reportFrequencyList[0])
-    }
-
-    /**
-     * 关闭或者打开
-     */
-    private fun disableOrEnable(sw: String = "1") {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_ALRAM_BROADCAST_SWITCH,
-            "sw=$sw"
-        )
-        commandItems.add(command)
-
-//        showLoadingDialog(StringUtils.getString(R.string.processing))
-//        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
     private fun initSaveCommand() {
         commandItems.clear()
 
-        if (mStates.model.get() == "自动") {
+        if (mStates.reportModel.get() == "自动") {
+            //四级预警未启用
+            if (!mStates.alarmEnable.get()) {
+                val reportModeEntity = UDAlarmReportModeEntity(
+                    rept_mode = "0",
+                    warning_switch = "0",
+                )
+                val command = IOTCommandUtil.getCommand(
+                    IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR,
+                    reportModeEntity.toCommandString()
+                )
+                commandItems.add(command)
+
+                showLoadingDialog(StringUtils.getString(R.string.processing))
+                sendCommandFromCmdList(isStartTimeoutJob = true)
+                return
+            }
+
+            //四级预警启用
             if (mStates.firstAlarmThreshold.get().isEmpty()) {
                 showMessageDialog("请输入一级报警阈值!")
                 return
@@ -261,6 +268,16 @@ class UDWorkModelParamFragment : BaseIOTDeviceFragment() {
                 return
             }
 
+            val reportModeEntity = UDAlarmReportModeEntity(
+                rept_mode = "0",
+                warning_switch = "1",
+            )
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR,
+                reportModeEntity.toCommandString()
+            )
+            commandItems.add(command)
+
             val triggerValueEntity = AlarmTriggerValueEntity(
                 level1 = mStates.firstAlarmThreshold.get(),
                 level2 = mStates.secondAlarmThreshold.get(),
@@ -272,10 +289,18 @@ class UDWorkModelParamFragment : BaseIOTDeviceFragment() {
                 triggerValueEntity.toCommandString()
             )
             commandItems.add(triggerValueCommand)
-        } else {
 
+        } else {//手动
+            val reportModeEntity = UDAlarmReportModeEntity(
+                rept_mode = "1",
+                ld_reptgap = reportFrequencyMinList[reportFrequencyList.indexOf(mStates.reportFrequency.get())]
+            )
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR,
+                reportModeEntity.toCommandString()
+            )
+            commandItems.add(command)
         }
-
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -289,7 +314,7 @@ class UDWorkModelParamFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
 
         var command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_ALRAM_BROADCAST_SWITCH
+            IOTCommandType.MD_GET_DEVICE_STATUS, "value=0"
         )
         commandItems.add(command)
 
@@ -303,14 +328,14 @@ class UDWorkModelParamFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_ALRAM_BROADCAST_SWITCH -> {
-                val result = iotParseManager.parse<AlarmSwitchInfo>(
+            IOTCommandType.MD_GET_DEVICE_STATUS -> {
+                val result = iotParseManager.parse<String>(
                     cmdStr,
-                    IOTCommandType.MD_GET_ALRAM_BROADCAST_SWITCH
+                    IOTCommandType.MD_GET_DEVICE_STATUS
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询参数出错: ${result.message}"
+                        val errMsg = "查询上报模式出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -319,24 +344,8 @@ class UDWorkModelParamFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        initEnableAlarmData(result.data)
-                    }
-                }
-            }
-
-            IOTCommandType.MD_SET_ALRAM_BROADCAST_SWITCH -> {//
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg =
-                            if (cmdStr.contains("sw=0")) "关闭出错: ${result.message}" else "打开出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("保存成功")
-                        }
+                        val content: String = result.data
+                        initStatusInfo(content)
                     }
                 }
             }
@@ -358,6 +367,22 @@ class UDWorkModelParamFragment : BaseIOTDeviceFragment() {
                             binding.refreshLayout.finish()
                         }
                         initAlarmTriggerValueData(result.data)
+                    }
+                }
+            }
+
+            IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR -> {//
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "设置上报模式出错: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("保存成功")
+                        }
                     }
                 }
             }
@@ -384,12 +409,25 @@ class UDWorkModelParamFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initEnableAlarmData(info: AlarmSwitchInfo) {
-        try {
-            mStates.alarmEnable.set(info.sw == "1")
-        } catch (e: Exception) {
-            Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+    private fun initStatusInfo(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val udCommonCurrentStateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<UDCommonCurrentStateInfo>(content)
+                } ?: return@launchWithViewLifecycle
+
+                mStates.reportModel.set(if (udCommonCurrentStateInfo.reportMode == "0") "自动" else "手动")
+                mStates.alarmEnable.set(udCommonCurrentStateInfo.levelFourWarningEnabled == "1")
+                reportFrequencyMinList.indexOf(udCommonCurrentStateInfo.reportFrequency)
+                    .let { index ->
+                        if (index in reportFrequencyMinList.indices) {
+                            mStates.reportFrequency.set(reportFrequencyList[index])
+                        }
+                    }
+            } catch (e: Exception) {
+                Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
+            }
         }
     }
 
@@ -397,7 +435,7 @@ class UDWorkModelParamFragment : BaseIOTDeviceFragment() {
      * 初始化报警阈值数据
      */
     private fun initAlarmTriggerValueData(info: AlarmTriggerValueInfo) {
-        decimalFormat.applyPattern("#.###")
+        decimalFormat.applyPattern("#.#")
 
         info.level1.toDoubleOrNull()?.let {
             mStates.firstAlarmThreshold.set(decimalFormat.format(it))

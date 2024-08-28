@@ -27,9 +27,9 @@
 
     <fragment
         android:id="@+id/udWorkModelParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDWorkModelParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDReportModelParamFragment"
         android:label="UDWorkModelParamFragment"
-        tools:layout="@layout/fragment_ud_workmodel_param" />
+        tools:layout="@layout/fragment_ud_report_model_param" />
 
     <fragment
         android:id="@+id/udMobileNetworkParamFragment"

@@ -1,4 +1,4 @@
-package com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common
+package com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.u_product
 
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants

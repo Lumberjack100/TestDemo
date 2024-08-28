@@ -11,11 +11,11 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.UDWorkModelParamViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.UDReportModelParamViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDWorkModelParamFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDReportModelParamFragment.ClickProxy" />
 
     </data>
 
@@ -64,12 +64,12 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             android:drawableEnd="@drawable/ic_arrow_down"
-                            android:text="@{stateVM.model}"
+                            android:text="@{stateVM.reportModel}"
                             tools:text="自动" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        visible='@{stateVM.model == "自动"}'
+                        visible='@{stateVM.reportModel == "自动"}'
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -152,7 +152,7 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        visible='@{stateVM.model == "手动"}'
+                        visible='@{stateVM.reportModel == "手动"}'
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -180,7 +180,7 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_reset"
             style="@style/ResetButton_ColorPrimary"
-            visible='@{!(stateVM.model == "自动" &amp;&amp; !stateVM.alarmEnable)}'
+            visible='@{!(stateVM.reportModel == "自动" &amp;&amp; !stateVM.alarmEnable)}'
             android:layout_marginTop="0dp"
             android:layout_marginBottom="35dp"
             android:onClick="@{()->click.onResetClick()}"
@@ -193,7 +193,7 @@
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-            visible='@{!(stateVM.model == "自动" &amp;&amp; !stateVM.alarmEnable)}'
+            visible='@{!(stateVM.reportModel == "自动" &amp;&amp; !stateVM.alarmEnable)}'
             android:layout_marginTop="0dp"
             android:layout_marginBottom="55dp"
             android:text="@string/button_save_text"

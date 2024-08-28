@@ -6,4 +6,8 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 class UDAltitudeParamViewModel : ViewModel() {
     val isOpened = NonNullObservableField(false)
     val model = NonNullObservableField("")//模式
+
+    //RTK测高
+
+
 }
