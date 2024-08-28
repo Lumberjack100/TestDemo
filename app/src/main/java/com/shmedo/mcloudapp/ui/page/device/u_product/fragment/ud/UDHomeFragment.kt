@@ -40,9 +40,12 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.LoraConfigModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.RebootModule
+import com.shmedo.mcloudapp.model.RunningStatusModule
+import com.shmedo.mcloudapp.model.SensorConfigModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.model.WorkModeModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoParentFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
@@ -226,33 +229,33 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             ConfigModuleTree(
                 configModules = arrayListOf(
                     ConfigModule(
-                        CommonModule(
+                        RunningStatusModule(
                             name = "基本信息",
-                            desc = "",
+                            desc = "查看设备基本信息",
                             resID = R.drawable.ic_module_current_state,
                             navId = R.id.action_global_to_commonRunningDeviceInfoFragment
                         )
                     ),
                     ConfigModule(
-                        CommonModule(
+                        RunningStatusModule(
                             name = "网络信息",
-                            desc = "",
+                            desc = "查看设备网络信息",
                             resID = R.drawable.ic_module_network_info,
                             navId = R.id.action_global_to_commonRunningDeviceInfoFragment
                         )
                     ),
                     ConfigModule(
-                        CommonModule(
+                        RunningStatusModule(
                             name = "状态信息",
-                            desc = "",
+                            desc = "查看设备运行状态信息",
                             resID = R.drawable.ic_basic_config,
                             navId = R.id.action_global_to_commonRunningDeviceInfoFragment
                         )
                     ),
                     ConfigModule(
-                        CommonModule(
+                        RunningStatusModule(
                             name = "位置信息",
-                            desc = "",
+                            desc = "查看设备位置信息",
                             resID = R.drawable.ic_module_location_info,
                             navId = R.id.action_global_to_commonRunningDeviceInfoFragment
                         )
@@ -266,75 +269,61 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 iconResId = R.drawable.ic_mr702_interface_info_sensor_config
             )
         )
-
         val configModuleTree = ConfigModuleTree(
             configModules = arrayListOf(
                 ConfigModule(
                     WorkModeModule(
                         name = "工作模式",
-                        desc = "",
-                        resID = R.drawable.ic_module_work_model,
+                        desc = "报警上报参数配置",
                         navId = R.id.action_global_to_udWorkModelParamFragment
                     )
                 ),
                 ConfigModule(
                     CommonModule(
                         name = "网络配置",
-                        desc = "",
+                        desc = "移动网络参数配置",
                         resID = R.drawable.ic_module_network_setting,
                         navId = R.id.action_global_to_udMobileNetworkParamFragment
                     )
                 ),
                 ConfigModule(
                     DataCenterModule(
-                        desc = "",
-                        resID = R.drawable.ic_module_datacenter,
                         navId = R.id.action_global_to_udProductDataCenterHomeFragment
                     )
                 ),
                 ConfigModule(
                     CommonModule(
-                        name = "RTK测高",
-                        desc = "",
+                        name = "CORS测高",
+                        desc = "CORS参数配置",
                         resID = R.drawable.ic_module_satellite_communications,
                         navId = R.id.action_global_to_udCORSParamFragment
                     )
                 ),
                 ConfigModule(
-                    CommonModule(
+                    SensorConfigModule(
                         name = "传感配置",
-                        desc = "",
-                        resID = R.drawable.ic_module_sensor_setting,
                         navId = R.id.action_global_to_udProductSensorParamFragment
                     )
                 ),
                 ConfigModule(
                     LoraConfigModule(
                         name = "电台配置",
-                        desc = "",
-                        resID = R.drawable.ic_module_lora,
                         navId = R.id.action_global_to_udRadioParamFragment
                     )
                 ),
                 ConfigModule(
                     AlarmConfigModule(
-                        name = "报警配置",
-                        desc = "",
-                        resID = R.drawable.ic_module_alarm,
                         navId = R.id.action_global_to_alarmSettingFragment
                     )
                 ),
                 ConfigModule(
                     TimeCalibrationModule(
                         name = "时间校准",
-                        desc = "",
-                        resID = R.drawable.ic_module_time_calibration,
                     )
                 ),
-                ConfigModule(RebootModule(desc = "", resID = R.drawable.ic_module_reboot)),
+                ConfigModule(RebootModule()),
                 ConfigModule(
                     AdvancedSettingsModule(
-                        desc = "",
                         navId = R.id.action_global_to_advancedSettingFragment
                     )
                 )
@@ -382,6 +371,26 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             return
         }
         when (module) {
+            is RunningStatusModule -> {
+                val index = when (module.name) {
+                    "基本信息" -> 0
+                    "网络信息" -> 1
+                    "状态信息" -> 2
+                    "位置信息" -> 3
+                    else -> 0
+                }
+                nav().navigate(
+                    module.navId,
+                    BaseDeviceStatusInfoParentFragment.newBundleArguments(
+                        productType,
+                        communicateWay,
+                        deviceInfo,
+                        bleDevice,
+                        tabIndex = index
+                    )
+                )
+            }
+
             is TimeCalibrationModule -> {//时间校准
                 queryTerminalTime()
             }

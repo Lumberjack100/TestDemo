@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDReportModelParamFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDAltitudeParamFragment.ClickProxy" />
 
     </data>
 
@@ -59,13 +59,13 @@
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@drawable/ic_arrow_down"
-                        android:text="@{stateVM.model}"
+                        android:text="@{stateVM.altitudeMeasureMode}"
                         tools:text="自动" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_LayoutStyle"
-                    visible='@{stateVM.model == "手动"}'
+                    visible='@{stateVM.altitudeMeasureMode == "手动"}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
@@ -79,8 +79,18 @@
                         android:maxLength="10"
                         android:text="@={stateVM.altitude}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_size_5"
+                    android:layout_marginStart="@dimen/dimen_size_16"
+                    android:text='* "自动"需在 "CORS测高"中配置'
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_12" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.core.widget.NestedScrollView>
+
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_reset"
             style="@style/ResetButton_ColorPrimary"

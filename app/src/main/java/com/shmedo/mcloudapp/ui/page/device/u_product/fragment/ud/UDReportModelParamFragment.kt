@@ -420,7 +420,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
                 mStates.alarmEnable.set(udCommonCurrentStateInfo.levelFourWarningEnabled == "1")
                 reportFrequencyMinList.indexOf(udCommonCurrentStateInfo.reportFrequency)
                     .let { index ->
-                        if (index in reportFrequencyMinList.indices) {
+                        if (index in reportFrequencyList.indices) {
                             mStates.reportFrequency.set(reportFrequencyList[index])
                         }
                     }

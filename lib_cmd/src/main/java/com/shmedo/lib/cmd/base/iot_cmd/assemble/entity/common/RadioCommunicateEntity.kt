@@ -11,7 +11,8 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class RadioCommunicateEntity(
-    val airbaud: String = "", //空中速率  0,1,2 默认 1
+    var sw: String = IOTConstants.NULL_KEY, //开关  0 关闭 1 开启
+    val airbaud: String = IOTConstants.NULL_KEY, //空中速率  0,1,2 默认 1
     val rxchl: String = IOTConstants.NULL_KEY,//接收频率 [0~19] 载波频率以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 自组网网关：接收默认6，发送默认13 M20S：接收默认13，发送默认6
     val txchl: String = IOTConstants.NULL_KEY,//发送频率 [0~19] 载波频率以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 自组网网关：接收默认6，发送默认13 M20S：接收默认13，发送默认6
     val outpwr: String = IOTConstants.NULL_KEY,//发射功率 [0~22] 默认22

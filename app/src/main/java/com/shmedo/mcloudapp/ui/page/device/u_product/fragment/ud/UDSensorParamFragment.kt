@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
@@ -12,10 +13,12 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
-import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.u_product.MudLevelMeterSensorEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.u_product.UDAlarmReportModeEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.u_product.UDInitialValueEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.u_product.UDModuleGapParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.UDCommonCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -24,6 +27,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentUDProductSensorParamBinding
+import com.shmedo.mcloudapp.extensions.formatDoubleValue
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -36,25 +40,23 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
 
 /**
  * @author：gonghe
  * @time: 2024/4/26
- * @desc: 泥位计传感参数
+ * @desc: 一体化雷达泥位计传感参数
  *
  */
 class UDSensorParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUDProductSensorParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: UDSensorParamViewModel by viewModels()
+    private val mStates: UDSensorParamViewModel by activityViewModels()
     private val iotParseManager: IOTParserManager by inject()
-    private val decimalFormat = DecimalFormat("#.###", DecimalFormatSymbols(Locale.getDefault()))
 
     private val captureFrequencyList =
         arrayListOf("15分钟/次", "30分钟/次", "1小时/次", " 2 小时/次")
+    private val captureFrequencyMinList =
+        arrayListOf("15", "30", "60", "120")//抓拍频率
     private val imageResolutionList = arrayListOf("1025x768", "1280x960", "1600x1200", "1920x1080")
 
     override fun initViewModel() {
@@ -83,11 +85,6 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
         initRefresh()
     }
 
-    override fun initData() {
-        super.initData()
-        resetParams()
-    }
-
     private fun initRefresh() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
@@ -100,16 +97,37 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    override fun initData() {
+        super.initData()
+        resetDefaultParams()
+    }
+
+    private fun resetDefaultParams() {
+        mStates.measureInterval.set("5")//测量间隔
+        mStates.installAngleOffsetThreshold.set("3")//安装角度偏移阈值
+        mStates.captureFrequency.set(captureFrequencyList[captureFrequencyList.lastIndex])
+        mStates.imageResolution.set(imageResolutionList[2])
+    }
+
     inner class ClickProxy : BaseClickProxy() {
         /**
          * 海拔高度
          */
         fun onGoToAltitudeClick() {
-
+            val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                productType,
+                communicateWay,
+                deviceInfo,
+                bleDevice
+            )
+            nav().navigate(
+                R.id.action_global_to_udAltitudeParamFragment,
+                bundle
+            )
         }
 
         /**
-         * 设置雷达初始值
+         * 更新测量初始值
          */
         fun onSetInitialValueClick() {
             KeyboardUtils.hideSoftInput(binding.root)
@@ -118,9 +136,13 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                 return
             }
             commandItems.clear()
+            val entity = UDInitialValueEntity(
+                method = "1",
+                type = "1",
+            )
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_SET_SENSOR_INITIAL,
-                "method=1&type=2"
+                entity.toCommandString()
             )
             commandItems.add(command)
 
@@ -172,7 +194,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
          * 恢复默认配置
          */
         fun onResetClick() {
-            resetParams()
+            resetDefaultParams()
         }
 
         override fun onSubmitButtonClick() {
@@ -183,13 +205,6 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
             }
             initSaveCommand()
         }
-    }
-
-    private fun resetParams() {
-        mStates.measureInterval.set("5")//测量间隔
-        mStates.installAngleOffsetThreshold.set("3")//安装角度偏移阈值
-        mStates.captureFrequency.set(captureFrequencyList[captureFrequencyList.lastIndex])
-        mStates.imageResolution.set(imageResolutionList[2])
     }
 
     private fun initSaveCommand() {
@@ -212,19 +227,25 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
             return
         }
 
-        val entity = MudLevelMeterSensorEntity(
+        commandItems.clear()
+        val entity = UDModuleGapParamEntity(
+            ld_module = mStates.measureInterval.get(),
+            cam_module = captureFrequencyMinList[captureFrequencyList.indexOf(mStates.captureFrequency.get())],
+        )
+        var command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_SET_MODULE_GAP,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
 
-            //gap = mStates.measureInterval.get(),  当前置灰不可配置
-            //times = mStates.averageTimes.get(),  当前置灰不可配置
-            capture_level = captureFrequencyList.indexOf(mStates.captureFrequency.get())
-                .toString(),
+        val reportModeEntity = UDAlarmReportModeEntity(
+            agle_threshol = mStates.installAngleOffsetThreshold.get(),
             pixx = mStates.imageResolution.get().split("x")[0],
             pixy = mStates.imageResolution.get().split("x")[1]
         )
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
+        command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR,
-            entity.toCommandString()
+            reportModeEntity.toCommandString()
         )
         commandItems.add(command)
 
@@ -239,7 +260,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_DEVICE_STATUS
+            IOTCommandType.MD_GET_DEVICE_STATUS, "value=4"
         )
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -268,7 +289,23 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR -> {//设置
+            IOTCommandType.MD_SET_SENSOR_INITIAL -> {//
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "更新雷达初始值出错: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("更新雷达初始值成功")
+                        }
+                    }
+                }
+            }
+
+            IOTCommandType.MD_SET_MODULE_GAP -> {//设置测量间隔
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置参数出错: ${result.message}"
@@ -284,18 +321,17 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_SET_SENSOR_INITIAL -> {//
+            IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR -> {//设置角度偏移阈值
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-
-                        val errMsg = "更新雷达初始值出错: ${result.message}"
+                        val errMsg = "设置参数出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("更新雷达初始值成功")
+                            Toaster.show("保存成功")
                         }
                     }
                 }
@@ -310,22 +346,25 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
     private fun initParamData(content: String) {
         launchWithViewLifecycle {
             try {
-                val commonCurrentStateInfoList = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<List<CommonCurrentStateInfo2>>(content)
+                val udCommonCurrentStateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<UDCommonCurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
 
-                if (commonCurrentStateInfoList.isEmpty()) {
-                    Toaster.show("数据为空")
-                    return@launchWithViewLifecycle
-                }
-                val info = commonCurrentStateInfoList[0]
-//                info.height.toDoubleOrNull()?.let {
-//                    mStates.installHeight.set(decimalFormat.format(it))
-//                }
-                //mStates.measureInterval.set(info.gap)
-                //mStates.averageTimes.set(info.times)
-                mStates.captureFrequency.set(if (info.capture_level.toInt() < captureFrequencyList.size) captureFrequencyList[info.capture_level.toInt()] else captureFrequencyList.last())
-                mStates.imageResolution.set("${info.pixx}x${info.pixy}")
+                mStates.measureInterval.set(udCommonCurrentStateInfo.radarMeasureInterval)
+                mStates.installAngleOffsetThreshold.set(udCommonCurrentStateInfo.installAngleOffsetThreshold)
+                mStates.altitude.set(
+                    udCommonCurrentStateInfo.altitude.formatDoubleValue(
+                        "",
+                        3
+                    )
+                )
+                captureFrequencyMinList.indexOf(udCommonCurrentStateInfo.captureFrequency)
+                    .let { index ->
+                        if (index in captureFrequencyList.indices) {
+                            mStates.captureFrequency.set(captureFrequencyList[index])
+                        }
+                    }
+                mStates.imageResolution.set("${udCommonCurrentStateInfo.pixx}x${udCommonCurrentStateInfo.pixy}")
 
             } catch (e: Exception) {
                 Timber.e(e)

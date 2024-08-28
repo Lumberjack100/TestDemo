@@ -57,7 +57,7 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
             ProductType.U_D_1,
             ProductType.U_D_2 -> {//一体化雷达泥位计
                 tabs.clear()
-                tabs.addAll(listOf("基本信息", "状态信息", "位置信息", "传感信息"))
+                tabs.addAll(listOf("基本信息", "网络信息", "状态信息", "位置信息"))
             }
 
             else -> {
@@ -89,8 +89,7 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                             productType,
                             communicateWay,
                             deviceInfo,
-                            bleDevice,
-                            statusBarColor
+                            bleDevice
                         )
                     }
                 )
@@ -116,17 +115,16 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                             communicateWay,
                             deviceInfo,
                             bleDevice,
-                            statusBarColor
                         )
                     }
                 )
                 fragmentList.add(
-                    UDLocationInfoFragment.newInstance().apply {
+                    UDProductSensorInfoFragment.newInstance().apply {
                         arguments = bundle
                     }
                 )
                 fragmentList.add(
-                    UDProductSensorInfoFragment.newInstance().apply {
+                    UDLocationInfoFragment.newInstance().apply {
                         arguments = bundle
                     }
                 )
@@ -146,7 +144,6 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                             communicateWay,
                             deviceInfo,
                             bleDevice,
-                            statusBarColor
                         )
                     }
                 )
@@ -171,7 +168,6 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                             communicateWay,
                             deviceInfo,
                             bleDevice,
-                            statusBarColor
                         )
                     }
                 )
@@ -237,7 +233,6 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                             communicateWay,
                             deviceInfo,
                             bleDevice,
-                            statusBarColor
                         )
                     }
                 )
@@ -286,7 +281,6 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                             communicateWay,
                             deviceInfo,
                             bleDevice,
-                            statusBarColor
                         )
                     }
                 )

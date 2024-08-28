@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
 import androidx.fragment.app.viewModels
@@ -14,12 +15,12 @@ import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.RadioCommunicateEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.RadioCommunicateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
@@ -27,6 +28,7 @@ import com.shmedo.mcloudapp.databinding.FragmentUdRadioParamBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDRadioParamViewModel
@@ -36,7 +38,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/8/22
- * @desc: 电台配置
+ * @desc: 一体化雷达泥位计电台配置
  *
  */
 class UDRadioParamFragment : BaseIOTDeviceFragment() {
@@ -45,7 +47,8 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
     private val mStates: UDRadioParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
-    private var radioChannelList: List<String> = emptyList()
+    private val radioChannelNumList: List<String> = (451150..470150 step 1000).map { it.toString() }
+    private var radioChannelTextList: List<String> = emptyList()
     private val transmitPowerList: List<String> = (10..22).map { it.toString() }//发射功率
     private val airSpeedList: List<String> = (1..3).map { it.toString() }//空中速率
 
@@ -75,15 +78,6 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
         initRefresh()
     }
 
-    override fun initData() {
-        super.initData()
-        //451.15-470.15，1MHz步进
-        radioChannelList = (451150..470150 step 1000).map {
-            (it.toFloat() / 1000).toString() + "MHz"
-        }
-        resetParams()
-    }
-
     private fun initRefresh() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
@@ -96,6 +90,26 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    override fun initData() {
+        super.initData()
+        //451.15-470.15，1MHz步进
+        radioChannelTextList = (451150..470150 step 1000).map {
+            (it.toFloat() / 1000).toString() + "MHz"
+        }
+        resetDefaultParams()
+    }
+
+    private fun resetDefaultParams() {
+        //发送默认 10 即 461.125MHz
+        mStates.sendChannel.set(radioChannelTextList.first())
+        //接收默认 20 即 471.125MHz
+        mStates.receiveChannel.set(radioChannelTextList.first())
+        //发射功率 [10~22] 默认22
+        mStates.transmitPower.set(transmitPowerList.last())
+        //空中速率  [1~3] 默认1
+        mStates.airSpeed.set(airSpeedList[0])
+    }
+
     inner class ClickProxy : BaseClickProxy() {
         override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
             if (isBleDisconnected()) {
@@ -104,21 +118,28 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
                 return
             }
             mStates.isOpened.set(isChecked)
-            disableOrEnable(if (isChecked) "1" else "0")
+            if (!isChecked) {
+                showMessage("确定要关闭吗？", "温馨提示", "确定", {
+                    disableRadio()
+                }, "取消", {
+                    mStates.isOpened.set(true)
+                    (button as SwitchButton).setCheckedImmediatelyNoEvent(true)
+                })
+            }
         }
 
         /**
          * 选择接收频点
          */
         fun onReceiveChannelChooseClick() {
-            val selectedIndex = radioChannelList.indexOf(mStates.receiveChannel.get())
+            val selectedIndex = radioChannelTextList.indexOf(mStates.receiveChannel.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", radioChannelList.toTypedArray(),
+                    "", radioChannelTextList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.receiveChannel.set(text)
@@ -131,14 +152,14 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
          * 选择发送频点
          */
         fun onSendChannelChooseClick() {
-            val selectedIndex = radioChannelList.indexOf(mStates.sendChannel.get())
+            val selectedIndex = radioChannelTextList.indexOf(mStates.sendChannel.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", radioChannelList.toTypedArray(),
+                    "", radioChannelTextList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.sendChannel.set(text)
@@ -191,7 +212,7 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
          * 恢复默认配置
          */
         fun onResetClick() {
-            resetParams()
+            resetDefaultParams()
         }
 
         override fun onSubmitButtonClick() {
@@ -204,47 +225,35 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun resetParams() {
-        //发送默认 10 即 461.125MHz
-        mStates.sendChannel.set(radioChannelList[0])
-        //接收默认 20 即 471.125MHz
-        mStates.receiveChannel.set(radioChannelList[0])
-        //发射功率 [10~22] 默认22
-        mStates.transmitPower.set(transmitPowerList[transmitPowerList.lastIndex])
-        //空中速率  [1~3] 默认1
-        mStates.airSpeed.set(airSpeedList[0])
-    }
-
     /**
-     * 关闭或者打开
+     * 关闭
      */
-    private fun disableOrEnable(sw: String = "1") {
+    private fun disableRadio() {
         commandItems.clear()
-//        val command = IOTCommandUtil.getCommand(
-//            IOTCommandType.MD_SET_ALRAM_BROADCAST_SWITCH,
-//            "sw=$sw"
-//        )
-//        commandItems.add(command)
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_SET_RADIO_CTRL,
+            "sw=0"
+        )
+        commandItems.add(command)
 
-//        showLoadingDialog(StringUtils.getString(R.string.processing))
-//        sendCommandFromCmdList(isStartTimeoutJob = true)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun initSaveCommand() {
         commandItems.clear()
         val entity = RadioCommunicateEntity(
-            rxchl = radioChannelList.indexOf(mStates.receiveChannel.get()).toString(),
-            txchl = radioChannelList.indexOf(mStates.sendChannel.get()).toString(),
+            sw = "1",
+            rxchl = radioChannelNumList[radioChannelTextList.indexOf(mStates.receiveChannel.get())],
+            txchl = radioChannelNumList[radioChannelTextList.indexOf(mStates.sendChannel.get())],
             outpwr = mStates.transmitPower.get(),
             airbaud = mStates.airSpeed.get(),
         )
-        //devicetype  添加且赋值为1时，表示配置自组网网关
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_SET_RADIO_CTRL,
             entity.toCommandString()
         )
         commandItems.add(command)
-
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -256,21 +265,9 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
 
     private fun queryData() {
         commandItems.clear()
-        //devicetype  添加且赋值为1时，表示配置自组网网关
-        var command = if (productType == ProductType.LB20S) IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_RADIO_CTRL, "devicetype=1"
-        ) else
-            IOTCommandUtil.getCommand(
-                IOTCommandType.MD_GET_RADIO_CTRL
-            )
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_RADIO_CTRL)
         commandItems.add(command)
 
-        command = if (productType == ProductType.LB20S) IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_TERMINAL_ID, "type=1"
-        ) else IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_TERMINAL_ID
-        )
-        commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
@@ -321,28 +318,26 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
 
     private fun initRadioData(info: RadioCommunicateInfo) {
         try {
-            mStates.receiveChannel.set(
-                if (info.rxchl.toInt() in radioChannelList.indices) {
-                    radioChannelList[info.rxchl.toInt()]
-                } else {
-                    radioChannelList[6]
+            mStates.isOpened.set(info.sw == "1")
+            radioChannelNumList.indexOf(info.rxchl)
+                .let { index ->
+                    if (index in radioChannelTextList.indices) {
+                        mStates.receiveChannel.set(radioChannelTextList[index])
+                    }
                 }
-            )
-            mStates.sendChannel.set(
-                if (info.txchl.toInt() in radioChannelList.indices) {
-                    radioChannelList[info.txchl.toInt()]
-                } else {
-                    radioChannelList[13]
+            radioChannelNumList.indexOf(info.txchl)
+                .let { index ->
+                    if (index in radioChannelTextList.indices) {
+                        mStates.sendChannel.set(radioChannelTextList[index])
+                    }
                 }
-            )
             mStates.transmitPower.set(info.outpwr)
             mStates.airSpeed.set(info.airbaud)
-
         } catch (e: Exception) {
             Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
         }
     }
-
 
     override fun onResume() {
         super.onResume()

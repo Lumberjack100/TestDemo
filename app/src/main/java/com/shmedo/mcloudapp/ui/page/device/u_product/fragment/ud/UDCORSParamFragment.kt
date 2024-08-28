@@ -122,7 +122,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
             }
             commandItems.clear()
             val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_MUD_LEVEL_METER_LOCATE,
+                IOTCommandType.MD_SET_MUD_LEVEL_METER_DIFF_LOCATE,
                 "switch=0"
             )
             commandItems.add(command)
@@ -231,7 +231,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_SET_MUD_LEVEL_METER_LOCATE -> {//
+            IOTCommandType.MD_SET_MUD_LEVEL_METER_DIFF_LOCATE -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "更新海拔高度出错: ${result.message}"
