@@ -226,10 +226,9 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
                 .debounce(AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
                 .collect { lastUpdateTime ->
                     val updateTime = TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
-                    Timber.d("startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
-                    // 仅当设备连接并且需要发送心跳时，才发送心跳包
-                    if (mHeadStates.isConnected.get() && isNearbyCommunicationTimeout(lastUpdateTime)) {
-                        Timber.d("bingo startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
+                    //仅当设备连接并且需要发送心跳时，才发送心跳包
+                    if (mHeadStates.isConnected.get()) {
+                        Timber.d("发送心跳包指令 startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
                         val command = IOTCommandUtil.getCommand(IOTCommandType.HEART_BEAT)
                         Timber.d("发送心跳包指令: $command")
                         sendBleCommand(command)

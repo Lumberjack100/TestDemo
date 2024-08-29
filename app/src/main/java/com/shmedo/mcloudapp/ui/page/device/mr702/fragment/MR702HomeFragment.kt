@@ -3,11 +3,13 @@ package com.shmedo.mcloudapp.ui.page.device.mr702.fragment
 import android.os.Bundle
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
+import com.blankj.utilcode.util.TimeUtils
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.WorkModeEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -44,7 +46,9 @@ import com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702HomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
+import kotlinx.coroutines.flow.debounce
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 /**
  * 创建者:   gonghe <br></br>
@@ -76,20 +80,32 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         binding.llToolbar.toolbar.setNavigationOnClickListener {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             if (bleViewModel.isConnected()) {
-                showMessage(StringUtils.getString(R.string.disconnect_device_warn), "温馨提示", "确定", {
-                    bleViewModel.disconnect()
-                    mActivity.finish()
-                }, "取消")
+                showMessage(
+                    StringUtils.getString(R.string.disconnect_device_warn),
+                    "温馨提示",
+                    "确定",
+                    {
+                        bleViewModel.disconnect()
+                        mActivity.finish()
+                    },
+                    "取消"
+                )
             } else
                 mActivity.finish()
         }
         registerOnBackPressedDispatcher {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             if (bleViewModel.isConnected()) {
-                showMessage(StringUtils.getString(R.string.disconnect_device_warn), "温馨提示", "确定", {
-                    bleViewModel.disconnect()
-                    mActivity.finish()
-                }, "取消")
+                showMessage(
+                    StringUtils.getString(R.string.disconnect_device_warn),
+                    "温馨提示",
+                    "确定",
+                    {
+                        bleViewModel.disconnect()
+                        mActivity.finish()
+                    },
+                    "取消"
+                )
             } else
                 mActivity.finish()
         }
@@ -186,9 +202,15 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
 
         override fun onConnectOperateClick() {
             if (bleViewModel.isConnected()) {
-                showMessage(StringUtils.getString(R.string.disconnect_device_warn), "温馨提示", "确定", {
-                    bleViewModel.disconnect()
-                }, "取消")
+                showMessage(
+                    StringUtils.getString(R.string.disconnect_device_warn),
+                    "温馨提示",
+                    "确定",
+                    {
+                        bleViewModel.disconnect()
+                    },
+                    "取消"
+                )
             } else {
                 bleViewModel.launch(bleDevice!!)
             }
@@ -309,6 +331,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        updateLastCommunicationTime()
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.GET_WORK_MODE -> {
                 val result =
@@ -445,5 +468,28 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             )
         }
         binding.rvModule.models = moduleList
+    }
+
+    override fun createObserver() {
+        super.createObserver()
+        setupHeartbeat()
+    }
+
+    // 设置心跳检查
+    private fun setupHeartbeat() {
+        launchWithViewLifecycle {
+            lastCommunicationTime
+                .debounce(AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
+                .collect { lastUpdateTime ->
+                    val updateTime = TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
+                    //仅当设备连接并且需要发送心跳时，才发送心跳包
+                    if (mHeadStates.isConnected.get()) {
+                        Timber.d("发送心跳包指令 startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
+                        val command = IOTCommandUtil.getCommand(IOTCommandType.HEART_BEAT)
+                        Timber.d("发送心跳包指令: $command")
+                        sendBleCommand(command)
+                    }
+                }
+        }
     }
 }

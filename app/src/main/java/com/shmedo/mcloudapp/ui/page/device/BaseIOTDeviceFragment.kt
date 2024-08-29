@@ -79,9 +79,9 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     protected val lastCommunicationTime = MutableStateFlow(System.currentTimeMillis())
 
     // 检查是否超时
-    protected fun isNearbyCommunicationTimeout(lastUpdateTime: Long): Boolean {
-        return (System.currentTimeMillis() - lastUpdateTime) >= AppContants.Communication.DELAY_10000_MILLIS
-    }
+//    protected fun isNearbyCommunicationTimeout(lastUpdateTime: Long): Boolean {
+//        return (System.currentTimeMillis() - lastUpdateTime) >= AppContants.Communication.DELAY_10000_MILLIS
+//    }
 
     // 更新最后通信时间
     protected fun updateLastCommunicationTime() {
