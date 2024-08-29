@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="35dp"
@@ -64,7 +64,7 @@
             app:drawable_radiusRT="@{24}"
             app:drawable_solidColor="@{@color/white}">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_login_way_title_zh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
                 android:textColor="#2F3033"
                 android:textSize="@dimen/text_size_18" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_login_way_title_en"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -119,12 +119,12 @@
                             android:maxLines="1"
                             android:paddingStart="10dp"
                             android:paddingEnd="20dp"
-                            app:inputTypeFilter='@{"character"}'
-                            app:lengthFilter="@{20}"
                             android:text="@={vm.name}"
                             android:textColor="@color/title_text_color"
                             android:textColorHint="@color/text_color_cccccc"
-                            android:textSize="@dimen/text_size_18" />
+                            android:textSize="@dimen/text_size_18"
+                            app:inputTypeFilter='@{"character"}'
+                            app:lengthFilter="@{20}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -151,10 +151,10 @@
                             android:gravity="center_vertical"
                             android:hint="请输入密码"
                             android:inputType="textPassword"
+                            android:maxLength="30"
                             android:maxLines="1"
                             android:paddingStart="10dp"
                             android:paddingEnd="20dp"
-                            app:lengthFilter="@{30}"
                             android:text="@={vm.password}"
                             android:textColor="@color/title_text_color"
                             android:textColorHint="@color/text_color_cccccc"
@@ -162,10 +162,10 @@
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/iv_eye_password"
+                            onClickWithDebouncing="@{()->click.eyeClick()}"
                             android:layout_width="18dp"
                             android:layout_height="18dp"
                             android:layout_marginEnd="25dp"
-                            onClickWithDebouncing="@{()->click.eyeClick()}"
                             android:src="@{vm.eyeOpen?@drawable/icon_eye_open:@drawable/icon_eye_close}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -246,12 +246,12 @@
                             android:layout_marginEnd="19dp"
                             android:background="@color/text_color_cccccc" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_get_code"
+                            onClickWithDebouncing="@{()->click.onGetCodeClick()}"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="43dp"
-                            onClickWithDebouncing="@{()->click.onGetCodeClick()}"
                             android:text="获取验证码"
                             android:textColor="@color/title_text_color"
                             android:textSize="@dimen/text_size_15" />
@@ -262,19 +262,19 @@
 
             </FrameLayout>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/btn_confirm"
+                onClickWithDebouncing="@{()->click.login()}"
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:layout_marginTop="32dp"
                 android:background="@drawable/login_button_gradient_bg"
                 android:gravity="center"
-                onClickWithDebouncing="@{()->click.login()}"
                 android:text="登录"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_17" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_user_protocol"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -290,12 +290,12 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_login_way"
+                onClickWithDebouncing="@{()->click.onSwitchLoginWayClick()}"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
-                onClickWithDebouncing="@{()->click.onSwitchLoginWayClick()}"
                 android:src="@{vm.isAccountLogin?@drawable/icon_account_login:@drawable/icon_phone_login}" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_login_way_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -309,7 +309,7 @@
                 android:layout_height="0dp"
                 android:layout_weight="1" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"

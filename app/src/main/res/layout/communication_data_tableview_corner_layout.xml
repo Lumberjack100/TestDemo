@@ -6,7 +6,7 @@
     android:layout_height="@dimen/data_table_cell_height"
     android:background="@color/mr_communication_data_table_row_header_backround">
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/corner_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

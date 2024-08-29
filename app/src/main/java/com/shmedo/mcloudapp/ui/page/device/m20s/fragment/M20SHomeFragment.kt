@@ -96,7 +96,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
             ConfigModule(
                 DataCenterModule(
                     resID = R.drawable.ic_module_datacenter,
-                    navId = R.id.action_global_universalDataCenterHomeFragment
+                    navId = R.id.action_global_to_universalDataCenterHomeFragment
                 )
             )
         )

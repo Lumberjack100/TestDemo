@@ -14,7 +14,7 @@
             android:layout_height="99dp"
             android:src="@drawable/cmd_response_loading" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_query_cmd_result_loading_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

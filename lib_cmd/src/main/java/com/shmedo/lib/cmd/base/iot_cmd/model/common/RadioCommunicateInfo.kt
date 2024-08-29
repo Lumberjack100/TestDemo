@@ -6,6 +6,7 @@ package com.shmedo.lib.cmd.base.iot_cmd.model.common
  * 描述： 电台通讯参数信息
  */
 data class RadioCommunicateInfo(
+    var sw: String = "", //开关  0 关闭 1 开启
     var airbaud: String = "", //空中速率  0,1,2 默认 1
     var rxchl: String = "",//接收频率 [0~19] 载波频率以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 自组网网关：接收默认6，发送默认13 M20S：接收默认13，发送默认6
     var txchl: String = "",//发送频率 [0~19] 载波频率以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 自组网网关：接收默认6，发送默认13 M20S：接收默认13，发送默认6

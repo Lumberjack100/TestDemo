@@ -29,9 +29,9 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_marginStart="13dp"
-                android:src="@drawable/ic_search_project" />
+                android:src="@drawable/ic_search_device" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_search_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

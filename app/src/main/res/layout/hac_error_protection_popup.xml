@@ -26,7 +26,7 @@
             android:layout_marginTop="@dimen/dimen_size_5"
             android:src="@drawable/ic_warning" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_size_5"
@@ -36,7 +36,7 @@
             android:textSize="@dimen/text_size_18"
             android:textStyle="bold" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
             android:text='@{stateVM.content}'
             tools:text="测斜仪配对失败；\n伺服电机低力矩；\n计米器基数脉冲不足\n" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_size_5"
@@ -54,7 +54,7 @@
             android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_14" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_sure"
             android:layout_width="match_parent"
             android:layout_height="45dp"

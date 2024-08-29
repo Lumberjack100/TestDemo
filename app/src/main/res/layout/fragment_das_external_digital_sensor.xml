@@ -53,11 +53,11 @@
                     android:layout_marginTop="@dimen/dimen_size_1"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="模型切换" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.modelType }"
@@ -70,12 +70,12 @@
                     visible="@{stateVM.isChildSensorTypeSupport}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="@{stateVM.childSensorTypeTitle}"
                         tools:text="传感器类型" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.childSensorType }"
@@ -88,7 +88,7 @@
                     android:layout_marginTop="@dimen/dimen_size_1"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="传感器地址" />
 
@@ -105,7 +105,7 @@
                     visible="@{stateVM.isTriggerSupport}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="@{stateVM.triggerTitle}"
                         tools:text="触发值"
@@ -118,14 +118,14 @@
                         app:inputTypeFilter='@{"numberDecimal"}'
                         app:lengthFilter="@{10}" />
 
-                    <ImageView
+                     <androidx.appcompat.widget.AppCompatImageView
                         onClickWithDebouncing="@{()->click.onTriggerTipBtnClick()}"
                         visible="@{stateVM.isTriggerTipBtnSupport}"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/icon_userinfo_about"
+                        android:src="@drawable/ic_tip"
                         app:tint="@color/red" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -134,7 +134,7 @@
                     visible="@{stateVM.isCorrectSupport}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="@{stateVM.correctTitle}"
                         tools:text="修正值"
@@ -147,14 +147,14 @@
                         app:inputTypeFilter='@{"numberDecimal"}'
                         app:lengthFilter="@{10}" />
 
-                    <ImageView
+                     <androidx.appcompat.widget.AppCompatImageView
                         onClickWithDebouncing="@{()->click.onCorrectTipBtnClick()}"
                         visible="@{stateVM.isCorrectTipBtnSupport}"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/icon_userinfo_about"
+                        android:src="@drawable/ic_tip"
                         app:tint="@color/red" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -163,7 +163,7 @@
                     visible="@{stateVM.isExtension1Support}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="@{stateVM.extension1Title}"
                         tools:text="扩展1"
@@ -177,17 +177,17 @@
                         app:inputTypeFilter='@{"numberDecimal"}'
                         app:lengthFilter="@{10}" />
 
-                    <ImageView
+                     <androidx.appcompat.widget.AppCompatImageView
                         onClickWithDebouncing="@{()->click.onExtension1TipBtnClick()}"
                         visible="@{stateVM.isExtension1TipBtnSupport}"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/icon_userinfo_about"
+                        android:src="@drawable/ic_tip"
                         app:tint="@color/red" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/btn_extension1"
                         onClickWithDebouncing="@{()->click.onExtension1ButtonClick()}"
                         visible="@{stateVM.isExtension1ButtonSupport}"
@@ -207,7 +207,7 @@
                     visible="@{stateVM.isExtension2Support}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="@{stateVM.extension2Title}"
                         tools:text="扩展2"
@@ -221,14 +221,14 @@
                         app:inputTypeFilter='@{"numberDecimal"}'
                         app:lengthFilter="@{10}" />
 
-                    <ImageView
+                     <androidx.appcompat.widget.AppCompatImageView
                         onClickWithDebouncing="@{()->click.onExtension2TipBtnClick()}"
                         visible="@{stateVM.isExtension2TipBtnSupport}"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/icon_userinfo_about"
+                        android:src="@drawable/ic_tip"
                         app:tint="@color/red" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -238,7 +238,7 @@
                     visible="@{stateVM.isExtension3Support}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="@{stateVM.extension3Title}"
                         tools:text="扩展3"
@@ -251,14 +251,14 @@
                         android:text="@={stateVM.extension3Value}"
                         app:lengthFilter="@{10}" />
 
-                    <ImageView
+                     <androidx.appcompat.widget.AppCompatImageView
                         onClickWithDebouncing="@{()->click.onExtension3TipBtnClick()}"
                         visible="@{stateVM.isExtension3TipBtnSupport}"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/icon_userinfo_about"
+                        android:src="@drawable/ic_tip"
                         app:tint="@color/red" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -267,7 +267,7 @@
                     visible="@{stateVM.isExtension4Support}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="@{stateVM.extension4Title}"
                         tools:text="扩展4"
@@ -281,14 +281,14 @@
                         app:inputTypeFilter='@{"numberDecimal"}'
                         app:lengthFilter="@{10}" />
 
-                    <ImageView
+                     <androidx.appcompat.widget.AppCompatImageView
                         onClickWithDebouncing="@{()->click.onExtension4TipBtnClick()}"
                         visible="@{stateVM.isExtension4TipBtnSupport}"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/icon_userinfo_about"
+                        android:src="@drawable/ic_tip"
                         app:tint="@color/red" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -297,7 +297,7 @@
                     visible="@{stateVM.isExtension5Support}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="@{stateVM.extension5Title}"
                         tools:text="扩展5"
@@ -310,18 +310,18 @@
                         app:inputTypeFilter='@{"numberDecimal"}'
                         app:lengthFilter="@{10}" />
 
-                    <ImageView
+                     <androidx.appcompat.widget.AppCompatImageView
                         onClickWithDebouncing="@{()->click.onExtension5TipBtnClick()}"
                         visible="@{stateVM.isExtension5TipBtnSupport}"
                         android:layout_width="20dp"
                         android:layout_height="20dp"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/icon_userinfo_about"
+                        android:src="@drawable/ic_tip"
                         app:tint="@color/red" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/btn_confirm"
                     style="@style/SubmitButton_ColorPrimary"
                     onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"

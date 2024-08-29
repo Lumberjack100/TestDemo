@@ -62,7 +62,7 @@
                     android:layout_toRightOf="@+id/userAvatar"
                     android:orientation="vertical">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/userName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
                         android:textSize="@dimen/text_size_18"
                         tools:text="张三丰" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/userTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -88,7 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:src="@drawable/icon_arrow_right" />
+                    android:src="@drawable/ic_arrow_right" />
 
             </RelativeLayout>
 
@@ -104,12 +104,12 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/icon_userinfo_company" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_ClickableItem_TitleStyle"
                     android:layout_marginStart="@dimen/dimen_size_15"
                     android:text="所属企业" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_ClickableItem_ValueStyle"
                     android:text="@{vm.company}"
                     android:textColor="@color/sub_title_text_color"
@@ -128,12 +128,12 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/icon_userinfo_setting" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_ClickableItem_TitleStyle"
                     android:layout_marginStart="@dimen/dimen_size_15"
                     android:text="修改密码" />
 
-                <androidx.appcompat.widget.AppCompatTextView style="@style/Common_ClickableItem_ValueStyle" />
+                <com.google.android.material.textview.MaterialTextView style="@style/Common_ClickableItem_ValueStyle" />
 
             </LinearLayout>
 
@@ -147,14 +147,14 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/icon_userinfo_check_version" />
+                    android:src="@drawable/ic_check_update_version" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_ClickableItem_TitleStyle"
                     android:layout_marginStart="@dimen/dimen_size_15"
                     android:text="版本检测" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_ClickableItem_ValueStyle"
                     android:text="@{vm.appVersion}"
                     android:textColor="@color/sub_title_text_color"
@@ -173,12 +173,12 @@
                     android:scaleType="centerCrop"
                     android:src="@drawable/icon_userinfo_setting" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_ClickableItem_TitleStyle"
                     android:layout_marginStart="@dimen/dimen_size_15"
                     android:text="设置" />
 
-                <androidx.appcompat.widget.AppCompatTextView style="@style/Common_ClickableItem_ValueStyle" />
+                <com.google.android.material.textview.MaterialTextView style="@style/Common_ClickableItem_ValueStyle" />
 
             </LinearLayout>
 
@@ -190,7 +190,7 @@
                 android:layout_marginBottom="30dp"
                 android:gravity="center">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="退出登录"

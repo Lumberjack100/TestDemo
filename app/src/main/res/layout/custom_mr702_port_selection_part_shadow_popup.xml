@@ -30,7 +30,7 @@
             android:layout_height="1dp"
             android:background="@color/divider_line_bg" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

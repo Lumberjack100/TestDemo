@@ -15,13 +15,13 @@
         style="@style/DeviceCurrentState_SingleItem_Style"
         android:background="@drawable/layer_common_click_item_with_divider">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             style="@style/DeviceCurrentState_SingleItem_NameStyle"
             android:maxLines="1"
             android:text="@{m.name}"
             tools:text="设备SN" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             style="@style/DeviceCurrentState_SingleItem_ValueStyle"
             android:text="@{m.value}"
             tools:text="modo-1819929190" />

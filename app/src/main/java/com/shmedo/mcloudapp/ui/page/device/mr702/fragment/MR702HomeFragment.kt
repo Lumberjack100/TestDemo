@@ -80,20 +80,32 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         binding.llToolbar.toolbar.setNavigationOnClickListener {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             if (bleViewModel.isConnected()) {
-                showMessage(StringUtils.getString(R.string.disconnect_device_warn), "温馨提示", "确定", {
-                    bleViewModel.disconnect()
-                    mActivity.finish()
-                }, "取消")
+                showMessage(
+                    StringUtils.getString(R.string.disconnect_device_warn),
+                    "温馨提示",
+                    "确定",
+                    {
+                        bleViewModel.disconnect()
+                        mActivity.finish()
+                    },
+                    "取消"
+                )
             } else
                 mActivity.finish()
         }
         registerOnBackPressedDispatcher {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             if (bleViewModel.isConnected()) {
-                showMessage(StringUtils.getString(R.string.disconnect_device_warn), "温馨提示", "确定", {
-                    bleViewModel.disconnect()
-                    mActivity.finish()
-                }, "取消")
+                showMessage(
+                    StringUtils.getString(R.string.disconnect_device_warn),
+                    "温馨提示",
+                    "确定",
+                    {
+                        bleViewModel.disconnect()
+                        mActivity.finish()
+                    },
+                    "取消"
+                )
             } else
                 mActivity.finish()
         }
@@ -173,7 +185,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         //刷新模块状态
         binding.rvModule.models?.forEach {
             if (it is ConfigModule) {
-                it.configModule.refreshStatus(isConnected)
+                it.functionModule.refreshStatus(isConnected)
             }
         }
     }
@@ -190,9 +202,15 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
 
         override fun onConnectOperateClick() {
             if (bleViewModel.isConnected()) {
-                showMessage(StringUtils.getString(R.string.disconnect_device_warn), "温馨提示", "确定", {
-                    bleViewModel.disconnect()
-                }, "取消")
+                showMessage(
+                    StringUtils.getString(R.string.disconnect_device_warn),
+                    "温馨提示",
+                    "确定",
+                    {
+                        bleViewModel.disconnect()
+                    },
+                    "取消"
+                )
             } else {
                 bleViewModel.launch(bleDevice!!)
             }
@@ -230,7 +248,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
             return
         }
-        when (module.configModule) {
+        when (module.functionModule) {
             is RebootModule -> {
                 showMessage("确定重启设备吗？", "温馨提示", "确定", {
                     reboot()
@@ -238,7 +256,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                if (module.configModule.navId != 0) {
+                if (module.functionModule.navId != 0) {
                     val bundle = BaseIOTDeviceFragment.newBundleArguments(
                         productType,
                         communicateWay,
@@ -246,7 +264,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                         bleDevice
                     )
                     nav().navigate(
-                        module.configModule.navId,
+                        module.functionModule.navId,
                         bundle
                     )
                 }
@@ -355,10 +373,8 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             IOTCommandType.SET_WORK_MODE -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置工作模式出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -433,7 +449,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             ConfigModule(MR702TerminalParameterModule(navId = R.id.action_mR702HomeFragment_to_mR702TerminalParameterFragment))
         )
         moduleList.add(
-            ConfigModule(DeviceOperationModule(navId = R.id.action_global_mR702EquipmentOperationFragment))
+            ConfigModule(DeviceOperationModule(navId = R.id.action_global_to_mR702EquipmentOperationFragment))
         )
         moduleList.add(
             ConfigModule(NetworkCommunicationModule(navId = R.id.action_mR702HomeFragment_to_mR702NetworkCommunicationFragment))
@@ -466,10 +482,9 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 .debounce(AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
                 .collect { lastUpdateTime ->
                     val updateTime = TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
-                    Timber.d("startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
-                    // 仅当设备连接并且需要发送心跳时，才发送心跳包
-                    if (mHeadStates.isConnected.get() && isNearbyCommunicationTimeout(lastUpdateTime)) {
-                        Timber.d("bingo startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
+                    //仅当设备连接并且需要发送心跳时，才发送心跳包
+                    if (mHeadStates.isConnected.get()) {
+                        Timber.d("发送心跳包指令 startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
                         val command = IOTCommandUtil.getCommand(IOTCommandType.HEART_BEAT)
                         Timber.d("发送心跳包指令: $command")
                         sendBleCommand(command)
@@ -477,5 +492,4 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 }
         }
     }
-
 }

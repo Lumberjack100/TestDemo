@@ -30,7 +30,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:progress="10" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_cur_depth"
             visible="@{stateVM.isCurDepthVisible}"
             android:layout_width="wrap_content"
@@ -47,7 +47,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="当前测点位置 -- 米" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_hole_depth"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

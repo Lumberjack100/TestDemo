@@ -66,7 +66,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     override fun initData() {
         companyID = userInfo.companyID
         productID = -1
-        deviceRequestViewModel.getAllProductTabList(userInfo.companyID)
+        deviceRequestViewModel.getAllProductTabList()
         binding.page.showLoading(false)
     }
 
@@ -150,7 +150,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             TabLayoutMediator(binding.tabs, binding.viewpager) { tab, position ->
                 val tabView = LayoutInflater.from(requireContext())
                     .inflate(R.layout.custom_tab_product, null)
-                val textView = tabView.findViewById<androidx.appcompat.widget.AppCompatTextView>(R.id.tabText)
+                val textView = tabView.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.tabText)
                 textView.text = productInfoList[position].productName
                 if (position == 0) {
                     textView.textSize = activeSize
@@ -173,7 +173,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     override fun onTabSelected(tab: TabLayout.Tab) {
         tab.customView?.let {
             it.setBackgroundResource(activeBg)
-            val textView = it.findViewById<androidx.appcompat.widget.AppCompatTextView>(R.id.tabText)
+            val textView = it.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.tabText)
             textView.textSize = activeSize
             textView.setTextColor(activeColor)
             productID = productInfoList[tab.position].id
@@ -183,7 +183,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     override fun onTabUnselected(tab: TabLayout.Tab) {
         tab.customView?.let {
             it.setBackgroundResource(normalBg)
-            val textView = it.findViewById<androidx.appcompat.widget.AppCompatTextView>(R.id.tabText)
+            val textView = it.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.tabText)
             textView.textSize = normalSize
             textView.setTextColor(normalColor)
         }
@@ -200,7 +200,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         if (companyID != userInfo.companyID) {
             companyID = userInfo.companyID
             productID = -1
-            deviceRequestViewModel.getAllProductTabList(userInfo.companyID)
+            deviceRequestViewModel.getAllProductTabList()
         }
         deviceRequestViewModel.getDeviceStatByCompanyID(
             userInfo.companyID,

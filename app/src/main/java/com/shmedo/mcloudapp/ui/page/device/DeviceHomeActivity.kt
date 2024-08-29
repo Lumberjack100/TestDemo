@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.WindowManager
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -51,6 +52,7 @@ class DeviceHomeActivity : BaseActivity() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as ActivityDeviceHomeBinding
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     override fun initData() {
@@ -140,19 +142,19 @@ class DeviceHomeActivity : BaseActivity() {
                 bundle2
             )
 
-            ProductType.LR200, ProductType.U_D_1, ProductType.U_D_2, ProductType.U_I_1, ProductType.U_R_1 -> {
+            ProductType.LR200, ProductType.U_I_1, ProductType.U_R_1 -> {
                 navController.setGraph(
                     R.navigation.u_product_graph,
                     bundle2
                 )
             }
 
-//            ProductType.U_D_1, ProductType.U_D_2 -> {
-//                navController.setGraph(
-//                    R.navigation.ud_graph,
-//                    bundle2
-//                )
-//            }
+            ProductType.U_D_1, ProductType.U_D_2 -> {
+                navController.setGraph(
+                    R.navigation.ud_graph,
+                    bundle2
+                )
+            }
 
             ProductType.LB20S -> {
                 navController.setGraph(
@@ -173,6 +175,12 @@ class DeviceHomeActivity : BaseActivity() {
 
             }
         }
+    }
+
+    override fun onDestroy() {
+        // 清除 FLAG_KEEP_SCREEN_ON 标志
+        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        super.onDestroy()
     }
 
     companion object {

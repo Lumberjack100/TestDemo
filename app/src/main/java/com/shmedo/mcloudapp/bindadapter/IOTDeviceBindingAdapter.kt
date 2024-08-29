@@ -104,7 +104,7 @@ object IOTDeviceBindingAdapter {
         textView.setCompoundDrawablesWithIntrinsicBounds(
             0,
             0,
-            if (visible) R.drawable.icon_arrow_right else 0,
+            if (visible) R.drawable.ic_arrow_right else 0,
             0
         )
     }

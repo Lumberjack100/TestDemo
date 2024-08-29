@@ -47,15 +47,15 @@
                 android:background="@drawable/layer_common_click_item_with_divider"
                 android:enabled="@{stateVM.isEditable }">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_ClickableItem_TitleStyle"
                     textViewEnabled="@{stateVM.isEditable }"
                     android:text="电台设置" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_ClickableItem_ValueStyle"
                     textViewEnabled="@{stateVM.isEditable }"
-                    android:drawableEnd="@drawable/icon_arrow_right" />
+                    android:drawableEnd="@drawable/ic_arrow_right" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -65,22 +65,22 @@
                 android:background="@drawable/layer_common_click_item_with_divider"
                 android:enabled="@{stateVM.isEditable }">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_ClickableItem_TitleStyle"
                     textViewEnabled="@{stateVM.isEditable }"
                     android:text="LoRa设置" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_ClickableItem_ValueStyle"
                     textViewEnabled="@{stateVM.isEditable }"
-                    android:drawableEnd="@drawable/icon_arrow_right" />
+                    android:drawableEnd="@drawable/ic_arrow_right" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 style="@style/Common_EditItem_LayoutStyle"
                 android:background="@drawable/layer_common_click_item_with_divider">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_ClickableItem_TitleStyle"
                     enabledTextColor="@{@color/colorPrimary}"
                     onClickWithDebouncing="@{()->click.onGatewaySchoolTimeClick()}"
@@ -95,7 +95,7 @@
                 style="@style/Common_EditItem_LayoutStyle"
                 android:background="@drawable/layer_common_click_item_with_divider">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_ClickableItem_TitleStyle"
                     enabledTextColor="@{@color/colorPrimary}"
                     onClickWithDebouncing="@{()->click.onGatewayRestartClick()}"
@@ -110,7 +110,7 @@
                 style="@style/Common_EditItem_LayoutStyle"
                 android:background="@drawable/layer_common_click_item_with_divider">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_ClickableItem_TitleStyle"
                     enabledTextColor="@{@color/colorPrimary}"
                     onClickWithDebouncing="@{()->click.onRestoreGatewayToFactoryClick()}"

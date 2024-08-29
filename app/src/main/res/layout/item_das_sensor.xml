@@ -17,7 +17,7 @@
         android:background="@{m.isPlugin?@drawable/mr702_port_sensor_item_bright_bg:@drawable/mr702_port_sensor_item_gray_bg}"
         tools:background="@drawable/mr702_port_sensor_item_bright_bg">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|top"
@@ -42,7 +42,7 @@
             android:layout_marginVertical="@dimen/dimen_size_15"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -51,7 +51,7 @@
                 android:textSize="14sp"
                 tools:text="配置地址" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
