@@ -67,7 +67,7 @@
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="5dp"
                             android:text="CTR工作状态:"
-                            android:textColor="@color/text_color_3AD094"
+                            android:textColor="@color/device_online_platform"
                             android:textSize="15sp" />
 
                         <com.google.android.material.textview.MaterialTextView

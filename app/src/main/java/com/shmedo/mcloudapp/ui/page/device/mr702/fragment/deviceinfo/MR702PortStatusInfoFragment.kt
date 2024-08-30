@@ -14,7 +14,6 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRDeviceInfoEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRDeviceInfo
@@ -26,15 +25,16 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.databinding.FragmentMr702PortStatusInfoBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.MRIOStatusItem
 import com.shmedo.mcloudapp.model.RVEmptyItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702DeviceStatusInfoParentViewModel
-import com.shmedo.mcloudapp.extensions.notNullKey
+import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -116,6 +116,10 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        //判断是否页面是否处于 resume 状态
+        if (!isResumed) {
+            return
+        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_MR_GET_DEVICE_BASE_INFO -> {
                 val result = iotParseManager.parse<MRDeviceInfo>(
@@ -217,8 +221,8 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "4~20mA  IN1",
                 value = interfaceStatusInfo.adc_a1,
                 defaultValue = "0",
-                minThresHold = 4.0,
-                maxThresHold = 20.0,
+                downLimitValue = 4.0,
+                upLimitValue = 20.0,
                 digit = 3,
                 unit = "mA",
             )
@@ -227,8 +231,8 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "4~20mA  IN2",
                 value = interfaceStatusInfo.adc_a2,
                 defaultValue = "0",
-                minThresHold = 4.0,
-                maxThresHold = 20.0,
+                downLimitValue = 4.0,
+                upLimitValue = 20.0,
                 digit = 3,
                 unit = "mA",
             )
@@ -237,8 +241,8 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "4~20mA  IN3",
                 value = interfaceStatusInfo.adc_a3,
                 defaultValue = "0",
-                minThresHold = 4.0,
-                maxThresHold = 20.0,
+                downLimitValue = 4.0,
+                upLimitValue = 20.0,
                 digit = 3,
                 unit = "mA",
             )
@@ -247,8 +251,8 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "4~20mA  IN4",
                 value = interfaceStatusInfo.adc_a4,
                 defaultValue = "0",
-                minThresHold = 4.0,
-                maxThresHold = 20.0,
+                downLimitValue = 4.0,
+                upLimitValue = 20.0,
                 digit = 3,
                 unit = "mA",
             )
@@ -257,8 +261,8 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "0~5V  IN5",
                 value = interfaceStatusInfo.adc_v1,
                 defaultValue = "0",
-                minThresHold = 0.0,
-                maxThresHold = 5.0,
+                downLimitValue = 0.0,
+                upLimitValue = 5.0,
                 digit = 1,
                 unit = "V",
             )
@@ -267,8 +271,8 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "0~5V  IN6",
                 value = interfaceStatusInfo.adc_v2,
                 defaultValue = "0",
-                minThresHold = 0.0,
-                maxThresHold = 5.0,
+                downLimitValue = 0.0,
+                upLimitValue = 5.0,
                 digit = 1,
                 unit = "V",
             )
@@ -277,8 +281,8 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "0~5V  IN7",
                 value = interfaceStatusInfo.adc_v3,
                 defaultValue = "0",
-                minThresHold = 0.0,
-                maxThresHold = 5.0,
+                downLimitValue = 0.0,
+                upLimitValue = 5.0,
                 digit = 1,
                 unit = "V",
             )
@@ -287,8 +291,8 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "0~5V  IN8",
                 value = interfaceStatusInfo.adc_v4,
                 defaultValue = "0",
-                minThresHold = 0.0,
-                maxThresHold = 5.0,
+                downLimitValue = 0.0,
+                upLimitValue = 5.0,
                 digit = 1,
                 unit = "V",
             )

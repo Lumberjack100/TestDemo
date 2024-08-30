@@ -58,7 +58,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
         moduleList.add(
             ConfigModule(
                 WorkModeModule(
-                    resID = R.drawable.ic_module_work_model,
+                    resID = R.drawable.ic_module_work_mode,
                     navId = R.id.action_m20SHomeFragment_to_m20SWorkModelFragment
                 )
             )

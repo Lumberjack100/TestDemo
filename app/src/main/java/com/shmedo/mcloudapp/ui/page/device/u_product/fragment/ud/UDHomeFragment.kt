@@ -151,6 +151,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
             else -> {}
         }
+
+        initModuleData()
     }
 
     override fun onConnectionStateChanged(isConnected: Boolean) {
@@ -175,7 +177,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     private fun initModuleAdapter() {
         binding.rvModule.linear().setup { rv ->
-            addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group)
+            addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group_ud)
             addType<ConfigModuleTree>(R.layout.item_sub_config_module)
             onCreate {
                 when (itemViewType) {
@@ -184,11 +186,11 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         itemBinding.rvSubModule.setup { subRv ->
                             subRv.addItemDecoration(
                                 MyGridSpacingItemDecoration(
-                                    2,
+                                    4,
                                     ConvertUtils.dp2px(10f), false
                                 )
                             )
-                            addType<ConfigModule>(R.layout.item_device_config_module)
+                            addType<ConfigModule>(R.layout.item_device_config_module_ud)
                             R.id.item.onClick {
                                 val configModule = getModel<ConfigModule>()
                                 processSubModuleItemClick(configModule.functionModule)
@@ -213,15 +215,15 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-        }.models = getModuleList()
+        }
     }
 
-    private fun getModuleList(): MutableList<Any> {
+    private fun initModuleData() {
         val groupList = mutableListOf<Any>()
         groupList.add(
             DeviceStatusInfoGroupItem(
                 "设备信息",
-                iconResId = R.drawable.ic_mr702_device_info_running_data,
+                iconResId = R.drawable.ic_module_work_mode,
                 hover = false
             )
         )
@@ -266,7 +268,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         groupList.add(
             DeviceStatusInfoGroupItem(
                 "设备配置",
-                iconResId = R.drawable.ic_mr702_interface_info_sensor_config
+                iconResId = R.drawable.ic_basic_config
             )
         )
         val configModuleTree = ConfigModuleTree(
@@ -275,6 +277,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     WorkModeModule(
                         name = "工作模式",
                         desc = "报警上报参数配置",
+                        resID = R.drawable.ic_module_report_mode,
                         navId = R.id.action_global_to_udWorkModelParamFragment
                     )
                 ),
@@ -326,16 +329,15 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     AdvancedSettingsModule(
                         navId = R.id.action_global_to_advancedSettingFragment
                     )
-                )
+                ),
             )
         )
         if (communicateWay is BleConnect) {
-            configModuleTree.configModules.add(ConfigModule(CommandDebugConfigModule(desc = "")))
+            configModuleTree.configModules.add(ConfigModule(CommandDebugConfigModule()))
         }
         groupList.add(configModuleTree)
 
-
-        return groupList
+        binding.rvModule.models = groupList
     }
 
     inner class ClickProxy : BaseClickProxy() {

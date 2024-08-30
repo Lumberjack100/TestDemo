@@ -135,12 +135,12 @@ object IOTDeviceBindingAdapter {
 
             in -85..-76 -> {
                 view.setSignalLevel(3)
-                view.setLevelColor(ColorUtils.getColor(R.color.text_color_3AD094))
+                view.setLevelColor(ColorUtils.getColor(R.color.device_online_platform))
             }
 
             in -75..-50 -> {
                 view.setSignalLevel(4)
-                view.setLevelColor(ColorUtils.getColor(R.color.text_color_3AD094))
+                view.setLevelColor(ColorUtils.getColor(R.color.device_online_platform))
             }
         }
     }
@@ -158,14 +158,14 @@ object IOTDeviceBindingAdapter {
             if (volt <= 10) {
                 textView.setTextColor(ColorUtils.getColor(R.color.device_offline_platform))
             } else {
-                textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094))
+                textView.setTextColor(ColorUtils.getColor(R.color.device_online_platform))
             }
         } else {
             val volt = value.toDoubleOrNull() ?: 0.0
             if (volt <= 5) {
                 textView.setTextColor(ColorUtils.getColor(R.color.device_offline_platform))
             } else {
-                textView.setTextColor(ColorUtils.getColor(R.color.text_color_3AD094))
+                textView.setTextColor(ColorUtils.getColor(R.color.device_online_platform))
             }
         }
     }

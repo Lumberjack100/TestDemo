@@ -5,7 +5,6 @@ import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo2
@@ -13,10 +12,10 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoFragment
-import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
@@ -83,7 +82,7 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     name = "外部供电电压",
                     value = stateInfo.extPowerVolt,
                     defaultValue = "0",
-                    thresHold = 5.0,
+                    downLimitValue = 5.0,
                     digit = 2,
                     unit = "V",
                 )
@@ -94,7 +93,7 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         name = "设备状态",
                         value = if (deviceAbnormalList.isEmpty()) "正常" else "异常",
                         textColorRes = if (deviceAbnormalList.isEmpty()) ColorUtils.getColor(
-                            R.color.text_color_3AD094
+                            R.color.device_online_platform
                         ) else ColorUtils.getColor(R.color.device_offline_platform),
                         isClickable = deviceAbnormalList.isNotEmpty()
                     )
@@ -102,20 +101,17 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 if (stateInfo.worktime != IOTConstants.NULL_KEY || stateInfo.emmcStorage != IOTConstants.NULL_KEY)
                     groupList.add(DeviceStatusInfoGroupItem("运行数据"))
 
-                stateInfo.worktime.notNullKey {
-                    val tempValue = it.toDoubleOrNull()?.div(3600) ?: 0.0
+                stateInfo.worktime.toIntOrNull()?.let {
                     groupList.add(
                         DeviceStatusInfoBasicItem(
                             name = "运行时间",
-                            value = DeviceStatusInfoProcessor.formatDoubleValue(
-                                tempValue.toString(),
-                                "0",
-                                1
-                            ) + " 小时"
+                            value = DeviceStatusInfoProcessor.millis2FitTimeSpan(
+                                it * 1000L,
+                                3
+                            )
                         )
                     )
                 }
-
                 if (stateInfo.emmcStorage != IOTConstants.NULL_KEY && stateInfo.emmcFree != IOTConstants.NULL_KEY) {
                     val free = DeviceStatusInfoProcessor.formatDoubleValue(
                         stateInfo.emmcFree.replace(

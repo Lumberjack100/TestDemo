@@ -77,7 +77,7 @@ class LR200BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     name = "电池电量",
                     value = stateInfo.volt_percent.replace("%", ""),
                     defaultValue = "0",
-                    thresHold = 10.0,
+                    downLimitValue = 10.0,
                     digit = 2,
                     unit = "%",
                 )

@@ -3,16 +3,16 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo
 import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.models
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.URCurrentStateInfo
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoFragment
-import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -62,7 +62,8 @@ class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         "initAngle" -> {
                             info.value.notNullKey { value ->
                                 //根据逗号分隔
-                                val initAngle = value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                                val initAngle =
+                                    value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                                 if (initAngle.isNotEmpty()) {
                                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
                                         groupList,
@@ -100,7 +101,8 @@ class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         "angle" -> {
                             info.value.notNullKey { value ->
                                 //根据逗号分隔
-                                val angle = value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                                val angle =
+                                    value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                                 if (angle.isNotEmpty()) {
                                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
                                         groupList,
@@ -174,14 +176,15 @@ class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         }
 
                         "worktime" -> {
-                            if (info.value.isNotEmpty()) {
-                                val day = info.value.toInt() / (24 * 60 * 60)
-                                val hour = (info.value.toInt() % (24 * 60 * 60)) / (60 * 60)
-                                val minute = (info.value.toInt() % (60 * 60)) / 60
-                                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                                    groupList,
-                                    name = "连续运行时间",
-                                    value = "${day}天${hour}时${minute}分",
+                            info.value.toIntOrNull()?.let {
+                                groupList.add(
+                                    DeviceStatusInfoBasicItem(
+                                        name = "连续运行时间",
+                                        value = DeviceStatusInfoProcessor.millis2FitTimeSpan(
+                                            it * 1000L,
+                                            3
+                                        )
+                                    )
                                 )
                             }
                         }

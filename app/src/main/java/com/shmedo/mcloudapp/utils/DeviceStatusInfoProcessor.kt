@@ -2,18 +2,19 @@ package com.shmedo.mcloudapp.utils
 
 import com.blankj.utilcode.util.ColorUtils
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.extensions.notNullKey
+import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import java.text.DecimalFormat
+import kotlin.math.min
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/5/14
- * 描述： TODO
+ * 描述： 设备状态信息项处理器
  */
 object DeviceStatusInfoProcessor {
 
-    // 创建DecimalFormat的方法，确保线程安全
+    //创建DecimalFormat的方法，确保线程安全
     private fun getDecimalFormat(digit: Int): DecimalFormat {
         return DecimalFormat().apply {
             if (digit == 0) {
@@ -31,22 +32,40 @@ object DeviceStatusInfoProcessor {
         return value?.toDoubleOrNull()?.let { decimalFormat.format(it) } ?: defaultValue
     }
 
+    /**
+     * 添加设备状态信息基本项, 字符串直接显示
+     * @param name 名称
+     * @param value 值
+     * @param unit 单位
+     * @param textColorRes 字体颜色
+     */
     fun addDeviceStatusInfoBasicItemFromString(
         groupList: MutableList<Any>,
         name: String,
         value: String,
-        unit: String = ""
+        unit: String = "",
+        textColorRes: Int = 0,
     ) {
         value.notNullKey {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = name,
-                    value = "$it $unit"
+                    value = "$it $unit",
+                    textColorRes = textColorRes
                 )
             )
         }
     }
 
+    /**
+     * 添加设备状态信息基本项, Double 数值需要处理小数点
+     * @param name 名称
+     * @param value 值
+     * @param defaultValue 默认值
+     * @param digit 小数点位数
+     * @param unit 单位
+     *
+     */
     fun addDeviceStatusInfoBasicItemFromDouble(
         groupList: MutableList<Any>,
         name: String,
@@ -65,12 +84,21 @@ object DeviceStatusInfoProcessor {
         }
     }
 
+    /**
+     * 添加设备状态信息基本项，适用于电池电量、电压等，需要特殊处理字体颜色
+     * @param name 名称
+     * @param value 值
+     * @param defaultValue 默认值
+     * @param downLimitValue 低于此值时字体颜色变红
+     * @param digit 小数点位数
+     * @param unit 单位
+     */
     fun addDeviceStatusInfoBatteryLevel(
         groupList: MutableList<Any>,
         name: String,
         value: String,
         defaultValue: String = "0",
-        thresHold: Double = 5.0,
+        downLimitValue: Double = 5.0,
         digit: Int = 2,
         unit: String = ""
     ) {
@@ -84,23 +112,32 @@ object DeviceStatusInfoProcessor {
                 DeviceStatusInfoBasicItem(
                     name = name,
                     value = "$tempValue $unit",
-                    textColorRes = if (tempValue.toDouble() <= thresHold)
+                    textColorRes = if (tempValue.toDouble() <= downLimitValue)
                         ColorUtils.getColor(R.color.device_offline_platform)
                     else
-                        ColorUtils.getColor(R.color.text_color_3AD094)
+                        ColorUtils.getColor(R.color.device_online_platform)
                 )
             )
         }
     }
 
-
+    /**
+     * 添加设备状态信息基本项，适用于MR702系列串口状态信息，需要特殊处理字体颜色
+     * @param name 名称
+     * @param value 值
+     * @param defaultValue 默认值
+     * @param downLimitValue 低于此值时字体颜色变红
+     * @param upLimitValue 高于此值时字体颜色变红
+     * @param digit 小数点位数
+     * @param unit 单位
+     */
     fun addMR702SerialPortStatusInfoItem(
         groupList: MutableList<Any>,
         name: String,
         value: String,
         defaultValue: String = "0",
-        minThresHold: Double = 4.0,
-        maxThresHold: Double = 20.0,
+        downLimitValue: Double = 4.0,
+        upLimitValue: Double = 20.0,
         digit: Int = 2,
         unit: String = ""
     ) {
@@ -114,12 +151,39 @@ object DeviceStatusInfoProcessor {
                 DeviceStatusInfoBasicItem(
                     name = name,
                     value = "$tempValue $unit",
-                    textColorRes = if (tempValue.toDouble() < minThresHold || tempValue.toDouble() > maxThresHold)
+                    textColorRes = if (tempValue.toDouble() < downLimitValue || tempValue.toDouble() > upLimitValue)
                         ColorUtils.getColor(R.color.device_offline_platform)
                     else
-                        ColorUtils.getColor(R.color.text_color_3AD094)
+                        ColorUtils.getColor(R.color.device_online_platform)
                 )
             )
         }
+    }
+
+    /**
+     * 将毫秒转换为合适的时间格式
+     */
+    fun millis2FitTimeSpan(millis: Long, precision: Int): String {
+        var millis = millis
+        var precision = precision
+        if (precision <= 0) return ""
+        precision = min(precision.toDouble(), 5.0).toInt()
+        val units = arrayOf("天", "小时", "分钟", "秒", "毫秒")
+        if (millis == 0L) return 0.toString() + units[precision - 1]
+
+        val sb = StringBuilder()
+        if (millis < 0) {
+            sb.append("-")
+            millis = -millis
+        }
+        val unitLen = intArrayOf(86400000, 3600000, 60000, 1000, 1)
+        for (i in 0 until precision) {
+            if (millis >= unitLen[i]) {
+                val mode = millis / unitLen[i]
+                millis -= mode * unitLen[i]
+                sb.append(mode).append(units[i])
+            }
+        }
+        return sb.toString()
     }
 }

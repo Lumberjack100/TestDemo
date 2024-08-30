@@ -217,7 +217,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
             return
         }
         try {
-            val value = mStates.installAngleOffsetThreshold.get().toInt()
+            val value = mStates.installAngleOffsetThreshold.get().toDouble()
             if (value > 360) {
                 showMessageDialog("安装角度偏移阈值不能大于360!")
                 return
