@@ -23,7 +23,7 @@
             android:padding="@dimen/dimen_size_5"
             android:textSize="@dimen/text_size_15"
             tools:text="V"
-            tools:textColor="@color/red" />
+            tools:textColor="@color/red_F13838" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_log_time"

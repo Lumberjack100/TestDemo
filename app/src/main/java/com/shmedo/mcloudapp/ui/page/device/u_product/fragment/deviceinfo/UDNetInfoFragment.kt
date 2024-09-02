@@ -135,8 +135,8 @@ class UDNetInfoFragment : BaseDeviceStatusInfoFragment() {
                                 "未启用"
                             ),
                             textColorRes = if (enableStatus == "0" || onlineStatus == "未连接") ColorUtils.getColor(
-                                R.color.device_offline_platform
-                            ) else ColorUtils.getColor(R.color.device_online_platform)
+                                R.color.red_F13838
+                            ) else ColorUtils.getColor(R.color.green_00B26B)
                         )
                     }
                 }

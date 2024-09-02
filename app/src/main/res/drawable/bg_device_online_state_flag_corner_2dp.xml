@@ -4,8 +4,8 @@
 
     <corners android:radius="2dp" />
 
-    <solid android:color="@color/device_offline_backround" />
+    <solid android:color="@color/green_00B26B_10" />
 
-    <stroke android:width="0.5dp" android:color="@color/device_offline_foreground" />
+    <stroke android:width="0.5dp" android:color="@color/green_00B26B" />
 
 </shape>

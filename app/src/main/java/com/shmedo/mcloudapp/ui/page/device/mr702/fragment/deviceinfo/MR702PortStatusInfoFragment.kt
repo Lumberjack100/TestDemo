@@ -163,8 +163,8 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                     DeviceStatusInfoBasicItem(
                         name = "RS485-1",
                         value = if (it == "1") "正常" else "异常",
-                        textColorRes = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
-                            R.color.device_offline_platform
+                        textColorRes = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
+                            R.color.red_F13838
                         )
                     )
                 )
@@ -174,8 +174,8 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                     DeviceStatusInfoBasicItem(
                         name = "RS485-2",
                         value = if (it == "1") "正常" else "异常",
-                        textColorRes = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
-                            R.color.device_offline_platform
+                        textColorRes = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
+                            R.color.red_F13838
                         )
                     )
                 )
@@ -185,8 +185,8 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                     DeviceStatusInfoBasicItem(
                         name = "RS485-3",
                         value = if (it == "1") "正常" else "异常",
-                        textColorRes = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
-                            R.color.device_offline_platform
+                        textColorRes = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
+                            R.color.red_F13838
                         )
                     )
                 )
@@ -196,8 +196,8 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                     DeviceStatusInfoBasicItem(
                         name = "RS232-1",
                         value = if (it == "1") "正常" else "异常",
-                        textColorRes = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
-                            R.color.device_offline_platform
+                        textColorRes = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
+                            R.color.red_F13838
                         )
                     )
                 )
@@ -207,8 +207,8 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                     DeviceStatusInfoBasicItem(
                         name = "RS232-2",
                         value = if (it == "1") "正常" else "异常",
-                        textColorRes = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
-                            R.color.device_offline_platform
+                        textColorRes = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
+                            R.color.red_F13838
                         )
                     )
                 )
@@ -352,7 +352,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 MRIOStatusItem(
                     name = if (it == "1") "开启" else "关闭",
                     textBold = false,
-                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
                         R.color.title_text_color
                     ),
                     bgColorResId = ColorUtils.getColor(R.color.white)
@@ -372,7 +372,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 MRIOStatusItem(
                     name = if (it == "1") "开启" else "关闭",
                     textBold = false,
-                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
                         R.color.title_text_color
                     ),
                     bgColorResId = ColorUtils.getColor(R.color.white)
@@ -392,7 +392,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 MRIOStatusItem(
                     name = if (it == "1") "开启" else "关闭",
                     textBold = false,
-                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
                         R.color.title_text_color
                     ),
                     bgColorResId = ColorUtils.getColor(R.color.white)
@@ -412,7 +412,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 MRIOStatusItem(
                     name = if (it == "1") "开启" else "关闭",
                     textBold = false,
-                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
                         R.color.title_text_color
                     ),
                     bgColorResId = ColorUtils.getColor(R.color.white)
@@ -432,7 +432,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 MRIOStatusItem(
                     name = if (it == "1") "开启" else "关闭",
                     textBold = false,
-                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
                         R.color.title_text_color
                     ),
                     bgColorResId = ColorUtils.getColor(R.color.white)
@@ -452,7 +452,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 MRIOStatusItem(
                     name = if (it == "1") "开启" else "关闭",
                     textBold = false,
-                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
                         R.color.title_text_color
                     ),
                     bgColorResId = ColorUtils.getColor(R.color.white)
@@ -472,7 +472,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 MRIOStatusItem(
                     name = if (it == "1") "开启" else "关闭",
                     textBold = false,
-                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
                         R.color.title_text_color
                     ),
                     bgColorResId = ColorUtils.getColor(R.color.white)
@@ -492,7 +492,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 MRIOStatusItem(
                     name = if (it == "1") "开启" else "关闭",
                     textBold = false,
-                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
                         R.color.title_text_color
                     ),
                     bgColorResId = ColorUtils.getColor(R.color.white)
@@ -513,7 +513,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 MRIOStatusItem(
                     name = if (it == "1") "开启" else "关闭",
                     textBold = false,
-                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
                         R.color.title_text_color
                     ),
                     bgColorResId = ColorUtils.getColor(R.color.white)
@@ -533,7 +533,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 MRIOStatusItem(
                     name = if (it == "1") "开启" else "关闭",
                     textBold = false,
-                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
                         R.color.title_text_color
                     ),
                     bgColorResId = ColorUtils.getColor(R.color.white)
@@ -553,7 +553,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 MRIOStatusItem(
                     name = if (it == "1") "开启" else "关闭",
                     textBold = false,
-                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
                         R.color.title_text_color
                     ),
                     bgColorResId = ColorUtils.getColor(R.color.white)
@@ -574,7 +574,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 MRIOStatusItem(
                     name = if (it == "1") "开启" else "关闭",
                     textBold = false,
-                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
                         R.color.title_text_color
                     ),
                     bgColorResId = ColorUtils.getColor(R.color.white)
@@ -594,7 +594,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 MRIOStatusItem(
                     name = if (it == "1") "开启" else "关闭",
                     textBold = false,
-                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
                         R.color.title_text_color
                     ),
                     bgColorResId = ColorUtils.getColor(R.color.white)
@@ -614,7 +614,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 MRIOStatusItem(
                     name = if (it == "1") "开启" else "关闭",
                     textBold = false,
-                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
+                    textColorResId = if (it == "1") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
                         R.color.title_text_color
                     ),
                     bgColorResId = ColorUtils.getColor(R.color.white)

@@ -1,26 +1,35 @@
 package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.viewModels
+import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
+import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
+import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
+import com.google.android.flexbox.FlexboxLayoutManager
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.extensions.compareAndReturn
+import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.UDCommonCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentUDHomeBinding
+import com.shmedo.mcloudapp.databinding.FragmentUdHomeBinding
 import com.shmedo.mcloudapp.databinding.ItemSubConfigModuleBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -39,6 +48,7 @@ import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.LoraConfigModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.model.PlatformLabel
 import com.shmedo.mcloudapp.model.RebootModule
 import com.shmedo.mcloudapp.model.RunningStatusModule
 import com.shmedo.mcloudapp.model.SensorConfigModule
@@ -54,7 +64,9 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDHomeViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -65,7 +77,7 @@ import timber.log.Timber
  *
  */
 class UDHomeFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentUDHomeBinding
+    private lateinit var binding: FragmentUdHomeBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mHeadStates: UDHomeViewModel by viewModels()
     private val mCommandResponseStates: CommandResponseViewModel by viewModels()
@@ -77,13 +89,13 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_u_d_home, BR.stateVM, mHeadStates)
+        return DataBindingConfig(R.layout.fragment_ud_home, BR.stateVM, mHeadStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentUDHomeBinding
+        binding = getBinding() as FragmentUdHomeBinding
         binding.llToolbar.toolbar.title = "设备配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             if (bleViewModel.isConnected()) {
@@ -115,38 +127,34 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             } else
                 mActivity.finish()
         }
+        initPlatformAdapter()
         initModuleAdapter()
+    }
+
+    private fun initPlatformAdapter() {
+        binding.llDeviceInfo.rvPlatform.setup { rv ->
+            rv.layoutManager = FlexboxLayoutManager(context)
+            addType<PlatformLabel>(R.layout.item_platform_label)
+        }
     }
 
     override fun initData() {
         super.initData()
         toolbarViewModel.toolbarIvActionVisible.set(true)
-        mHeadStates.productLightResId.set(R.drawable.device_logo_niweiji)
-        mHeadStates.productGrayResId.set(R.drawable.device_logo_niweiji_gray)
-        mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
+        mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
 
         mHeadStates.productName.set(deviceInfo.productName)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
         mHeadStates.deviceName.set(if (deviceInfo.deviceName == deviceInfo.deviceToken) deviceInfo.productToken else deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
-        mHeadStates.firmwareVersion.set(deviceInfo.firmwareVersion.ifEmpty { "--" })
-        mHeadStates.isRunningStateVisible.set(false)
-        mHeadStates.isPlatformsVisible.set(false)
 
         when (communicateWay) {
             NetPlatformConnect -> {
-                mHeadStates.isDeviceStateTagHighLight.set(deviceInfo.onlineStatus)
-                mHeadStates.deviceStateTagText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
                 mHeadStates.isConnectOperateVisible.set(false)
-                mHeadStates.isIOTPlatformStateVisible.set(false)
             }
 
             BleConnect -> {
-                mHeadStates.isDeviceStateTagHighLight.set(false)
-                mHeadStates.deviceStateTagText.set("未连接")
                 mHeadStates.isConnectOperateVisible.set(true)
                 mHeadStates.connectOperateText.set("蓝牙连接")
-                mHeadStates.isIOTPlatformStateVisible.set(true)
-                mHeadStates.iotPlatformStateText.set(if (deviceInfo.onlineStatus) "在线" else "离线")
             }
 
             else -> {}
@@ -157,20 +165,22 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     override fun onConnectionStateChanged(isConnected: Boolean) {
         mHeadStates.isConnected.set(isConnected)
-        mHeadStates.isDeviceStateTagHighLight.set(isConnected)
         if (isConnected) {
-            mHeadStates.deviceStateTagText.set("已连接")
             mHeadStates.connectOperateText.set("断开连接")
-            mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
+            initPlatformStatus("蓝牙已连接", "1")
         } else {
-            mHeadStates.deviceStateTagText.set("未连接")
             mHeadStates.connectOperateText.set("蓝牙连接")
-            mHeadStates.productLogoResId.set(mHeadStates.productGrayResId.get())
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
+            initPlatformStatus("蓝牙已断开", "0")
         }
+
         //刷新模块状态
         binding.rvModule.models?.forEach {
-            if (it is ConfigModule) {
-                it.functionModule.refreshStatus(isConnected)
+            if (it is ConfigModuleTree) {
+                it.configModules.forEach { configModule ->
+                    configModule.functionModule.refreshStatus(isConnected)
+                }
             }
         }
     }
@@ -491,16 +501,46 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun onNetPlatformReady() {
-
+        if (deviceInfo.onlineStatus) {
+            initPlatformStatus("米度平台在线", "1")
+            queryStatusInfo()
+        } else {
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
+            initPlatformStatus("米度平台离线", "0")
+        }
     }
 
     override fun onBleDeviceReady() {
         super.onBleDeviceReady()
-        launchWithViewLifecycle {
-//            delay(2000) //延迟 timeMillis 秒后，提示超时
-            //蓝牙模式下，等蓝牙建立连接后查询设备工作模式
-//            queryData()
-        }
+        queryStatusInfo()
+    }
+
+    private fun initPlatformStatus(content: String, status: String) {
+        val platformLabels = mutableListOf<PlatformLabel>()
+        platformLabels.add(
+            PlatformLabel(
+                content,
+                textColorRes = status.compareAndReturn(
+                    "1",
+                    ColorUtils.getColor(R.color.colorPrimary),
+                    ColorUtils.getColor(R.color.sub_title_text_color)
+                ),
+                bgResId = status.compareAndReturn(
+                    "1",
+                    R.drawable.bg_label_corner_10dp_blue,
+                    R.drawable.bg_label_corner_10dp_gray
+                )
+            )
+        )
+        binding.llDeviceInfo.rvPlatform.models = platformLabels
+    }
+
+    private fun queryStatusInfo() {
+        commandItems.clear()
+
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "value=0")
+        commandItems.add(command)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun doNetDispatchSuccess(cmdStr: String) {
@@ -583,7 +623,25 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         updateLastCommunicationTime()
+
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DEVICE_STATUS -> {
+                val result =
+                    iotParseManager.parse<String>(cmdStr, IOTCommandType.MD_GET_DEVICE_STATUS)
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询设备状态出错: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList()
+                        initStatusInfo(result.data)
+                    }
+                }
+            }
+
             IOTCommandType.QUERY_TERMINAL_TIME -> {//查询终端时间
                 val result = iotParseManager.parse<String>(
                     cmdStr,
@@ -674,6 +732,65 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
             else -> {
 
+            }
+        }
+    }
+
+    private fun initStatusInfo(content: String) {
+        if (binding.llDeviceInfo.rvPlatform.mutable.size >= 2) {
+            return
+        }
+        launchWithViewLifecycle {
+            try {
+                val stateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<UDCommonCurrentStateInfo>(content)
+                } ?: return@launchWithViewLifecycle
+
+                val reportStatus = if (stateInfo.reportStatus == "5") "正常" else "告警"
+                val status = stateInfo.deviceStatus.compareAndReturn(
+                    "0",
+                    reportStatus,
+                    "故障"
+                )
+                mHeadStates.productLogoResId.set(
+                    status.compareAndReturn(
+                        "故障",
+                        R.drawable.device_logo_niweiji_error,
+                        status.compareAndReturn(
+                            "告警",
+                            R.drawable.device_logo_niweiji_alarm,
+                            R.drawable.device_logo_niweiji
+                        )
+                    )
+                )
+
+                val platformLabel = PlatformLabel(
+                    status, textColorRes = status.compareAndReturn(
+                        "故障",
+                        ColorUtils.getColor(R.color.red_F13838),
+                        status.compareAndReturn(
+                            "告警",
+                            ColorUtils.getColor(R.color.yellow_FDA251),
+                            ColorUtils.getColor(R.color.colorPrimary)
+                        )
+                    ),
+                    bgResId = status.compareAndReturn(
+                        "故障",
+                        R.drawable.bg_device_offline_state_flag_corner_10dp,
+                        status.compareAndReturn(
+                            "告警",
+                            R.drawable.bg_label_corner_10dp_yellow,
+                            R.drawable.bg_label_corner_10dp_blue
+                        )
+                    )
+                )
+                binding.llDeviceInfo.rvPlatform.bindingAdapter.apply {
+                    mutable.add(platformLabel)
+                    notifyItemInserted(itemCount)
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

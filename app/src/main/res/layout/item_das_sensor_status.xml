@@ -38,7 +38,7 @@
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/device_online_platform"
+                android:textColor="@color/green_00B26B"
                 android:textSize="@dimen/text_size_13"
                 app:bind_sensor_errno='@{m.errno+""}'
                 app:layout_constraintEnd_toEndOf="parent"

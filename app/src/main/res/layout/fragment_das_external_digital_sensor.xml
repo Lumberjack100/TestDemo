@@ -126,7 +126,7 @@
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_tip"
-                        app:tint="@color/red" />
+                        app:tint="@color/red_F13838" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -155,7 +155,7 @@
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_tip"
-                        app:tint="@color/red" />
+                        app:tint="@color/red_F13838" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -185,7 +185,7 @@
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_tip"
-                        app:tint="@color/red" />
+                        app:tint="@color/red_F13838" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/btn_extension1"
@@ -229,7 +229,7 @@
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_tip"
-                        app:tint="@color/red" />
+                        app:tint="@color/red_F13838" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -259,7 +259,7 @@
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_tip"
-                        app:tint="@color/red" />
+                        app:tint="@color/red_F13838" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -289,7 +289,7 @@
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_tip"
-                        app:tint="@color/red" />
+                        app:tint="@color/red_F13838" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -318,7 +318,7 @@
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_tip"
-                        app:tint="@color/red" />
+                        app:tint="@color/red_F13838" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <com.google.android.material.textview.MaterialTextView

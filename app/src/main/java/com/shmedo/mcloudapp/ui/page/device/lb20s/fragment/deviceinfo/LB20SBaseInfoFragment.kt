@@ -102,8 +102,8 @@ class LB20SBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                             value = if (item.errno.toString() == "0") "正常" else SensorErrorType.getErrorMessageByCode(
                                 item.errno.toString()
                             ),
-                            textColorRes = if (item.errno.toString() == "0") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
-                                R.color.device_offline_platform
+                            textColorRes = if (item.errno.toString() == "0") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
+                                R.color.red_F13838
                             )
                         )
                     )

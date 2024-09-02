@@ -130,7 +130,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
             ) { error: Throwable ->
                 printLog(
                     "TCP 连接异常，获取远程服务器地址和端口信息失败：${error.message}",
-                    ColorUtils.getColor(R.color.device_offline_platform)
+                    ColorUtils.getColor(R.color.red_F13838)
                 )
 
             } ?: return@launchWithViewLifecycle
@@ -178,7 +178,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
                     is ConnectedResult -> {
                         printLog(
                             "蓝牙连接成功",
-                            ColorUtils.getColor(R.color.device_online_platform)
+                            ColorUtils.getColor(R.color.green_00B26B)
                         )
                     }
 
@@ -194,28 +194,28 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
                     is DisconnectedResult -> {
                         printLog(
                             "蓝牙连接断开, reason: ${state.result.reason}",
-                            ColorUtils.getColor(R.color.device_offline_platform)
+                            ColorUtils.getColor(R.color.red_F13838)
                         )
                     }
 
                     is LinkLossResult -> {
                         printLog(
                             "蓝牙连接断开, reason: device link loss",
-                            ColorUtils.getColor(R.color.device_offline_platform)
+                            ColorUtils.getColor(R.color.red_F13838)
                         )
                     }
 
                     is MissingServiceResult -> {
                         printLog(
                             "蓝牙连接失败, reason: device missing service",
-                            ColorUtils.getColor(R.color.device_offline_platform)
+                            ColorUtils.getColor(R.color.red_F13838)
                         )
                     }
 
                     is UnknownErrorResult -> {
                         printLog(
                             "蓝牙连接失败, reason: device unknown error",
-                            ColorUtils.getColor(R.color.device_offline_platform)
+                            ColorUtils.getColor(R.color.red_F13838)
                         )
                     }
                 }
@@ -233,7 +233,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
 
                 is TcpConnectedResult -> {
                     mStates.tcpConnected.set(true)
-                    printLog("TCP 连接成功", ColorUtils.getColor(R.color.device_online_platform))
+                    printLog("TCP 连接成功", ColorUtils.getColor(R.color.green_00B26B))
                 }
 
                 is TcpSuccessResult -> {
@@ -246,12 +246,12 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
 
                 is TcpConnectClosed -> {
                     mStates.tcpConnected.set(false)
-                    printLog("TCP 连接断开", ColorUtils.getColor(R.color.device_offline_platform))
+                    printLog("TCP 连接断开", ColorUtils.getColor(R.color.red_F13838))
                 }
 
                 is TcpConnectError -> {
                     mStates.tcpConnected.set(false)
-                    printLog("TCP 连接异常", ColorUtils.getColor(R.color.device_offline_platform))
+                    printLog("TCP 连接异常", ColorUtils.getColor(R.color.red_F13838))
                 }
             }
         }
@@ -286,7 +286,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
         if (isBleDisconnected()) {
             printLog(
                 "蓝牙连接已断开",
-                ColorUtils.getColor(R.color.device_offline_platform)
+                ColorUtils.getColor(R.color.red_F13838)
             )
             return
         }
@@ -305,7 +305,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
         if (!tcpViewModel.isConnected()) {
             printLog(
                 "TCP 连接已断开",
-                ColorUtils.getColor(R.color.device_offline_platform)
+                ColorUtils.getColor(R.color.red_F13838)
             )
             return
         }

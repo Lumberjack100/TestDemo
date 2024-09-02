@@ -17,7 +17,7 @@
             android:id="@+id/item"
             android:layout_width="match_parent"
             android:layout_height="32dp"
-            android:background="@{m.isChecked?@drawable/bg_mr702_port_tab_checked:@drawable/bg_mr702_port_tab_normal}"
+            android:background="@{m.isChecked?@drawable/bg_product_tab_checked:@drawable/bg_product_tab_normal}"
             android:gravity="center"
             android:layout_marginStart="@dimen/dimen_size_6"
             android:layout_marginBottom="@dimen/dimen_size_5"

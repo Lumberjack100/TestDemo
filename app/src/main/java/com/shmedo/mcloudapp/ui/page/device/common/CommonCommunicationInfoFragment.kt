@@ -307,7 +307,7 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
                         columnCellDataList.add(
                             CommunicationDataCellModel(
                                 mData = if (enableStatusList[i] == "0") "未开启" else if (onlineStatusList[i] == "1") "已连接" else "未连接",
-                                textColorResId = if (enableStatusList[i] == "1" && onlineStatusList[i] == "1") R.color.device_online_platform else R.color.device_offline_platform
+                                textColorResId = if (enableStatusList[i] == "1" && onlineStatusList[i] == "1") R.color.green_00B26B else R.color.red_F13838
                             )
                         )
                     }

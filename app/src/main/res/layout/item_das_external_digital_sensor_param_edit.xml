@@ -23,7 +23,7 @@
             android:layout_height="20dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_tip"
-            app:tint="@color/red" />
+            app:tint="@color/red_F13838" />
 
         <com.google.android.material.textview.MaterialTextView
             style="@style/Common_ClickableItem_TitleStyle"

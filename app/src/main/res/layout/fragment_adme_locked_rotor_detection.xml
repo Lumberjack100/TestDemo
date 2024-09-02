@@ -162,7 +162,7 @@
                             android:layout_marginHorizontal="@dimen/dimen_size_16"
                             android:layout_marginVertical="@dimen/dimen_size_8"
                             app:rsb_gravity="bottom"
-                            app:rsb_indicator_background_color="@color/text_color_51B4F8"
+                            app:rsb_indicator_background_color="@color/colorPrimary"
                             app:rsb_indicator_height="wrap_content"
                             app:rsb_indicator_padding_bottom="5dp"
                             app:rsb_indicator_padding_left="6dp"
@@ -177,13 +177,13 @@
                             app:rsb_min_interval="0"
                             app:rsb_mode="range"
                             app:rsb_progress_color="#EDEDED"
-                            app:rsb_progress_default_color="@color/text_color_51B4F8"
+                            app:rsb_progress_default_color="@color/colorPrimary"
                             app:rsb_thumb_drawable="@drawable/thumb_blue"
                             app:rsb_thumb_height="13dp"
                             app:rsb_thumb_width="13dp"
                             app:rsb_tick_mark_mode="other"
                             app:rsb_tick_mark_text_array="@array/seekBar_array"
-                            app:rsb_tick_mark_text_color="@color/text_color_51B4F8" />
+                            app:rsb_tick_mark_text_color="@color/colorPrimary" />
                     </FrameLayout>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -218,7 +218,7 @@
                             android:layout_marginVertical="@dimen/dimen_size_8"
                             android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
                             app:rsb_gravity="bottom"
-                            app:rsb_indicator_background_color="@color/text_color_51B4F8"
+                            app:rsb_indicator_background_color="@color/colorPrimary"
                             app:rsb_indicator_height="wrap_content"
                             app:rsb_indicator_padding_bottom="5dp"
                             app:rsb_indicator_padding_left="6dp"
@@ -232,14 +232,14 @@
                             app:rsb_min="0"
                             app:rsb_min_interval="1"
                             app:rsb_mode="range"
-                            app:rsb_progress_color="@color/text_color_51B4F8"
+                            app:rsb_progress_color="@color/colorPrimary"
                             app:rsb_progress_default_color="#EDEDED"
                             app:rsb_thumb_drawable="@drawable/thumb_default"
                             app:rsb_thumb_height="30dp"
                             app:rsb_thumb_width="30dp"
                             app:rsb_tick_mark_mode="other"
                             app:rsb_tick_mark_text_array="@array/seekBar_array"
-                            app:rsb_tick_mark_text_color="@color/text_color_51B4F8" />
+                            app:rsb_tick_mark_text_color="@color/colorPrimary" />
                     </FrameLayout>
 
                     <RelativeLayout
@@ -366,7 +366,7 @@
                             android:layout_marginHorizontal="@dimen/dimen_size_16"
                             android:layout_marginVertical="@dimen/dimen_size_8"
                             app:rsb_gravity="bottom"
-                            app:rsb_indicator_background_color="@color/text_color_51B4F8"
+                            app:rsb_indicator_background_color="@color/colorPrimary"
                             app:rsb_indicator_height="wrap_content"
                             app:rsb_indicator_padding_bottom="5dp"
                             app:rsb_indicator_padding_left="6dp"
@@ -381,13 +381,13 @@
                             app:rsb_min_interval="0"
                             app:rsb_mode="range"
                             app:rsb_progress_color="#EDEDED"
-                            app:rsb_progress_default_color="@color/text_color_51B4F8"
+                            app:rsb_progress_default_color="@color/colorPrimary"
                             app:rsb_thumb_drawable="@drawable/thumb_blue"
                             app:rsb_thumb_height="13dp"
                             app:rsb_thumb_width="13dp"
                             app:rsb_tick_mark_mode="other"
                             app:rsb_tick_mark_text_array="@array/seekBar_array"
-                            app:rsb_tick_mark_text_color="@color/text_color_51B4F8" />
+                            app:rsb_tick_mark_text_color="@color/colorPrimary" />
 
                     </FrameLayout>
 

@@ -67,7 +67,7 @@
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="5dp"
                             android:text="CTR工作状态:"
-                            android:textColor="@color/device_online_platform"
+                            android:textColor="@color/green_00B26B"
                             android:textSize="15sp" />
 
                         <com.google.android.material.textview.MaterialTextView
@@ -88,7 +88,7 @@
                             android:layout_marginStart="18dp"
                             android:gravity="center_vertical"
                             android:text="@{stateVM.motorInfo}"
-                            android:textColor="@{stateVM.isMotorInfoNormal ? @color/title_text_color : @color/red}"
+                            android:textColor="@{stateVM.isMotorInfoNormal ? @color/title_text_color : @color/red_F13838}"
                             android:textSize="15sp"
                             tools:text="磁开关触发，测量结束" />
 

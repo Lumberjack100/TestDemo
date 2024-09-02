@@ -35,7 +35,7 @@
             app:bind_signal_value="@{m.signalValue}"
             app:connected="true"
             app:primary_color="@color/text_color_cccccc"
-            app:shadow_color="@color/device_online_platform"
+            app:shadow_color="@color/green_00B26B"
             app:shadow_open="false"
             app:signal_maximum="4"
             app:spacing="1"

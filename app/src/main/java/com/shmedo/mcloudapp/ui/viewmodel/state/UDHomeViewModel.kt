@@ -8,7 +8,4 @@ class UDHomeViewModel : CommonDeviceHomeViewModel() {
     val installationAngle = NonNullObservableField("")//安装角度
     val measurementTime = NonNullObservableField("") //测量时间
 
-    //移动网络
-    val mobileNetwork = NonNullObservableField("")//移动网络
-
 }
