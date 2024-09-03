@@ -269,7 +269,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                             name = "位置信息",
                             desc = "查看设备位置信息",
                             resID = R.drawable.ic_module_location_info,
-                            navId = R.id.action_global_to_commonRunningDeviceInfoFragment
+                            navId = R.id.action_global_to_udMonitorDataHistoryFragment
                         )
                     )
                 )
@@ -527,8 +527,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 ),
                 bgResId = status.compareAndReturn(
                     "1",
-                    R.drawable.bg_label_corner_10dp_blue,
-                    R.drawable.bg_label_corner_10dp_gray
+                    R.drawable.bg_label_corner_15dp_blue,
+                    R.drawable.bg_label_corner_15dp_gray
                 )
             )
         )
@@ -556,13 +556,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 mCommandResponseStates.isResponseLoading.set(true)
                 mCommandResponseStates.isResponseSuccess.set(false)
             }
-
-            IOTCommandType.QUERY_SAMPLE -> {
-                mCommandResponseStates.isResponseLoading.set(true)
-                mCommandResponseStates.isResponseSuccess.set(false)
-//                showTelemetryDataPopup()
-            }
-
             else -> {}
         }
     }
@@ -571,7 +564,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME,
             IOTCommandType.SET_TERMINAL_TIME,
-            IOTCommandType.QUERY_SAMPLE -> {
+            -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
                 mCommandResponseStates.responseContent.set(errorMsg)
@@ -587,7 +580,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME,
             IOTCommandType.SET_TERMINAL_TIME,
-            IOTCommandType.QUERY_SAMPLE -> {
+            -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
                 mCommandResponseStates.responseContent.set("指令响应超时")
@@ -631,7 +624,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询设备状态出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isShowErrMsg = false)
                         return
                     }
 
@@ -779,8 +772,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         R.drawable.bg_device_offline_state_flag_corner_10dp,
                         status.compareAndReturn(
                             "告警",
-                            R.drawable.bg_label_corner_10dp_yellow,
-                            R.drawable.bg_label_corner_10dp_blue
+                            R.drawable.bg_label_corner_15dp_yellow,
+                            R.drawable.bg_label_corner_15dp_blue
                         )
                     )
                 )

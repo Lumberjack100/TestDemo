@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.UDSensorDataHistoryViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDSensorDataHistoryFragment.ClickProxy" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray">
+
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:vm="@{toolbarVM}" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ll_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_1"
+            android:background="@color/white"
+            android:paddingVertical="@dimen/dimen_size_8"
+            android:paddingStart="@dimen/dimen_size_35"
+            android:paddingEnd="@dimen/dimen_size_10"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/dimen_size_10"
+                app:drawable_radius="@{20}"
+                app:drawable_solidColor="@{@color/gray_f5f6f8}"
+                tools:background="@color/gray_f5f6f8">
+
+                <com.google.android.material.textview.MaterialTextView
+                    onClickWithDebouncing="@{() -> click.onChooseStartTimeClick()}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@{stateVM.startTime}"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_13"
+                    tools:text="2024-08-27 09:41:07" />
+
+                <View
+                    android:layout_width="10dp"
+                    android:layout_height="1dp"
+                    android:layout_marginHorizontal="@dimen/dimen_size_10"
+                    android:background="@color/title_text_color" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    onClickWithDebouncing="@{() -> click.onChooseEndTimeClick()}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@{stateVM.endTime}"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_13"
+                    tools:text="2024-08-27 09:41:07" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                onClickWithDebouncing="@{() -> click.onModelChooseClick()}"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginStart="@dimen/dimen_size_20"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="@dimen/dimen_size_10"
+                app:drawable_radius="@{20}"
+                app:drawable_solidColor="@{@color/gray_f5f6f8}"
+                tools:background="@color/gray_f5f6f8">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{stateVM.modelName}"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_13"
+                    tools:text="水面距离" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginStart="@dimen/dimen_size_10"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_arrow_down" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.drake.brv.PageRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_filter">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_35"
+                android:clipToPadding="false"
+                android:paddingBottom="@dimen/dimen_size_30"
+                android:splitMotionEvents="false"
+                tools:itemCount="30"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_device_status_info_basic" />
+
+        </com.drake.brv.PageRefreshLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -421,8 +421,8 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     ),
                     bgResId = dataCenterStatus.status1.compareAndReturn(
                         "1",
-                        R.drawable.bg_label_corner_10dp_blue,
-                        R.drawable.bg_label_corner_10dp_gray
+                        R.drawable.bg_label_corner_15dp_blue,
+                        R.drawable.bg_label_corner_15dp_gray
                     )
                 )
             )
@@ -436,8 +436,8 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     ),
                     bgResId = dataCenterStatus.status2.compareAndReturn(
                         "1",
-                        R.drawable.bg_label_corner_10dp_blue,
-                        R.drawable.bg_label_corner_10dp_gray
+                        R.drawable.bg_label_corner_15dp_blue,
+                        R.drawable.bg_label_corner_15dp_gray
                     )
                 )
             )
@@ -451,8 +451,8 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     ),
                     bgResId = dataCenterStatus.status3.compareAndReturn(
                         "1",
-                        R.drawable.bg_label_corner_10dp_blue,
-                        R.drawable.bg_label_corner_10dp_gray
+                        R.drawable.bg_label_corner_15dp_blue,
+                        R.drawable.bg_label_corner_15dp_gray
                     )
                 )
             )
@@ -466,8 +466,8 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     ),
                     bgResId = dataCenterStatus.status4.compareAndReturn(
                         "1",
-                        R.drawable.bg_label_corner_10dp_blue,
-                        R.drawable.bg_label_corner_10dp_gray
+                        R.drawable.bg_label_corner_15dp_blue,
+                        R.drawable.bg_label_corner_15dp_gray
                     )
                 )
             )
@@ -481,8 +481,8 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     ),
                     bgResId = dataCenterStatus.status5.compareAndReturn(
                         "1",
-                        R.drawable.bg_label_corner_10dp_blue,
-                        R.drawable.bg_label_corner_10dp_gray
+                        R.drawable.bg_label_corner_15dp_blue,
+                        R.drawable.bg_label_corner_15dp_gray
                     )
                 )
             )

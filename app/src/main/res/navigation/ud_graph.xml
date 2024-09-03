@@ -26,6 +26,12 @@
         tools:layout="@layout/fragment_captured_picture_view" />
 
     <fragment
+        android:id="@+id/udMonitorDataHistoryFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDSensorDataHistoryFragment"
+        android:label="UDMonitorDataHistoryFragment"
+        tools:layout="@layout/fragment_ud_sensor_data_history" />
+
+    <fragment
         android:id="@+id/udWorkModelParamFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDReportModelParamFragment"
         android:label="UDWorkModelParamFragment"
@@ -99,6 +105,14 @@
     <action
         android:id="@+id/action_global_to_capturedPictureViewFragment"
         app:destination="@id/capturedPictureViewFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_udMonitorDataHistoryFragment"
+        app:destination="@id/udMonitorDataHistoryFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
