@@ -18,7 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dimen_size_10"
-        android:padding="@dimen/dimen_size_12"
+        android:paddingHorizontal="@dimen/dimen_size_10"
+        android:paddingVertical="@dimen/dimen_size_13"
         app:drawable_radius="@{3}"
         app:drawable_solidColor="@{@color/white}"
         tools:background="@color/white">
@@ -31,7 +32,7 @@
             android:drawablePadding="@dimen/dimen_size_3"
             android:text="水面高程："
             android:textColor="@color/text_color_666666"
-            android:textSize="@dimen/text_size_12"
+            android:textSize="@dimen/text_size_13"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -58,7 +59,7 @@
             android:drawablePadding="@dimen/dimen_size_3"
             android:text="空高距离："
             android:textColor="@color/text_color_666666"
-            android:textSize="@dimen/text_size_12"
+            android:textSize="@dimen/text_size_13"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_water_surface_elevation_title" />
 
@@ -70,7 +71,7 @@
             android:maxLines="1"
             android:text='@{stateVM.airDistance}'
             android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_12"
+            android:textSize="@dimen/text_size_13"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/tv_air_distance_title"
             app:layout_constraintTop_toTopOf="@+id/tv_air_distance_title"
@@ -85,7 +86,7 @@
             android:drawablePadding="@dimen/dimen_size_3"
             android:text="安装角度："
             android:textColor="@color/text_color_666666"
-            android:textSize="@dimen/text_size_12"
+            android:textSize="@dimen/text_size_13"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_air_distance_title" />
 
@@ -97,7 +98,7 @@
             android:maxLines="1"
             android:text='@{stateVM.installationAngle }'
             android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_12"
+            android:textSize="@dimen/text_size_13"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/tv_installation_angle_title"
             app:layout_constraintTop_toTopOf="@+id/tv_installation_angle_title"
@@ -112,7 +113,7 @@
             android:drawablePadding="@dimen/dimen_size_3"
             android:text="测量时间："
             android:textColor="@color/text_color_666666"
-            android:textSize="@dimen/text_size_12"
+            android:textSize="@dimen/text_size_13"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_installation_angle_title" />
 
@@ -124,7 +125,7 @@
             android:maxLines="1"
             android:text="@{stateVM.measurementTime}"
             android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_12"
+            android:textSize="@dimen/text_size_13"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/tv_measurement_time_title"
             app:layout_constraintTop_toTopOf="@+id/tv_measurement_time_title"
@@ -135,6 +136,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dimen_size_5"
             android:gravity="bottom"
+            android:paddingBottom="@dimen/dimen_size_5"
             app:layout_constraintBottom_toTopOf="@+id/tv_measurement_time"
             app:layout_constraintEnd_toEndOf="parent">
 

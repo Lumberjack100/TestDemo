@@ -385,7 +385,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            mHeadStates.isMeasuring.set(true)
             measureData()
         }
 
@@ -603,17 +602,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 mCommandResponseStates.isResponseLoading.set(true)
                 mCommandResponseStates.isResponseSuccess.set(false)
             }
-
-//            IOTCommandType.QUERY_SAMPLE -> {
-//                if (cmdStr.contains("value=1")) {
-//                    Toaster.show("测量数据指令下发成功")
-//                    dismissLoadingDialog()
-//                    clearQueryMeasureDataTimeoutJob()
-//                    processQueryMeasureData()
-//                    return
-//                }
-//                super.doNetDispatchSuccess(cmdStr)
-//            }
 
             else -> {
                 super.doNetDispatchSuccess(cmdStr)
@@ -833,6 +821,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "召测出错: ${result.message}"
                         handleFailureResult(errMsg, isShowErrMsg = false)
+                        mHeadStates.isMeasuring.set(false)
+                        clearQueryMeasureDataTimeoutJob()
                         return
                     }
 
@@ -940,13 +930,14 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             resultMap["value"]?.let { code ->
                 when (code) {
                     "1" -> {
-                        Toaster.show("测量数据指令下发成功")
+                        Toaster.show("测量数据指令下发成功,开始测量数据")
+                        mHeadStates.isMeasuring.set(true)
                         clearQueryMeasureDataTimeoutJob()
                         processQueryMeasureData()
                     }
 
                     "2" -> {
-                        Toaster.show("拍照指令已下发，请稍后在历史中查看图片")
+                        Toaster.show("拍照指令下发成功，请稍后在历史中查看图片")
                     }
 
                     "0" -> {
