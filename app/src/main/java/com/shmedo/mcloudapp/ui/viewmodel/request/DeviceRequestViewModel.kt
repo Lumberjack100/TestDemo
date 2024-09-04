@@ -14,7 +14,6 @@ import com.shmedo.core.model.DeviceDetailInfo
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.core.model.DeviceSensorBasicInfo
 import com.shmedo.core.model.DeviceStatisticInfo
-import com.shmedo.core.model.EmptyInfo
 import com.shmedo.core.model.FirmWareInfo
 import com.shmedo.core.model.ProductInfo
 import com.shmedo.lib.network.ext.errorMsg
@@ -24,6 +23,7 @@ import com.shmedo.lib.network.response.ResponseStatus
 import com.shmedo.lib.network.response.ResultSource
 import com.shmedo.lib.network.util.BaseURL
 import com.shmedo.mcloudapp.BuildConfig
+import com.shmedo.mcloudapp.model.HoverHeaderModel
 import com.shmedo.mcloudapp.model.SingleSelectionItem
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
 import kotlinx.coroutines.Dispatchers
@@ -82,8 +82,8 @@ class DeviceRequestViewModel(
     val cloudDeviceDataListResult: Result<DataResult<List<CloudDeviceData>>> =
         _cloudDeviceDataListResult
 
-    private val _sensorDataListResult = MutableResult<DataResult<List<EmptyInfo>>>()
-    val sensorDataListResult: Result<DataResult<List<EmptyInfo>>> =
+    private val _sensorDataListResult = MutableResult<DataResult<List<Any>>>()
+    val sensorDataListResult: Result<DataResult<List<Any>>> =
         _sensorDataListResult
 
     private val _firmWareListResult = MutableResult<DataResult<List<FirmWareInfo>>>()
@@ -597,27 +597,73 @@ class DeviceRequestViewModel(
      * 分页查询设备监测数据
      */
     fun queryMonitorDataListWithPage(
-        sensorIDList: List<String>,
+        deviceToken: String = "",
+        sensorIDList: List<String>? = emptyList(),
         begin: String = "",
         end: String = "",
         currentPage: Int = 1,
         pageSize: Int = 100,
     ) = viewModelScope.launch(Dispatchers.IO) {
-        val remoteResult = deviceManageRepositoryImp.querySensorDataListExWithPage(
-            sensorIDList = sensorIDList,
-            begin = begin,
-            end = end,
-            density = "0",
-            dateTimeSort = false,
-            currentPage = currentPage,
-            pageSize = pageSize
-        ) { error ->
-            handleError(
-                _sensorDataListResult,
-                error,
-                methodUrl = "${BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl}/QueryDeviceFilePage"
+        var totalCount: Int = 0
+        var totalPage: Int = 0
+        val dataList: MutableList<Any> = arrayListOf()
+
+        if (sensorIDList.isNullOrEmpty()) {
+            val remoteResult = deviceManageRepositoryImp.queryDeviceFileListWithPage(
+                deviceToken = deviceToken,
+                begin = begin,
+                end = end,
+                fileType = "1",
+                orderType = "1",
+                currentPage = currentPage,
+                pageSize = pageSize
+            ) { error ->
+                handleError(
+                    _sensorDataListResult,
+                    error,
+                    methodUrl = "${BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl}/QueryDeviceFilePage"
+                )
+            } ?: return@launch
+
+            totalPage = remoteResult.totalPage
+            totalCount = remoteResult.totalCount
+            dataList.addAll(remoteResult.currentPageData ?: emptyList())
+
+        } else {
+            val remoteResult = deviceManageRepositoryImp.querySensorDataListExWithPage(
+                sensorIDList = sensorIDList,
+                begin = begin,
+                end = end,
+                density = "0",
+                dateTimeSort = false,
+                currentPage = currentPage,
+                pageSize = pageSize
+            ) { error ->
+                handleError(
+                    _sensorDataListResult,
+                    error,
+                    methodUrl = "${BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl}/ListPageSensorDataListEx"
+                )
+            }?.pageResult ?: return@launch
+
+            totalPage = remoteResult.totalPage
+            totalCount = remoteResult.totalCount
+            dataList.addAll(remoteResult.currentPageData ?: emptyList())
+        }
+
+        if (currentPage == 1 && dataList.isNotEmpty()) {
+            dataList.add(0, HoverHeaderModel())
+        }
+        _sensorDataListResult.postValue(
+            DataResult(
+                dataList,
+                responseStatus = ResponseStatus().apply {
+                    isSuccess = true
+                    responseCode = "0"
+                    source = ResultSource.NETWORK
+                }, totalCount = totalCount, totalPage = totalPage
             )
-        }?.pageResult?.currentPageData ?: return@launch
+        )
     }
 
     /**
@@ -646,12 +692,11 @@ class DeviceRequestViewModel(
             )
         } ?: return@launch
 
-        val dataList: MutableList<EmptyInfo> =
+        val dataList: MutableList<Any> =
             remoteResult.currentPageData?.toMutableList() ?: arrayListOf()
-
-        if (currentPage == 1)
-            dataList.add(0, EmptyInfo())//添加一个空数据，用于显示文件上传按钮
-
+        if (currentPage == 1 && dataList.isNotEmpty()) {
+            dataList.add(0, HoverHeaderModel())
+        }
         _sensorDataListResult.postValue(
             DataResult(
                 dataList,

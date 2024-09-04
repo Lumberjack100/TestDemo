@@ -9,12 +9,12 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class DeviceSensorDataPageInfo(
-    val pageResult: PageResultInfo,//
+    val pageResult: PageResultInfo? = null,//
 )
 
 @JsonClass(generateAdapter = true)
 data class PageResultInfo(
     var totalCount: Int = 0,
     var totalPage: Int = 0,
-    var currentPageData: List<String>? = null
+    var currentPageData: List<Map<String, String>>? = null
 )

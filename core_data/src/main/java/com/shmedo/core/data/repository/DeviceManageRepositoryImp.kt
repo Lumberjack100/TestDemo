@@ -2,7 +2,6 @@ package com.shmedo.core.data.repository
 
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
-import com.shmedo.core.model.DeviceFileInfo
 import com.shmedo.core.model.DeviceSensorBasicInfo
 import com.shmedo.core.model.DeviceSensorDataPageInfo
 import com.shmedo.lib.network.response.PageList
@@ -98,7 +97,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
         currentPage: Int = 1,
         pageSize: Int = 100,
         onCatch: ((Throwable) -> Unit)? = null
-    ): PageList<DeviceFileInfo>? {
+    ): PageList<Map<String, String>>? {
         val jsonObject = JSONObject().apply {
             put("companyID", AuthMMKVOwner.companyID)
             put("deviceToken", deviceToken)
@@ -111,7 +110,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
         }
         val headers: Map<String, String> = mapOf("Authorization" to MmkvCacheUtil.getToken())
 
-        return commonPostResponseString<PageList<DeviceFileInfo>>(
+        return commonPostResponseString<PageList<Map<String, String>>>(
             baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
             shortMethodUrl = "/QueryDeviceFilePage",
             jsonParam = jsonObject.toString(),

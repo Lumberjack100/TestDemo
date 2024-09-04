@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
@@ -10,15 +11,18 @@ import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.TimeUtils
+import com.drake.brv.PageRefreshLayout
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.luck.picture.lib.basic.PictureSelector
+import com.luck.picture.lib.entity.LocalMedia
+import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.utils.AppContants
-import com.shmedo.core.model.DeviceFileInfo
 import com.shmedo.core.model.DeviceInfo
-import com.shmedo.core.model.EmptyInfo
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -29,11 +33,12 @@ import com.shmedo.mcloudapp.databinding.ItemUdSensorDataHeaderBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.showDatePickerDialog
-import com.shmedo.mcloudapp.model.DeviceSensorDataHeaderItem
+import com.shmedo.mcloudapp.model.HoverHeaderModel
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDSensorDataHistoryViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
+import com.shmedo.mcloudapp.utils.image.GlideEngine
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class UDSensorDataHistoryFragment : BaseFragment() {
@@ -42,9 +47,14 @@ class UDSensorDataHistoryFragment : BaseFragment() {
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
 
     private lateinit var deviceInfo: DeviceInfo
+
     private val modelNameList = arrayListOf("水面距离", "垂直方向角度", "抓拍图片")
     private val modelTokenList = arrayListOf("104", "206", "10001")
     private val modelFieldList = arrayListOf("高度(m)", "角度(°)", "操作")
+    private val modelFieldJsonPathList = arrayListOf("value", "z")
+
+    private val sensorIDList: MutableList<String> = arrayListOf()
+    private val mImageData: ArrayList<LocalMedia> = ArrayList()
 
 
     override fun initViewModel() {}
@@ -71,6 +81,7 @@ class UDSensorDataHistoryFragment : BaseFragment() {
     }
 
     private fun initRefresh() {
+        PageRefreshLayout.startIndex = 1
         binding.refreshLayout.setEnableRefresh(false)
         binding.refreshLayout.onRefresh {
             refreshData()
@@ -86,8 +97,8 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                     )
                 )
             )
-            addType<DeviceSensorDataHeaderItem>(R.layout.item_ud_sensor_data_header)
-            addType<EmptyInfo>(R.layout.item_ud_sensor_data)
+            addType<HoverHeaderModel>(R.layout.item_ud_sensor_data_header)
+            addType<Map<String, String>>(R.layout.item_ud_sensor_data)
             onBind {
                 try {
                     when (itemViewType) {
@@ -100,16 +111,34 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                         R.layout.item_ud_sensor_data -> {
                             val itemBinding = getBinding<ItemUdSensorDataBinding>()
                             itemBinding.tvIndex.text = modelPosition.toString()
-                            itemBinding.tvValue.visibility =
-                                if (mStates.modelName.get() == "抓拍图片") View.GONE else View.VISIBLE
-                            itemBinding.tvOpt.visibility =
-                                if (mStates.modelName.get() == "抓拍图片") View.VISIBLE else View.GONE
+                            itemBinding.tvValue.visibility = mStates.modelName.get()
+                                .compareAndReturn("抓拍图片", View.GONE, View.VISIBLE)
+                            itemBinding.llOpt.visibility = mStates.modelName.get()
+                                .compareAndReturn("抓拍图片", View.VISIBLE, View.GONE)
 
-                            val item = getModel<EmptyInfo>()
-                            if (item is DeviceFileInfo) {
-                                itemBinding.tvTime.text =
-                                    TimeUtils.date2String(TimeUtils.string2Date(item.uploadTime))
-                                itemBinding.tvName.text = mStates.modelName.get()
+                            val itemMap = getModel<Map<String, String>>()
+                            when (mStates.modelName.get()) {
+                                "水面距离" -> {
+                                    itemBinding.tvTime.text =
+                                        TimeUtils.date2String(TimeUtils.string2Date(itemMap["time"]))
+                                    itemBinding.tvName.text = mStates.modelName.get()
+                                    itemBinding.tvValue.text = itemMap[modelFieldJsonPathList[0]]
+                                }
+
+                                "垂直方向角度" -> {
+                                    itemBinding.tvTime.text =
+                                        TimeUtils.date2String(TimeUtils.string2Date(itemMap["time"]))
+                                    itemBinding.tvName.text = mStates.modelName.get()
+                                    itemBinding.tvValue.text = itemMap[modelFieldJsonPathList[1]]
+                                }
+
+                                "抓拍图片" -> {
+                                    itemBinding.tvTime.text =
+                                        TimeUtils.date2String(TimeUtils.string2Date(itemMap["uploadTime"]))
+                                    itemBinding.tvName.text = mStates.modelName.get()
+                                }
+
+                                else -> {}
                             }
                         }
 
@@ -117,6 +146,20 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                     }
                 } catch (ex: Exception) {
                     ex.printStackTrace()
+                }
+            }
+            R.id.tv_opt.onClick {
+                val itemMap = getModel<Map<String, String>>()
+                if (itemMap.containsKey("filePath")) {
+                    val filePath = itemMap["filePath"]
+                    val shortFileName = itemMap["fileName"]
+
+                    mImageData.clear()
+                    mImageData.add(LocalMedia.generateHttpAsLocalMedia(filePath)
+                        .apply {
+                            fileName = shortFileName
+                        })
+                    openPreview(0)
                 }
             }
         }
@@ -145,11 +188,11 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                 "yyyy-MM-dd HH:mm"
             ) + ":00"
         )
-        mStates.modelName.set(modelNameList[2])
+        mStates.modelName.set(modelNameList[0])
     }
 
     override fun createObserver() {
-        deviceRequestViewModel.sensorDataListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<EmptyInfo>> ->
+        deviceRequestViewModel.sensorDataListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<Any>> ->
             if (!listDataResult.responseStatus.isSuccess) {
                 Toaster.show(listDataResult.responseStatus.errorMessage)
                 return@observe
@@ -176,6 +219,9 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                 }
                 mStates.startTimeMills.set(time)
                 mStates.startTime.set(TimeUtils.millis2String(time, "yyyy-MM-dd HH:mm") + ":00")
+                if (mStates.endTimeMills.get() == 0L) {
+                    binding.refreshLayout.showLoading()
+                }
             }
         }
 
@@ -187,6 +233,9 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                 }
                 mStates.endTimeMills.set(time)
                 mStates.endTime.set(TimeUtils.millis2String(time, "yyyy-MM-dd HH:mm") + ":00")
+                if (mStates.startTimeMills.get() == 0L) {
+                    binding.refreshLayout.showLoading()
+                }
             }
         }
 
@@ -205,6 +254,17 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                     null, selectedIndex,
                     { position, text ->
                         mStates.modelName.set(text)
+                        if (mStates.modelName.get() == "抓拍图片") {
+                            sensorIDList.clear()
+                        } else {
+                            if (position in modelTokenList.indices) {
+                                mStates.modelTokenMap[modelTokenList[position]]?.let { sensorBasicInfo ->
+                                    sensorIDList.clear()
+                                    sensorIDList.add(sensorBasicInfo.id)
+                                }
+                            }
+                        }
+                        binding.refreshLayout.showLoading()
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -219,18 +279,50 @@ class UDSensorDataHistoryFragment : BaseFragment() {
             sensorList.forEach {
                 mStates.modelTokenMap[it.iotSensorType] = it
             }
+
+            sensorIDList.clear()
+            val position = modelNameList.indexOf(mStates.modelName.get())
+            mStates.modelTokenMap[modelTokenList[position]]?.let { sensorBasicInfo ->
+                sensorIDList.add(sensorBasicInfo.id)
+            }
             binding.refreshLayout.showLoading()
         }
     }
 
     private fun refreshData() {
-        deviceRequestViewModel.queryDeviceFileListWithPage(
+        deviceRequestViewModel.queryMonitorDataListWithPage(
             deviceToken = deviceInfo.deviceToken,
+            sensorIDList = sensorIDList,
             begin = mStates.startTime.get(),
             end = mStates.endTime.get(),
             currentPage = binding.refreshLayout.index,
             pageSize = PAGE_SIZE
         )
+    }
+
+    /**
+     * 打开预览
+     */
+    private fun openPreview(currentPosition: Int) {
+        // 预览图片、视频、音频
+        PictureSelector.create(requireContext()).openPreview()
+            .setImageEngine(GlideEngine.createGlideEngine())
+            .setExternalPreviewEventListener(ImagePreviewEventListener())
+            .isHidePreviewDownload(false)
+            .startActivityPreview(currentPosition, false, mImageData)
+    }
+
+    /**
+     * 外部预览监听事件
+     */
+    private inner class ImagePreviewEventListener : OnExternalPreviewEventListener {
+        override fun onPreviewDelete(position: Int) {
+
+        }
+
+        override fun onLongPressDownload(context: Context?, media: LocalMedia?): Boolean {
+            return false
+        }
     }
 
     override fun onResume() {

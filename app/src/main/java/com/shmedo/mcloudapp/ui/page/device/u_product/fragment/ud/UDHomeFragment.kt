@@ -49,7 +49,6 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.LoraConfigModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.PlatformLabel
-import com.shmedo.mcloudapp.model.RebootModule
 import com.shmedo.mcloudapp.model.RunningStatusModule
 import com.shmedo.mcloudapp.model.SensorConfigModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
@@ -269,7 +268,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                             name = "位置信息",
                             desc = "查看设备位置信息",
                             resID = R.drawable.ic_module_location_info,
-                            navId = R.id.action_global_to_udMonitorDataHistoryFragment
+                            navId = R.id.action_global_to_commonRunningDeviceInfoFragment
                         )
                     )
                 )
@@ -334,9 +333,9 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         name = "时间校准",
                     )
                 ),
-                ConfigModule(RebootModule()),
                 ConfigModule(
                     AdvancedSettingsModule(
+                        name = "系统配置",
                         navId = R.id.action_global_to_advancedSettingFragment
                     )
                 ),
@@ -374,6 +373,21 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             } else {
                 bleViewModel.launch(bleDevice!!)
             }
+        }
+
+        fun onMeasureDataClick() {
+            measureData()
+        }
+
+        fun onTakePhotoClick() {
+            takePhoto()
+        }
+
+        fun onGoToSensorDataHistoryClick() {
+            nav().navigate(
+                R.id.action_global_to_udMonitorDataHistoryFragment,
+                UDSensorDataHistoryFragment.newBundleArguments(deviceInfo)
+            )
         }
     }
 
@@ -448,6 +462,38 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    private fun queryStatusInfo() {
+        commandItems.clear()
+
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "value=0")
+        commandItems.add(command)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 测量数据
+     */
+    private fun measureData() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "value=2")
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 拍照
+     */
+    private fun takePhoto() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "value=2")
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
     /**
      * 查询终端时间
      */
@@ -515,34 +561,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         queryStatusInfo()
     }
 
-    private fun initPlatformStatus(content: String, status: String) {
-        val platformLabels = mutableListOf<PlatformLabel>()
-        platformLabels.add(
-            PlatformLabel(
-                content,
-                textColorRes = status.compareAndReturn(
-                    "1",
-                    ColorUtils.getColor(R.color.colorPrimary),
-                    ColorUtils.getColor(R.color.sub_title_text_color)
-                ),
-                bgResId = status.compareAndReturn(
-                    "1",
-                    R.drawable.bg_label_corner_15dp_blue,
-                    R.drawable.bg_label_corner_15dp_gray
-                )
-            )
-        )
-        binding.llDeviceInfo.rvPlatform.models = platformLabels
-    }
-
-    private fun queryStatusInfo() {
-        commandItems.clear()
-
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "value=0")
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
     override fun doNetDispatchSuccess(cmdStr: String) {
         super.doNetDispatchSuccess(cmdStr)
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
@@ -556,6 +574,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 mCommandResponseStates.isResponseLoading.set(true)
                 mCommandResponseStates.isResponseSuccess.set(false)
             }
+
             else -> {}
         }
     }
@@ -707,26 +726,30 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.REBOOT -> {//重启设备
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = StringUtils.getString(R.string.reboot_failed) + result.message
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show(StringUtils.getString(R.string.device_reboot_tip))
-                        }
-                    }
-                }
-            }
-
             else -> {
 
             }
         }
+    }
+
+    private fun initPlatformStatus(content: String, status: String) {
+        val platformLabels = mutableListOf<PlatformLabel>()
+        platformLabels.add(
+            PlatformLabel(
+                content,
+                textColorRes = status.compareAndReturn(
+                    "1",
+                    ColorUtils.getColor(R.color.colorPrimary),
+                    ColorUtils.getColor(R.color.sub_title_text_color)
+                ),
+                bgResId = status.compareAndReturn(
+                    "1",
+                    R.drawable.bg_label_corner_15dp_blue,
+                    R.drawable.bg_label_corner_15dp_gray
+                )
+            )
+        )
+        binding.llDeviceInfo.rvPlatform.models = platformLabels
     }
 
     private fun initStatusInfo(content: String) {

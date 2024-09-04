@@ -12,7 +12,7 @@ import com.drake.brv.item.ItemHover
  *
  */
 data class HoverHeaderModel(
-    val title: String,
+    val title: String = "",
 ) : ItemHover {
     override var itemHover: Boolean = true
 }

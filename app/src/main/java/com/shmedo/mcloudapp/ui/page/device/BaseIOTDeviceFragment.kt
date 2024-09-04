@@ -377,6 +377,18 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     }
 
     /**
+     * 重启设备
+     */
+    private fun reboot() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(IOTCommandType.REBOOT)
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
      * 恢复出厂
      */
     protected open fun restoreFactory() {

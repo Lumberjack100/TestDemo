@@ -51,9 +51,7 @@
                 android:layout_height="30dp"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="@dimen/dimen_size_10"
-                app:drawable_radius="@{20}"
-                app:drawable_solidColor="@{@color/gray_f5f6f8}"
-                tools:background="@color/gray_f5f6f8">
+                android:background="@drawable/bg_label_corner_15dp_blue">
 
                 <com.google.android.material.textview.MaterialTextView
                     onClickWithDebouncing="@{() -> click.onChooseStartTimeClick()}"
@@ -92,9 +90,7 @@
                 android:layout_marginStart="@dimen/dimen_size_20"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="@dimen/dimen_size_10"
-                app:drawable_radius="@{20}"
-                app:drawable_solidColor="@{@color/gray_f5f6f8}"
-                tools:background="@color/gray_f5f6f8">
+                android:background="@drawable/bg_label_corner_15dp_blue">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
@@ -128,13 +124,14 @@
                 android:id="@+id/recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimen_size_35"
+                android:layout_marginStart="@dimen/dimen_size_25"
+                android:layout_marginEnd="@dimen/dimen_size_15"
                 android:clipToPadding="false"
                 android:paddingBottom="@dimen/dimen_size_30"
                 android:splitMotionEvents="false"
                 tools:itemCount="30"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_device_status_info_basic" />
+                tools:listitem="@layout/item_ud_sensor_data" />
 
         </com.drake.brv.PageRefreshLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
