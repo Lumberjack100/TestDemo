@@ -66,7 +66,7 @@
                 android:id="@+id/tv_opt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_label_corner_15dp_blue"
+                android:background="@drawable/bg_label_blue_corner_15dp"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/dimen_size_12"
                 android:paddingVertical="@dimen/dimen_size_3"

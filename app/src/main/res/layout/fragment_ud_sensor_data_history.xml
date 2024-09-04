@@ -51,7 +51,7 @@
                 android:layout_height="30dp"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="@dimen/dimen_size_10"
-                android:background="@drawable/bg_label_corner_15dp_blue">
+                android:background="@drawable/bg_label_blue_corner_15dp">
 
                 <com.google.android.material.textview.MaterialTextView
                     onClickWithDebouncing="@{() -> click.onChooseStartTimeClick()}"
@@ -90,7 +90,7 @@
                 android:layout_marginStart="@dimen/dimen_size_20"
                 android:gravity="center_vertical"
                 android:paddingHorizontal="@dimen/dimen_size_10"
-                android:background="@drawable/bg_label_corner_15dp_blue">
+                android:background="@drawable/bg_label_blue_corner_15dp">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"

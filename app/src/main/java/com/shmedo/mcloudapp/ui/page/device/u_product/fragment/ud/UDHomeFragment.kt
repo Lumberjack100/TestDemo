@@ -861,8 +861,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 ),
                 bgResId = status.compareAndReturn(
                     "1",
-                    R.drawable.bg_label_corner_15dp_blue,
-                    R.drawable.bg_label_corner_15dp_gray
+                    R.drawable.bg_label_blue_corner_15dp,
+                    R.drawable.bg_label_gray_corner_15dp
                 )
             )
         )
@@ -912,8 +912,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         R.drawable.bg_device_offline_state_flag_corner_10dp,
                         status.compareAndReturn(
                             "告警",
-                            R.drawable.bg_label_corner_15dp_yellow,
-                            R.drawable.bg_label_corner_15dp_blue
+                            R.drawable.bg_label_yellow_corner_15dp,
+                            R.drawable.bg_label_blue_corner_15dp
                         )
                     )
                 )
@@ -935,6 +935,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         try {
             //{"value":1,"time":"2024-09-04 11:07:34"}
             //{"value":2,"filename":"20240904111431"}
+            //{"value":0,"obj_alt":28.320,"ld_value":3.514,"z_angle":86.4,"time":"2024-09-04 14:32:32"}
             val resultMap = MoshiUtil.fromJson<Map<String, String>>(content) ?: return
             resultMap["value"]?.let { code ->
                 when (code) {
