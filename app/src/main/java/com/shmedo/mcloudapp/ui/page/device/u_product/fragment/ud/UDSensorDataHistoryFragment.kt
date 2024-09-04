@@ -49,9 +49,9 @@ class UDSensorDataHistoryFragment : BaseFragment() {
     private lateinit var deviceInfo: DeviceInfo
 
     private val modelNameList = arrayListOf("水面距离", "垂直方向角度", "抓拍图片")
-    private val modelTokenList = arrayListOf("104", "206", "10001")
+    private val modelTokenList = arrayListOf("904", "206", "10001")
     private val modelFieldList = arrayListOf("高度(m)", "角度(°)", "操作")
-    private val modelFieldJsonPathList = arrayListOf("value", "z")
+    private val modelFieldJsonPathList = arrayListOf("ullage", "z")
 
     private val sensorIDList: MutableList<String> = arrayListOf()
     private val mImageData: ArrayList<LocalMedia> = ArrayList()

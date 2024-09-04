@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{stateVM.waterSurfaceElevation}"
+            android:text='@{stateVM.waterSurfaceElevation}'
             android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_14"
             android:textStyle="bold"
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{stateVM.airDistance}"
+            android:text='@{stateVM.airDistance}'
             android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_12"
             android:textStyle="bold"
@@ -89,7 +89,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{stateVM.installationAngle}"
+            android:text='@{stateVM.installationAngle }'
             android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_12"
             android:textStyle="bold"
@@ -134,8 +134,7 @@
                 onClickWithDebouncing="@{()->click.onMeasureDataClick()}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:focusable="true"
-                android:foreground="?android:selectableItemBackground"
+                android:enabled="@{!stateVM.isMeasuring()}"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -148,20 +147,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_size_4"
-                    android:text="测量"
-                    android:textColor="@color/sub_title_text_color"
+                    android:text='@{stateVM.isMeasuring() ? "测量中" : "测量"}'
+                    android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_12" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 onClickWithDebouncing="@{()->click.onTakePhotoClick()}"
-                visible="@{stateVM.isConnectOperateVisible}"
+                invisible="@{!stateVM.isConnectOperateVisible}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimen_size_25"
-                android:focusable="true"
-                android:foreground="?android:selectableItemBackground"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -175,19 +172,17 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_size_4"
                     android:text="拍照"
-                    android:textColor="@color/sub_title_text_color"
+                    android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_12" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 onClickWithDebouncing="@{()->click.onGoToSensorDataHistoryClick()}"
-                visible="@{stateVM.isConnectOperateVisible}"
+                invisible="@{!stateVM.isConnectOperateVisible}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimen_size_25"
-                android:focusable="true"
-                android:foreground="?android:selectableItemBackground"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -201,7 +196,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_size_4"
                     android:text="历史"
-                    android:textColor="@color/sub_title_text_color"
+                    android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_12" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>

@@ -273,36 +273,37 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         timeoutMillis: Long = AppContants.Communication.DELAY_10000_MILLIS,//默认10秒超时
         crossinline finishAction: () -> Unit = {}
     ) {
+        //指令队列为空，结束
         if (commandItems.size <= 0) {
             cancelNearbyCommunicationTimeoutJob()
             finishAction()
             return
         }
-
         val command = commandItems.first
         commandItems.removeFirst()
-        addLogItem(Log.INFO, command)
+        addLogItem(Log.INFO, "发送指令: $command")
 
+        //4G远程下发指令
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
-        } else {
-            if (isBleDisconnected()) {
-                Toaster.show("蓝牙已断开，请重新连接")
-                cancelNearbyCommunicationTimeoutJob()
-                finishAction()
-                return
-            }
-            //发送物联网指令
-            if (command.startsWith(IOTConstants.COMMAND_HEADER)) {
-                bleViewModel.sendIOTCommand(command, deviceInfo.apikey, delaySendMillis)
-            } else {
-                //发送MD指令 ##开头
-                bleViewModel.sendMDCommand(command, delaySendMillis)
-            }
-
-            if (isStartTimeoutJob)
-                startNearbyCommunicationTimeoutJob(command, timeoutMillis)
+            return
         }
+
+        //蓝牙通信
+        if (isBleDisconnected()) {
+            Toaster.show("蓝牙已断开，请重新连接")
+            cancelNearbyCommunicationTimeoutJob()
+            finishAction()
+            return
+        }
+        //发送物联网指令
+        if (command.startsWith(IOTConstants.COMMAND_HEADER))
+            bleViewModel.sendIOTCommand(command, deviceInfo.apikey, delaySendMillis)
+        else
+            bleViewModel.sendMDCommand(command, delaySendMillis)//发送MD指令 ##开头
+        //启动超时Job
+        if (isStartTimeoutJob)
+            startNearbyCommunicationTimeoutJob(command, timeoutMillis)
     }
 
     /**

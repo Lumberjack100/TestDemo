@@ -31,6 +31,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentUdHomeBinding
 import com.shmedo.mcloudapp.databinding.ItemSubConfigModuleBinding
+import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -64,6 +65,8 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDHomeViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -80,8 +83,10 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mHeadStates: UDHomeViewModel by viewModels()
     private val mCommandResponseStates: CommandResponseViewModel by viewModels()
-
     private val iotParseManager: IOTParserManager by inject()
+
+    private var queryMeasureDataTimeoutJob: Job? = null
+    private var repeatPollNum = 0 //重复轮询次数
 
     override fun initViewModel() {
         super.initViewModel()
@@ -376,10 +381,19 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         }
 
         fun onMeasureDataClick() {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            mHeadStates.isMeasuring.set(true)
             measureData()
         }
 
         fun onTakePhotoClick() {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
             takePhoto()
         }
 
@@ -471,11 +485,22 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     }
 
     /**
+     * 查询测量数据
+     */
+    private fun queryMeasureData() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "value=0")
+        commandItems.add(command)
+
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
      * 测量数据
      */
     private fun measureData() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "value=2")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "value=1")
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
@@ -561,26 +586,50 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         queryStatusInfo()
     }
 
+    /**
+     * 4G 透传指令成功
+     */
     override fun doNetDispatchSuccess(cmdStr: String) {
-        super.doNetDispatchSuccess(cmdStr)
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME -> {
+                super.doNetDispatchSuccess(cmdStr)
                 mCommandResponseStates.isResponseLoading.set(true)
                 mCommandResponseStates.isResponseSuccess.set(false)
                 showTimeCalibrationPopup()
             }
 
             IOTCommandType.SET_TERMINAL_TIME -> {
+                super.doNetDispatchSuccess(cmdStr)
                 mCommandResponseStates.isResponseLoading.set(true)
                 mCommandResponseStates.isResponseSuccess.set(false)
             }
 
-            else -> {}
+//            IOTCommandType.QUERY_SAMPLE -> {
+//                if (cmdStr.contains("value=1")) {
+//                    Toaster.show("测量数据指令下发成功")
+//                    dismissLoadingDialog()
+//                    clearQueryMeasureDataTimeoutJob()
+//                    processQueryMeasureData()
+//                    return
+//                }
+//                super.doNetDispatchSuccess(cmdStr)
+//            }
+
+            else -> {
+                super.doNetDispatchSuccess(cmdStr)
+            }
         }
     }
 
+    /**
+     * 4G 下发指令响应失败
+     */
     override fun doCmdResponseResultError(cmdStr: String, errorMsg: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DEVICE_STATUS -> {
+                dismissLoadingDialog()
+            }
+
             IOTCommandType.QUERY_TERMINAL_TIME,
             IOTCommandType.SET_TERMINAL_TIME,
             -> {
@@ -589,14 +638,34 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 mCommandResponseStates.responseContent.set(errorMsg)
             }
 
+            IOTCommandType.QUERY_SAMPLE -> {
+                mHeadStates.isMeasuring.set(false)
+                if (cmdStr.contains("value=1")) {
+                    Toaster.show("测量数据指令下发出错: $errorMsg")
+                    dismissLoadingDialog()
+                } else if (cmdStr.contains("value=2")) {
+                    Toaster.show("拍照指令下发出错: $errorMsg")
+                    dismissLoadingDialog()
+                } else if (cmdStr.contains("value=0")) {
+                    clearQueryMeasureDataTimeoutJob()
+                }
+            }
+
             else -> {
                 super.doCmdResponseResultError(cmdStr, errorMsg)
             }
         }
     }
 
+    /**
+     * 4G 下发指令响应超时
+     */
     override fun doCmdResponseResultTimeOut(cmdStr: String, errorMsg: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DEVICE_STATUS -> {
+                dismissLoadingDialog()
+            }
+
             IOTCommandType.QUERY_TERMINAL_TIME,
             IOTCommandType.SET_TERMINAL_TIME,
             -> {
@@ -605,30 +674,86 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 mCommandResponseStates.responseContent.set("指令响应超时")
             }
 
+            IOTCommandType.QUERY_SAMPLE -> {
+                mHeadStates.isMeasuring.set(false)
+                if (cmdStr.contains("value=1")) {
+                    Toaster.show("测量数据指令响应超时")
+                    dismissLoadingDialog()
+                } else if (cmdStr.contains("value=2")) {
+                    Toaster.show("拍照指令响应超时")
+                    dismissLoadingDialog()
+                } else if (cmdStr.contains("value=0")) {
+                    clearQueryMeasureDataTimeoutJob()
+                }
+            }
+
             else -> {
                 super.doCmdResponseResultTimeOut(cmdStr, errorMsg)
             }
         }
     }
 
+    /**
+     * 蓝牙下发指令响应超时
+     */
     override fun showNearbyCommunicationTimeoutAlert(
         cmdStr: String,
         isDismissLoadingDialog: Boolean,
         isShowMsg: Boolean,
         msg: String
     ) {
-        super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, false, msg)
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DEVICE_STATUS -> {
+                super.showNearbyCommunicationTimeoutAlert(
+                    cmdStr,
+                    isDismissLoadingDialog,
+                    isShowMsg = false,
+                    msg
+                )
+            }
+
             IOTCommandType.QUERY_TERMINAL_TIME,
             IOTCommandType.SET_TERMINAL_TIME,
-            IOTCommandType.QUERY_SAMPLE -> {
+            -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
                 mCommandResponseStates.responseContent.set("指令响应超时")
             }
 
-            else -> {
+            IOTCommandType.QUERY_SAMPLE -> {
+                mHeadStates.isMeasuring.set(false)
+                if (cmdStr.contains("value=1")) {
+                    super.showNearbyCommunicationTimeoutAlert(
+                        cmdStr,
+                        isDismissLoadingDialog,
+                        isShowMsg,
+                        msg = "测量数据指令响应超时"
+                    )
+                } else if (cmdStr.contains("value=2")) {
+                    super.showNearbyCommunicationTimeoutAlert(
+                        cmdStr,
+                        isDismissLoadingDialog,
+                        isShowMsg,
+                        msg = "拍照指令响应超时"
+                    )
+                } else if (cmdStr.contains("value=0")) {
+                    clearQueryMeasureDataTimeoutJob()
+                    super.showNearbyCommunicationTimeoutAlert(
+                        cmdStr,
+                        isDismissLoadingDialog,
+                        isShowMsg = false,
+                        msg
+                    )
+                }
+            }
 
+            else -> {
+                super.showNearbyCommunicationTimeoutAlert(
+                    cmdStr,
+                    isDismissLoadingDialog,
+                    isShowMsg,
+                    msg
+                )
             }
         }
     }
@@ -706,22 +831,14 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        handleFailureResult(result.message, false)
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(false)
-                        mCommandResponseStates.responseContent.set(result.message)
+                        val errMsg = "召测出错: ${result.message}"
+                        handleFailureResult(errMsg, isShowErrMsg = false)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList()
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(true)
-                        try {
-                            mCommandResponseStates.responseContent.set(result.data)
-                        } catch (ex: Exception) {
-                            ex.printStackTrace()
-                        }
+                        processSampleResponse(result.data)
                     }
                 }
             }
@@ -811,6 +928,81 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    /**
+     * 处理召测响应
+     */
+    private fun processSampleResponse(content: String) {
+        try {
+            //{"value":1,"time":"2024-09-04 11:07:34"}
+            //{"value":2,"filename":"20240904111431"}
+            val resultMap = MoshiUtil.fromJson<Map<String, String>>(content) ?: return
+            resultMap["value"]?.let { code ->
+                when (code) {
+                    "1" -> {
+                        Toaster.show("测量数据指令下发成功")
+                        clearQueryMeasureDataTimeoutJob()
+                        processQueryMeasureData()
+                    }
+
+                    "2" -> {
+                        Toaster.show("拍照指令已下发，请稍后在历史中查看图片")
+                    }
+
+                    "0" -> {
+                        //已经有数据
+                        if (resultMap.containsKey("obj_alt")
+                            && resultMap.containsKey("ld_value")
+                            && resultMap.containsKey("z_angle")
+                            && resultMap.containsKey("time")
+                        ) {
+                            mHeadStates.isMeasuring.set(false)
+                            clearQueryMeasureDataTimeoutJob()
+
+                            val waterSurfaceElevation = resultMap["obj_alt"] ?: ""
+                            val airDistance = resultMap["ld_value"] ?: ""
+                            val installationAngle = resultMap["z_angle"] ?: ""
+                            val measurementTime = resultMap["time"] ?: ""
+
+                            mHeadStates.waterSurfaceElevation.set("$waterSurfaceElevation m")
+                            mHeadStates.airDistance.set("$airDistance m")
+                            mHeadStates.installationAngle.set("$installationAngle°")
+                            mHeadStates.measurementTime.set(measurementTime)
+                            return
+                        }
+
+                        processQueryMeasureData()
+                    }
+
+                    else -> {}
+                }
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
+    private fun processQueryMeasureData() {
+        //启动一个新的协程作为超时Job
+        queryMeasureDataTimeoutJob?.cancel()
+        queryMeasureDataTimeoutJob = launchWithViewLifecycle {
+            if (repeatPollNum >= 6) {
+                clearQueryMeasureDataTimeoutJob()
+                return@launchWithViewLifecycle
+            }
+            delay(AppContants.Communication.DELAY_10000_MILLIS) //延迟 timeMillis 秒
+            repeatPollNum++
+            Timber.d("查询测量数据轮询次数：$repeatPollNum")
+            queryMeasureData()
+        }
+    }
+
+    private fun clearQueryMeasureDataTimeoutJob() {
+        queryMeasureDataTimeoutJob?.cancel()
+        queryMeasureDataTimeoutJob = null
+        repeatPollNum = 0
+    }
+
     override fun createObserver() {
         super.createObserver()
         setupHeartbeat()
@@ -822,9 +1014,10 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     private fun setupHeartbeat() {
         launchWithViewLifecycle {
             lastCommunicationTime
-                .debounce(AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
+                .debounce(AppContants.Communication.DELAY_20000_MILLIS)  //20秒无更新触发
                 .collect { lastUpdateTime ->
-                    val updateTime = TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
+                    val updateTime =
+                        TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
                     //仅当设备连接并且需要发送心跳时，才发送心跳包
                     if (mHeadStates.isConnected.get()) {
                         Timber.d("发送心跳包指令 startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
