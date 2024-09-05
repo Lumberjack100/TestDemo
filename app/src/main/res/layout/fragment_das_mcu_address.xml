@@ -39,7 +39,7 @@
                     style="@style/Common_EditItem_EditText_Style"
                     android:hint="数值范围[0-255]"
                     android:text="@={stateVM.address}"
-                    app:inputTypeFilter='@{"number"}'
+                    android:inputType="number"
                     app:lengthFilter="@{3}" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>

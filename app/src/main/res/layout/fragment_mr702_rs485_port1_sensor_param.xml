@@ -114,7 +114,7 @@
                             android:hint="请输入"
                             android:inputType="phone"
                             android:text="@={stateVM.modelToken}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{8}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -130,7 +130,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             android:hint="请输入"
                             android:text="@={stateVM.address}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -148,7 +148,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="请输入"
                             android:text="@={stateVM.baudRate}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{6}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -402,7 +402,7 @@
                             textViewEnabled="@{stateVM.isEditable}"
                             android:hint="请输入"
                             android:text="@={stateVM.ngateval}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>

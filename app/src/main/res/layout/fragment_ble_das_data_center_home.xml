@@ -113,7 +113,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             android:hint="请输入"
                             android:text="@={stateVM.reportingInterval}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{4}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -133,7 +133,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             android:hint="请输入"
                             android:text="@={stateVM.bdCardNumber}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{6}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>

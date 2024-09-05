@@ -95,7 +95,7 @@
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         android:text="@={stateVM.address}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{3}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>

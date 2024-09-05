@@ -112,7 +112,7 @@
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:hint="请输入"
                             android:text="@={stateVM.alarmAddress}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -132,7 +132,7 @@
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:hint="请输入10~300之间数值"
                             android:text="@={stateVM.duration}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -152,7 +152,7 @@
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:hint="请输入5~300之间数值"
                             android:text="@={stateVM.interval}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -294,7 +294,7 @@
                             textViewEnabled="@{stateVM.isScreenOpened}"
                             android:hint="请输入"
                             android:text="@={stateVM.screenAddress}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -314,7 +314,7 @@
                             textViewEnabled="@{stateVM.isScreenOpened}"
                             android:hint="请输入"
                             android:text="@={stateVM.showTime}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -334,7 +334,7 @@
                             textViewEnabled="@{stateVM.isScreenOpened}"
                             android:hint="请输入"
                             android:text="@={stateVM.showGap}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>

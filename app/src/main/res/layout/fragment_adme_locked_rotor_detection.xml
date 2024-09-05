@@ -88,7 +88,7 @@
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
                             android:hint="数值范围[1,10000]"
                             android:text="@={stateVM.downPulsesPerUnitTime}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -126,7 +126,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
                             android:text="@={stateVM.downSlowStartIntervalEndValue}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{6}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -145,7 +145,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
                             android:text="@={stateVM.downSlowStopIntervalStartValue}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{6}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -330,7 +330,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.pullUpEnable}"
                             android:text="@={stateVM.pullUpSlowStartIntervalEndValue}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -349,7 +349,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.pullUpEnable}"
                             android:text="@={stateVM.pullUpSlowStopIntervalStartValue}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>

@@ -448,6 +448,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
             else
                 mStates.startTimePerRound.get(),
             datainval = mStates.executiveAgencyInfoWrapper.get().datainval,
+            clin_compen = mStates.executiveAgencyInfoWrapper.get().clin_compen,
             compensatetime = mStates.executiveAgencyInfoWrapper.get().compensatetime,
             interdeep = mStates.inclinometerTubeHoleDepth.get(),
             driveaddress = mStates.executiveAgencyInfoWrapper.get().driveaddress,

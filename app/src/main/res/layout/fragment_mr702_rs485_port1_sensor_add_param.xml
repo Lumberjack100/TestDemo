@@ -88,9 +88,9 @@
                         style="@style/Common_EditItem_EditText_Style"
                         android:enabled="@{stateVM.isCustomSensor&amp;&amp; stateVM.isFirstModelField}"
                         android:hint="请输入"
-                        android:inputType="phone"
+                        android:inputType="number"
                         android:text="@={stateVM.modelToken}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{8}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -108,7 +108,7 @@
                         android:enabled="@{ stateVM.isFirstModelField}"
                         android:hint="请输入"
                         android:text="@={stateVM.address}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{5}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -125,7 +125,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         android:hint="请输入"
                         android:text="@={stateVM.baudRate}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{6}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -237,7 +237,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         android:hint="请输入"
                         android:text="@={stateVM.hydrologicalIdentification}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{6}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -391,7 +391,7 @@
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         android:text="@={stateVM.ngateval}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{5}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>

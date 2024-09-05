@@ -131,7 +131,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.waitingIntervalPerRound}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -190,7 +190,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.intervalDays}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{6}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -238,7 +238,26 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.dataReadingInterval}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
+                            app:lengthFilter="@{5}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:layout_marginTop="0.5dp"
+                        visible='@{ stateVM.wrapInfo.clin_compen != IOTConstants.NULL_KEY}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_TitleStyle"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="测斜仪补偿时间(秒)" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="@={stateVM.inclinometerCompensationTime}"
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -257,7 +276,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.measurementCompensationTime}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -297,7 +316,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[0-99]"
                             android:text="@={stateVM.motorDriveAddress}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -317,7 +336,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-180]"
                             android:text="@={stateVM.decentralizationSpeed}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -337,7 +356,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-32]"
                             android:text="@={stateVM.decentralizationWaitingTime}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{3}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -357,7 +376,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-180]"
                             android:text="@={stateVM.pullUpSpeed}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -377,7 +396,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-10]"
                             android:text="@={stateVM.pullUpZeroSpeed}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{2}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -396,7 +415,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.measuringDistance}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -415,7 +434,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.measurementIntervalTime}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>

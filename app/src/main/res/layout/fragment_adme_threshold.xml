@@ -209,7 +209,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="0 表示关闭防冻"
                             android:text="@={stateVM.antifreezeDistance}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{8}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>

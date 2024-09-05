@@ -88,7 +88,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="@={stateVM.centerServerPort}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -261,7 +261,7 @@
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.registerPort}"
-                                app:inputTypeFilter='@{"number"}'
+                                android:inputType="number"
                                 app:lengthFilter="@{5}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -307,7 +307,7 @@
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.centerStationAddr}"
-                                app:inputTypeFilter='@{"number"}'
+                                android:inputType="number"
                                 app:lengthFilter="@{3}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -325,7 +325,7 @@
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.password}"
-                                app:inputTypeFilter='@{"number"}'
+                                android:inputType="number"
                                 app:lengthFilter="@{5}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -429,7 +429,7 @@
                                     style="@style/Common_EditItem_EditText_Style"
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:text="@={stateVM.maintainReportInterval}"
-                                    app:inputTypeFilter='@{"number"}'
+                                    android:inputType="number"
                                     app:lengthFilter="@{3}" />
 
                             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -447,7 +447,7 @@
                                     style="@style/Common_EditItem_EditText_Style"
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:text="@={stateVM.reissuingDataValidDays}"
-                                    app:inputTypeFilter='@{"number"}'
+                                    android:inputType="number"
                                     app:lengthFilter="@{3}" />
 
                             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -465,7 +465,7 @@
                                     style="@style/Common_EditItem_EditText_Style"
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:text="@={stateVM.reissuingDataInterval}"
-                                    app:inputTypeFilter='@{"number"}'
+                                    android:inputType="number"
                                     app:lengthFilter="@{4}" />
 
                             </androidx.appcompat.widget.LinearLayoutCompat>

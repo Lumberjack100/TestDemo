@@ -125,7 +125,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.waitingIntervalPerRound}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -184,7 +184,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.intervalDays}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{6}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -251,7 +251,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-180]"
                             android:text="@={stateVM.decentralizationSpeed}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -270,7 +270,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-32]"
                             android:text="@={stateVM.decentralizationWaitingTime}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{3}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>

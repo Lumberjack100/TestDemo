@@ -69,7 +69,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.acquisitionFrequency}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{5}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -87,7 +87,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.collectionTimes}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{5}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -105,7 +105,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.noResponseTimes}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{5}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -123,7 +123,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.delayDuration}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{5}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -175,7 +175,7 @@
                         textViewEnabled="@{homeVM.isEditable }"
                         android:hint="请输入"
                         android:text="@={stateVM.collectorAddress}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{6}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -195,7 +195,7 @@
                         textViewEnabled="@{homeVM.isEditable }"
                         android:hint="请输入"
                         android:text="@={stateVM.baudRate}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{6}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 

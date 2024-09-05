@@ -120,7 +120,7 @@
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                         android:hint="请输入"
                         android:text="@={stateVM.debounceCoefficient}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{6}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 

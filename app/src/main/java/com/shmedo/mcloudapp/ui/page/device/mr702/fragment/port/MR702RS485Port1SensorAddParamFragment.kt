@@ -57,7 +57,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port1SensorAddParamBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: MR702RS485Port1SensorAddParamViewModel
-    private lateinit var mInterfaceHomeViewModel: MR702PortHomeViewModel
+    private lateinit var portHomeViewModel: MR702PortHomeViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private lateinit var sensorItem: MRSensorItem
@@ -74,7 +74,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         super.initViewModel()
         toolbarViewModel = getFragmentScopeViewModel()
         mStates = getFragmentScopeViewModel()
-        mInterfaceHomeViewModel = getActivityScopeViewModel()
+        portHomeViewModel = getActivityScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -106,14 +106,18 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         }
         binding.llToolbar.toolbar.title = "RS485-1-${sensorItem.sensorName}"
 
-        mStates.isCustomSensor.set(sensorItem.modelFieldList.isEmpty())
-        mStates.isFirstModelField.set(true)
-        mStates.isSaveModelFieldBtnVisible.set(true)
+        portHomeViewModel.configPort4851SensorNameToSensorModelMap[sensorItem.sensorName]?.let {
+            mStates.curSensorModel = it
+        }
+        mStates.isCustomSensor.set(mStates.curSensorModel.modelFieldList.isEmpty())//是否自定义传感器
+        mStates.isFirstModelField.set(true)//是否第一个采集项
+        mStates.isSaveModelFieldBtnVisible.set(true)//是否显示保存采集项按钮
         mStates.isConfirmBtnVisible.set(false)
 
-        mStates.sensorName.set(sensorItem.sensorName)//传感器名称
-        mStates.modelToken.set(sensorItem.modelToken)//物模型编号
-        mStates.sensorAddress.set("")//传感器地址
+        mStates.modelName.set(mStates.curSensorModel.modelName)//物模型名称
+        mStates.modelToken.set(mStates.curSensorModel.modelToken)//物模型编号
+        mStates.address.set("1")//传感器地址,默认1
+
         resetDefaultModelField()
     }
 
@@ -127,32 +131,71 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         mStates.stopBit.set(stopBitList[0])//默认停止位 1
 
         mStates.modelFieldName.set(
-            if (sensorItem.modelFieldList.isNotEmpty()) {
-                sensorItem.modelFieldList[modelFieldIndex].fieldName
-            } else {
-                ""//采集项${modelFieldIndex + 1}
-            }
+            if (checkModelFieldList())
+                mStates.curSensorModel.modelFieldList[modelFieldIndex].fieldName
+            else ""
         )
         mStates.modelFieldUnit.set(
-            if (sensorItem.modelFieldList.isNotEmpty()) {
-                sensorItem.modelFieldList[modelFieldIndex].engUnit
-            } else {
-                ""
-            }
+            if (checkModelFieldList())
+                mStates.curSensorModel.modelFieldList[modelFieldIndex].engUnit
+            else ""
         )
-        mStates.hydrologicalIdentification.set("")//水文识别
-        mStates.collectionInstructions.set("")//采集指令
-        mStates.ratio.set("1")//默认倍率 1
-        mStates.dataFormat.set(dataFormatList[0])
-        mStates.solutionMethod.set(solutionMethodList[0])//默认解算方法 加权平均
-        mStates.triggerValue.set("0")//默认触发值 0
-        mStates.upperLimit.set("100")//默认上限 100
-        mStates.lowerLimit.set("0")//默认下限 0
-        mStates.correctValue.set("0")//默认修正值 0
-        mStates.ngateval.set("3")//默认阈值次数 3
+        mStates.hydrologicalIdentification.set(
+            if (checkModelFieldList())
+                mStates.curSensorModel.modelFieldList[modelFieldIndex].hydrologicalIdentification
+            else ""
+        )//水文识别
+        mStates.collectionInstructions.set(
+            if (checkModelFieldList())
+                mStates.curSensorModel.modelFieldList[modelFieldIndex].collectionInstructions
+            else ""
+        )//采集指令
+        mStates.ratio.set(
+            if (checkModelFieldList())
+                mStates.curSensorModel.modelFieldList[modelFieldIndex].ratio
+            else "1"
+        )//默认倍率 1
+        mStates.dataFormat.set(
+            if (checkModelFieldList())
+                mStates.curSensorModel.modelFieldList[modelFieldIndex].dataFormat
+            else dataFormatList[0]
+        )
+        mStates.solutionMethod.set(
+            if (checkModelFieldList())
+                mStates.curSensorModel.modelFieldList[modelFieldIndex].solutionMethod
+            else solutionMethodList[0]
+        )//默认解算方法 加权平均
+        mStates.triggerValue.set(
+            if (checkModelFieldList())
+                mStates.curSensorModel.modelFieldList[modelFieldIndex].triggerValue
+            else "0"
+        )//默认触发值 0
+        mStates.upperLimit.set(
+            if (checkModelFieldList())
+                mStates.curSensorModel.modelFieldList[modelFieldIndex].upperLimit
+            else "100"
+        )//默认上限 100
+        mStates.lowerLimit.set(
+            if (checkModelFieldList())
+                mStates.curSensorModel.modelFieldList[modelFieldIndex].lowerLimit
+            else "0"
+        )//默认下限 0
+        mStates.correctValue.set(
+            if (checkModelFieldList())
+                mStates.curSensorModel.modelFieldList[modelFieldIndex].correctValue
+            else "0"
+        )//默认修正值 0
+        mStates.ngateval.set(
+            if (checkModelFieldList())
+                mStates.curSensorModel.modelFieldList[modelFieldIndex].ngateval
+            else "3"
+        )//默认阈值次数 3
     }
 
     inner class ClickProxy : BaseClickProxy() {
+        /**
+         * 选择数据位
+         */
         fun onDataBitChooseClick() {
             val selectedIndex = dataBitList.indexOf(mStates.dataBit.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -170,6 +213,9 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
+        /**
+         * 选择校验位
+         */
         fun onCheckBitChooseClick() {
             val selectedIndex = checkBitList.indexOf(mStates.checkBit.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -187,6 +233,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
+        /** 选择停止位 */
         fun onStopBitChooseClick() {
             val selectedIndex = stopBitList.indexOf(mStates.stopBit.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -204,6 +251,9 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
+        /**
+         * 选择数据类型
+         */
         fun onDataFormatChooseClick() {
             val selectedIndex = dataFormatList.indexOf(mStates.dataFormat.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -221,6 +271,9 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
+        /**
+         * 选择解算方法
+         */
         fun onSolutionMethodChooseClick() {
             val selectedIndex = solutionMethodList.indexOf(mStates.solutionMethod.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -258,7 +311,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
 
     private fun initSaveCommand() {
         commandItems.clear()
-        if (mStates.sensorName.get().isEmpty()) {
+        if (mStates.modelName.get().isEmpty()) {
             showMessageDialog("请输入物模型名称")
             return
         }
@@ -266,7 +319,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
             showMessageDialog("请输入物模型编号")
             return
         }
-        if (mStates.sensorAddress.get().isEmpty()) {
+        if (mStates.address.get().isEmpty()) {
             showMessageDialog("请输入地址")
             return
         }
@@ -278,7 +331,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
             showMessageDialog("请输入采集项名称")
             return
         }
-        if (mStates.modelFieldName.get().isEmpty()) {
+        if (mStates.modelFieldUnit.get().isEmpty()) {
             showMessageDialog("请输入采集项单位")
             return
         }
@@ -317,7 +370,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         val entity = MRRS485Port1SensorParamEntity(
             c_model = "1",
             num = modelFieldIndex.toString(),
-            model = mStates.modelToken.get() + "_" + mStates.sensorAddress.get(),
+            model = mStates.modelToken.get() + "_" + mStates.address.get(),
             baud = mStates.baudRate.get(),
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
@@ -334,9 +387,8 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
             ngateval = mStates.ngateval.get(),
             mgbk = mStates.modelFieldName.get().stringToGBK16UByteString(),//GBK编码
             egbk = mStates.modelFieldUnit.get().stringToGBK16UByteString(),
-            sgbk = mStates.sensorName.get().stringToGBK16UByteString()
+            sgbk = mStates.modelName.get().stringToGBK16UByteString()
         )
-
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RS485_PORT1_SENSOR_PARAM,
             entity.toCommandString()
@@ -362,14 +414,16 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                             updateUnnamedSensorModel()
                             mStates.isFirstModelField.set(false)
                             modelFieldIndex++
-                            //自定义物模型
+
+                            //自定义传感器
                             if (mStates.isCustomSensor.get()) {
                                 mStates.saveModelFieldBtnText.set("配置下一个采集项")
                                 mStates.isConfirmBtnVisible.set(modelFieldIndex > 0)
                                 return@sendCommandFromCmdList
                             }
+
                             //非自定义传感器
-                            if (modelFieldIndex < sensorItem.modelFieldList.size) {
+                            if (modelFieldIndex < mStates.curSensorModel.modelFieldList.size) {
                                 mStates.saveModelFieldBtnText.set("配置下一个采集项")
                             } else {
                                 mStates.isSaveModelFieldBtnVisible.set(false)
@@ -393,10 +447,17 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         if (!mStates.isCustomSensor.get())
             return
 
+        val customSize =
+            portHomeViewModel.configPort4851SensorNameToSensorModelMap.keys.filter { it.contains("自定义传感器") }.size
+
         if (modelFieldIndex == 0) {
-            mStates.curSensorModel.sensorName = mStates.sensorName.get()
-            mStates.curSensorModel.modelToken = mStates.modelToken.get()
-            mStates.curSensorModel.sensorType = mStates.modelToken.get()
+            mStates.curSensorModel.apply {
+                nickName = "自定义传感器-${mStates.modelName.get()}"
+                sensorType = mStates.modelToken.get()
+                sensorName = "自定义传感器${customSize + 1}-${mStates.modelName.get()}"
+                modelToken = mStates.modelToken.get()
+                modelName = mStates.modelName.get()
+            }
             mStates.curModelFieldList.clear()
         }
         mStates.curModelFieldList.add(
@@ -431,8 +492,8 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                 return
 
             mStates.curSensorModel.modelFieldList = mStates.curModelFieldList
-            mInterfaceHomeViewModel.portSensorModelListMap["485port1"]?.add(mStates.curSensorModel)
-            mInterfaceHomeViewModel.sensorModelMap[mStates.curSensorModel.sensorType] =
+            portHomeViewModel.configPortSensorModelListMap["485port1"]?.add(mStates.curSensorModel)
+            portHomeViewModel.configPort4851SensorNameToSensorModelMap[mStates.curSensorModel.sensorName] =
                 mStates.curSensorModel
 
             withContext(Dispatchers.IO) {
@@ -440,8 +501,8 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
                 val jsonStr = localAppConfigInfo.configPara.replace("\\", "")
                 MoshiUtil.fromJson<AppConfigContent>(jsonStr)
                     ?.let { appConfigContent: AppConfigContent ->
-                        appConfigContent.mr702.first { it.portName == "485port1" }.sensors =
-                            mInterfaceHomeViewModel.portSensorModelListMap["485port1"]!!
+                        appConfigContent.mr702.first { it.portName == "485port1" }.sensorModelList =
+                            portHomeViewModel.configPortSensorModelListMap["485port1"]!!
                         //将 " 转换为 \"
                         localAppConfigInfo.configPara =
                             MoshiUtil.toJson(appConfigContent).replace("\"", "\\\"")
@@ -455,6 +516,9 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
             addLogItem(Log.ERROR, e.errorMsg)
         }
     }
+
+    private fun checkModelFieldList() =
+        mStates.curSensorModel.modelFieldList.isNotEmpty() && modelFieldIndex < mStates.curSensorModel.modelFieldList.size
 
     override fun onResume() {
         super.onResume()

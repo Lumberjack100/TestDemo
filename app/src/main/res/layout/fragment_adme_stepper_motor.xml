@@ -84,7 +84,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1,600]"
                             android:text="@={stateVM.movementSpeed}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{10}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -102,7 +102,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.motorTorque}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{10}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>

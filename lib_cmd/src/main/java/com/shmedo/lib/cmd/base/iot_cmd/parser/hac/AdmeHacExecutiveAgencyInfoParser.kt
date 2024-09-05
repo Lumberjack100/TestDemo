@@ -26,6 +26,7 @@ class AdmeHacExecutiveAgencyInfoParser : IOTCommandParser<AdmeExecutiveAgencyInf
             invalday = keyValueMap.getOrDefault("invalday", IOTConstants.NULL_KEY)
             roundmeasstart = keyValueMap.getOrDefault("roundmeasstart", IOTConstants.NULL_KEY)
             datainval = keyValueMap.getOrDefault("datainval", IOTConstants.NULL_KEY)
+            clin_compen = keyValueMap.getOrDefault("clin_compen", IOTConstants.NULL_KEY)
             compensatetime = keyValueMap.getOrDefault("compensatetime", IOTConstants.NULL_KEY)
             driveaddress = keyValueMap.getOrDefault("driveaddress", IOTConstants.NULL_KEY)
             downspeed = keyValueMap.getOrDefault("downspeed", IOTConstants.NULL_KEY)

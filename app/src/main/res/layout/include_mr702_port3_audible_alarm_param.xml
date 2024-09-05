@@ -34,7 +34,7 @@
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:hint="请输入"
                 android:text="@={stateVM.duration}"
-                app:inputTypeFilter='@{"number"}'
+                android:inputType="number"
                 app:lengthFilter="@{5}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -54,7 +54,7 @@
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:hint="请输入"
                 android:text="@={stateVM.interval}"
-                app:inputTypeFilter='@{"number"}'
+                android:inputType="number"
                 app:lengthFilter="@{5}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -157,7 +157,7 @@
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="@={stateVM.waterTriggerValueLevel1}"
-                app:inputTypeFilter='@{"number"}'
+                android:inputType="number"
                 app:lengthFilter="@{6}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -176,7 +176,7 @@
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="@={stateVM.waterTriggerValueLevel2}"
-                app:inputTypeFilter='@{"number"}'
+                android:inputType="number"
                 app:lengthFilter="@{6}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -195,7 +195,7 @@
                 style="@style/Common_EditItem_EditText_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="@={stateVM.waterTriggerValueLevel3}"
-                app:inputTypeFilter='@{"number"}'
+                android:inputType="number"
                 app:lengthFilter="@{6}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>

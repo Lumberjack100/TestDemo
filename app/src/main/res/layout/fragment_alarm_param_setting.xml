@@ -89,7 +89,7 @@
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[0-255]"
                             android:text="@={stateVM.broadcastTimes}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{3}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -108,7 +108,7 @@
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
                             android:text="@={stateVM.firstAlarmVoice}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{3}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -126,7 +126,7 @@
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
                             android:text="@={stateVM.secondAlarmVoice}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{3}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -144,7 +144,7 @@
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
                             android:text="@={stateVM.thirdAlarmVoice}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{3}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -162,7 +162,7 @@
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
                             android:text="@={stateVM.fourthAlarmVoice}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{3}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -265,7 +265,7 @@
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:text="@={stateVM.firstAlarmReportInterval}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{4}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -284,7 +284,7 @@
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:text="@={stateVM.secondAlarmReportInterval}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{4}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -303,7 +303,7 @@
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:text="@={stateVM.thirdAlarmReportInterval}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{4}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -322,7 +322,7 @@
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:text="@={stateVM.fourthAlarmReportInterval}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{4}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
                 </androidx.appcompat.widget.LinearLayoutCompat>
