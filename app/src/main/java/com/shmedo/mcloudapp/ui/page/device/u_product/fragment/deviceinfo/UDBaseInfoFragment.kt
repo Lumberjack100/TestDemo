@@ -129,13 +129,13 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "上报频率",
-                    value = stateInfo.reportFrequency.toIntOrNull()?.div(60)?.toString() ?: "--",
+                    value = stateInfo.reportFrequency,
                     unit = "分钟/次",
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "抓拍频率",
-                    value = stateInfo.captureFrequency.toIntOrNull()?.div(60)?.toString() ?: "--",
+                    value = stateInfo.captureFrequency,
                     unit = "分钟/次",
                 )
                 binding.recyclerview.models = groupList

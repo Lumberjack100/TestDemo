@@ -48,21 +48,19 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                 val groupList = mutableListOf<Any>()
 
                 groupList.add(DeviceStatusInfoGroupItem("供电信息"))
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
                     groupList,
                     name = "外部电压",
                     value = stateInfo.externalVoltage,
                     defaultValue = "--",
-                    downLimitValue = 5.0,
                     digit = 2,
                     unit = "V",
                 )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
                     groupList,
                     name = "电池电压",
                     value = stateInfo.batteryVoltage,
                     defaultValue = "--",
-                    downLimitValue = 5.0,
                     digit = 2,
                     unit = "V",
                 )
@@ -103,7 +101,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
                     groupList,
                     name = "内部湿度",
-                    value = stateInfo.internalTemp,
+                    value = stateInfo.internalHumidity,
                     defaultValue = "--",
                     digit = 2,
                     unit = "%",

@@ -59,7 +59,5 @@
                 tools:listitem="@layout/data_center_status_item" />
 
         </com.drake.brv.PageRefreshLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

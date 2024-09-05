@@ -149,8 +149,8 @@ class UDLocationInfoFragment : BaseIOTDeviceFragment() {
                 } ?: return@launchWithViewLifecycle
 
                 mStates.utcTime.set(stateInfo.utcTime)
-                mStates.longitude.set("${stateInfo.longitudeDirection} ${stateInfo.longitude}")
-                mStates.latitude.set("${stateInfo.latitudeDirection} ${stateInfo.latitude}")
+                mStates.longitude.set("${stateInfo.longitudeDirection} ${stateInfo.longitude}°")
+                mStates.latitude.set("${stateInfo.latitudeDirection} ${stateInfo.latitude}°")
                 if (stateInfo.longitude != IOTConstants.NULL_KEY
                     && stateInfo.latitude != IOTConstants.NULL_KEY
                 ) {

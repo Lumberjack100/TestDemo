@@ -59,7 +59,7 @@ data class UDCommonCurrentStateInfo(
     val dataCenterEnableStatus: String = IOTConstants.NULL_KEY, //数据中心启用状态 "1,0,0,0"
     @Json(name = "dataCenterStatus")
     val dataCenterLinkStatus: String = IOTConstants.NULL_KEY, //数据中心连接状态 "0,0,0,0"
-    @Json(name = "dataCenterplatform")
+    @Json(name = "dataCenterPlatform")
     val dataCenterPlatformType: String = IOTConstants.NULL_KEY, //数据中心连接平台类型 "2,7,0,0"
     @Json(name = "extern_volt")
     val externalVoltage: String = IOTConstants.NULL_KEY, //外部电压  float  "0.00"

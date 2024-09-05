@@ -98,11 +98,17 @@ class UDNetInfoFragment : BaseDeviceStatusInfoFragment() {
                     groupList,
                     name = "电台",
                     value = stateInfo.radioEnableStatus.compareAndReturn("1", "已启用", "未启用"),
+                    textColorRes = if (stateInfo.radioEnableStatus == "1") ColorUtils.getColor(
+                        R.color.green_00B26B
+                    ) else 0
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "蓝牙",
                     value = stateInfo.bt_connected.compareAndReturn("1", "已连接", "未连接"),
+                    textColorRes = if (stateInfo.radioEnableStatus == "1") ColorUtils.getColor(
+                        R.color.green_00B26B
+                    ) else 0
                 )
                 groupList.add(DeviceStatusInfoGroupItem("数据链路"))
                 if (stateInfo.dataCenterEnableStatus != IOTConstants.NULL_KEY

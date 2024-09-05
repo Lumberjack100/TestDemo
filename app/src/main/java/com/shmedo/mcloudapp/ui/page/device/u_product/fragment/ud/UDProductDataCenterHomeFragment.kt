@@ -14,7 +14,7 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo2
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.UDCommonCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -82,15 +82,6 @@ class UDProductDataCenterHomeFragment : BaseIOTDeviceFragment() {
         initAdapter()
     }
 
-    override fun initData() {
-        super.initData()
-        arguments?.let {
-            centerNum = it.getInt(UniversalDataCenterHomeFragment.CENTER_NUM)
-        }
-        mStates.isSupportedReportInterval.set(false)
-        binding.recyclerView.bindingAdapter.models = getAdapterData()
-    }
-
     private fun initRefresh() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
@@ -99,7 +90,7 @@ class UDProductDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
-            queryData()
+            queryStatusInfo()
         }
     }
 
@@ -130,6 +121,15 @@ class UDProductDataCenterHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    override fun initData() {
+        super.initData()
+        arguments?.let {
+            centerNum = it.getInt(UniversalDataCenterHomeFragment.CENTER_NUM)
+        }
+        mStates.isSupportedReportInterval.set(false)
+        binding.recyclerView.bindingAdapter.models = getAdapterData()
+    }
+
     override fun createObserver() {
         super.createObserver()
         //从编辑页面返回需要刷新事件详情页面
@@ -142,17 +142,16 @@ class UDProductDataCenterHomeFragment : BaseIOTDeviceFragment() {
         binding.refreshLayout.autoRefresh()
     }
 
-    private fun queryData() {
+    private fun queryStatusInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "value=1")
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-
             IOTCommandType.MD_GET_DEVICE_STATUS -> {
                 val result = iotParseManager.parse<String>(
                     cmdStr,
@@ -183,20 +182,24 @@ class UDProductDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private fun initDataCenterStatus(content: String) {
         launchWithViewLifecycle {
             try {
-                val commonCurrentStateInfoList = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<List<CommonCurrentStateInfo2>>(content)
-                } ?: return@launchWithViewLifecycle
-
-                if (commonCurrentStateInfoList.isEmpty()) {
-                    Toaster.show("数据为空")
+                val stateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<UDCommonCurrentStateInfo>(content)
+                }
+                if (stateInfo == null) {
+                    binding.refreshLayout.showEmpty()
                     return@launchWithViewLifecycle
                 }
-                val info = commonCurrentStateInfoList[0]
-                //根据 启用状态和连接状态刷新数据中心状态
-                if (info.dataCenterUseSta != IOTConstants.NULL_KEY && info.dataCenterStatus != IOTConstants.NULL_KEY && info.dataCenterUseSta.isNotEmpty() && info.dataCenterStatus.isNotEmpty()) {
+                if (stateInfo.dataCenterEnableStatus != IOTConstants.NULL_KEY
+                    && stateInfo.dataCenterLinkStatus != IOTConstants.NULL_KEY
+                    && stateInfo.dataCenterEnableStatus.isNotEmpty()
+                    && stateInfo.dataCenterLinkStatus.isNotEmpty()
+                ) {
                     //根据逗号分隔
-                    val enableStatusList = info.dataCenterUseSta.split(",".toRegex()).dropLastWhile { it.isEmpty() }
-                    val onlineStatusList = info.dataCenterStatus.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                    val enableStatusList = stateInfo.dataCenterEnableStatus.split(",".toRegex())
+                        .dropLastWhile { it.isEmpty() }
+                    val onlineStatusList = stateInfo.dataCenterLinkStatus.split(",".toRegex())
+                        .dropLastWhile { it.isEmpty() }
+
                     val lastIndex = enableStatusList.size.coerceAtMost(centerNum)
                     for (i in 0 until lastIndex) {
                         val status =
@@ -205,7 +208,6 @@ class UDProductDataCenterHomeFragment : BaseIOTDeviceFragment() {
                             .refreshStatus(status)
                     }
                 }
-
             } catch (e: Exception) {
                 Timber.e(e)
             }
@@ -214,7 +216,6 @@ class UDProductDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     private fun getAdapterData(): MutableList<DataCenterStatusItem> {
         val list = mutableListOf<DataCenterStatusItem>()
-        //centerNum
         for (i in 1..centerNum) {
             list.add(DataCenterStatusItem(i, "数据中心$i", "0"))
         }

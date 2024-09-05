@@ -50,7 +50,7 @@ object DeviceStatusInfoProcessor {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = name,
-                    value = "$it $unit",
+                    value = "$it$unit",
                     textColorRes = textColorRes
                 )
             )
@@ -78,7 +78,7 @@ object DeviceStatusInfoProcessor {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = name,
-                    value = "${formatDoubleValue(it, defaultValue, digit)} $unit"
+                    value = "${formatDoubleValue(it, defaultValue, digit)}$unit"
                 )
             )
         }
@@ -111,7 +111,7 @@ object DeviceStatusInfoProcessor {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = name,
-                    value = "$tempValue $unit",
+                    value = "$tempValue$unit",
                     textColorRes = if (tempValue.toDouble() <= downLimitValue)
                         ColorUtils.getColor(R.color.red_F13838)
                     else
@@ -150,7 +150,7 @@ object DeviceStatusInfoProcessor {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = name,
-                    value = "$tempValue $unit",
+                    value = "$tempValue$unit",
                     textColorRes = if (tempValue.toDouble() < downLimitValue || tempValue.toDouble() > upLimitValue)
                         ColorUtils.getColor(R.color.red_F13838)
                     else
