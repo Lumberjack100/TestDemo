@@ -21,7 +21,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/main_bg_gray">
+        android:background="@color/main_bg_gray_dadada">
 
         <include
             android:id="@+id/ll_toolbar"
@@ -92,6 +92,7 @@
                     android:clipToPadding="false"
                     android:paddingBottom="@dimen/dimen_size_30"
                     android:splitMotionEvents="false"
+                    tools:itemCount="1"
                     tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_sub_config_module" />
 

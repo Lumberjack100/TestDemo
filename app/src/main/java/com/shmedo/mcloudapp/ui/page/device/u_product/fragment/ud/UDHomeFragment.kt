@@ -953,7 +953,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                             val waterSurfaceElevation = resultMap["obj_alt"] ?: ""
                             val airDistance = resultMap["ld_value"] ?: ""
                             val installationAngle = resultMap["z_angle"] ?: ""
-                            val measurementTime = resultMap["time"] ?: ""
+                            val measurementTime = resultMap["time"]?.replace("-", ".") ?: ""
 
                             mHeadStates.waterSurfaceElevation.set("$waterSurfaceElevation m")
                             mHeadStates.airDistance.set("$airDistance m")

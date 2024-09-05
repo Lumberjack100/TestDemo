@@ -114,7 +114,6 @@
                             android:hint="请输入"
                             android:inputType="phone"
                             android:text="@={stateVM.modelToken}"
-                            android:inputType="number"
                             app:lengthFilter="@{8}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

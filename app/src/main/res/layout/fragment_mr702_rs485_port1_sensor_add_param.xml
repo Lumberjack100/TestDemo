@@ -88,7 +88,6 @@
                         style="@style/Common_EditItem_EditText_Style"
                         android:enabled="@{stateVM.isCustomSensor&amp;&amp; stateVM.isFirstModelField}"
                         android:hint="请输入"
-                        android:inputType="number"
                         android:text="@={stateVM.modelToken}"
                         android:inputType="number"
                         app:lengthFilter="@{8}" />

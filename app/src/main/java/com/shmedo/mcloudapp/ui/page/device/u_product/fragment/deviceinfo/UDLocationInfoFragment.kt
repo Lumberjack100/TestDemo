@@ -81,7 +81,7 @@ class UDLocationInfoFragment : BaseIOTDeviceFragment() {
         aMap.uiSettings.isZoomControlsEnabled = false //隐藏地图默认的缩放按钮
         aMap.uiSettings.isScaleControlsEnabled = false //控制比例尺控件是否显示
         aMap.uiSettings.isMyLocationButtonEnabled = false //显示默认的定位按钮
-        aMap.isMyLocationEnabled = true //可触发定位并显示当前位置
+//        aMap.isMyLocationEnabled = true //可触发定位并显示当前位置
     }
 
     inner class ClickProxy : BaseClickProxy() {
