@@ -47,7 +47,7 @@ class URProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                     DeviceStatusInfoBasicItem(
                         name = "雨量传感器状态",
                         value = "正常",
-                        textColorRes =  ColorUtils.getColor(R.color.device_online_platform)
+                        textColorRes =  ColorUtils.getColor(R.color.green_00B26B)
                     )
                 )
                 uRSensorInfoList.forEach { info ->
@@ -66,14 +66,15 @@ class URProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         }
 
                         "worktime" -> {
-                            if (info.value.isNotEmpty()) {
-                                val day = info.value.toInt() / (24 * 60 * 60)
-                                val hour = (info.value.toInt() % (24 * 60 * 60)) / (60 * 60)
-                                val minute = (info.value.toInt() % (60 * 60)) / 60
-                                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                                    groupList,
-                                    name = "连续运行时间",
-                                    value = "${day}天${hour}时${minute}分",
+                            info.value.toIntOrNull()?.let {
+                                groupList.add(
+                                    DeviceStatusInfoBasicItem(
+                                        name = "连续运行时间",
+                                        value = DeviceStatusInfoProcessor.millis2FitTimeSpan(
+                                            it * 1000L,
+                                            3
+                                        )
+                                    )
                                 )
                             }
                         }
@@ -84,7 +85,7 @@ class URProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                     name = "外部供电电压",
                     value = stateInfo.ext_power_volt,
                     defaultValue = "0",
-                    thresHold = 5.0,
+                    downLimitValue = 5.0,
                     digit = 2,
                     unit = "V",
                 )

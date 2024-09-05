@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="com.shmedo.mcloudapp.model.ConfigModule" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:foreground="?android:selectableItemBackground"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/dimen_size_10">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_config_logo"
+            imageResId="@{m.functionModule.iconResId}"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:tint="@{m.functionModule.moduleAvailable ? @color/colorPrimary : @color/sub_title_text_color}"
+            tools:src="@drawable/ic_module_current_state" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_config_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_5"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@{m.functionModule.name}"
+            android:textColor="@{m.functionModule.moduleAvailable ? @color/title_text_color : @color/sub_title_text_color}"
+            android:textSize="14sp"
+            tools:text="关于设备" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

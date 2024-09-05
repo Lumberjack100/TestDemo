@@ -57,7 +57,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
         arrayListOf("15分钟/次", "30分钟/次", "1小时/次", " 2 小时/次")
     private val captureFrequencyMinList =
         arrayListOf("15", "30", "60", "120")//抓拍频率
-    private val imageResolutionList = arrayListOf("1025x768", "1280x960", "1600x1200", "1920x1080")
+    private val imageResolutionList = arrayListOf("1024x768", "1280x960", "1600x1200", "1920x1080")
 
     override fun initViewModel() {
         super.initViewModel()
@@ -217,7 +217,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
             return
         }
         try {
-            val value = mStates.installAngleOffsetThreshold.get().toInt()
+            val value = mStates.installAngleOffsetThreshold.get().toDouble()
             if (value > 360) {
                 showMessageDialog("安装角度偏移阈值不能大于360!")
                 return
@@ -239,7 +239,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
         commandItems.add(command)
 
         val reportModeEntity = UDAlarmReportModeEntity(
-            agle_threshol = mStates.installAngleOffsetThreshold.get(),
+            angle_threshol = mStates.installAngleOffsetThreshold.get(),
             pixx = mStates.imageResolution.get().split("x")[0],
             pixy = mStates.imageResolution.get().split("x")[1]
         )

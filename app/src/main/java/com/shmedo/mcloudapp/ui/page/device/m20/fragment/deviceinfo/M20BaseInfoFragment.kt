@@ -5,16 +5,16 @@ import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoFragment
-import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
@@ -81,8 +81,8 @@ class M20BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                             name = "设备状态",
                             value = if (deviceAbnormalList.isEmpty()) "正常" else "异常",
                             textColorRes = if (deviceAbnormalList.isEmpty()) ColorUtils.getColor(
-                                R.color.text_color_3AD094
-                            ) else ColorUtils.getColor(R.color.device_offline_platform),
+                                R.color.green_00B26B
+                            ) else ColorUtils.getColor(R.color.red_F13838),
                             isClickable = deviceAbnormalList.isNotEmpty()
                         )
                     )
@@ -92,7 +92,7 @@ class M20BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     name = "外部供电电压",
                     value = stateInfo.ext_power_volt,
                     defaultValue = "0",
-                    thresHold = 5.0,
+                    downLimitValue = 5.0,
                     digit = 2,
                     unit = "V",
                 )
@@ -101,23 +101,18 @@ class M20BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     name = "太阳能板电压",
                     value = stateInfo.solar_volt,
                     defaultValue = "0",
-                    thresHold = 5.0,
+                    downLimitValue = 5.0,
                     digit = 2,
                     unit = "V",
                 )
                 if (stateInfo.worktime != IOTConstants.NULL_KEY || stateInfo.emmc_storage != IOTConstants.NULL_KEY)
                     groupList.add(DeviceStatusInfoGroupItem("运行数据"))
 
-                stateInfo.worktime.notNullKey {
-                    val tempValue = it.toDoubleOrNull()?.div(3600) ?: 0.0
+                stateInfo.worktime.toIntOrNull()?.let {
                     groupList.add(
                         DeviceStatusInfoBasicItem(
                             name = "运行时间",
-                            value = DeviceStatusInfoProcessor.formatDoubleValue(
-                                tempValue.toString(),
-                                "0",
-                                1
-                            ) + " 小时"
+                            value = DeviceStatusInfoProcessor.millis2FitTimeSpan(it * 1000L, 3)
                         )
                     )
                 }

@@ -18,7 +18,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/dimen_size_10"
-        android:padding="@dimen/dimen_size_8"
+        android:paddingHorizontal="@dimen/dimen_size_10"
+        android:paddingVertical="@dimen/dimen_size_13"
         app:drawable_radius="@{3}"
         app:drawable_solidColor="@{@color/white}"
         tools:background="@color/white">
@@ -27,9 +28,11 @@
             android:id="@+id/tv_water_surface_elevation_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_measure_data_time"
+            android:drawablePadding="@dimen/dimen_size_3"
             android:text="水面高程："
             android:textColor="@color/text_color_666666"
-            android:textSize="@dimen/text_size_14"
+            android:textSize="@dimen/text_size_13"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -39,7 +42,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{stateVM.waterSurfaceElevation}"
+            android:text='@{stateVM.waterSurfaceElevation}'
             android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_14"
             android:textStyle="bold"
@@ -52,9 +55,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:drawableStart="@drawable/ic_measure_data_time"
+            android:drawablePadding="@dimen/dimen_size_3"
             android:text="空高距离："
             android:textColor="@color/text_color_666666"
-            android:textSize="@dimen/text_size_14"
+            android:textSize="@dimen/text_size_13"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_water_surface_elevation_title" />
 
@@ -64,9 +69,9 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{stateVM.airDistance}"
+            android:text='@{stateVM.airDistance}'
             android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_14"
+            android:textSize="@dimen/text_size_13"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/tv_air_distance_title"
             app:layout_constraintTop_toTopOf="@+id/tv_air_distance_title"
@@ -77,9 +82,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:drawableStart="@drawable/ic_measure_data_time"
+            android:drawablePadding="@dimen/dimen_size_3"
             android:text="安装角度："
             android:textColor="@color/text_color_666666"
-            android:textSize="@dimen/text_size_14"
+            android:textSize="@dimen/text_size_13"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_air_distance_title" />
 
@@ -89,9 +96,9 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="@{stateVM.installationAngle}"
+            android:text='@{stateVM.installationAngle }'
             android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_14"
+            android:textSize="@dimen/text_size_13"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/tv_installation_angle_title"
             app:layout_constraintTop_toTopOf="@+id/tv_installation_angle_title"
@@ -102,9 +109,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
+            android:drawableStart="@drawable/ic_measure_data_time"
+            android:drawablePadding="@dimen/dimen_size_3"
             android:text="测量时间："
             android:textColor="@color/text_color_666666"
-            android:textSize="@dimen/text_size_14"
+            android:textSize="@dimen/text_size_13"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_installation_angle_title" />
 
@@ -116,30 +125,109 @@
             android:maxLines="1"
             android:text="@{stateVM.measurementTime}"
             android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_14"
+            android:textSize="@dimen/text_size_13"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/tv_measurement_time_title"
             app:layout_constraintTop_toTopOf="@+id/tv_measurement_time_title"
             tools:text="2023-08-07 12:36:00" />
 
-        <!--        <com.google.android.material.textview.MaterialTextView-->
-        <!--            onClickWithDebouncing="@{()->click.onViewPointInMapClick()}"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:gravity="center"-->
-        <!--            android:paddingStart="12dp"-->
-        <!--            android:paddingTop="4dp"-->
-        <!--            android:paddingEnd="12dp"-->
-        <!--            android:paddingBottom="4dp"-->
-        <!--            android:text="查看"-->
-        <!--            android:textColor="@color/text_color_done"-->
-        <!--            android:textSize="@dimen/text_size_13"-->
-        <!--            app:drawable_radius="@{20}"-->
-        <!--            app:drawable_strokeColor="@{@color/text_color_done}"-->
-        <!--            app:drawable_strokeWidth="@{1}"-->
-        <!--            app:layout_constraintBottom_toBottomOf="parent"-->
-        <!--            app:layout_constraintEnd_toEndOf="parent" />-->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dimen_size_5"
+            android:gravity="bottom"
+            android:paddingBottom="@dimen/dimen_size_5"
+            app:layout_constraintBottom_toTopOf="@+id/tv_measurement_time"
+            app:layout_constraintEnd_toEndOf="parent">
 
+            <androidx.appcompat.widget.LinearLayoutCompat
+                onClickWithDebouncing="@{()->click.onMeasureDataClick()}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:enabled="@{!stateVM.isMeasuring()}"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
 
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="@dimen/dimen_size_20"
+                        android:layout_height="@dimen/dimen_size_20"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_device_measure_data" />
+
+                    <ProgressBar
+                        android:id="@+id/progress_bar"
+                        visible="@{stateVM.isMeasuring()}"
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center"
+                        android:indeterminate="true"
+                        android:indeterminateDrawable="@drawable/circular_progress_bar" />
+
+                </FrameLayout>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_size_2"
+                    android:text='@{stateVM.isMeasuring() ? "测量中" : "测量"}'
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_13"
+                    tools:text="测量" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                onClickWithDebouncing="@{()->click.onTakePhotoClick()}"
+                visible="@{!stateVM.isConnectOperateVisible}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_25"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/dimen_size_20"
+                    android:layout_height="@dimen/dimen_size_20"
+                    android:src="@drawable/ic_device_take_photo" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_size_2"
+                    android:text="拍照"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_13" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                onClickWithDebouncing="@{()->click.onGoToSensorDataHistoryClick()}"
+                visible="@{!stateVM.isConnectOperateVisible}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_25"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/dimen_size_20"
+                    android:layout_height="@dimen/dimen_size_20"
+                    android:src="@drawable/ic_device_sensor_data_history" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_size_2"
+                    android:text="历史"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_13" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

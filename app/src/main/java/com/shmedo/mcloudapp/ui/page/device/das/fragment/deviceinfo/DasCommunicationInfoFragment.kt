@@ -5,7 +5,6 @@ import android.util.Log
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasNetStatusInfo
@@ -15,11 +14,12 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.databinding.FragmentDasCommunicationInfoBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.CommunicationDataTableAdapter
 import com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.model.CommunicationDataCellModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -76,6 +76,7 @@ class DasCommunicationInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        //判断是否页面是否处于 resume 状态
         if (!isResumed) {
             return
         }
@@ -151,19 +152,19 @@ class DasCommunicationInfoFragment : BaseIOTDeviceFragment() {
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (dataList[0].errno.toString() == "0") "未开启" else if (dataList[0].errno.toString() == "1") "已连接" else "未连接",
-                            textColorResId = if (dataList[0].errno.toString() == "1") R.color.device_online_platform else R.color.device_offline_platform
+                            textColorResId = if (dataList[0].errno.toString() == "1") R.color.green_00B26B else R.color.red_F13838
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (dataList[1].errno.toString() == "0") "未开启" else if (dataList[1].errno.toString() == "1") "已连接" else "未连接",
-                            textColorResId = if (dataList[1].errno.toString() == "1") R.color.device_online_platform else R.color.device_offline_platform
+                            textColorResId = if (dataList[1].errno.toString() == "1") R.color.green_00B26B else R.color.red_F13838
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (dataList[2].errno.toString() == "0") "未开启" else if (dataList[2].errno.toString() == "1") "已连接" else "未连接",
-                            textColorResId = if (dataList[2].errno.toString() == "1") R.color.device_online_platform else R.color.device_offline_platform
+                            textColorResId = if (dataList[2].errno.toString() == "1") R.color.green_00B26B else R.color.red_F13838
                         )
                     )
                 }
@@ -178,19 +179,19 @@ class DasCommunicationInfoFragment : BaseIOTDeviceFragment() {
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             dataList[0].unsend.toString(),
-                            R.color.device_offline_platform
+                            R.color.red_F13838
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             dataList[1].unsend.toString(),
-                            R.color.device_offline_platform
+                            R.color.red_F13838
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             dataList[2].unsend.toString(),
-                            R.color.device_offline_platform
+                            R.color.red_F13838
                         )
                     )
                 }

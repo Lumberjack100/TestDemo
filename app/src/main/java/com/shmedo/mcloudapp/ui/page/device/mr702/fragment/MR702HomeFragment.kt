@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.ui.page.device.mr702.fragment
 
 import android.os.Bundle
+import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -9,6 +10,7 @@ import com.drake.brv.utils.setup
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.WorkModeEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
@@ -38,7 +40,7 @@ import com.shmedo.mcloudapp.model.MR702PortConfigModule
 import com.shmedo.mcloudapp.model.MR702TerminalParameterModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.NetworkCommunicationModule
-import com.shmedo.mcloudapp.model.PlatformLable
+import com.shmedo.mcloudapp.model.PlatformLabel
 import com.shmedo.mcloudapp.model.RebootModule
 import com.shmedo.mcloudapp.model.RunningStatusModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
@@ -116,7 +118,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     private fun initPlatformAdapter() {
         binding.llDeviceInfo.rvPlatform.setup { rv ->
             rv.layoutManager = FlexboxLayoutManager(context)
-            addType<PlatformLable>(R.layout.item_platform_label)
+            addType<PlatformLabel>(R.layout.item_platform_label)
         }
     }
 
@@ -407,19 +409,85 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initDataCenterStatus(dataCenterStatus: MRDataCenterStatus) {
-        val platformLables = mutableListOf<PlatformLable>()
+        val platformLabels = mutableListOf<PlatformLabel>()
         if (dataCenterStatus.status1 != "0")
-            platformLables.add(PlatformLable("中心1", dataCenterStatus.status1 == "1"))
+            platformLabels.add(
+                PlatformLabel(
+                    content = "中心1",
+                    textColorRes = dataCenterStatus.status1.compareAndReturn(
+                        "1",
+                        ColorUtils.getColor(R.color.colorPrimary),
+                        ColorUtils.getColor(R.color.sub_title_text_color)
+                    ),
+                    bgResId = dataCenterStatus.status1.compareAndReturn(
+                        "1",
+                        R.drawable.bg_label_blue_corner_15dp,
+                        R.drawable.bg_label_gray_corner_15dp
+                    )
+                )
+            )
         if (dataCenterStatus.status2 != "0")
-            platformLables.add(PlatformLable("中心2", dataCenterStatus.status2 == "1"))
+            platformLabels.add(
+                PlatformLabel(
+                    "中心2", textColorRes = dataCenterStatus.status2.compareAndReturn(
+                        "1",
+                        ColorUtils.getColor(R.color.colorPrimary),
+                        ColorUtils.getColor(R.color.sub_title_text_color)
+                    ),
+                    bgResId = dataCenterStatus.status2.compareAndReturn(
+                        "1",
+                        R.drawable.bg_label_blue_corner_15dp,
+                        R.drawable.bg_label_gray_corner_15dp
+                    )
+                )
+            )
         if (dataCenterStatus.status3 != "0")
-            platformLables.add(PlatformLable("中心3", dataCenterStatus.status3 == "1"))
+            platformLabels.add(
+                PlatformLabel(
+                    "中心3", textColorRes = dataCenterStatus.status3.compareAndReturn(
+                        "1",
+                        ColorUtils.getColor(R.color.colorPrimary),
+                        ColorUtils.getColor(R.color.sub_title_text_color)
+                    ),
+                    bgResId = dataCenterStatus.status3.compareAndReturn(
+                        "1",
+                        R.drawable.bg_label_blue_corner_15dp,
+                        R.drawable.bg_label_gray_corner_15dp
+                    )
+                )
+            )
         if (dataCenterStatus.status4 != "0")
-            platformLables.add(PlatformLable("中心4", dataCenterStatus.status4 == "1"))
+            platformLabels.add(
+                PlatformLabel(
+                    "中心4", textColorRes = dataCenterStatus.status4.compareAndReturn(
+                        "1",
+                        ColorUtils.getColor(R.color.colorPrimary),
+                        ColorUtils.getColor(R.color.sub_title_text_color)
+                    ),
+                    bgResId = dataCenterStatus.status4.compareAndReturn(
+                        "1",
+                        R.drawable.bg_label_blue_corner_15dp,
+                        R.drawable.bg_label_gray_corner_15dp
+                    )
+                )
+            )
         if (dataCenterStatus.status5 != "0")
-            platformLables.add(PlatformLable("中心5", dataCenterStatus.status5 == "1"))
+            platformLabels.add(
+                PlatformLabel(
+                    "中心5", textColorRes = dataCenterStatus.status5.compareAndReturn(
+                        "1",
+                        ColorUtils.getColor(R.color.colorPrimary),
+                        ColorUtils.getColor(R.color.sub_title_text_color)
+                    ),
+                    bgResId = dataCenterStatus.status5.compareAndReturn(
+                        "1",
+                        R.drawable.bg_label_blue_corner_15dp,
+                        R.drawable.bg_label_gray_corner_15dp
+                    )
+                )
+            )
 
-        binding.llDeviceInfo.rvPlatform.models = platformLables
+        binding.llDeviceInfo.rvPlatform.models = platformLabels
     }
 
     override fun onResume() {

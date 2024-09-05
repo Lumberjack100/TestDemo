@@ -125,7 +125,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
         mHeadStates.deviceName.set(deviceName.replace("BHY-RDS", "BHY-3S"))
         mHeadStates.firmwareVersion.set(deviceInfo.firmwareVersion.ifEmpty { "--" })
         mHeadStates.isRunningStateVisible.set(false)
-        mHeadStates.isPlatformsVisible.set(false)
+        mHeadStates.isPlatformListVisible.set(false)
 
         when (communicateWay) {
             NetPlatformConnect -> {

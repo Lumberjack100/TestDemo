@@ -14,125 +14,75 @@
             type="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDLocationInfoFragment.ClickProxy" />
     </data>
 
-    <com.shmedo.mcloudapp.ui.widget.CustomNestedScrollView
-        android:id="@+id/scrollView"
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/main_bg_gray">
+        android:background="@color/main_bg_gray"
+        android:orientation="vertical">
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            style="@style/DeviceCurrentState_SingleItem_Style"
+            android:background="@drawable/layer_common_click_item_with_divider">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                style="@style/DeviceCurrentState_SingleItem_Style"
-                android:background="@drawable/layer_common_click_item_with_divider">
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                onClickWithDebouncing="@{()->click.refreshLocation()}"
+                android:text="位置更新"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold" />
 
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    onClickWithDebouncing="@{()->click.refreshLocation()}"
-                    android:text="位置更新"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                style="@style/DeviceCurrentState_SingleItem_Style"
-                android:background="@drawable/layer_common_click_item_with_divider">
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="UTC时间" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                    android:text="@{stateVM.utcTime}"
-                    tools:text="2024.01.05 04:34:45" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                style="@style/DeviceCurrentState_SingleItem_Style"
-                android:background="@drawable/layer_common_click_item_with_divider">
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="经度" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                    android:text="@{stateVM.longitude}"
-                    tools:text="121.5983860" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                style="@style/DeviceCurrentState_SingleItem_Style"
-                android:background="@drawable/layer_common_click_item_with_divider">
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="纬度" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                    android:text="@{stateVM.latitude}"
-                    tools:text="1.210353" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                style="@style/DeviceCurrentState_SingleItem_Style"
-                android:background="@drawable/layer_common_click_item_with_divider">
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="海拔" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                    android:text="@{stateVM.altitude}"
-                    tools:text="47.69" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                style="@style/DeviceCurrentState_SingleItem_Style"
-                android:background="@drawable/layer_common_click_item_with_divider">
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="定位方式" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                    android:text="@{stateVM.locationMethod}"
-                    tools:text="RTK 固定解" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                style="@style/DeviceCurrentState_SingleItem_Style"
-                android:background="@drawable/layer_common_click_item_with_divider">
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/DeviceCurrentState_SingleItem_NameStyle"
-                    android:text="PDOP" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/DeviceCurrentState_SingleItem_ValueStyle"
-                    android:text="@{stateVM.pdop}"
-                    tools:text="2.3" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <com.amap.api.maps.TextureMapView
-                android:id="@+id/textureMapView"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_marginTop="@dimen/dimen_size_10" />
         </androidx.appcompat.widget.LinearLayoutCompat>
-    </com.shmedo.mcloudapp.ui.widget.CustomNestedScrollView>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            style="@style/DeviceCurrentState_SingleItem_Style"
+            android:background="@drawable/layer_common_click_item_with_divider">
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                android:text="UTC时间" />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                android:text="@{stateVM.utcTime}"
+                tools:text="2024.01.05 04:34:45" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            style="@style/DeviceCurrentState_SingleItem_Style"
+            android:background="@drawable/layer_common_click_item_with_divider">
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                android:text="经度" />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                android:text="@{stateVM.longitude}"
+                tools:text="121.5983860" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            style="@style/DeviceCurrentState_SingleItem_Style"
+            android:background="@drawable/layer_common_click_item_with_divider">
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                android:text="纬度" />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                android:text="@{stateVM.latitude}"
+                tools:text="1.210353" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.amap.api.maps.TextureMapView
+            android:id="@+id/textureMapView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

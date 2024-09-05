@@ -11,11 +11,15 @@
         android:id="@+id/rv_sub_module"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/dimen_size_10"
+        android:background="@drawable/bg_white_corner_5dp"
         android:clipToPadding="false"
         android:paddingHorizontal="@dimen/dimen_size_10"
+        android:paddingTop="@dimen/dimen_size_10"
+        android:paddingBottom="@dimen/dimen_size_20"
         android:splitMotionEvents="false"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
-        tools:listitem="@layout/item_device_config_module" />
+        app:spanCount="4"
+        tools:listitem="@layout/item_device_config_module_ud" />
 
 </layout>

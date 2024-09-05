@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.viewModels
 import com.amap.api.maps.AMap
 import com.amap.api.maps.AMapOptions
@@ -12,18 +13,27 @@ import com.amap.api.maps.model.MarkerOptions
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.UDCommonCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentUdLocationInfoBinding
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.toGcj02LatLng
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDLocationInfoViewModel
 import com.shmedo.mcloudapp.utils.map.CustomLatLng
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 /**
  * @author：gonghe
@@ -37,7 +47,6 @@ class UDLocationInfoFragment : BaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
     private lateinit var aMap: AMap //地图控制器对象
-    private lateinit var gcjLatLng: CustomLatLng
     private var curMaker: Marker? = null
     private var mZoomLevel = 15f //地图的缩放级别一共分为 17 级，从 3 到 19。数字越大，展示的图面信息越精细。
 
@@ -72,14 +81,7 @@ class UDLocationInfoFragment : BaseIOTDeviceFragment() {
         aMap.uiSettings.isZoomControlsEnabled = false //隐藏地图默认的缩放按钮
         aMap.uiSettings.isScaleControlsEnabled = false //控制比例尺控件是否显示
         aMap.uiSettings.isMyLocationButtonEnabled = false //显示默认的定位按钮
-        aMap.isMyLocationEnabled = false //可触发定位并显示当前位置
-    }
-
-    override fun initData() {
-        super.initData()
-//        arguments?.let {
-//            centerNum = it.getInt(CENTER_NUM_PARAM, 4)
-//        }
+        aMap.isMyLocationEnabled = true //可触发定位并显示当前位置
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -101,34 +103,34 @@ class UDLocationInfoFragment : BaseIOTDeviceFragment() {
 
     private fun queryInfo() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_DEVICE_STATUS
-        )
+
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "value=3")
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
+        //判断是否页面是否处于 resume 状态
+        if (!isResumed) {
+            return
+        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-
-            IOTCommandType.QUERY_DEVICE_STATUS -> {
+            IOTCommandType.MD_GET_DEVICE_STATUS -> {
                 val result = iotParseManager.parse<String>(
                     cmdStr,
-                    IOTCommandType.QUERY_DEVICE_STATUS
+                    IOTCommandType.MD_GET_DEVICE_STATUS
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "查询通讯状态出错: ${result.message}"
+                        val errMsg = "查询位置信息出错: ${result.message}"
                         Toaster.show(errMsg)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-
-                        }
-                        val content: String = result.data
+                        sendCommandFromCmdList {}
+                        initStatusInfo(result.data)
                     }
                 }
             }
@@ -139,21 +141,44 @@ class UDLocationInfoFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun addMarker() {
+    private fun initStatusInfo(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val stateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<UDCommonCurrentStateInfo>(content)
+                } ?: return@launchWithViewLifecycle
+
+                mStates.utcTime.set(stateInfo.utcTime)
+                mStates.longitude.set("${stateInfo.longitudeDirection} ${stateInfo.longitude}°")
+                mStates.latitude.set("${stateInfo.latitudeDirection} ${stateInfo.latitude}°")
+                if (stateInfo.longitude != IOTConstants.NULL_KEY
+                    && stateInfo.latitude != IOTConstants.NULL_KEY
+                ) {
+                    val longitude = stateInfo.longitude.toDouble()
+                    val latitude = stateInfo.latitude.toDouble()
+                    val gcj02LatLng = CustomLatLng(latitude, longitude).toGcj02LatLng()
+                    addMarker(gcj02LatLng)
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
+    private fun addMarker(latLng: LatLng) {
         curMaker?.remove()
         curMaker = null
 
         try {
-            val latlng = LatLng(gcjLatLng.latitude, gcjLatLng.longitude)
             val markerOption = MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_device_location))
-                .position(latlng)
+                .position(latLng)
                 .draggable(false)
 
             curMaker = aMap.addMarker(markerOption)
             //设置指定的可视区域地图
-            moveCameraToLocation(latlng)
-
+            moveCameraToLocation(latLng)
         } catch (ex: Exception) {
             ex.printStackTrace()
         }

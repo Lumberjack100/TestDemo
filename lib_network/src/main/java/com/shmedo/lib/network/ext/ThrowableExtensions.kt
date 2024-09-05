@@ -19,11 +19,7 @@ import java.util.concurrent.TimeoutException
  * Time: 21:04
  */
 fun Throwable.show() {
-    errorMsg.show()
-}
-
-fun String.show() {
-    ToastUtils.showShort(this)
+    ToastUtils.showShort(errorMsg)
 }
 
 val Throwable.errorCode: Int

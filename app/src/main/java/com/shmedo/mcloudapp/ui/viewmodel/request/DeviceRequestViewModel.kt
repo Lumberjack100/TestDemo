@@ -5,12 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
 import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
+import com.shmedo.core.data.repository.DeviceManageRepositoryImp
 import com.shmedo.core.data.repository.LoggerRepositoryImp
 import com.shmedo.core.data.repository.NetDataRepository
 import com.shmedo.core.model.CloudDeviceData
 import com.shmedo.core.model.DeviceDebugAddress
 import com.shmedo.core.model.DeviceDetailInfo
 import com.shmedo.core.model.DeviceInfo
+import com.shmedo.core.model.DeviceSensorBasicInfo
 import com.shmedo.core.model.DeviceStatisticInfo
 import com.shmedo.core.model.FirmWareInfo
 import com.shmedo.core.model.ProductInfo
@@ -21,6 +23,7 @@ import com.shmedo.lib.network.response.ResponseStatus
 import com.shmedo.lib.network.response.ResultSource
 import com.shmedo.lib.network.util.BaseURL
 import com.shmedo.mcloudapp.BuildConfig
+import com.shmedo.mcloudapp.model.HoverHeaderModel
 import com.shmedo.mcloudapp.model.SingleSelectionItem
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
 import kotlinx.coroutines.Dispatchers
@@ -40,8 +43,10 @@ import timber.log.Timber
  *
  *
  */
-class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) :
-    BaseRequestViewModel(loggerRepositoryImp) {
+class DeviceRequestViewModel(
+    private val deviceManageRepositoryImp: DeviceManageRepositoryImp,
+    private val loggerRepositoryImp: LoggerRepositoryImp
+) : BaseRequestViewModel(loggerRepositoryImp) {
 
     private val _deviceStatisticInfoResult = MutableResult<DataResult<DeviceStatisticInfo>>()
     val deviceStatisticInfoResult: Result<DataResult<DeviceStatisticInfo>> =
@@ -76,6 +81,10 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
     private val _cloudDeviceDataListResult = MutableResult<DataResult<List<CloudDeviceData>>>()
     val cloudDeviceDataListResult: Result<DataResult<List<CloudDeviceData>>> =
         _cloudDeviceDataListResult
+
+    private val _sensorDataListResult = MutableResult<DataResult<List<Any>>>()
+    val sensorDataListResult: Result<DataResult<List<Any>>> =
+        _sensorDataListResult
 
     private val _firmWareListResult = MutableResult<DataResult<List<FirmWareInfo>>>()
     val firmWareListResult: Result<DataResult<List<FirmWareInfo>>> =
@@ -302,7 +311,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
         }
     }
 
-    fun addUserFollowDevice(deviceSn: String = ""){
+    fun addUserFollowDevice(deviceSn: String = "") {
         viewModelScope.launch {
             val jsonObjectRequest = JSONObject()
             jsonObjectRequest.put("deviceSn", deviceSn)
@@ -334,7 +343,7 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
         }
     }
 
-    fun cancelUserFollowDevice(deviceSn: String = ""){
+    fun cancelUserFollowDevice(deviceSn: String = "") {
         viewModelScope.launch {
             val jsonObjectRequest = JSONObject()
             jsonObjectRequest.put("deviceSn", deviceSn)
@@ -544,7 +553,11 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
         )
     }
 
-    suspend fun getRemoteDeviceLogin(deviceSn: String, deviceKey: String, onCatch: ((Throwable) -> Unit)? = null): DeviceDebugAddress? {
+    suspend fun getRemoteDeviceLogin(
+        deviceSn: String,
+        deviceKey: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): DeviceDebugAddress? {
         val jsonObjectRequest = JSONObject()//接口请求参数
         jsonObjectRequest.put("appKey", BuildConfig.AMS_APP_KEY)
         jsonObjectRequest.put("appSecret", BuildConfig.AMS_APP_SECRET)
@@ -563,6 +576,139 @@ class DeviceRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
             onCatch?.invoke(error)
         }
     }
+
+
+    //<editor-fold desc="获取传感器数据">
+    suspend fun queryDeviceSensor(
+        deviceToken: String = "",
+        currentPage: Int = 1,
+        pageSize: Int = 100,
+    ): List<DeviceSensorBasicInfo> = withContext(Dispatchers.Default) {
+        val sensorList = deviceManageRepositoryImp.queryDeviceSensorListWithPage(
+            deviceToken = deviceToken,
+            currentPage = currentPage,
+            pageSize = pageSize
+        )?.currentPageData ?: emptyList()
+
+        sensorList
+    }
+
+    /**
+     * 分页查询设备监测数据
+     */
+    fun queryMonitorDataListWithPage(
+        deviceToken: String = "",
+        sensorIDList: List<String>? = emptyList(),
+        begin: String = "",
+        end: String = "",
+        currentPage: Int = 1,
+        pageSize: Int = 100,
+    ) = viewModelScope.launch(Dispatchers.IO) {
+        var totalCount: Int = 0
+        var totalPage: Int = 0
+        val dataList: MutableList<Any> = arrayListOf()
+
+        if (sensorIDList.isNullOrEmpty()) {
+            val remoteResult = deviceManageRepositoryImp.queryDeviceFileListWithPage(
+                deviceToken = deviceToken,
+                begin = begin,
+                end = end,
+                fileType = "1",
+                orderType = "1",
+                currentPage = currentPage,
+                pageSize = pageSize
+            ) { error ->
+                handleError(
+                    _sensorDataListResult,
+                    error,
+                    methodUrl = "${BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl}/QueryDeviceFilePage"
+                )
+            } ?: return@launch
+
+            totalPage = remoteResult.totalPage
+            totalCount = remoteResult.totalCount
+            dataList.addAll(remoteResult.currentPageData ?: emptyList())
+
+        } else {
+            val remoteResult = deviceManageRepositoryImp.querySensorDataListExWithPage(
+                sensorIDList = sensorIDList,
+                begin = begin,
+                end = end,
+                density = "0",
+                dateTimeSort = false,
+                currentPage = currentPage,
+                pageSize = pageSize
+            ) { error ->
+                handleError(
+                    _sensorDataListResult,
+                    error,
+                    methodUrl = "${BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl}/ListPageSensorDataListEx"
+                )
+            }?.pageResult ?: return@launch
+
+            totalPage = remoteResult.totalPage
+            totalCount = remoteResult.totalCount
+            dataList.addAll(remoteResult.currentPageData ?: emptyList())
+        }
+
+        if (currentPage == 1 && dataList.isNotEmpty()) {
+            dataList.add(0, HoverHeaderModel())
+        }
+        _sensorDataListResult.postValue(
+            DataResult(
+                dataList,
+                responseStatus = ResponseStatus().apply {
+                    isSuccess = true
+                    responseCode = "0"
+                    source = ResultSource.NETWORK
+                }, totalCount = totalCount, totalPage = totalPage
+            )
+        )
+    }
+
+    /**
+     * 分页查询设备文件
+     */
+    fun queryDeviceFileListWithPage(
+        deviceToken: String = "",
+        begin: String = "",
+        end: String = "",
+        currentPage: Int = 1,
+        pageSize: Int = 100,
+    ) = viewModelScope.launch(Dispatchers.IO) {
+        val remoteResult = deviceManageRepositoryImp.queryDeviceFileListWithPage(
+            deviceToken = deviceToken,
+            begin = begin,
+            end = end,
+            fileType = "1",
+            orderType = "1",
+            currentPage = currentPage,
+            pageSize = pageSize
+        ) { error ->
+            handleError(
+                _sensorDataListResult,
+                error,
+                methodUrl = "${BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl}/QueryDeviceFilePage"
+            )
+        } ?: return@launch
+
+        val dataList: MutableList<Any> =
+            remoteResult.currentPageData?.toMutableList() ?: arrayListOf()
+        if (currentPage == 1 && dataList.isNotEmpty()) {
+            dataList.add(0, HoverHeaderModel())
+        }
+        _sensorDataListResult.postValue(
+            DataResult(
+                dataList,
+                responseStatus = ResponseStatus().apply {
+                    isSuccess = true
+                    responseCode = "0"
+                    source = ResultSource.NETWORK
+                }, totalPage = remoteResult.totalPage, totalCount = remoteResult.totalCount
+            )
+        )
+    }
+    //</editor-fold>
 
     override fun onCleared() {
         Timber.i("DeviceRequestViewModel onCleared")

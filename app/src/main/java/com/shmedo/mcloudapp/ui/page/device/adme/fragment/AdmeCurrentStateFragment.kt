@@ -328,8 +328,8 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                             name = "设备状态",
                             value = if (deviceAbnormalList.isEmpty()) "正常" else "异常",
                             textColorRes = if (deviceAbnormalList.isEmpty()) ColorUtils.getColor(
-                                R.color.text_color_3AD094
-                            ) else ColorUtils.getColor(R.color.device_offline_platform),
+                                R.color.green_00B26B
+                            ) else ColorUtils.getColor(R.color.red_F13838),
                             isClickable = deviceAbnormalList.isNotEmpty()
                         )
                     )
@@ -344,7 +344,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                     name = "CTR输入电压",
                     value = stateInfo.ctrinputv,
                     defaultValue = "0",
-                    thresHold = 5.0,
+                    downLimitValue = 5.0,
                     digit = 2,
                     unit = "V",
                 )
@@ -353,7 +353,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                     name = "驱动器输入电压",
                     value = stateInfo.driveinputv,
                     defaultValue = "0",
-                    thresHold = 5.0,
+                    downLimitValue = 5.0,
                     digit = 2,
                     unit = "V",
                 )
@@ -439,7 +439,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                     name = "测斜仪电压",
                     value = stateInfo.incvoltage,
                     defaultValue = "0",
-                    thresHold = 5.0,
+                    downLimitValue = 5.0,
                     digit = 2,
                     unit = "V",
                 )

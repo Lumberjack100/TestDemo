@@ -142,6 +142,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
                 )
             )
         }
+
         if (isNeedOffsetInitialization()) {
             moduleList.add(
                 AdvancedSettingItem(
@@ -150,6 +151,14 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
                 )
             )
         }
+
+        moduleList.add(
+            AdvancedSettingItem(
+                "重启",
+                AdvancedSettingItem.Type.REBOOT,
+            )
+        )
+
         if (productType != ProductType.COLLECTOR_G_0) {
             moduleList.add(
                 AdvancedSettingItem(
@@ -158,6 +167,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
                 )
             )
         }
+
         if (communicateWay is NetPlatformConnect) {
             moduleList.add(
                 AdvancedSettingItem(
@@ -233,6 +243,12 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
             return
         }
         when (item.type) {
+            AdvancedSettingItem.Type.REBOOT -> {
+                showMessage("确定重启吗？", "温馨提示", "确定", {
+                    restoreFactory()
+                }, "取消")
+            }
+
             AdvancedSettingItem.Type.RESET -> {
                 showMessage("确定恢复出厂设置吗？", "温馨提示", "确定", {
                     restoreFactory()
@@ -268,32 +284,33 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
                 )
                 nav().navigate(R.id.action_global_to_remoteDebugFragment, bundle)
             }
+
+            else -> {}
         }
     }
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.RESET -> {
+            IOTCommandType.MD_SET_INSTALL_LOCATION -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg =
-                            StringUtils.getString(R.string.reset_failed) + result.message
+                        val errMsg = "同步安装位置出错"
                         handleFailureResult(errMsg)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show(StringUtils.getString(R.string.device_reset_tip))
+                            Toaster.show("同步安装位置成功")
                         }
                     }
                 }
             }
 
-            IOTCommandType.MD_SET_INSTALL_LOCATION -> {
+            IOTCommandType.MD_RAW -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "同步安装位置出错"
+                        val errMsg = "同步安装位置出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -321,17 +338,35 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
                     }
                 }
             }
-            IOTCommandType.MD_RAW -> {
+
+            IOTCommandType.REBOOT -> {//重启设备
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "同步安装位置出错: ${result.message}"
+                        val errMsg = StringUtils.getString(R.string.reboot_failed) + result.message
                         handleFailureResult(errMsg)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("同步安装位置成功")
+                            Toaster.show(StringUtils.getString(R.string.device_reboot_tip))
+                        }
+                    }
+                }
+            }
+
+            IOTCommandType.RESET -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg =
+                            StringUtils.getString(R.string.reset_failed) + result.message
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show(StringUtils.getString(R.string.device_reset_tip))
                         }
                     }
                 }

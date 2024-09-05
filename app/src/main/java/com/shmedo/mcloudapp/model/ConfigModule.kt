@@ -68,7 +68,7 @@ class TelemetryDataModule(
 class WorkModeModule(
     name: String = "工作模式",
     desc: String = "GNSS模式设置",
-    resID: Int = R.drawable.ic_module_work_model,
+    resID: Int = R.drawable.ic_module_work_mode,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
@@ -125,7 +125,7 @@ class AlarmConfigModule(
 class CommandDebugConfigModule(
     name: String = "指令调试",
     desc: String = "调试指令日志输出",
-    resID: Int = R.drawable.ic_parameter_export,
+    resID: Int = R.drawable.ic_module_cmd_debug,
     navId: Int = R.id.action_global_to_commandDebug,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 

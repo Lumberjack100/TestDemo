@@ -14,11 +14,11 @@ import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoFragment
-import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import timber.log.Timber
 
@@ -107,6 +107,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        //判断是否页面是否处于 resume 状态
         if (!isResumed) {
             return
         }
@@ -260,7 +261,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     info.batteryVoltage.toDoubleOrNull() ?: 0.0
                 ).replace("%", ""),
                 defaultValue = "0",
-                thresHold = 10.0,
+                downLimitValue = 10.0,
                 digit = 2,
                 unit = "%",
             )
@@ -269,7 +270,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 name = "外部供电电压",
                 value = info.externalVoltage,
                 defaultValue = "0",
-                thresHold = 5.0,
+                downLimitValue = 5.0,
                 digit = 2,
                 unit = "V",
             )
@@ -323,9 +324,9 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         name = "状态",
                         value = if (info.solarControllerStatus != "1") "正常" else "异常",
                         textColorRes = if (info.solarControllerStatus != "1") ColorUtils.getColor(
-                            R.color.device_online_platform
+                            R.color.green_00B26B
                         ) else ColorUtils.getColor(
-                            R.color.device_offline_platform
+                            R.color.red_F13838
                         )
                     )
                 )
@@ -334,7 +335,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     name = "太阳能板电压",
                     value = info.solarPanelVoltage,
                     defaultValue = "0",
-                    thresHold = 5.0,
+                    downLimitValue = 5.0,
                     digit = 2,
                     unit = "V",
                 )
@@ -343,7 +344,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     name = "蓄电池电压",
                     value = info.batteryVoltage,
                     defaultValue = "0",
-                    thresHold = 5.0,
+                    downLimitValue = 5.0,
                     digit = 2,
                     unit = "V",
                 )
@@ -367,9 +368,9 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         name = "状态",
                         value = if (info.internalTempHumidityStatus != "1") "正常" else "异常",
                         textColorRes = if (info.internalTempHumidityStatus != "1") ColorUtils.getColor(
-                            R.color.device_online_platform
+                            R.color.green_00B26B
                         ) else ColorUtils.getColor(
-                            R.color.device_offline_platform
+                            R.color.red_F13838
                         )
                     )
                 )
@@ -377,7 +378,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     groupList,
                     name = "温度",
                     value = info.internalTemperature,
-                    defaultValue = "0",
+                    defaultValue = "--",
                     digit = 2,
                     unit = "℃",
                 )
@@ -385,7 +386,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     groupList,
                     name = "湿度",
                     value = info.internalHumidity,
-                    defaultValue = "0",
+                    defaultValue = "--",
                     digit = 2,
                     unit = "%",
                 )
@@ -397,9 +398,9 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         name = "状态",
                         value = if (info.externalTempHumidityStatus != "1") "正常" else "异常",
                         textColorRes = if (info.externalTempHumidityStatus != "1") ColorUtils.getColor(
-                            R.color.device_online_platform
+                            R.color.green_00B26B
                         ) else ColorUtils.getColor(
-                            R.color.device_offline_platform
+                            R.color.red_F13838
                         )
                     )
                 )
@@ -407,7 +408,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     groupList,
                     name = "温度",
                     value = info.externalTemperature,
-                    defaultValue = "0",
+                    defaultValue = "--",
                     digit = 2,
                     unit = "℃",
                 )
@@ -415,7 +416,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     groupList,
                     name = "湿度",
                     value = info.externalHumidity,
-                    defaultValue = "0",
+                    defaultValue = "--",
                     digit = 2,
                     unit = "%",
                 )

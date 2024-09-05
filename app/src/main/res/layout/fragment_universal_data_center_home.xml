@@ -58,14 +58,14 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingTop="160dp">
 
                     <com.google.android.material.textview.MaterialTextView
+                        visible="@{stateVM.isSupportedReportInterval() }"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dimen_size_15"
-                        android:layout_marginTop="160dp"
-                        android:layout_marginBottom="@dimen/dimen_size_4"
                         android:drawablePadding="-80dp"
                         android:text="北斗数传"
                         android:textColor="@color/title_text_color"
@@ -74,10 +74,11 @@
                         app:drawableStartCompat="@drawable/ic_mr702_device_info_communication_data" />
 
                     <com.google.android.material.textview.MaterialTextView
+                        visible="@{stateVM.isSupportedReportInterval() }"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginVertical="@dimen/dimen_size_5"
                         android:layout_marginStart="@dimen/dimen_size_16"
-                        android:layout_marginBottom="@dimen/dimen_size_3"
                         android:text="* 通过外接的北斗数传终端，传输采集的传感器数据"
                         android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_12" />

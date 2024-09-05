@@ -39,8 +39,8 @@ class M20SensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "倾角MEMS状态",
                             value = camState,
-                            textColorRes = if (camState == "正常") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
-                                R.color.device_offline_platform
+                            textColorRes = if (camState == "正常") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
+                                R.color.red_F13838
                             )
                         )
                     )

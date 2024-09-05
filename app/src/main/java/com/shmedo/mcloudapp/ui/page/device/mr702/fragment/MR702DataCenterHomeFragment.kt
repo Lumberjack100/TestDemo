@@ -11,7 +11,6 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRDataCenterStatus
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
@@ -19,14 +18,15 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
-import com.shmedo.mcloudapp.databinding.FragmentMr702DataCenterHomeBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.databinding.FragmentMr702DataCenterHomeBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
 import org.koin.android.ext.android.inject
 
 class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
@@ -107,8 +107,8 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
     override fun createObserver() {
         super.createObserver()
         //从编辑页面返回需要刷新事件详情页面
-        setFragmentResultListener(com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702DataCenterHomeFragment.Companion.FRAGMENT_RESULT_REQUEST_KEY) { key, bundle ->
-            val refreshData = bundle.getBoolean(com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702DataCenterHomeFragment.Companion.REFRESH_DATA)
+        setFragmentResultListener(FRAGMENT_RESULT_REQUEST_KEY) { key, bundle ->
+            val refreshData = bundle.getBoolean(REFRESH_DATA)
             if (refreshData) {
                 binding.refreshLayout.autoRefresh()
             }
@@ -126,21 +126,6 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
         commandItems.add(command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    override fun cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog: Boolean) {
-        super.cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog)
-        binding.refreshLayout.finish(false)
-    }
-
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowMsg: Boolean,
-        msg: String
-    ) {
-        super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, isShowMsg, msg)
-        binding.refreshLayout.finish(false)
     }
 
     override fun setResultData(cmdStr: String) {

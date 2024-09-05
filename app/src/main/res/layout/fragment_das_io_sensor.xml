@@ -161,10 +161,10 @@
                         android:layout_width="0dp"
                         android:layout_height="38dp"
                         android:layout_weight="1"
-                        android:background='@{stateVM.isBreakAlarmOpen?@drawable/bg_corner_19dp_blue_stroke:@drawable/bg_corner_19dp_gray_stroke}'
+                        android:background="@{stateVM.isBreakAlarmOpen?@drawable/bg_blue_stroke_corner_19dp:@drawable/bg_gray_stroke_corner_19dp}"
                         android:text="常开"
                         android:textColor='@{stateVM.isBreakAlarmOpen?@color/colorPrimary:@color/sub_title_text_color}'
-                        tools:background="@drawable/bg_corner_19dp_blue_stroke"
+                        tools:background="@drawable/bg_blue_stroke_corner_19dp"
                         tools:textColor="@color/colorPrimary" />
 
                     <Button
@@ -174,10 +174,10 @@
                         android:layout_height="38dp"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:layout_weight="1"
-                        android:background='@{!stateVM.isBreakAlarmOpen?@drawable/bg_corner_19dp_blue_stroke:@drawable/bg_corner_19dp_gray_stroke}'
+                        android:background="@{!stateVM.isBreakAlarmOpen?@drawable/bg_blue_stroke_corner_19dp:@drawable/bg_gray_stroke_corner_19dp}"
                         android:text="常闭"
                         android:textColor='@{!stateVM.isBreakAlarmOpen?@color/colorPrimary:@color/sub_title_text_color}'
-                        tools:background="@drawable/bg_corner_19dp_gray_stroke"
+                        tools:background="@drawable/bg_gray_stroke_corner_19dp"
                         tools:textColor="@color/title_text_color" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
