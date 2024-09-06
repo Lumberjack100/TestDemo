@@ -105,8 +105,12 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
     private fun resetDefaultParams() {
         mStates.measureInterval.set("5")//测量间隔
         mStates.installAngleOffsetThreshold.set("3")//安装角度偏移阈值
+        mStates.altitude.set("")//海拔
+
         mStates.captureFrequency.set(captureFrequencyList[captureFrequencyList.lastIndex])
         mStates.imageResolution.set(imageResolutionList[2])
+
+        mStates.altitudeMeasureMode.set("自动")
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -365,6 +369,10 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                         }
                     }
                 mStates.imageResolution.set("${udCommonCurrentStateInfo.pixx}x${udCommonCurrentStateInfo.pixy}")
+
+                mStates.altitudeMeasureMode.set(
+                    if (udCommonCurrentStateInfo.altitudeMeasureMode == "0") "自动" else "手动"
+                )
 
             } catch (e: Exception) {
                 Timber.e(e)
