@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor
 
 import com.blankj.utilcode.util.StringUtils
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
@@ -31,10 +32,11 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
             SaveConfigMode.SAVE_NO_REBOOT.toString()
         )
         commandItems.add(command)
+
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_40000_MILLIS
+            timeoutMillis = AppContants.Communication.DELAY_40000_MILLIS
         )
     }
 

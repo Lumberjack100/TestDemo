@@ -337,7 +337,11 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {}
+                        val commandDesc = if (commandDescItems.isEmpty()) "触发值" else {
+                            commandDescItems.first
+                        }
+                        Timber.d("设置$commandDesc")
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -360,7 +364,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
 
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+
             }
         }
     }
@@ -394,10 +398,6 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
      *  处理获取到的单个传感器参数信息
      */
     private fun processSensorParamsInfo(sensorInfo: DasExternalSensorInfo) {
-        if (mStates.sensorModelMap.containsKey(sensorInfo.addr)) {
-            mStates.sensorModelMap[sensorInfo.addr] = sensorInfo
-            return
-        }
         mStates.sensorModelMap[sensorInfo.addr] = sensorInfo
         val item = DASSensorItem(
             isPlugin = true,
