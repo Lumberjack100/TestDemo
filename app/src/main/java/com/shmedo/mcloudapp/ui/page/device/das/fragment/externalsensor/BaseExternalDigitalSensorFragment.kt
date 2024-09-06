@@ -61,6 +61,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
     //阵列测斜仪物模型
     private val modelTypeList = arrayOf("坐标模型", "ADME 模型")
+
     //子雷达类型
     private val childRadarTypeList = arrayOf("雷达物位计", "精波雷达")
 
@@ -106,15 +107,12 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         val externalSensorInfo = if (sensorListViewModel.sensorModelMap.containsKey(sensorAddress))
             sensorListViewModel.sensorModelMap[sensorAddress]!!
         else //新建传感器 采用第一个传感器的信息，没有则使用默认信息
-            sensorListViewModel.sensorModelMap.values.firstOrNull()?.apply {
-                addr = ""
-            }
-                ?: DasExternalSensorInfo(
-                    addr = "",
-                    type = iotSensorType.code,
-                    threshold = "",
-                    corrval = ""
-                )
+            DasExternalSensorInfo(
+                addr = "",
+                type = iotSensorType.code,
+                threshold = "",
+                corrval = ""
+            )
 
         initSensorInfo(externalSensorInfo)
         initRefresh()
@@ -891,8 +889,8 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         }
 
         //更新或者添加传感器
-        if (sensorListViewModel.sensorModelMap.containsKey(sensorAddress)) {
-            sensorListViewModel.sensorModelMap.remove(sensorAddress)
+        if (sensorListViewModel.sensorModelMap.containsKey(sensorInfo.addr)) {
+            sensorListViewModel.sensorModelMap.remove(sensorInfo.addr)
         }
         sensorListViewModel.sensorModelMap[sensorInfo.addr] = sensorInfo
         sensorListViewModel.updateIsRefreshSensorList(true)
