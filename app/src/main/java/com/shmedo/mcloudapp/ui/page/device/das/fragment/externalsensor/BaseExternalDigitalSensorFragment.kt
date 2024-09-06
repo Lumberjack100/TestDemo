@@ -496,7 +496,18 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                 }
 
                 else -> {
-
+                    groupList.add(
+                        ExternalDigitalSensorParamEditItem(
+                            name = "触发值",
+                            value = sensorInfo.threshold.formatDoubleValue("", 3),
+                        )
+                    )
+                    groupList.add(
+                        ExternalDigitalSensorParamEditItem(
+                            name = "修正值",
+                            value = sensorInfo.corrval.formatDoubleValue("", 3)
+                        )
+                    )
                 }
             }
 

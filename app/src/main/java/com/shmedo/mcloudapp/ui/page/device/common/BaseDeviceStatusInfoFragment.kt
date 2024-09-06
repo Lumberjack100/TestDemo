@@ -400,6 +400,18 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            IOTSensorType.LYSIMETER,//蒸渗仪
+            -> {
+                if (dataList.isNotEmpty()) {
+                    subMonitorStatusList.add(
+                        DasSensorSubMonitorStatusItem(
+                            monitorType = "重量(克)",
+                            monitorValue = dataList[0]
+                        )
+                    )
+                }
+            }
+
             IOTSensorType.WEATHER_STATION //气象站
             -> {
                 if (dataList.isNotEmpty()) {
