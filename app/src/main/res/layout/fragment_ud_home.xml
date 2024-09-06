@@ -21,7 +21,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/main_bg_gray_dadada">
+        android:background="@color/main_bg_gray">
 
         <include
             android:id="@+id/ll_toolbar"
@@ -66,12 +66,12 @@
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        android:src="@drawable/ic_module_work_mode" />
+                        android:src="@drawable/ic_ud_measure_group" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dimen_size_10"
+                        android:layout_marginStart="@dimen/dimen_size_5"
                         android:singleLine="true"
                         android:text="测量数据"
                         android:textColor="@color/title_text_color"

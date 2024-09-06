@@ -44,7 +44,7 @@ import timber.log.Timber
  * 创建时间：2024/4/29
  * 描述： 一体化雷达泥位计数据中心主页面
  */
-class UDProductDataCenterHomeFragment : BaseIOTDeviceFragment() {
+class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUniversalDataCenterHomeBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: UniversalDataCenterHomeViewModel

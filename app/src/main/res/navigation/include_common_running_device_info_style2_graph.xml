@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/common_running_device_info_style2_graph"
+    app:startDestination="@id/commonDeviceStatusInfoParentStyle2Fragment">
+
+    <fragment
+        android:id="@+id/commonDeviceStatusInfoParentStyle2Fragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.CommonDeviceStatusInfoParentStyle2Fragment"
+        android:label="CommonDeviceStatusInfoParentStyle2Fragment"
+        tools:layout="@layout/fragment_base_device_status_info_parent_style2" />
+
+</navigation>

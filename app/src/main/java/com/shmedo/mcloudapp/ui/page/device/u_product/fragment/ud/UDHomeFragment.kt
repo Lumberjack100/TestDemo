@@ -237,8 +237,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         groupList.add(
             DeviceStatusInfoGroupItem(
                 "设备信息",
-                iconResId = R.drawable.ic_module_work_mode,
-                hover = false
+                iconResId = R.drawable.ic_ud_device_info_group,
             )
         )
         groupList.add(
@@ -249,7 +248,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                             name = "基本信息",
                             desc = "查看设备基本信息",
                             resID = R.drawable.ic_module_current_state,
-                            navId = R.id.action_global_to_commonRunningDeviceInfoFragment
+                            navId = R.id.action_global_to_commonRunningDeviceInfoStyle2Fragment
                         )
                     ),
                     ConfigModule(
@@ -257,7 +256,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                             name = "网络信息",
                             desc = "查看设备网络信息",
                             resID = R.drawable.ic_module_network_info,
-                            navId = R.id.action_global_to_commonRunningDeviceInfoFragment
+                            navId = R.id.action_global_to_commonRunningDeviceInfoStyle2Fragment
                         )
                     ),
                     ConfigModule(
@@ -265,7 +264,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                             name = "状态信息",
                             desc = "查看设备运行状态信息",
                             resID = R.drawable.ic_basic_config,
-                            navId = R.id.action_global_to_commonRunningDeviceInfoFragment
+                            navId = R.id.action_global_to_commonRunningDeviceInfoStyle2Fragment
                         )
                     ),
                     ConfigModule(
@@ -273,7 +272,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                             name = "位置信息",
                             desc = "查看设备位置信息",
                             resID = R.drawable.ic_module_location_info,
-                            navId = R.id.action_global_to_commonRunningDeviceInfoFragment
+                            navId = R.id.action_global_to_commonRunningDeviceInfoStyle2Fragment
                         )
                     )
                 )

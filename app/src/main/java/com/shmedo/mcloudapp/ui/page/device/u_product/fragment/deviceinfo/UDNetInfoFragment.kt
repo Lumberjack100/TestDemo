@@ -16,7 +16,7 @@ import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -27,7 +27,7 @@ import timber.log.Timber
  * 创建时间：2024/8/29
  * 描述： 一体化雷达泥位计网络信息
  */
-class UDNetInfoFragment : BaseDeviceStatusInfoFragment() {
+class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
 
     override fun queryStatusInfo() {
@@ -51,7 +51,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoFragment() {
                 binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
 
-                groupList.add(DeviceStatusInfoGroupItem("数据网络"))
+                groupList.add(DeviceStatusInfoGroupItem("数据网络", bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "移动网络",
@@ -110,7 +110,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoFragment() {
                         R.color.green_00B26B
                     ) else 0
                 )
-                groupList.add(DeviceStatusInfoGroupItem("数据链路"))
+                groupList.add(DeviceStatusInfoGroupItem("数据链路", bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)))
                 if (stateInfo.dataCenterEnableStatus != IOTConstants.NULL_KEY
                     && stateInfo.dataCenterLinkStatus != IOTConstants.NULL_KEY
                     && stateInfo.dataCenterPlatformType != IOTConstants.NULL_KEY

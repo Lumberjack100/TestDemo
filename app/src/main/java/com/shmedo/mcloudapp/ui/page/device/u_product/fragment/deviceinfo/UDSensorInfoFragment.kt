@@ -12,7 +12,7 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -24,7 +24,7 @@ import timber.log.Timber
  * @desc: 一体化雷达泥位计电池、传感器等信息
  *
  */
-class UDSensorInfoFragment : BaseDeviceStatusInfoFragment() {
+class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
     override fun queryStatusInfo() {
         commandItems.clear()
@@ -47,7 +47,12 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                 binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
 
-                groupList.add(DeviceStatusInfoGroupItem("供电信息"))
+                groupList.add(
+                    DeviceStatusInfoGroupItem(
+                        "供电信息",
+                        bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)
+                    )
+                )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
                     groupList,
                     name = "外部电压",
@@ -89,7 +94,12 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                     value = stateInfo.batteryHealth,
                     unit = "%",
                 )
-                groupList.add(DeviceStatusInfoGroupItem("环境信息"))
+                groupList.add(
+                    DeviceStatusInfoGroupItem(
+                        "环境信息",
+                        bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)
+                    )
+                )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
                     groupList,
                     name = "内部温度",
@@ -106,7 +116,12 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                     digit = 2,
                     unit = "%",
                 )
-                groupList.add(DeviceStatusInfoGroupItem("传感信息"))
+                groupList.add(
+                    DeviceStatusInfoGroupItem(
+                        "传感信息",
+                        bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)
+                    )
+                )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "雷达状态",

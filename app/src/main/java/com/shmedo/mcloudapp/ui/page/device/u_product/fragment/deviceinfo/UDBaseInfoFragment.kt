@@ -12,7 +12,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -23,7 +23,7 @@ import timber.log.Timber
  * 创建时间：2024/8/28
  * 描述： 一体化雷达泥位计基本信息
  */
-class UDBaseInfoFragment : BaseDeviceStatusInfoFragment() {
+class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
     override fun queryStatusInfo() {
         commandItems.clear()
@@ -46,7 +46,8 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
 
-                groupList.add(DeviceStatusInfoGroupItem("设备信息"))
+                groupList.add(DeviceStatusInfoGroupItem("设备信息",
+                    bgColorRes = ColorUtils.getColor(R.color.main_bg_gray) ))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "设备型号",
@@ -103,7 +104,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         )
                     )
                 }
-                groupList.add(DeviceStatusInfoGroupItem("工作信息"))
+                groupList.add(DeviceStatusInfoGroupItem("工作信息", bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "上报模式",
