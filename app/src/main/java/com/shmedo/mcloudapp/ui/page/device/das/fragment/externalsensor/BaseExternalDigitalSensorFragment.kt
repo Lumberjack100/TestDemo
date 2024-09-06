@@ -48,18 +48,19 @@ import timber.log.Timber
 abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentBaseExternalDigitalSensorBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
-    protected lateinit var sensorListViewModel: DasExternalSensorListViewModel<DasExternalSensorInfo>
+    private lateinit var sensorListViewModel: DasExternalSensorListViewModel<DasExternalSensorInfo>
 
     protected val iotSensorType: IOTSensorType by lazy {
         IOTSensorType.getSensorTypeByCollectorCode(sensorListViewModel.collectorType.get())
     }
-    protected val usedAddressList = ArrayList<String>()
+    private val usedAddressList = ArrayList<String>()
+    private var sensorAddress = ""
     protected var sensorIndex: Int = -1
-    protected var sensorAddr = "-1"
+    private var sensorEditMode: Boolean = false
+
 
     //阵列测斜仪物模型
     private val modelTypeList = arrayOf("坐标模型", "ADME 模型")
-
     //子雷达类型
     private val childRadarTypeList = arrayOf("雷达物位计", "精波雷达")
 
@@ -94,34 +95,35 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         super.initData()
         binding.llToolbar.toolbar.title = iotSensorType.description
         arguments?.let {
+            sensorEditMode = it.getBoolean(SENSOR_EDIT_MODE, false)
             sensorIndex = it.getInt(AppContants.Extras.SENSOR_INDEX, -1)
-            sensorAddr = it.getString(AppContants.Extras.SENSOR_ADDR, "-1")
+            sensorAddress = it.getString(AppContants.Extras.SENSOR_ADDR, "")
         }
         usedAddressList.clear()
-        sensorListViewModel.sensorModelMap.keys.filterNot { it == sensorAddr }
+        sensorListViewModel.sensorModelMap.keys.filterNot { it == sensorAddress }
             .forEach { usedAddressList.add(it) }
 
-        val externalSensorInfo = if (sensorListViewModel.sensorModelMap.containsKey(sensorAddr))
-            sensorListViewModel.sensorModelMap[sensorAddr]!!
+        val externalSensorInfo = if (sensorListViewModel.sensorModelMap.containsKey(sensorAddress))
+            sensorListViewModel.sensorModelMap[sensorAddress]!!
         else //新建传感器 采用第一个传感器的信息，没有则使用默认信息
             sensorListViewModel.sensorModelMap.values.firstOrNull()?.apply {
-                addr = "-1"
+                addr = ""
             }
                 ?: DasExternalSensorInfo(
-                    addr = "-1",
+                    addr = "",
                     type = iotSensorType.code,
                     threshold = "",
                     corrval = ""
                 )
 
         initSensorInfo(externalSensorInfo)
-        initRefresh(externalSensorInfo.addr != "-1")
+        initRefresh()
     }
 
-    private fun initRefresh(isEnable: Boolean) {
+    private fun initRefresh() {
         refreshLayout = binding.refreshLayout
         binding.refreshLayout.setEnableLoadMore(false)
-        binding.refreshLayout.setEnableRefresh(isEnable)
+        binding.refreshLayout.setEnableRefresh(sensorEditMode)
         binding.refreshLayout.onRefresh {
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
@@ -411,7 +413,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                         ExternalDigitalSensorParamEditItem(
                             name = "初始值(单位:毫米)",
                             value = sensorInfo.initval.formatDoubleValue("", 3),
-                            btnVisible = sensorIndex != -1 //只有在编辑传感器下才显示重置按钮，新建传感器不显示
+                            btnVisible = sensorEditMode //只有在编辑传感器下才显示重置按钮，新建传感器不显示
                         )
                     )
                 }
@@ -436,7 +438,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                             value = sensorInfo.initvaly.formatDoubleValue("", 3),
                         )
                     )
-                    if (sensorIndex != -1) {
+                    if (sensorEditMode) {
                         groupList.add(
                             GapItem(
                                 height = ConvertUtils.dp2px(100f)
@@ -889,8 +891,8 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
         }
 
         //更新或者添加传感器
-        if (sensorListViewModel.sensorModelMap.containsKey(sensorAddr)) {
-            sensorListViewModel.sensorModelMap.remove(sensorAddr)
+        if (sensorListViewModel.sensorModelMap.containsKey(sensorAddress)) {
+            sensorListViewModel.sensorModelMap.remove(sensorAddress)
         }
         sensorListViewModel.sensorModelMap[sensorInfo.addr] = sensorInfo
         sensorListViewModel.updateIsRefreshSensorList(true)
@@ -932,17 +934,21 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     }
 
     companion object {
+        private const val SENSOR_EDIT_MODE = "sensor_edit_mode"
+
         fun newBundleArguments(
+            sensorEditMode: Boolean = false,
             index: Int,
-            sensorAddr: String,
+            sensorAddress: String = "",
             type: ProductType = ProductType.UnKnown,
             communicateWay: CommunicateWay = NetPlatformConnect,
             deviceInfo: DeviceInfo,
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
+            putBoolean(SENSOR_EDIT_MODE, sensorEditMode)
             putInt(AppContants.Extras.SENSOR_INDEX, index)
-            putString(AppContants.Extras.SENSOR_ADDR, sensorAddr)
+            putString(AppContants.Extras.SENSOR_ADDR, sensorAddress)
             putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
             putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
             putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)

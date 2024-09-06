@@ -48,7 +48,7 @@
                 android:layout_gravity="center"
                 android:text="@{m.addrDesc}"
                 android:textColor="@color/white"
-                android:textSize="14sp"
+                android:textSize="@dimen/text_size_13"
                 tools:text="配置地址" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -58,16 +58,16 @@
                 android:layout_marginTop="@dimen/dimen_size_2"
                 android:text="@{m.sensorName}"
                 android:textColor="@color/white"
-                android:textSize="15sp"
+                android:textSize="@dimen/text_size_14"
                 android:textStyle="bold"
-                tools:text="雷达水位计" />
+                tools:text="雷达水位计雷达水位计雷达水位计雷达水位计雷达水位计雷达水位计" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/item_del"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_gravity="end|top"
             android:layout_marginTop="@dimen/dimen_size_6"
             android:layout_marginEnd="@dimen/dimen_size_6"
