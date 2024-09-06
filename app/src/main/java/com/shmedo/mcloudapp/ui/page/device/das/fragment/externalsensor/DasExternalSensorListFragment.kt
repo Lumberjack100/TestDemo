@@ -178,6 +178,18 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
+            if (mStates.sensorModelMap.isEmpty()) {
+                showMessage(
+                    "确定将采集器接入的传感器个数设置为0吗？",
+                    "温馨提示",
+                    "确定",
+                    {
+                        closeCollector()
+                    },
+                    "取消"
+                )
+                return
+            }
             initSaveCommand()
         }
     }
@@ -192,6 +204,27 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
             "index=$deleteItemIndex"
         )
         commandItems.add(command)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 当接入的传感器个数为0时，设置采集器地址为0，关闭采集器
+     */
+    private fun closeCollector() {
+        commandItems.clear()
+
+        //设置采集器参数
+        val entity = DasCollectorEntity(
+            type = mStates.collectorType.get(),
+            addr = "0",
+        )
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
+
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -432,23 +465,6 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.DAS_MD_DEL_EXTERNAL_SENSOR -> {//移除传感器
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "移除传感器出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("移除成功")
-                            updateAdapterRemoveSensorItem()
-                        }
-                    }
-                }
-            }
-
             IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
@@ -458,7 +474,11 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {}
+                        sendCommandFromCmdList {
+                            if (mStates.sensorModelMap.isEmpty()) {
+                                showMessageDialog("采集器地址已修改为0,如继续配置扩展传感器,请先修改采集器地址!")
+                            }
+                        }
                     }
                 }
             }
@@ -479,6 +499,22 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            IOTCommandType.DAS_MD_DEL_EXTERNAL_SENSOR -> {//移除传感器
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "移除传感器出错: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("移除成功")
+                            updateAdapterRemoveSensorItem()
+                        }
+                    }
+                }
+            }
 
             else -> {
                 cancelNearbyCommunicationTimeoutJob()
@@ -533,7 +569,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
         binding.rv.bindingAdapter.notifyItemInserted(binding.rv.bindingAdapter.modelCount)
     }
 
-    private fun updateAdapterRemoveSensorItem(){
+    private fun updateAdapterRemoveSensorItem() {
         binding.rv.bindingAdapter.mutable[deleteItemIndex].let {
             if (it is DASSensorItem) {
                 mStates.sensorModelMap.remove(it.addr)

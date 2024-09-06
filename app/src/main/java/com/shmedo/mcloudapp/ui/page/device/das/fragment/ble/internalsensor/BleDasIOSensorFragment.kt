@@ -10,7 +10,6 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTRainStation
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDBreakAlarmStatus
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
@@ -24,11 +23,12 @@ import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentDasIoSensorBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseDasIOSensorClickProxy
+import com.shmedo.mcloudapp.databinding.FragmentDasIoSensorBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasIOSensorViewModel
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -204,6 +204,10 @@ class BleDasIOSensorFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        //判断是否页面是否处于 resume 状态
+        if (!isResumed) {
+            return
+        }
         when (MDCommandUtil.extractCommandType(cmdStr)) {
             MDCommandType.BASE_CONFIG -> {
                 val result = mdParseManager.parse<DasBaseConfigInfo>(
@@ -212,7 +216,6 @@ class BleDasIOSensorFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-
                         val errMsg = "查询开关量传感器状态出错"
                         handleFailureResult(errMsg)
                         return

@@ -18,6 +18,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasCollectorInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.cmd.base.md_cmd.enums.SaveConfigMode
 import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
@@ -28,6 +29,7 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentDasExternalSensorListBinding
 import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CommunicateWay
@@ -210,8 +212,41 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
+            if (mStates.sensorModelMap.isEmpty()) {
+                showMessage(
+                    "确定将采集器接入的传感器个数设置为0吗？",
+                    "温馨提示",
+                    "确定",
+                    {
+                        closeCollector()
+                    },
+                    "取消"
+                )
+                return
+            }
             initSaveCommand()
         }
+    }
+
+    /**
+     * 当接入的传感器个数为0时，设置采集器地址为0，关闭采集器
+     */
+    private fun closeCollector() {
+        commandItems.clear()
+        var command = MDCommandUtil.getCommand(
+            MDCommandType.SET_COLLECTOR_ADDRESS,
+            "0"
+        )
+        commandItems.add(command)
+
+        command = MDCommandUtil.getCommand(
+            MDCommandType.SAVE_CONFIG_INFO,
+            SaveConfigMode.SAVE_NO_REBOOT.toString()
+        )
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     abstract fun initSaveCommand()
@@ -255,7 +290,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
 
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_15000_MILLIS
+            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
         )
     }
 
@@ -328,6 +363,20 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            MDCommandType.SET_COLLECTOR_ADDRESS -> {//
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "采集器地址配置错误!"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList()
+                    }
+                }
+            }
+
             MDCommandType.SET_COLLECTOR_SENSOR -> {//
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
@@ -356,7 +405,11 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            if (mStates.sensorModelMap.isEmpty()) {
+                                showMessageDialog("采集器地址已修改为0,如继续配置扩展传感器,请先修改采集器地址!")
+                            }else{
+                                Toaster.show("保存成功")
+                            }
                         }
                     }
                 }
