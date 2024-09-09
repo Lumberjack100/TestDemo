@@ -290,9 +290,8 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询信息出错: ${result.message}"
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

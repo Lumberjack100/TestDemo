@@ -77,7 +77,7 @@ class LR200BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     name = "电池电量",
                     value = stateInfo.volt_percent.replace("%", ""),
                     defaultValue = "0",
-                    thresHold = 10.0,
+                    downLimitValue = 10.0,
                     digit = 2,
                     unit = "%",
                 )
@@ -130,8 +130,8 @@ class LR200BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "LoRa功能",
                             value = camState,
-                            textColorRes = if (camState == "有") ColorUtils.getColor(R.color.device_online_platform) else ColorUtils.getColor(
-                                R.color.device_offline_platform
+                            textColorRes = if (camState == "有") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
+                                R.color.red_F13838
                             )
                         )
                     )

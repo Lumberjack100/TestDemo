@@ -29,6 +29,7 @@ import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.getAppViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CmdResponseResultError
 import com.shmedo.mcloudapp.model.CmdResponseResultSuccess
@@ -78,9 +79,9 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     protected val lastCommunicationTime = MutableStateFlow(System.currentTimeMillis())
 
     // 检查是否超时
-    protected fun isNearbyCommunicationTimeout(lastUpdateTime: Long): Boolean {
-        return (System.currentTimeMillis() - lastUpdateTime) >= AppContants.Communication.DELAY_10000_MILLIS
-    }
+//    protected fun isNearbyCommunicationTimeout(lastUpdateTime: Long): Boolean {
+//        return (System.currentTimeMillis() - lastUpdateTime) >= AppContants.Communication.DELAY_10000_MILLIS
+//    }
 
     // 更新最后通信时间
     protected fun updateLastCommunicationTime() {
@@ -272,36 +273,37 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         timeoutMillis: Long = AppContants.Communication.DELAY_10000_MILLIS,//默认10秒超时
         crossinline finishAction: () -> Unit = {}
     ) {
+        //指令队列为空，结束
         if (commandItems.size <= 0) {
             cancelNearbyCommunicationTimeoutJob()
             finishAction()
             return
         }
-
         val command = commandItems.first
         commandItems.removeFirst()
-        addLogItem(Log.INFO, command)
+        addLogItem(Log.INFO, "发送指令: $command")
 
+        //4G远程下发指令
         if (communicateWay is NetPlatformConnect) {
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
-        } else {
-            if (isBleDisconnected()) {
-                Toaster.show("蓝牙已断开，请重新连接")
-                cancelNearbyCommunicationTimeoutJob()
-                finishAction()
-                return
-            }
-            //发送物联网指令
-            if (command.startsWith(IOTConstants.COMMAND_HEADER)) {
-                bleViewModel.sendIOTCommand(command, deviceInfo.apikey, delaySendMillis)
-            } else {
-                //发送MD指令 ##开头
-                bleViewModel.sendMDCommand(command, delaySendMillis)
-            }
-
-            if (isStartTimeoutJob)
-                startNearbyCommunicationTimeoutJob(command, timeoutMillis)
+            return
         }
+
+        //蓝牙通信
+        if (isBleDisconnected()) {
+            Toaster.show("蓝牙已断开，请重新连接")
+            cancelNearbyCommunicationTimeoutJob()
+            finishAction()
+            return
+        }
+        //发送物联网指令
+        if (command.startsWith(IOTConstants.COMMAND_HEADER))
+            bleViewModel.sendIOTCommand(command, deviceInfo.apikey, delaySendMillis)
+        else
+            bleViewModel.sendMDCommand(command, delaySendMillis)//发送MD指令 ##开头
+        //启动超时Job
+        if (isStartTimeoutJob)
+            startNearbyCommunicationTimeoutJob(command, timeoutMillis)
     }
 
     /**
@@ -360,11 +362,31 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     protected fun isBleDisconnected() = communicateWay is BleConnect && !bleViewModel.isConnected()
 
-    protected fun handleFailureResult(errMsg: String) {
+    protected fun handleFailureResult(
+        errMsg: String,
+        isShowErrMsg: Boolean = true,
+        isMessageDialog: Boolean = false
+    ) {
         cancelNearbyCommunicationTimeoutJob()
         Timber.e(errMsg)
-        Toaster.show(errMsg)
-        //PopTip.show(errMsg).autoDismiss(4500).iconError()
+        if (isShowErrMsg) {
+            if (isMessageDialog)
+                showMessageDialog(errMsg)
+            else
+                Toaster.show(errMsg)
+        }
+    }
+
+    /**
+     * 重启设备
+     */
+    private fun reboot() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(IOTCommandType.REBOOT)
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     /**

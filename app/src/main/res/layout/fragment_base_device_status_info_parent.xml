@@ -37,7 +37,7 @@
             app:titleTextColor="@color/white"
             tools:title="测试" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_product_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
             tools:text="终端遥控测试机" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_product_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -102,6 +102,10 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        //判断是否页面是否处于 resume 状态
+        if (!isResumed) {
+            return
+        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_DEVICE_STATUS -> {
                 val result = iotParseManager.parse<String>(
@@ -110,9 +114,8 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询通讯状态出错: ${result.message}"
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -133,9 +136,8 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询通讯状态出错: ${result.message}"
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -305,7 +307,7 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
                         columnCellDataList.add(
                             CommunicationDataCellModel(
                                 mData = if (enableStatusList[i] == "0") "未开启" else if (onlineStatusList[i] == "1") "已连接" else "未连接",
-                                textColorResId = if (enableStatusList[i] == "1" && onlineStatusList[i] == "1") R.color.device_online_platform else R.color.device_offline_platform
+                                textColorResId = if (enableStatusList[i] == "1" && onlineStatusList[i] == "1") R.color.green_00B26B else R.color.red_F13838
                             )
                         )
                     }

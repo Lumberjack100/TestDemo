@@ -6,7 +6,6 @@ import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.mutable
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTRainStation
@@ -17,6 +16,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
@@ -47,6 +47,7 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        //判断是否页面是否处于 resume 状态
         if (!isResumed) {
             return
         }
@@ -120,7 +121,7 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                                     DeviceStatusInfoBasicItem(
                                         name = "状态",
                                         value = "未接入",
-                                        textColorRes = ColorUtils.getColor(R.color.device_offline_platform)
+                                        textColorRes = ColorUtils.getColor(R.color.red_F13838)
                                     )
                                 )
                             }
@@ -130,7 +131,7 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                                     DeviceStatusInfoBasicItem(
                                         name = "状态",
                                         value = "接入",
-                                        textColorRes = ColorUtils.getColor(R.color.device_online_platform)
+                                        textColorRes = ColorUtils.getColor(R.color.green_00B26B)
                                     )
                                 )
                                 groupList.add(
@@ -146,15 +147,15 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                                     DeviceStatusInfoBasicItem(
                                         name = "状态",
                                         value = "接入",
-                                        textColorRes = ColorUtils.getColor(R.color.device_online_platform)
+                                        textColorRes = ColorUtils.getColor(R.color.green_00B26B)
                                     )
                                 )
                                 groupList.add(
                                     DeviceStatusInfoBasicItem(
                                         name = "断线报警器",
                                         value = if (ioBean.vaule == "1") "断线" else "未断线",
-                                        textColorRes = if (ioBean.vaule == "1") ColorUtils.getColor(R.color.device_offline_platform) else ColorUtils.getColor(
-                                            R.color.device_online_platform
+                                        textColorRes = if (ioBean.vaule == "1") ColorUtils.getColor(R.color.red_F13838) else ColorUtils.getColor(
+                                            R.color.green_00B26B
                                         )
                                     )
                                 )
@@ -174,9 +175,9 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                                     vwpBean.errno
                                 ),
                                 textColorRes = if (vwpBean.errno == "0") ColorUtils.getColor(
-                                    R.color.device_online_platform
+                                    R.color.green_00B26B
                                 ) else ColorUtils.getColor(
-                                    R.color.device_offline_platform
+                                    R.color.red_F13838
                                 )
                             )
                         )
@@ -220,9 +221,9 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                                     memsBean.errno
                                 ),
                                 textColorRes = if (memsBean.errno == "0") ColorUtils.getColor(
-                                    R.color.device_online_platform
+                                    R.color.green_00B26B
                                 ) else ColorUtils.getColor(
-                                    R.color.device_offline_platform
+                                    R.color.red_F13838
                                 )
                             )
                         )

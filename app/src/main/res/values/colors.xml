@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#0096FF</color>
+    <color name="colorPrimary_10">#1A0096FF</color>
     <color name="colorPrimaryDark">#0288D1</color>
     <color name="colorAccent">#00b3fb</color>
 
@@ -42,13 +43,16 @@
     <color name="gray_DADADA">#DADADA</color>
     <color name="gray_EAEFF6">#EAEFF6</color>
     <color name="green">#00FF00</color>
+    <color name="green_00B26B">#00B26B</color>
+    <color name="green_00B26B_10">#1A00B26B</color>
     <color name="main_bg_gray">#f6f6f6</color>
+    <color name="main_bg_gray_dadada">#DADADA</color>
     <color name="main_bg_gray_f3f9fe">#F3F9FE</color>
     <color name="main_bg_gray_f2f2f2">#f2f2f2</color>
     <color name="main_bg_gray_f9f9f9">#f9f9f9</color>
     <color name="orange">#ff7502</color>
-    <color name="red">#fd1b1b</color>
-    <color name="red_90">#E6E34D59</color>
+    <color name="red_F13838">#F13838</color>
+    <color name="red_F13838_10">#1AF13838</color>
     <color name="sub_title_text_color">#999999</color>
     <color name="title_text_color">#333333</color>
     <color name="text_color_hint">#808080</color>
@@ -69,14 +73,12 @@
     <color name="white_25">#40FFFFFF</color>
     <color name="white_60">#99FFFFFF</color>
     <color name="white_80">#CCFFFFFF</color>
-    <color name="yellow_E37B21">#E37B21</color>
     <color name="yellow_FDA251">#FDA251</color>
-    <color name="yellow_FEF9E5">#FEF9E5</color>
-    <color name="yellow_FFA838">#FFA838</color>
+    <color name="yellow_FDA251_10">#1AFDA251</color>
 
-    <color name="bottom_nav_text_color_checked">#52B4F8</color>
+    <color name="bottom_nav_text_color_checked">@color/colorPrimary</color>
     <color name="bottom_nav_text_color_normal">#ff999999</color>
-    <color name="bottom_nav_icon_color_checked">#52B4F8</color>
+    <color name="bottom_nav_icon_color_checked">@color/colorPrimary</color>
     <color name="bottom_nav_icon_color_normal">#C4C6CA</color>
 
     <color name="blue_disabled">#8000A8E1</color>
@@ -87,31 +89,20 @@
     <color name="search_bg_gray_color">#fff1f1f1</color>
 
     <color name="device_unopened_platform">#BCC0CC</color>
-    <color name="device_online_platform">#00B26B</color>
-    <color name="device_offline_platform">#F13838</color>
-    <color name="device_online_foreground">#00B26B</color>
-    <color name="device_online_backround">#1A00B26B</color>
-    <color name="device_offline_foreground">#F13838</color>
-    <color name="device_offline_backround">#1AF13838</color>
-
-    <color name="connect_ble_foreground">#0096FF</color>
+    <color name="connect_ble_foreground">@color/colorPrimary</color>
     <color name="disconnect_ble_foreground">#666666</color>
 
     <!-- MR702  -->
     <color name="mr_communication_data_table_row_header_backround">#EBF7FF</color>
-    <color name="mr_interface_sensor_flag_in_backround">#0099E9</color>
+    <color name="mr_interface_sensor_flag_in_backround">@color/colorPrimary</color>
     <color name="mr_interface_sensor_flag_out_backround">#969696</color>
-    <color name="mr_module_status_normal_foreground">#00B26B</color>
-    <color name="mr_module_status_abnormal_foreground">#F13838</color>
     <color name="mr_module_status_item_normal_backround">#EBF9F4</color>
     <color name="mr_module_status_item_abnormal_backround">#FEEFEF</color>
-    <color name="mr_module_status_text_normal_backround">#AAE4CE</color>
-    <color name="mr_module_status_text_abnormal_backround">#FCD8D8</color>
     <color name="mr702_port_tab_checked_text_color">#FFFFFFFF</color>
     <color name="mr702_port_tab_unchecked_text_color">#65A2CD</color>
 
     <color name="receive_data_color">#ff088c32</color>
-    <color name="send_data_color">#ff2d78e7</color>
+    <color name="send_data_color">@color/colorPrimary</color>
 
     <!-- Fast Scroll -->
     <color name="fastscroll_handle">#999999</color>

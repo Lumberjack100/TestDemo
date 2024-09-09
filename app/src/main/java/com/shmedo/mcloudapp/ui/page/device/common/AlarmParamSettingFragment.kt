@@ -9,7 +9,6 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.AlarmMonitorPointEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.AlarmReportIntervalEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.AlarmTriggerValueEntity
@@ -24,15 +23,16 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentAlarmParamSettingBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.AlarmParamSettingViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.databinding.FragmentAlarmParamSettingBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.AlarmParamSettingViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -106,19 +106,6 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
                 mStates.secondAlarmThresholdTitle.set("二级报警阈值(毫米)")
                 mStates.thirdAlarmThresholdTitle.set("三级报警阈值(毫米)")
                 mStates.fourthAlarmThresholdTitle.set("四级报警阈值(毫米)")
-
-                mStates.firstAlarmReportIntervalTitle.set("一级报警间隔(秒)")
-                mStates.secondAlarmReportIntervalTitle.set("二级报警间隔(秒)")
-                mStates.thirdAlarmReportIntervalTitle.set("三级报警间隔(秒)")
-                mStates.fourthAlarmReportIntervalTitle.set("四级报警间隔(秒)")
-            }
-
-            ProductType.U_D_1,//
-            ProductType.U_D_2 -> {//一体化雷达液位计
-                mStates.firstAlarmThresholdTitle.set("一级报警阈值(米)")
-                mStates.secondAlarmThresholdTitle.set("二级报警阈值(米)")
-                mStates.thirdAlarmThresholdTitle.set("三级报警阈值(米)")
-                mStates.fourthAlarmThresholdTitle.set("四级报警阈值(米)")
 
                 mStates.firstAlarmReportIntervalTitle.set("一级报警间隔(秒)")
                 mStates.secondAlarmReportIntervalTitle.set("二级报警间隔(秒)")
@@ -462,9 +449,8 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询语音参数出错: ${result.message}"
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -484,9 +470,8 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询报警阈值出错: ${result.message}"
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -506,9 +491,8 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询报警间隔出错: ${result.message}"
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

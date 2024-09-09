@@ -19,8 +19,6 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.utils.IOTRegexContants
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.adme.AdmeBasicConfigEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.adme.AdmeExecutiveAgencyInfoEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.adme.AdmeLockedRotorDetectionEntity
@@ -37,18 +35,20 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
-import com.shmedo.mcloudapp.databinding.FragmentAdmeBasicParamConfigBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeBasicParamConfigViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.databinding.FragmentAdmeBasicParamConfigBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.adapter.AdmeTimeAdapter
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeBasicParamConfigViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
+import com.shmedo.mcloudapp.utils.IOTRegexContants
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.util.Date
@@ -448,6 +448,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
             else
                 mStates.startTimePerRound.get(),
             datainval = mStates.executiveAgencyInfoWrapper.get().datainval,
+            clin_compen = mStates.executiveAgencyInfoWrapper.get().clin_compen,
             compensatetime = mStates.executiveAgencyInfoWrapper.get().compensatetime,
             interdeep = mStates.inclinometerTubeHoleDepth.get(),
             driveaddress = mStates.executiveAgencyInfoWrapper.get().driveaddress,
@@ -564,7 +565,6 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询堵转参数出错: ${result.message}"
                         handleFailureResult(errMsg)
                         //设备版本不支持，隐藏编辑按钮
@@ -620,15 +620,13 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         var errMsg = "设置执行机构参数出错: ${result.message}"
-                        Timber.e(errMsg)
                         if (errMsg.contains("time_err"))
                             errMsg = errMsg.replaceFirst(
                                 "(time_err)(:?)".toRegex(),
                                 "一轮测量时间不能少于"
                             ) + "小时"
-                        showMessageDialog(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 

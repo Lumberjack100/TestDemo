@@ -41,7 +41,7 @@
                 android:padding="6dp"
                 android:src="@drawable/ic_dispatch_cmd_dialog_close" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -61,20 +61,20 @@
             android:layout_marginBottom="@dimen/dimen_size_10"
             android:orientation="horizontal">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="设备运行状态："
                 android:textColor="@color/title_text_color"
                 android:textSize="@dimen/text_size_14" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_motion_state"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@{stateVM.motorInfo}"
-                android:textColor="@{stateVM.isMotorInfoNormal ? @color/text_color_54DA99 : @color/red}"
+                android:textColor="@{stateVM.isMotorInfoNormal ? @color/text_color_54DA99 : @color/red_F13838}"
                 android:textSize="@dimen/text_size_13"
                 tools:text="设备欠压,测斜仪配对失败,伺服电机接线错误,计米器基数脉冲不足" />
 
@@ -99,7 +99,7 @@
                 app:drawable_solidColor="@{@color/main_bg_gray_f9f9f9}"
                 tools:background="@color/main_bg_gray_f9f9f9">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_data_left_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -109,7 +109,7 @@
                     android:textColor="@color/text_color_666666"
                     android:textSize="15sp" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_motion_pulse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
                 app:drawable_solidColor="@{@color/main_bg_gray_f9f9f9}"
                 tools:background="@color/main_bg_gray_f9f9f9">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableStart="@drawable/ic_motor_motion_distance"
@@ -147,7 +147,7 @@
                     android:textColor="@color/text_color_666666"
                     android:textSize="15sp" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_motion_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -171,7 +171,7 @@
             android:layout_marginEnd="14dp"
             android:layout_marginBottom="34dp">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/btn_stop"
                 onClickWithDebouncing="@{()->click.onStopClick()}"
                 visible="@{!stateVM.isExitButtonVisible }"
@@ -187,7 +187,7 @@
                 android:textStyle="bold"
                 tools:visibility="visible" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/btn_pause"
                 onClickWithDebouncing="@{()->click.onPauseClick()}"
                 visible="@{!stateVM.isExitButtonVisible }"
@@ -206,7 +206,7 @@
                 tools:text="暂停"
                 tools:visibility="visible" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/btn_exit"
                 onClickWithDebouncing="@{()->click.onExitClick()}"
                 visible="@{stateVM.isExitButtonVisible }"

@@ -10,6 +10,7 @@ import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
@@ -17,6 +18,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasCollectorInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.cmd.base.md_cmd.enums.SaveConfigMode
 import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
 import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
@@ -27,6 +29,7 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentDasExternalSensorListBinding
 import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CommunicateWay
@@ -49,10 +52,11 @@ import timber.log.Timber
  */
 abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasExternalSensorListBinding
-    lateinit var mStates: DasExternalSensorListViewModel<DasExternalSensorInfo>
-    val mdParseManager: MDParserManager by inject()
-    lateinit var iotSensorType: IOTSensorType
+    protected lateinit var mStates: DasExternalSensorListViewModel<DasExternalSensorInfo>
+    protected val mdParseManager: MDParserManager by inject()
+    protected lateinit var iotSensorType: IOTSensorType
     private var deleteItemIndex = 0
+
 
     override fun initViewModel() {
         super.initViewModel()
@@ -97,7 +101,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return@onRefresh
             }
-            resetData()
+            resetDefaultData()
             queryCollectorInfo()
         }
     }
@@ -125,10 +129,12 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                 when (itemViewType) {
                     R.layout.item_das_sensor -> {
                         val item = getModel<DASSensorItem>()
+                        //编辑数字式传感器
                         if (!mStates.isVibratingWireSensor.get()) {
                             val bundle = BaseExternalDigitalSensorFragment.newBundleArguments(
+                                sensorEditMode = true,
                                 index = modelPosition,
-                                sensorAddr = item.addr,
+                                sensorAddress = item.addr,
                                 productType,
                                 communicateWay,
                                 deviceInfo,
@@ -139,6 +145,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 bundle
                             )
                         } else {
+                            //编辑振弦式传感器
                             val bundle = DasExternalVibratingSensorFragment.newBundleArguments(
                                 sensorChannel = item.addr,
                                 productType,
@@ -153,21 +160,23 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                         }
                     }
 
-                    else -> {//添加传感器
+                    else -> {
+                        //新增数字式传感器
                         if (!mStates.isVibratingWireSensor.get()) {
                             val bundle = BaseExternalDigitalSensorFragment.newBundleArguments(
+                                sensorEditMode = false,
                                 index = -1,
-                                sensorAddr = "-1",
-                                productType,
-                                communicateWay,
-                                deviceInfo,
-                                bleDevice,
+                                type = productType,
+                                communicateWay = communicateWay,
+                                deviceInfo = deviceInfo,
+                                bleDevice = bleDevice,
                             )
                             nav().navigate(
                                 R.id.action_bleDasSensorHomeFragment_to_bleDasExternalDigitalSensorFragment,
                                 bundle
                             )
                         } else {
+                            //新增振弦式传感器
                             val bundle = DasExternalVibratingSensorFragment.newBundleArguments(
                                 sensorChannel = "-1",
                                 productType,
@@ -188,21 +197,10 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                     Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                     return@onClick
                 }
-                //最少保留一个传感器
-                if (binding.rv.models!!.size <= 1) {
-                    Toaster.show("至少保留一个传感器")
-                    return@onClick
-                }
-                showMessage("确定删除此传感器吗？", "提示", "删除", {
+
+                showMessage("确定移除此传感器吗？", "提示", "删除", {
                     deleteItemIndex = modelPosition
-                    binding.rv.bindingAdapter.mutable[deleteItemIndex].let {
-                        if (it is DASSensorItem) {
-                            mStates.sensorModelMap.remove(it.addr)
-                        }
-                    }
-                    binding.rv.bindingAdapter.mutable.removeAt(deleteItemIndex)
-                    binding.rv.bindingAdapter.notifyItemRemoved(deleteItemIndex)
-                    updateFooter()
+                    updateAdapterRemoveSensorItem()
                 }, "取消")
             }
         }
@@ -214,8 +212,41 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
+            if (mStates.sensorModelMap.isEmpty()) {
+                showMessage(
+                    "确定将采集器接入的传感器个数设置为0吗？",
+                    "温馨提示",
+                    "确定",
+                    {
+                        closeCollector()
+                    },
+                    "取消"
+                )
+                return
+            }
             initSaveCommand()
         }
+    }
+
+    /**
+     * 当接入的传感器个数为0时，设置采集器地址为0，关闭采集器
+     */
+    private fun closeCollector() {
+        commandItems.clear()
+        var command = MDCommandUtil.getCommand(
+            MDCommandType.SET_COLLECTOR_ADDRESS,
+            "0"
+        )
+        commandItems.add(command)
+
+        command = MDCommandUtil.getCommand(
+            MDCommandType.SAVE_CONFIG_INFO,
+            SaveConfigMode.SAVE_NO_REBOOT.toString()
+        )
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     abstract fun initSaveCommand()
@@ -224,7 +255,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
         super.createObserver()
         mStates.isRefreshSensorList.observe(viewLifecycleOwner) { flag ->
             if (flag) {
-                binding.rv.mutable.clear()
+                binding.rv.models = arrayListOf()
                 mStates.sensorModelMap.keys.sortedBy { addr -> addr.toInt() }.forEach { key ->
                     val sensorInfo = mStates.sensorModelMap[key]!!
                     val item = DASSensorItem(
@@ -236,7 +267,6 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                     )
                     binding.rv.mutable.add(item)
                 }
-                binding.rv.bindingAdapter.notifyDataSetChanged()
                 updateFooter()
             }
         }
@@ -257,9 +287,10 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
         )
         commandItems.add(command)
         Timber.d("查询采集器配置信息===%s", command)
+
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_15000_MILLIS
+            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
         )
     }
 
@@ -315,9 +346,9 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        initEmptySensor()
                         val errMsg = "查询传感器参数出错"
                         handleFailureResult(errMsg)
+                        initEmptySensor()
                         return
                     }
 
@@ -327,8 +358,21 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                             updateFooter()
-                            mStates.isSubmitBtnVisible.set(mStates.sensorModelMap.isNotEmpty())
                         }
+                    }
+                }
+            }
+
+            MDCommandType.SET_COLLECTOR_ADDRESS -> {//
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "采集器地址配置错误!"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -342,7 +386,11 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {}
+                        val commandDesc = if (commandDescItems.isEmpty()) "触发值" else {
+                            commandDescItems.first
+                        }
+                        Timber.d("设置$commandDesc")
+                        sendCommandFromCmdList()
                     }
                 }
             }
@@ -357,7 +405,11 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            if (mStates.sensorModelMap.isEmpty()) {
+                                showMessageDialog("采集器地址已修改为0,如继续配置扩展传感器,请先修改采集器地址!")
+                            }else{
+                                Toaster.show("保存成功")
+                            }
                         }
                     }
                 }
@@ -365,7 +417,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
 
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+
             }
         }
     }
@@ -383,8 +435,10 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             }
             if (collectorInfo.sensornum.isEmpty() || collectorInfo.sensornum.toInt() == 0) {
                 cancelNearbyCommunicationTimeoutJob()
+                initEmptySensor()
                 return
             }
+            //查询采集器接入的传感器配置信息
             queryExtendSensorConfigInfo(collectorInfo.sensornum.toInt())
         } catch (e: Exception) {
             cancelNearbyCommunicationTimeoutJob()
@@ -397,10 +451,6 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
      *  处理获取到的单个传感器参数信息
      */
     private fun processSensorParamsInfo(sensorInfo: DasExternalSensorInfo) {
-        if (mStates.sensorModelMap.containsKey(sensorInfo.addr)) {
-            mStates.sensorModelMap[sensorInfo.addr] = sensorInfo
-            return
-        }
         mStates.sensorModelMap[sensorInfo.addr] = sensorInfo
         val item = DASSensorItem(
             isPlugin = true,
@@ -415,6 +465,17 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
         binding.rv.bindingAdapter.notifyItemInserted(binding.rv.bindingAdapter.modelCount)
     }
 
+    private fun updateAdapterRemoveSensorItem() {
+        binding.rv.bindingAdapter.mutable[deleteItemIndex].let {
+            if (it is DASSensorItem) {
+                mStates.sensorModelMap.remove(it.addr)
+            }
+        }
+        binding.rv.bindingAdapter.mutable.removeAt(deleteItemIndex)
+        binding.rv.bindingAdapter.notifyItemRemoved(deleteItemIndex)
+        updateFooter()
+    }
+
     private fun initEmptySensor() {
         binding.rv.models = arrayListOf<DASSensorItem>()
         updateFooter()
@@ -425,12 +486,12 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             if (binding.rv.bindingAdapter.footerCount == 0)
                 binding.rv.bindingAdapter.addFooter(RVEmptyFooter())
         } else {
-            binding.rv.bindingAdapter.removeFooterAt()
+            binding.rv.bindingAdapter.clearFooter()
         }
+        mStates.isSubmitBtnVisible.set(mStates.sensorModelMap.isNotEmpty())
     }
 
-    private fun resetData() {
-        deleteItemIndex = 0
+    private fun resetDefaultData() {
         mStates.sensorModelMap.clear()
         binding.rv.bindingAdapter.clearFooter()
         binding.rv.models = arrayListOf<DASSensorItem>()
@@ -449,11 +510,11 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
             putString(BleDasSensorHomeFragment.COLLECTOR_MODEL, collectorModel)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

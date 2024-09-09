@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.extensions
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
@@ -11,7 +12,11 @@ import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
 import com.afollestad.materialdialogs.list.listItemsMultiChoice
 import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.TimeUtils
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.kongzue.dialogx.dialogs.MessageDialog
+import com.loper7.date_time_picker.DateTimeConfig
+import com.loper7.date_time_picker.dialog.CardDatePickerDialog
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
@@ -27,6 +32,46 @@ import com.shmedo.mcloudapp.utils.SettingUtil
  * 创建时间:  2022/12/13 <br/>
  * 描述：     TODO
  */
+
+
+fun Context.showDatePickerDialog(
+    displayList: MutableList<Int>? = mutableListOf(
+        DateTimeConfig.YEAR,
+        DateTimeConfig.MONTH,
+        DateTimeConfig.DAY,
+        DateTimeConfig.HOUR,
+        DateTimeConfig.MIN
+    ),
+    model: Int = CardDatePickerDialog.STACK,
+    maxDate: Long = TimeUtils.getNowMills(),
+    minDate: Long = TimeUtils.getNowMills() - 3650L * 24 * 3600 * 1000,//10年前
+    defaultDate: Long = TimeUtils.getNowMills(),
+    positiveAction: (Long) -> Unit,
+) {
+    val dialog = CardDatePickerDialog.builder(this)
+        .setTitle("选择时间")
+        .setDisplayType(displayList)
+        .setBackGroundModel(model)//显示模式  STACK:顶部圆角
+        .showBackNow(false)
+        .setMaxTime(maxDate)
+        .setMinTime(minDate)
+        .setDefaultTime(defaultDate)
+        .setTouchHideable(true)//是否可以滑动关闭弹窗
+        .setChooseDateModel(DateTimeConfig.DATE_LUNAR)//设置dialog选中日期信息展示格式
+        .setWrapSelectorWheel(false)//设置是否循环滚动
+        .showDateLabel(true)//是否显示单位标签
+        .showFocusDateInfo(false)//是否显示选中日期信息
+        .setThemeColor(ColorUtils.getColor(R.color.colorPrimary))
+        .setOnChoose("选择") { time: Long ->
+            positiveAction.invoke(time)
+        }
+        .setOnCancel("关闭") {
+        }.build()
+    dialog.show()
+    //重点 需要在dialog show 方法后
+    //得到 BottomSheetDialog 实体，设置其 isHideable 为 fasle
+    (dialog as BottomSheetDialog).behavior.isHideable = false
+}
 
 /**
  * @param message 显示对话框的内容 必填项

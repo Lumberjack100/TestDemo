@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor
 
 import com.blankj.utilcode.util.StringUtils
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
@@ -18,6 +19,8 @@ import timber.log.Timber
  */
 class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFragment() {
 
+
+
     override fun initSaveCommand() {
         commandDescItems.clear()
         commandItems.clear()
@@ -31,10 +34,11 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
             SaveConfigMode.SAVE_NO_REBOOT.toString()
         )
         commandItems.add(command)
+
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
-            timeoutMillis = com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_40000_MILLIS
+            timeoutMillis = AppContants.Communication.DELAY_40000_MILLIS
         )
     }
 
@@ -178,14 +182,18 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
 
     /**
      * 接入传感器触发值<br/>
-     * 指令格式: ##168xx\r\n<br/>
+     * 指令格式: cxx\r\n<br/>
      */
     private fun initSingleTriggerThreshold(sensorInfo: DasExternalSensorInfo) {
         val command = MDCommandUtil.getCommand(
             MDCommandType.COLLECTOR_SENSOR_THRESHOLD_SINGLE,
-            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${sensorInfo.addr}${sensorInfo.threshold}"
+            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${
+                MDCommandUtil.formatStringTwo(
+                    sensorInfo.addr
+                )
+            }${sensorInfo.threshold}"
         )
-        commandDescItems.add("地址${sensorInfo.addr} 触发值")
+        commandDescItems.add("地址${MDCommandUtil.formatStringTwo(sensorInfo.addr)} 触发值")
         commandItems.add(command)
     }
 
@@ -196,9 +204,13 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
     private fun initSingleCorrectionValue(sensorInfo: DasExternalSensorInfo) {
         val command = MDCommandUtil.getCommand(
             MDCommandType.COLLECTOR_SENSOR_REVISED,
-            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${sensorInfo.addr}${sensorInfo.corrval}"
+            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${
+                MDCommandUtil.formatStringTwo(
+                    sensorInfo.addr
+                )
+            }${sensorInfo.corrval}"
         )
-        commandDescItems.add("地址${sensorInfo.addr} 修正值")
+        commandDescItems.add("地址${MDCommandUtil.formatStringTwo(sensorInfo.addr)} 修正值")
         commandItems.add(command)
     }
 
@@ -209,9 +221,13 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
     private fun initSingleInitialReadingValue(address: String, value: String) {
         val command = MDCommandUtil.getCommand(
             MDCommandType.SENSOR_INITIAL_READING,
-            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${address}${value}"
+            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${
+                MDCommandUtil.formatStringTwo(
+                    address
+                )
+            }${value}"
         )
-        commandDescItems.add("地址$address 初始读数/初始值")
+        commandDescItems.add("地址${MDCommandUtil.formatStringTwo(address)} 初始读数/初始值")
         commandItems.add(command)
     }
 
@@ -226,9 +242,9 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
     ) {
         val command = MDCommandUtil.getCommand(
             MDCommandType.COLLECTOR_SENSOR_REVISED,
-            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${address}${initvalx},${initvaly}"
+            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${MDCommandUtil.formatStringTwo(address)}${initvalx},${initvaly}"
         )
-        commandDescItems.add("地址$address 初始值")
+        commandDescItems.add("地址${MDCommandUtil.formatStringTwo(address)} 初始值")
         commandItems.add(command)
     }
 
@@ -239,9 +255,13 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
     private fun initSingleWeirHeadValue(sensorInfo: DasExternalSensorInfo) {
         val command = MDCommandUtil.getCommand(
             MDCommandType.SENSOR_WEIR_HEAD,
-            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${sensorInfo.addr}${sensorInfo.lsyysst}"
+            "${MDCommandUtil.formatStringTwo(mStates.collectorType.get())}${
+                MDCommandUtil.formatStringTwo(
+                    sensorInfo.addr
+                )
+            }${sensorInfo.lsyysst}"
         )
-        commandDescItems.add("地址${sensorInfo.addr} 初始堰上水头")
+        commandDescItems.add("地址${MDCommandUtil.formatStringTwo(sensorInfo.addr)} 初始堰上水头")
         commandItems.add(command)
     }
 

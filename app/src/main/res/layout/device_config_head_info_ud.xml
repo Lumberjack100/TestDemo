@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.CommonDeviceHomeViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="@dimen/dimen_size_10">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_device_logo"
+                imageResId="@{vm.productLogoResId}"
+                android:layout_width="70dp"
+                android:layout_height="60dp"
+                tools:src="@drawable/device_logo_gateway" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_20"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_product_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@{vm.productName}"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_15"
+                    android:textStyle="bold"
+                    tools:text="智能遥测终端机" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_product_type"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_size_5"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text='@{vm.deviceName+"|"+vm.deviceToken}'
+                    android:textColor="@color/sub_title_text_color"
+                    android:textSize="@dimen/text_size_13"
+                    tools:text="MD-DR030|21E118L" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_platform"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_size_5"
+                    android:clipToPadding="false"
+                    android:splitMotionEvents="false"
+                    tools:itemCount="2"
+                    tools:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
+                    tools:listitem="@layout/item_platform_label" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_device_connect_operate"
+            onClickWithDebouncing="@{()->click.onConnectOperateClick()}"
+            visible="@{vm.isConnectOperateVisible}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginEnd="@dimen/dimen_size_10"
+            android:drawableStart="@{vm.isConnected()?@drawable/ic_ble_disconnect:@drawable/ic_ble_connect}"
+            android:drawablePadding="@dimen/dimen_size_4"
+            android:paddingVertical="@dimen/dimen_size_5"
+            android:text="@{vm.connectOperateText}"
+            android:textColor="@{vm.isConnected()?@color/disconnect_ble_foreground:@color/connect_ble_foreground}"
+            android:textSize="@dimen/text_size_13"
+            tools:drawableStartCompat="@drawable/ic_ble_connect"
+            tools:text="蓝牙连接"
+            tools:visibility="visible" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

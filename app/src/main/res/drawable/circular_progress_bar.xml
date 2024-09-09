@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Background circle (track) -->
+    <item>
+        <shape
+            android:innerRadiusRatio="2.5"
+            android:shape="ring"
+            android:thickness="1.5dp"
+            android:useLevel="false">
+            <solid android:color="#CCC" />
+        </shape>
+    </item>
+
+    <!-- Progress bar -->
+    <item>
+        <rotate
+            android:fromDegrees="270"
+            android:toDegrees="270">
+            <shape
+                android:innerRadiusRatio="2.5"
+                android:shape="ring"
+                android:thickness="1.5dp"
+                android:useLevel="true">
+                <solid android:color="@color/colorPrimary" />
+            </shape>
+        </rotate>
+    </item>
+
+</layer-list>

@@ -6,31 +6,29 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.model.PlatformLable" />
+            type="com.shmedo.mcloudapp.model.PlatformLabel" />
     </data>
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/item"
+            bgResId="@{m.bgResId}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dimen_size_5"
             android:layout_marginBottom="@dimen/dimen_size_5"
-            android:background="@{m.online ? @color/device_online_backround : @color/device_offline_backround}"
             android:gravity="center"
-            android:paddingStart="5dp"
-            android:paddingTop="2dp"
-            android:paddingEnd="5dp"
-            android:paddingBottom="2dp"
-            android:text="@{m.name}"
-            android:textColor="@{m.online ? @color/device_online_foreground : @color/device_offline_foreground}"
-            android:textSize="11sp"
-            tools:background="@color/device_online_backround"
-            tools:text="全部"
-            tools:textColor="@color/device_online_foreground" />
+            android:paddingHorizontal="@dimen/dimen_size_5"
+            android:paddingVertical="@dimen/dimen_size_2"
+            android:text="@{m.content}"
+            android:textColor="@{m.textColorRes}"
+            android:textSize="@dimen/text_size_10"
+            tools:background="@color/green_00B26B_10"
+            tools:text="米度平台在线"
+            tools:textColor="@color/green_00B26B" />
 
     </FrameLayout>
 

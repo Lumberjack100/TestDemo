@@ -5,7 +5,6 @@ import android.util.Log
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
@@ -16,6 +15,7 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentM20CommunicationInfoBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.CommunicationDataTableAdapter
 import com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.model.CommunicationDataCellModel
@@ -74,6 +74,10 @@ class M20CommunicationInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        //判断是否页面是否处于 resume 状态
+        if (!isResumed) {
+            return
+        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_DEVICE_STATUS -> {
                 val result = iotParseManager.parse<String>(
@@ -154,25 +158,25 @@ class M20CommunicationInfoFragment : BaseIOTDeviceFragment() {
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (commonCurrentStateInfo.dataCenter1 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter1 == 1) "已连接" else "未连接",
-                            textColorResId = if (commonCurrentStateInfo.dataCenter1 == 1) R.color.device_online_platform else R.color.device_offline_platform
+                            textColorResId = if (commonCurrentStateInfo.dataCenter1 == 1) R.color.green_00B26B else R.color.red_F13838
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (commonCurrentStateInfo.dataCenter2 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter2 == 1) "已连接" else "未连接",
-                            textColorResId = if (commonCurrentStateInfo.dataCenter2 == 1) R.color.device_online_platform else R.color.device_offline_platform
+                            textColorResId = if (commonCurrentStateInfo.dataCenter2 == 1) R.color.green_00B26B else R.color.red_F13838
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (commonCurrentStateInfo.dataCenter3 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter3 == 1) "已连接" else "未连接",
-                            textColorResId = if (commonCurrentStateInfo.dataCenter3 == 1) R.color.device_online_platform else R.color.device_offline_platform
+                            textColorResId = if (commonCurrentStateInfo.dataCenter3 == 1) R.color.green_00B26B else R.color.red_F13838
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (commonCurrentStateInfo.dataCenter4 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter4 == 1) "已连接" else "未连接",
-                            textColorResId = if (commonCurrentStateInfo.dataCenter4 == 1) R.color.device_online_platform else R.color.device_offline_platform
+                            textColorResId = if (commonCurrentStateInfo.dataCenter4 == 1) R.color.green_00B26B else R.color.red_F13838
                         )
                     )
                 }

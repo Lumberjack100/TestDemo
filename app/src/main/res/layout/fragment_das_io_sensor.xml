@@ -35,7 +35,7 @@
                 android:background="@color/white"
                 android:orientation="vertical">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/radio_close"
                     onClickWithDebouncing="@{(textView)->click.onModeCheckedChanged(textView)}"
                     android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/radio_rain_gauge"
                         onClickWithDebouncing="@{(textView)->click.onModeCheckedChanged(textView)}"
                         android:layout_width="wrap_content"
@@ -92,7 +92,7 @@
                         app:drawable_solidColor="@{@color/gray_f5f6f8}"
                         tools:background="@color/gray_f5f6f8">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -118,7 +118,7 @@
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:paddingStart="@dimen/dimen_size_30">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="翻斗翻转最小间隔(秒)"
                         tools:textColor="@color/title_text_color" />
@@ -127,11 +127,11 @@
                         style="@style/Common_EditItem_EditText_Style"
                         android:hint="请输入"
                         android:text="@={stateVM.dumpMinTime}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{6}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/radio_break_alarm"
                     onClickWithDebouncing="@{(textView)->click.onModeCheckedChanged(textView)}"
                     android:layout_width="wrap_content"
@@ -161,10 +161,10 @@
                         android:layout_width="0dp"
                         android:layout_height="38dp"
                         android:layout_weight="1"
-                        android:background='@{stateVM.isBreakAlarmOpen?@drawable/bg_corner_19dp_blue_stroke:@drawable/bg_corner_19dp_gray_stroke}'
+                        android:background="@{stateVM.isBreakAlarmOpen?@drawable/bg_blue_stroke_corner_19dp:@drawable/bg_gray_stroke_corner_19dp}"
                         android:text="常开"
                         android:textColor='@{stateVM.isBreakAlarmOpen?@color/colorPrimary:@color/sub_title_text_color}'
-                        tools:background="@drawable/bg_corner_19dp_blue_stroke"
+                        tools:background="@drawable/bg_blue_stroke_corner_19dp"
                         tools:textColor="@color/colorPrimary" />
 
                     <Button
@@ -174,17 +174,17 @@
                         android:layout_height="38dp"
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:layout_weight="1"
-                        android:background='@{!stateVM.isBreakAlarmOpen?@drawable/bg_corner_19dp_blue_stroke:@drawable/bg_corner_19dp_gray_stroke}'
+                        android:background="@{!stateVM.isBreakAlarmOpen?@drawable/bg_blue_stroke_corner_19dp:@drawable/bg_gray_stroke_corner_19dp}"
                         android:text="常闭"
                         android:textColor='@{!stateVM.isBreakAlarmOpen?@color/colorPrimary:@color/sub_title_text_color}'
-                        tools:background="@drawable/bg_corner_19dp_gray_stroke"
+                        tools:background="@drawable/bg_gray_stroke_corner_19dp"
                         tools:textColor="@color/title_text_color" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>
         </com.drake.brv.PageRefreshLayout>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"

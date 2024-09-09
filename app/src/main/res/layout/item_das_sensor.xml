@@ -17,7 +17,7 @@
         android:background="@{m.isPlugin?@drawable/mr702_port_sensor_item_bright_bg:@drawable/mr702_port_sensor_item_gray_bg}"
         tools:background="@drawable/mr702_port_sensor_item_bright_bg">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|top"
@@ -42,32 +42,32 @@
             android:layout_marginVertical="@dimen/dimen_size_15"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@{m.addrDesc}"
                 android:textColor="@color/white"
-                android:textSize="14sp"
+                android:textSize="@dimen/text_size_13"
                 tools:text="配置地址" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/dimen_size_2"
                 android:text="@{m.sensorName}"
                 android:textColor="@color/white"
-                android:textSize="15sp"
+                android:textSize="@dimen/text_size_14"
                 android:textStyle="bold"
-                tools:text="雷达水位计" />
+                tools:text="雷达水位计雷达水位计雷达水位计雷达水位计雷达水位计雷达水位计" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/item_del"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_gravity="end|top"
             android:layout_marginTop="@dimen/dimen_size_6"
             android:layout_marginEnd="@dimen/dimen_size_6"

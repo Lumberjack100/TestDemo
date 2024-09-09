@@ -38,10 +38,11 @@ abstract class BaseDeviceStatusInfoParentFragment : BaseFragment(),
     protected lateinit var mStates: BaseDeviceStatusInfoParentViewModel
 
     protected var productType = ProductType.UnKnown
-    protected var statusBarColor = 0
     protected var communicateWay: CommunicateWay = NetPlatformConnect
     protected lateinit var deviceInfo: DeviceInfo
     protected var bleDevice: DiscoveredBluetoothDevice? = null
+    private var tabIndex = 0//当前选中的tab
+
 
     protected val tabs = mutableListOf("基本信息", "通讯状态", "传感器")
 
@@ -61,12 +62,10 @@ abstract class BaseDeviceStatusInfoParentFragment : BaseFragment(),
         binding = getBinding() as FragmentBaseDeviceStatusInfoParentBinding
         binding.toolbar.title = "状态信息"
         binding.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
                 nav().navigateUp()
             }
         })
@@ -79,7 +78,7 @@ abstract class BaseDeviceStatusInfoParentFragment : BaseFragment(),
             communicateWay = it.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
             deviceInfo = it.getParcelable(AppContants.Extras.DEVICE_INFO)!!
             bleDevice = it.getParcelable(AppContants.Extras.BLE_DEVICE)
-            statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
+            tabIndex = it.getInt(TAB_INDEX, 0)
         }
         mStates.productName.set(deviceInfo.productName)
         mStates.productType.set("型号：${deviceInfo.deviceName}")
@@ -113,6 +112,9 @@ abstract class BaseDeviceStatusInfoParentFragment : BaseFragment(),
             }
             tab.customView = textView
         }.attach()
+
+        if (tabIndex < tabs.size)
+            binding.viewpager.setCurrentItem(tabIndex, false)
     }
 
     override fun onTabSelected(tab: TabLayout.Tab) {
@@ -151,5 +153,20 @@ abstract class BaseDeviceStatusInfoParentFragment : BaseFragment(),
         private val normalColor: Int = ColorUtils.getColor(R.color.text_color_666666)
         private const val activeSize: Float = 17f
         private const val normalSize: Float = 15f
+        const val TAB_INDEX = "tab_index"
+
+        fun newBundleArguments(
+            type: ProductType = ProductType.UnKnown,
+            communicateWay: CommunicateWay = NetPlatformConnect,
+            deviceInfo: DeviceInfo,
+            bleDevice: DiscoveredBluetoothDevice? = null,
+            tabIndex: Int = 0,
+        ): Bundle = Bundle().apply {
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(TAB_INDEX, tabIndex)
+        }
     }
 }

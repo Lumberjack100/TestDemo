@@ -6,5 +6,5 @@ package com.shmedo.lib.network.response
 enum class ResultSource {
     NETWORK,
     DATABASE,
-    LOCAL_FILE
+    ALL
 }

@@ -26,23 +26,23 @@
             android:layout_margin="@dimen/dimen_size_10"
             android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_device_state_flag"
                 android:layout_width="wrap_content"
                 android:layout_height="16dp"
                 android:layout_marginBottom="@dimen/dimen_size_8"
-                android:background="@{m.onlineStatus?@drawable/bg_device_online_state_flag2:@drawable/bg_device_offline_state_flag2}"
+                android:background="@{m.onlineStatus?@drawable/bg_device_online_state_flag_corner_2dp:@drawable/bg_device_offline_state_flag_corner_2dp}"
                 android:gravity="center"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:text="@{m.onlineStatus?@string/device_online:@string/device_offline}"
-                android:textColor="@{m.onlineStatus?@color/device_online_foreground:@color/device_offline_foreground}"
+                android:textColor="@{m.onlineStatus?@color/green_00B26B:@color/red_F13838}"
                 android:textSize="@dimen/text_size_10"
-                tools:background="@drawable/bg_device_offline_state_flag"
+                tools:background="@drawable/bg_device_offline_state_flag_corner_2dp"
                 tools:text="在线"
-                tools:textColor="@color/device_offline_foreground" />
+                tools:textColor="@color/red_F13838" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_device_sn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -70,7 +70,7 @@
                     android:src="@{m.onlineStatus?@drawable/ic_battery_full_online:@drawable/ic_battery_full_offline}"
                     tools:src="@drawable/ic_battery_default" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_battery_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:singleLine="true"
@@ -101,7 +101,7 @@
                     android:textColor="@color/sub_title_text_color"
                     android:textSize="@dimen/text_size_13" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_device_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

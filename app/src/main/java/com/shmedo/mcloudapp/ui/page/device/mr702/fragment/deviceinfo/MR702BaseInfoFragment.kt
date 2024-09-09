@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo
 import android.util.Log
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRDeviceInfoEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRBaseInfo
@@ -11,6 +10,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRDeviceInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
@@ -35,6 +35,10 @@ class MR702BaseInfoFragment : BaseDeviceStatusInfoFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        //判断是否页面是否处于 resume 状态
+        if (!isResumed) {
+            return
+        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_MR_GET_DEVICE_BASE_INFO -> {
                 val result = iotParseManager.parse<MRDeviceInfo>(
@@ -112,7 +116,7 @@ class MR702BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     groupList,
                     name = "湿度",
                     value = stateInfo.hum,
-                    defaultValue = "0",
+                    defaultValue = "--",
                     digit = 2,
                     unit = "%",
                 )
@@ -120,8 +124,8 @@ class MR702BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     groupList,
                     name = "外部供电电压",
                     value = stateInfo.volt,
-                    defaultValue = "0",
-                    thresHold = 5.0,
+                    defaultValue = "--",
+                    downLimitValue = 5.0,
                     digit = 2,
                     unit = "V",
                 )

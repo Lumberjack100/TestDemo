@@ -60,17 +60,17 @@
                         android:orientation="vertical"
                         tools:visibility="visible">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginBottom="5dp"
                             android:text="CTR工作状态:"
-                            android:textColor="@color/text_color_3AD094"
+                            android:textColor="@color/green_00B26B"
                             android:textSize="15sp" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_measure_mode"
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
@@ -81,18 +81,18 @@
                             android:textSize="15sp"
                             tools:text="正向测量" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_motor_info"
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"
                             android:layout_marginStart="18dp"
                             android:gravity="center_vertical"
                             android:text="@{stateVM.motorInfo}"
-                            android:textColor="@{stateVM.isMotorInfoNormal ? @color/title_text_color : @color/red}"
+                            android:textColor="@{stateVM.isMotorInfoNormal ? @color/title_text_color : @color/red_F13838}"
                             android:textSize="15sp"
                             tools:text="磁开关触发，测量结束" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_measure_point"
                             android:layout_width="wrap_content"
                             android:layout_height="30dp"

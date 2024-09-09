@@ -9,11 +9,11 @@ import com.shmedo.mcloudapp.R
  * 描述：   配置模块
  */
 data class ConfigModule(
-    val configModule: DeviceFunctionModule
+    val functionModule: DeviceFunctionModule
 )
 
 data class ConfigModuleTree(
-    val configModules: MutableList<DeviceFunctionModule> = arrayListOf(),
+    val configModules: MutableList<ConfigModule> = arrayListOf(),
 )
 
 sealed class DeviceFunctionModule(
@@ -39,7 +39,7 @@ sealed class DeviceFunctionModule(
 class CommonModule(
     name: String = "",
     desc: String = "",
-    resID: Int = R.drawable.ic_device_current_state,
+    resID: Int = R.drawable.ic_module_current_state,
     navId: Int = 0,
     isSupport: Boolean = true
 ) : DeviceFunctionModule(name, desc, resID, navId, isSupport = isSupport)
@@ -47,14 +47,14 @@ class CommonModule(
 class RunningStatusModule(
     name: String = "状态",
     desc: String = "获取当前设备状态",
-    resID: Int = R.drawable.ic_device_current_state,
+    resID: Int = R.drawable.ic_module_current_state,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
 class TimeCalibrationModule(
     name: String = "时间校准",
     desc: String = "获取当前设备时间",
-    resID: Int = R.drawable.ic_time_calibration,
+    resID: Int = R.drawable.ic_module_time_calibration,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
@@ -68,35 +68,35 @@ class TelemetryDataModule(
 class WorkModeModule(
     name: String = "工作模式",
     desc: String = "GNSS模式设置",
-    resID: Int = R.drawable.ic_device_reboot,
+    resID: Int = R.drawable.ic_module_work_mode,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
 class RebootModule(
     name: String = "重启",
     desc: String = "重新启动当前设备",
-    resID: Int = R.drawable.ic_device_reboot,
+    resID: Int = R.drawable.ic_module_reboot,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
 class RestoreFactoryModule(
     name: String = "恢复出厂",
     desc: String = "设备恢复到出厂设置",
-    resID: Int = R.drawable.ic_device_reboot,
+    resID: Int = R.drawable.ic_module_reset,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
 class DataCenterModule(
     name: String = "数据中心",
     desc: String = "连接平台参数配置",
-    resID: Int = R.drawable.ic_device_data_center,
+    resID: Int = R.drawable.ic_module_datacenter,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
 class AdvancedSettingsModule(
     name: String = "设置",
     desc: String = "高级设置",
-    resID: Int = R.drawable.ic_device_setting,
+    resID: Int = R.drawable.ic_module_setting,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
@@ -111,7 +111,7 @@ class FirmwareUpgradeModule(
 class LoraConfigModule(
     name: String = "LORA设置",
     desc: String = "传感器LORA电台设置",
-    resID: Int = R.drawable.ic_device_sensor_config,
+    resID: Int = R.drawable.ic_module_lora,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
@@ -125,7 +125,7 @@ class AlarmConfigModule(
 class CommandDebugConfigModule(
     name: String = "指令调试",
     desc: String = "调试指令日志输出",
-    resID: Int = R.drawable.ic_parameter_export,
+    resID: Int = R.drawable.ic_module_cmd_debug,
     navId: Int = R.id.action_global_to_commandDebug,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
@@ -156,7 +156,7 @@ class CollectorConfigModule(
 class SensorConfigModule(
     name: String = "传感器配置",
     desc: String = "传感器参数配置",
-    resID: Int = R.drawable.ic_device_sensor_config,
+    resID: Int = R.drawable.ic_module_sensor_setting,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 // </editor-fold>
@@ -179,7 +179,7 @@ class MR702TerminalParameterModule(
 class DeviceOperationModule(
     name: String = "设备操作",
     desc: String = "时间校准、人工置数、召测等",
-    resID: Int = R.drawable.ic_device_setting,
+    resID: Int = R.drawable.ic_module_setting,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 

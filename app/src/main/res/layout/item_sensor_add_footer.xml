@@ -16,8 +16,8 @@
         android:layout_height="wrap_content"
         android:paddingVertical="@dimen/dimen_size_15"
         app:drawable_radius="@{6}"
-        app:drawable_solidColor="@{@color/search_bg_gray_color}"
-        tools:background="@color/search_bg_gray_color">
+        app:drawable_solidColor="@{@color/main_bg_gray_dadada}"
+        tools:background="@color/main_bg_gray_dadada">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="24dp"

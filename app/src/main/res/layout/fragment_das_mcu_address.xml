@@ -31,7 +31,7 @@
                 style="@style/Common_EditItem_LayoutStyle"
                 android:background="@drawable/layer_common_click_item_with_divider">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_ClickableItem_TitleStyle"
                     android:text="地址" />
 
@@ -39,13 +39,13 @@
                     style="@style/Common_EditItem_EditText_Style"
                     android:hint="数值范围[0-255]"
                     android:text="@={stateVM.address}"
-                    app:inputTypeFilter='@{"number"}'
+                    android:inputType="number"
                     app:lengthFilter="@{3}" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </com.drake.brv.PageRefreshLayout>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onSubmitClick()}"

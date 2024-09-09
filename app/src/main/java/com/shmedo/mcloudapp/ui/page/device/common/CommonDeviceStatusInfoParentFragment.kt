@@ -21,7 +21,10 @@ import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702PortSt
 import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702RunningStatusInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.LR200BaseInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.LR200SensorInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDProductSensorInfoFragment
+import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDBaseInfoFragment
+import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDLocationInfoFragment
+import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDNetInfoFragment
+import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDSensorInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UIProductSensorInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UProductBaseInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.URProductSensorInfoFragment
@@ -53,6 +56,12 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                 tabs.addAll(listOf("基本信息", "运行状态", "接口状态", "模块状态"))
             }
 
+            ProductType.U_D_1,
+            ProductType.U_D_2 -> {//一体化雷达泥位计
+                tabs.clear()
+                tabs.addAll(listOf("基本信息", "网络信息", "状态信息", "位置信息"))
+            }
+
             else -> {
                 tabs.clear()
                 tabs.addAll(listOf("基本信息", "通讯状态", "传感器信息"))
@@ -82,8 +91,7 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                             productType,
                             communicateWay,
                             deviceInfo,
-                            bleDevice,
-                            statusBarColor
+                            bleDevice
                         )
                     }
                 )
@@ -95,26 +103,24 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
             }
 
             ProductType.U_D_1,//
-            ProductType.U_D_2 -> {//一体化雷达液位计
+            ProductType.U_D_2 -> {//一体化雷达泥位计
                 fragmentList.add(
-                    UProductBaseInfoFragment.newInstance().apply {
+                    UDBaseInfoFragment.newInstance().apply {
                         arguments = bundle
                     }
                 )
                 fragmentList.add(
-                    CommonCommunicationInfoFragment.newInstance().apply {
-                        arguments = CommonCommunicationInfoFragment.newBundleArguments(
-                            centerNum = 3,
-                            productType,
-                            communicateWay,
-                            deviceInfo,
-                            bleDevice,
-                            statusBarColor
-                        )
+                    UDNetInfoFragment.newInstance().apply {
+                        arguments = bundle
                     }
                 )
                 fragmentList.add(
-                    UDProductSensorInfoFragment.newInstance().apply {
+                    UDSensorInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                )
+                fragmentList.add(
+                    UDLocationInfoFragment.newInstance().apply {
                         arguments = bundle
                     }
                 )
@@ -134,7 +140,6 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                             communicateWay,
                             deviceInfo,
                             bleDevice,
-                            statusBarColor
                         )
                     }
                 )
@@ -159,7 +164,6 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                             communicateWay,
                             deviceInfo,
                             bleDevice,
-                            statusBarColor
                         )
                     }
                 )
@@ -225,7 +229,6 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                             communicateWay,
                             deviceInfo,
                             bleDevice,
-                            statusBarColor
                         )
                     }
                 )
@@ -274,7 +277,6 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                             communicateWay,
                             deviceInfo,
                             bleDevice,
-                            statusBarColor
                         )
                     }
                 )

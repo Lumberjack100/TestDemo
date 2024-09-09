@@ -55,7 +55,7 @@
                         android:layout_marginTop="@dimen/dimen_size_1"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/SwitchButton_TitleStyle"
                             android:text="运动信息检校"
                             android:textColor="@{stateVM.isEditable?@color/title_text_color:@color/sub_title_text_color}" />
@@ -78,7 +78,7 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         tools:visibility="visible">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="归零差(毫米)" />
@@ -98,7 +98,7 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         tools:visibility="visible">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="定位误差区间(毫米)" />
@@ -116,7 +116,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="尝试次数" />
@@ -125,7 +125,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.tryNumber}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -135,7 +135,7 @@
                         android:layout_marginTop="@dimen/dimen_size_8"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/SwitchButton_TitleStyle"
                             android:text="K值检校"
                             android:textColor="@{stateVM.isEditable?@color/title_text_color:@color/sub_title_text_color}" />
@@ -158,7 +158,7 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         tools:visibility="visible">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="k值阈值(毫米)" />
@@ -178,7 +178,7 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         tools:visibility="visible">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="中误差阈值(毫米)" />
@@ -196,7 +196,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="尝试次数" />
@@ -205,7 +205,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.kTryNumber}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -215,7 +215,7 @@
                         android:layout_marginTop="@dimen/dimen_size_8"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/SwitchButton_TitleStyle"
                             android:text="数据处理"
                             android:textColor="@{stateVM.isEditable?@color/title_text_color:@color/sub_title_text_color}" />
@@ -238,7 +238,7 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         tools:visibility="visible">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="累加值差值(毫米)" />
@@ -256,7 +256,7 @@
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onSubmitClick()}"

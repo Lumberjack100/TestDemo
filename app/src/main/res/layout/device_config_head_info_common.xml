@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:paddingVertical="@dimen/dimen_size_8">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_product_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -40,36 +40,36 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="智能遥测终端机" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_device_state_flag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:background="@{vm.isDeviceStateTagHighLight()?@drawable/bg_device_online_state_flag:@drawable/bg_device_offline_state_flag}"
+                android:background="@{vm.isDeviceStateTagHighLight()?@drawable/bg_device_online_state_flag_corner_10dp:@drawable/bg_device_offline_state_flag_corner_10dp}"
                 android:gravity="center"
                 android:paddingHorizontal="@dimen/dimen_size_5"
                 android:paddingVertical="@dimen/dimen_size_3"
                 android:text="@{vm.deviceStateTagText}"
-                android:textColor="@{vm.isDeviceStateTagHighLight()?@color/device_online_foreground:@color/device_offline_foreground}"
+                android:textColor="@{vm.isDeviceStateTagHighLight()?@color/green_00B26B:@color/red_F13838}"
                 android:textSize="@dimen/text_size_10"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tv_product_name"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:background="@drawable/bg_device_offline_state_flag"
+                tools:background="@drawable/bg_device_offline_state_flag_corner_10dp"
                 tools:text="已断开"
-                tools:textColor="@color/device_offline_foreground" />
+                tools:textColor="@color/red_F13838" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_device_connect_operate"
                 onClickWithDebouncing="@{()->click.onConnectOperateClick()}"
                 visible="@{vm.isConnectOperateVisible}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableStart="@{!vm.isDeviceStateTagHighLight()?@drawable/ic_ble_connect:@drawable/ic_ble_disconnect}"
+                android:drawableStart="@{vm.isConnected()?@drawable/ic_ble_disconnect:@drawable/ic_ble_connect}"
                 android:drawablePadding="@dimen/dimen_size_4"
                 android:paddingVertical="@dimen/dimen_size_5"
                 android:text="@{vm.connectOperateText}"
-                android:textColor="@{!vm.isDeviceStateTagHighLight()?@color/connect_ble_foreground:@color/disconnect_ble_foreground}"
+                android:textColor="@{vm.isConnected()?@color/disconnect_ble_foreground:@color/connect_ble_foreground}"
                 android:textSize="@dimen/text_size_13"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -111,7 +111,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_device_sn_desc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -119,7 +119,7 @@
                         android:textColor="@color/sub_title_text_color"
                         android:textSize="@dimen/text_size_13" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_device_sn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_product_type_desc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -146,7 +146,7 @@
                         android:textColor="@color/sub_title_text_color"
                         android:textSize="@dimen/text_size_13" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_product_type"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -165,7 +165,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_firmware_version_desc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -173,7 +173,7 @@
                         android:textColor="@color/sub_title_text_color"
                         android:textSize="@dimen/text_size_13" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_firmware_version"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -193,7 +193,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_running_status_desc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -201,17 +201,17 @@
                         android:textColor="@color/sub_title_text_color"
                         android:textSize="@dimen/text_size_13" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_running_status"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="@{vm.runningStateText}"
-                        android:textColor="@{!vm.isRunningStateNormal()?@color/device_online_platform:@color/device_offline_platform}"
+                        android:textColor="@{!vm.isRunningStateNormal()?@color/green_00B26B:@color/red_F13838}"
                         android:textSize="@dimen/text_size_13"
                         tools:text="正常"
-                        tools:textColor="@color/device_online_platform" />
+                        tools:textColor="@color/green_00B26B" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -221,34 +221,34 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="平台在线状态："
                         android:textColor="@color/sub_title_text_color"
                         android:textSize="@dimen/text_size_13" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
                         android:text="@{vm.iotPlatformStateText}"
-                        android:textColor='@{vm.iotPlatformStateText=="在线"?@color/device_online_platform:@color/device_offline_platform}'
+                        android:textColor='@{vm.iotPlatformStateText=="在线"?@color/green_00B26B:@color/red_F13838}'
                         android:textSize="@dimen/text_size_13"
                         tools:text="在线"
-                        tools:textColor="@color/device_online_platform" />
+                        tools:textColor="@color/green_00B26B" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/ll_platform"
-                    visible="@{vm.isPlatformsVisible}"
+                    visible="@{vm.isPlatformListVisible}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_platform_desc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

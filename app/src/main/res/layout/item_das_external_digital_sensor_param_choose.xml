@@ -16,7 +16,7 @@
         style="@style/Common_ClickableItem_LayoutStyle"
         android:background="@drawable/layer_common_click_item_with_divider">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             style="@style/Common_ClickableItem_TitleStyle"
             android:text='@{m.name}'
             tools:text="传感器类型" />

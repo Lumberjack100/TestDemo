@@ -42,7 +42,7 @@
                     android:layout_marginTop="@dimen/dimen_size_1"
                     app:vm="@{homeVM}" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_size_15"
@@ -59,7 +59,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="采集频率(毫秒)" />
@@ -68,7 +68,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.acquisitionFrequency}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{5}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -77,7 +77,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="采集周期(分钟)" />
@@ -86,7 +86,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.collectionDuration}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{5}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -95,7 +95,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="采集次数(N)" />
@@ -104,7 +104,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.collectionTimes}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{5}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -113,7 +113,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="无应答次数" />
@@ -122,7 +122,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.noResponseTimes}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{5}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -131,7 +131,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="延时时间(秒)" />
@@ -140,12 +140,12 @@
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="@={stateVM.delayDuration}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{5}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_size_15"
@@ -171,7 +171,7 @@
                     tools:itemCount="6"
                     tools:listitem="@layout/item_mr702_port_sensor" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/btn_confirm"
                     style="@style/SubmitButton_ColorPrimary"
                     onClickWithDebouncing="@{()->click.onSubmitClick()}"

@@ -15,6 +15,9 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
+import com.lxj.xpopup.impl.PartShadowPopupView
+import com.lxj.xpopup.interfaces.SimpleCallback
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.core.model.DeviceStatisticInfo
@@ -48,10 +51,13 @@ class NewNetDeviceListFragment : BaseFragment() {
     private lateinit var binding: FragmentNewNetDeviceListBinding
     private lateinit var mStates: NetDeviceListViewModel
     private lateinit var deviceRequestViewModel: DeviceRequestViewModel
-    private val userInfo: UserInfo by lazy {  AuthMMKVOwner.userInfo!! }
+    private val userInfo: UserInfo by lazy { AuthMMKVOwner.userInfo!! }
 
     private val productTabList = mutableListOf<SingleSelectionItem>()
     private val onlineStatusList = mutableListOf<SingleSelectionItem>()
+
+    private var productSelectionPopupView: PartShadowPopupView? = null
+    private var onlineStatusSelectionPopupView: PartShadowPopupView? = null
 
 
     override fun initViewModel() {
@@ -74,8 +80,8 @@ class NewNetDeviceListFragment : BaseFragment() {
     }
 
     private fun initPageRefresh() {
-        binding.page.onRefresh {
-            refreshPage()
+        binding.pageRoot.onRefresh {
+            refreshDeviceStatus()
             binding.refreshLayout.showLoading()
         }
     }
@@ -119,19 +125,23 @@ class NewNetDeviceListFragment : BaseFragment() {
     }
 
     private fun showProductSelectionPopupView(view: View) {
+        if (productSelectionPopupView != null && productSelectionPopupView!!.isShow) {
+            return
+        }
         val filterDeviceTabItem = binding.rvTab.bindingAdapter.getModel<FilterDeviceTabItem>(0)
-        val selectionPopupView = ProductSelectionPartShadowPopupView(requireContext())
-        selectionPopupView.setData(
-            productTabList,
-            filterDeviceTabItem.singleSelectionItemLastSelectedIndex
-        )
-            .setSelectListener(object : ProductSelectionPartShadowPopupView.OnSelectListener {
+        productSelectionPopupView = ProductSelectionPartShadowPopupView(requireContext()).apply {
+            setData(
+                productTabList,
+                filterDeviceTabItem.singleSelectionItemLastSelectedIndex
+            )
+            setSelectListener(object : ProductSelectionPartShadowPopupView.OnSelectListener {
                 override fun onSelect(selectionItem: SingleSelectionItem, position: Int) {
                     filterDeviceTabItem.refreshValue(selectionItem.name, position)
                     mStates.filterProductID.set(selectionItem.extValue)
                     binding.refreshLayout.showLoading()
                 }
             })
+        }
         XPopup.Builder(context)
             .atView(view)
             .isClickThrough(true)
@@ -139,25 +149,36 @@ class NewNetDeviceListFragment : BaseFragment() {
             .isRequestFocus(false)
             .dismissOnTouchOutside(true)// 点击外部是否关闭弹窗，默认为true
             .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-            .asCustom(selectionPopupView)
+            .setPopupCallback(object : SimpleCallback() {
+                override fun onDismiss(popupView: BasePopupView?) {
+                    super.onDismiss(popupView)
+                    productSelectionPopupView = null
+                }
+            })
+            .asCustom(productSelectionPopupView)
             .show()
     }
 
     private fun showOnlineStatusSelectionPopupView(view: View) {
+        if (onlineStatusSelectionPopupView != null && onlineStatusSelectionPopupView!!.isShow) {
+            return
+        }
         val filterDeviceTabItem = binding.rvTab.bindingAdapter.getModel<FilterDeviceTabItem>(1)
-        val selectionPopupView = SingleSelectionPartShadowPopupView(requireContext())
-        selectionPopupView.setData(
-            onlineStatusList,
-            filterDeviceTabItem.singleSelectionItemLastSelectedIndex
-        )
-            .setSelectListener(object :
-                SingleSelectionPartShadowPopupView.OnSelectListener {
-                override fun onSelect(selectionItem: SingleSelectionItem, position: Int) {
-                    filterDeviceTabItem.refreshValue(selectionItem.name, position)
-                    mStates.filterOnlineStatus.set(if (selectionItem.name == onlineStatusList[0].name) "" else if (selectionItem.name == onlineStatusList[1].name) "true" else "false")
-                    binding.refreshLayout.showLoading()
-                }
-            })
+        onlineStatusSelectionPopupView =
+            SingleSelectionPartShadowPopupView(requireContext()).apply {
+                setData(
+                    onlineStatusList,
+                    filterDeviceTabItem.singleSelectionItemLastSelectedIndex
+                )
+                setSelectListener(object :
+                    SingleSelectionPartShadowPopupView.OnSelectListener {
+                    override fun onSelect(selectionItem: SingleSelectionItem, position: Int) {
+                        filterDeviceTabItem.refreshValue(selectionItem.name, position)
+                        mStates.filterOnlineStatus.set(if (selectionItem.name == onlineStatusList[0].name) "" else if (selectionItem.name == onlineStatusList[1].name) "true" else "false")
+                        binding.refreshLayout.showLoading()
+                    }
+                })
+            }
         XPopup.Builder(context)
             .atView(view)
             .isClickThrough(true)
@@ -165,7 +186,7 @@ class NewNetDeviceListFragment : BaseFragment() {
             .isRequestFocus(false)
             .dismissOnTouchOutside(true)// 点击外部是否关闭弹窗，默认为true
             .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-            .asCustom(selectionPopupView)
+            .asCustom(onlineStatusSelectionPopupView)
             .show()
     }
 
@@ -242,7 +263,7 @@ class NewNetDeviceListFragment : BaseFragment() {
             )
         )
         binding.rvTab.models = tabList
-        deviceRequestViewModel.getAllProductTabList(userInfo.companyID)
+        deviceRequestViewModel.getAllProductTabList()
     }
 
     private fun initOnlineStatusData() {
@@ -265,7 +286,7 @@ class NewNetDeviceListFragment : BaseFragment() {
         )
     }
 
-    private fun refreshPage() {
+    private fun refreshDeviceStatus() {
         deviceRequestViewModel.getDeviceStatByCompanyID(
             userInfo.companyID,
             AuthMMKVOwner.listSuperInfoPermission
@@ -292,9 +313,7 @@ class NewNetDeviceListFragment : BaseFragment() {
     }
 
     override fun lazyLoadData() {
-        binding.page.showLoading(refresh = false)
-        refreshPage()
-        refreshDeviceList()
+        binding.pageRoot.showLoading()
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -308,7 +327,7 @@ class NewNetDeviceListFragment : BaseFragment() {
     override fun createObserver() {
         deviceRequestViewModel.deviceStatisticInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceStatisticInfo> ->
             if (!dataResult.responseStatus.isSuccess) {
-                binding.page.showError()
+                binding.pageRoot.showError()
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe
             }
@@ -318,7 +337,7 @@ class NewNetDeviceListFragment : BaseFragment() {
                 val df = DecimalFormat("#.##") //格式化小数
                 val rate: String = df.format(it.onlinePercent) + "%"
                 updateTopView(rate)
-                binding.page.showContent(false)
+                binding.pageRoot.showContent(false)
             }
         }
         launchWithViewLifecycle {

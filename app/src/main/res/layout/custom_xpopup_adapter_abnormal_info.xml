@@ -15,7 +15,7 @@
         android:layout_height="22dp"
         android:layout_marginEnd="6dp" />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
         android:ellipsize="end"
         android:gravity="left"
         android:lines="1"
-        android:textColor="@color/red"
+        android:textColor="@color/red_F13838"
         android:textSize="16sp"
         tools:text=" 通道号" />
 </androidx.appcompat.widget.LinearLayoutCompat>

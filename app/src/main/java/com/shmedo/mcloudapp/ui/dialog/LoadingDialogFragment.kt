@@ -30,7 +30,7 @@ class LoadingDialogFragment : DialogFragment() {
 
         // 设置消息文本，可以通过参数传递
         dialog.getCustomView()
-            .findViewById<androidx.appcompat.widget.AppCompatTextView>(R.id.loading_tips)?.text =
+            .findViewById<com.google.android.material.textview.MaterialTextView>(R.id.loading_tips)?.text =
             arguments?.getString("message") ?: "请求网络中"
 
         return dialog

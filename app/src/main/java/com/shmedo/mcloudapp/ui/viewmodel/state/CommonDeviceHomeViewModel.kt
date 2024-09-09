@@ -1,8 +1,8 @@
 package com.shmedo.mcloudapp.ui.viewmodel.state
 
 import androidx.lifecycle.ViewModel
-import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 open class CommonDeviceHomeViewModel : ViewModel() {
     val productLightResId = NonNullObservableField(R.drawable.ic_device_logo_def)
@@ -21,17 +21,14 @@ open class CommonDeviceHomeViewModel : ViewModel() {
     val isConnectOperateVisible = NonNullObservableField(false)
     val connectOperateText = NonNullObservableField("蓝牙连接")
 
-    //运行状态
-    val isRunningStateVisible = NonNullObservableField(false)
+    val isRunningStateVisible = NonNullObservableField(false) //是否显示设备运行状态
     val isRunningStateNormal = NonNullObservableField(false)
     val runningStateText = NonNullObservableField("--")
 
-    //米度物联网平台在线状态
-    val isIOTPlatformStateVisible = NonNullObservableField(false)
+    val isIOTPlatformStateVisible = NonNullObservableField(false)//是否显示米度物联网平台在线状态
     val iotPlatformStateText = NonNullObservableField("")
 
-    //已连接的平台
-    val isPlatformsVisible = NonNullObservableField(false)
+    val isPlatformListVisible = NonNullObservableField(false)//是否显示已连接的平台
 
     //ADME模式选择
     val isAdmeModeChooseViewVisible = NonNullObservableField(false)

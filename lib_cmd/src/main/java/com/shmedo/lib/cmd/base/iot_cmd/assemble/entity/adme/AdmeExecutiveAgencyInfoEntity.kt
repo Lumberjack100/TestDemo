@@ -23,6 +23,7 @@ data class AdmeExecutiveAgencyInfoEntity(
     val invalday: String = IOTConstants.NULL_KEY, //间隔天数
     val roundmeasstart: String = IOTConstants.NULL_KEY, //每轮测量开始时间
     val datainval: String = IOTConstants.NULL_KEY, //数据读取间隔
+    val clin_compen: String = IOTConstants.NULL_KEY, //测斜仪补偿时间
     val compensatetime: String = IOTConstants.NULL_KEY, //测量补偿时间
     val driveaddress: String = IOTConstants.NULL_KEY,//电机驱动器地址
     val downspeed: String = IOTConstants.NULL_KEY,//电机下放速度

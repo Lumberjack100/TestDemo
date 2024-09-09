@@ -15,6 +15,7 @@ data class AdmeExecutiveAgencyInfo(
     var invalday: String = "", //间隔天数
     var roundmeasstart: String = "", //每轮测量开始时间
     var datainval: String = "", //数据读取间隔
+    var clin_compen: String = "", //测斜仪补偿时间
     var compensatetime: String = "", //测量补偿时间
     var driveaddress: String = "",//电机驱动器地址
     var downspeed: String = "",//电机下放速度

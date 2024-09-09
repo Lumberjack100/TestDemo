@@ -196,10 +196,8 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_MR_SET_RAIN_GAUGE_PORT_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置参数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

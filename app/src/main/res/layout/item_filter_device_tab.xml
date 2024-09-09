@@ -21,7 +21,7 @@
         app:drawable_solidColor="@{@color/gray_f5f6f8}"
         tools:background="@color/gray_f5f6f8">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingHorizontal="@dimen/dimen_size_5"

@@ -46,7 +46,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 android:text="设备SN号"
                 android:textSize="@dimen/text_size_14" />
@@ -73,7 +73,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_sn">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 onClickWithDebouncing="@{()->click.onChoosePlatformClick()}"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -90,7 +90,7 @@
                 android:layout_height="1dp"
                 android:layout_weight="1" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 onClickWithDebouncing="@{()->click.onChooseDataTypeClick()}"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -107,7 +107,7 @@
                 android:layout_height="1dp"
                 android:layout_weight="1" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 onClickWithDebouncing="@{()->click.onChoosePeriodDateClick()}"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -134,7 +134,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_filter_time">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_TitleStyle"
                 android:text="数据过滤"
                 android:textSize="@dimen/text_size_14" />
@@ -145,7 +145,7 @@
                 android:text="@={stateVM.regexContent}"
                 android:textSize="@dimen/text_size_14" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_search"
                 onClickWithDebouncing="@{()->click.onSearchClick()}"
                 android:layout_width="60dp"

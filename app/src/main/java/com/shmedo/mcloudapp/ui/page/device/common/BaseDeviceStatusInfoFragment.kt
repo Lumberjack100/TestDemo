@@ -16,7 +16,6 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasSensorStatusInfo
@@ -26,17 +25,18 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
-import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentBaseDeviceStatusInfoBinding
 import com.shmedo.mcloudapp.databinding.ItemDasSensorStatusBinding
 import com.shmedo.mcloudapp.databinding.ItemDeviceStatusInfoBasicBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.model.DasSensorSubMonitorStatusItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
+import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.android.ext.android.inject
 
 /**
@@ -400,6 +400,18 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            IOTSensorType.LYSIMETER,//蒸渗仪
+            -> {
+                if (dataList.isNotEmpty()) {
+                    subMonitorStatusList.add(
+                        DasSensorSubMonitorStatusItem(
+                            monitorType = "重量(克)",
+                            monitorValue = dataList[0]
+                        )
+                    )
+                }
+            }
+
             IOTSensorType.WEATHER_STATION //气象站
             -> {
                 if (dataList.isNotEmpty()) {
@@ -660,6 +672,10 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        //判断是否页面是否处于 resume 状态
+        if (!isResumed) {
+            return
+        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_DEVICE_STATUS -> {
                 val result = iotParseManager.parse<String>(

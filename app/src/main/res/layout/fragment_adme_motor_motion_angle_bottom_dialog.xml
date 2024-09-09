@@ -41,7 +41,7 @@
                 android:padding="6dp"
                 android:src="@drawable/ic_dispatch_cmd_dialog_close" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
                 app:drawable_solidColor="@{@color/main_bg_gray_f9f9f9}"
                 tools:background="@color/main_bg_gray_f9f9f9">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_data_left_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
                     android:textColor="@color/text_color_666666"
                     android:textSize="15sp" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_motion_pulse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
                 app:drawable_solidColor="@{@color/main_bg_gray_f9f9f9}"
                 tools:background="@color/main_bg_gray_f9f9f9">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableStart="@drawable/ic_motor_motion_distance"
@@ -120,7 +120,7 @@
                     android:textColor="@color/text_color_666666"
                     android:textSize="15sp" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_motion_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
             android:layout_marginEnd="14dp"
             android:layout_marginBottom="34dp">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/btn_stop"
                 onClickWithDebouncing="@{()->click.onStopClick()}"
                 visible="@{!stateVM.isExitButtonVisible }"
@@ -160,7 +160,7 @@
                 android:textStyle="bold"
                 tools:visibility="visible" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/btn_pause"
                 onClickWithDebouncing="@{()->click.onPauseClick()}"
                 visible="@{!stateVM.isExitButtonVisible }"
@@ -179,7 +179,7 @@
                 tools:text="暂停"
                 tools:visibility="visible"/>
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/btn_exit"
                 onClickWithDebouncing="@{()->click.onExitClick()}"
                 visible="@{stateVM.isExitButtonVisible }"

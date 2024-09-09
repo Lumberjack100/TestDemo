@@ -34,6 +34,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.material.textview.MaterialTextView
 import com.shmedo.core.data.source.local.entity.LogLevel
 
 
@@ -81,6 +82,12 @@ object CommonBindingAdapter {
     @BindingAdapter(value = ["imageResId"], requireAll = false)
     fun imageResId(view: ImageView, resId: Int) {
         view.setImageResource(resId)
+    }
+
+    @JvmStatic
+    @BindingAdapter(value = ["drawableStartResId"], requireAll = false)
+    fun drawableStartResId(textView: MaterialTextView, resId: Int) {
+        textView.setCompoundDrawablesWithIntrinsicBounds(resId, 0, 0, 0)
     }
 
     @JvmStatic

@@ -33,7 +33,6 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DataCenterStatusParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DeviceCurrentStateParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DeviceCurrentStateParser2
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.LoraCommunicateInfoParser
-import com.shmedo.lib.cmd.base.iot_cmd.parser.common.MudLevelMeterSensorInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.RadioCommunicateInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.RtkParamInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.TelemetryDataParser
@@ -84,6 +83,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRReportMethodParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRScreenParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRWiredNetParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRWirelessNetParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.UDCORSParamParser
 import org.koin.dsl.module
 
 /**
@@ -174,7 +174,7 @@ val iotCommandModule = module {
     factory { AlarmMonitorPointInfoParser() }
     factory { AlarmTriggerValueInfoParser() }
     factory { AlarmReportIntervalInfoParser() }
-    factory { MudLevelMeterSensorInfoParser() }
+    factory { UDCORSParamParser() }
     factory { LR200ZeroValueParser() }
 
 
@@ -262,7 +262,7 @@ val iotCommandModule = module {
             get<AlarmMonitorPointInfoParser>(),
             get<AlarmTriggerValueInfoParser>(),
             get<AlarmReportIntervalInfoParser>(),
-            get<MudLevelMeterSensorInfoParser>(),
+            get<UDCORSParamParser>(),
             get<LR200ZeroValueParser>(),
         )
         IOTParserManager(parsers)

@@ -1,8 +1,8 @@
 package com.shmedo.mcloudapp.ui.viewmodel.state
 
 import androidx.lifecycle.ViewModel
-import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeExecutiveAgencyInfo
+import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 class AdmeExecutiveAgencyViewModel : ViewModel() {
     val wrapInfo = NonNullObservableField(AdmeExecutiveAgencyInfo())
@@ -19,6 +19,7 @@ class AdmeExecutiveAgencyViewModel : ViewModel() {
     val intervalDays = NonNullObservableField("")//间隔时间
     val startTimePerRound = NonNullObservableField("")//每轮开始时间
     val dataReadingInterval = NonNullObservableField("")//数据读取间隔
+    val inclinometerCompensationTime = NonNullObservableField("")//测斜仪补偿时间
     val measurementCompensationTime = NonNullObservableField("")//测量补偿时间
     val inclinometerTubeHoleDepth = NonNullObservableField("")//测斜管孔深(m)
     val motorDriveAddress = NonNullObservableField("")//电机驱动器地址

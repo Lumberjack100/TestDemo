@@ -46,7 +46,7 @@
                 android:orientation="vertical"
                 android:paddingBottom="@dimen/dimen_size_25">
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:gravity="center_vertical"
@@ -60,7 +60,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="物模型名称" />
 
@@ -79,7 +79,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="物模型编号"
                         tools:textColor="@color/title_text_color" />
@@ -88,9 +88,8 @@
                         style="@style/Common_EditItem_EditText_Style"
                         android:enabled="@{stateVM.isCustomSensor&amp;&amp; stateVM.isFirstModelField}"
                         android:hint="请输入"
-                        android:inputType="phone"
                         android:text="@={stateVM.modelToken}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{8}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -98,7 +97,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="地址"
                         tools:textColor="@color/title_text_color" />
@@ -108,7 +107,7 @@
                         android:enabled="@{ stateVM.isFirstModelField}"
                         android:hint="请输入"
                         android:text="@={stateVM.address}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{5}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -116,7 +115,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="波特率(Bps)"
                         tools:textColor="@color/title_text_color" />
@@ -125,7 +124,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         android:hint="请输入"
                         android:text="@={stateVM.baudRate}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{6}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -134,11 +133,11 @@
                     onClickWithDebouncing="@{()->click.onDataBitChooseClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="数据位" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.dataBit}"
@@ -150,11 +149,11 @@
                     onClickWithDebouncing="@{()->click.onCheckBitChooseClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="校验位" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.checkBit}"
@@ -166,18 +165,18 @@
                     onClickWithDebouncing="@{()->click.onStopBitChooseClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="停止位" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.stopBit}"
                         tools:text="2" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:gravity="center_vertical"
@@ -191,7 +190,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="采集项名称" />
 
@@ -210,7 +209,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="采集项单位" />
 
@@ -228,7 +227,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="水文标识"
                         tools:textColor="@color/title_text_color" />
@@ -237,7 +236,7 @@
                         style="@style/Common_EditItem_EditText_Style"
                         android:hint="请输入"
                         android:text="@={stateVM.hydrologicalIdentification}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{6}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -245,7 +244,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="采集指令"
                         tools:textColor="@color/title_text_color" />
@@ -262,7 +261,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="倍率(精度)"
                         tools:textColor="@color/title_text_color" />
@@ -279,11 +278,11 @@
                     onClickWithDebouncing="@{()->click.onDataFormatChooseClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="数据类型" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.dataFormat}"
@@ -296,11 +295,11 @@
                     onClickWithDebouncing="@{()->click.onSolutionMethodChooseClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="解算方式" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_ValueStyle"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.solutionMethod}"
@@ -312,7 +311,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="触发值"
                         tools:textColor="@color/title_text_color" />
@@ -330,7 +329,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="上限值"
                         tools:textColor="@color/title_text_color" />
@@ -348,7 +347,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="下限值"
                         tools:textColor="@color/title_text_color" />
@@ -366,7 +365,7 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="修正值"
                         tools:textColor="@color/title_text_color" />
@@ -384,14 +383,14 @@
                     style="@style/Common_EditItem_LayoutStyle"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_TitleStyle"
                         android:text="阈值次数" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         android:text="@={stateVM.ngateval}"
-                        app:inputTypeFilter='@{"number"}'
+                        android:inputType="number"
                         app:lengthFilter="@{5}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -404,7 +403,7 @@
                     android:paddingStart="@dimen/dimen_size_15"
                     android:paddingEnd="@dimen/dimen_size_15">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/btn_save_model_field"
                         onClickWithDebouncing="@{()->click.onSaveModelFieldClick()}"
                         android:layout_width="match_parent"
@@ -425,7 +424,7 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.core.widget.NestedScrollView>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onSubmitClick()}"

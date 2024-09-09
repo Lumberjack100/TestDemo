@@ -94,6 +94,8 @@ enum class IOTSensorType(val code: String, val description: String) {
 
     VERTICAL_COORDINATE("31", "垂线坐标仪"),
 
+    LYSIMETER("32", "蒸渗仪"),
+
     /**
      * 基康渗压计 BGK-4500
      */

@@ -56,7 +56,7 @@
                         android:layout_marginTop="@dimen/dimen_size_1"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="Mac地址" />
@@ -77,12 +77,12 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测量方式" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -96,12 +96,12 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="数据解算方式" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -116,7 +116,7 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         tools:visibility="visible">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="每轮等待时间(分钟)" />
@@ -125,7 +125,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.waitingIntervalPerRound}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -137,12 +137,12 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="每轮测量间隔(小时)" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -157,12 +157,12 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="修改日期" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@null"
@@ -175,7 +175,7 @@
                         visible='@{stateVM.measureMethod == 2}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="间隔时间(天)" />
@@ -184,7 +184,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.intervalDays}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{6}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -194,7 +194,7 @@
                         visible='@{stateVM.measureMethod == 2}'
                         android:enabled="@{stateVM.isEditable }">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="每轮测量开始时间"
@@ -222,7 +222,7 @@
                         android:layout_marginTop="0.5dp"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测斜管孔深(米)" />
@@ -241,7 +241,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="电机下放速度(r/min)" />
@@ -251,7 +251,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-180]"
                             android:text="@={stateVM.decentralizationSpeed}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -260,7 +260,7 @@
                         style="@style/Common_EditItem_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="下放等待时间(分钟)" />
@@ -270,7 +270,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-32]"
                             android:text="@={stateVM.decentralizationWaitingTime}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{3}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -279,7 +279,7 @@
                         style="@style/SwitchButton_LayoutStyle"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/SwitchButton_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="下放堵转计米检测" />
@@ -301,7 +301,7 @@
                         android:layout_marginTop="@dimen/dimen_size_1"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/SwitchButton_TitleStyle"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="正反测使能" />
@@ -321,7 +321,7 @@
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onSubmitClick()}"

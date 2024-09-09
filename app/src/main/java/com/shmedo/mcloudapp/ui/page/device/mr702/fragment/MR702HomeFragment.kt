@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.ui.page.device.mr702.fragment
 
 import android.os.Bundle
+import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -9,6 +10,7 @@ import com.drake.brv.utils.setup
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.WorkModeEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
@@ -38,7 +40,7 @@ import com.shmedo.mcloudapp.model.MR702PortConfigModule
 import com.shmedo.mcloudapp.model.MR702TerminalParameterModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.NetworkCommunicationModule
-import com.shmedo.mcloudapp.model.PlatformLable
+import com.shmedo.mcloudapp.model.PlatformLabel
 import com.shmedo.mcloudapp.model.RebootModule
 import com.shmedo.mcloudapp.model.RunningStatusModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
@@ -80,20 +82,32 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         binding.llToolbar.toolbar.setNavigationOnClickListener {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             if (bleViewModel.isConnected()) {
-                showMessage(StringUtils.getString(R.string.disconnect_device_warn), "温馨提示", "确定", {
-                    bleViewModel.disconnect()
-                    mActivity.finish()
-                }, "取消")
+                showMessage(
+                    StringUtils.getString(R.string.disconnect_device_warn),
+                    "温馨提示",
+                    "确定",
+                    {
+                        bleViewModel.disconnect()
+                        mActivity.finish()
+                    },
+                    "取消"
+                )
             } else
                 mActivity.finish()
         }
         registerOnBackPressedDispatcher {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             if (bleViewModel.isConnected()) {
-                showMessage(StringUtils.getString(R.string.disconnect_device_warn), "温馨提示", "确定", {
-                    bleViewModel.disconnect()
-                    mActivity.finish()
-                }, "取消")
+                showMessage(
+                    StringUtils.getString(R.string.disconnect_device_warn),
+                    "温馨提示",
+                    "确定",
+                    {
+                        bleViewModel.disconnect()
+                        mActivity.finish()
+                    },
+                    "取消"
+                )
             } else
                 mActivity.finish()
         }
@@ -104,7 +118,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     private fun initPlatformAdapter() {
         binding.llDeviceInfo.rvPlatform.setup { rv ->
             rv.layoutManager = FlexboxLayoutManager(context)
-            addType<PlatformLable>(R.layout.item_platform_label)
+            addType<PlatformLabel>(R.layout.item_platform_label)
         }
     }
 
@@ -173,7 +187,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         //刷新模块状态
         binding.rvModule.models?.forEach {
             if (it is ConfigModule) {
-                it.configModule.refreshStatus(isConnected)
+                it.functionModule.refreshStatus(isConnected)
             }
         }
     }
@@ -190,9 +204,15 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
 
         override fun onConnectOperateClick() {
             if (bleViewModel.isConnected()) {
-                showMessage(StringUtils.getString(R.string.disconnect_device_warn), "温馨提示", "确定", {
-                    bleViewModel.disconnect()
-                }, "取消")
+                showMessage(
+                    StringUtils.getString(R.string.disconnect_device_warn),
+                    "温馨提示",
+                    "确定",
+                    {
+                        bleViewModel.disconnect()
+                    },
+                    "取消"
+                )
             } else {
                 bleViewModel.launch(bleDevice!!)
             }
@@ -230,7 +250,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
             return
         }
-        when (module.configModule) {
+        when (module.functionModule) {
             is RebootModule -> {
                 showMessage("确定重启设备吗？", "温馨提示", "确定", {
                     reboot()
@@ -238,7 +258,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                if (module.configModule.navId != 0) {
+                if (module.functionModule.navId != 0) {
                     val bundle = BaseIOTDeviceFragment.newBundleArguments(
                         productType,
                         communicateWay,
@@ -246,7 +266,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                         bleDevice
                     )
                     nav().navigate(
-                        module.configModule.navId,
+                        module.functionModule.navId,
                         bundle
                     )
                 }
@@ -355,10 +375,8 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             IOTCommandType.SET_WORK_MODE -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "设置工作模式出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -391,19 +409,85 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initDataCenterStatus(dataCenterStatus: MRDataCenterStatus) {
-        val platformLables = mutableListOf<PlatformLable>()
+        val platformLabels = mutableListOf<PlatformLabel>()
         if (dataCenterStatus.status1 != "0")
-            platformLables.add(PlatformLable("中心1", dataCenterStatus.status1 == "1"))
+            platformLabels.add(
+                PlatformLabel(
+                    content = "中心1",
+                    textColorRes = dataCenterStatus.status1.compareAndReturn(
+                        "1",
+                        ColorUtils.getColor(R.color.colorPrimary),
+                        ColorUtils.getColor(R.color.sub_title_text_color)
+                    ),
+                    bgResId = dataCenterStatus.status1.compareAndReturn(
+                        "1",
+                        R.drawable.bg_label_blue_corner_15dp,
+                        R.drawable.bg_label_gray_corner_15dp
+                    )
+                )
+            )
         if (dataCenterStatus.status2 != "0")
-            platformLables.add(PlatformLable("中心2", dataCenterStatus.status2 == "1"))
+            platformLabels.add(
+                PlatformLabel(
+                    "中心2", textColorRes = dataCenterStatus.status2.compareAndReturn(
+                        "1",
+                        ColorUtils.getColor(R.color.colorPrimary),
+                        ColorUtils.getColor(R.color.sub_title_text_color)
+                    ),
+                    bgResId = dataCenterStatus.status2.compareAndReturn(
+                        "1",
+                        R.drawable.bg_label_blue_corner_15dp,
+                        R.drawable.bg_label_gray_corner_15dp
+                    )
+                )
+            )
         if (dataCenterStatus.status3 != "0")
-            platformLables.add(PlatformLable("中心3", dataCenterStatus.status3 == "1"))
+            platformLabels.add(
+                PlatformLabel(
+                    "中心3", textColorRes = dataCenterStatus.status3.compareAndReturn(
+                        "1",
+                        ColorUtils.getColor(R.color.colorPrimary),
+                        ColorUtils.getColor(R.color.sub_title_text_color)
+                    ),
+                    bgResId = dataCenterStatus.status3.compareAndReturn(
+                        "1",
+                        R.drawable.bg_label_blue_corner_15dp,
+                        R.drawable.bg_label_gray_corner_15dp
+                    )
+                )
+            )
         if (dataCenterStatus.status4 != "0")
-            platformLables.add(PlatformLable("中心4", dataCenterStatus.status4 == "1"))
+            platformLabels.add(
+                PlatformLabel(
+                    "中心4", textColorRes = dataCenterStatus.status4.compareAndReturn(
+                        "1",
+                        ColorUtils.getColor(R.color.colorPrimary),
+                        ColorUtils.getColor(R.color.sub_title_text_color)
+                    ),
+                    bgResId = dataCenterStatus.status4.compareAndReturn(
+                        "1",
+                        R.drawable.bg_label_blue_corner_15dp,
+                        R.drawable.bg_label_gray_corner_15dp
+                    )
+                )
+            )
         if (dataCenterStatus.status5 != "0")
-            platformLables.add(PlatformLable("中心5", dataCenterStatus.status5 == "1"))
+            platformLabels.add(
+                PlatformLabel(
+                    "中心5", textColorRes = dataCenterStatus.status5.compareAndReturn(
+                        "1",
+                        ColorUtils.getColor(R.color.colorPrimary),
+                        ColorUtils.getColor(R.color.sub_title_text_color)
+                    ),
+                    bgResId = dataCenterStatus.status5.compareAndReturn(
+                        "1",
+                        R.drawable.bg_label_blue_corner_15dp,
+                        R.drawable.bg_label_gray_corner_15dp
+                    )
+                )
+            )
 
-        binding.llDeviceInfo.rvPlatform.models = platformLables
+        binding.llDeviceInfo.rvPlatform.models = platformLabels
     }
 
     override fun onResume() {
@@ -433,7 +517,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             ConfigModule(MR702TerminalParameterModule(navId = R.id.action_mR702HomeFragment_to_mR702TerminalParameterFragment))
         )
         moduleList.add(
-            ConfigModule(DeviceOperationModule(navId = R.id.action_global_mR702EquipmentOperationFragment))
+            ConfigModule(DeviceOperationModule(navId = R.id.action_global_to_mR702EquipmentOperationFragment))
         )
         moduleList.add(
             ConfigModule(NetworkCommunicationModule(navId = R.id.action_mR702HomeFragment_to_mR702NetworkCommunicationFragment))
@@ -466,10 +550,9 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 .debounce(AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
                 .collect { lastUpdateTime ->
                     val updateTime = TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
-                    Timber.d("startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
-                    // 仅当设备连接并且需要发送心跳时，才发送心跳包
-                    if (mHeadStates.isConnected.get() && isNearbyCommunicationTimeout(lastUpdateTime)) {
-                        Timber.d("bingo startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
+                    //仅当设备连接并且需要发送心跳时，才发送心跳包
+                    if (mHeadStates.isConnected.get()) {
+                        Timber.d("发送心跳包指令 startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
                         val command = IOTCommandUtil.getCommand(IOTCommandType.HEART_BEAT)
                         Timber.d("发送心跳包指令: $command")
                         sendBleCommand(command)
@@ -477,5 +560,4 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 }
         }
     }
-
 }

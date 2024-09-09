@@ -15,7 +15,7 @@
         android:layout_height="40dp"
         android:background="@color/mr_communication_data_table_row_header_backround">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
@@ -25,7 +25,7 @@
             android:textSize="@dimen/text_size_16"
             android:textStyle="bold" />
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"

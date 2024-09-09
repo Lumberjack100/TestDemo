@@ -127,7 +127,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
             return
         }
-        when (module.configModule) {
+        when (module.functionModule) {
             is TimeCalibrationModule -> {
                 commandItems.clear()
                 val command =
@@ -413,8 +413,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        Timber.e(result.message)
+                        handleFailureResult(result.message, isShowErrMsg = false)
                         mStates.isResponseLoading.set(false)
                         mStates.isResponseSuccess.set(false)
                         mStates.responseContent.set(result.message)
@@ -435,8 +434,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
             IOTCommandType.SET_TERMINAL_TIME -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        Timber.e(result.message)
+                        handleFailureResult(result.message, isShowErrMsg = false)
                         mStates.isResponseLoading.set(false)
                         mStates.isResponseSuccess.set(false)
                         mStates.responseContent.set(result.message)
@@ -459,8 +457,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        Timber.e(result.message)
+                        handleFailureResult(result.message, isShowErrMsg = false)
                         mStates.isResponseLoading.set(false)
                         mStates.isResponseSuccess.set(false)
                         mStates.responseContent.set(result.message)
@@ -492,7 +489,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_MR_ARTIFICIAL -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
+                        handleFailureResult(result.message, isShowErrMsg = false)
                         mStates.isResponseLoading.set(false)
                         mStates.isResponseSuccess.set(false)
                         mStates.responseContent.set(result.message)
@@ -511,7 +508,8 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_MR_UPLOAD_FILE -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
+                        handleFailureResult(result.message, isShowErrMsg = false)
+
                         mStates.isResponseLoading.set(false)
                         mStates.isResponseSuccess.set(false)
                         mStates.responseContent.set(result.message)
@@ -530,7 +528,8 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_BACKUP_CONFIG -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
+                        handleFailureResult(result.message, isShowErrMsg = false)
+
                         mStates.isResponseLoading.set(false)
                         mStates.isResponseSuccess.set(false)
                         mStates.responseContent.set(result.message)
@@ -549,7 +548,8 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_RESTORE_CONFIG -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
+                        handleFailureResult(result.message, isShowErrMsg = false)
+
                         mStates.isResponseLoading.set(false)
                         mStates.isResponseSuccess.set(false)
                         mStates.responseContent.set(result.message)

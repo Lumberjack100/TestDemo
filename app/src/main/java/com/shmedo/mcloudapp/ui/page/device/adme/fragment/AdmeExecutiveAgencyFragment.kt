@@ -17,7 +17,6 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.adme.AdmeExecutiveAgencyInfoEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeExecutiveAgencyInfo
@@ -29,17 +28,18 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
-import com.shmedo.mcloudapp.databinding.FragmentAdmeExecutiveAgencyBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseAdmeExecutiveAgencyClickProxy
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeExecutiveAgencyViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.databinding.FragmentAdmeExecutiveAgencyBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.adapter.AdmeTimeAdapter
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeExecutiveAgencyViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -326,6 +326,21 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             return
         }
 
+        if (mStates.inclinometerCompensationTime.get().isEmpty()) {
+            showMessageDialog("请输入测斜仪补偿时间!")
+            return
+        }
+        try {
+            val value = mStates.inclinometerCompensationTime.get().toDouble()
+            if (value < 1) {
+                showMessageDialog("请输入正确的测斜仪补偿时间!")
+                return
+            }
+        } catch (ex: Exception) {
+            Toaster.show("请输入正确的测斜仪补偿时间!")
+            return
+        }
+
         if (mStates.measurementCompensationTime.get().isEmpty()) {
             Toaster.show("请输入测量补偿时间!")
             return
@@ -536,6 +551,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             else
                 mStates.startTimePerRound.get(),
             datainval = mStates.dataReadingInterval.get(),
+            clin_compen = mStates.inclinometerCompensationTime.get(),
             compensatetime = mStates.measurementCompensationTime.get(),
             interdeep = mStates.inclinometerTubeHoleDepth.get(),
             driveaddress = mStates.motorDriveAddress.get(),
@@ -612,15 +628,13 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_EXECUTIVE_AGENCY -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         var errMsg = "设置执行机构参数出错: ${result.message}"
-                        Timber.e(errMsg)
                         if (errMsg.contains("time_err"))
                             errMsg = errMsg.replaceFirst(
                                 "(time_err)(:?)".toRegex(),
                                 "一轮测量时间不能少于"
                             ) + "小时"
-                        showMessageDialog(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -689,6 +703,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
                 }
             mAdapter.notifyDataSetChanged()
             mStates.dataReadingInterval.set(info.datainval)
+            mStates.inclinometerCompensationTime.set(info.clin_compen)
             mStates.measurementCompensationTime.set(info.compensatetime)
 
             decimalFormat.applyPattern("#.##")

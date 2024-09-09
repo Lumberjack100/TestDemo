@@ -34,7 +34,7 @@ val viewModelModule = module {
     viewModel { BleViewModel(get(), get()) }
     viewModel { TcpViewModel(get(), get()) }
     viewModel { NetIOTCommandViewModel(get()) }
-    viewModel { DeviceRequestViewModel(get()) }
+    viewModel { DeviceRequestViewModel(get(), get()) }
     viewModel { RequestSearchViewModel(get()) }
     viewModel { AppUpdateViewModel(get(), get()) }
     viewModel { LoginRequestViewModel(get()) }

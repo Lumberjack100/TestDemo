@@ -20,7 +20,7 @@
         android:paddingVertical="@dimen/dimen_size_10"
         tools:background="@drawable/mr702_do_port_item_bright_bg">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -38,7 +38,7 @@
             android:layout_marginTop="@dimen/dimen_size_10"
             android:gravity="center_vertical">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text='@{m.open?"开启":"关闭"}'

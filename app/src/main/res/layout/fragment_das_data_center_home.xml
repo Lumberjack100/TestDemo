@@ -60,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dimen_size_15"
@@ -73,7 +73,7 @@
                         android:textStyle="bold"
                         app:drawableStartCompat="@drawable/ic_mr702_device_info_communication_data" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dimen_size_16"
@@ -87,7 +87,7 @@
                         android:layout_marginHorizontal="@dimen/dimen_size_10"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/SwitchButton_TitleStyle"
                             android:text="开关" />
 
@@ -108,7 +108,7 @@
                         android:layout_marginHorizontal="@dimen/dimen_size_10"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isBdOpened}"
                             android:text="目标地址"
@@ -119,7 +119,7 @@
                             textViewEnabled="@{stateVM.isBdOpened}"
                             android:hint="请输入"
                             android:text="@={stateVM.address}"
-                            app:inputTypeFilter='@{"number"}'
+                            android:inputType="number"
                             app:lengthFilter="@{6}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -132,12 +132,12 @@
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isBdOpened}">
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
                             textViewEnabled="@{stateVM.isBdOpened}"
                             android:text="波特率(Bps)" />
 
-                        <androidx.appcompat.widget.AppCompatTextView
+                        <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
                             textViewEnabled="@{stateVM.isBdOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -156,7 +156,7 @@
                         tools:itemCount="4"
                         tools:listitem="@layout/data_center_status_item" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/btn_confirm"
                         style="@style/SubmitButton_ColorPrimary"
                         onClickWithDebouncing="@{()->click.onSubmitClick()}"

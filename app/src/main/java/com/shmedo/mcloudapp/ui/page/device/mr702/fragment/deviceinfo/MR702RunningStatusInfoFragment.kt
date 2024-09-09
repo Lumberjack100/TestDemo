@@ -8,7 +8,6 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRDeviceInfoEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRCommunicationData
@@ -20,13 +19,14 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702RunningStatusInfoBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.model.MRRunningDataItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.CommunicationDataTableAdapter
 import com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.model.CommunicationDataCellModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702DeviceStatusInfoParentViewModel
+import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -105,6 +105,10 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        //判断是否页面是否处于 resume 状态
+        if (!isResumed) {
+            return
+        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_MR_GET_DEVICE_BASE_INFO -> {
                 val result = iotParseManager.parse<MRDeviceInfo>(
@@ -179,31 +183,31 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (communicationData.status1 == "0") "未开启" else if (communicationData.status1 == "1") "已连接" else "未连接",
-                            textColorResId = if (communicationData.status1 == "1") R.color.device_online_platform else R.color.device_offline_platform
+                            textColorResId = if (communicationData.status1 == "1") R.color.green_00B26B else R.color.red_F13838
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (communicationData.status2 == "0") "未开启" else if (communicationData.status2 == "1") "已连接" else "未连接",
-                            textColorResId = if (communicationData.status2 == "1") R.color.device_online_platform else R.color.device_offline_platform
+                            textColorResId = if (communicationData.status2 == "1") R.color.green_00B26B else R.color.red_F13838
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (communicationData.status3 == "0") "未开启" else if (communicationData.status3 == "1") "已连接" else "未连接",
-                            textColorResId = if (communicationData.status3 == "1") R.color.device_online_platform else R.color.device_offline_platform
+                            textColorResId = if (communicationData.status3 == "1") R.color.green_00B26B else R.color.red_F13838
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (communicationData.status4 == "0") "未开启" else if (communicationData.status4 == "1") "已连接" else "未连接",
-                            textColorResId = if (communicationData.status4 == "1") R.color.device_online_platform else R.color.device_offline_platform
+                            textColorResId = if (communicationData.status4 == "1") R.color.green_00B26B else R.color.red_F13838
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (communicationData.status5 == "0") "未接入" else if (communicationData.status5 == "1") "已连接" else "未连接",
-                            textColorResId = if (communicationData.status5 == "1") R.color.device_online_platform else R.color.device_offline_platform
+                            textColorResId = if (communicationData.status5 == "1") R.color.green_00B26B else R.color.red_F13838
                         )
                     )
                 }
@@ -228,31 +232,31 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             communicationData.ndata1,
-                            R.color.device_offline_platform
+                            R.color.red_F13838
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             communicationData.ndata2,
-                            R.color.device_offline_platform
+                            R.color.red_F13838
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             communicationData.ndata3,
-                            R.color.device_offline_platform
+                            R.color.red_F13838
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             communicationData.ndata4,
-                            R.color.device_offline_platform
+                            R.color.red_F13838
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             communicationData.ndata5,
-                            R.color.device_offline_platform
+                            R.color.red_F13838
                         )
                     )
                 }

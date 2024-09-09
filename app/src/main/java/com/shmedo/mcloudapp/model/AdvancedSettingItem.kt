@@ -17,6 +17,9 @@ data class AdvancedSettingItem(
         //偏移初始化
         data object OFFSET_INITIALIZATION : Type()
 
+        //重启
+        data object REBOOT : Type()
+
         //重置
         data object RESET : Type()
 

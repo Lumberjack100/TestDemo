@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/column_header_textView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

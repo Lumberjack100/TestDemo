@@ -87,6 +87,7 @@ class BleDasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        //判断是否页面是否处于 resume 状态
         if (!isResumed) {
             return
         }
@@ -171,7 +172,7 @@ class BleDasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "状态",
                             value = "未接入",
-                            textColorRes = ColorUtils.getColor(R.color.device_offline_platform)
+                            textColorRes = ColorUtils.getColor(R.color.red_F13838)
                         )
                     )
                 }
@@ -181,7 +182,7 @@ class BleDasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "状态",
                             value = "接入",
-                            textColorRes = ColorUtils.getColor(R.color.device_online_platform)
+                            textColorRes = ColorUtils.getColor(R.color.green_00B26B)
                         )
                     )
                     groupList.add(
@@ -197,7 +198,7 @@ class BleDasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "状态",
                             value = "接入",
-                            textColorRes = ColorUtils.getColor(R.color.device_online_platform)
+                            textColorRes = ColorUtils.getColor(R.color.green_00B26B)
                         )
                     )
                     groupList.add(
@@ -205,9 +206,9 @@ class BleDasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                             name = "断线报警器",
                             value = if (info.rainfallStatus == "1" || info.rainfallStatus == "1.0") "断线" else "未断线",
                             textColorRes = if (info.rainfallStatus == "1" || info.rainfallStatus == "1.0") ColorUtils.getColor(
-                                R.color.device_offline_platform
+                                R.color.red_F13838
                             ) else ColorUtils.getColor(
-                                R.color.device_online_platform
+                                R.color.green_00B26B
                             )
                         )
                     )
@@ -238,9 +239,9 @@ class BleDasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         info.status
                     ),
                     textColorRes = if (info.status == "0") ColorUtils.getColor(
-                        R.color.device_online_platform
+                        R.color.green_00B26B
                     ) else ColorUtils.getColor(
-                        R.color.device_offline_platform
+                        R.color.red_F13838
                     )
                 )
             )

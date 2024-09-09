@@ -30,11 +30,11 @@
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="设备搜星数量" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.starNum+""}'
                         tools:text="34" />
@@ -45,11 +45,11 @@
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="AMS连接状态" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text="@{stateVM.amsState}"
                         tools:text="在线" />
@@ -60,11 +60,11 @@
                     style="@style/DeviceCurrentState_SingleItem_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         style="@style/DeviceCurrentState_SingleItem_NameStyle"
                         android:text="4G信号强度" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_4g_signal_strength"
                         style="@style/DeviceCurrentState_SingleItem_ValueStyle"
                         android:text='@{stateVM.signalValue==0?"--dBm":stateVM.signalValue+"dBm" }'
@@ -78,7 +78,7 @@
                         app:bind_signal_value="@{stateVM.signalValue}"
                         app:connected="true"
                         app:primary_color="@color/text_color_cccccc"
-                        app:shadow_color="@color/text_color_3AD094"
+                        app:shadow_color="@color/green_00B26B"
                         app:shadow_open="false"
                         app:signal_maximum="4"
                         app:spacing="1"
@@ -86,7 +86,7 @@
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_size_15"

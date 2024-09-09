@@ -91,7 +91,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
             Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
             return
         }
-        if (module.configModule.navId != 0) {
+        if (module.functionModule.navId != 0) {
             val bundle = BaseIOTDeviceFragment.newBundleArguments(
                 productType,
                 communicateWay,
@@ -99,7 +99,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
                 bleDevice
             )
             nav().navigate(
-                module.configModule.navId,
+                module.functionModule.navId,
                 bundle
             )
         }

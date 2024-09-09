@@ -43,13 +43,12 @@
 
         </com.drake.brv.PageRefreshLayout>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-            visible="@{stateVM.isSubmitBtnVisible}"
             android:layout_marginTop="0dp"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="100dp"
             android:text="保存"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

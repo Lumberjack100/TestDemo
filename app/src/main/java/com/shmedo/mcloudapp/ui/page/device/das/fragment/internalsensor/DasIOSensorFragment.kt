@@ -11,7 +11,6 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.das.DasIOSensorEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTBreakAlarmStatus
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
@@ -25,9 +24,10 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.databinding.FragmentDasIoSensorBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseDasIOSensorClickProxy
+import com.shmedo.mcloudapp.databinding.FragmentDasIoSensorBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasIOSensorViewModel
 import org.koin.android.ext.android.inject
@@ -178,6 +178,7 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO -> {//查询开关量传感器参数
                 val result = iotParseManager.parse<DasIOSensorInfo>(

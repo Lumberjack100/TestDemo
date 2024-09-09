@@ -525,10 +525,8 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_CLEAR_MEASURING_HOLEDEPTH_DATA -> {//清空脉冲数记录
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "清空脉冲数出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 
@@ -562,10 +560,8 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SAVE_CONFIG_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "保存出错: ${result.message}"
-                        Timber.e(errMsg)
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg)
                         return
                     }
 

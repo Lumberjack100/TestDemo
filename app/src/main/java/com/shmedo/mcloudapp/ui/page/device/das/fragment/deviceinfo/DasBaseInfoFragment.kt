@@ -5,7 +5,6 @@ import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.mutable
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasBaseInfo
@@ -15,11 +14,12 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoFragment
-import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import timber.log.Timber
 
@@ -47,6 +47,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        //判断是否页面是否处于 resume 状态
         if (!isResumed) {
             return
         }
@@ -157,8 +158,8 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 groupList,
                 name = "内部电量",
                 value = baseInfo.involt.replace("%", ""),
-                defaultValue = "0",
-                thresHold = 10.0,
+                defaultValue = "--",
+                downLimitValue = 10.0,
                 digit = 2,
                 unit = "%",
             )
@@ -166,8 +167,8 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 groupList,
                 name = "外部供电电压",
                 value = baseInfo.outvolt,
-                defaultValue = "0",
-                thresHold = 5.0,
+                defaultValue = "--",
+                downLimitValue = 5.0,
                 digit = 2,
                 unit = "V",
             )
@@ -214,9 +215,9 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         name = "状态",
                         value = if (info.solar.errno == "1") "正常" else "异常",
                         textColorRes = if (info.solar.errno == "1") ColorUtils.getColor(
-                            R.color.device_online_platform
+                            R.color.green_00B26B
                         ) else ColorUtils.getColor(
-                            R.color.device_offline_platform
+                            R.color.red_F13838
                         )
                     )
                 )
@@ -225,7 +226,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     name = "太阳能板电压",
                     value = info.solar.solarvolt,
                     defaultValue = "0",
-                    thresHold = 5.0,
+                    downLimitValue = 5.0,
                     digit = 2,
                     unit = "V",
                 )
@@ -234,7 +235,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     name = "蓄电池电压",
                     value = info.solar.batvolt,
                     defaultValue = "0",
-                    thresHold = 5.0,
+                    downLimitValue = 5.0,
                     digit = 2,
                     unit = "V",
                 )
@@ -279,9 +280,9 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                             name = "状态",
                             value = if (info.inth.errno == "1") "正常" else "异常",
                             textColorRes = if (info.inth.errno == "1") ColorUtils.getColor(
-                                R.color.device_online_platform
+                                R.color.green_00B26B
                             ) else ColorUtils.getColor(
-                                R.color.device_offline_platform
+                                R.color.red_F13838
                             )
                         )
                     )
@@ -289,7 +290,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         groupList,
                         name = "温度",
                         value = info.inth.temp,
-                        defaultValue = "0",
+                        defaultValue = "--",
                         digit = 2,
                         unit = "℃",
                     )
@@ -297,7 +298,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         groupList,
                         name = "湿度",
                         value = info.inth.humi,
-                        defaultValue = "0",
+                        defaultValue = "--",
                         digit = 2,
                         unit = "%",
                     )
@@ -309,9 +310,9 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                             name = "状态",
                             value = if (info.outth.errno == "1") "正常" else "异常",
                             textColorRes = if (info.outth.errno == "1") ColorUtils.getColor(
-                                R.color.device_online_platform
+                                R.color.green_00B26B
                             ) else ColorUtils.getColor(
-                                R.color.device_offline_platform
+                                R.color.red_F13838
                             )
                         )
                     )
@@ -319,7 +320,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         groupList,
                         name = "温度",
                         value = info.outth.temp,
-                        defaultValue = "0",
+                        defaultValue = "--",
                         digit = 2,
                         unit = "℃",
                     )
@@ -327,7 +328,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         groupList,
                         name = "湿度",
                         value = info.outth.humi,
-                        defaultValue = "0",
+                        defaultValue = "--",
                         digit = 2,
                         unit = "%",
                     )

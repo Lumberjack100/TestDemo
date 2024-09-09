@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/item"
+        android:layout_width="match_parent"
+        android:layout_height="34dp"
+        android:background="@color/white"
+        android:gravity="center_vertical">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_index"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_13"
+            tools:text="01" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_13"
+            tools:text="2023-12-24 23:13:00" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_13"
+            tools:text="水面距离" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_value"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_13"
+            android:visibility="gone"
+            tools:text="8.903" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/ll_opt"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:visibility="gone"
+            android:gravity="center">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_opt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_label_blue_corner_15dp"
+                android:gravity="center"
+                android:paddingHorizontal="@dimen/dimen_size_12"
+                android:paddingVertical="@dimen/dimen_size_3"
+                android:text="查看"
+                android:textColor="@color/colorPrimary"
+                android:textSize="@dimen/text_size_13" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>
