@@ -246,12 +246,12 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
         }
         try {
             val value = mStates.decentralizationWaitingTime.get().toDouble()
-            if (value < 1 || value > 32) {
-                showMessageDialog("下放等待时间数值范围[1,32]!")
+            if (value < 30 || value > 86400) {
+                showMessageDialog("下放等待时间数值范围[30,86400]!")
                 return
             }
         } catch (ex: Exception) {
-            showMessageDialog("下放等待时间数值范围[1,32]!")
+            showMessageDialog("下放等待时间数值范围[30,86400]!")
             return
         }
 
