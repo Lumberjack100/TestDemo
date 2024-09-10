@@ -232,3 +232,14 @@ class OneClickSilenceModule(
     resID: Int = R.drawable.ic_parameter_export,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
+
+//<editor-fold desc="MR702 功能模块">
+
+class DataStorageModule(
+    name: String = "数据存储",
+    desc: String = "数据存储设置",
+    resID: Int = R.drawable.ic_manual_photo_taking,
+    navId: Int = 0,
+) : DeviceFunctionModule(name, desc, resID, navId)
+
+// </editor-fold>

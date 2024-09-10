@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
+package com.shmedo.mcloudapp.ui.page.device.m50
 
 import android.os.Bundle
 import android.util.Log
@@ -28,7 +28,7 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentUdReportModelParamBinding
+import com.shmedo.mcloudapp.databinding.FragmentM50ReportModelParamBinding
 import com.shmedo.mcloudapp.extensions.formatDoubleValue
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -36,8 +36,8 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.M50ReportModelParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.UDReportModelParamViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -45,20 +45,17 @@ import timber.log.Timber
 
 /**
  * @author：gonghe
- * @time: 2024/8/23
- * @desc: 一体化雷达泥位计上报工作模式参数设置
+ * @time: 2024/9/10
+ * @desc:M50上报工作模式参数设置
+ *
  */
-class UDReportModelParamFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentUdReportModelParamBinding
+class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentM50ReportModelParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: UDReportModelParamViewModel by viewModels()
+    private val mStates: M50ReportModelParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
-
-    private val modelList = arrayListOf("自动", "手动")
-    private val reportFrequencyList =
-        arrayListOf("15分钟/次", "30分钟/次", "1小时/次", "2小时/次")//上报频率
-    private val reportFrequencyMinList =
-        arrayListOf("15", "30", "60", "120")//上报频率
+    private val workModelList = arrayListOf("测站", "基准站")
+    private val reportModelList = arrayListOf("低功耗", "正常")
 
 
     override fun initViewModel() {
@@ -67,7 +64,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_ud_report_model_param,
+            R.layout.fragment_m50_report_model_param,
             BR.stateVM,
             mStates
         )
@@ -76,7 +73,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentUdReportModelParamBinding
+        binding = getBinding() as FragmentM50ReportModelParamBinding
         binding.llToolbar.toolbar.title = "工作模式"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
@@ -115,12 +112,16 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
                 mStates.thirdAlarmThresholdTitle.set("三级报警阈值(毫米)")
                 mStates.fourthAlarmThresholdTitle.set("四级报警阈值(毫米)")
             }
+
             else -> {}
         }
     }
 
     private fun resetDefaultParams() {
-        mStates.reportModel.set("自动")
+        mStates.workModel.set(workModelList[0])
+        mStates.reportModel.set(reportModelList[0])
+        mStates.memsThreshold.set("0")
+        mStates.alarmEnable.set(true)
         //一级报警阈值
         mStates.firstAlarmThreshold.set("20")
         //二级报警阈值
@@ -129,22 +130,42 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         mStates.thirdAlarmThreshold.set("100")
         //四级报警阈值
         mStates.fourthAlarmThreshold.set("200")
-        mStates.reportFrequency.set(reportFrequencyList[0])
     }
 
     inner class ClickProxy : BaseClickProxy() {
+
         /**
-         * 选择上报模式
+         * 选择工作模式
          */
-        fun onModelChooseClick() {
-            val selectedIndex = modelList.indexOf(mStates.reportModel.get())
+        fun onWorkModelChooseClick() {
+            val selectedIndex = workModelList.indexOf(mStates.workModel.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", modelList.toTypedArray(),
+                    "", workModelList.toTypedArray(),
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.workModel.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        /**
+         * 选择上报模式
+         */
+        fun onReportModelChooseClick() {
+            val selectedIndex = reportModelList.indexOf(mStates.reportModel.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "", reportModelList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.reportModel.set(text)
@@ -160,26 +181,6 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
                 return
             }
             mStates.alarmEnable.set(isChecked)
-        }
-
-        /**
-         * 选择上报频率
-         */
-        fun onReportFrequencyChooseClick() {
-            val selectedIndex = reportFrequencyList.indexOf(mStates.reportFrequency.get())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "", reportFrequencyList.toTypedArray(),
-                    null, selectedIndex,
-                    { position, text ->
-                        mStates.reportFrequency.set(text)
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
         }
 
         /**
@@ -202,72 +203,11 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
     private fun initSaveCommand() {
         commandItems.clear()
 
-        if (mStates.reportModel.get() == "自动") {
-            //四级预警未启用
-            if (!mStates.alarmEnable.get()) {
-                val reportModeEntity = UDAlarmReportModeEntity(
-                    rept_mode = "0",
-                    warning_switch = "0",
-                )
-                val command = IOTCommandUtil.getCommand(
-                    IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR,
-                    reportModeEntity.toCommandString()
-                )
-                commandItems.add(command)
-
-                showLoadingDialog(StringUtils.getString(R.string.processing))
-                sendCommandFromCmdList(isStartTimeoutJob = true)
-                return
-            }
-
-            //四级预警启用
-            if (mStates.firstAlarmThreshold.get().isEmpty()) {
-                showMessageDialog("请输入一级报警阈值!")
-                return
-            }
-            try {
-                val value = mStates.firstAlarmThreshold.get().toDouble()
-            } catch (ex: Exception) {
-                showMessageDialog("请输入正确的一级报警阈值!")
-                return
-            }
-
-            if (mStates.secondAlarmThreshold.get().isEmpty()) {
-                showMessageDialog("请输入二级报警阈值!")
-                return
-            }
-            try {
-                val value = mStates.secondAlarmThreshold.get().toDouble()
-            } catch (ex: Exception) {
-                showMessageDialog("请输入正确的二级报警阈值!")
-                return
-            }
-
-            if (mStates.thirdAlarmThreshold.get().isEmpty()) {
-                showMessageDialog("请输入三级报警阈值!")
-                return
-            }
-            try {
-                val value = mStates.thirdAlarmThreshold.get().toDouble()
-            } catch (ex: Exception) {
-                showMessageDialog("请输入正确的三级报警阈值!")
-                return
-            }
-
-            if (mStates.fourthAlarmThreshold.get().isEmpty()) {
-                showMessageDialog("请输入四级报警阈值!")
-                return
-            }
-            try {
-                val value = mStates.fourthAlarmThreshold.get().toDouble()
-            } catch (ex: Exception) {
-                showMessageDialog("请输入正确的四级报警阈值!")
-                return
-            }
-
+        //四级预警未启用
+        if (!mStates.alarmEnable.get()) {
             val reportModeEntity = UDAlarmReportModeEntity(
                 rept_mode = "0",
-                warning_switch = "1",
+                warning_switch = "0",
             )
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR,
@@ -275,29 +215,79 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
             )
             commandItems.add(command)
 
-            val triggerValueEntity = AlarmTriggerValueEntity(
-                level1 = mStates.firstAlarmThreshold.get(),
-                level2 = mStates.secondAlarmThreshold.get(),
-                level3 = mStates.thirdAlarmThreshold.get(),
-                level4 = mStates.fourthAlarmThreshold.get()
-            )
-            val triggerValueCommand = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE,
-                triggerValueEntity.toCommandString()
-            )
-            commandItems.add(triggerValueCommand)
-
-        } else {//手动
-            val reportModeEntity = UDAlarmReportModeEntity(
-                rept_mode = "1",
-                ld_reptgap = reportFrequencyMinList[reportFrequencyList.indexOf(mStates.reportFrequency.get())]
-            )
-            val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR,
-                reportModeEntity.toCommandString()
-            )
-            commandItems.add(command)
+            showLoadingDialog(StringUtils.getString(R.string.processing))
+            sendCommandFromCmdList(isStartTimeoutJob = true)
+            return
         }
+
+        //四级预警启用
+        if (mStates.firstAlarmThreshold.get().isEmpty()) {
+            showMessageDialog("请输入一级报警阈值!")
+            return
+        }
+        try {
+            val value = mStates.firstAlarmThreshold.get().toDouble()
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的一级报警阈值!")
+            return
+        }
+
+        if (mStates.secondAlarmThreshold.get().isEmpty()) {
+            showMessageDialog("请输入二级报警阈值!")
+            return
+        }
+        try {
+            val value = mStates.secondAlarmThreshold.get().toDouble()
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的二级报警阈值!")
+            return
+        }
+
+        if (mStates.thirdAlarmThreshold.get().isEmpty()) {
+            showMessageDialog("请输入三级报警阈值!")
+            return
+        }
+        try {
+            val value = mStates.thirdAlarmThreshold.get().toDouble()
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的三级报警阈值!")
+            return
+        }
+
+        if (mStates.fourthAlarmThreshold.get().isEmpty()) {
+            showMessageDialog("请输入四级报警阈值!")
+            return
+        }
+        try {
+            val value = mStates.fourthAlarmThreshold.get().toDouble()
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的四级报警阈值!")
+            return
+        }
+
+        val reportModeEntity = UDAlarmReportModeEntity(
+            rept_mode = "0",
+            warning_switch = "1",
+        )
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR,
+            reportModeEntity.toCommandString()
+        )
+        commandItems.add(command)
+
+        val triggerValueEntity = AlarmTriggerValueEntity(
+            level1 = mStates.firstAlarmThreshold.get(),
+            level2 = mStates.secondAlarmThreshold.get(),
+            level3 = mStates.thirdAlarmThreshold.get(),
+            level4 = mStates.fourthAlarmThreshold.get()
+        )
+        val triggerValueCommand = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE,
+            triggerValueEntity.toCommandString()
+        )
+        commandItems.add(triggerValueCommand)
+
+
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -415,12 +405,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
 
                 mStates.reportModel.set(if (udCommonCurrentStateInfo.reportMode == "0") "自动" else "手动")
                 mStates.alarmEnable.set(udCommonCurrentStateInfo.levelFourWarningEnabled == "1")
-                reportFrequencyMinList.indexOf(udCommonCurrentStateInfo.reportFrequency)
-                    .let { index ->
-                        if (index in reportFrequencyList.indices) {
-                            mStates.reportFrequency.set(reportFrequencyList[index])
-                        }
-                    }
+
             } catch (e: Exception) {
                 Timber.e(e)
                 addLogItem(Log.ERROR, e.errorMsg)

@@ -6,7 +6,7 @@
     <data>
 
         <variable
-            name="vm"
+            name="stateVM"
             type="com.shmedo.mcloudapp.ui.viewmodel.state.CommonDeviceHomeViewModel" />
 
         <variable
@@ -28,7 +28,7 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_device_logo"
-                imageResId="@{vm.productLogoResId}"
+                imageResId="@{stateVM.productLogoResId}"
                 android:layout_width="70dp"
                 android:layout_height="60dp"
                 tools:src="@drawable/device_logo_gateway" />
@@ -46,7 +46,7 @@
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="@{vm.productName}"
+                    android:text="@{stateVM.productName}"
                     android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_15"
                     android:textStyle="bold"
@@ -59,7 +59,7 @@
                     android:layout_marginTop="@dimen/dimen_size_5"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text='@{vm.deviceName+"|"+vm.deviceToken}'
+                    android:text='@{stateVM.deviceName+"|"+stateVM.deviceToken}'
                     android:textColor="@color/sub_title_text_color"
                     android:textSize="@dimen/text_size_13"
                     tools:text="MD-DR030|21E118L" />
@@ -80,16 +80,16 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_device_connect_operate"
             onClickWithDebouncing="@{()->click.onConnectOperateClick()}"
-            visible="@{vm.isConnectOperateVisible}"
+            visible="@{stateVM.isConnectOperateVisible}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:layout_marginEnd="@dimen/dimen_size_10"
-            android:drawableStart="@{vm.isConnected()?@drawable/ic_ble_disconnect:@drawable/ic_ble_connect}"
+            android:drawableStart="@{stateVM.isConnected()?@drawable/ic_ble_disconnect:@drawable/ic_ble_connect}"
             android:drawablePadding="@dimen/dimen_size_4"
             android:paddingVertical="@dimen/dimen_size_5"
-            android:text="@{vm.connectOperateText}"
-            android:textColor="@{vm.isConnected()?@color/disconnect_ble_foreground:@color/connect_ble_foreground}"
+            android:text="@{stateVM.connectOperateText}"
+            android:textColor="@{stateVM.isConnected()?@color/disconnect_ble_foreground:@color/connect_ble_foreground}"
             android:textSize="@dimen/text_size_13"
             tools:drawableStartCompat="@drawable/ic_ble_connect"
             tools:text="蓝牙连接"

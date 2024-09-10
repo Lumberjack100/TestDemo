@@ -90,10 +90,10 @@ enum class ProductType(
         deviceName = "",
         description = "全星座,对应UM960D版本"
     ),
-    GNSS_M_3(
+    GNSS_M_5(
         prefix = "",
         oldSuffix = "",
-        newSuffix = "GM3",
+        newSuffix = "GM5",
         productName = "测地形GNSS接收机",
         deviceName = "",
         description = "自供电版,待立项"

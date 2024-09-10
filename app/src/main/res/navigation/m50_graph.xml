@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/m50_graph"
+    app:startDestination="@id/m50HomeFragment">
+
+    <include app:graph="@navigation/include_query_data_graph" />
+    <include app:graph="@navigation/include_common_running_device_info_style2_graph" />
+    <include app:graph="@navigation/include_lora_graph" />
+    <include app:graph="@navigation/include_alarm_setting_graph" />
+    <include app:graph="@navigation/include_firmware_upgrade_graph" />
+    <include app:graph="@navigation/include_ble_command_debug_graph" />
+    <include app:graph="@navigation/include_remote_command_debug_graph" />
+
+    <fragment
+        android:id="@+id/m50HomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m50.M50HomeFragment"
+        android:label="M50HomeFragment"
+        tools:layout="@layout/fragment_m50_home" />
+
+    <fragment
+        android:id="@+id/udMonitorDataHistoryFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDSensorDataHistoryFragment"
+        android:label="UDMonitorDataHistoryFragment"
+        tools:layout="@layout/fragment_ud_sensor_data_history" />
+
+    <fragment
+        android:id="@+id/m50WorkModelParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m50.M50ReportModelParamFragment"
+        android:label="M50ReportModelParamFragment"
+        tools:layout="@layout/fragment_m50_report_model_param" />
+
+    <fragment
+        android:id="@+id/udMobileNetworkParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDMobileNetworkParamFragment"
+        android:label="UDMobileNetworkParamFragment"
+        tools:layout="@layout/fragment_ud_mobile_network_param" />
+
+    <fragment
+        android:id="@+id/udProductDataCenterHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDDataCenterHomeFragment"
+        android:label="UDProductDataCenterHomeFragment"
+        tools:layout="@layout/fragment_universal_data_center_home" />
+
+    <fragment
+        android:id="@+id/dataCenterParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment"
+        android:label="DataCenterParamFragment"
+        tools:layout="@layout/fragment_data_center_param" />
+
+    <fragment
+        android:id="@+id/udRadioParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDRadioParamFragment"
+        android:label="UDRadioParamFragment"
+        tools:layout="@layout/fragment_ud_radio_param" />
+
+    <fragment
+        android:id="@+id/advancedSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.BaseAdvancedSettingFragment"
+        android:label="BaseAdvancedSettingFragment"
+        tools:layout="@layout/fragment_advanced_setting" />
+
+    <action
+        android:id="@+id/action_global_to_queryDeviceDataFragment"
+        app:destination="@id/query_data_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_commonRunningDeviceInfoStyle2Fragment"
+        app:destination="@id/common_running_device_info_style2_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_udMonitorDataHistoryFragment"
+        app:destination="@id/udMonitorDataHistoryFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_m50WorkModelParamFragment"
+        app:destination="@id/m50WorkModelParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_udMobileNetworkParamFragment"
+        app:destination="@id/udMobileNetworkParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_udProductDataCenterHomeFragment"
+        app:destination="@id/udProductDataCenterHomeFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_dataCenterParamFragment"
+        app:destination="@id/dataCenterParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+
+    <action
+        android:id="@+id/action_global_to_udRadioParamFragment"
+        app:destination="@id/udRadioParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_alarmSettingFragment"
+        app:destination="@id/alarm_setting_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_advancedSettingFragment"
+        app:destination="@id/advancedSettingFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_firmwareUpgradeFragment"
+        app:destination="@id/firmware_upgrade_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_commandDebug"
+        app:destination="@id/ble_command_debug_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_remoteDebugFragment"
+        app:destination="@id/remote_command_debug_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+</navigation>

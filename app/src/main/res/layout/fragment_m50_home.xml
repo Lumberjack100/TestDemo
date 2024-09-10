@@ -11,11 +11,11 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.UDHomeViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.M50HomeViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDHomeFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.m50.M50HomeFragment.ClickProxy" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -81,7 +81,7 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <include
-                    layout="@layout/include_radar_water_gauge_measure_data_layout"
+                    layout="@layout/include_m50_measure_data_layout"
                     app:click="@{click}"
                     app:stateVM="@{stateVM}" />
 
