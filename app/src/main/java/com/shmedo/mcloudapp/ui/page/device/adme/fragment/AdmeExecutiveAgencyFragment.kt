@@ -156,11 +156,17 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        resetDefaultParams()
+    }
+
+    private fun resetDefaultParams() {
         mStates.measureMethod.set(0)
         mStates.measureMethodText.set(measureMethodList[0])
         mStates.dataSettlementMethod.set(settlementMethodList[1])
         mStates.dataResponse.set(dataResponseTypeList[0])
         mStates.measurementIntervalPerRound.set(measIntervalPerRoundList[0])
+        mStates.inclinometerCompensationTime.set("4")//测斜仪补偿时间
+        mStates.decentralizationWaitingTime.set("180")//下放等待时间
     }
 
     private fun setEditable(editable: Boolean) {
@@ -332,7 +338,7 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         }
         try {
             val value = mStates.inclinometerCompensationTime.get().toDouble()
-            if (value < 1) {
+            if (value < 0) {
                 showMessageDialog("请输入正确的测斜仪补偿时间!")
                 return
             }
@@ -399,12 +405,12 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         }
         try {
             val value = mStates.decentralizationWaitingTime.get().toDouble()
-            if (value < 1 || value > 32) {
-                showMessageDialog("下放等待时间数值范围[1,32]!")
+            if (value < 30 || value > 86400) {
+                showMessageDialog("下放等待时间数值范围[30,86400]!")
                 return
             }
         } catch (ex: Exception) {
-            showMessageDialog("下放等待时间数值范围[1,32]!")
+            showMessageDialog("下放等待时间数值范围[30,86400]!")
             return
         }
 

@@ -7,8 +7,8 @@ class M20SRadioSettingViewModel : ViewModel() {
     val isEditable = NonNullObservableField(true)
 
     val rtcmChannel = NonNullObservableField("")//RTCM数据频点
-    val receiveChannel = NonNullObservableField("")//报警接收频点
-    val sendChannel = NonNullObservableField("")//广播发射频点
+    val receiveChannel = NonNullObservableField("")//广播接收频点
+    val sendChannel = NonNullObservableField("")//报警发射频点
     val transmitPower = NonNullObservableField("")//发射功率
     val airSpeed = NonNullObservableField("")//空中速率
 }

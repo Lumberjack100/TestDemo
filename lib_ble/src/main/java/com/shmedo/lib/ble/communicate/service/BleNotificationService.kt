@@ -5,6 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -30,7 +31,15 @@ abstract class BleNotificationService : LifecycleService() {
         val result = super.onStartCommand(intent, flags, startId)
         Timber.d("BleNotificationService onStartCommand")
 
-        startForeground(BLE_NOTIFICATION_ID, createForegroundNotification())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(
+                BLE_NOTIFICATION_ID,
+                createForegroundNotification(),
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_CONNECTED_DEVICE
+            )
+        } else {
+            startForeground(BLE_NOTIFICATION_ID, createForegroundNotification())
+        }
         return result
     }
 
