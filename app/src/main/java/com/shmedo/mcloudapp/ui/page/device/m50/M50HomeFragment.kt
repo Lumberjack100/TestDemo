@@ -298,25 +298,25 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                     CommonModule(
                         name = "网络配置",
                         resID = R.drawable.ic_module_network_setting,
-                        navId = R.id.action_global_to_udMobileNetworkParamFragment
+                        navId = R.id.action_global_to_m50MobileNetworkParamFragment
                     )
                 ),
                 ConfigModule(
                     DataCenterModule(
-                        navId = R.id.action_global_to_udProductDataCenterHomeFragment
+                        navId = R.id.action_global_to_universalDataCenterHomeFragment
                     )
                 ),
 
                 ConfigModule(
                     LoraConfigModule(
                         name = "电台配置",
-                        navId = R.id.action_global_to_udRadioParamFragment
+                        navId = R.id.action_global_to_m50RadioSettingFragment
                     )
                 ),
                 ConfigModule(
                     SensorConfigModule(
                         name = "串口配置",
-                        navId = R.id.action_global_to_udProductSensorParamFragment
+                        navId = R.id.action_global_to_m50SerialPortParamFragment
                     )
                 ),
                 ConfigModule(

@@ -7,7 +7,7 @@
 
     <include app:graph="@navigation/include_query_data_graph" />
     <include app:graph="@navigation/include_common_running_device_info_style2_graph" />
-    <include app:graph="@navigation/include_lora_graph" />
+    <include app:graph="@navigation/include_data_center_graph" />
     <include app:graph="@navigation/include_alarm_setting_graph" />
     <include app:graph="@navigation/include_firmware_upgrade_graph" />
     <include app:graph="@navigation/include_ble_command_debug_graph" />
@@ -32,28 +32,22 @@
         tools:layout="@layout/fragment_m50_report_model_param" />
 
     <fragment
-        android:id="@+id/udMobileNetworkParamFragment"
+        android:id="@+id/m50MobileNetworkParamFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDMobileNetworkParamFragment"
         android:label="UDMobileNetworkParamFragment"
         tools:layout="@layout/fragment_ud_mobile_network_param" />
 
     <fragment
-        android:id="@+id/udProductDataCenterHomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDDataCenterHomeFragment"
-        android:label="UDProductDataCenterHomeFragment"
-        tools:layout="@layout/fragment_universal_data_center_home" />
+        android:id="@+id/m20SRadioSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m20s.fragment.M20SRadioSettingFragment"
+        android:label="M20SRadioSettingFragment"
+        tools:layout="@layout/fragment_m20s_radio_setting" />
 
     <fragment
-        android:id="@+id/dataCenterParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment"
-        android:label="DataCenterParamFragment"
-        tools:layout="@layout/fragment_data_center_param" />
-
-    <fragment
-        android:id="@+id/udRadioParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDRadioParamFragment"
-        android:label="UDRadioParamFragment"
-        tools:layout="@layout/fragment_ud_radio_param" />
+        android:id="@+id/m50SerialPortParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m50.M50SerialPortParamFragment"
+        android:label="M50SerialPortParamFragment"
+        tools:layout="@layout/fragment_m50_serial_port_param" />
 
     <fragment
         android:id="@+id/advancedSettingFragment"
@@ -94,33 +88,32 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_udMobileNetworkParamFragment"
-        app:destination="@id/udMobileNetworkParamFragment"
+        android:id="@+id/action_global_to_m50MobileNetworkParamFragment"
+        app:destination="@id/m50MobileNetworkParamFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_udProductDataCenterHomeFragment"
-        app:destination="@id/udProductDataCenterHomeFragment"
+        android:id="@+id/action_global_to_universalDataCenterHomeFragment"
+        app:destination="@id/data_center_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_dataCenterParamFragment"
-        app:destination="@id/dataCenterParamFragment"
+        android:id="@+id/action_global_to_m50RadioSettingFragment"
+        app:destination="@id/m20SRadioSettingFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
 
-
     <action
-        android:id="@+id/action_global_to_udRadioParamFragment"
-        app:destination="@id/udRadioParamFragment"
+        android:id="@+id/action_global_to_m50SerialPortParamFragment"
+        app:destination="@id/m50SerialPortParamFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

@@ -1,62 +1,67 @@
-package com.shmedo.mcloudapp.ui.page.device.m20s.fragment
+package com.shmedo.mcloudapp.ui.page.device.m50
 
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.RadioCommunicateEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.RadioCommunicateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.m50.M50SerialPortParam
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentM20sRadioSettingBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.databinding.FragmentM50SerialPortParamBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.M20SRadioSettingViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.M50SerialPortParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentM20sRadioSettingBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: M20SRadioSettingViewModel
+/**
+ * @author：gonghe
+ * @time: 2024/9/10
+ * @desc: M50 串口参数配置
+ *
+ */
+class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentM50SerialPortParamBinding
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: M50SerialPortParamViewModel by activityViewModels()
     private val iotParseManager: IOTParserManager by inject()
 
-    private val radioChannelList by lazy { Utils.getApp().resources.getStringArray(R.array.radio_channel) }
-    private var transmitPowerList: List<String> = emptyList()//发射功率
-    private var airSpeedList: List<String> = emptyList()//空中速率
+    private val rs232ExternalDeviceList =
+        arrayListOf("无", "抓拍相机", "卫星通信终端")
+    private val captureFrequencyList =
+        arrayListOf("15分钟/次", "30分钟/次", "1小时/次", "2小时/次")
+    private val captureFrequencyMinList =
+        arrayListOf("15", "30", "60", "120")//抓拍频率
+    private val imageResolutionList = arrayListOf("1024x768", "1280x960", "1600x1200", "1920x1080")
+    private val rs485ExternalDeviceList = arrayListOf("无", "压电式雨量计")
+    private val rs485BaudRateList = arrayListOf("9600", "19200", "38400", "57600", "115200")
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_m20s_radio_setting,
+            R.layout.fragment_m50_serial_port_param,
             BR.stateVM,
             mStates
         )
@@ -65,8 +70,8 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentM20sRadioSettingBinding
-        binding.llToolbar.toolbar.title = "电台设置"
+        binding = getBinding() as FragmentM50SerialPortParamBinding
+        binding.llToolbar.toolbar.title = "串口设置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }
@@ -90,47 +95,18 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        transmitPowerList =
-            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_1)
-                (0..22).map { it.toString() }
-            else
-                (10..22).map { it.toString() }
-
-        airSpeedList =
-            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_1)
-                (0..2).map { it.toString() }
-            else
-                (1..3).map { it.toString() }
-
-        mStates.isSupportSwitch.set(productType == ProductType.GNSS_M_5)
-
         resetDefaultParams()
     }
 
     private fun resetDefaultParams() {
-        when (productType) {
-            ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {//M20S 载波频率以 450.15Mhz 为起始，间隔 1Mhz，进行信道划分，共划分 20 个信道
-                mStates.rtcmChannel.set(radioChannelList[0])//RTCM数据频点以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 默认0
-                mStates.receiveChannel.set(radioChannelList[13])//接收默认 13 即 463.15MHz
-                mStates.sendChannel.set(radioChannelList[6])//发送默认 6 即 456.15MHz
-                mStates.transmitPower.set(transmitPowerList.last())//发射功率 [0~22] 默认22
-                mStates.airSpeed.set(airSpeedList[1])//空中速率  [0~2] 默认1
-            }
-
-            ProductType.GNSS_M_5 -> {//M50 载波频率以 450.15Mhz 为起始，间隔 1Mhz，进行信道划分，共划分 20 个信道
-                mStates.rtcmChannel.set(radioChannelList[0])//RTCM数据频点以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 默认0
-                mStates.receiveChannel.set(radioChannelList[13])//接收默认 13 即 463.15MHz
-                mStates.sendChannel.set(radioChannelList[6])//发送默认 6 即 456.15MHz
-                mStates.transmitPower.set(transmitPowerList.last())//发射功率 [10~22] 默认22
-                mStates.airSpeed.set(airSpeedList[0])//空中速率  [1~3] 默认1
-            }
-
-            else -> {
-
-            }
-        }
+        mStates.isExternalPower.set(false)
+        mStates.rs232ExternalDevice.set(rs232ExternalDeviceList[0])//默认为 无
+        mStates.captureFrequency.set(captureFrequencyList[captureFrequencyList.lastIndex])//默认为 2小时/次
+        mStates.imageResolution.set(imageResolutionList[2])//默认为 1600x1200
+        mStates.rs485ExternalDevice.set(rs485ExternalDeviceList[0])//默认为 无
+        mStates.rs485BaudRate.set(rs485BaudRateList[0])//默认为 9600
+        mStates.rs485ExternalDeviceAddr.set("1")//默认为 1
     }
-
 
     inner class ClickProxy : BaseClickProxy() {
         override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
@@ -139,112 +115,101 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
                 (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
                 return
             }
-            mStates.isOpened.set(isChecked)
-            if (!isChecked) {
-                showMessage("确定要关闭吗？", "温馨提示", "确定", {
-                    disableRadio()
-                }, "取消", {
-                    mStates.isOpened.set(true)
-                    (button as SwitchButton).setCheckedImmediatelyNoEvent(true)
-                })
-            }
+            mStates.isExternalPower.set(isChecked)
         }
 
         /**
-         * 选择RTCM数据频点
+         * 选择 232外部设备
          */
-        fun onRTCMDataChannelChooseClick() {
-            val selectedIndex = radioChannelList.indexOf(mStates.rtcmChannel.get())
+        fun on232ExternalDeviceChooseClick() {
+            val selectedIndex = rs232ExternalDeviceList.indexOf(mStates.rs232ExternalDevice.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", radioChannelList,
+                    "", rs232ExternalDeviceList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
-                        mStates.rtcmChannel.set(text)
+                        mStates.rs232ExternalDevice.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
         }
 
         /**
-         * 选择接收频点
+         * 抓拍频率
          */
-        fun onReceiveChannelChooseClick() {
-            val selectedIndex = radioChannelList.indexOf(mStates.receiveChannel.get())
+        fun onCaptureFrequencyClick() {
+            val selectedIndex = captureFrequencyList.indexOf(mStates.captureFrequency.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", radioChannelList,
+                    "", captureFrequencyList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
-                        mStates.receiveChannel.set(text)
+                        mStates.captureFrequency.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
         }
 
         /**
-         * 选择发送频点
+         * 图片分辨率
          */
-        fun onSendChannelChooseClick() {
-            val selectedIndex = radioChannelList.indexOf(mStates.sendChannel.get())
+        fun onImageResolutionClick() {
+            val selectedIndex = imageResolutionList.indexOf(mStates.imageResolution.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", radioChannelList,
+                    "", imageResolutionList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
-                        mStates.sendChannel.set(text)
+                        mStates.imageResolution.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
         }
 
         /**
-         * 选择发射功率
+         * 选择 485外部设备
          */
-        fun onTransmitPowerChooseClick() {
-            val selectedIndex = transmitPowerList.indexOf(mStates.transmitPower.get())
+        fun on485ExternalDeviceChooseClick() {
+            val selectedIndex = rs485ExternalDeviceList.indexOf(mStates.rs485ExternalDevice.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .isDestroyOnDismiss(true) //对于只使���一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", transmitPowerList.toTypedArray(),
+                    "", rs485ExternalDeviceList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
-                        mStates.transmitPower.set(text)
+                        mStates.rs485ExternalDevice.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
         }
 
-        /**
-         * 选择空中速率
-         */
-        fun onAirSpeedChooseClick() {
-            val selectedIndex = airSpeedList.indexOf(mStates.airSpeed.get())
+        fun on485BaudRateChooseClick() {
+            val selectedIndex = rs485BaudRateList.indexOf(mStates.rs485BaudRate.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", airSpeedList.toTypedArray(),
+                    "", rs485BaudRateList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
-                        mStates.airSpeed.set(text)
+                        mStates.rs485BaudRate.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -267,38 +232,8 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    /**
-     * 关闭
-     */
-    private fun disableRadio() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_RADIO_CTRL,
-            "sw=0"
-        )
-        commandItems.add(command)
-
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
     private fun initSaveCommand() {
-        commandItems.clear()
-        val entity = RadioCommunicateEntity(
-            sw = if (mStates.isSupportSwitch.get()) "1" else IOTConstants.NULL_KEY,
-            bcchl = radioChannelList.indexOf(mStates.rtcmChannel.get()).toString(),
-            rxchl = radioChannelList.indexOf(mStates.receiveChannel.get()).toString(),
-            txchl = radioChannelList.indexOf(mStates.sendChannel.get()).toString(),
-            outpwr = mStates.transmitPower.get(),
-            airbaud = mStates.airSpeed.get(),
-        )
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_RADIO_CTRL,
-            entity.toCommandString()
-        )
-        commandItems.add(command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+
     }
 
     override fun lazyLoadData() {
@@ -307,23 +242,21 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
 
     private fun queryData() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_RADIO_CTRL
-        )
+        val command = IOTCommandUtil.getCommand(IOTCommandType.M50_MD_GET_SERIAL_PORT)
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_RADIO_CTRL -> {
-                val result = iotParseManager.parse<RadioCommunicateInfo>(
+            IOTCommandType.M50_MD_GET_SERIAL_PORT -> {//
+                val result = iotParseManager.parse<M50SerialPortParam>(
                     cmdStr,
-                    IOTCommandType.MD_GET_RADIO_CTRL
+                    IOTCommandType.M50_MD_GET_SERIAL_PORT
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询电台参数出错: ${result.message}"
+                        val errMsg = "查询参数出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -332,15 +265,15 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        initRadioData(result.data)
+                        initParamData(result.data)
                     }
                 }
             }
 
-            IOTCommandType.MD_SET_RADIO_CTRL -> {//
+            IOTCommandType.M50_MD_SET_SERIAL_PORT -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置电台参数出错: ${result.message}"
+                        val errMsg = "设置参数出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -359,27 +292,37 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initRadioData(info: RadioCommunicateInfo) {
+    private fun initParamData(info: M50SerialPortParam) {
         try {
-            mStates.isOpened.set(info.sw == "1")
-            info.bcchl.toInt().let {
-                if (it in radioChannelList.indices) {
-                    mStates.rtcmChannel.set(radioChannelList[it])
+            mStates.isExternalPower.set(info.out_power == "1")
+            info.rs232_mode.toIntOrNull()?.let {
+                if (it in rs232ExternalDeviceList.indices) {
+                    mStates.rs232ExternalDevice.set(rs232ExternalDeviceList[it])
                 }
             }
-            info.rxchl.toInt().let {
-                if (it in radioChannelList.indices) {
-                    mStates.receiveChannel.set(radioChannelList[it])
-                }
-            }
-            info.txchl.toInt().let {
-                if (it in radioChannelList.indices) {
-                    mStates.sendChannel.set(radioChannelList[it])
-                }
-            }
-            mStates.transmitPower.set(info.outpwr)
-            mStates.airSpeed.set(info.airbaud)
 
+            captureFrequencyMinList.indexOf(info.cam_module)
+                .let { index ->
+                    if (index in captureFrequencyList.indices) {
+                        mStates.captureFrequency.set(captureFrequencyList[index])
+                    }
+                }
+
+            mStates.imageResolution.set("${info.pixx}x${info.pixy}")
+
+            info.rs485_mode.toIntOrNull()?.let {
+                if (it in rs485ExternalDeviceList.indices) {
+                    mStates.rs485ExternalDevice.set(rs485ExternalDeviceList[it])
+                }
+            }
+
+            info.rs485_baud.toIntOrNull()?.let {
+                if (it in rs485BaudRateList.indices) {
+                    mStates.rs485BaudRate.set(rs485BaudRateList[it])
+                }
+            }
+
+            mStates.rs485ExternalDeviceAddr.set(info.rs485_addr)
         } catch (e: Exception) {
             Timber.e(e)
             addLogItem(Log.ERROR, e.errorMsg)

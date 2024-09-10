@@ -161,7 +161,7 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
                 bleDevice
             )
             nav().navigate(
-                if (productType == ProductType.U_D_1 || productType == ProductType.U_D_2) R.id.action_global_to_udAlarmParamSettingFragment
+                if (productType == ProductType.U_D_1 || productType == ProductType.U_D_2 || productType == ProductType.GNSS_M_5) R.id.action_global_to_udAlarmParamSettingFragment
                 else R.id.action_global_to_alarmParamSettingFragment,
                 bundle
             )

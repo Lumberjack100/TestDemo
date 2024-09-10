@@ -10,7 +10,6 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.RadioCommunicateEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
@@ -21,22 +20,23 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentRadioSettingsBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.RadioSettingsViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.databinding.FragmentChongqingRadioSettingsBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.ChongQingRadioSettingsViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class RadioSettingsFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentRadioSettingsBinding
+class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentChongqingRadioSettingsBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: RadioSettingsViewModel
+    private lateinit var mStates: ChongQingRadioSettingsViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private var radioChannelList: List<String> = emptyList()
@@ -52,7 +52,7 @@ class RadioSettingsFragment : BaseIOTDeviceFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_radio_settings,
+            R.layout.fragment_chongqing_radio_settings,
             BR.stateVM,
             mStates
         )
@@ -61,7 +61,7 @@ class RadioSettingsFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentRadioSettingsBinding
+        binding = getBinding() as FragmentChongqingRadioSettingsBinding
         binding.llToolbar.toolbar.title = "电台设置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
@@ -77,7 +77,7 @@ class RadioSettingsFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         radioChannelList = if (productType == ProductType.LB20S)
-            Utils.getApp().resources.getStringArray(R.array.radio_alarm_broadcast_channel).toList()
+            Utils.getApp().resources.getStringArray(R.array.lb20s_radio_channel).toList()
         else
             Utils.getApp().resources.getStringArray(R.array.radio_channel).toList()
 

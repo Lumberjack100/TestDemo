@@ -11,11 +11,11 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.RadioSettingsViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ChongQingRadioSettingsViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.common.RadioSettingsFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.common.ChongQingRadioSettingsFragment.ClickProxy" />
 
     </data>
 

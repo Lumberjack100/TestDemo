@@ -38,9 +38,9 @@
 
     <fragment
         android:id="@+id/radioSettingsFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.common.RadioSettingsFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.ChongQingRadioSettingsFragment"
         android:label="RadioSettingsFragment"
-        tools:layout="@layout/fragment_radio_settings" />
+        tools:layout="@layout/fragment_chongqing_radio_settings" />
 
     <fragment
         android:id="@+id/lB20SAlarmTestFragment"
