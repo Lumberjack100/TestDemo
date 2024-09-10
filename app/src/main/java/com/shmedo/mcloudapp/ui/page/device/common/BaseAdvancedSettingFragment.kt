@@ -152,6 +152,15 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
             )
         }
 
+        if (communicateWay is NetPlatformConnect) {
+            moduleList.add(
+                AdvancedSettingItem(
+                    "固件升级",
+                    AdvancedSettingItem.Type.FIRMWARE,
+                )
+            )
+        }
+
         moduleList.add(
             AdvancedSettingItem(
                 "重启",
@@ -168,15 +177,6 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
             )
         }
 
-        if (communicateWay is NetPlatformConnect) {
-            moduleList.add(
-                AdvancedSettingItem(
-                    "固件升级",
-                    AdvancedSettingItem.Type.FIRMWARE,
-                )
-            )
-        }
-
         if (communicateWay is BleConnect) {
             moduleList.add(
                 AdvancedSettingItem(
@@ -185,6 +185,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
                 )
             )
         }
+
         binding.recyclerview.models = moduleList
     }
 
