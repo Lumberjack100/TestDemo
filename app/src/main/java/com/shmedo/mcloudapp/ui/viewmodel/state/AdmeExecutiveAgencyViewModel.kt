@@ -24,7 +24,7 @@ class AdmeExecutiveAgencyViewModel : ViewModel() {
     val inclinometerTubeHoleDepth = NonNullObservableField("")//测斜管孔深(m)
     val motorDriveAddress = NonNullObservableField("")//电机驱动器地址
     val decentralizationSpeed = NonNullObservableField("")//下放速度(r/min)
-    val decentralizationWaitingTime = NonNullObservableField("")//下放等待时间(min)
+    val decentralizationWaitingTime = NonNullObservableField("")//下放等待时间(s)
     val pullUpSpeed = NonNullObservableField("")//电机上拉速度
     val pullUpZeroSpeed = NonNullObservableField("")//上拉归零速度
     val measuringDistance = NonNullObservableField("")//测量间距

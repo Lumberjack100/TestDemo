@@ -11,7 +11,7 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class MRWirelessNetEntity(
-    val switch: String = "1",//是否开启4G 0:关闭 1:开启
+    val switch: String = IOTConstants.NULL_KEY,//是否开启4G 0:关闭 1:开启
     val apn: String = IOTConstants.NULL_KEY,
     val username: String = IOTConstants.NULL_KEY,
     val password: String = IOTConstants.NULL_KEY

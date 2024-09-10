@@ -54,7 +54,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
     private val captureFrequencyList =
-        arrayListOf("15分钟/次", "30分钟/次", "1小时/次", " 2 小时/次")
+        arrayListOf("15分钟/次", "30分钟/次", "1小时/次", "2小时/次")
     private val captureFrequencyMinList =
         arrayListOf("15", "30", "60", "120")//抓拍频率
     private val imageResolutionList = arrayListOf("1024x768", "1280x960", "1600x1200", "1920x1080")
