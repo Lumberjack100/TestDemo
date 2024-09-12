@@ -47,8 +47,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimen_size_3"
                 android:text="水面高程："
-                android:textColor="@color/text_color_666666"
-                android:textSize="@dimen/text_size_13"
+                android:textColor="@color/device_home_module_item_normal_text_color"
+                android:textSize="@dimen/device_home_module_item_text_size"
                 app:layout_constraintBaseline_toBaselineOf="@+id/tv_water_surface_elevation"
                 app:layout_constraintStart_toEndOf="@+id/iv_water_surface_elevation" />
 
@@ -57,8 +57,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text='@{stateVM.waterSurfaceElevation}'
-                android:textColor="@color/title_text_color"
-                android:textSize="@dimen/text_size_20"
+                android:textColor="@color/device_home_module_item_normal_text_color"
+                android:textSize="@dimen/text_size_17"
                 android:textStyle="bold"
                 app:layout_constraintBaseline_toBaselineOf="@+id/tv_water_surface_elevation_title"
                 app:layout_constraintStart_toEndOf="@+id/tv_water_surface_elevation_title"
@@ -70,7 +70,7 @@
             android:id="@+id/ll_air_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_5"
+            android:layout_marginTop="@dimen/dimen_size_8"
             app:layout_constraintStart_toStartOf="@+id/ll_water_surface_elevation"
             app:layout_constraintTop_toBottomOf="@+id/ll_water_surface_elevation">
 
@@ -90,8 +90,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimen_size_3"
                 android:text="空高距离："
-                android:textColor="@color/text_color_666666"
-                android:textSize="@dimen/text_size_13"
+                android:textColor="@color/device_home_module_item_normal_text_color"
+                android:textSize="@dimen/device_home_module_item_text_size"
                 app:layout_constraintBaseline_toBaselineOf="@+id/tv_air_distance"
                 app:layout_constraintStart_toEndOf="@+id/iv_air_distance" />
 
@@ -100,8 +100,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text='@{stateVM.airDistance}'
-                android:textColor="@color/title_text_color"
-                android:textSize="@dimen/text_size_13"
+                android:textColor="@color/device_home_module_item_normal_text_color"
+                android:textSize="@dimen/device_home_module_item_text_size"
                 android:textStyle="bold"
                 app:layout_constraintBaseline_toBaselineOf="@+id/tv_air_distance_title"
                 app:layout_constraintStart_toEndOf="@+id/tv_air_distance_title"
@@ -113,7 +113,7 @@
             android:id="@+id/ll_installation_angle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_5"
+            android:layout_marginTop="@dimen/dimen_size_8"
             app:layout_constraintStart_toStartOf="@+id/ll_air_distance"
             app:layout_constraintTop_toBottomOf="@+id/ll_air_distance">
 
@@ -133,8 +133,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimen_size_3"
                 android:text="安装角度："
-                android:textColor="@color/text_color_666666"
-                android:textSize="@dimen/text_size_13"
+                android:textColor="@color/device_home_module_item_normal_text_color"
+                android:textSize="@dimen/device_home_module_item_text_size"
                 app:layout_constraintBaseline_toBaselineOf="@+id/tv_installation_angle"
                 app:layout_constraintStart_toEndOf="@+id/iv_installation_angle" />
 
@@ -143,8 +143,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text='@{stateVM.installationAngle}'
-                android:textColor="@color/title_text_color"
-                android:textSize="@dimen/text_size_13"
+                android:textColor="@color/device_home_module_item_normal_text_color"
+                android:textSize="@dimen/device_home_module_item_text_size"
                 android:textStyle="bold"
                 app:layout_constraintBaseline_toBaselineOf="@+id/tv_installation_angle_title"
                 app:layout_constraintStart_toEndOf="@+id/tv_installation_angle_title"
@@ -156,7 +156,7 @@
             android:id="@+id/ll_measurement_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_5"
+            android:layout_marginTop="@dimen/dimen_size_8"
             app:layout_constraintStart_toStartOf="@+id/ll_installation_angle"
             app:layout_constraintTop_toBottomOf="@+id/ll_installation_angle">
 
@@ -176,8 +176,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimen_size_3"
                 android:text="测量时间："
-                android:textColor="@color/text_color_666666"
-                android:textSize="@dimen/text_size_13"
+                android:textColor="@color/device_home_module_item_normal_text_color"
+                android:textSize="@dimen/device_home_module_item_text_size"
                 app:layout_constraintBaseline_toBaselineOf="@+id/tv_measurement_time"
                 app:layout_constraintStart_toEndOf="@+id/iv_measurement_time" />
 
@@ -186,8 +186,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text='@{stateVM.measurementTime}'
-                android:textColor="@color/title_text_color"
-                android:textSize="@dimen/text_size_13"
+                android:textColor="@color/device_home_module_item_normal_text_color"
+                android:textSize="@dimen/device_home_module_item_text_size"
                 android:textStyle="bold"
                 app:layout_constraintBaseline_toBaselineOf="@+id/tv_measurement_time_title"
                 app:layout_constraintStart_toEndOf="@+id/tv_measurement_time_title"
@@ -197,9 +197,8 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dimen_size_5"
             android:gravity="bottom"
-            android:paddingBottom="@dimen/dimen_size_5"
+            android:paddingBottom="@dimen/dimen_size_8"
             app:layout_constraintBottom_toTopOf="@+id/ll_measurement_time"
             app:layout_constraintEnd_toEndOf="parent">
 
@@ -237,24 +236,25 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_size_2"
                     android:text='@{stateVM.isMeasuring() ? "测量中" : "测量"}'
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_13"
+                    android:textColor="@color/device_home_module_item_normal_text_color"
+                    android:textSize="@dimen/device_home_module_item_text_size"
                     tools:text="测量" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 onClickWithDebouncing="@{()->click.onTakePhotoClick()}"
-                visible="@{!stateVM.isConnectOperateVisible}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimen_size_25"
+                android:layout_marginStart="@dimen/dimen_size_20"
+                android:enabled="@{!stateVM.isConnectOperateVisible}"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="@dimen/dimen_size_20"
                     android:layout_height="@dimen/dimen_size_20"
+                    android:tint="@{!stateVM.isConnectOperateVisible ? @color/colorPrimary : @color/sub_title_text_color}"
                     android:src="@drawable/ic_device_take_photo" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -262,23 +262,24 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_size_2"
                     android:text="拍照"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_13" />
+                    android:textColor="@color/device_home_module_item_normal_text_color"
+                    android:textSize="@dimen/device_home_module_item_text_size" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 onClickWithDebouncing="@{()->click.onGoToSensorDataHistoryClick()}"
-                visible="@{!stateVM.isConnectOperateVisible}"
+                android:enabled="@{!stateVM.isConnectOperateVisible}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimen_size_25"
+                android:layout_marginStart="@dimen/dimen_size_20"
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="@dimen/dimen_size_20"
                     android:layout_height="@dimen/dimen_size_20"
+                    android:tint="@{!stateVM.isConnectOperateVisible ? @color/colorPrimary : @color/sub_title_text_color}"
                     android:src="@drawable/ic_device_sensor_data_history" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -286,8 +287,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_size_2"
                     android:text="历史"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_13" />
+                    android:textColor="@color/device_home_module_item_normal_text_color"
+                    android:textSize="@dimen/device_home_module_item_text_size" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 

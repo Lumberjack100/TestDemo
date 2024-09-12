@@ -8,7 +8,6 @@ import com.blankj.utilcode.util.TimeUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
@@ -16,20 +15,20 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentLb20sAdHocNetworkSettingsBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.model.BleConnect
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.LB20SAdHocNetworkSettingsViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.databinding.FragmentLb20sAdHocNetworkSettingsBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
+import com.shmedo.mcloudapp.model.BleConnect
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.TimeCalibrationPopupView
+import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.LB20SAdHocNetworkSettingsViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 /**
  * @author：gonghe
@@ -190,7 +189,7 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
     /**
      * 重启设备
      */
-    private fun reboot() {
+    override fun reboot() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(IOTCommandType.REBOOT, "devicetype=1")
         commandItems.add(command)

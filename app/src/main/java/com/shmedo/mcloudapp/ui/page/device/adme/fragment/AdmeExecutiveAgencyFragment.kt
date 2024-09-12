@@ -332,19 +332,21 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             return
         }
 
-        if (mStates.inclinometerCompensationTime.get().isEmpty()) {
-            showMessageDialog("请输入测斜仪补偿时间!")
-            return
-        }
-        try {
-            val value = mStates.inclinometerCompensationTime.get().toDouble()
-            if (value < 0) {
-                showMessageDialog("请输入正确的测斜仪补偿时间!")
+        if (mStates.wrapInfo.get().clin_compen != IOTConstants.NULL_KEY) {
+            if (mStates.inclinometerCompensationTime.get().isEmpty()) {
+                showMessageDialog("请输入测斜仪补偿时间!")
                 return
             }
-        } catch (ex: Exception) {
-            Toaster.show("请输入正确的测斜仪补偿时间!")
-            return
+            try {
+                val value = mStates.inclinometerCompensationTime.get().toDouble()
+                if (value < 0) {
+                    showMessageDialog("请输入正确的测斜仪补偿时间!")
+                    return
+                }
+            } catch (ex: Exception) {
+                Toaster.show("请输入正确的测斜仪补偿时间!")
+                return
+            }
         }
 
         if (mStates.measurementCompensationTime.get().isEmpty()) {

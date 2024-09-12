@@ -53,20 +53,16 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)
                     )
                 )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "外部电压",
-                    value = stateInfo.externalVoltage,
-                    defaultValue = "--",
-                    digit = 2,
+                    value = stateInfo.externalVoltage.ifEmpty { "--" },
                     unit = "V",
                 )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "电池电压",
-                    value = stateInfo.batteryVoltage,
-                    defaultValue = "--",
-                    digit = 2,
+                    value = stateInfo.batteryVoltage.ifEmpty { "--" },
                     unit = "V",
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -75,18 +71,16 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = stateInfo.batteryCapacity,
                     unit = "%",
                 )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
-                    name = "温度",
-                    value = stateInfo.batteryTemp,
-                    defaultValue = "--",
-                    digit = 2,
+                    name = "电池温度",
+                    value = stateInfo.batteryTemp.ifEmpty { "--" },
                     unit = "℃",
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "充放状态",
-                    value = if (stateInfo.batteryStatus == "1") "充电中" else "放电中",
+                    value = if (stateInfo.batteryStatus == "1") "充电中" else if (stateInfo.batteryStatus == "0") "放电中" else "--",
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,

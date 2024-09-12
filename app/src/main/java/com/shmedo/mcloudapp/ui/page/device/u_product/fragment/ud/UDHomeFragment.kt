@@ -309,7 +309,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 ),
                 ConfigModule(
                     CommonModule(
-                        name = "CORS测高",
+                        name = "CORS",
                         desc = "CORS参数配置",
                         resID = R.drawable.ic_module_satellite_communications,
                         navId = R.id.action_global_to_udCORSParamFragment

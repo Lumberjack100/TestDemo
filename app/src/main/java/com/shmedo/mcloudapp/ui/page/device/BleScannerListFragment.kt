@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.permissions.OnPermissionCallback
@@ -95,7 +96,7 @@ class BleScannerListFragment : BaseFragment() {
                 discoveredBluetoothDevice = getModel<DiscoveredBluetoothDevice>()
                 discoveredBluetoothDevice?.name?.replaceFirst(Regex("^MD-?"), "")
                     ?.let { deviceToken ->
-                        showLoadingDialog("")
+                        showLoadingDialog(StringUtils.getString(R.string.processing))
                         deviceRequestViewModel.getDeviceDetailInfo(deviceToken)
                     }
             }
@@ -169,11 +170,6 @@ class BleScannerListFragment : BaseFragment() {
             dismissLoadingDialog()
             if (!dataResult.responseStatus.isSuccess) {
                 discoveredBluetoothDevice?.name?.let { deviceToken ->
-                    //CG0 自组网报警网关 特殊处理
-//                    if (!token.endsWith(ProductType.COLLECTOR_G_0.newSuffix)) {
-//                        showMessageDialog("获取设备信息失败!${dataResult.responseStatus.errorMessage}")
-//                        return@observe
-//                    }
                     DeviceHomeActivity.start(
                         mActivity,
                         DeviceInfo(

@@ -293,18 +293,6 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    /**
-     * 重启设备
-     */
-    private fun reboot() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.REBOOT)
-        commandItems.add(command)
-
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
     override fun lazyLoadData() {
         //4G 模式下，直接查询设备工作模式
         if (communicateWay is NetPlatformConnect) {

@@ -85,7 +85,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_size_5"
                     android:layout_marginStart="@dimen/dimen_size_16"
-                    android:text='* "自动"需在 "CORS测高"中配置'
+                    android:text='* "自动"需在 "CORS"中配置'
                     android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_12" />
             </androidx.appcompat.widget.LinearLayoutCompat>

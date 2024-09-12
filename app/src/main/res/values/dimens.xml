@@ -83,8 +83,8 @@
     <dimen name="design_bottom_navigation_text_size" tools:override="true">12sp</dimen>
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">12sp</dimen>
 
+    <dimen name="device_home_module_item_text_size" tools:override="true">14sp</dimen>
     <dimen name="device_home_module_item_space">18dp</dimen>
-
     <dimen name="device_param_scroll_content_padding_bottom">200dp</dimen>
     <dimen name="device_param_submit_button_margin_bottom">60dp</dimen>
 
