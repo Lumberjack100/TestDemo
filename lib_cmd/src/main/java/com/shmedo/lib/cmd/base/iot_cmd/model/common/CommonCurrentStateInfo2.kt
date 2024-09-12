@@ -1,5 +1,6 @@
 package com.shmedo.lib.cmd.base.iot_cmd.model.common
 
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
@@ -58,7 +59,7 @@ data class CommonCurrentStateInfo2(
     var insideHum: String = IOTConstants.NULL_KEY, //内部湿度
     var height: String = IOTConstants.NULL_KEY, //安装高度
     var ldValue: String = IOTConstants.NULL_KEY, //雷达测量值
-    var uptime: String = "--", //设备本次运行时间
+    var uptime: String = AppContants.PLACE_HOLDER_VALUE, //设备本次运行时间
     var mag: String = IOTConstants.NULL_KEY, //磁力方向
     var ccid: String = IOTConstants.NULL_KEY, //CCID
     var imei: String = IOTConstants.NULL_KEY, //IMEI

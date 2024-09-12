@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 android:text='@{stateVM.waterSurfaceElevation}'
                 android:textColor="@color/device_home_module_item_normal_text_color"
-                android:textSize="@dimen/text_size_17"
+                android:textSize="@dimen/text_size_16"
                 android:textStyle="bold"
                 app:layout_constraintBaseline_toBaselineOf="@+id/tv_water_surface_elevation_title"
                 app:layout_constraintStart_toEndOf="@+id/tv_water_surface_elevation_title"
