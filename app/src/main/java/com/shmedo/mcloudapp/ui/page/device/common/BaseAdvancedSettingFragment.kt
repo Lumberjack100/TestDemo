@@ -246,7 +246,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
         when (item.type) {
             AdvancedSettingItem.Type.REBOOT -> {
                 showMessage("确定重启吗？", "温馨提示", "确定", {
-                    restoreFactory()
+                    reboot()
                 }, "取消")
             }
 

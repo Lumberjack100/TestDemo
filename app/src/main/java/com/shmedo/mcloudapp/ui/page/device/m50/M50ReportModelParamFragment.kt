@@ -15,7 +15,6 @@ import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.RtkParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.RtkParamInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
@@ -97,37 +96,24 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initThresholdTitles() {
-        when (productType) {
-            ProductType.U_D_1,
-            ProductType.U_D_2
-            -> {
-                mStates.firstAlarmThresholdTitle.set("一级报警阈值(毫米)")
-                mStates.secondAlarmThresholdTitle.set("二级报警阈值(毫米)")
-                mStates.thirdAlarmThresholdTitle.set("三级报警阈值(毫米)")
-                mStates.fourthAlarmThresholdTitle.set("四级报警阈值(毫米)")
-            }
-
-            else -> {}
-        }
+        mStates.firstAlarmThresholdTitle.set("一级报警阈值(毫米)")
+        mStates.secondAlarmThresholdTitle.set("二级报警阈值(毫米)")
+        mStates.thirdAlarmThresholdTitle.set("三级报警阈值(毫米)")
+        mStates.fourthAlarmThresholdTitle.set("四级报警阈值(毫米)")
     }
 
     private fun resetDefaultParams() {
-        mStates.workModel.set(workModelList[0])
-        mStates.reportModel.set(reportModelList[0])
-        mStates.memsThreshold.set("0")
-        mStates.alarmEnable.set(true)
-        //一级报警阈值
-        mStates.firstAlarmThreshold.set("20")
-        //二级报警阈值
-        mStates.secondAlarmThreshold.set("50")
-        //三级报警阈值
-        mStates.thirdAlarmThreshold.set("100")
-        //四级报警阈值
-        mStates.fourthAlarmThreshold.set("200")
+        mStates.workModel.set(workModelList[0])//默认基准站
+        mStates.reportModel.set(reportModelList[0])//默认低功耗
+        mStates.memsThreshold.set("0")//MEMS阈值
+        mStates.alarmEnable.set(true)//是否启用报警
+        mStates.firstAlarmThreshold.set("20")//一级报警阈值
+        mStates.secondAlarmThreshold.set("50")//二级报警阈值
+        mStates.thirdAlarmThreshold.set("100")//三级报警阈值
+        mStates.fourthAlarmThreshold.set("200")//四级报警阈值
     }
 
     inner class ClickProxy : BaseClickProxy() {
-
         /**
          * 选择工作模式
          */
@@ -197,12 +183,25 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
     private fun initSaveCommand() {
         commandItems.clear()
 
+        if (mStates.memsThreshold.get().isEmpty()) {
+            showMessageDialog("请输入MEMS 触发阈值!")
+            return
+        }
+        try {
+            val value = mStates.memsThreshold.get().toDouble()
+        } catch (ex: Exception) {
+            showMessageDialog("请输入正确的MEMS 触发阈值!")
+            return
+        }
+
         //四级预警未启用
         if (!mStates.alarmEnable.get()) {
             val entity = RtkParamEntity(
                 mode = (workModelList.indexOf(mStates.workModel.get()) + 1).toString(),
-
-                )
+                reportMode = reportModelList.indexOf(mStates.reportModel.get()).toString(),
+                gateAngleVal1 = mStates.memsThreshold.get(),
+                alarmSwitch = "0"
+            )
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_CFG_RTK,
                 entity.toCommandString()
@@ -260,7 +259,9 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
         }
         val entity = RtkParamEntity(
             mode = (workModelList.indexOf(mStates.workModel.get()) + 1).toString(),
+            reportMode = reportModelList.indexOf(mStates.reportModel.get()).toString(),
             gateAngleVal1 = mStates.memsThreshold.get(),
+            alarmSwitch = "1",
             gateDevVal1 = mStates.firstAlarmThreshold.get(),
             gateDevVal2 = mStates.secondAlarmThreshold.get(),
             gateDevVal3 = mStates.thirdAlarmThreshold.get(),
@@ -333,14 +334,13 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
                     mStates.workModel.set(workModelList[it - 1])
                 }
             }
-//            info.frontCalc.toIntOrNull()?.let {
-//                if (it in reportModelList.indices) {
-//                    mStates.reportModel.set(reportModelList[it])
-//                }
-//            }
-
-//            mStates.alarmEnable.set(
-
+            info.reportMode.toIntOrNull()?.let {
+                if (it in reportModelList.indices) {
+                    mStates.reportModel.set(reportModelList[it])
+                }
+            }
+            mStates.memsThreshold.set(info.gateAngleVal1.formatDoubleValue("", 1))
+            mStates.alarmEnable.set(info.alarmSwitch == "1")
             mStates.firstAlarmThreshold.set(info.gateDevVal1.formatDoubleValue("", 1))
             mStates.secondAlarmThreshold.set(info.gateDevVal2.formatDoubleValue("", 1))
             mStates.thirdAlarmThreshold.set(info.gateDevVal3.formatDoubleValue("", 1))

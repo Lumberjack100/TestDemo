@@ -121,14 +121,12 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
 
     private fun resetDefaultParams() {
         mStates.reportModel.set("自动")
-        //一级报警阈值
-        mStates.firstAlarmThreshold.set("20")
-        //二级报警阈值
-        mStates.secondAlarmThreshold.set("50")
-        //三级报警阈值
-        mStates.thirdAlarmThreshold.set("100")
-        //四级报警阈值
-        mStates.fourthAlarmThreshold.set("200")
+
+        mStates.alarmEnable.set(true)//是否启用报警
+        mStates.firstAlarmThreshold.set("20")//一级报警阈值
+        mStates.secondAlarmThreshold.set("50")//二级报警阈值
+        mStates.thirdAlarmThreshold.set("100")//三级报警阈值
+        mStates.fourthAlarmThreshold.set("200")//四级报警阈值
         mStates.reportFrequency.set(reportFrequencyList[0])
     }
 

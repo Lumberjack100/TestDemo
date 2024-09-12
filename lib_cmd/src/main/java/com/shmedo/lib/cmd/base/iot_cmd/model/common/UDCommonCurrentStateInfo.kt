@@ -17,7 +17,7 @@ data class UDCommonCurrentStateInfo(
     @Json(name = "dev_sn")
     val sn: String = IOTConstants.NULL_KEY, //设备SN号
     @Json(name = "dev_sta")
-    val deviceStatus: String = IOTConstants.NULL_KEY, //设备状态 0：正常  -3：异常
+    val deviceStatus: String = IOTConstants.NULL_KEY, //设备状态 0：正常 -2:告警  -3：设备故障
     val rttVersion: String = IOTConstants.NULL_KEY, //RTT操作系统版本  "4.1.0"
     var hardwareVersion: String = IOTConstants.NULL_KEY, //硬件版本 "1"
     @Json(name = "sw_version")

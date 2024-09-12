@@ -85,6 +85,10 @@
 
     <dimen name="device_home_module_item_space">18dp</dimen>
 
+    <dimen name="device_param_scroll_content_padding_bottom">200dp</dimen>
+    <dimen name="device_param_submit_button_margin_bottom">60dp</dimen>
+
+
     <!--圆角矩形-->
     <dimen name="rect_radius_medium">18dp</dimen>
     <dimen name="rect_height_medium">36dp</dimen>

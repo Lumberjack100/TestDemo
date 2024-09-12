@@ -58,7 +58,11 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "设备SN",
                     value = stateInfo.sn,
                 )
-                val deviceStatus = if (stateInfo.deviceStatus == "0") "正常" else "异常"
+                val deviceStatus = when (stateInfo.deviceStatus) {
+                    "-2" -> "告警"
+                    "-3" -> "故障"
+                    else -> "正常"
+                }
                 groupList.add(
                     DeviceStatusInfoBasicItem(
                         name = "设备状态",

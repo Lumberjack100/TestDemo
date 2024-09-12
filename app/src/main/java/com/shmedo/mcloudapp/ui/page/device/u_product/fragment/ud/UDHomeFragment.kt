@@ -868,12 +868,11 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     MoshiUtil.fromJson<UDCommonCurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
 
-                val reportStatus = if (stateInfo.reportStatus == "5") "正常" else "告警"
-                val status = stateInfo.deviceStatus.compareAndReturn(
-                    "0",
-                    reportStatus,
-                    "故障"
-                )
+                val status = when (stateInfo.deviceStatus) {
+                    "-2" -> "告警"
+                    "-3" -> "故障"
+                    else -> "正常"
+                }
                 mHeadStates.productLogoResId.set(
                     status.compareAndReturn(
                         "故障",

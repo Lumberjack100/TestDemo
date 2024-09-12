@@ -14,12 +14,14 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.m50.M50SerialPortParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.m50.M50SerialPortParam
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -27,6 +29,8 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentM50SerialPortParamBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.M50SerialPortParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -233,7 +237,41 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initSaveCommand() {
+        commandItems.clear()
 
+        if (mStates.rs232ExternalDevice.get() != "无" && mStates.rs485ExternalDeviceAddr.get()
+                .isEmpty()
+        ) {
+            showMessageDialog("请输入485外接设备地址!")
+            return
+        }
+
+        val entity = M50SerialPortParamEntity(
+            out_power = if (mStates.isExternalPower.get()) "1" else "0",
+            rs232_mode = rs232ExternalDeviceList.indexOf(mStates.rs232ExternalDevice.get())
+                .toString(),
+            cam_module = if (mStates.rs232ExternalDevice.get() == "无") IOTConstants.NULL_KEY else captureFrequencyMinList[captureFrequencyList.indexOf(
+                mStates.captureFrequency.get()
+            )],
+            pixx = if (mStates.rs232ExternalDevice.get() == "无") IOTConstants.NULL_KEY else imageResolutionList.indexOf(
+                mStates.imageResolution.get()
+            ).toString(),
+            pixy = if (mStates.rs232ExternalDevice.get() == "无") IOTConstants.NULL_KEY else imageResolutionList.indexOf(
+                mStates.imageResolution.get()
+            ).toString(),
+            rs485_mode = rs485ExternalDeviceList.indexOf(mStates.rs485ExternalDevice.get())
+                .toString(),
+            rs485_baud = rs485BaudRateList.indexOf(mStates.rs485BaudRate.get()).toString(),
+            rs485_addr = mStates.rs485ExternalDeviceAddr.get()
+        )
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_CFG_RTK,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun lazyLoadData() {
