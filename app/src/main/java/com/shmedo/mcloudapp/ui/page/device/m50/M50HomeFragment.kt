@@ -148,7 +148,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         toolbarViewModel.toolbarIvActionVisible.set(true)
         mHeadStates.productLogoResId.set(R.drawable.device_logo_m20)
 
-        mHeadStates.productName.set(deviceInfo.productName)
+        mHeadStates.productName.set("一体化GNSS接收机")
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
         mHeadStates.deviceName.set(if (deviceInfo.deviceName == deviceInfo.deviceToken) deviceInfo.productToken else deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
 
