@@ -71,7 +71,7 @@ class M20BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "工作模式",
-                    value = if (stateInfo.workMode.contains("1")) "基准站" else "移动站",
+                    value = if (stateInfo.workMode.contains("1")) "基站" else "测站",
                 )
                 stateInfo.self_check.notNullKey {
                     deviceAbnormalList.clear()

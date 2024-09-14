@@ -191,8 +191,8 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
 
     private fun isNeedSyncLocation(): Boolean {
         return communicateWay is BleConnect && (productType == ProductType.LR200
-                || productType == ProductType.LB20S || productType == ProductType.U_D_1
-                || productType == ProductType.U_D_2 || productType == ProductType.U_R_1 || productType == ProductType.U_I_1)
+                || productType == ProductType.LB20S
+                || productType == ProductType.U_R_1 || productType == ProductType.U_I_1)
     }
 
     /**

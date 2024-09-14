@@ -57,7 +57,7 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
         arrayListOf("15", "30", "60", "120")//抓拍频率
     private val imageResolutionList = arrayListOf("1024x768", "1280x960", "1600x1200", "1920x1080")
     private val rs485ExternalDeviceList = arrayListOf("无", "压电式雨量计")
-    private val rs485BaudRateList = arrayListOf("9600", "19200", "38400", "57600", "115200")
+    private val rs485BaudRateList = arrayListOf("2400", "4800", "9600", "14400", "19200")
 
     override fun initViewModel() {
         super.initViewModel()
@@ -108,8 +108,8 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
         mStates.captureFrequency.set(captureFrequencyList[captureFrequencyList.lastIndex])//默认为 2小时/次
         mStates.imageResolution.set(imageResolutionList[2])//默认为 1600x1200
         mStates.rs485ExternalDevice.set(rs485ExternalDeviceList[0])//默认为 无
-        mStates.rs485BaudRate.set(rs485BaudRateList[0])//默认为 9600
-        mStates.rs485ExternalDeviceAddr.set("1")//默认为 1
+        mStates.rs485BaudRate.set(rs485BaudRateList[2])//默认为 9600
+        mStates.rs485ExternalDeviceAddr.set("2")//默认为 2
     }
 
     inner class ClickProxy : BaseClickProxy() {

@@ -68,11 +68,11 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.model}"
-                            tools:text="基准站" />
+                            tools:text="基站" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        visible='@{stateVM.model.equals("移动站")}'
+                        visible='@{stateVM.model.equals("测站")}'
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onFrontCalcChooseClick()}"
                         android:layout_marginTop="@dimen/dimen_size_1"

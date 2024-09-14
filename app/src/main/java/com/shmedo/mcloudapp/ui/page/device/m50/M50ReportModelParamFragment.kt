@@ -47,8 +47,8 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: M50ReportModelParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
-    private val workModelList = arrayListOf("基准站", "移动站")
-    private val reportModelList = arrayListOf("低功耗", "正常")
+    private val workModelList = arrayListOf("基站", "测站")
+    private val reportModelList = arrayListOf("常在线", "低功耗")
 
 
     override fun initViewModel() {
@@ -103,10 +103,10 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun resetDefaultParams() {
-        mStates.workModel.set(workModelList[0])//默认基准站
-        mStates.reportModel.set(reportModelList[0])//默认低功耗
-        mStates.memsThreshold.set("0")//MEMS阈值
-        mStates.alarmEnable.set(true)//是否启用报警
+        mStates.workModel.set(workModelList[1])//默认测站
+        mStates.reportModel.set(reportModelList[0])//默认常在线
+        mStates.memsThreshold.set("5")//MEMS阈值
+        mStates.alarmEnable.set(false)//是否启用报警
         mStates.firstAlarmThreshold.set("20")//一级报警阈值
         mStates.secondAlarmThreshold.set("50")//二级报警阈值
         mStates.thirdAlarmThreshold.set("100")//三级报警阈值

@@ -170,8 +170,9 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_data_server_address"
                             style="@style/Common_EditItem_EditText_Style"
-                            android:text="@={stateVM.rs485ExternalDeviceAddr}"
-                            app:lengthFilter="@{100}" />
+                            android:inputType="number"
+                            android:maxLength="5"
+                            android:text="@={stateVM.rs485ExternalDeviceAddr}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
                 </androidx.appcompat.widget.LinearLayoutCompat>
