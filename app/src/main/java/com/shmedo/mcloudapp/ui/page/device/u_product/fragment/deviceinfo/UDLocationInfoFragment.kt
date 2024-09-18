@@ -109,6 +109,11 @@ class UDLocationInfoFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    override fun initData() {
+        super.initData()
+        moveCameraToLocation(LatLng(31.21032874, 121.59840681))
+    }
+
     override fun lazyLoadData() {
         startTimer()
         queryInfo()

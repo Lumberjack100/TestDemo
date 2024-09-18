@@ -50,8 +50,8 @@ class UDSensorDataHistoryFragment : BaseFragment() {
 
     private val modelNameList = arrayListOf("液面高程", "安装角度", "抓拍图片")
     private val modelTokenList = arrayListOf("904", "206", "10001")
-    private val modelFieldList = arrayListOf("高度(m)", "角度(°)", "操作")
-    private val modelFieldJsonPathList = arrayListOf("ullage", "z")
+    private val modelValueDescList = arrayListOf("高度(m)", "角度(°)", "操作")
+    private val modelFieldJsonPathList = arrayListOf("liquid_surface_alt", "z")
 
     private val sensorIDList: MutableList<String> = arrayListOf()
     private val mImageData: ArrayList<LocalMedia> = ArrayList()
@@ -105,7 +105,7 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                         R.layout.item_ud_sensor_data_header -> {
                             val itemBinding = getBinding<ItemUdSensorDataHeaderBinding>()
                             itemBinding.tvValueName.text =
-                                modelFieldList[modelNameList.indexOf(mStates.modelName.get())]
+                                modelValueDescList[modelNameList.indexOf(mStates.modelName.get())]
                         }
 
                         R.layout.item_ud_sensor_data -> {
