@@ -21,7 +21,7 @@ import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.UDCommonCurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -863,7 +863,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<UDCommonCurrentStateInfo>(content)
+                    MoshiUtil.fromJson<UDCurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
 
                 val reportStatus = if (stateInfo.reportStatus == "5") "正常" else "告警"

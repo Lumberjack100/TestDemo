@@ -1,4 +1,4 @@
-package com.shmedo.lib.cmd.base.iot_cmd.model.m50
+package com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m
 
 /**
  * 创建者：gonghe

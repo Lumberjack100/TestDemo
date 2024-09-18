@@ -2,7 +2,7 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.m50
 
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
-import com.shmedo.lib.cmd.base.iot_cmd.model.m50.M50SerialPortParam
+import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50SerialPortParam
 
 /**
  * 创建者：gonghe

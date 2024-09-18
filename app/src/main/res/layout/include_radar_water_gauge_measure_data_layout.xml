@@ -46,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimen_size_3"
-                android:text="水面高程："
+                android:text="液面高程："
                 android:textColor="@color/device_home_module_item_normal_text_color"
                 android:textSize="@dimen/device_home_module_item_text_size"
                 app:layout_constraintBaseline_toBaselineOf="@+id/tv_water_surface_elevation"

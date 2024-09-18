@@ -123,7 +123,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
             commandItems.clear()
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_SET_MUD_LEVEL_METER_DIFF_LOCATE,
-                "switch=0"
+                "switch=1"
             )
             commandItems.add(command)
 

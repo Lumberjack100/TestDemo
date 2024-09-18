@@ -20,7 +20,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.AlarmTriggerValueInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.UDCommonCurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -407,13 +407,13 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
     private fun initStatusInfo(content: String) {
         launchWithViewLifecycle {
             try {
-                val udCommonCurrentStateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<UDCommonCurrentStateInfo>(content)
+                val udCurrentStateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<UDCurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
 
-                mStates.reportModel.set(if (udCommonCurrentStateInfo.reportMode == "0") "自动" else "手动")
-                mStates.alarmEnable.set(udCommonCurrentStateInfo.levelFourWarningEnabled == "1")
-                reportFrequencyMinList.indexOf(udCommonCurrentStateInfo.reportFrequency)
+                mStates.reportModel.set(if (udCurrentStateInfo.reportMode == "0") "自动" else "手动")
+                mStates.alarmEnable.set(udCurrentStateInfo.levelFourWarningEnabled == "1")
+                reportFrequencyMinList.indexOf(udCurrentStateInfo.reportFrequency)
                     .let { index ->
                         if (index in reportFrequencyList.indices) {
                             mStates.reportFrequency.set(reportFrequencyList[index])

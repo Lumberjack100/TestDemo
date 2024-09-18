@@ -48,7 +48,7 @@ class UDSensorDataHistoryFragment : BaseFragment() {
 
     private lateinit var deviceInfo: DeviceInfo
 
-    private val modelNameList = arrayListOf("水面距离", "垂直方向角度", "抓拍图片")
+    private val modelNameList = arrayListOf("液面高程", "安装角度", "抓拍图片")
     private val modelTokenList = arrayListOf("904", "206", "10001")
     private val modelFieldList = arrayListOf("高度(m)", "角度(°)", "操作")
     private val modelFieldJsonPathList = arrayListOf("ullage", "z")
@@ -118,14 +118,14 @@ class UDSensorDataHistoryFragment : BaseFragment() {
 
                             val itemMap = getModel<Map<String, String>>()
                             when (mStates.modelName.get()) {
-                                "水面距离" -> {
+                                "液面高程" -> {
                                     itemBinding.tvTime.text =
                                         TimeUtils.date2String(TimeUtils.string2Date(itemMap["time"]))
                                     itemBinding.tvName.text = mStates.modelName.get()
                                     itemBinding.tvValue.text = itemMap[modelFieldJsonPathList[0]]
                                 }
 
-                                "垂直方向角度" -> {
+                                "安装角度" -> {
                                     itemBinding.tvTime.text =
                                         TimeUtils.date2String(TimeUtils.string2Date(itemMap["time"]))
                                     itemBinding.tvName.text = mStates.modelName.get()
