@@ -191,8 +191,8 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
 
     private fun isNeedSyncLocation(): Boolean {
         return communicateWay is BleConnect && (productType == ProductType.LR200
-                || productType == ProductType.LB20S || productType == ProductType.U_D_1
-                || productType == ProductType.U_D_2 || productType == ProductType.U_R_1 || productType == ProductType.U_I_1)
+                || productType == ProductType.LB20S
+                || productType == ProductType.U_R_1 || productType == ProductType.U_I_1)
     }
 
     /**
@@ -246,7 +246,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
         when (item.type) {
             AdvancedSettingItem.Type.REBOOT -> {
                 showMessage("确定重启吗？", "温馨提示", "确定", {
-                    restoreFactory()
+                    reboot()
                 }, "取消")
             }
 

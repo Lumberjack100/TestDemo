@@ -9,7 +9,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.common.RtkParamInfo
  * 创建时间：2024/4/25
  * 描述： TODO
  */
-class RtkParamInfoParser: IOTCommandParser<RtkParamInfo> {
+class RtkParamInfoParser : IOTCommandParser<RtkParamInfo> {
     override fun parseInstance(keyValueMap: Map<String, String>): RtkParamInfo {
         return RtkParamInfo().apply {
             mode = keyValueMap.getOrDefault("mode", mode)
@@ -32,6 +32,8 @@ class RtkParamInfoParser: IOTCommandParser<RtkParamInfo> {
             gateDevVal4 = keyValueMap.getOrDefault("gateDevVal4", gateDevVal4)
             rtkMode = keyValueMap.getOrDefault("rtkMode", rtkMode)
             obs = keyValueMap.getOrDefault("obs", obs)
+            alarmSwitch = keyValueMap.getOrDefault("alarmSwitch", alarmSwitch)
+            reportMode = keyValueMap.getOrDefault("reportMode", reportMode)
         }
     }
 

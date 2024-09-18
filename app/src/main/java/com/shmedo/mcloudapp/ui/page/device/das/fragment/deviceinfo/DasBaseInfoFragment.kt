@@ -6,6 +6,7 @@ import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.mutable
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasBaseInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasSolarStatusInfo
@@ -158,7 +159,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 groupList,
                 name = "内部电量",
                 value = baseInfo.involt.replace("%", ""),
-                defaultValue = "--",
+                defaultValue = AppContants.PLACE_HOLDER_VALUE,
                 downLimitValue = 10.0,
                 digit = 2,
                 unit = "%",
@@ -167,7 +168,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 groupList,
                 name = "外部供电电压",
                 value = baseInfo.outvolt,
-                defaultValue = "--",
+                defaultValue = AppContants.PLACE_HOLDER_VALUE,
                 downLimitValue = 5.0,
                 digit = 2,
                 unit = "V",
@@ -290,7 +291,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         groupList,
                         name = "温度",
                         value = info.inth.temp,
-                        defaultValue = "--",
+                        defaultValue = AppContants.PLACE_HOLDER_VALUE,
                         digit = 2,
                         unit = "℃",
                     )
@@ -298,7 +299,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         groupList,
                         name = "湿度",
                         value = info.inth.humi,
-                        defaultValue = "--",
+                        defaultValue = AppContants.PLACE_HOLDER_VALUE,
                         digit = 2,
                         unit = "%",
                     )
@@ -320,7 +321,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         groupList,
                         name = "温度",
                         value = info.outth.temp,
-                        defaultValue = "--",
+                        defaultValue = AppContants.PLACE_HOLDER_VALUE,
                         digit = 2,
                         unit = "℃",
                     )
@@ -328,7 +329,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         groupList,
                         name = "湿度",
                         value = info.outth.humi,
-                        defaultValue = "--",
+                        defaultValue = AppContants.PLACE_HOLDER_VALUE,
                         digit = 2,
                         unit = "%",
                     )

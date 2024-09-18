@@ -437,7 +437,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     /**
      * 重启设备
      */
-    private fun reboot() {
+    override fun reboot() {
         commandItems.clear()
         val command =
             MDCommandUtil.getCommand(

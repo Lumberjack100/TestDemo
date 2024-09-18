@@ -4,19 +4,18 @@
     <color name="colorPrimary_10">#1A0096FF</color>
     <color name="colorPrimaryDark">#0288D1</color>
     <color name="colorAccent">#00b3fb</color>
-
     <color name="black">#FF000000</color>
-    <color name="bg_black_3">#08000000</color>
-    <color name="bg_black_4">#0A000000</color>
-    <color name="bg_black_7">#12000000</color>
-    <color name="bg_black_15">#26000000</color>
-    <color name="bg_black_20">#33000000</color>
-    <color name="bg_black_25">#40000000</color>
-    <color name="bg_black_40">#66000000</color>
-    <color name="bg_black_50">#80000000</color>
-    <color name="bg_black_60">#99000000</color>
-    <color name="bg_black_70">#B3000000</color>
-    <color name="bg_black_90">#E6000000</color>
+    <color name="black_3">#08000000</color>
+    <color name="black_4">#0A000000</color>
+    <color name="black_7">#12000000</color>
+    <color name="black_15">#26000000</color>
+    <color name="black_20">#33000000</color>
+    <color name="black_25">#40000000</color>
+    <color name="black_40">#66000000</color>
+    <color name="black_50">#80000000</color>
+    <color name="black_60">#99000000</color>
+    <color name="black_70">#B3000000</color>
+    <color name="black_90">#E6000000</color>
     <color name="darker_gray_27">#45aaaaaa</color>
     <color name="gray_15">#26666666</color>
     <color name="gray_E0E0E0">#E0E0E0</color>
@@ -92,6 +91,9 @@
     <color name="connect_ble_foreground">@color/colorPrimary</color>
     <color name="disconnect_ble_foreground">#666666</color>
 
+    <color name="device_home_module_item_normal_text_color">@color/title_text_color</color>
+    <color name="device_home_module_item_disable_text_color">@color/sub_title_text_color</color>
+
     <!-- MR702  -->
     <color name="mr_communication_data_table_row_header_backround">#EBF7FF</color>
     <color name="mr_interface_sensor_flag_in_backround">@color/colorPrimary</color>
@@ -101,6 +103,7 @@
     <color name="mr702_port_tab_checked_text_color">#FFFFFFFF</color>
     <color name="mr702_port_tab_unchecked_text_color">#65A2CD</color>
 
+    <!-- CommandDebugLog  -->
     <color name="receive_data_color">#ff088c32</color>
     <color name="send_data_color">@color/colorPrimary</color>
 

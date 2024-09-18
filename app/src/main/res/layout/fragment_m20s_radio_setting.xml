@@ -37,7 +37,7 @@
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_reset"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <androidx.core.widget.NestedScrollView
@@ -47,25 +47,45 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/dimen_size_25">
+                    android:paddingTop="@dimen/dimen_size_1"
+                    android:paddingBottom="@dimen/device_param_scroll_content_padding_bottom">
+
+                    <RelativeLayout
+                        style="@style/SwitchButton_LayoutStyle"
+                        visible="@{stateVM.isSupportSwitch()}"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/SwitchButton_TitleStyle"
+                            android:text="电台启用" />
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            style="@style/SwitchButton_ButtonStyle"
+                            checkedImmediatelyNoEvent="@{stateVM.isOpened}"
+                            android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
+                            app:kswAnimationDuration="100"
+                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
+
+                    </RelativeLayout>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onRTCMDataChannelChooseClick()}"
                         android:layout_marginTop="@dimen/dimen_size_1"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:enabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isEditable }"
+                            textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:text="RTCM数据频点" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
-                            textViewEnabled="@{stateVM.isEditable }"
+                            textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.rtcmChannel}"
                             tools:text="410.00MHz" />
@@ -75,16 +95,16 @@
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onReceiveChannelChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:enabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:text="报警接收频点" />
+                            textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
+                            android:text="广播接收频点" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
-                            textViewEnabled="@{stateVM.isEditable }"
+                            textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.receiveChannel}"
                             tools:text="410.00MHz" />
@@ -94,16 +114,16 @@
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onSendChannelChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:enabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isEditable }"
+                            textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:text="报警发射频点" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
-                            textViewEnabled="@{stateVM.isEditable }"
+                            textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.sendChannel}"
                             tools:text="5" />
@@ -113,16 +133,16 @@
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onTransmitPowerChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:enabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isEditable }"
+                            textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:text="发射功率" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
-                            textViewEnabled="@{stateVM.isEditable }"
+                            textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.transmitPower}"
                             tools:text="5" />
@@ -132,21 +152,20 @@
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onAirSpeedChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:enabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isEditable }"
+                            textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:text="空中速率" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
-                            textViewEnabled="@{stateVM.isEditable }"
+                            textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.airSpeed}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
-
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
@@ -155,27 +174,25 @@
             android:id="@+id/btn_reset"
             style="@style/ResetButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onResetClick()}"
-            visible="@{stateVM.isEditable }"
+            visible="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
             android:layout_marginTop="0dp"
-            android:layout_marginBottom="35dp"
+            android:layout_marginBottom="30dp"
             android:text="@string/button_reset_text"
             app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/refreshLayout" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-            visible="@{stateVM.isEditable }"
+            visible="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
             android:layout_marginTop="0dp"
-            android:layout_marginBottom="55dp"
+            android:layout_marginBottom="@dimen/device_param_submit_button_margin_bottom"
             android:text="@string/button_save_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_reset" />
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

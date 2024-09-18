@@ -380,7 +380,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     /**
      * 重启设备
      */
-    private fun reboot() {
+    protected open fun reboot() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(IOTCommandType.REBOOT)
         commandItems.add(command)

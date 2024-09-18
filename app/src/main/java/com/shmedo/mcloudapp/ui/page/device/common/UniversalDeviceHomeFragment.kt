@@ -9,6 +9,7 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
@@ -123,7 +124,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
         val deviceName =
             if (deviceInfo.deviceName == deviceInfo.deviceToken) deviceInfo.productToken else deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken }
         mHeadStates.deviceName.set(deviceName.replace("BHY-RDS", "BHY-3S"))
-        mHeadStates.firmwareVersion.set(deviceInfo.firmwareVersion.ifEmpty { "--" })
+        mHeadStates.firmwareVersion.set(deviceInfo.firmwareVersion.ifEmpty { AppContants.PLACE_HOLDER_VALUE })
         mHeadStates.isRunningStateVisible.set(false)
         mHeadStates.isPlatformListVisible.set(false)
 
@@ -290,18 +291,6 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
             mCommandResponseStates.isResponseLoading.set(true)
             showTimeCalibrationPopup()
         }
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
-     * 重启设备
-     */
-    private fun reboot() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.REBOOT)
-        commandItems.add(command)
-
-        showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 

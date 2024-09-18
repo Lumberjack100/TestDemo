@@ -11,7 +11,7 @@ class UDSensorParamViewModel : ViewModel() {
     val altitude = NonNullObservableField("") //海拔
 
     val captureFrequency = NonNullObservableField("")//抓拍频率
-    val imageResolution = NonNullObservableField("")//图片分辨率 640*480、1920*1080、2560*1920；默认为1920*1080
+    val imageResolution = NonNullObservableField("")//图片分辨率
 
     val altitudeMeasureMode = NonNullObservableField("")//模式 自动 手动
 

@@ -1,4 +1,4 @@
-package com.shmedo.lib.cmd.base.iot_cmd.model.common
+package com.shmedo.lib.cmd.base.iot_cmd.model.u_product
 
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.squareup.moshi.Json
@@ -11,13 +11,13 @@ import com.squareup.moshi.JsonClass
  *
  */
 @JsonClass(generateAdapter = true)
-data class UDCommonCurrentStateInfo(
+data class UDCurrentStateInfo(
     @Json(name = "dev_type")
     val deviceType: String = IOTConstants.NULL_KEY, //设备型号  "MD-DR030"
     @Json(name = "dev_sn")
     val sn: String = IOTConstants.NULL_KEY, //设备SN号
     @Json(name = "dev_sta")
-    val deviceStatus: String = IOTConstants.NULL_KEY, //设备状态 0：正常  -3：异常
+    val deviceStatus: String = IOTConstants.NULL_KEY, //设备状态 0：正常 -2:告警  -3：设备故障
     val rttVersion: String = IOTConstants.NULL_KEY, //RTT操作系统版本  "4.1.0"
     var hardwareVersion: String = IOTConstants.NULL_KEY, //硬件版本 "1"
     @Json(name = "sw_version")
@@ -37,9 +37,9 @@ data class UDCommonCurrentStateInfo(
     @Json(name = "rept_sta")
     val reportStatus: String = IOTConstants.NULL_KEY, //上报状态 1：一级报警   2：二级报警  3：三级报警  4：四级报警 5：正常
     @Json(name = "rept_freq")
-    val reportFrequency: String = IOTConstants.NULL_KEY, //上报频率  单位：秒 "300"
+    val reportFrequency: String = IOTConstants.NULL_KEY, //上报频率  单位：分钟/次 "120"
     @Json(name = "cap_freq")
-    val captureFrequency: String = IOTConstants.NULL_KEY, //抓拍频率 单位：秒 "7200"
+    val captureFrequency: String = IOTConstants.NULL_KEY, //抓拍频率 单位：分钟/次 "120"
     @Json(name = "warning_switch")
     val levelFourWarningEnabled: String = IOTConstants.NULL_KEY, //四级预警启用 0：启用  1：不启用
     @Json(name = "mobile_net")
@@ -70,7 +70,7 @@ data class UDCommonCurrentStateInfo(
     @Json(name = "bat_temp")
     val batteryTemp: String = IOTConstants.NULL_KEY, //电池温度  "28.15"
     @Json(name = "bat_sta")
-    val batteryStatus: String = IOTConstants.NULL_KEY, //电池充放状态   0: 未充电  1: 充电中
+    val batteryStatus: String = IOTConstants.NULL_KEY, //电池充放状态   0: 放电中  1: 充电中 -3：电池异常
     @Json(name = "bat_health")
     val batteryHealth: String = IOTConstants.NULL_KEY, //电池健康  "100"
     @Json(name = "inside_temp")
@@ -98,7 +98,7 @@ data class UDCommonCurrentStateInfo(
     @Json(name = "lat")
     val latitude: String = IOTConstants.NULL_KEY, //纬度  "31.212460"
     @Json(name = "ld_module_gap")
-    val radarMeasureInterval: String = IOTConstants.NULL_KEY, //雷达测量间隔 单位：秒  "60"
+    val radarMeasureInterval: String = IOTConstants.NULL_KEY, //雷达测量间隔 单位：分钟  "60"
     @Json(name = "angle_threshol")
     val installAngleOffsetThreshold: String = IOTConstants.NULL_KEY, //安装角度偏移阈值  "0.0"
     @Json(name = "alt_get_mode")

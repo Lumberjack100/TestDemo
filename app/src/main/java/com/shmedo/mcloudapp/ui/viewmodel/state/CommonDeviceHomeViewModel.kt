@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.ui.viewmodel.state
 
 import androidx.lifecycle.ViewModel
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
@@ -12,7 +13,7 @@ open class CommonDeviceHomeViewModel : ViewModel() {
     val productName = NonNullObservableField("")
     val deviceName = NonNullObservableField("")
     val deviceToken = NonNullObservableField("")
-    val firmwareVersion = NonNullObservableField("--")
+    val firmwareVersion = NonNullObservableField("")
 
     val isDeviceStateTagHighLight = NonNullObservableField(true)
     val deviceStateTagText = NonNullObservableField("在线")
@@ -23,7 +24,7 @@ open class CommonDeviceHomeViewModel : ViewModel() {
 
     val isRunningStateVisible = NonNullObservableField(false) //是否显示设备运行状态
     val isRunningStateNormal = NonNullObservableField(false)
-    val runningStateText = NonNullObservableField("--")
+    val runningStateText = NonNullObservableField(AppContants.PLACE_HOLDER_VALUE)
 
     val isIOTPlatformStateVisible = NonNullObservableField(false)//是否显示米度物联网平台在线状态
     val iotPlatformStateText = NonNullObservableField("")

@@ -3,7 +3,7 @@ package com.shmedo.mcloudapp.ui.viewmodel.state
 import androidx.lifecycle.ViewModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
-class RadioSettingsViewModel : ViewModel() {
+class ChongQingRadioSettingsViewModel : ViewModel() {
     val isEditable = NonNullObservableField(true)
 
     val receiveChannel = NonNullObservableField("")//报警接收频点

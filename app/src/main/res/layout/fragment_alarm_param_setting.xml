@@ -49,7 +49,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="200dp">
+                    android:paddingBottom="@dimen/device_param_scroll_content_padding_bottom">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_GroupName_Style"
@@ -88,8 +88,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[0-255]"
-                            android:text="@={stateVM.broadcastTimes}"
                             android:inputType="number"
+                            android:text="@={stateVM.broadcastTimes}"
                             app:lengthFilter="@{3}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -107,8 +107,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
-                            android:text="@={stateVM.firstAlarmVoice}"
                             android:inputType="number"
+                            android:text="@={stateVM.firstAlarmVoice}"
                             app:lengthFilter="@{3}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -125,8 +125,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
-                            android:text="@={stateVM.secondAlarmVoice}"
                             android:inputType="number"
+                            android:text="@={stateVM.secondAlarmVoice}"
                             app:lengthFilter="@{3}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -143,8 +143,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
-                            android:text="@={stateVM.thirdAlarmVoice}"
                             android:inputType="number"
+                            android:text="@={stateVM.thirdAlarmVoice}"
                             app:lengthFilter="@{3}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -161,8 +161,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
-                            android:text="@={stateVM.fourthAlarmVoice}"
                             android:inputType="number"
+                            android:text="@={stateVM.fourthAlarmVoice}"
                             app:lengthFilter="@{3}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -264,8 +264,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
-                            android:text="@={stateVM.firstAlarmReportInterval}"
                             android:inputType="number"
+                            android:text="@={stateVM.firstAlarmReportInterval}"
                             app:lengthFilter="@{4}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -283,8 +283,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
-                            android:text="@={stateVM.secondAlarmReportInterval}"
                             android:inputType="number"
+                            android:text="@={stateVM.secondAlarmReportInterval}"
                             app:lengthFilter="@{4}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -302,8 +302,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
-                            android:text="@={stateVM.thirdAlarmReportInterval}"
                             android:inputType="number"
+                            android:text="@={stateVM.thirdAlarmReportInterval}"
                             app:lengthFilter="@{4}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -321,8 +321,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
-                            android:text="@={stateVM.fourthAlarmReportInterval}"
                             android:inputType="number"
+                            android:text="@={stateVM.fourthAlarmReportInterval}"
                             app:lengthFilter="@{4}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -347,7 +347,7 @@
             onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
             visible="@{stateVM.isOpened }"
             android:layout_marginTop="0dp"
-            android:layout_marginBottom="35dp"
+            android:layout_marginBottom="@dimen/device_param_submit_button_margin_bottom"
             android:text="@string/button_save_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

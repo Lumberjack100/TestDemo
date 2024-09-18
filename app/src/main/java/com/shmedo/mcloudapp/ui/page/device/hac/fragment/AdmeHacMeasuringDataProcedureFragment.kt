@@ -577,7 +577,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     private fun getMinTime(): String {
         val decimalFormat = DecimalFormat("#", DecimalFormatSymbols(Locale.getDefault()))
         mStates.motionStateWrapper.get().let { motionState ->
-            if (TextUtils.isEmpty(motionState.waittime)) return "--"
+            if (TextUtils.isEmpty(motionState.waittime)) return AppContants.PLACE_HOLDER_VALUE
             try {
                 val second = motionState.waittime.toInt()
                 val min = second.toFloat() / 60 + 1
@@ -585,7 +585,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 return decimalFormat.format(min.toDouble())
             } catch (exception: Exception) {
                 Timber.e(exception)
-                return "--"
+                return AppContants.PLACE_HOLDER_VALUE
             }
         }
     }

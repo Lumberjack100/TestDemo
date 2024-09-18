@@ -20,7 +20,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.AlarmTriggerValueInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.UDCommonCurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -29,6 +29,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentUdReportModelParamBinding
+import com.shmedo.mcloudapp.extensions.formatDoubleValue
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -41,9 +42,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
 
 /**
  * @author：gonghe
@@ -61,7 +59,6 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         arrayListOf("15分钟/次", "30分钟/次", "1小时/次", "2小时/次")//上报频率
     private val reportFrequencyMinList =
         arrayListOf("15", "30", "60", "120")//上报频率
-    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
 
     override fun initViewModel() {
@@ -124,14 +121,12 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
 
     private fun resetDefaultParams() {
         mStates.reportModel.set("自动")
-        //一级报警阈值
-        mStates.firstAlarmThreshold.set("20")
-        //二级报警阈值
-        mStates.secondAlarmThreshold.set("50")
-        //三级报警阈值
-        mStates.thirdAlarmThreshold.set("100")
-        //四级报警阈值
-        mStates.fourthAlarmThreshold.set("200")
+
+        mStates.alarmEnable.set(true)//是否启用报警
+        mStates.firstAlarmThreshold.set("20")//一级报警阈值
+        mStates.secondAlarmThreshold.set("50")//二级报警阈值
+        mStates.thirdAlarmThreshold.set("100")//三级报警阈值
+        mStates.fourthAlarmThreshold.set("200")//四级报警阈值
         mStates.reportFrequency.set(reportFrequencyList[0])
     }
 
@@ -412,13 +407,13 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
     private fun initStatusInfo(content: String) {
         launchWithViewLifecycle {
             try {
-                val udCommonCurrentStateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<UDCommonCurrentStateInfo>(content)
+                val udCurrentStateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<UDCurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
 
-                mStates.reportModel.set(if (udCommonCurrentStateInfo.reportMode == "0") "自动" else "手动")
-                mStates.alarmEnable.set(udCommonCurrentStateInfo.levelFourWarningEnabled == "1")
-                reportFrequencyMinList.indexOf(udCommonCurrentStateInfo.reportFrequency)
+                mStates.reportModel.set(if (udCurrentStateInfo.reportMode == "0") "自动" else "手动")
+                mStates.alarmEnable.set(udCurrentStateInfo.levelFourWarningEnabled == "1")
+                reportFrequencyMinList.indexOf(udCurrentStateInfo.reportFrequency)
                     .let { index ->
                         if (index in reportFrequencyList.indices) {
                             mStates.reportFrequency.set(reportFrequencyList[index])
@@ -435,20 +430,10 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
      * 初始化报警阈值数据
      */
     private fun initAlarmTriggerValueData(info: AlarmTriggerValueInfo) {
-        decimalFormat.applyPattern("#.#")
-
-        info.level1.toDoubleOrNull()?.let {
-            mStates.firstAlarmThreshold.set(decimalFormat.format(it))
-        }
-        info.level2.toDoubleOrNull()?.let {
-            mStates.secondAlarmThreshold.set(decimalFormat.format(it))
-        }
-        info.level3.toDoubleOrNull()?.let {
-            mStates.thirdAlarmThreshold.set(decimalFormat.format(it))
-        }
-        info.level4.toDoubleOrNull()?.let {
-            mStates.fourthAlarmThreshold.set(decimalFormat.format(it))
-        }
+        mStates.firstAlarmThreshold.set(info.level1.formatDoubleValue("", 1))
+        mStates.secondAlarmThreshold.set(info.level2.formatDoubleValue("", 1))
+        mStates.thirdAlarmThreshold.set(info.level3.formatDoubleValue("", 1))
+        mStates.fourthAlarmThreshold.set(info.level4.formatDoubleValue("", 1))
     }
 
     override fun onResume() {

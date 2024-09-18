@@ -130,6 +130,13 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
+            ProductType.GNSS_M_5 -> {
+                navController.setGraph(
+                    R.navigation.m50_graph,
+                    bundle2
+                )
+            }
+
             ProductType.M20 -> {
                 navController.setGraph(
                     R.navigation.m20_graph,

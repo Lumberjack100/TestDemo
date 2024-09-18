@@ -41,7 +41,7 @@
             android:gravity="center"
             android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_13"
-            tools:text="水面距离" />
+            tools:text="液面高程" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_value"

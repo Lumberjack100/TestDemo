@@ -21,7 +21,7 @@ import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.UDCommonCurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -309,7 +309,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 ),
                 ConfigModule(
                     CommonModule(
-                        name = "CORS测高",
+                        name = "CORS",
                         desc = "CORS参数配置",
                         resID = R.drawable.ic_module_satellite_communications,
                         navId = R.id.action_global_to_udCORSParamFragment
@@ -865,15 +865,14 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<UDCommonCurrentStateInfo>(content)
+                    MoshiUtil.fromJson<UDCurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
 
-                val reportStatus = if (stateInfo.reportStatus == "5") "正常" else "告警"
-                val status = stateInfo.deviceStatus.compareAndReturn(
-                    "0",
-                    reportStatus,
-                    "故障"
-                )
+                val status = when (stateInfo.deviceStatus) {
+                    "-2" -> "告警"
+                    "-3" -> "故障"
+                    else -> "正常"
+                }
                 mHeadStates.productLogoResId.set(
                     status.compareAndReturn(
                         "故障",

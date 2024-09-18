@@ -6,8 +6,9 @@ import com.blankj.utilcode.util.Utils
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.UDCommonCurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
@@ -42,7 +43,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<UDCommonCurrentStateInfo>(content)
+                    MoshiUtil.fromJson<UDCurrentStateInfo>(content)
                 }
                 if (stateInfo == null) {
                     binding.refreshLayout.showEmpty()
@@ -69,7 +70,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "CMCC" -> "中国移动"
                         "CU" -> "中国联通"
                         "CT" -> "中国电信"
-                        else -> "--"
+                        else -> AppContants.PLACE_HOLDER_VALUE
                     }
                 )
                 stateInfo.csq.notNullKey {

@@ -979,6 +979,12 @@ enum class IOTCommandType(private val value: String) {
     MD_SET_INSTALL_LOCATION("md_setloc"),
 
     /**
+     * M50 串口参数
+     */
+    M50_MD_GET_SERIAL_PORT("md_gm_getportparam"),
+    M50_MD_SET_SERIAL_PORT("md_gm_setportparam"),
+
+    /**
      * 指令透传
      */
     MD_RAW("md_raw"),

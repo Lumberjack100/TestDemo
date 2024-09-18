@@ -62,6 +62,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.hac.HacMotorMotionDistanceInfoPars
 import com.shmedo.lib.cmd.base.iot_cmd.parser.hac.HacWarningValueParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.lr200.LR200ZeroValueParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.m20.M20BaseInfoParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.m50.M50SerialPortParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDIPortParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDOPortParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDataCenterParser
@@ -143,6 +144,7 @@ val iotCommandModule = module {
     factory { DasSensorStatusParser() }
     factory { DasInternalSensorStatusParser() }
     factory { M20BaseInfoParser() }
+    factory { M50SerialPortParamParser() }
     factory { DeviceCurrentStateParser() }
     factory { DeviceCurrentStateParser2() }
     factory { MRWirelessNetParser() }
@@ -231,6 +233,7 @@ val iotCommandModule = module {
             get<DasSensorStatusParser>(),
             get<DasInternalSensorStatusParser>(),
             get<M20BaseInfoParser>(),
+            get<M50SerialPortParamParser>(),
             get<DeviceCurrentStateParser>(),
             get<DeviceCurrentStateParser2>(),
             get<MRWirelessNetParser>(),

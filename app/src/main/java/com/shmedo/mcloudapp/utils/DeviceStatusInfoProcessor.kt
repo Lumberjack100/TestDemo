@@ -1,6 +1,8 @@
 package com.shmedo.mcloudapp.utils
 
 import com.blankj.utilcode.util.ColorUtils
+import com.shmedo.core.commonlib.extensions.compareAndReturn
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
@@ -46,15 +48,15 @@ object DeviceStatusInfoProcessor {
         unit: String = "",
         textColorRes: Int = 0,
     ) {
-        value.notNullKey {
+        value.notNullKey(action = {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = name,
-                    value = "$it$unit",
+                    value = it.compareAndReturn(AppContants.PLACE_HOLDER_VALUE, it, "$it$unit"),
                     textColorRes = textColorRes
                 )
             )
-        }
+        })
     }
 
     /**

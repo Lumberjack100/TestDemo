@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 /**
  * 创建者：gonghe
  * 创建时间：2024/4/25
- * 描述： TODO
+ * 描述： M20S、M50 工作模式参数实体
  */
 @JsonClass(generateAdapter = true)
 data class RtkParamEntity(
@@ -22,6 +22,7 @@ data class RtkParamEntity(
     val distance: String = IOTConstants.NULL_KEY, //距离 自主优化距离 （0~10） 单位 米
     val time: String = IOTConstants.NULL_KEY, //gnss前端解算处理时间 自主优化时间 单位 秒
     val id: String = IOTConstants.NULL_KEY, //基准站ID号 用于作移动站、基站细分
+    val alarmSwitch: String = IOTConstants.NULL_KEY, //报警开关 0:关闭  1:打开
     val gateAngleVal1: String = IOTConstants.NULL_KEY, //倾角报警一级阈值 单位 度
     val gateAngleVal2: String = IOTConstants.NULL_KEY, //倾角报警二级阈值
     val gateAngleVal3: String = IOTConstants.NULL_KEY, //倾角报警三级阈值
@@ -32,6 +33,7 @@ data class RtkParamEntity(
     val gateDevVal4: String = IOTConstants.NULL_KEY, //位移报警四级阈值
     val rtkMode: String = IOTConstants.NULL_KEY, //解算模式源 1:静态解算  2:动态结算  默认1
     val obs: String = IOTConstants.NULL_KEY, //观测数据上报频率 取值为[0-60]
+    val reportMode: String = IOTConstants.NULL_KEY, //上报模式 0:低功耗  1:正常
 ) {
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)

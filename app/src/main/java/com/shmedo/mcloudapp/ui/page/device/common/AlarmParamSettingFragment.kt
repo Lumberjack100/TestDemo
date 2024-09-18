@@ -25,6 +25,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAlarmParamSettingBinding
+import com.shmedo.mcloudapp.extensions.formatDoubleValue
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -35,9 +36,6 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.AlarmParamSettingViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
 
 class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentAlarmParamSettingBinding
@@ -46,7 +44,6 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
     private val monitorPointList: List<String> = (1..10).map { it.toString() }
-    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
     override fun initViewModel() {
         super.initViewModel()
@@ -68,20 +65,12 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentAlarmParamSettingBinding
         binding.llToolbar.toolbar.title = "报警参数设置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         initRefresh()
-    }
-
-    override fun initData() {
-        super.initData()
-        initTitles()
-        resetParams()
     }
 
     private fun initRefresh() {
@@ -94,6 +83,12 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
             }
             queryData()
         }
+    }
+
+    override fun initData() {
+        super.initData()
+        initTitles()
+        resetDefaultParams()
     }
 
     private fun initTitles() {
@@ -129,45 +124,7 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    inner class ClickProxy : BaseClickProxy() {
-        /**
-         * 选择报警编号
-         */
-        fun onMonitorPointChooseClick() {
-            val selectedIndex = monitorPointList.indexOf(mStates.monitorPoint.get())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "", monitorPointList.toTypedArray(),
-                    null, selectedIndex,
-                    { position, text ->
-                        mStates.monitorPoint.set(text)
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
-        }
-
-        /**
-         * 恢复默认配置
-         */
-        fun onResetClick() {
-            resetParams()
-        }
-
-        override fun onSubmitButtonClick() {
-            KeyboardUtils.hideSoftInput(binding.root)
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return
-            }
-            initSaveCommand()
-        }
-    }
-
-    private fun resetParams() {
+    private fun resetDefaultParams() {
         //监测点编号 [1~15] 默认01
         mStates.monitorPoint.set("1")
         //播报次数 [0~255] 其中0表示关闭当前报警，255表示一直报警，默认03
@@ -197,6 +154,44 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         mStates.thirdAlarmReportInterval.set("1800")
         //四级报警上报间隔 默认3600,单位s
         mStates.fourthAlarmReportInterval.set("3600")
+    }
+
+    inner class ClickProxy : BaseClickProxy() {
+        /**
+         * 选择报警编号
+         */
+        fun onMonitorPointChooseClick() {
+            val selectedIndex = monitorPointList.indexOf(mStates.monitorPoint.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "", monitorPointList.toTypedArray(),
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.monitorPoint.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        /**
+         * 恢复默认配置
+         */
+        fun onResetClick() {
+            resetDefaultParams()
+        }
+
+        override fun onSubmitButtonClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            initSaveCommand()
+        }
     }
 
     private fun initSaveCommand() {
@@ -577,33 +572,16 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
      * 初始化报警阈值数据
      */
     private fun initAlarmTriggerValueData(info: AlarmTriggerValueInfo) {
-        decimalFormat.applyPattern("#.###")
         if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) {
-            info.devlevel1.toDoubleOrNull()?.let {
-                mStates.firstAlarmThreshold.set(decimalFormat.format(it))
-            }
-            info.devlevel2.toDoubleOrNull()?.let {
-                mStates.secondAlarmThreshold.set(decimalFormat.format(it))
-            }
-            info.devlevel3.toDoubleOrNull()?.let {
-                mStates.thirdAlarmThreshold.set(decimalFormat.format(it))
-            }
-            info.devlevel4.toDoubleOrNull()?.let {
-                mStates.fourthAlarmThreshold.set(decimalFormat.format(it))
-            }
+            mStates.firstAlarmThreshold.set(info.devlevel1.formatDoubleValue("", 3))
+            mStates.secondAlarmThreshold.set(info.devlevel2.formatDoubleValue("", 3))
+            mStates.thirdAlarmThreshold.set(info.devlevel3.formatDoubleValue("", 3))
+            mStates.fourthAlarmThreshold.set(info.devlevel4.formatDoubleValue("", 3))
         } else {
-            info.level1.toDoubleOrNull()?.let {
-                mStates.firstAlarmThreshold.set(decimalFormat.format(it))
-            }
-            info.level2.toDoubleOrNull()?.let {
-                mStates.secondAlarmThreshold.set(decimalFormat.format(it))
-            }
-            info.level3.toDoubleOrNull()?.let {
-                mStates.thirdAlarmThreshold.set(decimalFormat.format(it))
-            }
-            info.level4.toDoubleOrNull()?.let {
-                mStates.fourthAlarmThreshold.set(decimalFormat.format(it))
-            }
+            mStates.firstAlarmThreshold.set(info.level1.formatDoubleValue("", 3))
+            mStates.secondAlarmThreshold.set(info.level2.formatDoubleValue("", 3))
+            mStates.thirdAlarmThreshold.set(info.level3.formatDoubleValue("", 3))
+            mStates.fourthAlarmThreshold.set(info.level4.formatDoubleValue("", 3))
         }
     }
 

@@ -101,7 +101,7 @@ data class CommonCurrentStateInfo(
     var starNum: Int = 0, //星数
     var gpsCard: String = IOTConstants.NULL_KEY, //板卡
     var self_check: String = IOTConstants.NULL_KEY,//设备自检
-    var workMode: String = IOTConstants.NULL_KEY, //工作模式 1:基准站  2:移动站
+    var workMode: String = IOTConstants.NULL_KEY, //工作模式 1:基站  2:测站
     var worktime: String = IOTConstants.NULL_KEY,//运行时间
     var memsstatus: String = IOTConstants.NULL_KEY,//MEMS状态
     var initAngle: String = IOTConstants.NULL_KEY,//x、y、z初始角度

@@ -13,7 +13,6 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.AlarmMonitorPointEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.AlarmReportIntervalEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.AlarmMonitorPointInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.AlarmReportIntervalInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -78,7 +77,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         initTitles()
-        resetParams()
+        resetDefaultParams()
     }
 
     private fun initRefresh() {
@@ -94,17 +93,33 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initTitles() {
-        when (productType) {
-            ProductType.U_D_1,//
-            ProductType.U_D_2 -> {//一体化雷达泥位计
-                mStates.firstAlarmReportIntervalTitle.set("一级报警间隔(秒)")
-                mStates.secondAlarmReportIntervalTitle.set("二级报警间隔(秒)")
-                mStates.thirdAlarmReportIntervalTitle.set("三级报警间隔(秒)")
-                mStates.fourthAlarmReportIntervalTitle.set("四级报警间隔(秒)")
-            }
+        mStates.firstAlarmReportIntervalTitle.set("一级报警间隔(秒)")
+        mStates.secondAlarmReportIntervalTitle.set("二级报警间隔(秒)")
+        mStates.thirdAlarmReportIntervalTitle.set("三级报警间隔(秒)")
+        mStates.fourthAlarmReportIntervalTitle.set("四级报警间隔(秒)")
+    }
 
-            else -> {}
-        }
+    private fun resetDefaultParams() {
+        //监测点编号 [1~15] 默认01
+        mStates.monitorPoint.set("1")
+        //播报次数 [0~255] 其中0表示关闭当前报警，255表示一直报警，默认03
+        mStates.broadcastTimes.set("3")
+        //一级报警语音编号  [1~255] 默认 4
+        mStates.firstAlarmVoice.set("4")
+        //二级报警语音编号  [1~255] 默认 3
+        mStates.secondAlarmVoice.set("3")
+        //三级报警语音编号  [1~255] 默认 2
+        mStates.thirdAlarmVoice.set("2")
+        //四级报警语音编号  [1~255] 默认 1
+
+        //一级报警上报间隔 默认60,单位s
+        mStates.firstAlarmReportInterval.set("60")
+        //二级报警上报间隔 默认300,单位s
+        mStates.secondAlarmReportInterval.set("300")
+        //三级报警上报间隔 默认1800,单位s
+        mStates.thirdAlarmReportInterval.set("1800")
+        //四级报警上报间隔 默认3600,单位s
+        mStates.fourthAlarmReportInterval.set("3600")
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -132,7 +147,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
          * 恢复默认配置
          */
         fun onResetClick() {
-            resetParams()
+            resetDefaultParams()
         }
 
         override fun onSubmitButtonClick() {
@@ -143,29 +158,6 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
             }
             initSaveCommand()
         }
-    }
-
-    private fun resetParams() {
-        //监测点编号 [1~15] 默认01
-        mStates.monitorPoint.set("1")
-        //播报次数 [0~255] 其中0表示关闭当前报警，255表示一直报警，默认03
-        mStates.broadcastTimes.set("3")
-        //一级报警语音编号  [1~255] 默认 4
-        mStates.firstAlarmVoice.set("4")
-        //二级报警语音编号  [1~255] 默认 3
-        mStates.secondAlarmVoice.set("3")
-        //三级报警语音编号  [1~255] 默认 2
-        mStates.thirdAlarmVoice.set("2")
-        //四级报警语音编号  [1~255] 默认 1
-
-        //一级报警上报间隔 默认60,单位s
-        mStates.firstAlarmReportInterval.set("60")
-        //二级报警上报间隔 默认300,单位s
-        mStates.secondAlarmReportInterval.set("300")
-        //三级报警上报间隔 默认1800,单位s
-        mStates.thirdAlarmReportInterval.set("1800")
-        //四级报警上报间隔 默认3600,单位s
-        mStates.fourthAlarmReportInterval.set("3600")
     }
 
     private fun initSaveCommand() {
@@ -421,7 +413,6 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
             }
         }
     }
-
 
     private fun initAlarmMonitorPointData(info: AlarmMonitorPointInfo) {
         try {
