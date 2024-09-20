@@ -2,7 +2,9 @@ package com.shmedo.mcloudapp.ui.page.device.common
 
 import android.os.Bundle
 import android.view.View
+import androidx.annotation.CallSuper
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ClipboardUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
@@ -25,10 +27,12 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentBaseDeviceStatusInfoStyle2Binding
 import com.shmedo.mcloudapp.databinding.ItemDasSensorStatusBinding
 import com.shmedo.mcloudapp.databinding.ItemDeviceStatusInfoBasicBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.model.DasSensorSubMonitorStatusItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
@@ -36,6 +40,7 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.android.ext.android.inject
 
@@ -46,22 +51,34 @@ import org.koin.android.ext.android.inject
  */
 abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentBaseDeviceStatusInfoStyle2Binding
-    private lateinit var mStates: EmptyViewModel
+    protected val toolbarViewModel: ToolbarViewModel by viewModels()
+    protected val mStates: EmptyViewModel by viewModels()
     protected val iotParseManager: IOTParserManager by inject()
     protected val mdParseManager: MDParserManager by inject()
 
 
     override fun initViewModel() {
         super.initViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_base_device_status_info_style2, BR.stateVM, mStates)
+        return DataBindingConfig(
+            R.layout.fragment_base_device_status_info_style2,
+            BR.stateVM,
+            mStates
+        ).addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, BaseClickProxy())
     }
 
+    @CallSuper
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentBaseDeviceStatusInfoStyle2Binding
+        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
+            nav().navigateUp()
+        }
+        registerOnBackPressedDispatcher {
+            nav().navigateUp()
+        }
         initRefresh()
         initAdapter()
     }

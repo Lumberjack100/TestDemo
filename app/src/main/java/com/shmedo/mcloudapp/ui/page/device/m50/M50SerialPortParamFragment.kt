@@ -265,7 +265,7 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
             rs485_addr = mStates.rs485ExternalDeviceAddr.get()
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_CFG_RTK,
+            IOTCommandType.M50_MD_SET_SERIAL_PORT,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -280,21 +280,24 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
 
     private fun queryData() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.M50_MD_GET_SERIAL_PORT)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.M50_MD_SET_SERIAL_PORT,"method=0")
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.M50_MD_GET_SERIAL_PORT -> {//
-                val result = iotParseManager.parse<M50SerialPortParam>(
-                    cmdStr,
-                    IOTCommandType.M50_MD_GET_SERIAL_PORT
-                )
+            IOTCommandType.M50_MD_SET_SERIAL_PORT -> {//
+                val result = if (cmdStr.contains("method=0"))
+                    iotParseManager.parse<M50SerialPortParam>(
+                        cmdStr,
+                        IOTCommandType.M50_MD_SET_SERIAL_PORT
+                    )
+                else iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询参数出错: ${result.message}"
+                        val errMsg =
+                            if (cmdStr.contains("method=0")) "查询信息出错: ${result.message}" else "设置参数出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -303,21 +306,9 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        initParamData(result.data)
-                    }
-                }
-            }
-
-            IOTCommandType.M50_MD_SET_SERIAL_PORT -> {//
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "设置参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
+                        if (cmdStr.contains("method=0")) {
+                            initParamData(result.data as M50SerialPortParam)
+                        } else {
                             Toaster.show("保存成功")
                         }
                     }

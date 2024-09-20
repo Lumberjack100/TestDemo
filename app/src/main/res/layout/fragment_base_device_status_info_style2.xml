@@ -5,27 +5,51 @@
 
     <data>
 
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
     </data>
 
-    <com.drake.brv.PageRefreshLayout
-        android:id="@+id/refreshLayout"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerview"
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white2"
+            app:click="@{click}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:vm="@{toolbarVM}" />
+
+        <com.drake.brv.PageRefreshLayout
+            android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/dimen_size_10"
-            android:layout_marginTop="@dimen/dimen_size_10"
-            android:background="@drawable/bg_white_corner_5dp"
-            android:clipToPadding="false"
-            android:paddingHorizontal="@dimen/dimen_size_10"
-            android:paddingTop="@dimen/dimen_size_10"
-            android:paddingBottom="@dimen/dimen_size_30"
-            android:splitMotionEvents="false"
-            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_device_status_info_basic" />
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
-    </com.drake.brv.PageRefreshLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/dimen_size_10"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:background="@drawable/bg_white_corner_5dp"
+                android:clipToPadding="false"
+                android:paddingHorizontal="@dimen/dimen_size_10"
+                android:paddingTop="@dimen/dimen_size_10"
+                android:paddingBottom="@dimen/dimen_size_30"
+                android:splitMotionEvents="false"
+                tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_device_status_info_basic" />
+
+        </com.drake.brv.PageRefreshLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

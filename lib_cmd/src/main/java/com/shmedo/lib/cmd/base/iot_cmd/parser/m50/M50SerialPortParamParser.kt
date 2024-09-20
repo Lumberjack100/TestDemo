@@ -23,5 +23,5 @@ class M50SerialPortParamParser: IOTCommandParser<M50SerialPortParam> {
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.M50_MD_GET_SERIAL_PORT
+    override fun commandType(): IOTCommandType = IOTCommandType.M50_MD_SET_SERIAL_PORT
 }

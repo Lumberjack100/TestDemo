@@ -204,48 +204,7 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                onClickWithDebouncing="@{()->click.onMeasureDataClick()}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:enabled="@{!stateVM.isMeasuring()}"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <FrameLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="@dimen/dimen_size_20"
-                        android:layout_height="@dimen/dimen_size_20"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_device_measure_data" />
-
-                    <ProgressBar
-                        android:id="@+id/progress_bar"
-                        visible="@{stateVM.isMeasuring()}"
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:layout_gravity="center"
-                        android:indeterminate="true"
-                        android:indeterminateDrawable="@drawable/circular_progress_bar" />
-
-                </FrameLayout>
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_size_2"
-                    android:text='@{stateVM.isMeasuring() ? "测量中" : "测量"}'
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_13"
-                    tools:text="测量" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                onClickWithDebouncing="@{()->click.onTakePhotoClick()}"
-                visible="@{!stateVM.isConnectOperateVisible}"
+                onClickWithDebouncing="@{()->click.onGotoLocaionClick()}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimen_size_25"
@@ -261,6 +220,29 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_size_2"
+                    android:text="位置"
+                    android:textColor="@color/title_text_color"
+                    android:textSize="@dimen/text_size_13" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_25"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/dimen_size_20"
+                    android:layout_height="@dimen/dimen_size_20"
+                    android:src="@drawable/ic_device_take_photo"
+                    app:tint="@color/sub_title_text_color" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_size_2"
                     android:text="拍照"
                     android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_13" />
@@ -269,7 +251,6 @@
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 onClickWithDebouncing="@{()->click.onGoToSensorDataHistoryClick()}"
-                visible="@{!stateVM.isConnectOperateVisible}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimen_size_25"

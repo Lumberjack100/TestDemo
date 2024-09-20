@@ -981,7 +981,6 @@ enum class IOTCommandType(private val value: String) {
     /**
      * M50 串口参数
      */
-    M50_MD_GET_SERIAL_PORT("md_gm_getportparam"),
     M50_MD_SET_SERIAL_PORT("md_gm_setportparam"),
 
     /**

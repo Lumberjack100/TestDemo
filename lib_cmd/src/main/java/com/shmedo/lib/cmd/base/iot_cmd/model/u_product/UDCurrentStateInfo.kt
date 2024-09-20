@@ -72,7 +72,7 @@ data class UDCurrentStateInfo(
     @Json(name = "bat_sta")
     val batteryStatus: String = IOTConstants.NULL_KEY, //电池充放状态   0: 放电中  1: 充电中 -3：电池异常
     @Json(name = "bat_health")
-    val batteryHealth: String = IOTConstants.NULL_KEY, //电池健康  "100"
+    val batteryHealth: String = IOTConstants.NULL_KEY, //电池健康度  "100"
     @Json(name = "inside_temp")
     val internalTemp: String = IOTConstants.NULL_KEY, //内部温度  "30.47"
     @Json(name = "inside_hum")

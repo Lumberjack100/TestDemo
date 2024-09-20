@@ -101,7 +101,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentM50HomeBinding
-        binding.llToolbar.toolbar.title = "设备配置"
+        binding.llToolbar.toolbar.title = "返回"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             if (bleViewModel.isConnected()) {
                 showMessage(
@@ -249,7 +249,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                             name = "基本信息",
                             desc = "查看设备基本信息",
                             resID = R.drawable.ic_module_current_state,
-                            navId = R.id.action_global_to_commonRunningDeviceInfoStyle2Fragment
+                            navId = R.id.action_global_to_m50BaseInfoFragment
                         )
                     ),
                     ConfigModule(
@@ -257,7 +257,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                             name = "网络信息",
                             desc = "查看设备网络信息",
                             resID = R.drawable.ic_module_network_info,
-                            navId = R.id.action_global_to_commonRunningDeviceInfoStyle2Fragment
+                            navId = R.id.action_global_to_m50NetInfoFragment
                         )
                     ),
                     ConfigModule(
@@ -265,7 +265,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                             name = "状态信息",
                             desc = "查看设备运行状态信息",
                             resID = R.drawable.ic_basic_config,
-                            navId = R.id.action_global_to_commonRunningDeviceInfoStyle2Fragment
+                            navId = R.id.action_global_to_m50StatusInfoFragment
                         )
                     ),
                     ConfigModule(
@@ -377,12 +377,20 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             }
         }
 
-        fun onMeasureDataClick() {
+        fun onGotoLocaionClick() {
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            measureData()
+            nav().navigate(
+                R.id.action_global_to_m50LocationInfoFragment,
+                BaseIOTDeviceFragment.newBundleArguments(
+                    productType,
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
+            )
         }
 
         fun onTakePhotoClick() {
@@ -475,8 +483,12 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     private fun queryStatusInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "value=0")
+        var command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
         commandItems.add(command)
+
+        command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "value=0")
+        commandItems.add(command)
+
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
@@ -492,23 +504,11 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 测量数据
-     */
-    private fun measureData() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "value=1")
-        commandItems.add(command)
-
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
      * 拍照
      */
     private fun takePhoto() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "value=2")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "value=1")
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))

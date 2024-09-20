@@ -95,7 +95,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
-                    name = "电池健康",
+                    name = "电池健康度",
                     value = stateInfo.batteryStatus.compareAndReturn(
                         "-3",
                         AppContants.PLACE_HOLDER_VALUE,
