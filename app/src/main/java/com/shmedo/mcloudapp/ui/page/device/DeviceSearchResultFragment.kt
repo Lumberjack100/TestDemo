@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.PageRefreshLayout
 import com.drake.brv.utils.setup
@@ -15,6 +16,7 @@ import com.shmedo.core.model.UserInfo
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentDeviceSearchResultBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
@@ -22,6 +24,7 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
@@ -36,6 +39,7 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
  */
 class DeviceSearchResultFragment : BaseFragment() {
     private lateinit var binding: FragmentDeviceSearchResultBinding
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
     private lateinit var mStates: EmptyViewModel
     private lateinit var deviceRequestViewModel: DeviceRequestViewModel
     private val userInfo: UserInfo by lazy {  AuthMMKVOwner.userInfo!! }
@@ -51,16 +55,16 @@ class DeviceSearchResultFragment : BaseFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_device_search_result, BR.vm, mStates)
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, BaseClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentDeviceSearchResultBinding
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         initDeviceInfoAdapter()
@@ -124,7 +128,7 @@ class DeviceSearchResultFragment : BaseFragment() {
         arguments?.let {
             keyWord = it.getString(AppContants.Extras.DEVICE_SEARCH_KEYWORD, "")
             statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
-            binding.llToolbar.toolbar.title = keyWord
+            toolbarViewModel.toolbarTitleText.set(keyWord)
         }
     }
 

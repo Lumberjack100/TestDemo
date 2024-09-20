@@ -48,6 +48,7 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.BleCustomCommandLogPrintViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -90,10 +91,10 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentBleCustomCommandLogPrintBinding
         //设置menu 关键代码
-        mActivity.setSupportActionBar(binding.toolbar)
+        (mActivity as BaseActivity).setToolBar(binding.llToolbar.toolbar)
         addMenu()
-        binding.toolbar.title = "指令调试"
-        binding.toolbar.setNavigationOnClickListener { v: View? ->
+        toolbarViewModel.toolbarTitleText.set("指令调试")
+        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             closeDebugMode()
             nav().navigateUp()
         }
@@ -409,7 +410,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
 
     override fun onResume() {
         super.onResume()
-        initImmersionBar(binding.toolbar, isKeyboardEnable = true)
+        initImmersionBar(binding.llToolbar.toolbar, isKeyboardEnable = true)
     }
 
     override fun onDestroy() {

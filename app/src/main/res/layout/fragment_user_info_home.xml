@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="vm"
@@ -21,10 +24,12 @@
 
         <include
             android:id="@+id/ll_toolbar"
-            layout="@layout/include_toolbar_white"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:vm="@{toolbarVM}" />
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scrollView"

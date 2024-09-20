@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             app:elevation="0dp">
 
-            <androidx.appcompat.widget.Toolbar
+            <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
@@ -60,7 +60,7 @@
 
                 </RelativeLayout>
 
-            </androidx.appcompat.widget.Toolbar>
+            </com.google.android.material.appbar.MaterialToolbar>
 
             <View
                 android:layout_width="match_parent"

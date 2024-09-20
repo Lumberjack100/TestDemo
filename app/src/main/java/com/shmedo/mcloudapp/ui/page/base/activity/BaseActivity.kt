@@ -29,7 +29,7 @@ abstract class BaseActivity : BaseVmDbActivity() {
     /**
      * Use a Toolbar as an Action Bar
      */
-    protected open fun setToolBar(toolbar: Toolbar) {
+    open fun setToolBar(toolbar: Toolbar) {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = ""

@@ -23,17 +23,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/transparent"
-            android:theme="@style/AppTheme.AppBarOverlay"
+            style="@style/Widget.MyApp.MaterialToolbar"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_scrollFlags="scroll|enterAlways"
             app:navigationIcon="@drawable/ic_navigation_white"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:titleTextAppearance="@style/Toolbar_TitleText"
             app:titleTextColor="@color/white"
             tools:title="测试" />
 

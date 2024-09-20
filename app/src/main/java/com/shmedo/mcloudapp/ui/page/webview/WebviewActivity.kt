@@ -4,46 +4,50 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.LinearLayout
+import androidx.activity.viewModels
 import com.just.agentweb.AgentWeb
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.ActivityWebviewBinding
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 
 class WebviewActivity : BaseActivity() {
     private lateinit var binding: ActivityWebviewBinding
-    private lateinit var mStates: EmptyViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: EmptyViewModel by viewModels()
 
     private lateinit var mAgentWeb: AgentWeb
 
 
-    override fun initViewModel() {
-        mStates = getActivityScopeViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.activity_webview, BR.vm, mStates)
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, BaseClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as ActivityWebviewBinding
         setToolBar(binding.llToolbar.toolbar)
+
+        binding.llToolbar.toolbar.setNavigationOnClickListener {
+            finish()
+        }
+    }
+
+    override fun initData() {
         if (intent.extras != null) {
             val title = intent.getStringExtra(ARG_TITLE)
             val url = intent.getStringExtra(ARG_URL)
-            binding.llToolbar.toolbar.title = title
             mAgentWeb = AgentWeb.with(this)
                 .setAgentWebParent(binding.container, LinearLayout.LayoutParams(-1, -1))
                 .useDefaultIndicator()
                 .createAgentWeb()
                 .ready()
                 .go(url)
-        }
-        binding.llToolbar.toolbar.setNavigationOnClickListener {
-            finish()
         }
     }
 

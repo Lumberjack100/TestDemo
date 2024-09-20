@@ -11,6 +11,7 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ThreadUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -26,6 +27,7 @@ import com.shmedo.core.model.UserInfo
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentUserInfoHomeBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
@@ -33,6 +35,7 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UserInfoHomeViewModel
 import com.shmedo.mcloudapp.utils.image.GlideEngine
 import com.shmedo.mcloudapp.utils.image.ImageFileCompressEngine
@@ -47,9 +50,10 @@ import java.io.IOException
 
 class UserInfoHomeFragment : BaseFragment() {
     private lateinit var binding: FragmentUserInfoHomeBinding
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
     private lateinit var mStates: UserInfoHomeViewModel
     private lateinit var loginRequestViewModel: LoginRequestViewModel
-    private val userInfo: UserInfo by lazy {  AuthMMKVOwner.userInfo!! }
+    private val userInfo: UserInfo by lazy { AuthMMKVOwner.userInfo!! }
 
 
     override fun initViewModel() {
@@ -59,19 +63,18 @@ class UserInfoHomeFragment : BaseFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_user_info_home, BR.vm, mStates)
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUserInfoHomeBinding
-        binding.llToolbar.toolbar.title = "个人资料"
+        toolbarViewModel.toolbarTitleText.set("个人资料")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
                 nav().navigateUp()
             }
         })
@@ -131,7 +134,7 @@ class UserInfoHomeFragment : BaseFragment() {
     }
 
 
-    inner class ClickProxy {
+    inner class ClickProxy : BaseClickProxy() {
         fun onChangeAvatar() {
             // 进入相册
             PictureSelector.create(context)

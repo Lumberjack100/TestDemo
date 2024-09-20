@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.userprofile
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.viewModels
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
@@ -11,6 +12,7 @@ import com.shmedo.core.model.UserInfo
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentCompanyHomeBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
@@ -19,13 +21,15 @@ import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.CompanyHomeViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class CompanyHomeFragment : BaseFragment() {
     private lateinit var binding: FragmentCompanyHomeBinding
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
     private lateinit var mStates: CompanyHomeViewModel
     private lateinit var loginRequestViewModel: LoginRequestViewModel
-    private val userInfo: UserInfo by lazy {  AuthMMKVOwner.userInfo!! }
+    private val userInfo: UserInfo by lazy { AuthMMKVOwner.userInfo!! }
 
 
     override fun initViewModel() {
@@ -35,12 +39,13 @@ class CompanyHomeFragment : BaseFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_company_home, BR.vm, mStates)
-            .addBindingParam(BR.click, ClickProxy())
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, BaseClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentCompanyHomeBinding
-        binding.llToolbar.toolbar.title = "企业详情"
+        toolbarViewModel.toolbarTitleText.set("企业详情")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
@@ -88,9 +93,6 @@ class CompanyHomeFragment : BaseFragment() {
         mStates.companyIntro.set(info.desc)
     }
 
-    inner class ClickProxy {
-
-    }
 
     override fun onResume() {
         super.onResume()
