@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo
 
+import android.os.Bundle
 import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.models
@@ -24,6 +25,11 @@ import timber.log.Timber
  * 描述： 一体化雷达泥位计基本信息
  */
 class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
+
+    override fun initView(savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
+        toolbarViewModel.toolbarTitleText.set("基本信息")
+    }
 
     override fun queryStatusInfo() {
         commandItems.clear()
@@ -152,7 +158,8 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         }
     }
 
-    companion object {
-        fun newInstance() = UDBaseInfoFragment()
+    override fun onResume() {
+        super.onResume()
+        initImmersionBar(binding.llToolbar.toolbar)
     }
 }

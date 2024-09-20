@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo
 
+import android.os.Bundle
 import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.Utils
@@ -30,6 +31,12 @@ import timber.log.Timber
  */
 class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
+
+
+    override fun initView(savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
+        toolbarViewModel.toolbarTitleText.set("网络信息")
+    }
 
     override fun queryStatusInfo() {
         commandItems.clear()
@@ -156,7 +163,8 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         }
     }
 
-    companion object {
-        fun newInstance() = UDNetInfoFragment()
+    override fun onResume() {
+        super.onResume()
+        initImmersionBar(binding.llToolbar.toolbar)
     }
 }

@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
+
+        <variable
             name="stateVM"
             type="com.shmedo.mcloudapp.ui.viewmodel.state.UDLocationInfoViewModel" />
 
@@ -18,10 +22,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/main_bg_gray"
-        android:orientation="vertical"
-        android:paddingHorizontal="@dimen/dimen_size_10"
-        android:paddingTop="@dimen/dimen_size_10"
-        android:paddingBottom="@dimen/dimen_size_15">
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white2"
+            app:click="@{click}"
+            app:vm="@{toolbarVM}" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/DeviceCurrentState_SingleItem_Style"

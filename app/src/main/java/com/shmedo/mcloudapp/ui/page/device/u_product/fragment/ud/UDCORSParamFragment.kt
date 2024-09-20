@@ -58,7 +58,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdCorsParamBinding
-        binding.llToolbar.toolbar.title = "CORS"
+        toolbarViewModel.toolbarTitleText.set("CORS")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }

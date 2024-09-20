@@ -75,7 +75,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUDProductSensorParamBinding
-        binding.llToolbar.toolbar.title = "传感设置"
+        toolbarViewModel.toolbarTitleText.set("传感设置")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }

@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.fragment.app.viewModels
 import com.amap.api.maps.AMap
 import com.amap.api.maps.AMapOptions
@@ -27,9 +28,12 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentUdLocationInfoBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.toGcj02LatLng
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDLocationInfoViewModel
 import com.shmedo.mcloudapp.utils.map.CustomLatLng
 import kotlinx.coroutines.Dispatchers
@@ -48,6 +52,7 @@ import timber.log.Timber
  */
 class UDLocationInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUdLocationInfoBinding
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: UDLocationInfoViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
@@ -69,11 +74,19 @@ class UDLocationInfoFragment : BaseIOTDeviceFragment() {
             BR.stateVM,
             mStates
         )
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdLocationInfoBinding
+        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
+            nav().navigateUp()
+        }
+        registerOnBackPressedDispatcher {
+            nav().navigateUp()
+        }
+        toolbarViewModel.toolbarTitleText.set("位置")
         binding.textureMapView.onCreate(savedInstanceState)
         setUpMap()
     }
@@ -224,6 +237,7 @@ class UDLocationInfoFragment : BaseIOTDeviceFragment() {
      */
     override fun onResume() {
         super.onResume()
+        initImmersionBar(binding.llToolbar.toolbar)
         binding.textureMapView.onResume()
     }
 

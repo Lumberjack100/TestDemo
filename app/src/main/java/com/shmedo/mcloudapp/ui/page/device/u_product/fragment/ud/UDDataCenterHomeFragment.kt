@@ -69,7 +69,7 @@ class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUniversalDataCenterHomeBinding
-        binding.llToolbar.toolbar.title = "数据中心"
+        toolbarViewModel.toolbarTitleText.set("数据中心")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()

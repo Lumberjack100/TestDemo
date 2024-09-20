@@ -68,6 +68,7 @@ class UDSensorDataHistoryFragment : BaseFragment() {
         mActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         binding = getBinding() as FragmentUdSensorDataHistoryBinding
         binding.llToolbar.toolbar.title = "历史数据"
+//        toolbarViewModel.toolbarTitleText.set("历史数据")
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             nav().navigateUp()
         }

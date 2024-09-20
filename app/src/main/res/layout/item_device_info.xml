@@ -56,31 +56,6 @@
                 tools:text="19D95B"
                 tools:textColor="@color/title_text_color" />
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_size_10"
-                android:gravity="center_vertical"
-                android:visibility="gone">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_battery"
-                    android:layout_width="26dp"
-                    android:layout_height="15dp"
-                    android:src="@{m.onlineStatus?@drawable/ic_battery_full_online:@drawable/ic_battery_full_offline}"
-                    tools:src="@drawable/ic_battery_default" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/tv_battery_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="7dp"
-                    android:text="100%"
-                    android:textColor="@color/sub_title_text_color"
-                    android:textSize="@dimen/text_size_14" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"

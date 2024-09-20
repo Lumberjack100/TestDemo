@@ -6,7 +6,6 @@
     app:startDestination="@id/m50HomeFragment">
 
     <include app:graph="@navigation/include_query_data_graph" />
-    <include app:graph="@navigation/include_common_running_device_info_style2_graph" />
     <include app:graph="@navigation/include_data_center_graph" />
     <include app:graph="@navigation/include_alarm_setting_graph" />
     <include app:graph="@navigation/include_firmware_upgrade_graph" />

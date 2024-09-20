@@ -273,7 +273,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                             name = "位置信息",
                             desc = "查看设备位置信息",
                             resID = R.drawable.ic_module_location_info,
-                            navId = R.id.action_global_to_commonRunningDeviceInfoStyle2Fragment
+                            navId = R.id.action_global_to_m50LocationInfoFragment
                         )
                     )
                 )

@@ -4,14 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
             type="com.shmedo.mcloudapp.ui.viewmodel.state.UDLocationInfoViewModel" />
-
-        <variable
-            name="toolbarVM"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="click"
