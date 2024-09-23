@@ -4,8 +4,6 @@ import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 class M50HomeViewModel : CommonDeviceHomeViewModel() {
-    //是否测量中
-    val isMeasuring = NonNullObservableField(false)
 
     val resultantDisplacement = NonNullObservableField(AppContants.PLACE_HOLDER_VALUE)//合位移量
     val xDisplacement = NonNullObservableField(AppContants.PLACE_HOLDER_VALUE)  //x 轴位移量

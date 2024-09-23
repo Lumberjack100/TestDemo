@@ -66,8 +66,6 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.M50HomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -86,8 +84,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     private val mCommandResponseStates: CommandResponseViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
-    private var queryMeasureDataTimeoutJob: Job? = null
-    private var repeatPollNum = 0 //重复轮询次数
 
     override fun initViewModel() {
         super.initViewModel()
@@ -104,33 +100,15 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         binding.llToolbar.toolbar.title = "返回"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             if (bleViewModel.isConnected()) {
-                showMessage(
-                    StringUtils.getString(R.string.disconnect_device_warn),
-                    "温馨提示",
-                    "确定",
-                    {
-                        bleViewModel.disconnect()
-                        mActivity.finish()
-                    },
-                    "取消"
-                )
-            } else
-                mActivity.finish()
+                bleViewModel.disconnect()
+            }
+            mActivity.finish()
         }
         registerOnBackPressedDispatcher {
             if (bleViewModel.isConnected()) {
-                showMessage(
-                    StringUtils.getString(R.string.disconnect_device_warn),
-                    "温馨提示",
-                    "确定",
-                    {
-                        bleViewModel.disconnect()
-                        mActivity.finish()
-                    },
-                    "取消"
-                )
-            } else
-                mActivity.finish()
+                bleViewModel.disconnect()
+            }
+            mActivity.finish()
         }
         initPlatformAdapter()
         initModuleAdapter()
@@ -452,7 +430,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-            is CommandDebugConfigModule -> {//指令调试
+            is CommandDebugConfigModule -> {//指令下发
                 val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
                     true,
                     productType,
@@ -487,17 +465,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         commandItems.add(command)
 
         command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "value=0")
-        commandItems.add(command)
-
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
-     * 查询测量数据
-     */
-    private fun queryMeasureData() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "value=0")
         commandItems.add(command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -624,15 +591,9 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.QUERY_SAMPLE -> {
-                mHeadStates.isMeasuring.set(false)
                 if (cmdStr.contains("value=1")) {
-                    Toaster.show("测量数据指令下发出错: $errorMsg")
-                    dismissLoadingDialog()
-                } else if (cmdStr.contains("value=2")) {
                     Toaster.show("拍照指令下发出错: $errorMsg")
                     dismissLoadingDialog()
-                } else if (cmdStr.contains("value=0")) {
-                    clearQueryMeasureDataTimeoutJob()
                 }
             }
 
@@ -660,15 +621,9 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.QUERY_SAMPLE -> {
-                mHeadStates.isMeasuring.set(false)
                 if (cmdStr.contains("value=1")) {
-                    Toaster.show("测量数据指令响应超时")
-                    dismissLoadingDialog()
-                } else if (cmdStr.contains("value=2")) {
                     Toaster.show("拍照指令响应超时")
                     dismissLoadingDialog()
-                } else if (cmdStr.contains("value=0")) {
-                    clearQueryMeasureDataTimeoutJob()
                 }
             }
 
@@ -706,28 +661,12 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.QUERY_SAMPLE -> {
-                mHeadStates.isMeasuring.set(false)
                 if (cmdStr.contains("value=1")) {
                     super.showNearbyCommunicationTimeoutAlert(
                         cmdStr,
                         isDismissLoadingDialog,
                         isShowMsg,
-                        msg = "测量数据指令响应超时"
-                    )
-                } else if (cmdStr.contains("value=2")) {
-                    super.showNearbyCommunicationTimeoutAlert(
-                        cmdStr,
-                        isDismissLoadingDialog,
-                        isShowMsg,
                         msg = "拍照指令响应超时"
-                    )
-                } else if (cmdStr.contains("value=0")) {
-                    clearQueryMeasureDataTimeoutJob()
-                    super.showNearbyCommunicationTimeoutAlert(
-                        cmdStr,
-                        isDismissLoadingDialog,
-                        isShowMsg = false,
-                        msg
                     )
                 }
             }
@@ -818,8 +757,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "召测出错: ${result.message}"
                         handleFailureResult(errMsg, isShowErrMsg = false)
-                        mHeadStates.isMeasuring.set(false)
-                        clearQueryMeasureDataTimeoutJob()
                         return
                     }
 
@@ -927,30 +864,19 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             resultMap["value"]?.let { code ->
                 when (code) {
                     "1" -> {
-                        Toaster.show("测量数据指令下发成功,开始测量数据")
-                        mHeadStates.isMeasuring.set(true)
-                        clearQueryMeasureDataTimeoutJob()
-                        processQueryMeasureData()
-                    }
-
-                    "2" -> {
                         Toaster.show("拍照指令下发成功，请稍后在历史中查看图片")
                     }
 
                     "0" -> {
-                        //已经有数据
-                        if (resultMap.containsKey("obj_alt")
-                            && resultMap.containsKey("ld_value")
-                            && resultMap.containsKey("z_angle")
-                            && resultMap.containsKey("time")
+                        if (resultMap.containsKey("sum_value")
+                            && resultMap.containsKey("x_value")
+                            && resultMap.containsKey("y_value")
+                            && resultMap.containsKey("z_value")
                         ) {
-                            mHeadStates.isMeasuring.set(false)
-                            clearQueryMeasureDataTimeoutJob()
-
-                            val resultantDisplacement = resultMap["obj_alt"] ?: ""
-                            val xDisplacement = resultMap["ld_value"] ?: ""
-                            val yDisplacement = resultMap["z_angle"] ?: ""
-                            val zDisplacement = resultMap["time"]?.replace("-", ".") ?: ""
+                            val resultantDisplacement = resultMap["sum_value"] ?: ""
+                            val xDisplacement = resultMap["x_value"] ?: ""
+                            val yDisplacement = resultMap["y_value"] ?: ""
+                            val zDisplacement = resultMap["z_value"]?.replace("-", ".") ?: ""
 
                             mHeadStates.resultantDisplacement.set("$resultantDisplacement m")
                             mHeadStates.xDisplacement.set("$xDisplacement m")
@@ -958,8 +884,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                             mHeadStates.zDisplacement.set(zDisplacement)
                             return
                         }
-
-                        processQueryMeasureData()
                     }
 
                     else -> {}
@@ -969,27 +893,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             Timber.e(e)
             addLogItem(Log.ERROR, e.errorMsg)
         }
-    }
-
-    private fun processQueryMeasureData() {
-        //启动一个新的协程作为超时Job
-        queryMeasureDataTimeoutJob?.cancel()
-        queryMeasureDataTimeoutJob = launchWithViewLifecycle {
-            if (repeatPollNum >= 6) {
-                clearQueryMeasureDataTimeoutJob()
-                return@launchWithViewLifecycle
-            }
-            delay(AppContants.Communication.DELAY_10000_MILLIS) //延迟 timeMillis 秒
-            repeatPollNum++
-            Timber.d("查询测量数据轮询次数：$repeatPollNum")
-            queryMeasureData()
-        }
-    }
-
-    private fun clearQueryMeasureDataTimeoutJob() {
-        queryMeasureDataTimeoutJob?.cancel()
-        queryMeasureDataTimeoutJob = null
-        repeatPollNum = 0
     }
 
     override fun createObserver() {

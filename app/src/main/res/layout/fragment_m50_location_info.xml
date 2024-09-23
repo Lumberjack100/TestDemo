@@ -10,7 +10,7 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.UDLocationInfoViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.M50LocationInfoViewModel" />
 
         <variable
             name="click"

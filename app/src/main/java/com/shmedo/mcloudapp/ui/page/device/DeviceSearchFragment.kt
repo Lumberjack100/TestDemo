@@ -7,27 +7,27 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
-import android.widget.ImageView
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentDeviceSearchBinding
-import com.shmedo.mcloudapp.ui.viewmodel.request.RequestSearchViewModel
 import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.extensions.showMessage
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
+import com.shmedo.mcloudapp.ui.viewmodel.request.RequestSearchViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * 创建者：gonghe
@@ -40,8 +40,10 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
  */
 class DeviceSearchFragment : BaseFragment() {
     private lateinit var binding: FragmentDeviceSearchBinding
-    private lateinit var mStates: EmptyViewModel
-    private lateinit var requestSearchViewModel: RequestSearchViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: EmptyViewModel by viewModels()
+    private val requestSearchViewModel: RequestSearchViewModel by viewModel()
+
     private val deviceSNFilter = InputFilter { source, start, end, _, _, _ ->
         for (i in start until end) {
             if (!"-0123456789QWERTZUIOPASDFGHJKLYXCVBNM".contains(source[i].toString())) {
@@ -52,12 +54,13 @@ class DeviceSearchFragment : BaseFragment() {
     }
 
     override fun initViewModel() {
-        mStates = getFragmentScopeViewModel()
-        requestSearchViewModel = getViewModel()
+
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_device_search, BR.vm, mStates)
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, BaseClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -66,15 +69,11 @@ class DeviceSearchFragment : BaseFragment() {
         mActivity.setSupportActionBar(binding.llToolbar.toolbar)
         addMenu()
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         initHistoryAdapter()
         binding.searchClear.setOnClickListener {
-            showMessage("确定清空吗", "温馨提示", "清空", {
-                //清空
-                requestSearchViewModel.historyData.value = arrayListOf()
-            }, "取消")
+            requestSearchViewModel.historyData.value = arrayListOf()
         }
     }
 
@@ -114,35 +113,31 @@ class DeviceSearchFragment : BaseFragment() {
 
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_search, menu)
-                val menuItem = menu.findItem(R.id.action_search)
-                (menuItem?.actionView as SearchView).let { searchView ->
+                val searchItem = menu.findItem(R.id.action_search)
+                (searchItem?.actionView as? SearchView)?.let { searchView ->
                     searchView.run {
                         val searchEditText =
                             findViewById<EditText>(androidx.appcompat.R.id.search_src_text)
                         searchEditText.filters = arrayOf(deviceSNFilter)
-                        queryHint = "输入设备 SN 关键字搜索"
+                        queryHint = "输入设备 SN"
                         onActionViewExpanded()
+                        // 监听搜索框中的文本变化
                         setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                            //SearchView的监听
+                            // 当用户提交搜索时调用
                             override fun onQueryTextSubmit(query: String?): Boolean {
                                 //当点击搜索时 输入法的搜索，和右边的搜索都会触发
                                 query?.let { queryStr ->
                                     goToSearchResultPage(queryStr)
                                 }
-                                return false
+                                return true
                             }
 
+                            // 当搜索框中的文本发生变化时调用
                             override fun onQueryTextChange(newText: String?): Boolean {
-                                return false
+                                return true
                             }
                         })
-                        isSubmitButtonEnabled = true //右边是否展示搜索图标
-                        val field = javaClass.getDeclaredField("mGoButton")
-                        field.run {
-                            isAccessible = true
-                            val mGoButton = get(searchView) as ImageView
-                            mGoButton.setImageResource(R.drawable.ic_search)
-                        }
+                        setIconifiedByDefault(false)
                     }
                 }
             }
@@ -185,7 +180,7 @@ class DeviceSearchFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar, isStatusBarDarkFont = false)
+        initImmersionBar(binding.llToolbar.toolbar)
     }
 
     companion object {

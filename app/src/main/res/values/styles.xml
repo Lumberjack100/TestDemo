@@ -19,7 +19,7 @@
     <style name="Widget.MyApp.MaterialToolbar" parent="Widget.MaterialComponents.Toolbar">
         <item name="titleTextAppearance">@style/Toolbar_TitleText</item>
         <item name="subtitleTextAppearance">@style/Toolbar_SubTitleText</item>
-        <item name="popupTheme">@style/MaterialToolbar.PopupOverlay</item>
+        <item name="popupTheme">@style/ThemeOverlay.MaterialComponents.Light</item>
     </style>
 
     <!-- 自定义标题文本样式 -->
@@ -32,9 +32,6 @@
     <style name="Toolbar_SubTitleText" parent="TextAppearance.MaterialComponents.Body2">
         <item name="android:textSize">@dimen/text_size_14</item>
     </style>
-
-    <style name="MaterialToolbar.PopupOverlay" parent="ThemeOverlay.MaterialComponents.Light" />
-
 
     <!--Activity进入和退出动画-->
     <!-- animation 样式 -->

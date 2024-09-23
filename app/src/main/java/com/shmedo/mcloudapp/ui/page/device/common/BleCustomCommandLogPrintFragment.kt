@@ -93,7 +93,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         //设置menu 关键代码
         (mActivity as BaseActivity).setToolBar(binding.llToolbar.toolbar)
         addMenu()
-        toolbarViewModel.toolbarTitleText.set("指令调试")
+        toolbarViewModel.toolbarTitleText.set("指令下发")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             closeDebugMode()
             nav().navigateUp()

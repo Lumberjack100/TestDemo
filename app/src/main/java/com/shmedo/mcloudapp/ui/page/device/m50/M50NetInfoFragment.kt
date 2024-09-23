@@ -27,7 +27,7 @@ import timber.log.Timber
  * 创建时间：2024/9/19
  * 描述： 基本信息
  */
-class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment(){
+class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
 
 
@@ -50,8 +50,10 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment(){
                 val groupList = mutableListOf<Any>()
 
                 groupList.add(
-                    DeviceStatusInfoGroupItem("数据网络",
-                    bgColorRes = ColorUtils.getColor(R.color.main_bg_gray) )
+                    DeviceStatusInfoGroupItem(
+                        "数据网络",
+                        bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)
+                    )
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
@@ -111,46 +113,49 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment(){
                         R.color.green_00B26B
                     ) else 0
                 )
-                groupList.add(DeviceStatusInfoGroupItem("数据链路", bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)))
-                if (stateInfo.dataCenterEnableStatus != IOTConstants.NULL_KEY
-                    && stateInfo.dataCenterLinkStatus != IOTConstants.NULL_KEY
+                groupList.add(
+                    DeviceStatusInfoGroupItem(
+                        "数据链路",
+                        bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)
+                    )
+                )
+                if (stateInfo.dataCenterStatus != IOTConstants.NULL_KEY
                     && stateInfo.dataCenterPlatformType != IOTConstants.NULL_KEY
-                    && stateInfo.dataCenterEnableStatus.isNotEmpty()
-                    && stateInfo.dataCenterLinkStatus.isNotEmpty()
+                    && stateInfo.dataCenterStatus.isNotEmpty()
                     && stateInfo.dataCenterPlatformType.isNotEmpty()
                 ) {
                     //根据逗号分隔
-                    val enableStatusList = stateInfo.dataCenterEnableStatus.split(",".toRegex())
-                        .dropLastWhile { it.isEmpty() }
-                    val onlineStatusList = stateInfo.dataCenterLinkStatus.split(",".toRegex())
+                    val onlineStatusList = stateInfo.dataCenterStatus.split(",".toRegex())
                         .dropLastWhile { it.isEmpty() }
                     val platformTypeList = stateInfo.dataCenterPlatformType.split(",".toRegex())
                         .dropLastWhile { it.isEmpty() }
 
-                    enableStatusList.forEachIndexed { index, enableStatus ->
+                    onlineStatusList.forEachIndexed { index, status ->
                         val platformIndex = platformTypeList.getOrNull(index)?.toIntOrNull() ?: 0
                         val platformType = platformList.getOrNull(platformIndex) ?: "未知"
-                        val onlineStatus = onlineStatusList.getOrNull(index)
-                            ?.compareAndReturn("1", "已连接", "未连接") ?: "未连接"
+                        val onlineStatus =
+                            status.compareAndReturn(
+                                "1",
+                                "已连接",
+                                status.compareAndReturn("2", "未连接", "未启用")
+                            )
 
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
                             name = "数据链路${index + 1}",
-                            value = enableStatus.compareAndReturn(
-                                "1",
-                                "$onlineStatus($platformType)",
-                                "未启用"
+                            value = status.compareAndReturn(
+                                "0",
+                                "未启用",
+                                "$onlineStatus($platformType)"
                             ),
-                            textColorRes = if (enableStatus == "0" || onlineStatus == "未连接") ColorUtils.getColor(
+                            textColorRes = if (status == "0" || onlineStatus == "未连接") ColorUtils.getColor(
                                 R.color.red_F13838
                             ) else ColorUtils.getColor(R.color.green_00B26B)
                         )
                     }
                 }
 
-
                 binding.recyclerview.models = groupList
-
             } catch (e: Exception) {
                 Timber.e(e)
                 addLogItem(Log.ERROR, e.errorMsg)

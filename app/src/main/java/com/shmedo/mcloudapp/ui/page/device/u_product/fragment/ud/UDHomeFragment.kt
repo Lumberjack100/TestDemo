@@ -103,33 +103,15 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         binding.llToolbar.toolbar.title = "返回"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             if (bleViewModel.isConnected()) {
-                showMessage(
-                    StringUtils.getString(R.string.disconnect_device_warn),
-                    "温馨提示",
-                    "确定",
-                    {
-                        bleViewModel.disconnect()
-                        mActivity.finish()
-                    },
-                    "取消"
-                )
-            } else
-                mActivity.finish()
+                bleViewModel.disconnect()
+            }
+            mActivity.finish()
         }
         registerOnBackPressedDispatcher {
             if (bleViewModel.isConnected()) {
-                showMessage(
-                    StringUtils.getString(R.string.disconnect_device_warn),
-                    "温馨提示",
-                    "确定",
-                    {
-                        bleViewModel.disconnect()
-                        mActivity.finish()
-                    },
-                    "取消"
-                )
-            } else
-                mActivity.finish()
+                bleViewModel.disconnect()
+            }
+            mActivity.finish()
         }
         initPlatformAdapter()
         initModuleAdapter()
@@ -446,7 +428,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-            is CommandDebugConfigModule -> {//指令调试
+            is CommandDebugConfigModule -> {//指令下发
                 val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
                     true,
                     productType,

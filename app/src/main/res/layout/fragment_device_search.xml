@@ -5,6 +5,13 @@
 
     <data>
 
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -15,7 +22,9 @@
 
         <include
             android:id="@+id/ll_toolbar"
-            layout="@layout/include_toolbar_primary" />
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:vm="@{toolbarVM}" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

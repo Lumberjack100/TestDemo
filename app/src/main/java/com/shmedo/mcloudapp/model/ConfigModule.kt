@@ -116,14 +116,14 @@ class LoraConfigModule(
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
 class AlarmConfigModule(
-    name: String = "报警设置",
+    name: String = "报警配置",
     desc: String = "报警功能设置",
     resID: Int = R.drawable.ic_module_alarm,
     navId: Int = 0,
 ) : DeviceFunctionModule(name, desc, resID, navId)
 
 class CommandDebugConfigModule(
-    name: String = "指令调试",
+    name: String = "指令下发",
     desc: String = "调试指令日志输出",
     resID: Int = R.drawable.ic_module_cmd_debug,
     navId: Int = R.id.action_global_to_commandDebug,

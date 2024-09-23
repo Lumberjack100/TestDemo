@@ -49,7 +49,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/device_param_scroll_content_padding_bottom">
+                    android:paddingBottom="@dimen/page_scroll_content_padding_bottom">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
@@ -220,7 +220,7 @@
             style="@style/SubmitButton_ColorPrimary"
             onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
             android:layout_marginTop="0dp"
-            android:layout_marginBottom="@dimen/device_param_submit_button_margin_bottom"
+            android:layout_marginBottom="@dimen/page_param_content_submit_button_margin_bottom"
             android:text="@string/button_save_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
