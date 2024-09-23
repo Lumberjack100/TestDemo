@@ -17,7 +17,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/main_bg_gray">
+        android:background="@color/main_bg_gray"
+        android:paddingBottom="@dimen/dimen_size_50">
 
         <include
             android:id="@+id/ll_toolbar"
@@ -32,11 +33,13 @@
             android:id="@+id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/page_content_margin_horizontal_12"
+            android:layout_marginTop="@dimen/page_content_margin_top_12"
+            android:background="@drawable/bg_white_corner_4dp"
             android:clipToPadding="false"
-            android:paddingTop="@dimen/dimen_size_8"
-            android:paddingBottom="@dimen/dimen_size_20"
             android:splitMotionEvents="false"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar"
+            tools:itemCount="20"
             tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_device_status_info_basic" />
     </androidx.constraintlayout.widget.ConstraintLayout>

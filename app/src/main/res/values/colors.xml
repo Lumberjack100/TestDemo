@@ -53,18 +53,13 @@
     <color name="red_F13838">#F13838</color>
     <color name="red_F13838_10">#1AF13838</color>
     <color name="sub_title_text_color">#999999</color>
+    <color name="sub_title_text_color_black_60">#99000000</color>
     <color name="title_text_color">#333333</color>
-    <color name="text_color_hint">#808080</color>
-    <color name="text_color_9a9a9a">#9a9a9a</color>
+    <color name="title_text_color_black_90">#E6000000</color>
+    <color name="text_color_hint">@color/black_25</color>
     <color name="text_color_666666">#666666</color>
     <color name="text_color_b3b3b3">#b3b3b3</color>
-    <color name="text_color_222222">#ff222222</color>
-    <color name="text_color_343434">#343434</color>
-    <color name="text_color_1f1f1f">#1F1F1F</color>
-    <color name="text_color_50E9B9">#50E9B9</color>
     <color name="text_color_54DA99">#54DA99</color>
-    <color name="text_color_51B4F8">#51B4F8</color>
-    <color name="text_color_3AD094">#3AD094</color>
     <color name="text_color_cccccc">#CCCCCC</color>
     <color name="transparent">#00000000</color>
     <color name="white">#FFFFFFFF</color>
@@ -82,7 +77,7 @@
 
     <color name="blue_disabled">#8000A8E1</color>
     <color name="update_theme_color">#FFFFAC5D</color>
-    <color name="divider_line_bg">#EDEDEF</color>
+    <color name="divider_line_bg">@color/black_4</color>
     <color name="divider_line_bg2">#ffe5e5e5</color>
     <color name="divider_line_bg3">#D8D8D8</color>
     <color name="search_bg_gray_color">#fff1f1f1</color>

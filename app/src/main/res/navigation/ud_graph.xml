@@ -7,7 +7,6 @@
 
     <include app:graph="@navigation/include_query_data_graph" />
     <include app:graph="@navigation/include_lora_graph" />
-    <include app:graph="@navigation/include_alarm_setting_graph" />
     <include app:graph="@navigation/include_firmware_upgrade_graph" />
     <include app:graph="@navigation/include_ble_command_debug_graph" />
     <include app:graph="@navigation/include_remote_command_debug_graph" />
@@ -101,6 +100,12 @@
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDRadioParamFragment"
         android:label="UDRadioParamFragment"
         tools:layout="@layout/fragment_ud_radio_param" />
+
+    <fragment
+        android:id="@+id/udAlarmParamSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDAlarmParamSettingFragment"
+        android:label="UDAlarmParamSettingFragment"
+        tools:layout="@layout/fragment_ud_alarm_param_setting" />
 
     <fragment
         android:id="@+id/advancedSettingFragment"
@@ -231,7 +236,7 @@
 
     <action
         android:id="@+id/action_global_to_alarmSettingFragment"
-        app:destination="@id/alarm_setting_graph"
+        app:destination="@id/udAlarmParamSettingFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

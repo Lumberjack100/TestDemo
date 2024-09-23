@@ -39,7 +39,6 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.FirmwareUpgradeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.getViewModel
-import timber.log.Timber
 
 /**
  * @author：gonghe
@@ -72,7 +71,7 @@ class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding.llToolbar.toolbar.title = "固件升级"
+        toolbarViewModel.toolbarTitleText.set("固件升级")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()

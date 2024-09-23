@@ -49,11 +49,25 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/page_scroll_content_padding_bottom">
+                    android:paddingHorizontal="@dimen/page_content_padding_horizontal_12"
+                    android:paddingTop="@dimen/page_content_padding_top_12"
+                    android:paddingBottom="@dimen/page_scroll_content_padding_bottom_100">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_GroupName_Style"
-                        android:text="移动网络" />
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="14dp"
+                            android:background="@color/black" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_GroupItem_TitleStyle"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:text="移动网络" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
@@ -94,7 +108,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
-                        android:background="@drawable/layer_common_click_item_with_divider">
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -109,32 +123,22 @@
                             app:lengthFilter="@{20}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_reset"
+                        style="@style/ResetButton_ColorPrimary2"
+                        android:layout_marginTop="48dp"
+                        android:onClick="@{()->click.onResetClick()}"
+                        android:text="@string/button_reset_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_confirm"
+                        style="@style/SubmitButton_ColorPrimary2"
+                        onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                        android:layout_marginTop="@dimen/dimen_size_15"
+                        android:text="@string/button_save_text" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_reset"
-            style="@style/ResetButton_ColorPrimary"
-            onClickWithDebouncing="@{()->click.onResetClick()}"
-            visible="@{stateVM.isEditable }"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="30dp"
-            android:text="@string/button_reset_text"
-            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_ColorPrimary"
-            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-            visible="@{stateVM.isEditable }"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="@dimen/page_param_content_submit_button_margin_bottom"
-            android:text="@string/button_save_text"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

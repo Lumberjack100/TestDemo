@@ -21,7 +21,7 @@ import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -686,9 +686,9 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         updateLastCommunicationTime()
 
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_DEVICE_STATUS -> {
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
                 val result =
-                    iotParseManager.parse<String>(cmdStr, IOTCommandType.MD_GET_DEVICE_STATUS)
+                    iotParseManager.parse<String>(cmdStr, IOTCommandType.QUERY_DEVICE_STATUS)
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询设备状态出错: ${result.message}"
@@ -800,15 +800,14 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<UDCurrentStateInfo>(content)
+                    MoshiUtil.fromJson<M50CurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
 
-                val reportStatus = if (stateInfo.reportStatus == "5") "正常" else "告警"
-                val status = stateInfo.deviceStatus.compareAndReturn(
-                    "0",
-                    reportStatus,
-                    "故障"
-                )
+                val status = when (stateInfo.deviceStatus) {
+                    "-2" -> "告警"
+                    "-3" -> "故障"
+                    else -> "正常"
+                }
                 mHeadStates.productLogoResId.set(
                     status.compareAndReturn(
                         "故障",

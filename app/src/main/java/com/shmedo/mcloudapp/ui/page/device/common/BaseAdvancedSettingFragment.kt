@@ -7,7 +7,6 @@ import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Lifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.amap.api.location.AMapLocation
 import com.amap.api.services.core.AMapException
 import com.amap.api.services.core.LatLonPoint
@@ -15,8 +14,6 @@ import com.amap.api.services.geocoder.GeocodeResult
 import com.amap.api.services.geocoder.GeocodeSearch
 import com.amap.api.services.geocoder.RegeocodeQuery
 import com.amap.api.services.geocoder.RegeocodeResult
-import com.blankj.utilcode.util.ColorUtils
-import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
@@ -50,7 +47,6 @@ import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.dialog.SyncInstallat
 import com.shmedo.mcloudapp.ui.viewmodel.request.LocationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.AdvancedSettingViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.utils.map.CustomLatLng
 import com.shmedo.mcloudapp.utils.map.JZLocationConverter
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper
@@ -63,7 +59,7 @@ import java.util.Locale
 /**
  * 创建者：gonghe
  * 创建时间：2024/5/17
- * 描述： TODO
+ * 描述： 系统配置页面
  */
 open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
     GeocodeSearch.OnGeocodeSearchListener {
@@ -94,13 +90,11 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentAdvancedSettingBinding
-        binding.llToolbar.toolbar.title = "高级设置"
+        toolbarViewModel.toolbarTitleText.set("系统配置")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            //mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
-            //mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         initAdapter()
@@ -109,13 +103,13 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
 
     private fun initAdapter() {
         binding.recyclerview.linear().setup { rv ->
-            rv.addItemDecoration(
-                RecycleViewDivider(
-                    LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(8f), ColorUtils.getColor(
-                        R.color.transparent
-                    )
-                )
-            )
+//            rv.addItemDecoration(
+//                RecycleViewDivider(
+//                    LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(8f), ColorUtils.getColor(
+//                        R.color.transparent
+//                    )
+//                )
+//            )
             addType<AdvancedSettingItem>(R.layout.item_advanced_setting)
             R.id.item.onClick {
                 val item = getModel<AdvancedSettingItem>()

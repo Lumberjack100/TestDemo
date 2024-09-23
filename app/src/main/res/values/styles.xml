@@ -57,10 +57,19 @@
         <item name="android:layout_height">44dp</item>
         <item name="android:paddingStart">16dp</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:textColor">@color/title_text_color</item>
+        <item name="android:textColor">@color/title_text_color_black_90</item>
         <item name="android:textSize">@dimen/text_size_16</item>
         <item name="android:textStyle">bold</item>
         <item name="android:singleLine">true</item>
+    </style>
+
+    <!--通用分组标题样式-->
+    <style name="Common_GroupItem_TitleStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/title_text_color_black_90</item>
+        <item name="android:textSize">@dimen/text_size_16</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <!-- 通用编辑项单条目样式 -->
@@ -69,24 +78,26 @@
         <item name="android:layout_height">50dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:background">@color/white</item>
-        <item name="android:paddingStart">16dp</item>
-        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingStart">@dimen/page_content_item_padding_horizontal_16</item>
+        <item name="android:paddingEnd">@dimen/page_content_item_padding_horizontal_16</item>
     </style>
+
     <!-- 通用编辑项单条目中 EditText 样式 -->
     <style name="Common_EditItem_EditText_Style">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_marginStart">10dp</item>
-        <item name="android:drawablePadding">15dp</item>
+        <item name="android:drawablePadding">10dp</item>
         <item name="android:background">@null</item>
         <item name="android:gravity">center_vertical|right</item>
         <item name="android:singleLine">true</item>
         <item name="android:hint">请输入</item>
         <item name="android:textColorHint">@color/text_color_hint</item>
-        <item name="android:textColor">@color/title_text_color</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/sub_title_text_color_black_60</item>
+        <item name="android:textSize">@dimen/page_content_item_text_size_14</item>
     </style>
+
     <!-- 通用选择项条目样式 -->
     <style name="Common_ClickableItem_LayoutStyle">
         <item name="android:layout_width">match_parent</item>
@@ -94,59 +105,31 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:background">@color/white</item>
-        <item name="android:paddingStart">16dp</item>
-        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingStart">@dimen/page_content_item_padding_horizontal_16</item>
+        <item name="android:paddingEnd">@dimen/page_content_item_padding_horizontal_16</item>
     </style>
+
     <!-- 通用选择项单条目中 Title TextView 样式 -->
     <style name="Common_ClickableItem_TitleStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/title_text_color</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/title_text_color_black_90</item>
+        <item name="android:textSize">@dimen/page_content_item_text_size_14</item>
     </style>
+
     <!-- 通用选择项单条目中 Value TextView 样式 -->
     <style name="Common_ClickableItem_ValueStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_marginStart">10dp</item>
+        <item name="android:drawablePadding">8dp</item>
         <item name="android:drawableEnd">@drawable/ic_arrow_right</item>
-        <item name="android:drawablePadding">10dp</item>
-        <item name="android:gravity">right|center_vertical</item>
+        <item name="android:gravity">center_vertical|right</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColorHint">@color/text_color_hint</item>
-        <item name="android:textColor">@color/title_text_color</item>
-        <item name="android:textSize">15sp</item>
-    </style>
-
-    <!-- 通用提交 Button 样式-->
-    <style name="SubmitButton_ColorPrimary" parent="@style/Widget.MaterialComponents.Button">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">48dp</item>
-        <item name="android:layout_marginStart">12dp</item>
-        <item name="android:layout_marginEnd">12dp</item>
-        <item name="android:layout_marginTop">25dp</item>
-        <item name="android:layout_marginBottom">25dp</item>
-        <item name="backgroundTint">@color/colorPrimary</item>
-        <item name="cornerSize">4dp</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">16sp</item>
-    </style>
-
-    <style name="ResetButton_ColorPrimary" parent="@style/Widget.MaterialComponents.Button">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">46dp</item>
-        <item name="android:layout_marginStart">15dp</item>
-        <item name="android:layout_marginEnd">15dp</item>
-        <item name="android:layout_marginTop">25dp</item>
-        <item name="android:layout_marginBottom">25dp</item>
-        <item name="android:foreground">?attr/selectableItemBackground</item>
-        <item name="android:background">@drawable/reset_button_with_corner</item>
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">17sp</item>
-        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/sub_title_text_color_black_60</item>
+        <item name="android:textSize">@dimen/page_content_item_text_size_14</item>
     </style>
 
     <!--通用开关项单条目样式 SwitchButton 样式-->
@@ -154,18 +137,20 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">50dp</item>
         <item name="android:background">@color/white</item>
-        <item name="android:paddingStart">16dp</item>
-        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingStart">@dimen/page_content_item_padding_horizontal_16</item>
+        <item name="android:paddingEnd">@dimen/page_content_item_padding_horizontal_16</item>
     </style>
+
     <!--通用开关项单条目中 Title TextView 样式-->
     <style name="SwitchButton_TitleStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentStart">true</item>
         <item name="android:layout_centerVertical">true</item>
-        <item name="android:textColor">@color/title_text_color</item>
-        <item name="android:textSize">@dimen/dimen_size_16</item>
+        <item name="android:textColor">@color/title_text_color_black_90</item>
+        <item name="android:textSize">@dimen/page_content_item_text_size_14</item>
     </style>
+
     <!--通用开关项单条目中 SwitchButton 样式-->
     <style name="SwitchButton_ButtonStyle">
         <item name="android:layout_width">wrap_content</item>
@@ -175,6 +160,62 @@
         <item name="kswThumbHeight">@dimen/dimen_size_18</item>
         <item name="kswThumbWidth">@dimen/dimen_size_18</item>
         <item name="kswThumbRangeRatio">2.3</item>
+    </style>
+
+    <style name="ResetButton_ColorPrimary" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_marginStart">@dimen/page_content_margin_horizontal_12</item>
+        <item name="android:layout_marginEnd">@dimen/page_content_margin_horizontal_12</item>
+        <item name="android:layout_marginTop">25dp</item>
+        <item name="android:layout_marginBottom">25dp</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:background">@drawable/reset_button_with_corner</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- 通用提交 Button 样式-->
+    <style name="SubmitButton_ColorPrimary" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_marginStart">@dimen/page_content_margin_horizontal_12</item>
+        <item name="android:layout_marginEnd">@dimen/page_content_margin_horizontal_12</item>
+        <item name="android:layout_marginTop">25dp</item>
+        <item name="android:layout_marginBottom">25dp</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="android:background">@drawable/ripple_button_with_corner</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="ResetButton_ColorPrimary2" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="backgroundTint">@color/colorPrimary_10</item>
+        <item name="rippleColor">@color/ripple_material_light</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="cornerRadius">4dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- 通用提交 Button 样式-->
+    <style name="SubmitButton_ColorPrimary2" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="backgroundTint">@color/colorPrimary</item>
+        <item name="rippleColor">@color/ripple_material_light</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="cornerRadius">4dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <!--设备运行状态分组标题样式-->

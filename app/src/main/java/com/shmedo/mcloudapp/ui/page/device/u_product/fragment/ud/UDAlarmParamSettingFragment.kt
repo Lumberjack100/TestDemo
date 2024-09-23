@@ -1,7 +1,9 @@
 package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.CompoundButton
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
@@ -9,21 +11,27 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.AlarmMonitorPointEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.AlarmReportIntervalEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.AlarmMonitorPointInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.AlarmReportIntervalInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.AlarmSwitchInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentUdAlarmParamSettingBinding
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
@@ -123,6 +131,16 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
     }
 
     inner class ClickProxy : BaseClickProxy() {
+        override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
+                return
+            }
+            mStates.isOpened.set(isChecked)
+            disableOrEnableAlram(if (isChecked) "1" else "0")
+        }
+
         /**
          * 选择报警编号
          */
@@ -144,6 +162,51 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
         }
 
         /**
+         * 测试一级报警
+         */
+        fun onTestFirstAlarmClick() {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            initTestAlarmCommand(1)
+        }
+
+        /**
+         * 测试二级报警
+         */
+        fun onTestSecondAlarmClick() {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            initTestAlarmCommand(2)
+        }
+
+        /**
+         * 测试三级报警
+         */
+        fun onTestThirdAlarmClick() {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            initTestAlarmCommand(3)
+        }
+
+        /**
+         * 测试四级报警
+         */
+        fun onTestFourthAlarmClick() {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            initTestAlarmCommand(4)
+        }
+
+
+        /**
          * 恢复默认配置
          */
         fun onResetClick() {
@@ -158,6 +221,37 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
             }
             initSaveCommand()
         }
+    }
+
+    /**
+     * 关闭或者打开报警
+     */
+    private fun disableOrEnableAlram(sw: String = "1") {
+        commandItems.clear()
+        val command =
+            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL,
+                "sw=$sw"
+            )
+            else IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_ALRAM_BROADCAST_SWITCH,
+                "sw=$sw"
+            )
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    private fun initTestAlarmCommand(level: Int) {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_TEST_ALRAM_BROADCAST,
+            "level=$level"
+        )
+        commandItems.add(command)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun initSaveCommand() {
@@ -283,6 +377,9 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
 
         val entity = AlarmMonitorPointEntity(
+            sw = if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2)
+                if (mStates.isOpened.get()) "1" else "0"
+            else IOTConstants.NULL_KEY,
             monitorpoint = mStates.monitorPoint.get(),
             cnt = mStates.broadcastTimes.get(),
             level1 = mStates.firstAlarmVoice.get(),
@@ -319,10 +416,22 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
 
-        var command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL
-        )
+        var command =
+            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2)
+                IOTCommandUtil.getCommand(
+                    IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL
+                )
+            else IOTCommandUtil.getCommand(
+                IOTCommandType.MD_GET_ALRAM_BROADCAST_SWITCH
+            )
         commandItems.add(command)
+
+        if (productType != ProductType.GNSS_M_1 && productType != ProductType.GNSS_M_2) {
+            command = IOTCommandUtil.getCommand(
+                IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL
+            )
+            commandItems.add(command)
+        }
 
         command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_GET_ALRAM_BROADCAST_REPORT_INTERVAL
@@ -334,6 +443,27 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_ALRAM_BROADCAST_SWITCH -> {
+                val result = iotParseManager.parse<AlarmSwitchInfo>(
+                    cmdStr,
+                    IOTCommandType.MD_GET_ALRAM_BROADCAST_SWITCH
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询参数出错: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initAlarmSwitch(result.data)
+                    }
+                }
+            }
+
             IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL -> {
                 val result = iotParseManager.parse<AlarmMonitorPointInfo>(
                     cmdStr,
@@ -376,10 +506,29 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            IOTCommandType.MD_SET_ALRAM_BROADCAST_SWITCH -> {//
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg =
+                            if (cmdStr.contains("sw=0")) "关闭出错: ${result.message}" else "打开出错: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("保存成功")
+                        }
+                    }
+                }
+            }
+
             IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置语音参数出错: ${result.message}"
+                        val errMsg =
+                            if (cmdStr.contains("sw=0")) "关闭出错: ${result.message}" else "设置报警信息出错: ${result.message}"
+                        handleFailureResult(errMsg)
                         handleFailureResult(errMsg)
                         return
                     }
@@ -408,14 +557,42 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            IOTCommandType.MD_TEST_ALRAM_BROADCAST -> {//
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "发送预警测试指令出错: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("预警测试成功")
+                        }
+                    }
+                }
+            }
+
             else -> {
                 cancelNearbyCommunicationTimeoutJob()
             }
         }
     }
 
+    private fun initAlarmSwitch(info: AlarmSwitchInfo) {
+        try {
+            mStates.isOpened.set(info.sw == "1")
+        } catch (e: Exception) {
+            Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
     private fun initAlarmMonitorPointData(info: AlarmMonitorPointInfo) {
         try {
+            info.sw.notNullKey {
+                mStates.isOpened.set(it == "1")
+            }
             mStates.monitorPoint.set(info.monitorpoint)
             mStates.broadcastTimes.set(info.cnt)
             mStates.firstAlarmVoice.set(info.level1)
