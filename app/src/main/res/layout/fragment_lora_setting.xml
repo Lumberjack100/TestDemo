@@ -65,6 +65,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.channel}"
@@ -84,6 +85,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.transmitPower}"
@@ -103,6 +105,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.airSpeed}"
@@ -122,6 +125,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.networkNumber}"
@@ -141,6 +145,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.localAddress}"
@@ -161,6 +166,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.targetAddress}"

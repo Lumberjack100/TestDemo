@@ -84,6 +84,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.receiveChannel}"
@@ -103,6 +104,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.sendChannel}"
@@ -122,6 +124,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.transmitPower}"
@@ -141,6 +144,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.airSpeed}"
@@ -151,7 +155,7 @@
                         android:id="@+id/btn_reset"
                         style="@style/ResetButton_ColorPrimary2"
                         visible="@{stateVM.isOpened }"
-                        android:layout_marginTop="48dp"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
                         android:onClick="@{()->click.onResetClick()}"
                         android:text="@string/button_reset_text" />
 
@@ -160,7 +164,7 @@
                         style="@style/SubmitButton_ColorPrimary2"
                         onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
                         visible="@{stateVM.isOpened }"
-                        android:layout_marginTop="@dimen/dimen_size_15"
+                        android:layout_marginTop="@dimen/summit_button_margin_top_20"
                         android:text="@string/button_save_text" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>

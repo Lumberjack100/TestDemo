@@ -90,7 +90,7 @@ object IOTDeviceBindingAdapter {
             if (enabled) {
                 if (enabledColorRes == 0) ColorUtils.getColor(R.color.title_text_color_black_90) else enabledColorRes
             } else {
-                if (disabledColorRes == 0) ColorUtils.getColor(R.color.sub_title_text_color_black_60) else disabledColorRes
+                if (disabledColorRes == 0) ColorUtils.getColor(R.color.title_text_color_black_25) else disabledColorRes
             }
         )
     }

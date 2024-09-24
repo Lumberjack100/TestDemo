@@ -69,7 +69,7 @@
         android:id="@+id/mR702DataCenterHomeFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702DataCenterHomeFragment"
         android:label="MR702DataCenterHomeFragment"
-        tools:layout="@layout/fragment_mr702_data_center_home">
+        tools:layout="@layout/fragment_universal_data_center_home">
 
         <action
             android:id="@+id/action_mR702DataCenterHomeFragment_to_mR702DataCenterParamFragment"

@@ -3,9 +3,6 @@ package com.shmedo.mcloudapp.ui.page.device.mr702.fragment
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.setFragmentResultListener
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.blankj.utilcode.util.ColorUtils
-import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -19,39 +16,42 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentMr702DataCenterHomeBinding
+import com.shmedo.mcloudapp.databinding.FragmentUniversalDataCenterHomeBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
+import com.shmedo.mcloudapp.ui.viewmodel.state.UniversalDataCenterHomeViewModel
 import org.koin.android.ext.android.inject
 
 class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentMr702DataCenterHomeBinding
+    private lateinit var binding: FragmentUniversalDataCenterHomeBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
+    private lateinit var mStates: UniversalDataCenterHomeViewModel
     private val iotParseManager: IOTParserManager by inject()
 
 
     override fun initViewModel() {
         super.initViewModel()
         toolbarViewModel = getFragmentScopeViewModel()
+        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_mr702_data_center_home,
-            BR.toolbarVM,
-            toolbarViewModel
+            R.layout.fragment_universal_data_center_home,
+            BR.stateVM,
+            mStates
         )
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, BaseClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentMr702DataCenterHomeBinding
-        binding.llToolbar.toolbar.title = "数据中心"
+        binding = getBinding() as FragmentUniversalDataCenterHomeBinding
+        toolbarViewModel.toolbarTitleText.set("数据中心")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
@@ -78,13 +78,13 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     private fun initAdapter() {
         binding.recyclerView.setup { rv ->
-            rv.addItemDecoration(
-                RecycleViewDivider(
-                    LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(8f), ColorUtils.getColor(
-                        R.color.transparent
-                    )
-                )
-            )
+//            rv.addItemDecoration(
+//                RecycleViewDivider(
+//                    LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(8f), ColorUtils.getColor(
+//                        R.color.transparent
+//                    )
+//                )
+//            )
             addType<DataCenterStatusItem>(R.layout.data_center_status_item)
             R.id.item.onClick {
                 val item = getModel<DataCenterStatusItem>()

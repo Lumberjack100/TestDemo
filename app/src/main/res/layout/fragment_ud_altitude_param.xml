@@ -102,30 +102,21 @@
                         android:textSize="@dimen/text_size_12" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_reset"
+                    style="@style/ResetButton_ColorPrimary2"
+                    android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                    android:onClick="@{()->click.onResetClick()}"
+                    android:text="@string/button_reset_text" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_confirm"
+                    style="@style/SubmitButton_ColorPrimary2"
+                    onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                    android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                    android:text="@string/button_save_text" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.core.widget.NestedScrollView>
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_reset"
-            style="@style/ResetButton_ColorPrimary"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="35dp"
-            android:onClick="@{()->click.onResetClick()}"
-            android:text="@string/button_reset_text"
-            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_ColorPrimary"
-            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="@dimen/page_param_content_submit_button_margin_bottom"
-            android:text="@string/button_save_text"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

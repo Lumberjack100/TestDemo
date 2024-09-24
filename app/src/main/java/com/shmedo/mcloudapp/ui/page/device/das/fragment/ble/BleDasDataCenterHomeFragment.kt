@@ -3,9 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.das.fragment.ble
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.setFragmentResultListener
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
-import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.bindingAdapter
@@ -13,7 +11,6 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerOne
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerThree
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerTwo
@@ -26,17 +23,17 @@ import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
-import com.shmedo.mcloudapp.databinding.FragmentBleDasDataCenterHomeBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.model.DataCenterStatusItem
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.BleDasDataCenterHomeViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.databinding.FragmentBleDasDataCenterHomeBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
+import com.shmedo.mcloudapp.model.DataCenterStatusItem
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.BleDasDataCenterHomeViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -65,7 +62,7 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentBleDasDataCenterHomeBinding
-        binding.llToolbar.toolbar.title = "数据中心"
+        toolbarViewModel.toolbarTitleText.set("数据中心")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
@@ -92,13 +89,6 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     private fun initAdapter() {
         binding.recyclerView.setup { rv ->
-            rv.addItemDecoration(
-                RecycleViewDivider(
-                    LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(8f), ColorUtils.getColor(
-                        R.color.transparent
-                    )
-                )
-            )
             addType<DataCenterStatusItem>(R.layout.data_center_status_item)
             R.id.item.onClick {
                 val item = getModel<DataCenterStatusItem>()

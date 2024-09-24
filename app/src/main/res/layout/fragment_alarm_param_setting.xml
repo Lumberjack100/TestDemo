@@ -69,6 +69,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.monitorPoint}"
@@ -86,6 +87,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[0-255]"
                             android:inputType="number"
@@ -105,6 +107,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
                             android:inputType="number"
@@ -123,6 +126,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
                             android:inputType="number"
@@ -141,6 +145,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
                             android:inputType="number"
@@ -159,6 +164,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
                             android:inputType="number"
@@ -182,6 +188,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:text="@={stateVM.firstAlarmThreshold}"
@@ -201,6 +208,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:text="@={stateVM.secondAlarmThreshold}"
@@ -220,6 +228,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:text="@={stateVM.thirdAlarmThreshold}"
@@ -239,6 +248,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:text="@={stateVM.fourthAlarmThreshold}"
@@ -262,6 +272,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:inputType="number"
@@ -281,6 +292,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:inputType="number"
@@ -300,6 +312,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:inputType="number"
@@ -319,6 +332,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:inputType="number"

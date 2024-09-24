@@ -3,9 +3,6 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.setFragmentResultListener
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.blankj.utilcode.util.ColorUtils
-import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.setup
@@ -33,7 +30,6 @@ import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragmen
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UniversalDataCenterHomeViewModel
-import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -71,11 +67,9 @@ class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentUniversalDataCenterHomeBinding
         toolbarViewModel.toolbarTitleText.set("数据中心")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         initRefresh()
@@ -96,13 +90,6 @@ class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     private fun initAdapter() {
         binding.recyclerView.setup { rv ->
-            rv.addItemDecoration(
-                RecycleViewDivider(
-                    LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(8f), ColorUtils.getColor(
-                        R.color.transparent
-                    )
-                )
-            )
             addType<DataCenterStatusItem>(R.layout.data_center_status_item)
             R.id.item.onClick {
                 val item = getModel<DataCenterStatusItem>()

@@ -3,9 +3,6 @@ package com.shmedo.mcloudapp.ui.page.device.common
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.setFragmentResultListener
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.blankj.utilcode.util.ColorUtils
-import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.bindingAdapter
@@ -45,9 +42,7 @@ import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UniversalDataCenterHomeViewModel
-import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUniversalDataCenterHomeBinding
@@ -74,13 +69,11 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUniversalDataCenterHomeBinding
-        binding.llToolbar.toolbar.title = "数据中心"
+        toolbarViewModel.toolbarTitleText.set("数据中心")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         initRefresh()
@@ -110,13 +103,6 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     private fun initAdapter() {
         binding.recyclerView.setup { rv ->
-            rv.addItemDecoration(
-                RecycleViewDivider(
-                    LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(8f), ColorUtils.getColor(
-                        R.color.transparent
-                    )
-                )
-            )
             addType<DataCenterStatusItem>(R.layout.data_center_status_item)
             R.id.item.onClick {
                 val item = getModel<DataCenterStatusItem>()

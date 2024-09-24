@@ -49,7 +49,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/page_scroll_content_padding_bottom">
+                    android:paddingHorizontal="@dimen/page_content_padding_horizontal_12"
+                    android:paddingTop="@dimen/page_content_padding_top_12"
+                    android:paddingBottom="@dimen/page_scroll_content_padding_bottom_100">
 
                     <include
                         android:id="@+id/ll_data_center_param_head"
@@ -59,8 +61,8 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_LayoutStyle"
-                        android:layout_marginTop="@dimen/dimen_size_8"
-                        android:background="@drawable/layer_common_click_item_with_divider">
+                        android:layout_marginTop="@dimen/page_content_margin_top_12"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -70,13 +72,16 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_data_server_address"
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="@={stateVM.centerServerAddress}"
                             app:lengthFilter="@{100}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/Common_EditItem_LayoutStyle">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_LayoutStyle"
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_TitleStyle"
@@ -86,9 +91,10 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_data_server_port"
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            android:text="@={stateVM.centerServerPort}"
                             android:inputType="number"
+                            android:text="@={stateVM.centerServerPort}"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -107,6 +113,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.dataType}"
@@ -116,7 +123,6 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onDataProtocolChooseClick()}"
-                        android:layout_marginTop="@dimen/dimen_size_8"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
@@ -127,6 +133,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.dataProtocol}"
@@ -136,6 +143,7 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_LayoutStyle"
                         onClickWithDebouncing="@{()->click.onPlatformTypeChooseClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
                         <com.google.android.material.textview.MaterialTextView
@@ -145,6 +153,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.platformType}"
@@ -161,7 +170,6 @@
 
                         <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_EditItem_LayoutStyle"
-                            android:layout_marginTop="@dimen/dimen_size_8"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
@@ -171,6 +179,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
+                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.productId}"
                                 app:lengthFilter="@{100}" />
@@ -188,6 +197,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
+                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.deviceId}"
                                 app:lengthFilter="@{100}" />
@@ -205,6 +215,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
+                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.deviceKey}"
                                 app:lengthFilter="@{100}" />
@@ -223,6 +234,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
+                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.registerCode}"
                                 app:lengthFilter="@{100}" />
@@ -241,6 +253,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
+                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.registerAddress}"
                                 app:lengthFilter="@{100}" />
@@ -259,9 +272,10 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
+                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                android:text="@={stateVM.registerPort}"
                                 android:inputType="number"
+                                android:text="@={stateVM.registerPort}"
                                 app:lengthFilter="@{5}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -277,7 +291,6 @@
                         <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_ClickableItem_LayoutStyle"
                             onClickWithDebouncing="@{()->click.onStationClassificationChooseClick()}"
-                            android:layout_marginTop="@dimen/dimen_size_8"
                             android:background="@drawable/layer_common_click_item_with_divider"
                             android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
@@ -288,6 +301,7 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_ValueStyle"
+                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:drawableEnd="@drawable/ic_arrow_down"
                                 android:text="@{stateVM.stationType}"
@@ -305,9 +319,10 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
+                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                android:text="@={stateVM.centerStationAddr}"
                                 android:inputType="number"
+                                android:text="@={stateVM.centerStationAddr}"
                                 app:lengthFilter="@{3}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -323,16 +338,17 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
+                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                android:text="@={stateVM.password}"
                                 android:inputType="number"
+                                android:text="@={stateVM.password}"
                                 app:lengthFilter="@{5}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_EditItem_LayoutStyle"
-                            android:background="@drawable/layer_common_click_item_with_divider">
+                            android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_TitleStyle"
@@ -341,6 +357,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
+                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.telemetryStationAddr}"
                                 app:inputTypeFilter='@{"character"}'
@@ -351,13 +368,19 @@
                         <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_ClickableItem_LayoutStyle"
                             onClickWithDebouncing="@{()->click.onToggleAdvancedClick()}"
-                            android:layout_marginTop="@dimen/dimen_size_8"
-                            android:background="@drawable/layer_common_click_item_with_divider"
+                            android:layout_marginTop="@dimen/page_content_margin_top_12"
+                            android:background="@drawable/shape_common_click_item_top_corner_4"
                             android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
+
+                            <View
+                                android:layout_width="3dp"
+                                android:layout_height="14dp"
+                                android:background="@color/black" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_TitleStyle"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:layout_marginStart="@dimen/dimen_size_8"
                                 android:text="高级设置" />
 
                             <com.google.android.material.textview.MaterialTextView
@@ -381,15 +404,16 @@
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_TitleStyle"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                android:layout_marginStart="@dimen/dimen_size_16"
-                                android:layout_marginTop="@dimen/dimen_size_16"
+                                android:layout_marginStart="@dimen/page_content_item_padding_horizontal_16"
+                                android:layout_marginTop="@dimen/page_content_margin_top_12"
                                 android:text="报文选择" />
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_margin="@dimen/dimen_size_16"
-                                android:padding="@dimen/dimen_size_14"
+                                android:layout_marginHorizontal="@dimen/page_content_item_padding_horizontal_16"
+                                android:layout_marginVertical="@dimen/dimen_size_8"
+                                android:paddingHorizontal="@dimen/dimen_size_12"
                                 app:drawable_radius="@{4}"
                                 app:drawable_solidColor="@{@color/gray_f5f6f8}"
                                 tools:background="@color/gray_f5f6f8">
@@ -401,8 +425,8 @@
                                     android:button="@drawable/radiobutton_selector"
                                     android:checked="@={stateVM.hourlyReport}"
                                     android:text="小时报"
-                                    android:textColor="@color/title_text_color"
-                                    android:textSize="@dimen/text_size_16"
+                                    android:textColor="@color/title_text_color_black_90"
+                                    android:textSize="@dimen/text_size_14"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent"
                                     tools:checked="true" />
@@ -411,9 +435,7 @@
 
                             <View
                                 android:layout_width="match_parent"
-                                android:layout_height="1dp"
-                                android:layout_marginStart="@dimen/dimen_size_16"
-                                android:layout_marginEnd="@dimen/dimen_size_16"
+                                android:layout_height="0.6dp"
                                 android:background="@color/divider_line_bg" />
 
                             <androidx.appcompat.widget.LinearLayoutCompat
@@ -428,8 +450,9 @@
                                 <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                    android:text="@={stateVM.maintainReportInterval}"
+                                    enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                     android:inputType="number"
+                                    android:text="@={stateVM.maintainReportInterval}"
                                     app:lengthFilter="@{3}" />
 
                             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -445,16 +468,17 @@
 
                                 <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"
+                                    enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                    android:text="@={stateVM.reissuingDataValidDays}"
                                     android:inputType="number"
+                                    android:text="@={stateVM.reissuingDataValidDays}"
                                     app:lengthFilter="@{3}" />
 
                             </androidx.appcompat.widget.LinearLayoutCompat>
 
                             <androidx.appcompat.widget.LinearLayoutCompat
                                 style="@style/Common_EditItem_LayoutStyle"
-                                android:background="@drawable/layer_common_click_item_with_divider">
+                                android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                                 <com.google.android.material.textview.MaterialTextView
                                     style="@style/Common_ClickableItem_TitleStyle"
@@ -463,29 +487,25 @@
 
                                 <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"
+                                    enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                    android:text="@={stateVM.reissuingDataInterval}"
                                     android:inputType="number"
+                                    android:text="@={stateVM.reissuingDataInterval}"
                                     app:lengthFilter="@{4}" />
 
                             </androidx.appcompat.widget.LinearLayoutCompat>
                         </androidx.appcompat.widget.LinearLayoutCompat>
                     </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_confirm"
+                        style="@style/SubmitButton_ColorPrimary2"
+                        onClickWithDebouncing="@{()->click.onSubmitClick()}"
+                        visible="@{stateVM.isEditable &amp;&amp; stateVM.isCenterOpened}"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:text="@string/button_save_text" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_ColorPrimary"
-            onClickWithDebouncing="@{()->click.onSubmitClick()}"
-            visible="@{stateVM.isEditable &amp;&amp; stateVM.isCenterOpened}"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="@dimen/page_param_content_submit_button_margin_bottom"
-            android:text="保存"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

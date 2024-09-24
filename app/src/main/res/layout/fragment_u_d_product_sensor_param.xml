@@ -79,6 +79,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="请输入"
                             android:inputType="number"
@@ -97,6 +98,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="请输入"
                             android:inputType="number"
@@ -117,6 +119,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_right"
                             android:text="@{stateVM.altitude}"
@@ -168,6 +171,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.captureFrequency}"
@@ -187,6 +191,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_ValueStyle"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.imageResolution}"
@@ -196,7 +201,7 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_reset"
                         style="@style/ResetButton_ColorPrimary2"
-                        android:layout_marginTop="48dp"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
                         android:onClick="@{()->click.onResetClick()}"
                         android:text="@string/button_reset_text" />
 
@@ -204,7 +209,7 @@
                         android:id="@+id/btn_confirm"
                         style="@style/SubmitButton_ColorPrimary2"
                         onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-                        android:layout_marginTop="@dimen/dimen_size_15"
+                        android:layout_marginTop="@dimen/summit_button_margin_top_20"
                         android:text="@string/button_save_text" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>

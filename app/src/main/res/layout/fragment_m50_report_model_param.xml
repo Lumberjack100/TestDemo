@@ -135,6 +135,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
+                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
                                 android:inputType="numberDecimal"
@@ -154,6 +155,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
+                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
                                 android:inputType="numberDecimal"
@@ -173,6 +175,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
+                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
                                 android:inputType="numberDecimal"
@@ -192,6 +195,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
+                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
                                 android:inputType="numberDecimal"
