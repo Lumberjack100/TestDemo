@@ -52,23 +52,23 @@
                     android:paddingBottom="@dimen/page_scroll_content_padding_bottom">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_GroupName_Style"
+                        style="@style/Common_GroupItem_Title_Style"
                         android:text="语音设置" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onMonitorPointChooseClick()}"
                         android:layout_marginTop="@dimen/dimen_size_1"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isOpened }">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:text="监测点编号" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -77,11 +77,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="播报次数" />
 
@@ -97,11 +97,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="一级报警语音编号" />
 
@@ -116,11 +116,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="二级报警语音编号" />
 
@@ -135,11 +135,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="三级报警语音编号" />
 
@@ -154,11 +154,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="四级报警语音编号" />
 
@@ -173,15 +173,15 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_GroupName_Style"
+                        style="@style/Common_GroupItem_Title_Style"
                         android:text="报警阈值" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="@{stateVM.firstAlarmThresholdTitle}"
                             tools:text="一级报警阈值(毫米)" />
@@ -197,11 +197,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="@{stateVM.secondAlarmThresholdTitle}"
                             tools:text="二级报警阈值(毫米)" />
@@ -217,11 +217,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="@{stateVM.thirdAlarmThresholdTitle}"
                             tools:text="三级报警阈值(毫米)" />
@@ -237,11 +237,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="@{stateVM.fourthAlarmThresholdTitle}"
                             tools:text="四级报警阈值(毫米)" />
@@ -257,15 +257,15 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_GroupName_Style"
+                        style="@style/Common_GroupItem_Title_Style"
                         android:text="报警间隔" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="@{stateVM.firstAlarmReportIntervalTitle}"
                             tools:text="一级报警间隔(秒)" />
@@ -281,11 +281,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="@{stateVM.secondAlarmReportIntervalTitle}"
                             tools:text="二级报警间隔(秒)" />
@@ -301,11 +301,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="@{stateVM.thirdAlarmReportIntervalTitle}"
                             tools:text="三级报警间隔(秒)" />
@@ -321,11 +321,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="@{stateVM.fourthAlarmReportIntervalTitle}"
                             tools:text="四级报警间隔(秒)" />

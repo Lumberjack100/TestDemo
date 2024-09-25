@@ -93,7 +93,7 @@
             </RelativeLayout>
 
             <LinearLayout
-                style="@style/Common_ClickableItem_LayoutStyle"
+                style="@style/Common_ClickableItem_Layout_Style"
                 onClickWithDebouncing="@{()->click.onCompanyClick()}"
                 android:layout_marginTop="@dimen/dimen_size_10"
                 android:background="@drawable/layer_common_click_item_with_divider">
@@ -105,12 +105,12 @@
                     android:src="@drawable/icon_userinfo_company" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_ClickableItem_TitleStyle"
+                    style="@style/Common_ClickableItem_Title_Style"
                     android:layout_marginStart="@dimen/dimen_size_15"
                     android:text="所属企业" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_ClickableItem_ValueStyle"
+                    style="@style/Common_ClickableItem_Value_Style"
                     android:text="@{vm.company}"
                     android:textColor="@color/sub_title_text_color"
                     tools:text="上海米度测控科技有限公司" />
@@ -118,7 +118,7 @@
             </LinearLayout>
 
             <LinearLayout
-                style="@style/Common_ClickableItem_LayoutStyle"
+                style="@style/Common_ClickableItem_Layout_Style"
                 onClickWithDebouncing="@{()->click.onModifyPasswordClick()}"
                 android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -129,16 +129,16 @@
                     android:src="@drawable/icon_userinfo_setting" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_ClickableItem_TitleStyle"
+                    style="@style/Common_ClickableItem_Title_Style"
                     android:layout_marginStart="@dimen/dimen_size_15"
                     android:text="修改密码" />
 
-                <com.google.android.material.textview.MaterialTextView style="@style/Common_ClickableItem_ValueStyle" />
+                <com.google.android.material.textview.MaterialTextView style="@style/Common_ClickableItem_Value_Style" />
 
             </LinearLayout>
 
             <LinearLayout
-                style="@style/Common_ClickableItem_LayoutStyle"
+                style="@style/Common_ClickableItem_Layout_Style"
                 onClickWithDebouncing="@{()->click.onVersionCheckClick()}"
                 android:layout_marginTop="@dimen/dimen_size_10"
                 android:background="@drawable/layer_common_click_item_with_divider">
@@ -150,12 +150,12 @@
                     android:src="@drawable/ic_check_update_version" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_ClickableItem_TitleStyle"
+                    style="@style/Common_ClickableItem_Title_Style"
                     android:layout_marginStart="@dimen/dimen_size_15"
                     android:text="版本检测" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_ClickableItem_ValueStyle"
+                    style="@style/Common_ClickableItem_Value_Style"
                     android:text="@{vm.appVersion}"
                     android:textColor="@color/sub_title_text_color"
                     tools:text="1.1.0" />
@@ -163,7 +163,7 @@
             </LinearLayout>
 
             <LinearLayout
-                style="@style/Common_ClickableItem_LayoutStyle"
+                style="@style/Common_ClickableItem_Layout_Style"
                 onClickWithDebouncing="@{()->click.onSettingClick()}"
                 android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -174,17 +174,17 @@
                     android:src="@drawable/icon_userinfo_setting" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_ClickableItem_TitleStyle"
+                    style="@style/Common_ClickableItem_Title_Style"
                     android:layout_marginStart="@dimen/dimen_size_15"
                     android:text="设置" />
 
-                <com.google.android.material.textview.MaterialTextView style="@style/Common_ClickableItem_ValueStyle" />
+                <com.google.android.material.textview.MaterialTextView style="@style/Common_ClickableItem_Value_Style" />
 
             </LinearLayout>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/loginOutLayout"
-                style="@style/Common_ClickableItem_LayoutStyle"
+                style="@style/Common_ClickableItem_Layout_Style"
                 onClickWithDebouncing="@{()->click.logout()}"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="30dp"

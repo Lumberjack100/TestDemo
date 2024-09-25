@@ -35,7 +35,7 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/ll_volume_level"
-            style="@style/Common_ClickableItem_LayoutStyle"
+            style="@style/Common_ClickableItem_Layout_Style"
             onClickWithDebouncing="@{()->click.onVolumeChooseClick()}"
             android:layout_marginTop="@dimen/dimen_size_1"
             android:background="@drawable/layer_common_click_item_with_divider"
@@ -45,12 +45,12 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable }"
                 android:text="音量等级" />
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_ValueStyle"
+                style="@style/Common_ClickableItem_Value_Style"
                 enabledTextColor="@{@color/sub_title_text_color_black_60}"
                 textViewEnabled="@{stateVM.isEditable }"
                 android:drawableEnd="@drawable/ic_arrow_down"

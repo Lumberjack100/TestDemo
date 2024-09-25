@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.m50
 import android.os.Bundle
 import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.Utils
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.extensions.compareAndReturn
@@ -16,6 +17,7 @@ import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem
+import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
@@ -49,12 +51,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
 
-                groupList.add(
-                    DeviceStatusInfoGroupItem(
-                        "数据网络",
-                        bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)
-                    )
-                )
+                groupList.add(DeviceStatusInfoGroupItem("数据网络"))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "移动网络",
@@ -111,14 +108,12 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = stateInfo.bt_connected.compareAndReturn("1", "已连接", "未连接"),
                     textColorRes = if (stateInfo.radioEnableStatus == "1") ColorUtils.getColor(
                         R.color.green_00B26B
-                    ) else 0
+                    ) else 0,
+                    isBottomItem = true
                 )
-                groupList.add(
-                    DeviceStatusInfoGroupItem(
-                        "数据链路",
-                        bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)
-                    )
-                )
+
+                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                groupList.add(DeviceStatusInfoGroupItem("数据链路"))
                 if (stateInfo.dataCenterStatus != IOTConstants.NULL_KEY
                     && stateInfo.dataCenterPlatformType != IOTConstants.NULL_KEY
                     && stateInfo.dataCenterStatus.isNotEmpty()
@@ -150,7 +145,8 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             ),
                             textColorRes = if (status == "0" || onlineStatus == "未连接") ColorUtils.getColor(
                                 R.color.red_F13838
-                            ) else ColorUtils.getColor(R.color.green_00B26B)
+                            ) else ColorUtils.getColor(R.color.green_00B26B),
+                            isBottomItem = true
                         )
                     }
                 }

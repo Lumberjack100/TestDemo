@@ -52,20 +52,20 @@
                     android:paddingBottom="@dimen/dimen_size_25">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_GroupName_Style"
+                        style="@style/Common_GroupItem_Title_Style"
                         android:text="声光报警器" />
 
                     <RelativeLayout
-                        style="@style/SwitchButton_LayoutStyle"
+                        style="@style/SwitchButton_Item_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/SwitchButton_TitleStyle"
+                            style="@style/SwitchButton_Item_Title_Style"
                             android:text="开关" />
 
                         <com.kyleduo.switchbutton.SwitchButton
                             android:id="@+id/alarmSB"
-                            style="@style/SwitchButton_ButtonStyle"
+                            style="@style/SwitchButton_Item_Button_Style"
                             checkedImmediatelyNoEvent="@{stateVM.isAudibleOpened}"
                             android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                             app:kswAnimationDuration="100"
@@ -75,18 +75,18 @@
                     </RelativeLayout>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onAlarmTypeChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isAudibleOpened}">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="监测要素" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.alarmType}"
@@ -94,15 +94,15 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_GroupName_Style"
+                        style="@style/Common_GroupItem_Title_Style"
                         android:text="设备参数" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="地址"
                             tools:textColor="@color/title_text_color" />
@@ -118,11 +118,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="播放时长(秒)"
                             tools:textColor="@color/title_text_color" />
@@ -138,11 +138,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="切换间隔(秒)"
                             tools:textColor="@color/title_text_color" />
@@ -157,10 +157,10 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/Common_EditItem_LayoutStyle">
+                    <androidx.appcompat.widget.LinearLayoutCompat style="@style/Common_EditItem_Layout_Style">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="音量设置"
                             tools:textColor="@color/title_text_color" />
@@ -197,15 +197,15 @@
                     </FrameLayout>
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_GroupName_Style"
+                        style="@style/Common_GroupItem_Title_Style"
                         android:text="报警阈值" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="一级报警(毫米)"
                             tools:textColor="@color/title_text_color" />
@@ -220,11 +220,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="二级报警(毫米)"
                             tools:textColor="@color/title_text_color" />
@@ -239,11 +239,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
                             android:text="三级报警(毫米)"
                             tools:textColor="@color/title_text_color" />
@@ -258,20 +258,20 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_GroupName_Style"
+                        style="@style/Common_GroupItem_Title_Style"
                         android:text="电子点阵屏" />
 
                     <RelativeLayout
-                        style="@style/SwitchButton_LayoutStyle"
+                        style="@style/SwitchButton_Item_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/SwitchButton_TitleStyle"
+                            style="@style/SwitchButton_Item_Title_Style"
                             android:text="开关" />
 
                         <com.kyleduo.switchbutton.SwitchButton
                             android:id="@+id/screenSB"
-                            style="@style/SwitchButton_ButtonStyle"
+                            style="@style/SwitchButton_Item_Button_Style"
                             checkedImmediatelyNoEvent="@{stateVM.isScreenOpened}"
                             android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                             app:kswAnimationDuration="100"
@@ -280,11 +280,11 @@
 
                     </RelativeLayout>
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isScreenOpened}"
                             android:text="地址"
                             tools:textColor="@color/title_text_color" />
@@ -300,11 +300,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isScreenOpened}"
                             android:text="显示时长(秒)"
                             tools:textColor="@color/title_text_color" />
@@ -320,11 +320,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isScreenOpened}"
                             android:text="显示间隔(秒)"
                             tools:textColor="@color/title_text_color" />

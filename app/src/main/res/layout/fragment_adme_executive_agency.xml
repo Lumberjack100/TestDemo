@@ -54,7 +54,7 @@
                     android:paddingBottom="@dimen/dimen_size_25">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onMeasureMethodClick()}"
                         visible='@{ stateVM.wrapInfo.meastype != IOTConstants.NULL_KEY}'
                         android:layout_marginTop="@dimen/dimen_size_1"
@@ -62,12 +62,12 @@
                         android:enabled="@{stateVM.isEditable }">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测量方式" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.measureMethodText }"
@@ -75,19 +75,19 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onDataSettlementMethodClick()}"
                         visible='@{ stateVM.wrapInfo.datatype != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="数据解算方式" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.dataSettlementMethod }"
@@ -96,19 +96,19 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onDataResponseClick()}"
                         visible='@{ stateVM.wrapInfo.datareply != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="数据应答" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.dataResponse }"
@@ -117,13 +117,13 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible='@{stateVM.wrapInfo.roundwaitetime != IOTConstants.NULL_KEY &amp;&amp;stateVM.measureMethod == 0}'
                         android:background="@drawable/layer_common_click_item_with_divider"
                         tools:visibility="visible">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="每轮等待时间(分钟)" />
 
@@ -137,19 +137,19 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onMeasIntervalPerRoundsClick()}"
                         visible='@{stateVM.wrapInfo.roundmeasinval != IOTConstants.NULL_KEY &amp;&amp;stateVM.measureMethod == 1}'
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="每轮测量间隔(小时)" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.measurementIntervalPerRound }"
@@ -158,18 +158,18 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         visible='@{stateVM.wrapInfo.updatedate != IOTConstants.NULL_KEY &amp;&amp;stateVM.measureMethod == 2}'
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="修改日期" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@null"
                             android:text="@{stateVM.modifiedDate }" />
@@ -177,12 +177,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible='@{stateVM.wrapInfo.invalday != IOTConstants.NULL_KEY &amp;&amp;stateVM.measureMethod == 2}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="间隔时间(天)" />
 
@@ -196,12 +196,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         visible='@{stateVM.wrapInfo.roundmeasstart != IOTConstants.NULL_KEY &amp;&amp;stateVM.measureMethod == 2}'
                         android:enabled="@{stateVM.isEditable }">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="每轮测量开始时间"
                             android:textStyle="bold" />
@@ -224,13 +224,13 @@
                         tools:visibility="visible" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:layout_marginTop="0.5dp"
                         visible='@{ stateVM.wrapInfo.datainval != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="数据读取间隔(秒)" />
 
@@ -243,13 +243,13 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:layout_marginTop="0.5dp"
                         visible='@{ stateVM.wrapInfo.clin_compen != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测斜仪补偿时间(秒)" />
 
@@ -263,12 +263,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible='@{ stateVM.wrapInfo.compensatetime != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测量补偿时间(秒)" />
 
@@ -282,12 +282,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible='@{ stateVM.wrapInfo.interdeep != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测斜管孔深(米)" />
 
@@ -302,12 +302,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible='@{ stateVM.wrapInfo.driveaddress != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="电机驱动器地址" />
 
@@ -322,12 +322,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible='@{ stateVM.wrapInfo.downspeed != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="电机下放速度(r/min)" />
 
@@ -342,12 +342,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible='@{ stateVM.wrapInfo.downwaitetime != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="下放等待时间(秒)" />
 
@@ -362,12 +362,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible='@{ stateVM.wrapInfo.upspeed != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="电机上拉速度(r/min)" />
 
@@ -382,12 +382,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible='@{ stateVM.wrapInfo.pzspeed != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="上拉归零速度(r/min)" />
 
@@ -402,12 +402,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible='@{ stateVM.wrapInfo.measpacing != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测量间距(毫米)" />
 
@@ -421,12 +421,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible='@{ stateVM.wrapInfo.meaintertime != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测量间隔时间(秒)" />
 
@@ -440,12 +440,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible='@{ stateVM.wrapInfo.meabaseth != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测量基准深度(米)" />
 
@@ -459,12 +459,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible='@{ stateVM.wrapInfo.interval_compensation != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="管口安全距离(米)" />
 
@@ -478,12 +478,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible='@{ stateVM.wrapInfo.bottom_safe_distance != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="管底安全距离(米)" />
 
@@ -498,12 +498,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible='@{ stateVM.wrapInfo.interval_fitting != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="数据拟合区间h2(米)" />
 
@@ -518,12 +518,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible='@{ stateVM.wrapInfo.point_offset != IOTConstants.NULL_KEY}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测点偏移距离(米)" />
 

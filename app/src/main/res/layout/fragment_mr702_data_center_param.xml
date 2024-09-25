@@ -60,12 +60,12 @@
                         app:vm="@{stateVM}" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:layout_marginTop="@dimen/page_content_margin_top_12"
                         android:background="@drawable/shape_common_click_item_top_corner_4">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="数据中心地址" />
 
@@ -80,11 +80,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="数据中心端口" />
 
@@ -100,18 +100,18 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onCommunicateWayChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="通信方式" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -120,18 +120,18 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onIPTypeChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="网络协议" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -140,18 +140,18 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onTransferProtocolChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="传输协议" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -160,18 +160,18 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onDataProtocolChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="数据协议" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -180,18 +180,18 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onPlatformTypeChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="平台类型" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -208,11 +208,11 @@
                         android:orientation="vertical">
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
+                            style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="产品ID" />
 
@@ -226,11 +226,11 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
+                            style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="设备ID" />
 
@@ -244,11 +244,11 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
+                            style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="设备Key" />
 
@@ -262,11 +262,11 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
+                            style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="设备注册码" />
 
@@ -280,11 +280,11 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
+                            style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="设备注册地址" />
 
@@ -298,11 +298,11 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
+                            style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="设备注册端口" />
 
@@ -317,11 +317,11 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
+                            style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="心跳间隔(秒)" />
 
@@ -345,19 +345,19 @@
                         android:orientation="vertical">
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_ClickableItem_LayoutStyle"
+                            style="@style/Common_ClickableItem_Layout_Style"
                             onClickWithDebouncing="@{()->click.onStationClassificationChooseClick()}"
                             visible='@{stateVM.dataProtocol.contains("SL651")}'
                             android:background="@drawable/layer_common_click_item_with_divider"
                             android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="测站分类" />
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_ValueStyle"
+                                style="@style/Common_ClickableItem_Value_Style"
                                 enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:drawableEnd="@drawable/ic_arrow_down"
@@ -366,12 +366,12 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
+                            style="@style/Common_EditItem_Layout_Style"
                             visible='@{stateVM.dataProtocol.contains("SL651")}'
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="中心站地址" />
 
@@ -386,11 +386,11 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
+                            style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="密码" />
 
@@ -405,11 +405,11 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
+                            style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="测站编码" />
 
@@ -424,7 +424,7 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_ClickableItem_LayoutStyle"
+                            style="@style/Common_ClickableItem_Layout_Style"
                             onClickWithDebouncing="@{()->click.onToggleAdvancedClick()}"
                             android:layout_marginTop="@dimen/page_content_margin_top_12"
                             android:background="@drawable/shape_common_click_item_top_corner_4"
@@ -436,13 +436,13 @@
                                 android:background="@color/black" />
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:layout_marginStart="@dimen/dimen_size_8"
                                 android:text="高级设置" />
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_ValueStyle"
+                                style="@style/Common_ClickableItem_Value_Style"
                                 android:drawableEnd="@{stateVM.isAdvancedItemVisible ? @drawable/ic_arrow_up_blue : @drawable/ic_arrow_down_blue}"
                                 android:text='@{stateVM.isAdvancedItemVisible ? "收起" : "展开"}'
                                 android:textColor="@color/colorPrimary"
@@ -460,7 +460,7 @@
                             android:orientation="vertical">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:layout_marginStart="@dimen/page_content_item_padding_horizontal_16"
                                 android:layout_marginTop="@dimen/page_content_margin_top_12"
@@ -535,11 +535,11 @@
                                 android:background="@color/divider_line_bg" />
 
                             <androidx.appcompat.widget.LinearLayoutCompat
-                                style="@style/Common_EditItem_LayoutStyle"
+                                style="@style/Common_EditItem_Layout_Style"
                                 android:background="@drawable/layer_common_click_item_with_divider">
 
                                 <com.google.android.material.textview.MaterialTextView
-                                    style="@style/Common_ClickableItem_TitleStyle"
+                                    style="@style/Common_ClickableItem_Title_Style"
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:text="维持上报间隔(秒)" />
 
@@ -554,11 +554,11 @@
                             </androidx.appcompat.widget.LinearLayoutCompat>
 
                             <androidx.appcompat.widget.LinearLayoutCompat
-                                style="@style/Common_EditItem_LayoutStyle"
+                                style="@style/Common_EditItem_Layout_Style"
                                 android:background="@drawable/layer_common_click_item_with_divider">
 
                                 <com.google.android.material.textview.MaterialTextView
-                                    style="@style/Common_ClickableItem_TitleStyle"
+                                    style="@style/Common_ClickableItem_Title_Style"
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:text="数据补发有效时间(日)" />
 
@@ -573,11 +573,11 @@
                             </androidx.appcompat.widget.LinearLayoutCompat>
 
                             <androidx.appcompat.widget.LinearLayoutCompat
-                                style="@style/Common_EditItem_LayoutStyle"
+                                style="@style/Common_EditItem_Layout_Style"
                                 android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                                 <com.google.android.material.textview.MaterialTextView
-                                    style="@style/Common_ClickableItem_TitleStyle"
+                                    style="@style/Common_ClickableItem_Title_Style"
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:text="数据补发间隔(分钟)" />
 

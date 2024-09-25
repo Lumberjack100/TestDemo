@@ -46,81 +46,81 @@
                 android:orientation="vertical">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     android:layout_height="53dp"
                     android:layout_marginTop="@dimen/dimen_size_1"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="企业名称" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_ValueStyle"
+                        style="@style/Common_ClickableItem_Value_Style"
                         android:drawableEnd="@null"
                         android:text="@{vm.companyName}"
                         tools:text="上海米度测控科技有限公司" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     android:layout_height="53dp"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="企业性质" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_ValueStyle"
+                        style="@style/Common_ClickableItem_Value_Style"
                         android:drawableEnd="@null"
                         android:text="@{vm.companyType}"
                         tools:text="私营企业" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     android:layout_height="53dp"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="所属行业" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_ValueStyle"
+                        style="@style/Common_ClickableItem_Value_Style"
                         android:drawableEnd="@null"
                         android:text="@{vm.industryName}"
                         tools:text="互联网" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     android:layout_height="53dp"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="联系电话" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_ValueStyle"
+                        style="@style/Common_ClickableItem_Value_Style"
                         android:drawableEnd="@null"
                         android:text="@{vm.companyPhone}"
                         tools:text="021-33923621" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     android:layout_height="53dp"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="企业地址" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_ValueStyle"
+                        style="@style/Common_ClickableItem_Value_Style"
                         android:drawableEnd="@null"
                         android:ellipsize="end"
                         android:maxLines="3"
@@ -130,16 +130,16 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     android:layout_height="53dp"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="企业官网" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_ValueStyle"
+                        style="@style/Common_ClickableItem_Value_Style"
                         android:drawableEnd="@null"
                         android:text="@{vm.companyWebsite}"
                         tools:text="http://www.shmedo.cn" />

@@ -49,33 +49,33 @@
                 android:paddingBottom="110dp">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     onClickWithDebouncing="@{()->click.onSensorSwitchClick()}"
                     android:layout_marginTop="@dimen/dimen_size_1"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="传感器类型" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_ValueStyle"
+                        style="@style/Common_ClickableItem_Value_Style"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.sensorTypeName }"
                         tools:text="4g" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     onClickWithDebouncing="@{()->click.onChannelSwitchClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="通道" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_ValueStyle"
+                        style="@style/Common_ClickableItem_Value_Style"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.channel }"
                         tools:text="1" />

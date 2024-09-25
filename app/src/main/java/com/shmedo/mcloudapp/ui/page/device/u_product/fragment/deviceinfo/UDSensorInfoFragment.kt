@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo
 import android.os.Bundle
 import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
@@ -15,6 +16,7 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
+import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
@@ -55,12 +57,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
 
-                groupList.add(
-                    DeviceStatusInfoGroupItem(
-                        "供电信息",
-                        bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)
-                    )
-                )
+                groupList.add(DeviceStatusInfoGroupItem("供电信息"))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "外部电压",
@@ -107,13 +104,11 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         AppContants.PLACE_HOLDER_VALUE,
                         stateInfo.batteryHealth.ifEmpty { AppContants.PLACE_HOLDER_VALUE }),
                     unit = "%",
+                    isBottomItem = true
                 )
-                groupList.add(
-                    DeviceStatusInfoGroupItem(
-                        "环境信息",
-                        bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)
-                    )
-                )
+
+                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                groupList.add(DeviceStatusInfoGroupItem("环境信息"))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "内部温度",
@@ -185,7 +180,8 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     },
                     textColorRes = if (stateInfo.accelerometerStatus == "0") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
                         R.color.red_F13838
-                    )
+                    ),
+                    isBottomItem = true
                 )
 
                 binding.recyclerview.models = groupList

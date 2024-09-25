@@ -56,7 +56,7 @@
                     android:background="@color/divider_line_bg" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
@@ -113,13 +113,13 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     visible="@{stateVM.switchType==IOTRainStation.RAIN_OPEN &amp;&amp; stateVM.isSupportDumpMInTime}"
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:paddingStart="@dimen/dimen_size_30">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="翻斗翻转最小间隔(秒)"
                         tools:textColor="@color/title_text_color" />
 

@@ -23,8 +23,8 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_config_logo"
             imageResId="@{m.functionModule.iconResId}"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:tint="@{m.functionModule.moduleAvailable ? @color/colorPrimary : @color/sub_title_text_color}"
             tools:src="@drawable/ic_module_current_state" />
 

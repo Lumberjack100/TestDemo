@@ -57,11 +57,11 @@
                     app:drawableStartCompat="@drawable/ic_mr702_interface_info_collection_param" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="采集频率(秒)" />
 
@@ -75,11 +75,11 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="采集次数(N)" />
 
@@ -93,11 +93,11 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="无应答次数" />
 
@@ -111,11 +111,11 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="延时时间(秒)" />
 
@@ -142,18 +142,18 @@
                     app:drawableStartCompat="@drawable/ic_mr702_device_info_running_data" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:enabled="@{homeVM.isEditable }"
                     onClickWithDebouncing="@{()->click.onCollectorTypeChooseClick()}">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="采集器类型" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_ValueStyle"
+                        style="@style/Common_ClickableItem_Value_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.collectorType}"
@@ -161,11 +161,11 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="采集器地址"
                         tools:textColor="@color/title_text_color" />
@@ -181,11 +181,11 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="波特率(Bps)"
                         tools:textColor="@color/title_text_color" />
@@ -200,18 +200,18 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:enabled="@{homeVM.isEditable }"
                     onClickWithDebouncing="@{()->click.onDataBitChooseClick()}">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="数据位" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_ValueStyle"
+                        style="@style/Common_ClickableItem_Value_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.dataBit}"
@@ -219,18 +219,18 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:enabled="@{homeVM.isEditable }"
                     onClickWithDebouncing="@{()->click.onCheckBitChooseClick()}">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="校验位" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_ValueStyle"
+                        style="@style/Common_ClickableItem_Value_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.checkBit}"
@@ -238,18 +238,18 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:enabled="@{homeVM.isEditable }"
                     onClickWithDebouncing="@{()->click.onStopBitChooseClick()}">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:text="停止位" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_ValueStyle"
+                        style="@style/Common_ClickableItem_Value_Style"
                         textViewEnabled="@{homeVM.isEditable }"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.stopBit}"

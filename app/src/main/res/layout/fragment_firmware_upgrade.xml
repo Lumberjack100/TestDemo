@@ -35,7 +35,7 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/ll_firmware_status"
-            style="@style/Common_ClickableItem_LayoutStyle"
+            style="@style/Common_ClickableItem_Layout_Style"
             onClickWithDebouncing="@{()->click.onFirmwareStatusChooseClick()}"
             android:layout_marginTop="@dimen/dimen_size_1"
             android:background="@drawable/layer_common_click_item_with_divider"
@@ -44,11 +44,11 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 android:text="固件环境" />
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_ValueStyle"
+                style="@style/Common_ClickableItem_Value_Style"
                 android:drawableEnd="@drawable/ic_arrow_down"
                 android:text="@{stateVM.firmwareStatus }"
                 tools:text="测试环境" />
@@ -56,14 +56,14 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/ll_filter_regexp"
-            style="@style/Common_EditItem_LayoutStyle"
+            style="@style/Common_EditItem_Layout_Style"
             android:background="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_firmware_status">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 android:text="过滤内容" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText

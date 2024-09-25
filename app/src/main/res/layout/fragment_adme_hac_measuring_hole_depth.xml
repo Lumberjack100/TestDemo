@@ -53,12 +53,12 @@
                     android:paddingBottom="@dimen/dimen_size_25">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:layout_marginTop="@dimen/dimen_size_1"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="测斜仪Mac地址" />
 
@@ -73,11 +73,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="孔号" />
 
@@ -99,11 +99,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="区号" />
 
@@ -118,18 +118,18 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onMeasureModeClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="测量孔深模式" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.measureWay }"
@@ -137,12 +137,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible="@{stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="下放速度(r/min)" />
 
@@ -158,17 +158,17 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         visible="@{stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="实测测斜管孔深(米)" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@null"
                             android:text="@{stateVM.realHoleDepth }"
@@ -176,17 +176,17 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         visible="@{stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="推荐测斜管孔深(米)" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@null"
                             android:text="@{stateVM.recommendHoleDepth }"
@@ -194,18 +194,18 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <RelativeLayout
-                        style="@style/SwitchButton_LayoutStyle"
+                        style="@style/SwitchButton_Item_Layout_Style"
                         visible="@{!stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/SwitchButton_TitleStyle"
+                            style="@style/SwitchButton_Item_Title_Style"
                             android:text="下放堵转检测"
                             android:textColor="@{stateVM.isEditable?@color/title_text_color:@color/sub_title_text_color}" />
 
                         <com.kyleduo.switchbutton.SwitchButton
                             android:id="@+id/downEnableSBtn"
-                            style="@style/SwitchButton_ButtonStyle"
+                            style="@style/SwitchButton_Item_Button_Style"
                             checkedImmediatelyNoEvent="@{stateVM.decentralizedEnable}"
                             android:enabled="@{stateVM.isEditable}"
                             android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
@@ -216,19 +216,19 @@
                     </RelativeLayout>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onMotionTypeClick()}"
                         visible="@{!stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="运动方式" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.motionType }"
@@ -236,12 +236,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible="@{!stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="电机速度(r/min)" />
 
@@ -257,12 +257,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         visible="@{!stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="设定运动距离(米)" />
 

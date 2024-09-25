@@ -13,24 +13,25 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/item"
-        style="@style/DeviceCurrentState_Item_Layout_Style"
-        android:background="@drawable/layer_common_click_item_with_divider">
+        style="@style/DeviceCurrentState_Item_Layout_Style2"
+        android:background="@{m.isBottomItem?@drawable/shape_common_click_item_bottom_corner_4:@drawable/layer_common_click_item_with_divider}">
 
         <com.google.android.material.textview.MaterialTextView
-            style="@style/DeviceCurrentState_Item_Title_Style"
+            style="@style/DeviceCurrentState_Item_Title_Style2"
             android:text='@{m.name}'
             tools:text="4G信号强度" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_4g_signal_strength"
-            style="@style/DeviceCurrentState_Item_Value_Style"
+            style="@style/DeviceCurrentState_ClickableItem_Value_Style2"
+            android:drawableEnd="@null"
             android:text='@{m.signalValue==0?"--dBm":m.signalValue+"dBm" }'
             tools:text="-51dBm" />
 
         <com.shmedo.mcloudapp.ui.widget.SignalView
             android:id="@+id/signal"
             android:layout_width="wrap_content"
-            android:layout_height="22dp"
+            android:layout_height="20dp"
             android:layout_marginStart="10dp"
             app:bind_signal_value="@{m.signalValue}"
             app:connected="true"

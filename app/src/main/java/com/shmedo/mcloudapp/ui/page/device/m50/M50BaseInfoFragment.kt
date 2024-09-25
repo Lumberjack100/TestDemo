@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.m50
 import android.os.Bundle
 import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
@@ -11,6 +12,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
+import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
@@ -42,12 +44,7 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
 
-                groupList.add(
-                    DeviceStatusInfoGroupItem(
-                        "设备信息",
-                        bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)
-                    )
-                )
+                groupList.add(DeviceStatusInfoGroupItem("设备信息"))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "设备型号",
@@ -104,17 +101,14 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList.add(
                         DeviceStatusInfoBasicItem(
                             name = "累计运行时间",
-                            value = DeviceStatusInfoProcessor.millis2FitTimeSpan(it * 1000L, 3)
+                            value = DeviceStatusInfoProcessor.millis2FitTimeSpan(it * 1000L, 3),
+                            isBottomItem = true
                         )
                     )
                 }
-                groupList.add(
-                    DeviceStatusInfoGroupItem(
-                        "工作信息", bgColorRes = ColorUtils.getColor(
-                            R.color.main_bg_gray
-                        )
-                    )
-                )
+
+                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                groupList.add(DeviceStatusInfoGroupItem("工作信息"))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "工作模式",
@@ -130,14 +124,11 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "抓拍频率",
                     value = stateInfo.captureFrequency,
                     unit = "分钟/次",
+                    isBottomItem = true
                 )
-                groupList.add(
-                    DeviceStatusInfoGroupItem(
-                        "工作信息", bgColorRes = ColorUtils.getColor(
-                            R.color.main_bg_gray
-                        )
-                    )
-                )
+
+                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                groupList.add(DeviceStatusInfoGroupItem("工作信息"))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "可用空间",
@@ -147,7 +138,9 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList,
                     name = "总空间",
                     value = stateInfo.emmcStorage,
+                    isBottomItem = true
                 )
+
                 binding.recyclerview.models = groupList
 
             } catch (e: Exception) {

@@ -292,9 +292,19 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     private fun getAdapterData(): MutableList<DataCenterStatusItem> {
         val list = mutableListOf<DataCenterStatusItem>()
-        //centerNum
         for (i in 1..centerNum) {
-            list.add(DataCenterStatusItem(i, "数据中心$i", "0"))
+            list.add(
+                DataCenterStatusItem(
+                    centerid = i,
+                    name = "数据中心$i",
+                    status = "0",
+                    bgResId = when (i) {
+                        1 -> R.drawable.layer_common_click_item_top_corner_4_with_divider
+                        centerNum -> R.drawable.shape_common_click_item_bottom_corner_4
+                        else -> R.drawable.layer_common_click_item_with_divider
+                    }
+                )
+            )
         }
         return list
     }

@@ -47,7 +47,7 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 android:text="设备SN号"
                 android:textSize="@dimen/text_size_14" />
 
@@ -135,7 +135,7 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_filter_time">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 android:text="数据过滤"
                 android:textSize="@dimen/text_size_14" />
 

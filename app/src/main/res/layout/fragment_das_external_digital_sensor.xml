@@ -47,36 +47,36 @@
                 android:paddingBottom="110dp">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     onClickWithDebouncing="@{()->click.onModelSwitchClick()}"
                     visible="@{stateVM.isModelSwitchSupport}"
                     android:layout_marginTop="@dimen/dimen_size_1"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="模型切换" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_ValueStyle"
+                        style="@style/Common_ClickableItem_Value_Style"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.modelType }"
                         tools:text="坐标模型" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     onClickWithDebouncing="@{()->click.onChildSensorTypeSwitchClick()}"
                     visible="@{stateVM.isChildSensorTypeSupport}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="@{stateVM.childSensorTypeTitle}"
                         tools:text="传感器类型" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_ValueStyle"
+                        style="@style/Common_ClickableItem_Value_Style"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.childSensorType }"
                         tools:text="雷达物位计" />
@@ -84,12 +84,12 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     android:layout_marginTop="@dimen/dimen_size_1"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="传感器地址" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
@@ -101,12 +101,12 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     visible="@{stateVM.isTriggerSupport}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="@{stateVM.triggerTitle}"
                         tools:text="触发值"
                         tools:textColor="@color/title_text_color" />
@@ -130,12 +130,12 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     visible="@{stateVM.isCorrectSupport}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="@{stateVM.correctTitle}"
                         tools:text="修正值"
                         tools:textColor="@color/title_text_color" />
@@ -159,12 +159,12 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     visible="@{stateVM.isExtension1Support}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="@{stateVM.extension1Title}"
                         tools:text="扩展1"
                         tools:textColor="@color/title_text_color" />
@@ -203,12 +203,12 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     visible="@{stateVM.isExtension2Support}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="@{stateVM.extension2Title}"
                         tools:text="扩展2"
                         tools:textColor="@color/title_text_color" />
@@ -234,12 +234,12 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     visible="@{stateVM.isExtension3Support}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="@{stateVM.extension3Title}"
                         tools:text="扩展3"
                         tools:textColor="@color/title_text_color" />
@@ -263,12 +263,12 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     visible="@{stateVM.isExtension4Support}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="@{stateVM.extension4Title}"
                         tools:text="扩展4"
                         tools:textColor="@color/title_text_color" />
@@ -293,12 +293,12 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     visible="@{stateVM.isExtension5Support}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="@{stateVM.extension5Title}"
                         tools:text="扩展5"
                         tools:textColor="@color/title_text_color" />

@@ -49,20 +49,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingTop="@dimen/dimen_size_1"
-                    android:paddingBottom="@dimen/page_scroll_content_padding_bottom">
+                    android:paddingHorizontal="@dimen/page_content_padding_horizontal_12"
+                    android:paddingTop="@dimen/page_content_padding_top_12"
+                    android:paddingBottom="@dimen/page_scroll_content_padding_bottom_100">
 
                     <RelativeLayout
-                        style="@style/SwitchButton_LayoutStyle"
+                        style="@style/SwitchButton_Item_Layout_Style"
                         visible="@{stateVM.isSupportSwitch()}"
-                        android:background="@drawable/layer_common_click_item_with_divider">
+                        android:background="@drawable/layer_common_click_item_top_corner_4_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/SwitchButton_TitleStyle"
+                            style="@style/SwitchButton_Item_Title_Style"
                             android:text="电台启用" />
 
                         <com.kyleduo.switchbutton.SwitchButton
-                            style="@style/SwitchButton_ButtonStyle"
+                            style="@style/SwitchButton_Item_Button_Style"
                             checkedImmediatelyNoEvent="@{stateVM.isOpened}"
                             android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                             app:kswAnimationDuration="100"
@@ -72,19 +73,19 @@
                     </RelativeLayout>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onRTCMDataChannelChooseClick()}"
                         android:layout_marginTop="@dimen/dimen_size_1"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:text="RTCM数据频点" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -93,18 +94,18 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onReceiveChannelChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:text="广播接收频点" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -113,18 +114,18 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onSendChannelChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:text="报警发射频点" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -133,18 +134,18 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onTransmitPowerChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:text="发射功率" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:drawableEnd="@drawable/ic_arrow_down"
@@ -153,51 +154,43 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onAirSpeedChooseClick()}"
-                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4"
                         android:enabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:text="空中速率" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.airSpeed}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_reset"
+                        style="@style/ResetButton_ColorPrimary2"
+                        visible="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:onClick="@{()->click.onResetClick()}"
+                        android:text="@string/button_reset_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_confirm"
+                        style="@style/SubmitButton_ColorPrimary2"
+                        onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                        visible="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
+                        android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                        android:text="@string/button_save_text" />
+
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_reset"
-            style="@style/ResetButton_ColorPrimary"
-            onClickWithDebouncing="@{()->click.onResetClick()}"
-            visible="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="30dp"
-            android:text="@string/button_reset_text"
-            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_ColorPrimary"
-            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-            visible="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="@dimen/page_param_content_submit_button_margin_bottom"
-            android:text="@string/button_save_text"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

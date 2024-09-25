@@ -33,6 +33,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAdvancedSettingBinding
+import com.shmedo.mcloudapp.databinding.ItemAdvancedSettingBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -103,14 +104,15 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
 
     private fun initAdapter() {
         binding.recyclerview.linear().setup { rv ->
-//            rv.addItemDecoration(
-//                RecycleViewDivider(
-//                    LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(8f), ColorUtils.getColor(
-//                        R.color.transparent
-//                    )
-//                )
-//            )
             addType<AdvancedSettingItem>(R.layout.item_advanced_setting)
+            onBind {
+                val itemBinding = getBinding<ItemAdvancedSettingBinding>()
+                when (modelPosition) {
+                    0 -> itemBinding.item.setBackgroundResource(R.drawable.layer_common_click_item_top_corner_4_with_divider)
+                    modelCount - 1 -> itemBinding.item.setBackgroundResource(R.drawable.shape_common_click_item_bottom_corner_4)
+                    else -> itemBinding.item.setBackgroundResource(R.drawable.layer_common_click_item_with_divider)
+                }
+            }
             R.id.item.onClick {
                 val item = getModel<AdvancedSettingItem>()
                 processItemClick(item)

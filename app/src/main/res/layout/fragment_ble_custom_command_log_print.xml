@@ -34,7 +34,7 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/ll_mode"
-            style="@style/Common_ClickableItem_LayoutStyle"
+            style="@style/Common_ClickableItem_Layout_Style"
             onClickWithDebouncing="@{()->click.onDebugModeChooseClick()}"
             android:layout_marginTop="@dimen/dimen_size_1"
             android:background="@drawable/layer_common_click_item_with_divider"
@@ -43,11 +43,11 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 android:text="设备日志输出模式" />
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_ValueStyle"
+                style="@style/Common_ClickableItem_Value_Style"
                 android:drawableEnd="@drawable/ic_arrow_down"
                 android:text="@{stateVM.debugMode}"
                 tools:text="关" />

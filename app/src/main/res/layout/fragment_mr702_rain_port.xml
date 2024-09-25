@@ -41,15 +41,15 @@
                     android:background="@color/main_bg_gray" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="状态" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_ValueStyle"
+                        style="@style/Common_ClickableItem_Value_Style"
                         android:drawableEnd="@null"
                         android:text="@{stateVM.status}"
                         android:textSize="17sp"
@@ -57,17 +57,17 @@
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <RelativeLayout style="@style/SwitchButton_LayoutStyle">
+                <RelativeLayout style="@style/SwitchButton_Item_Layout_Style">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/SwitchButton_TitleStyle"
+                        style="@style/SwitchButton_Item_Title_Style"
                         android:text="雨量计"
                         android:textColor="@{homeVM.isEditable?@color/title_text_color:@color/sub_title_text_color}"
                         android:textStyle="bold" />
 
                     <com.kyleduo.switchbutton.SwitchButton
                         android:id="@+id/sensorSB"
-                        style="@style/SwitchButton_ButtonStyle"
+                        style="@style/SwitchButton_Item_Button_Style"
                         checkedImmediatelyNoEvent="@{stateVM.isOpened}"
                         android:enabled="@{homeVM.isEditable}"
                         android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
@@ -87,18 +87,18 @@
                     tools:src="@drawable/ic_mr702_rain_gauge_bright" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider"
                     android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                     onClickWithDebouncing="@{()->click.onChooseResolutionClick()}">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                         android:text="分辨率" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_ValueStyle"
+                        style="@style/Common_ClickableItem_Value_Style"
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.rainResolution}"
@@ -106,11 +106,11 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
                         android:text="消抖系数(秒/次)"
                         tools:textColor="@color/title_text_color" />

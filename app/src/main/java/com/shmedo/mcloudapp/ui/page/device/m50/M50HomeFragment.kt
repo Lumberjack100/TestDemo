@@ -65,6 +65,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.M50HomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.withContext
@@ -453,6 +454,8 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                         module.navId,
                         bundle
                     )
+                }else{
+                    Toaster.show("正在开发中")
                 }
             }
         }
@@ -703,6 +706,25 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            IOTCommandType.QUERY_SAMPLE -> {//召测
+                val result = iotParseManager.parse<String>(
+                    cmdStr,
+                    IOTCommandType.QUERY_SAMPLE
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "召测出错: ${result.message}"
+                        handleFailureResult(errMsg, isShowErrMsg = false)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList()
+                        processSampleResponse(result.data)
+                    }
+                }
+            }
+
             IOTCommandType.QUERY_TERMINAL_TIME -> {//查询终端时间
                 val result = iotParseManager.parse<String>(
                     cmdStr,
@@ -744,25 +766,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                         mCommandResponseStates.isResponseSuccess.set(true)
                         mCommandResponseStates.isCalibratingSuccess.set(true)
                         mCommandResponseStates.deviceTime.set(mCommandResponseStates.systemTime.get())
-                    }
-                }
-            }
-
-            IOTCommandType.QUERY_SAMPLE -> {//召测
-                val result = iotParseManager.parse<String>(
-                    cmdStr,
-                    IOTCommandType.QUERY_SAMPLE
-                )
-                when (result) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "召测出错: ${result.message}"
-                        handleFailureResult(errMsg, isShowErrMsg = false)
-                        return
-                    }
-
-                    is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        processSampleResponse(result.data)
                     }
                 }
             }
@@ -856,37 +859,23 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
      */
     private fun processSampleResponse(content: String) {
         try {
-            //{"value":1,"time":"2024-09-04 11:07:34"}
-            //{"value":2,"filename":"20240904111431"}
-            //{"value":0,"obj_alt":28.320,"ld_value":3.514,"z_angle":86.4,"time":"2024-09-04 14:32:32"}
+            //{"sum_value":2,"x_value":"22","y_value":"22","z_value":"22"}
             val resultMap = MoshiUtil.fromJson<Map<String, String>>(content) ?: return
-            resultMap["value"]?.let { code ->
-                when (code) {
-                    "1" -> {
-                        Toaster.show("拍照指令下发成功，请稍后在历史中查看图片")
-                    }
+            if (resultMap.containsKey("sum_value")
+                && resultMap.containsKey("x_value")
+                && resultMap.containsKey("y_value")
+                && resultMap.containsKey("z_value")
+            ) {
+                val resultantDisplacement = DeviceStatusInfoProcessor.formatDoubleValue(resultMap["sum_value"], "--", 1)
+                val xDisplacement = DeviceStatusInfoProcessor.formatDoubleValue(resultMap["x_value"], "--", 1)
+                val yDisplacement = DeviceStatusInfoProcessor.formatDoubleValue(resultMap["y_value"], "--", 1)
+                val zDisplacement =DeviceStatusInfoProcessor.formatDoubleValue(resultMap["z_value"], "--", 1)
 
-                    "0" -> {
-                        if (resultMap.containsKey("sum_value")
-                            && resultMap.containsKey("x_value")
-                            && resultMap.containsKey("y_value")
-                            && resultMap.containsKey("z_value")
-                        ) {
-                            val resultantDisplacement = resultMap["sum_value"] ?: ""
-                            val xDisplacement = resultMap["x_value"] ?: ""
-                            val yDisplacement = resultMap["y_value"] ?: ""
-                            val zDisplacement = resultMap["z_value"]?.replace("-", ".") ?: ""
-
-                            mHeadStates.resultantDisplacement.set("$resultantDisplacement m")
-                            mHeadStates.xDisplacement.set("$xDisplacement m")
-                            mHeadStates.yDisplacement.set("$yDisplacement°")
-                            mHeadStates.zDisplacement.set(zDisplacement)
-                            return
-                        }
-                    }
-
-                    else -> {}
-                }
+                mHeadStates.resultantDisplacement.set("${resultantDisplacement}mm")
+                mHeadStates.xDisplacement.set("${xDisplacement}mm")
+                mHeadStates.yDisplacement.set("${yDisplacement}mm")
+                mHeadStates.zDisplacement.set("${zDisplacement}mm")
+                return
             }
         } catch (e: Exception) {
             Timber.e(e)

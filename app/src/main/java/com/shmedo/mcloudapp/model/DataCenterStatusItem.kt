@@ -14,6 +14,7 @@ data class DataCenterStatusItem(
     val centerid: Int = 1,
     val name: String = "",
     var status: String = "",
+    val bgResId: Int = 0,
 ) : Parcelable, BaseObservable() {
 
     fun refreshStatus(status: String) {

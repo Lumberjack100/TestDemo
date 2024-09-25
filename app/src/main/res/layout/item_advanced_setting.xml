@@ -13,11 +13,11 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/item"
-        style="@style/Common_ClickableItem_LayoutStyle"
-        android:background="@drawable/layer_common_click_item_with_divider">
+        style="@style/Common_ClickableItem_Layout_Style"
+        tools:background="@drawable/layer_common_click_item_with_divider">
 
         <com.google.android.material.textview.MaterialTextView
-            style="@style/Common_ClickableItem_TitleStyle"
+            style="@style/Common_ClickableItem_Title_Style"
             android:text='@{m.name}'
             tools:text="固件升级" />
     </androidx.appcompat.widget.LinearLayoutCompat>

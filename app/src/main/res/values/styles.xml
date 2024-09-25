@@ -52,7 +52,7 @@
     </style>
 
     <!--通用分组标题样式-->
-    <style name="Common_GroupName_Style">
+    <style name="Common_GroupItem_Title_Style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">44dp</item>
         <item name="android:paddingStart">16dp</item>
@@ -64,7 +64,7 @@
     </style>
 
     <!--通用分组标题样式-->
-    <style name="Common_GroupItem_TitleStyle">
+    <style name="Common_GroupItem_Title_Style2">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/title_text_color_black_90</item>
@@ -73,7 +73,7 @@
     </style>
 
     <!-- 通用编辑项单条目样式 -->
-    <style name="Common_EditItem_LayoutStyle">
+    <style name="Common_EditItem_Layout_Style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">50dp</item>
         <item name="android:gravity">center_vertical</item>
@@ -99,7 +99,7 @@
     </style>
 
     <!-- 通用选择项条目样式 -->
-    <style name="Common_ClickableItem_LayoutStyle">
+    <style name="Common_ClickableItem_Layout_Style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">50dp</item>
         <item name="android:gravity">center_vertical</item>
@@ -110,7 +110,7 @@
     </style>
 
     <!-- 通用选择项单条目中 Title TextView 样式 -->
-    <style name="Common_ClickableItem_TitleStyle">
+    <style name="Common_ClickableItem_Title_Style">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/title_text_color_black_90</item>
@@ -118,7 +118,7 @@
     </style>
 
     <!-- 通用选择项单条目中 Value TextView 样式 -->
-    <style name="Common_ClickableItem_ValueStyle">
+    <style name="Common_ClickableItem_Value_Style">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
@@ -133,7 +133,7 @@
     </style>
 
     <!--通用开关项单条目样式 SwitchButton 样式-->
-    <style name="SwitchButton_LayoutStyle">
+    <style name="SwitchButton_Item_Layout_Style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">50dp</item>
         <item name="android:background">@color/white</item>
@@ -142,7 +142,7 @@
     </style>
 
     <!--通用开关项单条目中 Title TextView 样式-->
-    <style name="SwitchButton_TitleStyle">
+    <style name="SwitchButton_Item_Title_Style">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentStart">true</item>
@@ -152,7 +152,7 @@
     </style>
 
     <!--通用开关项单条目中 SwitchButton 样式-->
-    <style name="SwitchButton_ButtonStyle">
+    <style name="SwitchButton_Item_Button_Style">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentEnd">true</item>
@@ -218,21 +218,8 @@
         <item name="android:textSize">16sp</item>
     </style>
 
-    <!--设备运行状态分组标题样式-->
-    <style name="DeviceCurrentState_GroupName_Style">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@color/main_bg_gray</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
-        <item name="android:paddingStart">16dp</item>
-        <item name="android:paddingEnd">16dp</item>
-        <item name="android:textColor">@color/sub_title_text_color</item>
-        <item name="android:textSize">15sp</item>
-    </style>
-
     <!--设备运行状态单条基本信息样式-->
-    <style name="DeviceCurrentState_SingleItem_Style">
+    <style name="DeviceCurrentState_Item_Layout_Style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">40dp</item>
         <item name="android:gravity">center_vertical</item>
@@ -243,7 +230,7 @@
     </style>
 
     <!--设备运行状态单条项目标题样式-->
-    <style name="DeviceCurrentState_SingleItem_NameStyle">
+    <style name="DeviceCurrentState_Item_Title_Style">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/title_text_color</item>
@@ -251,7 +238,7 @@
     </style>
 
     <!--设备运行状态单条项目值样式-->
-    <style name="DeviceCurrentState_SingleItem_ValueStyle">
+    <style name="DeviceCurrentState_Item_Value_Style">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
@@ -260,6 +247,47 @@
         <item name="android:singleLine">true</item>
         <item name="android:textColor">@color/title_text_color</item>
         <item name="android:textSize">15sp</item>
+    </style>
+
+    <!--设备运行状态分组标题样式-->
+    <style name="DeviceCurrentState_GroupItem_Title_Style2">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/title_text_color_black_90</item>
+        <item name="android:textSize">@dimen/text_size_16</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!--设备运行状态单条基本信息样式-->
+    <style name="DeviceCurrentState_Item_Layout_Style2">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:paddingStart">@dimen/page_content_item_padding_horizontal_16</item>
+        <item name="android:paddingEnd">@dimen/page_content_item_padding_horizontal_16</item>
+    </style>
+
+    <!--设备运行状态单条项目标题样式-->
+    <style name="DeviceCurrentState_Item_Title_Style2">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/title_text_color_black_90</item>
+        <item name="android:textSize">@dimen/page_content_item_text_size_14</item>
+    </style>
+
+    <style name="DeviceCurrentState_ClickableItem_Value_Style2">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_marginStart">10dp</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:drawableEnd">@drawable/ic_arrow_right</item>
+        <item name="android:gravity">center_vertical|right</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColorHint">@color/text_color_hint</item>
+        <item name="android:textColor">@color/sub_title_text_color_black_60</item>
+        <item name="android:textSize">@dimen/page_content_item_text_size_14</item>
     </style>
 
     <!--MR702 终端参数页面单条项目值样式-->

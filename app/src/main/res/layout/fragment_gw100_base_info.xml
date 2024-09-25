@@ -62,63 +62,63 @@
                         android:textStyle="bold" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        style="@style/DeviceCurrentState_Item_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                            style="@style/DeviceCurrentState_Item_Title_Style"
                             android:text="设备SN" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                            style="@style/DeviceCurrentState_Item_Value_Style"
                             android:text="@{stateVM.wrapStateInfo.sn}"
                             tools:text="modo-1819929190" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        style="@style/DeviceCurrentState_Item_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                            style="@style/DeviceCurrentState_Item_Title_Style"
                             android:text="硬件版本" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                            style="@style/DeviceCurrentState_Item_Value_Style"
                             android:text="@{stateVM.wrapStateInfo.hardwareVersion}"
                             tools:text="1212" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/DeviceCurrentState_SingleItem_Style"
+                        style="@style/DeviceCurrentState_Item_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                            style="@style/DeviceCurrentState_Item_Title_Style"
                             android:text="固件版本" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                            style="@style/DeviceCurrentState_Item_Value_Style"
                             android:text="@{stateVM.wrapStateInfo.firmwareVersion}"
                             tools:text="1212" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/ll_device_abnormal_diagnosis"
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onShowErrorModulesInfoClick()}"
                         android:layout_height="44dp"
                         android:enabled="@{!stateVM.deviceNormal}">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                            style="@style/DeviceCurrentState_Item_Title_Style"
                             android:text="设备状态" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_device_abnormal_diagnosis"
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             rightArrowVisible="@{!stateVM.deviceNormal}"
                             android:text='@{stateVM.deviceNormal?"正常":"异常"}'
                             android:textColor="@{stateVM.deviceNormal?@color/green_00B26B:@color/red_F13838}"

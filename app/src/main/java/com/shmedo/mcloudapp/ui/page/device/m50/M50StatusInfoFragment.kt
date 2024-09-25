@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.m50
 import android.os.Bundle
 import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
@@ -12,6 +13,7 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
+import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
@@ -30,7 +32,6 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         toolbarViewModel.toolbarTitleText.set("状态信息")
     }
 
-
     override fun initStatusInfo(content: String) {
         launchWithViewLifecycle {
             try {
@@ -44,12 +45,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
 
-                groupList.add(
-                    DeviceStatusInfoGroupItem(
-                        "供电信息",
-                        bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)
-                    )
-                )
+                groupList.add(DeviceStatusInfoGroupItem("供电信息"))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "外接电压",
@@ -61,13 +57,11 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "光伏板电压",
                     value = stateInfo.externalVoltage.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                     unit = "V",
+                    isBottomItem = true
                 )
-                groupList.add(
-                    DeviceStatusInfoGroupItem(
-                        "电池信息",
-                        bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)
-                    )
-                )
+
+                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                groupList.add(DeviceStatusInfoGroupItem("电池信息"))
                 val batteryInfoList = stateInfo.battery ?: emptyList()
                 batteryInfoList.onEachIndexed { index, batteryInfo ->
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -110,14 +104,12 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             AppContants.PLACE_HOLDER_VALUE,
                             batteryInfo.batteryHealth.ifEmpty { AppContants.PLACE_HOLDER_VALUE }),
                         unit = "%",
+                        isBottomItem = true
                     )
                 }
-                groupList.add(
-                    DeviceStatusInfoGroupItem(
-                        "环境信息",
-                        bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)
-                    )
-                )
+
+                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                groupList.add(DeviceStatusInfoGroupItem("环境信息"))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "内部温度",
@@ -129,13 +121,11 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "内部湿度",
                     value = stateInfo.internalHumidity.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                     unit = "%",
+                    isBottomItem = true
                 )
-                groupList.add(
-                    DeviceStatusInfoGroupItem(
-                        "模块信息",
-                        bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)
-                    )
-                )
+
+                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                groupList.add(DeviceStatusInfoGroupItem("模块信息"))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "GNSS模组",
@@ -190,7 +180,8 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = stateInfo.sht21.uppercase().compareAndReturn("OK", "正常", "异常"),
                     textColorRes = if (stateInfo.sht21.uppercase() == "OK") ColorUtils.getColor(
                         R.color.green_00B26B
-                    ) else 0
+                    ) else 0,
+                    isBottomItem = true
                 )
 
                 binding.recyclerview.models = groupList

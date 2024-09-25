@@ -84,7 +84,7 @@
 
             <com.kyleduo.switchbutton.SwitchButton
                 android:id="@+id/statusSB"
-                style="@style/SwitchButton_ButtonStyle"
+                style="@style/SwitchButton_Item_Button_Style"
                 checkedImmediatelyNoEvent="@{vm.isCenterOpened}"
                 android:layout_marginTop="@dimen/dimen_size_10"
                 android:enabled="@{vm.isEditable}"

@@ -49,29 +49,29 @@
                 android:paddingBottom="@dimen/page_scroll_content_padding_bottom_100">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_top_corner_4_with_divider"
                     android:onClick="@{()->click.onModelChooseClick()}">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="模式" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_ValueStyle"
+                        style="@style/Common_ClickableItem_Value_Style"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.altitudeMeasureMode}"
                         tools:text="自动" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     visible='@{stateVM.altitudeMeasureMode == "手动"}'
                     android:background="@drawable/layer_common_click_item_with_divider"
                     tools:visibility="visible">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         android:text="海拔高度(米)" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
@@ -83,7 +83,7 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                     <com.google.android.material.textview.MaterialTextView

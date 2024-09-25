@@ -49,21 +49,21 @@
                 android:paddingBottom="@dimen/dimen_size_25">
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_GroupName_Style"
+                    style="@style/Common_GroupItem_Title_Style"
                     android:text="无线配置" />
 
                 <RelativeLayout
-                    style="@style/SwitchButton_LayoutStyle"
+                    style="@style/SwitchButton_Item_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/SwitchButton_TitleStyle"
+                        style="@style/SwitchButton_Item_Title_Style"
                         android:text="4G通信"
                         android:textColor="@{!stateVM.isWirelessDisabled&amp;&amp; stateVM.isEditable?@color/title_text_color:@color/sub_title_text_color}" />
 
                     <com.kyleduo.switchbutton.SwitchButton
                         android:id="@+id/mobileCommunicationSB"
-                        style="@style/SwitchButton_ButtonStyle"
+                        style="@style/SwitchButton_Item_Button_Style"
                         checkedImmediatelyNoEvent="@{stateVM.isWirelessOpened}"
                         android:enabled="@{!stateVM.isWirelessDisabled &amp;&amp; stateVM.isEditable}"
                         android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
@@ -74,11 +74,11 @@
                 </RelativeLayout>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isWirelessOpened}"
                         android:text="APN接入点"
                         tools:textColor="@color/title_text_color" />
@@ -94,11 +94,11 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isWirelessOpened}"
                         android:text="用户名" />
 
@@ -113,11 +113,11 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isWirelessOpened}"
                         android:text="密码" />
 
@@ -132,21 +132,21 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_GroupName_Style"
+                    style="@style/Common_GroupItem_Title_Style"
                     android:text="以太网配置" />
 
                 <RelativeLayout
-                    style="@style/SwitchButton_LayoutStyle"
+                    style="@style/SwitchButton_Item_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/SwitchButton_TitleStyle"
+                        style="@style/SwitchButton_Item_Title_Style"
                         android:text="以太网接入"
                         android:textColor="@{stateVM.isEditable?@color/title_text_color:@color/sub_title_text_color}" />
 
                     <com.kyleduo.switchbutton.SwitchButton
                         android:id="@+id/ethernetAccessSB"
-                        style="@style/SwitchButton_ButtonStyle"
+                        style="@style/SwitchButton_Item_Button_Style"
                         checkedImmediatelyNoEvent="@{stateVM.isEthernetOpened}"
                         android:enabled="@{stateVM.isEditable}"
                         android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
@@ -160,18 +160,18 @@
                 </RelativeLayout>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     onClickWithDebouncing="@{()->click.onIPModeChooseClick()}"
                     android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isEthernetOpened}">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isEthernetOpened}"
                         android:text="IP分配" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_dhcp"
-                        style="@style/Common_ClickableItem_ValueStyle"
+                        style="@style/Common_ClickableItem_Value_Style"
                         textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isEthernetOpened}"
                         android:drawableEnd="@null"
                         android:text="@{stateVM.ipMode}"
@@ -196,11 +196,11 @@
                     android:orientation="vertical">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isEthernetOpened}"
                             android:text="IP地址" />
 
@@ -214,11 +214,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isEthernetOpened}"
                             android:text="子网掩码" />
 
@@ -232,11 +232,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isEthernetOpened}"
                             android:text="网关" />
 
@@ -250,11 +250,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isEthernetOpened}"
                             android:text="首选DNS" />
 
@@ -268,12 +268,12 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:visibility="gone">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isEthernetOpened}"
                             android:text="备用DNS" />
 

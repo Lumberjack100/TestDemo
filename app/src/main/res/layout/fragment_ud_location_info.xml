@@ -31,11 +31,14 @@
             app:vm="@{toolbarVM}" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/DeviceCurrentState_SingleItem_Style"
-            android:background="@drawable/layer_common_click_item_with_divider">
+            style="@style/DeviceCurrentState_Item_Layout_Style2"
+            android:layout_marginHorizontal="@dimen/page_content_margin_horizontal_12"
+            android:layout_marginTop="@dimen/page_content_padding_top_12"
+            android:background="@drawable/shape_common_click_item_top_corner_4"
+            android:paddingTop="@dimen/page_content_margin_top_12">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                style="@style/DeviceCurrentState_Item_Title_Style2"
                 onClickWithDebouncing="@{()->click.refreshLocation()}"
                 android:text="位置更新"
                 android:textColor="@color/colorPrimary"
@@ -44,45 +47,51 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/DeviceCurrentState_SingleItem_Style"
+            style="@style/DeviceCurrentState_Item_Layout_Style2"
+            android:layout_marginHorizontal="@dimen/page_content_margin_horizontal_12"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                style="@style/DeviceCurrentState_Item_Title_Style2"
                 android:text="UTC时间" />
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                style="@style/DeviceCurrentState_ClickableItem_Value_Style2"
+                android:drawableEnd="@null"
                 android:text="@{stateVM.utcTime}"
                 tools:text="2024.01.05 04:34:45" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/DeviceCurrentState_SingleItem_Style"
+            style="@style/DeviceCurrentState_Item_Layout_Style2"
+            android:layout_marginHorizontal="@dimen/page_content_margin_horizontal_12"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                style="@style/DeviceCurrentState_Item_Title_Style2"
                 android:text="经度" />
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                style="@style/DeviceCurrentState_ClickableItem_Value_Style2"
+                android:drawableEnd="@null"
                 android:text="@{stateVM.longitude}"
                 tools:text="121.5983860" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/DeviceCurrentState_SingleItem_Style"
-            android:background="@drawable/layer_common_click_item_with_divider">
+            style="@style/DeviceCurrentState_Item_Layout_Style2"
+            android:layout_marginHorizontal="@dimen/page_content_margin_horizontal_12"
+            android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                style="@style/DeviceCurrentState_Item_Title_Style2"
                 android:text="纬度" />
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                style="@style/DeviceCurrentState_ClickableItem_Value_Style2"
+                android:drawableEnd="@null"
                 android:text="@{stateVM.latitude}"
                 tools:text="1.210353" />
 
@@ -91,6 +100,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_margin="@dimen/page_content_margin_horizontal_12"
             android:layout_weight="1">
 
             <com.amap.api.maps.TextureMapView

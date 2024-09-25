@@ -47,13 +47,15 @@ object DeviceStatusInfoProcessor {
         value: String,
         unit: String = "",
         textColorRes: Int = 0,
+        isBottomItem: Boolean = false,
     ) {
         value.notNullKey(action = {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = name,
                     value = it.compareAndReturn(AppContants.PLACE_HOLDER_VALUE, it, "$it$unit"),
-                    textColorRes = textColorRes
+                    textColorRes = textColorRes,
+                    isBottomItem = isBottomItem
                 )
             )
         })
@@ -74,13 +76,15 @@ object DeviceStatusInfoProcessor {
         value: String,
         defaultValue: String = "0",
         digit: Int = 2,
-        unit: String = ""
+        unit: String = "",
+        isBottomItem: Boolean = false,
     ) {
         value.notNullKey {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = name,
-                    value = "${formatDoubleValue(it, defaultValue, digit)}$unit"
+                    value = "${formatDoubleValue(it, defaultValue, digit)}$unit",
+                    isBottomItem = isBottomItem
                 )
             )
         }
@@ -102,7 +106,8 @@ object DeviceStatusInfoProcessor {
         defaultValue: String = "0",
         downLimitValue: Double = 5.0,
         digit: Int = 2,
-        unit: String = ""
+        unit: String = "",
+        isBottomItem: Boolean = false,
     ) {
         value.notNullKey {
             val tempValue = formatDoubleValue(
@@ -117,7 +122,8 @@ object DeviceStatusInfoProcessor {
                     textColorRes = if (tempValue.toDouble() <= downLimitValue)
                         ColorUtils.getColor(R.color.red_F13838)
                     else
-                        ColorUtils.getColor(R.color.green_00B26B)
+                        ColorUtils.getColor(R.color.green_00B26B),
+                    isBottomItem = isBottomItem,
                 )
             )
         }

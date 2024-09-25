@@ -20,11 +20,11 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/Common_EditItem_LayoutStyle"
+            style="@style/Common_EditItem_Layout_Style"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="播放时长(秒)"
                 tools:textColor="@color/title_text_color" />
@@ -40,11 +40,11 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/Common_EditItem_LayoutStyle"
+            style="@style/Common_EditItem_Layout_Style"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="切换间隔(毫秒)"
                 tools:textColor="@color/title_text_color" />
@@ -60,18 +60,18 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/Common_ClickableItem_LayoutStyle"
+            style="@style/Common_ClickableItem_Layout_Style"
             onClickWithDebouncing="@{()->click.onVolumeChooseClick()}"
             android:background="@drawable/layer_common_click_item_with_divider"
             android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="音量设置" />
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_ValueStyle"
+                style="@style/Common_ClickableItem_Value_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:drawableEnd="@drawable/ic_arrow_down"
                 android:text="@{stateVM.volume}"
@@ -79,15 +79,15 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <com.google.android.material.textview.MaterialTextView
-            style="@style/Common_GroupName_Style"
+            style="@style/Common_GroupItem_Title_Style"
             android:text="降雨量报警阈值" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/Common_EditItem_LayoutStyle"
+            style="@style/Common_EditItem_Layout_Style"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="一级报警(毫米)"
                 tools:textColor="@color/title_text_color" />
@@ -102,11 +102,11 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/Common_EditItem_LayoutStyle"
+            style="@style/Common_EditItem_Layout_Style"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="二级报警(毫米)"
                 tools:textColor="@color/title_text_color" />
@@ -121,11 +121,11 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/Common_EditItem_LayoutStyle"
+            style="@style/Common_EditItem_Layout_Style"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="三级报警(毫米)"
                 tools:textColor="@color/title_text_color" />
@@ -140,15 +140,15 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <com.google.android.material.textview.MaterialTextView
-            style="@style/Common_GroupName_Style"
+            style="@style/Common_GroupItem_Title_Style"
             android:text="水位报警阈值" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/Common_EditItem_LayoutStyle"
+            style="@style/Common_EditItem_Layout_Style"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="一级报警(毫米)"
                 tools:textColor="@color/title_text_color" />
@@ -163,11 +163,11 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/Common_EditItem_LayoutStyle"
+            style="@style/Common_EditItem_Layout_Style"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="二级报警(毫米)"
                 tools:textColor="@color/title_text_color" />
@@ -182,11 +182,11 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/Common_EditItem_LayoutStyle"
+            style="@style/Common_EditItem_Layout_Style"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
                 android:text="三级报警(毫米)"
                 tools:textColor="@color/title_text_color" />
