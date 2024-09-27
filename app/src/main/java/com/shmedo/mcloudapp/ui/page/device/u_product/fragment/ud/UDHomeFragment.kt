@@ -47,6 +47,7 @@ import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
+import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.LoraConfigModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.PlatformLabel
@@ -173,8 +174,9 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     private fun initModuleAdapter() {
         binding.rvModule.linear().setup { rv ->
-            addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group_ud)
+            addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group2)
             addType<ConfigModuleTree>(R.layout.item_sub_config_module)
+            addType<GapItem>(R.layout.item_device_status_info_gap)
             onCreate {
                 when (itemViewType) {
                     R.layout.item_sub_config_module -> {
@@ -216,12 +218,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     private fun initModuleData() {
         val groupList = mutableListOf<Any>()
-        groupList.add(
-            DeviceStatusInfoGroupItem(
-                "设备信息",
-                iconResId = R.drawable.ic_ud_device_info_group,
-            )
-        )
+        groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+        groupList.add(DeviceStatusInfoGroupItem("设备信息"))
         groupList.add(
             ConfigModuleTree(
                 configModules = arrayListOf(
@@ -229,7 +227,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         RunningStatusModule(
                             name = "基本信息",
                             desc = "查看设备基本信息",
-                            resID = R.drawable.ic_module_current_state,
+                            resID = R.drawable.ic_module_work_mode_new,
                             navId = R.id.action_global_to_udBaseInfoFragment
                         )
                     ),
@@ -237,7 +235,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         RunningStatusModule(
                             name = "网络信息",
                             desc = "查看设备网络信息",
-                            resID = R.drawable.ic_module_network_info,
+                            resID = R.drawable.ic_module_work_mode_new,
                             navId = R.id.action_global_to_udNetInfoFragment
                         )
                     ),
@@ -245,7 +243,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         RunningStatusModule(
                             name = "状态信息",
                             desc = "查看设备运行状态信息",
-                            resID = R.drawable.ic_basic_config,
+                            resID = R.drawable.ic_module_work_mode_new,
                             navId = R.id.action_global_to_udSensorInfoFragment
                         )
                     ),
@@ -260,19 +258,16 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 )
             )
         )
-        groupList.add(
-            DeviceStatusInfoGroupItem(
-                "设备配置",
-                iconResId = R.drawable.ic_basic_config
-            )
-        )
+
+        groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+        groupList.add(DeviceStatusInfoGroupItem("设备配置"))
         val configModuleTree = ConfigModuleTree(
             configModules = arrayListOf(
                 ConfigModule(
                     WorkModeModule(
                         name = "工作模式",
                         desc = "报警上报参数配置",
-                        resID = R.drawable.ic_module_report_mode,
+                        resID = R.drawable.ic_module_work_mode_new,
                         navId = R.id.action_global_to_udWorkModelParamFragment
                     )
                 ),
@@ -286,6 +281,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 ),
                 ConfigModule(
                     DataCenterModule(
+                        resID = R.drawable.ic_module_datacenter_new,
                         navId = R.id.action_global_to_udProductDataCenterHomeFragment
                     )
                 ),
@@ -293,42 +289,53 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     CommonModule(
                         name = "CORS",
                         desc = "CORS参数配置",
-                        resID = R.drawable.ic_module_satellite_communications,
+                        resID = R.drawable.ic_module_cors,
                         navId = R.id.action_global_to_udCORSParamFragment
                     )
                 ),
                 ConfigModule(
                     SensorConfigModule(
                         name = "传感配置",
+                        resID = R.drawable.ic_module_sensor_setting_new,
                         navId = R.id.action_global_to_udProductSensorParamFragment
                     )
                 ),
                 ConfigModule(
                     LoraConfigModule(
                         name = "电台配置",
+                        resID = R.drawable.ic_module_lora,
                         navId = R.id.action_global_to_udRadioParamFragment
                     )
                 ),
                 ConfigModule(
                     AlarmConfigModule(
+                        resID = R.drawable.ic_module_alarm,
                         navId = R.id.action_global_to_alarmSettingFragment
                     )
                 ),
                 ConfigModule(
                     TimeCalibrationModule(
                         name = "时间校准",
+                        resID = R.drawable.ic_module_time_calibration_new,
                     )
                 ),
                 ConfigModule(
                     AdvancedSettingsModule(
                         name = "系统配置",
+                        resID = R.drawable.ic_module_system_setting,
                         navId = R.id.action_global_to_advancedSettingFragment
                     )
                 ),
             )
         )
         if (communicateWay is BleConnect) {
-            configModuleTree.configModules.add(ConfigModule(CommandDebugConfigModule()))
+            configModuleTree.configModules.add(
+                ConfigModule(
+                    CommandDebugConfigModule(
+                        resID = R.drawable.ic_module_cmd_debug_new,
+                    )
+                )
+            )
         }
         groupList.add(configModuleTree)
 

@@ -14,8 +14,8 @@
         android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?android:selectableItemBackground"
         android:focusable="true"
-        android:foreground="?android:selectableItemBackground"
         android:gravity="center"
         android:orientation="vertical"
         android:paddingTop="@dimen/dimen_size_10">
@@ -25,7 +25,6 @@
             imageResId="@{m.functionModule.iconResId}"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:tint="@{m.functionModule.moduleAvailable ? @color/colorPrimary : @color/sub_title_text_color}"
             tools:src="@drawable/ic_module_current_state" />
 
         <com.google.android.material.textview.MaterialTextView
@@ -36,7 +35,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:text="@{m.functionModule.name}"
-            android:textColor="@{m.functionModule.moduleAvailable ? @color/device_home_module_item_normal_text_color : @color/device_home_module_item_disable_text_color}"
+            android:textColor="@color/sub_title_text_color_black_60"
             android:textSize="@dimen/device_home_module_item_text_size"
             tools:text="关于设备" />
 

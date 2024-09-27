@@ -162,7 +162,7 @@
         <item name="kswThumbRangeRatio">2.3</item>
     </style>
 
-    <style name="ResetButton_ColorPrimary" parent="@style/Widget.AppCompat.Button.Borderless">
+    <style name="ResetButton_Style" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dp</item>
         <item name="android:layout_marginStart">@dimen/page_content_margin_horizontal_12</item>
@@ -177,7 +177,7 @@
     </style>
 
     <!-- 通用提交 Button 样式-->
-    <style name="SubmitButton_ColorPrimary" parent="@style/Widget.AppCompat.Button.Borderless">
+    <style name="SubmitButton_Style" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dp</item>
         <item name="android:layout_marginStart">@dimen/page_content_margin_horizontal_12</item>
@@ -191,7 +191,7 @@
         <item name="android:textSize">16sp</item>
     </style>
 
-    <style name="ResetButton_ColorPrimary2" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
+    <style name="ResetButton_Style2" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dp</item>
         <item name="backgroundTint">@color/colorPrimary_10</item>
@@ -205,7 +205,7 @@
     </style>
 
     <!-- 通用提交 Button 样式-->
-    <style name="SubmitButton_ColorPrimary2" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
+    <style name="SubmitButton_Style2" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dp</item>
         <item name="backgroundTint">@color/colorPrimary</item>
@@ -216,6 +216,20 @@
         <item name="android:gravity">center</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="MeasureData_Button_Style" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:layout_width">92dp</item>
+        <item name="android:layout_height">32dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="backgroundTint">@color/colorPrimary_10</item>
+        <item name="rippleColor">@color/ripple_material_light</item>
+        <item name="strokeColor">@color/transparent</item>
+        <item name="iconPadding">0dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">14sp</item>
     </style>
 
     <!--设备运行状态单条基本信息样式-->

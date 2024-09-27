@@ -47,6 +47,7 @@ import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
+import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.LoraConfigModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.PlatformLabel
@@ -171,8 +172,9 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
 
     private fun initModuleAdapter() {
         binding.rvModule.linear().setup { rv ->
-            addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group_ud)
+            addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group2)
             addType<ConfigModuleTree>(R.layout.item_sub_config_module)
+            addType<GapItem>(R.layout.item_device_status_info_gap)
             onCreate {
                 when (itemViewType) {
                     R.layout.item_sub_config_module -> {
@@ -214,12 +216,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
 
     private fun initModuleData() {
         val groupList = mutableListOf<Any>()
-        groupList.add(
-            DeviceStatusInfoGroupItem(
-                "设备信息",
-                iconResId = R.drawable.ic_ud_device_info_group,
-            )
-        )
+        groupList.add(DeviceStatusInfoGroupItem("设备信息"))
         groupList.add(
             ConfigModuleTree(
                 configModules = arrayListOf(
@@ -235,7 +232,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                         RunningStatusModule(
                             name = "网络信息",
                             desc = "查看设备网络信息",
-                            resID = R.drawable.ic_module_network_info,
+                            resID = R.drawable.ic_module_work_mode_new,
                             navId = R.id.action_global_to_m50NetInfoFragment
                         )
                     ),
@@ -258,18 +255,15 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 )
             )
         )
-        groupList.add(
-            DeviceStatusInfoGroupItem(
-                "设备配置",
-                iconResId = R.drawable.ic_basic_config
-            )
-        )
+
+        groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+        groupList.add(DeviceStatusInfoGroupItem("设备配置"))
         val configModuleTree = ConfigModuleTree(
             configModules = arrayListOf(
                 ConfigModule(
                     WorkModeModule(
                         name = "工作模式",
-                        resID = R.drawable.ic_module_report_mode,
+                        resID = R.drawable.ic_module_work_mode_new,
                         navId = R.id.action_global_to_m50WorkModelParamFragment
                     )
                 ),

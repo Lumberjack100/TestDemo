@@ -92,7 +92,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_reset"
-            style="@style/ResetButton_ColorPrimary"
+            style="@style/ResetButton_Style"
             onClickWithDebouncing="@{()->click.onResetClick()}"
             visible="@{stateVM.isEditable }"
             android:layout_marginTop="0dp"
@@ -105,7 +105,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_ColorPrimary"
+            style="@style/SubmitButton_Style"
             onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
             visible="@{stateVM.isEditable }"
             android:layout_marginTop="0dp"

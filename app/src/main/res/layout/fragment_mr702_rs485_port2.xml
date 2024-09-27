@@ -284,7 +284,7 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/btn_confirm"
-                    style="@style/SubmitButton_ColorPrimary"
+                    style="@style/SubmitButton_Style"
                     onClickWithDebouncing="@{()->click.onSubmitClick()}"
                     visible="@{homeVM.isEditable }"
                     android:layout_marginBottom="15dp"

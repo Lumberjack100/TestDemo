@@ -125,7 +125,7 @@
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_confirm"
-                        style="@style/SubmitButton_ColorPrimary2"
+                        style="@style/SubmitButton_Style2"
                         onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
                         visible="@{stateVM.isSupportedReportInterval() }"
                         android:layout_marginTop="@dimen/reset_button_margin_top_50"

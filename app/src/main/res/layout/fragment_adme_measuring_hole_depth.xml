@@ -217,7 +217,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_run"
-            style="@style/SubmitButton_ColorPrimary"
+            style="@style/SubmitButton_Style"
             onClickWithDebouncing="@{()->click.onRunClick()}"
             visible="@{stateVM.isEditable }"
             android:layout_marginTop="0dp"

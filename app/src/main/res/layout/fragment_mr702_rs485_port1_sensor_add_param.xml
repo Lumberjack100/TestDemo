@@ -426,7 +426,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_ColorPrimary"
+            style="@style/SubmitButton_Style"
             onClickWithDebouncing="@{()->click.onSubmitClick()}"
             visible="@{stateVM.isConfirmBtnVisible}"
             android:layout_marginTop="0dp"
