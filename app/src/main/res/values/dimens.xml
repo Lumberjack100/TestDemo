@@ -84,13 +84,11 @@
     <dimen name="design_bottom_navigation_active_text_size" tools:override="true">12sp</dimen>
 
     <dimen name="device_home_module_item_text_size" tools:override="true">14sp</dimen>
-    <dimen name="page_content_margin_top_12">12dp</dimen>
-    <dimen name="page_content_margin_horizontal_12">12dp</dimen>
-    <dimen name="page_content_padding_top_12">12dp</dimen>
-    <dimen name="page_content_padding_horizontal_12">12dp</dimen>
-    <dimen name="page_scroll_content_padding_bottom_100">100dp</dimen>
-    <dimen name="page_scroll_content_padding_bottom">200dp</dimen>
-    <dimen name="page_param_content_submit_button_margin_bottom">60dp</dimen>
+    <dimen name="page_content_container_padding_horizontal_12">12dp</dimen>
+    <dimen name="page_content_container_padding_top_12">12dp</dimen>
+    <dimen name="page_content_container_padding_bottom_100">100dp</dimen>
+    <dimen name="page_content_item_margin_top_12">12dp</dimen>
+    <dimen name="page_content_item_margin_horizontal_12">12dp</dimen>
     <dimen name="page_content_item_padding_horizontal_16">16dp</dimen>
     <dimen name="page_content_item_text_size_14">14sp</dimen>
     <dimen name="reset_button_margin_top_50">50dp</dimen>

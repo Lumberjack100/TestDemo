@@ -49,9 +49,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingHorizontal="@dimen/page_content_padding_horizontal_12"
-                    android:paddingTop="@dimen/page_content_padding_top_12"
-                    android:paddingBottom="@dimen/page_scroll_content_padding_bottom_100">
+                    android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                    android:paddingTop="@dimen/page_content_container_padding_top_12"
+                    android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
@@ -143,7 +143,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
-                        android:layout_marginTop="@dimen/page_content_margin_top_12"
+                        android:layout_marginTop="@dimen/page_content_item_margin_top_12"
                         android:background="@drawable/shape_common_click_item_top_corner_4">
 
                         <View

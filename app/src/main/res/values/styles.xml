@@ -165,8 +165,8 @@
     <style name="ResetButton_Style" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dp</item>
-        <item name="android:layout_marginStart">@dimen/page_content_margin_horizontal_12</item>
-        <item name="android:layout_marginEnd">@dimen/page_content_margin_horizontal_12</item>
+        <item name="android:layout_marginStart">@dimen/page_content_item_margin_horizontal_12</item>
+        <item name="android:layout_marginEnd">@dimen/page_content_item_margin_horizontal_12</item>
         <item name="android:layout_marginTop">25dp</item>
         <item name="android:layout_marginBottom">25dp</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
@@ -180,8 +180,8 @@
     <style name="SubmitButton_Style" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">48dp</item>
-        <item name="android:layout_marginStart">@dimen/page_content_margin_horizontal_12</item>
-        <item name="android:layout_marginEnd">@dimen/page_content_margin_horizontal_12</item>
+        <item name="android:layout_marginStart">@dimen/page_content_item_margin_horizontal_12</item>
+        <item name="android:layout_marginEnd">@dimen/page_content_item_margin_horizontal_12</item>
         <item name="android:layout_marginTop">25dp</item>
         <item name="android:layout_marginBottom">25dp</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
@@ -219,8 +219,9 @@
     </style>
 
     <style name="MeasureData_Button_Style" parent="@style/Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:layout_width">92dp</item>
+        <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">32dp</item>
+        <item name="android:layout_weight">1</item>
         <item name="android:insetTop">0dp</item>
         <item name="android:insetBottom">0dp</item>
         <item name="cornerRadius">8dp</item>

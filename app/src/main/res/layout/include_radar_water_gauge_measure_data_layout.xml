@@ -119,7 +119,7 @@
 
             <com.google.android.material.button.MaterialButton
                 style="@style/MeasureData_Button_Style"
-                android:layout_marginStart="@dimen/dimen_size_20"
+                android:layout_marginStart="@dimen/dimen_size_10"
                 android:enabled="@{!stateVM.isConnectOperateVisible}"
                 android:onClick="@{()->click.onTakePhotoClick()}"
                 android:text='拍照'

@@ -50,9 +50,9 @@
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
                     android:orientation="vertical"
-                    android:paddingHorizontal="@dimen/page_content_padding_horizontal_12"
-                    android:paddingTop="@dimen/page_content_padding_top_12"
-                    android:paddingBottom="@dimen/page_scroll_content_padding_bottom_100">
+                    android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                    android:paddingTop="@dimen/page_content_container_padding_top_12"
+                    android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"

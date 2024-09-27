@@ -49,7 +49,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/page_scroll_content_padding_bottom">
+                    android:paddingBottom="@dimen/dimen_size_200">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_GroupItem_Title_Style"
@@ -361,7 +361,7 @@
             onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
             visible="@{stateVM.isOpened }"
             android:layout_marginTop="0dp"
-            android:layout_marginBottom="@dimen/page_param_content_submit_button_margin_bottom"
+            android:layout_marginBottom="@dimen/dimen_size_60"
             android:text="@string/button_save_text"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

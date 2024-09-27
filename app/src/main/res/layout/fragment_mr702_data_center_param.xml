@@ -49,9 +49,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical"
-                    android:paddingHorizontal="@dimen/page_content_padding_horizontal_12"
-                    android:paddingTop="@dimen/page_content_padding_top_12"
-                    android:paddingBottom="@dimen/page_scroll_content_padding_bottom_100">
+                    android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                    android:paddingTop="@dimen/page_content_container_padding_top_12"
+                    android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
                     <include
                         android:id="@+id/ll_data_center_param_head"
@@ -61,7 +61,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
-                        android:layout_marginTop="@dimen/page_content_margin_top_12"
+                        android:layout_marginTop="@dimen/page_content_item_margin_top_12"
                         android:background="@drawable/shape_common_click_item_top_corner_4">
 
                         <com.google.android.material.textview.MaterialTextView
@@ -426,7 +426,7 @@
                         <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_ClickableItem_Layout_Style"
                             onClickWithDebouncing="@{()->click.onToggleAdvancedClick()}"
-                            android:layout_marginTop="@dimen/page_content_margin_top_12"
+                            android:layout_marginTop="@dimen/page_content_item_margin_top_12"
                             android:background="@drawable/shape_common_click_item_top_corner_4"
                             android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
 
@@ -463,7 +463,7 @@
                                 style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:layout_marginStart="@dimen/page_content_item_padding_horizontal_16"
-                                android:layout_marginTop="@dimen/page_content_margin_top_12"
+                                android:layout_marginTop="@dimen/page_content_item_margin_top_12"
                                 android:text="报文选择" />
 
                             <androidx.constraintlayout.widget.ConstraintLayout

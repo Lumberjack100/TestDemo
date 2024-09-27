@@ -32,10 +32,9 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/DeviceCurrentState_Item_Layout_Style2"
-            android:layout_marginHorizontal="@dimen/page_content_margin_horizontal_12"
-            android:layout_marginTop="@dimen/page_content_padding_top_12"
-            android:background="@drawable/shape_common_click_item_top_corner_4"
-            android:paddingTop="@dimen/page_content_margin_top_12">
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
+            android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+            android:background="@drawable/shape_common_click_item_top_corner_4">
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/DeviceCurrentState_Item_Title_Style2"
@@ -48,7 +47,7 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/DeviceCurrentState_Item_Layout_Style2"
-            android:layout_marginHorizontal="@dimen/page_content_margin_horizontal_12"
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
@@ -65,7 +64,7 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/DeviceCurrentState_Item_Layout_Style2"
-            android:layout_marginHorizontal="@dimen/page_content_margin_horizontal_12"
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
@@ -82,7 +81,7 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/DeviceCurrentState_Item_Layout_Style2"
-            android:layout_marginHorizontal="@dimen/page_content_margin_horizontal_12"
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
             android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
             <com.google.android.material.textview.MaterialTextView
@@ -100,7 +99,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_margin="@dimen/page_content_margin_horizontal_12"
+            android:layout_margin="@dimen/page_content_item_margin_horizontal_12"
             android:layout_weight="1">
 
             <com.amap.api.maps.TextureMapView
