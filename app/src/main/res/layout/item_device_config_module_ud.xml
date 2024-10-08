@@ -23,9 +23,10 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_config_logo"
             imageResId="@{m.functionModule.iconResId}"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            tools:src="@drawable/ic_module_current_state" />
+            imageSize="@{m.functionModule.iconSize}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:src="@drawable/ic_module_basic_info" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_config_name"

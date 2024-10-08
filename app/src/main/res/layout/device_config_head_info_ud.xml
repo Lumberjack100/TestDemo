@@ -37,7 +37,7 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimen_size_36"
+                android:layout_marginStart="@dimen/dimen_size_25"
                 android:orientation="vertical">
 
                 <com.google.android.material.textview.MaterialTextView
@@ -48,7 +48,7 @@
                     android:maxLines="1"
                     android:text="@{stateVM.productName}"
                     android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_15"
+                    android:textSize="@dimen/text_size_17"
                     android:textStyle="bold"
                     tools:text="智能遥测终端机" />
 
@@ -60,8 +60,8 @@
                     android:ellipsize="end"
                     android:maxLines="1"
                     android:text='@{stateVM.deviceName+"|"+stateVM.deviceToken}'
-                    android:textColor="@color/sub_title_text_color"
-                    android:textSize="@dimen/text_size_13"
+                    android:textColor="@color/black_40"
+                    android:textSize="@dimen/text_size_14"
                     tools:text="MD-DR030|21E118L" />
 
                 <androidx.recyclerview.widget.RecyclerView

@@ -75,7 +75,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         name = "设备状态",
                         value = deviceStatus,
                         textColorRes = if (deviceStatus == "正常") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
-                            R.color.red_F13838
+                            R.color.error_FF4400
                         )
                     )
                 )
@@ -137,7 +137,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         name = "上报状态",
                         value = reportStatus,
                         textColorRes = if (reportStatus == "正常") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
-                            R.color.red_F13838
+                            R.color.error_FF4400
                         )
                     )
                 )

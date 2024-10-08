@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#0096FF</color>
+    <color name="colorPrimary_4">#0A0096FF</color>
     <color name="colorPrimary_10">#1A0096FF</color>
     <color name="colorPrimaryDark">#0288D1</color>
     <color name="colorAccent">#00b3fb</color>
@@ -50,8 +51,8 @@
     <color name="main_bg_gray_f2f2f2">#f2f2f2</color>
     <color name="main_bg_gray_f9f9f9">#f9f9f9</color>
     <color name="orange">#ff7502</color>
-    <color name="red_F13838">#F13838</color>
-    <color name="red_F13838_10">#1AF13838</color>
+    <color name="red_FF4400">#FF4400</color>
+    <color name="red_FF4400_10">#1AFF4400</color>
     <color name="sub_title_text_color">#999999</color>
     <color name="sub_title_text_color_black_60">#99000000</color>
     <color name="title_text_color">#333333</color>
@@ -68,8 +69,7 @@
     <color name="white_25">#40FFFFFF</color>
     <color name="white_60">#99FFFFFF</color>
     <color name="white_80">#CCFFFFFF</color>
-    <color name="yellow_FDA251">#FDA251</color>
-    <color name="yellow_FDA251_10">#1AFDA251</color>
+
 
     <color name="bottom_nav_text_color_checked">@color/colorPrimary</color>
     <color name="bottom_nav_text_color_normal">#ff999999</color>
@@ -105,5 +105,15 @@
 
     <!-- Fast Scroll -->
     <color name="fastscroll_handle">#999999</color>
+
+    <color name="online_colorPrimary">@color/colorPrimary</color>
+    <color name="online_colorPrimary_4">@color/colorPrimary_4</color>
+    <color name="offline_BABABA">#BABABA</color>
+    <color name="offline_BABABA_4">#0ABABABA</color>
+    <color name="warn_FF9D00">#FF9D00</color>
+    <color name="warn_FF9D00_4">#0AFDA251</color>
+    <color name="error_FF4400">#FF4400</color>
+    <color name="error_FF4400_4">#0AFF4400</color>
+
 
 </resources>

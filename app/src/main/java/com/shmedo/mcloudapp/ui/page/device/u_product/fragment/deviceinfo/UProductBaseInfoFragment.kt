@@ -94,7 +94,7 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         value = if (deviceAbnormalList.isEmpty()) "正常" else "异常",
                         textColorRes = if (deviceAbnormalList.isEmpty()) ColorUtils.getColor(
                             R.color.green_00B26B
-                        ) else ColorUtils.getColor(R.color.red_F13838),
+                        ) else ColorUtils.getColor(R.color.error_FF4400),
                         isClickable = deviceAbnormalList.isNotEmpty()
                     )
                 )

@@ -6,7 +6,6 @@ import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.drake.brv.utils.models
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.adme.AdmeEquipModelEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeBaseInfo
@@ -15,6 +14,9 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.model.BasicConfigModule
 import com.shmedo.mcloudapp.model.BleConnect
@@ -28,8 +30,6 @@ import com.shmedo.mcloudapp.model.RunningStatusModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDeviceHomeFragment
-import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import kotlinx.coroutines.delay
 
 /**
@@ -78,15 +78,15 @@ class AdmeHomeFragment : UniversalDeviceHomeFragment() {
                     )
                     moduleList.add(
                         ConfigModule(
-                            CommonModule(
-                                name = "指令下发",
-                                desc = "自定义指令下发",
-                                resID = R.drawable.ic_device_instruction_send,
-                                navId = 0
-                            )
+                            CommandDebugConfigModule()
                         )
                     )
                 }
+                moduleList.add(
+                    ConfigModule(
+                        CommandDebugConfigModule()
+                    )
+                )
                 moduleList.add(
                     ConfigModule(
                         DeviceOperationModule(

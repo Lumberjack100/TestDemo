@@ -327,7 +327,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         textColorRes = if (info.solarControllerStatus != "1") ColorUtils.getColor(
                             R.color.green_00B26B
                         ) else ColorUtils.getColor(
-                            R.color.red_F13838
+                            R.color.error_FF4400
                         )
                     )
                 )
@@ -371,7 +371,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         textColorRes = if (info.internalTempHumidityStatus != "1") ColorUtils.getColor(
                             R.color.green_00B26B
                         ) else ColorUtils.getColor(
-                            R.color.red_F13838
+                            R.color.error_FF4400
                         )
                     )
                 )
@@ -401,7 +401,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         textColorRes = if (info.externalTempHumidityStatus != "1") ColorUtils.getColor(
                             R.color.green_00B26B
                         ) else ColorUtils.getColor(
-                            R.color.red_F13838
+                            R.color.error_FF4400
                         )
                     )
                 )

@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.das.fragment
 import com.drake.brv.utils.models
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.model.CollectorConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
@@ -16,7 +17,6 @@ import com.shmedo.mcloudapp.model.TelemetryDataModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDeviceHomeFragment
-import com.shmedo.mcloudapp.extensions.nav
 
 class DasHomeFragment : UniversalDeviceHomeFragment() {
     override fun initData() {
@@ -31,8 +31,8 @@ class DasHomeFragment : UniversalDeviceHomeFragment() {
         moduleList.add(
             ConfigModule(
                 RunningStatusModule(
-                    "关于设备",
-                    "设备基本信息、运行数据",
+                    name = "关于设备",
+                    desc = "设备基本信息、运行数据",
                     R.drawable.ic_device_running_info,
                     navId = R.id.action_global_to_commonRunningDeviceInfoFragment
                 )

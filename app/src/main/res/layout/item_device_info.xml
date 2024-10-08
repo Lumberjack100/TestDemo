@@ -31,16 +31,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="16dp"
                 android:layout_marginBottom="@dimen/dimen_size_8"
-                android:background="@{m.onlineStatus?@drawable/bg_device_online_state_flag_corner_2dp:@drawable/bg_device_offline_state_flag_corner_2dp}"
+                android:background="@{m.onlineStatus?@drawable/bg_label_online_corner_1dp:@drawable/bg_label_offline_corner_1dp}"
                 android:gravity="center"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:text="@{m.onlineStatus?@string/device_online:@string/device_offline}"
-                android:textColor="@{m.onlineStatus?@color/green_00B26B:@color/red_F13838}"
+                android:textColor="@{m.onlineStatus?@color/online_colorPrimary:@color/offline_BABABA}"
                 android:textSize="@dimen/text_size_10"
-                tools:background="@drawable/bg_device_offline_state_flag_corner_2dp"
+                tools:background="@drawable/bg_label_online_corner_1dp"
                 tools:text="在线"
-                tools:textColor="@color/red_F13838" />
+                tools:textColor="@color/online_colorPrimary" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_device_sn"
@@ -50,7 +50,7 @@
                 android:gravity="start"
                 android:maxLines="2"
                 android:text='@{m.deviceToken==""?m.deviceSn:m.deviceToken}'
-                android:textColor="@{m.onlineStatus?@color/title_text_color:@color/text_color_b3b3b3}"
+                android:textColor="@{m.onlineStatus?@color/title_text_color_black_90:@color/offline_BABABA}"
                 android:textSize="@dimen/text_size_14"
                 android:textStyle="bold"
                 tools:text="19D95B"
@@ -73,7 +73,7 @@
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:text="类型:"
-                    android:textColor="@color/sub_title_text_color"
+                    android:textColor="@color/sub_title_text_color_black_60"
                     android:textSize="@dimen/text_size_13" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -84,7 +84,7 @@
                     android:ellipsize="end"
                     android:maxLines="2"
                     android:text="@{m.productName}"
-                    android:textColor="@{m.onlineStatus?@color/title_text_color:@color/text_color_b3b3b3}"
+                    android:textColor="@{m.onlineStatus?@color/title_text_color_black_90:@color/offline_BABABA}"
                     android:textSize="@dimen/text_size_13"
                     tools:text="智能声光报警器专业监测设备"
                     tools:textColor="@color/title_text_color" />

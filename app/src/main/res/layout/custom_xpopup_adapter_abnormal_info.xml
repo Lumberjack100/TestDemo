@@ -23,7 +23,7 @@
         android:ellipsize="end"
         android:gravity="left"
         android:lines="1"
-        android:textColor="@color/red_F13838"
+        android:textColor="@color/error_FF4400"
         android:textSize="16sp"
         tools:text=" 通道号" />
 </androidx.appcompat.widget.LinearLayoutCompat>

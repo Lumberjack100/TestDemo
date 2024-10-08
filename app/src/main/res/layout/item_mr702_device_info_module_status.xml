@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:background='@{m.status=="异常"?@color/mr_module_status_item_abnormal_backround:@color/mr_module_status_item_normal_backround}'
         android:minHeight="80dp"
-        tools:background="@color/red_F13838_10">
+        tools:background="@color/red_FF4400_10">
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
@@ -38,12 +38,12 @@
             android:paddingEnd="@dimen/dimen_size_6"
             android:paddingBottom="@dimen/dimen_size_2"
             android:text="@{m.status}"
-            android:textColor='@{m.status=="异常"?@color/red_F13838:@color/green_00B26B}'
+            android:textColor='@{m.status=="异常"?@color/red_FF4400:@color/green_00B26B}'
             android:textSize="13sp"
             app:drawable_radiusRT="@{13}"
-            app:drawable_solidColor='@{m.status=="异常"?@color/red_F13838_10:@color/green_00B26B_10}'
+            app:drawable_solidColor='@{m.status=="异常"?@color/red_FF4400_10:@color/green_00B26B_10}'
             tools:text="异常"
-            tools:textColor="@color/red_F13838" />
+            tools:textColor="@color/red_FF4400" />
 
     </FrameLayout>
 

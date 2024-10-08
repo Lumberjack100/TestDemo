@@ -33,12 +33,12 @@ object IOTDeviceBindingAdapter {
 
             "2" -> {
                 view.text = "未连接"
-                view.setTextColor(ColorUtils.getColor(R.color.red_F13838))
+                view.setTextColor(ColorUtils.getColor(R.color.red_FF4400))
             }
 
             else -> {
                 view.text = "未连接"
-                view.setTextColor(ColorUtils.getColor(R.color.red_F13838))
+                view.setTextColor(ColorUtils.getColor(R.color.red_FF4400))
             }
         }
     }
@@ -54,7 +54,7 @@ object IOTDeviceBindingAdapter {
 
             else -> {
                 view.text = "异常"
-                view.setTextColor(ColorUtils.getColor(R.color.red_F13838))
+                view.setTextColor(ColorUtils.getColor(R.color.red_FF4400))
             }
         }
     }
@@ -69,7 +69,7 @@ object IOTDeviceBindingAdapter {
             }
 
             else -> {
-                view.setTextColor(ColorUtils.getColor(R.color.red_F13838))
+                view.setTextColor(ColorUtils.getColor(R.color.red_FF4400))
             }
         }
     }
@@ -156,14 +156,14 @@ object IOTDeviceBindingAdapter {
             //移除 % 并转成 Double类型数值,如果值小于等于 10 textView 设置 R.color.device_offline_platform，否则 textView 设置 R.color.text_color_3AD094
             val volt = value.replace("%", "").toDoubleOrNull() ?: 0.0
             if (volt <= 10) {
-                textView.setTextColor(ColorUtils.getColor(R.color.red_F13838))
+                textView.setTextColor(ColorUtils.getColor(R.color.red_FF4400))
             } else {
                 textView.setTextColor(ColorUtils.getColor(R.color.green_00B26B))
             }
         } else {
             val volt = value.toDoubleOrNull() ?: 0.0
             if (volt <= 5) {
-                textView.setTextColor(ColorUtils.getColor(R.color.red_F13838))
+                textView.setTextColor(ColorUtils.getColor(R.color.red_FF4400))
             } else {
                 textView.setTextColor(ColorUtils.getColor(R.color.green_00B26B))
             }

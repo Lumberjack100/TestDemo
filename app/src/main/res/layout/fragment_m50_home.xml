@@ -54,31 +54,9 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:paddingVertical="@dimen/dimen_size_10"
-                    android:paddingStart="@dimen/dimen_size_10">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
-                        android:src="@drawable/ic_ud_measure_group" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dimen_size_5"
-                        android:singleLine="true"
-                        android:text="测量数据"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_17"
-                        android:textStyle="bold" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                android:paddingTop="@dimen/page_content_container_padding_top_12">
 
                 <include
                     layout="@layout/include_m50_measure_data_layout"

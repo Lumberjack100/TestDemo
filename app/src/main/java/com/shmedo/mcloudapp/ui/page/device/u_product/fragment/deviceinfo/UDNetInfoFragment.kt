@@ -154,7 +154,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                                 "未启用"
                             ),
                             textColorRes = if (enableStatus == "0" || onlineStatus == "未连接") ColorUtils.getColor(
-                                R.color.red_F13838
+                                R.color.error_FF4400
                             ) else ColorUtils.getColor(R.color.green_00B26B),
                             isBottomItem = true
                         )

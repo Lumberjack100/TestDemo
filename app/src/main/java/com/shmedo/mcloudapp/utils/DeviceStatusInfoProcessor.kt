@@ -120,7 +120,7 @@ object DeviceStatusInfoProcessor {
                     name = name,
                     value = "$tempValue$unit",
                     textColorRes = if (tempValue.toDouble() <= downLimitValue)
-                        ColorUtils.getColor(R.color.red_F13838)
+                        ColorUtils.getColor(R.color.error_FF4400)
                     else
                         ColorUtils.getColor(R.color.green_00B26B),
                     isBottomItem = isBottomItem,
@@ -160,7 +160,7 @@ object DeviceStatusInfoProcessor {
                     name = name,
                     value = "$tempValue$unit",
                     textColorRes = if (tempValue.toDouble() < downLimitValue || tempValue.toDouble() > upLimitValue)
-                        ColorUtils.getColor(R.color.red_F13838)
+                        ColorUtils.getColor(R.color.error_FF4400)
                     else
                         ColorUtils.getColor(R.color.green_00B26B)
                 )

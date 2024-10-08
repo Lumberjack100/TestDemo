@@ -69,7 +69,7 @@ data class M50CurrentStateInfo(
     var _4g: String = IOTConstants.NULL_KEY, //状态  OK/FAIL  OK，状态正常；FAIL，状态异常
     var bt: String = IOTConstants.NULL_KEY, //蓝牙状态 OK/FAIL
     var lora: String = IOTConstants.NULL_KEY, // 状态 OK/FAIL
-    var emmc: String = IOTConstants.NULL_KEY, //emmc状态  OK/FAIL
+    var sd: String = IOTConstants.NULL_KEY, //emmc状态  OK/FAIL
     var sht21: String = IOTConstants.NULL_KEY, //温湿度状态  OK/FAIL
 )
 

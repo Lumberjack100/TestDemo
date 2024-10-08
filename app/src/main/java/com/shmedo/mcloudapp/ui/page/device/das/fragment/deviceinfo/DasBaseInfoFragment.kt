@@ -218,7 +218,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         textColorRes = if (info.solar.errno == "1") ColorUtils.getColor(
                             R.color.green_00B26B
                         ) else ColorUtils.getColor(
-                            R.color.red_F13838
+                            R.color.error_FF4400
                         )
                     )
                 )
@@ -283,7 +283,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                             textColorRes = if (info.inth.errno == "1") ColorUtils.getColor(
                                 R.color.green_00B26B
                             ) else ColorUtils.getColor(
-                                R.color.red_F13838
+                                R.color.error_FF4400
                             )
                         )
                     )
@@ -313,7 +313,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                             textColorRes = if (info.outth.errno == "1") ColorUtils.getColor(
                                 R.color.green_00B26B
                             ) else ColorUtils.getColor(
-                                R.color.red_F13838
+                                R.color.error_FF4400
                             )
                         )
                     )

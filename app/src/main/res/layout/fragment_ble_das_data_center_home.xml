@@ -133,7 +133,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text='*'
-                            android:textColor="@color/red_F13838"
+                            android:textColor="@color/red_FF4400"
                             android:textSize="@dimen/text_size_12" />
 
                         <com.google.android.material.textview.MaterialTextView

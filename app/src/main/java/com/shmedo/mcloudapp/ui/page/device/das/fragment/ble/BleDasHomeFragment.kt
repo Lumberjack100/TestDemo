@@ -144,7 +144,8 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         mStates.productLogoResId.set(mStates.productLightResId.get())
         mStates.productName.set(deviceInfo.productName)
         mStates.deviceToken.set(deviceInfo.deviceToken)
-        mStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken }.replace("BHY-RDS","BHY-3S"))
+        mStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken }
+            .replace("BHY-RDS", "BHY-3S"))
         mStates.firmwareVersion.set(deviceInfo.firmwareVersion)
 
         mStates.isDeviceStateTagHighLight.set(false)
@@ -674,9 +675,9 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         moduleList.add(
             ConfigModule(
                 RunningStatusModule(
-                    "关于设备",
-                    "设备基本信息、运行数据",
-                    R.drawable.ic_device_running_info,
+                    name = "关于设备",
+                    desc = "设备基本信息、运行数据",
+                    resID = R.drawable.ic_device_running_info,
                     navId = R.id.action_global_to_commonRunningDeviceInfoFragment
                 )
             )

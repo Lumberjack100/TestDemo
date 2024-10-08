@@ -14,264 +14,130 @@
             type="com.shmedo.mcloudapp.ui.page.device.m50.M50HomeFragment.ClickProxy" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="@dimen/dimen_size_10"
-        android:paddingHorizontal="@dimen/dimen_size_10"
-        android:paddingVertical="@dimen/dimen_size_13"
-        app:drawable_radius="@{3}"
+        android:orientation="vertical"
+        android:padding="@dimen/page_content_item_padding_horizontal_16"
+        app:drawable_radius="@{4}"
         app:drawable_solidColor="@{@color/white}"
         tools:background="@color/white">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/ll_resultant_displacement"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_resultant_displacement"
-                android:layout_width="13dp"
-                android:layout_height="13dp"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_resultant_displacement_title"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_resultant_displacement_title"
-                app:layout_constraintVertical_bias="0.6"
-                app:srcCompat="@drawable/ic_ud_water_surface_elevation" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_resultant_displacement_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimen_size_3"
-                android:text="合位移量："
-                android:textColor="@color/text_color_666666"
-                android:textSize="@dimen/text_size_13"
-                app:layout_constraintBaseline_toBaselineOf="@+id/tv_water_surface_elevation"
-                app:layout_constraintStart_toEndOf="@+id/iv_resultant_displacement" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_water_surface_elevation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text='@{stateVM.resultantDisplacement}'
-                android:textColor="@color/title_text_color"
-                android:textSize="@dimen/text_size_20"
-                android:textStyle="bold"
-                app:layout_constraintBaseline_toBaselineOf="@+id/tv_resultant_displacement_title"
-                app:layout_constraintStart_toEndOf="@+id/tv_resultant_displacement_title"
-                tools:text="5.333m" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/ll_x_displacement"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_5"
-            app:layout_constraintStart_toStartOf="@+id/ll_resultant_displacement"
-            app:layout_constraintTop_toBottomOf="@+id/ll_resultant_displacement">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_x_displacement"
-                android:layout_width="13dp"
-                android:layout_height="13dp"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_x_displacement_title"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_x_displacement_title"
-                app:layout_constraintVertical_bias="0.6"
-                app:srcCompat="@drawable/ic_ud_air_distance" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_x_displacement_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimen_size_3"
-                android:text="X轴位移量："
-                android:textColor="@color/text_color_666666"
-                android:textSize="@dimen/text_size_13"
-                app:layout_constraintBaseline_toBaselineOf="@+id/tv_x_displacement"
-                app:layout_constraintStart_toEndOf="@+id/iv_x_displacement" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_x_displacement"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text='@{stateVM.xDisplacement}'
-                android:textColor="@color/title_text_color"
-                android:textSize="@dimen/text_size_13"
-                android:textStyle="bold"
-                app:layout_constraintBaseline_toBaselineOf="@+id/tv_x_displacement_title"
-                app:layout_constraintStart_toEndOf="@+id/tv_x_displacement_title"
-                tools:text="5.333m" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/ll_y_displacement"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_5"
-            app:layout_constraintStart_toStartOf="@+id/ll_x_displacement"
-            app:layout_constraintTop_toBottomOf="@+id/ll_x_displacement">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_y_displacement"
-                android:layout_width="13dp"
-                android:layout_height="13dp"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_y_displacement_title"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_y_displacement_title"
-                app:layout_constraintVertical_bias="0.6"
-                app:srcCompat="@drawable/ic_ud_installation_angle" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_y_displacement_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimen_size_3"
-                android:text="Y轴位移量："
-                android:textColor="@color/text_color_666666"
-                android:textSize="@dimen/text_size_13"
-                app:layout_constraintBaseline_toBaselineOf="@+id/tv_y_displacement"
-                app:layout_constraintStart_toEndOf="@+id/iv_y_displacement" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_y_displacement"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text='@{stateVM.yDisplacement}'
-                android:textColor="@color/title_text_color"
-                android:textSize="@dimen/text_size_13"
-                android:textStyle="bold"
-                app:layout_constraintBaseline_toBaselineOf="@+id/tv_y_displacement_title"
-                app:layout_constraintStart_toEndOf="@+id/tv_y_displacement_title"
-                tools:text="6.56mm°" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/ll_z_displacement"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_5"
-            app:layout_constraintStart_toStartOf="@+id/ll_y_displacement"
-            app:layout_constraintTop_toBottomOf="@+id/ll_y_displacement">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_z_displacement"
-                android:layout_width="13dp"
-                android:layout_height="13dp"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_z_displacement_title"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_z_displacement_title"
-                app:layout_constraintVertical_bias="0.6"
-                app:srcCompat="@drawable/ic_measure_data_time" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_z_displacement_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimen_size_3"
-                android:text="Z轴位移量："
-                android:textColor="@color/text_color_666666"
-                android:textSize="@dimen/text_size_13"
-                app:layout_constraintBaseline_toBaselineOf="@+id/tv_z_displacement"
-                app:layout_constraintStart_toEndOf="@+id/iv_z_displacement" />
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_z_displacement"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text='@{stateVM.zDisplacement}'
-                android:textColor="@color/title_text_color"
-                android:textSize="@dimen/text_size_13"
-                android:textStyle="bold"
-                app:layout_constraintBaseline_toBaselineOf="@+id/tv_z_displacement_title"
-                app:layout_constraintStart_toEndOf="@+id/tv_z_displacement_title"
-                tools:text="5.33mm" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/dimen_size_5"
-            android:gravity="bottom"
-            android:paddingBottom="@dimen/dimen_size_5"
-            app:layout_constraintBottom_toTopOf="@+id/ll_z_displacement"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:gravity="center_vertical">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                onClickWithDebouncing="@{()->click.onGotoLocaionClick()}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimen_size_25"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+            <View
+                android:layout_width="3dp"
+                android:layout_height="14dp"
+                android:background="@color/black" />
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="@dimen/dimen_size_20"
-                    android:layout_height="@dimen/dimen_size_20"
-                    android:src="@drawable/ic_device_take_photo" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_size_2"
-                    android:text="位置"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_13" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimen_size_25"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="@dimen/dimen_size_20"
-                    android:layout_height="@dimen/dimen_size_20"
-                    android:src="@drawable/ic_device_take_photo"
-                    app:tint="@color/sub_title_text_color" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_size_2"
-                    android:text="拍照"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_13" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                onClickWithDebouncing="@{()->click.onGoToSensorDataHistoryClick()}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimen_size_25"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="@dimen/dimen_size_20"
-                    android:layout_height="@dimen/dimen_size_20"
-                    android:src="@drawable/ic_device_sensor_data_history" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_size_2"
-                    android:text="历史"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_13" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/Common_GroupItem_Title_Style2"
+                android:layout_marginStart="@dimen/dimen_size_8"
+                android:text="测量数据" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:text='@{"合位移量："+stateVM.resultantDisplacement}'
+            android:textColor="@color/title_text_color_black_90"
+            android:textSize="@dimen/page_content_item_text_size_14"
+            tools:text="合位移量：5.333m" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ll_air_distance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_air_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{"X轴位移量："+stateVM.xDisplacement}'
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="X轴位移量：5.38m" />
+
+            <View
+                android:id="@+id/vertical_divider_line"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_marginVertical="@dimen/dimen_size_2"
+                android:background="@color/divider_line_bg"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_air_distance"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_air_distance" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_installation_angle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_16"
+                android:text='@{"Y轴位移量："+stateVM.yDisplacement}'
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/vertical_divider_line"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Y轴位移量：5.38m" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:text='@{"Z轴位移量："+stateVM.zDisplacement}'
+            android:textColor="@color/sub_title_text_color_black_60"
+            android:textSize="@dimen/page_content_item_text_size_14"
+            tools:text="Z轴位移量：3.22m" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10">
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/MeasureData_Button_Style"
+                android:gravity="center"
+                android:onClick="@{()->click.onGotoLocaionClick()}"
+                android:text='位置'
+                app:backgroundTint="@color/colorPrimary_10"
+                app:icon="@drawable/ic_device_measure_data"
+                app:iconSize="@dimen/dimen_size_18" />
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/MeasureData_Button_Style"
+                android:layout_marginStart="@dimen/dimen_size_10"
+                android:enabled="@{!stateVM.isConnectOperateVisible}"
+                android:onClick="@{()->click.onTakePhotoClick()}"
+                android:text='拍照'
+                app:backgroundTint="@color/colorPrimary_10"
+                app:icon="@drawable/ic_device_take_photo"
+                app:iconSize="@dimen/dimen_size_18"
+                app:iconTint="@{!stateVM.isConnectOperateVisible ? @color/colorPrimary : @color/sub_title_text_color}" />
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/MeasureData_Button_Style"
+                android:layout_marginStart="@dimen/dimen_size_10"
+                android:enabled="@{!stateVM.isConnectOperateVisible}"
+                android:onClick="@{()->click.onGoToSensorDataHistoryClick()}"
+                android:text='历史'
+                app:backgroundTint="@color/colorPrimary_10"
+                app:icon="@drawable/ic_device_sensor_data_history"
+                app:iconSize="@dimen/dimen_size_18" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

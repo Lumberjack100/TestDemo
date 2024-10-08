@@ -115,7 +115,7 @@
                 app:backgroundTint="@color/colorPrimary_10"
                 app:icon="@drawable/ic_device_measure_data"
                 app:iconSize="@dimen/dimen_size_18"
-                tools:text="测量" />
+                tools:text="测量中" />
 
             <com.google.android.material.button.MaterialButton
                 style="@style/MeasureData_Button_Style"
@@ -130,7 +130,7 @@
 
             <com.google.android.material.button.MaterialButton
                 style="@style/MeasureData_Button_Style"
-                android:layout_marginStart="@dimen/dimen_size_20"
+                android:layout_marginStart="@dimen/dimen_size_10"
                 android:enabled="@{!stateVM.isConnectOperateVisible}"
                 android:onClick="@{()->click.onGoToSensorDataHistoryClick()}"
                 android:text='历史'

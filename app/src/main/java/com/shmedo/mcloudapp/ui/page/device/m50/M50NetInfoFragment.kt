@@ -144,7 +144,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                                 "$onlineStatus($platformType)"
                             ),
                             textColorRes = if (status == "0" || onlineStatus == "未连接") ColorUtils.getColor(
-                                R.color.red_F13838
+                                R.color.error_FF4400
                             ) else ColorUtils.getColor(R.color.green_00B26B),
                             isBottomItem = true
                         )

@@ -103,7 +103,7 @@ class LB20SBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                                 item.errno.toString()
                             ),
                             textColorRes = if (item.errno.toString() == "0") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
-                                R.color.red_F13838
+                                R.color.error_FF4400
                             )
                         )
                     )

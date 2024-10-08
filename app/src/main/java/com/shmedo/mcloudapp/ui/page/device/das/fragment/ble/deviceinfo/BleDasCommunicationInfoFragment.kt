@@ -189,19 +189,19 @@ class BleDasCommunicationInfoFragment : BaseIOTDeviceFragment() {
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (dataList[0].errno.toString() == "0") "未开启" else if (dataList[0].errno.toString() == "1") "已连接" else "未连接",
-                            textColorResId = if (dataList[0].errno.toString() == "1") R.color.green_00B26B else R.color.red_F13838
+                            textColorResId = if (dataList[0].errno.toString() == "1") R.color.green_00B26B else R.color.error_FF4400
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (dataList[1].errno.toString() == "0") "未开启" else if (dataList[1].errno.toString() == "1") "已连接" else "未连接",
-                            textColorResId = if (dataList[1].errno.toString() == "1") R.color.green_00B26B else R.color.red_F13838
+                            textColorResId = if (dataList[1].errno.toString() == "1") R.color.green_00B26B else R.color.error_FF4400
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (dataList[2].errno.toString() == "0") "未开启" else if (dataList[2].errno.toString() == "1") "已连接" else "未连接",
-                            textColorResId = if (dataList[2].errno.toString() == "1") R.color.green_00B26B else R.color.red_F13838
+                            textColorResId = if (dataList[2].errno.toString() == "1") R.color.green_00B26B else R.color.error_FF4400
                         )
                     )
                 }
@@ -216,19 +216,19 @@ class BleDasCommunicationInfoFragment : BaseIOTDeviceFragment() {
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             dataList[0].unsend.toString(),
-                            R.color.red_F13838
+                            R.color.error_FF4400
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             dataList[1].unsend.toString(),
-                            R.color.red_F13838
+                            R.color.error_FF4400
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             dataList[2].unsend.toString(),
-                            R.color.red_F13838
+                            R.color.error_FF4400
                         )
                     )
                 }

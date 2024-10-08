@@ -137,7 +137,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.ldStatus == "0") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
-                        R.color.red_F13838
+                        R.color.error_FF4400
                     )
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
@@ -157,7 +157,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.cameraStatus == "0") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
-                        R.color.red_F13838
+                        R.color.error_FF4400
                     )
                 )
                 if (stateInfo.pixx != IOTConstants.NULL_KEY
@@ -179,7 +179,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.accelerometerStatus == "0") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
-                        R.color.red_F13838
+                        R.color.error_FF4400
                     ),
                     isBottomItem = true
                 )

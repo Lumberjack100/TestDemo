@@ -53,14 +53,14 @@
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:text="@{vm.deviceStateTagText}"
-                android:textColor="@{vm.isDeviceStateTagHighLight()?@color/green_00B26B:@color/red_F13838}"
+                android:textColor="@{vm.isDeviceStateTagHighLight()?@color/green_00B26B:@color/red_FF4400}"
                 android:textSize="@dimen/text_size_10"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/tv_product_name"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:background="@drawable/bg_device_offline_state_flag_corner_10dp"
                 tools:text="已断开"
-                tools:textColor="@color/red_F13838" />
+                tools:textColor="@color/red_FF4400" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_device_connect_operate"

@@ -221,34 +221,38 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             ConfigModuleTree(
                 configModules = arrayListOf(
                     ConfigModule(
-                        RunningStatusModule(
+                        CommonModule(
                             name = "基本信息",
                             desc = "查看设备基本信息",
-                            resID = R.drawable.ic_module_current_state,
+                            resID = R.drawable.ic_module_basic_info,
+                            iconSize = ConvertUtils.dp2px(34f),
                             navId = R.id.action_global_to_m50BaseInfoFragment
                         )
                     ),
                     ConfigModule(
-                        RunningStatusModule(
+                        CommonModule(
                             name = "网络信息",
                             desc = "查看设备网络信息",
-                            resID = R.drawable.ic_module_work_mode_new,
+                            resID = R.drawable.ic_module_net_info,
+                            iconSize = ConvertUtils.dp2px(34f),
                             navId = R.id.action_global_to_m50NetInfoFragment
                         )
                     ),
                     ConfigModule(
-                        RunningStatusModule(
+                        CommonModule(
                             name = "状态信息",
                             desc = "查看设备运行状态信息",
-                            resID = R.drawable.ic_basic_config,
+                            resID = R.drawable.ic_module_state_info,
+                            iconSize = ConvertUtils.dp2px(34f),
                             navId = R.id.action_global_to_m50StatusInfoFragment
                         )
                     ),
                     ConfigModule(
-                        RunningStatusModule(
+                        CommonModule(
                             name = "位置信息",
                             desc = "查看设备位置信息",
                             resID = R.drawable.ic_module_location_info,
+                            iconSize = ConvertUtils.dp2px(34f),
                             navId = R.id.action_global_to_m50LocationInfoFragment
                         )
                     )
@@ -276,6 +280,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 ),
                 ConfigModule(
                     DataCenterModule(
+                        resID = R.drawable.ic_module_datacenter_new,
                         navId = R.id.action_global_to_universalDataCenterHomeFragment
                     )
                 ),
@@ -283,34 +288,40 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 ConfigModule(
                     LoraConfigModule(
                         name = "电台配置",
+                        resID = R.drawable.ic_module_lora,
                         navId = R.id.action_global_to_m50RadioSettingFragment
                     )
                 ),
                 ConfigModule(
                     SensorConfigModule(
                         name = "串口配置",
+                        resID = R.drawable.ic_module_lora,
                         navId = R.id.action_global_to_m50SerialPortParamFragment
                     )
                 ),
                 ConfigModule(
                     SensorConfigModule(
                         name = "数据存储",
+                        resID = R.drawable.ic_module_lora,
                         navId = 0
                     )
                 ),
                 ConfigModule(
                     AlarmConfigModule(
+                        resID = R.drawable.ic_module_alarm,
                         navId = R.id.action_global_to_alarmSettingFragment
                     )
                 ),
                 ConfigModule(
                     TimeCalibrationModule(
                         name = "时间校准",
+                        resID = R.drawable.ic_module_time_calibration_new,
                     )
                 ),
                 ConfigModule(
                     AdvancedSettingsModule(
                         name = "系统配置",
+                        resID = R.drawable.ic_module_system_setting,
                         navId = R.id.action_global_to_advancedSettingFragment
                     )
                 ),
@@ -448,7 +459,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                         module.navId,
                         bundle
                     )
-                }else{
+                } else {
                     Toaster.show("正在开发中")
                 }
             }
@@ -777,13 +788,13 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 content,
                 textColorRes = status.compareAndReturn(
                     "1",
-                    ColorUtils.getColor(R.color.colorPrimary),
-                    ColorUtils.getColor(R.color.sub_title_text_color)
+                    ColorUtils.getColor(R.color.online_colorPrimary),
+                    ColorUtils.getColor(R.color.offline_BABABA)
                 ),
                 bgResId = status.compareAndReturn(
                     "1",
-                    R.drawable.bg_label_blue_corner_15dp,
-                    R.drawable.bg_label_gray_corner_15dp
+                    R.drawable.bg_label_online_corner_1dp,
+                    R.drawable.bg_label_offline_corner_1dp
                 )
             )
         )
@@ -820,20 +831,20 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 val platformLabel = PlatformLabel(
                     status, textColorRes = status.compareAndReturn(
                         "故障",
-                        ColorUtils.getColor(R.color.red_F13838),
+                        ColorUtils.getColor(R.color.error_FF4400),
                         status.compareAndReturn(
                             "告警",
-                            ColorUtils.getColor(R.color.yellow_FDA251),
-                            ColorUtils.getColor(R.color.colorPrimary)
+                            ColorUtils.getColor(R.color.warn_FF9D00),
+                            ColorUtils.getColor(R.color.online_colorPrimary)
                         )
                     ),
                     bgResId = status.compareAndReturn(
                         "故障",
-                        R.drawable.bg_device_offline_state_flag_corner_10dp,
+                        R.drawable.bg_label_error_corner_1dp,
                         status.compareAndReturn(
                             "告警",
-                            R.drawable.bg_label_yellow_corner_15dp,
-                            R.drawable.bg_label_blue_corner_15dp
+                            R.drawable.bg_label_warn_corner_1dp,
+                            R.drawable.bg_label_online_corner_1dp
                         )
                     )
                 )
@@ -860,10 +871,14 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 && resultMap.containsKey("y_value")
                 && resultMap.containsKey("z_value")
             ) {
-                val resultantDisplacement = DeviceStatusInfoProcessor.formatDoubleValue(resultMap["sum_value"], "--", 1)
-                val xDisplacement = DeviceStatusInfoProcessor.formatDoubleValue(resultMap["x_value"], "--", 1)
-                val yDisplacement = DeviceStatusInfoProcessor.formatDoubleValue(resultMap["y_value"], "--", 1)
-                val zDisplacement =DeviceStatusInfoProcessor.formatDoubleValue(resultMap["z_value"], "--", 1)
+                val resultantDisplacement =
+                    DeviceStatusInfoProcessor.formatDoubleValue(resultMap["sum_value"], "--", 1)
+                val xDisplacement =
+                    DeviceStatusInfoProcessor.formatDoubleValue(resultMap["x_value"], "--", 1)
+                val yDisplacement =
+                    DeviceStatusInfoProcessor.formatDoubleValue(resultMap["y_value"], "--", 1)
+                val zDisplacement =
+                    DeviceStatusInfoProcessor.formatDoubleValue(resultMap["z_value"], "--", 1)
 
                 mHeadStates.resultantDisplacement.set("${resultantDisplacement}mm")
                 mHeadStates.xDisplacement.set("${xDisplacement}mm")

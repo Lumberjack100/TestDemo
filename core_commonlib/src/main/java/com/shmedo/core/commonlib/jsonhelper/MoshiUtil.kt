@@ -83,7 +83,8 @@ object MoshiUtil {
 
     inline fun <reified T> toJsonMap(src: T): Map<String, Any> {
         val jsonStr = toJson(src)
-        val mapType = Types.newParameterizedType(Map::class.java, String::class.java, Any::class.java)
+        val mapType =
+            Types.newParameterizedType(Map::class.java, String::class.java, Any::class.java)
         val adapter: JsonAdapter<Map<String, Any>> = moshi.adapter(mapType)
 
         return adapter.fromJson(jsonStr) ?: emptyMap()

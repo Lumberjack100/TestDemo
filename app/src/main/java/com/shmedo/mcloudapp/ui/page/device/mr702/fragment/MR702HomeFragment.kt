@@ -409,8 +409,8 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     ),
                     bgResId = dataCenterStatus.status1.compareAndReturn(
                         "1",
-                        R.drawable.bg_label_blue_corner_15dp,
-                        R.drawable.bg_label_gray_corner_15dp
+                        R.drawable.bg_label_online_corner_1dp,
+                        R.drawable.bg_label_offline_corner_1dp
                     )
                 )
             )
@@ -424,8 +424,8 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     ),
                     bgResId = dataCenterStatus.status2.compareAndReturn(
                         "1",
-                        R.drawable.bg_label_blue_corner_15dp,
-                        R.drawable.bg_label_gray_corner_15dp
+                        R.drawable.bg_label_online_corner_1dp,
+                        R.drawable.bg_label_offline_corner_1dp
                     )
                 )
             )
@@ -439,8 +439,8 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     ),
                     bgResId = dataCenterStatus.status3.compareAndReturn(
                         "1",
-                        R.drawable.bg_label_blue_corner_15dp,
-                        R.drawable.bg_label_gray_corner_15dp
+                        R.drawable.bg_label_online_corner_1dp,
+                        R.drawable.bg_label_offline_corner_1dp
                     )
                 )
             )
@@ -454,8 +454,8 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     ),
                     bgResId = dataCenterStatus.status4.compareAndReturn(
                         "1",
-                        R.drawable.bg_label_blue_corner_15dp,
-                        R.drawable.bg_label_gray_corner_15dp
+                        R.drawable.bg_label_online_corner_1dp,
+                        R.drawable.bg_label_offline_corner_1dp
                     )
                 )
             )
@@ -469,8 +469,8 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     ),
                     bgResId = dataCenterStatus.status5.compareAndReturn(
                         "1",
-                        R.drawable.bg_label_blue_corner_15dp,
-                        R.drawable.bg_label_gray_corner_15dp
+                        R.drawable.bg_label_online_corner_1dp,
+                        R.drawable.bg_label_offline_corner_1dp
                     )
                 )
             )
@@ -488,9 +488,9 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         moduleList.add(
             ConfigModule(
                 RunningStatusModule(
-                    "关于设备",
-                    "设备基本信息、运行数据",
-                    R.drawable.ic_device_running_info,
+                    name = "关于设备",
+                    desc = "设备基本信息、运行数据",
+                    resID = R.drawable.ic_device_running_info,
                     navId = R.id.action_mR702HomeFragment_to_mR702DeviceInfoFragment
                 )
             )

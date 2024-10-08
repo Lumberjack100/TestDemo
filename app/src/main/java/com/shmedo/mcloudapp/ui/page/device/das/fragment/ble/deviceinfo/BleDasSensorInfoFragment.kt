@@ -172,7 +172,7 @@ class BleDasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "状态",
                             value = "未接入",
-                            textColorRes = ColorUtils.getColor(R.color.red_F13838)
+                            textColorRes = ColorUtils.getColor(R.color.error_FF4400)
                         )
                     )
                 }
@@ -206,7 +206,7 @@ class BleDasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                             name = "断线报警器",
                             value = if (info.rainfallStatus == "1" || info.rainfallStatus == "1.0") "断线" else "未断线",
                             textColorRes = if (info.rainfallStatus == "1" || info.rainfallStatus == "1.0") ColorUtils.getColor(
-                                R.color.red_F13838
+                                R.color.error_FF4400
                             ) else ColorUtils.getColor(
                                 R.color.green_00B26B
                             )
@@ -241,7 +241,7 @@ class BleDasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                     textColorRes = if (info.status == "0") ColorUtils.getColor(
                         R.color.green_00B26B
                     ) else ColorUtils.getColor(
-                        R.color.red_F13838
+                        R.color.error_FF4400
                     )
                 )
             )

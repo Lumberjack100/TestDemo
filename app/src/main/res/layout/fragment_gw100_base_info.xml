@@ -121,7 +121,7 @@
                             style="@style/Common_ClickableItem_Value_Style"
                             rightArrowVisible="@{!stateVM.deviceNormal}"
                             android:text='@{stateVM.deviceNormal?"正常":"异常"}'
-                            android:textColor="@{stateVM.deviceNormal?@color/green_00B26B:@color/red_F13838}"
+                            android:textColor="@{stateVM.deviceNormal?@color/green_00B26B:@color/error_FF4400}"
                             android:textSize="15sp"
                             tools:drawableEndCompat="@drawable/icon_arrow_right"
                             tools:text="异常" />

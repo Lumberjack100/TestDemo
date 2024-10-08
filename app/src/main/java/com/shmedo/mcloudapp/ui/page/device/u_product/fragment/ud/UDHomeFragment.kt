@@ -101,7 +101,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdHomeBinding
-        binding.llToolbar.toolbar.title = "返回"
+        toolbarViewModel.toolbarTitleText.set("返回")
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             if (bleViewModel.isConnected()) {
                 bleViewModel.disconnect()
@@ -224,34 +224,38 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             ConfigModuleTree(
                 configModules = arrayListOf(
                     ConfigModule(
-                        RunningStatusModule(
+                        CommonModule(
                             name = "基本信息",
                             desc = "查看设备基本信息",
-                            resID = R.drawable.ic_module_work_mode_new,
+                            resID = R.drawable.ic_module_basic_info,
+                            iconSize = ConvertUtils.dp2px(34f),
                             navId = R.id.action_global_to_udBaseInfoFragment
                         )
                     ),
                     ConfigModule(
-                        RunningStatusModule(
+                        CommonModule(
                             name = "网络信息",
                             desc = "查看设备网络信息",
-                            resID = R.drawable.ic_module_work_mode_new,
+                            resID = R.drawable.ic_module_net_info,
+                            iconSize = ConvertUtils.dp2px(34f),
                             navId = R.id.action_global_to_udNetInfoFragment
                         )
                     ),
                     ConfigModule(
-                        RunningStatusModule(
+                        CommonModule(
                             name = "状态信息",
                             desc = "查看设备运行状态信息",
-                            resID = R.drawable.ic_module_work_mode_new,
+                            resID = R.drawable.ic_module_state_info,
+                            iconSize = ConvertUtils.dp2px(34f),
                             navId = R.id.action_global_to_udSensorInfoFragment
                         )
                     ),
                     ConfigModule(
-                        RunningStatusModule(
+                        CommonModule(
                             name = "位置信息",
                             desc = "查看设备位置信息",
                             resID = R.drawable.ic_module_location_info,
+                            iconSize = ConvertUtils.dp2px(34f),
                             navId = R.id.action_global_to_udLocationInfoFragment
                         )
                     )
@@ -266,7 +270,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 ConfigModule(
                     WorkModeModule(
                         name = "工作模式",
-                        desc = "报警上报参数配置",
                         resID = R.drawable.ic_module_work_mode_new,
                         navId = R.id.action_global_to_udWorkModelParamFragment
                     )
@@ -274,7 +277,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 ConfigModule(
                     CommonModule(
                         name = "网络配置",
-                        desc = "移动网络参数配置",
                         resID = R.drawable.ic_module_network_setting,
                         navId = R.id.action_global_to_udMobileNetworkParamFragment
                     )
@@ -288,7 +290,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 ConfigModule(
                     CommonModule(
                         name = "CORS",
-                        desc = "CORS参数配置",
                         resID = R.drawable.ic_module_cors,
                         navId = R.id.action_global_to_udCORSParamFragment
                     )
@@ -834,13 +835,13 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 content,
                 textColorRes = status.compareAndReturn(
                     "1",
-                    ColorUtils.getColor(R.color.colorPrimary),
-                    ColorUtils.getColor(R.color.sub_title_text_color)
+                    ColorUtils.getColor(R.color.online_colorPrimary),
+                    ColorUtils.getColor(R.color.offline_BABABA)
                 ),
                 bgResId = status.compareAndReturn(
                     "1",
-                    R.drawable.bg_label_blue_corner_15dp,
-                    R.drawable.bg_label_gray_corner_15dp
+                    R.drawable.bg_label_online_corner_1dp,
+                    R.drawable.bg_label_offline_corner_1dp
                 )
             )
         )
@@ -877,20 +878,20 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 val platformLabel = PlatformLabel(
                     status, textColorRes = status.compareAndReturn(
                         "故障",
-                        ColorUtils.getColor(R.color.red_F13838),
+                        ColorUtils.getColor(R.color.error_FF4400),
                         status.compareAndReturn(
                             "告警",
-                            ColorUtils.getColor(R.color.yellow_FDA251),
-                            ColorUtils.getColor(R.color.colorPrimary)
+                            ColorUtils.getColor(R.color.warn_FF9D00),
+                            ColorUtils.getColor(R.color.online_colorPrimary)
                         )
                     ),
                     bgResId = status.compareAndReturn(
                         "故障",
-                        R.drawable.bg_device_offline_state_flag_corner_10dp,
+                        R.drawable.bg_label_error_corner_1dp,
                         status.compareAndReturn(
                             "告警",
-                            R.drawable.bg_label_yellow_corner_15dp,
-                            R.drawable.bg_label_blue_corner_15dp
+                            R.drawable.bg_label_warn_corner_1dp,
+                            R.drawable.bg_label_online_corner_1dp
                         )
                     )
                 )

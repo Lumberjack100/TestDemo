@@ -88,7 +88,7 @@
                             android:layout_marginStart="18dp"
                             android:gravity="center_vertical"
                             android:text="@{stateVM.motorInfo}"
-                            android:textColor="@{stateVM.isMotorInfoNormal ? @color/title_text_color : @color/red_F13838}"
+                            android:textColor="@{stateVM.isMotorInfoNormal ? @color/title_text_color : @color/error_FF4400}"
                             android:textSize="15sp"
                             tools:text="磁开关触发，测量结束" />
 

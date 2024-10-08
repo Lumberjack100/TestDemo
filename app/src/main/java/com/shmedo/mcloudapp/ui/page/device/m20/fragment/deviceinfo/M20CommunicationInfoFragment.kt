@@ -158,25 +158,25 @@ class M20CommunicationInfoFragment : BaseIOTDeviceFragment() {
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (commonCurrentStateInfo.dataCenter1 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter1 == 1) "已连接" else "未连接",
-                            textColorResId = if (commonCurrentStateInfo.dataCenter1 == 1) R.color.green_00B26B else R.color.red_F13838
+                            textColorResId = if (commonCurrentStateInfo.dataCenter1 == 1) R.color.green_00B26B else R.color.error_FF4400
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (commonCurrentStateInfo.dataCenter2 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter2 == 1) "已连接" else "未连接",
-                            textColorResId = if (commonCurrentStateInfo.dataCenter2 == 1) R.color.green_00B26B else R.color.red_F13838
+                            textColorResId = if (commonCurrentStateInfo.dataCenter2 == 1) R.color.green_00B26B else R.color.error_FF4400
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (commonCurrentStateInfo.dataCenter3 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter3 == 1) "已连接" else "未连接",
-                            textColorResId = if (commonCurrentStateInfo.dataCenter3 == 1) R.color.green_00B26B else R.color.red_F13838
+                            textColorResId = if (commonCurrentStateInfo.dataCenter3 == 1) R.color.green_00B26B else R.color.error_FF4400
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (commonCurrentStateInfo.dataCenter4 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter4 == 1) "已连接" else "未连接",
-                            textColorResId = if (commonCurrentStateInfo.dataCenter4 == 1) R.color.green_00B26B else R.color.red_F13838
+                            textColorResId = if (commonCurrentStateInfo.dataCenter4 == 1) R.color.green_00B26B else R.color.error_FF4400
                         )
                     )
                 }
