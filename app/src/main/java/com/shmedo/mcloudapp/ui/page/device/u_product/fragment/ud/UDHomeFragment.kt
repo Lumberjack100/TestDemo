@@ -58,7 +58,6 @@ import com.shmedo.mcloudapp.model.WorkModeModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoParentFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
-import com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
@@ -127,21 +126,21 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        toolbarViewModel.toolbarIvActionVisible.set(true)
         mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
-
         mHeadStates.productName.set(deviceInfo.productName)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
         mHeadStates.deviceName.set(if (deviceInfo.deviceName == deviceInfo.deviceToken) deviceInfo.productToken else deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
 
         when (communicateWay) {
             NetPlatformConnect -> {
+                toolbarViewModel.toolbarIvActionVisible.set(false)
                 mHeadStates.isConnectOperateVisible.set(false)
             }
 
             BleConnect -> {
+                toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
+                toolbarViewModel.toolbarIvActionVisible.set(true)
                 mHeadStates.isConnectOperateVisible.set(true)
-                mHeadStates.connectOperateText.set("蓝牙连接")
             }
 
             else -> {}
@@ -153,11 +152,11 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     override fun onConnectionStateChanged(isConnected: Boolean) {
         mHeadStates.isConnected.set(isConnected)
         if (isConnected) {
-            mHeadStates.connectOperateText.set("断开连接")
+            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
             mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
             initPlatformStatus("蓝牙已连接", "1")
         } else {
-            mHeadStates.connectOperateText.set("蓝牙连接")
+            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
             mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
             initPlatformStatus("蓝牙已断开", "0")
         }
@@ -345,15 +344,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     inner class ClickProxy : BaseClickProxy() {
         override fun onToolbarIvClick() {
-            val bundle = QueryDeviceDataFragment.newBundleArguments(
-                deviceInfo.deviceToken
-            )
-            nav(binding.llToolbar.ivAction).navigate(
-                R.id.action_global_to_queryDeviceDataFragment, bundle
-            )
-        }
-
-        override fun onConnectOperateClick() {
             if (bleViewModel.isConnected()) {
                 showMessage(
                     StringUtils.getString(R.string.disconnect_device_warn),

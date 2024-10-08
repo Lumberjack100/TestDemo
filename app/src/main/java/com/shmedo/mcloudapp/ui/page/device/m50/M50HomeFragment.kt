@@ -58,7 +58,6 @@ import com.shmedo.mcloudapp.model.WorkModeModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoParentFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
-import com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDSensorDataHistoryFragment
@@ -125,21 +124,21 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        toolbarViewModel.toolbarIvActionVisible.set(true)
-        mHeadStates.productLogoResId.set(R.drawable.device_logo_m20)
-
+        mHeadStates.productLogoResId.set(R.drawable.device_logo_m50)
         mHeadStates.productName.set("一体化GNSS接收机")
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
         mHeadStates.deviceName.set(if (deviceInfo.deviceName == deviceInfo.deviceToken) deviceInfo.productToken else deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
 
         when (communicateWay) {
             NetPlatformConnect -> {
+                toolbarViewModel.toolbarIvActionVisible.set(false)
                 mHeadStates.isConnectOperateVisible.set(false)
             }
 
             BleConnect -> {
+                toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
+                toolbarViewModel.toolbarIvActionVisible.set(true)
                 mHeadStates.isConnectOperateVisible.set(true)
-                mHeadStates.connectOperateText.set("蓝牙连接")
             }
 
             else -> {}
@@ -151,12 +150,12 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     override fun onConnectionStateChanged(isConnected: Boolean) {
         mHeadStates.isConnected.set(isConnected)
         if (isConnected) {
-            mHeadStates.connectOperateText.set("断开连接")
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
+            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_m50)
             initPlatformStatus("蓝牙已连接", "1")
         } else {
-            mHeadStates.connectOperateText.set("蓝牙连接")
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
+            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_m50_offline)
             initPlatformStatus("蓝牙已断开", "0")
         }
 
@@ -223,7 +222,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                     ConfigModule(
                         CommonModule(
                             name = "基本信息",
-                            desc = "查看设备基本信息",
                             resID = R.drawable.ic_module_basic_info,
                             iconSize = ConvertUtils.dp2px(34f),
                             navId = R.id.action_global_to_m50BaseInfoFragment
@@ -232,7 +230,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                     ConfigModule(
                         CommonModule(
                             name = "网络信息",
-                            desc = "查看设备网络信息",
                             resID = R.drawable.ic_module_net_info,
                             iconSize = ConvertUtils.dp2px(34f),
                             navId = R.id.action_global_to_m50NetInfoFragment
@@ -241,7 +238,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                     ConfigModule(
                         CommonModule(
                             name = "状态信息",
-                            desc = "查看设备运行状态信息",
                             resID = R.drawable.ic_module_state_info,
                             iconSize = ConvertUtils.dp2px(34f),
                             navId = R.id.action_global_to_m50StatusInfoFragment
@@ -249,9 +245,8 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                     ),
                     ConfigModule(
                         CommonModule(
-                            name = "位置信息",
-                            desc = "查看设备位置信息",
-                            resID = R.drawable.ic_module_location_info,
+                            name = "卫星信息",
+                            resID = R.drawable.ic_module_satellite_info,
                             iconSize = ConvertUtils.dp2px(34f),
                             navId = R.id.action_global_to_m50LocationInfoFragment
                         )
@@ -295,14 +290,14 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 ConfigModule(
                     SensorConfigModule(
                         name = "串口配置",
-                        resID = R.drawable.ic_module_lora,
+                        resID = R.drawable.ic_module_serial_port,
                         navId = R.id.action_global_to_m50SerialPortParamFragment
                     )
                 ),
                 ConfigModule(
                     SensorConfigModule(
                         name = "数据存储",
-                        resID = R.drawable.ic_module_lora,
+                        resID = R.drawable.ic_module_data_storage,
                         navId = 0
                     )
                 ),
@@ -337,15 +332,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
 
     inner class ClickProxy : BaseClickProxy() {
         override fun onToolbarIvClick() {
-            val bundle = QueryDeviceDataFragment.newBundleArguments(
-                deviceInfo.deviceToken
-            )
-            nav(binding.llToolbar.ivAction).navigate(
-                R.id.action_global_to_queryDeviceDataFragment, bundle
-            )
-        }
-
-        override fun onConnectOperateClick() {
             if (bleViewModel.isConnected()) {
                 showMessage(
                     StringUtils.getString(R.string.disconnect_device_warn),
@@ -547,7 +533,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             initPlatformStatus("米度平台在线", "1")
             queryStatusInfo()
         } else {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_m50_offline)
             initPlatformStatus("米度平台离线", "0")
         }
     }
@@ -819,11 +805,11 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 mHeadStates.productLogoResId.set(
                     status.compareAndReturn(
                         "故障",
-                        R.drawable.device_logo_niweiji_error,
+                        R.drawable.device_logo_m50_error,
                         status.compareAndReturn(
                             "告警",
-                            R.drawable.device_logo_niweiji_alarm,
-                            R.drawable.device_logo_niweiji
+                            R.drawable.device_logo_m50_alarm,
+                            R.drawable.device_logo_m50
                         )
                     )
                 )

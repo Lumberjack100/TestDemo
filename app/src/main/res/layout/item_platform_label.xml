@@ -26,9 +26,9 @@
             android:text="@{m.content}"
             android:textColor="@{m.textColorRes}"
             android:textSize="@dimen/text_size_11"
-            tools:background="@color/green_00B26B_10"
+            tools:background="@drawable/bg_label_online_corner_1dp"
             tools:text="米度平台在线"
-            tools:textColor="@color/green_00B26B" />
+            tools:textColor="@color/online_colorPrimary" />
 
     </FrameLayout>
 

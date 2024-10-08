@@ -113,19 +113,20 @@
                 android:onClick="@{()->click.onGotoLocaionClick()}"
                 android:text='位置'
                 app:backgroundTint="@color/colorPrimary_10"
-                app:icon="@drawable/ic_device_measure_data"
+                app:icon="@drawable/ic_module_location_info"
                 app:iconSize="@dimen/dimen_size_18" />
 
             <com.google.android.material.button.MaterialButton
                 style="@style/MeasureData_Button_Style"
                 android:layout_marginStart="@dimen/dimen_size_10"
-                android:enabled="@{!stateVM.isConnectOperateVisible}"
+                android:enabled="false"
                 android:onClick="@{()->click.onTakePhotoClick()}"
                 android:text='拍照'
-                app:backgroundTint="@color/colorPrimary_10"
+                android:textColor="@color/black_30"
+                app:backgroundTint="@color/black_4"
                 app:icon="@drawable/ic_device_take_photo"
                 app:iconSize="@dimen/dimen_size_18"
-                app:iconTint="@{!stateVM.isConnectOperateVisible ? @color/colorPrimary : @color/sub_title_text_color}" />
+                app:iconTint="@color/black_30" />
 
             <com.google.android.material.button.MaterialButton
                 style="@style/MeasureData_Button_Style"
@@ -133,9 +134,11 @@
                 android:enabled="@{!stateVM.isConnectOperateVisible}"
                 android:onClick="@{()->click.onGoToSensorDataHistoryClick()}"
                 android:text='历史'
-                app:backgroundTint="@color/colorPrimary_10"
+                android:textColor="@{!stateVM.isConnectOperateVisible ? @color/colorPrimary : @color/black_30}"
+                app:backgroundTint="@drawable/button_background_tint"
                 app:icon="@drawable/ic_device_sensor_data_history"
-                app:iconSize="@dimen/dimen_size_18" />
+                app:iconSize="@dimen/dimen_size_18"
+                app:iconTint="@{!stateVM.isConnectOperateVisible ? @color/colorPrimary : @color/black_30}" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

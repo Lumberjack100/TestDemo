@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
-                tools:src="@drawable/ic_query_device_data"
+                tools:src="@drawable/ic_ble_connect"
                 tools:visibility="visible" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -63,7 +63,7 @@
                 android:singleLine="true"
                 android:text="@{vm.toolbarTvActionText}"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/text_size_15"
+                android:textSize="@dimen/text_size_14"
                 tools:text="编辑"
                 tools:visibility="visible" />
         </FrameLayout>

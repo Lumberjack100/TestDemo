@@ -71,7 +71,7 @@
                         android:layout_width="21dp"
                         android:layout_height="21dp"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/ic_locate" />
+                        android:src="@drawable/ic_module_location_info" />
 
                 </LinearLayout>
 

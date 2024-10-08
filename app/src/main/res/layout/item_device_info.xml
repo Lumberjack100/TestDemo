@@ -85,7 +85,7 @@
                     android:maxLines="2"
                     android:text="@{m.productName}"
                     android:textColor="@{m.onlineStatus?@color/title_text_color_black_90:@color/offline_BABABA}"
-                    android:textSize="@dimen/text_size_13"
+                    android:textSize="@dimen/text_size_12"
                     tools:text="智能声光报警器专业监测设备"
                     tools:textColor="@color/title_text_color" />
 
