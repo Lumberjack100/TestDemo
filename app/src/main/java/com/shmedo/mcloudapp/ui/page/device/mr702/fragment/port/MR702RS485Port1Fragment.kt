@@ -183,7 +183,8 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                         bleDevice
                     )
                     nav().navigate(
-                        R.id.action_mR702PortHomeFragment_to_mR702RS485Port1SensorAddParamFragment,
+                        if (sensorModel.modelToken == "10066" || sensorModel.modelToken == "228") R.id.action_mR702PortHomeFragment_to_mR702RS485Port1SensorAddParamNewFragment
+                        else R.id.action_mR702PortHomeFragment_to_mR702RS485Port1SensorAddParamFragment,
                         bundle
                     )
                 }

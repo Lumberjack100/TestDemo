@@ -56,11 +56,11 @@ data class UDCurrentStateInfo(
     val radioEnableStatus: String = IOTConstants.NULL_KEY, //电台（启用/未启用）0：未启用  1：启用
     val bt_connected: String = IOTConstants.NULL_KEY, //蓝牙（连接/未连接） 0：未连接 1：已连接
     @Json(name = "dataCenterUseSta")
-    val dataCenterEnableStatus: String = IOTConstants.NULL_KEY, //数据中心启用状态 "1,0,0,0"
+    val dataCenterEnableStatus: String = IOTConstants.NULL_KEY, //数据链路启用状态 "1,0,0,0"
     @Json(name = "dataCenterStatus")
-    val dataCenterLinkStatus: String = IOTConstants.NULL_KEY, //数据中心连接状态 "0,0,0,0"
+    val dataCenterLinkStatus: String = IOTConstants.NULL_KEY, //数据链路连接状态 "0,0,0,0"
     @Json(name = "dataCenterPlatform")
-    val dataCenterPlatformType: String = IOTConstants.NULL_KEY, //数据中心连接平台类型 "2,7,0,0"
+    val dataCenterPlatformType: String = IOTConstants.NULL_KEY, //数据链路连接平台类型 "2,7,0,0"
     @Json(name = "extern_volt")
     val externalVoltage: String = IOTConstants.NULL_KEY, //外部电压  float  "0.00"
     @Json(name = "bat_volt")

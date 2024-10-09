@@ -122,7 +122,7 @@ object DeviceStatusInfoProcessor {
                     textColorRes = if (tempValue.toDouble() <= downLimitValue)
                         ColorUtils.getColor(R.color.error_FF4400)
                     else
-                        ColorUtils.getColor(R.color.green_00B26B),
+                        ColorUtils.getColor(R.color.online_colorPrimary),
                     isBottomItem = isBottomItem,
                 )
             )
@@ -162,7 +162,7 @@ object DeviceStatusInfoProcessor {
                     textColorRes = if (tempValue.toDouble() < downLimitValue || tempValue.toDouble() > upLimitValue)
                         ColorUtils.getColor(R.color.error_FF4400)
                     else
-                        ColorUtils.getColor(R.color.green_00B26B)
+                        ColorUtils.getColor(R.color.online_colorPrimary)
                 )
             )
         }

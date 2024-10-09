@@ -111,7 +111,7 @@ class CommunicationDataTableAdapter :
             parent,
             false
         )
-        binding.cornerTextView.text = "数据中心"
+        binding.cornerTextView.text = "数据链路"
 
         return binding.root
     }

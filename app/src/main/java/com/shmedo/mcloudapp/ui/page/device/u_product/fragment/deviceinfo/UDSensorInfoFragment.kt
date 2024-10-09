@@ -136,7 +136,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "正常"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
-                    textColorRes = if (stateInfo.ldStatus == "0") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
+                    textColorRes = if (stateInfo.ldStatus == "0") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
                         R.color.error_FF4400
                     )
                 )
@@ -156,7 +156,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "正常"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
-                    textColorRes = if (stateInfo.cameraStatus == "0") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
+                    textColorRes = if (stateInfo.cameraStatus == "0") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
                         R.color.error_FF4400
                     )
                 )
@@ -178,7 +178,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "正常"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
-                    textColorRes = if (stateInfo.accelerometerStatus == "0") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
+                    textColorRes = if (stateInfo.accelerometerStatus == "0") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
                         R.color.error_FF4400
                     ),
                     isBottomItem = true

@@ -182,7 +182,7 @@ class BleDasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "状态",
                             value = "接入",
-                            textColorRes = ColorUtils.getColor(R.color.green_00B26B)
+                            textColorRes = ColorUtils.getColor(R.color.online_colorPrimary)
                         )
                     )
                     groupList.add(
@@ -198,7 +198,7 @@ class BleDasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "状态",
                             value = "接入",
-                            textColorRes = ColorUtils.getColor(R.color.green_00B26B)
+                            textColorRes = ColorUtils.getColor(R.color.online_colorPrimary)
                         )
                     )
                     groupList.add(
@@ -208,7 +208,7 @@ class BleDasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                             textColorRes = if (info.rainfallStatus == "1" || info.rainfallStatus == "1.0") ColorUtils.getColor(
                                 R.color.error_FF4400
                             ) else ColorUtils.getColor(
-                                R.color.green_00B26B
+                                R.color.online_colorPrimary
                             )
                         )
                     )
@@ -239,7 +239,7 @@ class BleDasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         info.status
                     ),
                     textColorRes = if (info.status == "0") ColorUtils.getColor(
-                        R.color.green_00B26B
+                        R.color.online_colorPrimary
                     ) else ColorUtils.getColor(
                         R.color.error_FF4400
                     )

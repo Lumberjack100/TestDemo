@@ -39,7 +39,7 @@
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="数据中心03-TCP" />
+                tools:text="数据链路01" />
 
             <View
                 android:id="@+id/view_line"

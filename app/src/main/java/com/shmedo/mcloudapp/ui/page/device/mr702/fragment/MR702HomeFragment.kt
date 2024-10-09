@@ -348,7 +348,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询数据中心状态出错: ${result.message}"
+                        val errMsg = "查询数据链路状态出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }

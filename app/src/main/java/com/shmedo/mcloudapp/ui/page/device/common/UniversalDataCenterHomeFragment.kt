@@ -49,7 +49,7 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: UniversalDataCenterHomeViewModel
     private val iotParseManager: IOTParserManager by inject()
-    private var centerNum = 0//数据中心数量
+    private var centerNum = 0//数据链路数量
 
     override fun initViewModel() {
         super.initViewModel()
@@ -69,7 +69,7 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUniversalDataCenterHomeBinding
-        toolbarViewModel.toolbarTitleText.set("数据中心")
+        toolbarViewModel.toolbarTitleText.set("数据链路")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }
@@ -127,8 +127,8 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
         setFragmentResultListener(AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { key, bundle ->
             val centerNumber =
                 bundle.getInt(AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
-            commandItems.clear()
 
+            commandItems.clear()
             val entity = CenterNumberEntity(centerNumber.toString())
             val command =
                 IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
@@ -181,6 +181,7 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
             val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_REPORT_TIME)
             commandItems.add(command)
         }
+
         for (i in 1..centerNum) {
             val entity = CenterNumberEntity(i.toString())
             val command =
@@ -221,7 +222,7 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询数据中心状态出错: ${result.message}"
+                        val errMsg = "查询数据链路状态出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -296,7 +297,7 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
             list.add(
                 DataCenterStatusItem(
                     centerid = i,
-                    name = "数据中心$i",
+                    name = "数据链路$i",
                     status = "0",
                     bgResId = when (i) {
                         1 -> R.drawable.layer_common_click_item_top_corner_4_with_divider

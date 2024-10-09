@@ -282,13 +282,14 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 ),
                 ConfigModule(
                     DataCenterModule(
+                        name = "链路配置",
                         resID = R.drawable.ic_module_datacenter_new,
                         navId = R.id.action_global_to_udProductDataCenterHomeFragment
                     )
                 ),
                 ConfigModule(
                     CommonModule(
-                        name = "CORS",
+                        name = "海拔高度",
                         resID = R.drawable.ic_module_cors,
                         navId = R.id.action_global_to_udCORSParamFragment
                     )

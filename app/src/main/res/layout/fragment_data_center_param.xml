@@ -67,7 +67,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            android:text="数据中心地址" />
+                            android:text="链路地址" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_data_server_address"
@@ -86,7 +86,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            android:text="数据中心端口" />
+                            android:text="链路端口" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_data_server_port"

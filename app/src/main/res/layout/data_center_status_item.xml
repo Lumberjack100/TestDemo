@@ -18,7 +18,7 @@
         <com.google.android.material.textview.MaterialTextView
             style="@style/Common_ClickableItem_Title_Style"
             android:text="@{m.name}"
-            tools:text="数据中心01-MQTT" />
+            tools:text="数据链路01-MQTT" />
 
         <com.google.android.material.textview.MaterialTextView
             style="@style/Common_ClickableItem_Value_Style"

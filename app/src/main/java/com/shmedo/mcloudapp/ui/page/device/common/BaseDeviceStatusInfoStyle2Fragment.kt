@@ -100,7 +100,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
         binding.recyclerview.linear().setup { rv ->
             addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group2)
             addType<DeviceStatusInfoBasicItem>(R.layout.item_device_status_info_basic2)
-            addType<DeviceStatusInfoSignalItem>(R.layout.item_device_status_info_signal)
+            addType<DeviceStatusInfoSignalItem>(R.layout.item_device_status_info_signal2)
             addType<DasSensorStatusInfo>(R.layout.item_das_sensor_status)
             addType<GapItem>(R.layout.item_device_status_info_gap)
             onCreate {

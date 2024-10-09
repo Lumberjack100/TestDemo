@@ -64,7 +64,7 @@
                     android:layout_marginTop="@dimen/dimen_size_15"
                     android:layout_marginBottom="@dimen/dimen_size_15"
                     android:drawablePadding="-80dp"
-                    android:text="数据中心"
+                    android:text="数据链路"
                     android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_17"
                     android:textStyle="bold"

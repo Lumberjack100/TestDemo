@@ -64,7 +64,7 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     DeviceStatusInfoBasicItem(
                         name = "设备状态",
                         value = deviceStatus,
-                        textColorRes = if (deviceStatus == "正常") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
+                        textColorRes = if (deviceStatus == "正常") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
                             R.color.error_FF4400
                         )
                     )

@@ -130,7 +130,7 @@ class LR200BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "LoRa功能",
                             value = camState,
-                            textColorRes = if (camState == "有") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
+                            textColorRes = if (camState == "有") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
                                 R.color.error_FF4400
                             )
                         )

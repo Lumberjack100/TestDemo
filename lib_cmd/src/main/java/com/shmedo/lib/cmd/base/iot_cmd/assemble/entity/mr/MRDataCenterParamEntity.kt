@@ -16,8 +16,8 @@ data class MRDataCenterParamEntity(
     val line: String = "",//通信线路选择  1：4G 2：有线
     val level: String = "",//网络协议 1:ipv4 2:ipv6
     val type: String = "", //协议类型 1:TCP 2:UDP
-    val addr: String = "",//数据中心地址
-    val port: String = "", //数据中心端口
+    val addr: String = "",//数据链路地址
+    val port: String = "", //数据链路端口
     val plattype: String = "", //平台类型
     val datatype: String = "", //数据协议,1：TCP-C 2:MQTT 3:SL651水文协议 4:SZY206
 

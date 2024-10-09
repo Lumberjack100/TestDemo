@@ -8,7 +8,7 @@ import com.shmedo.lib.cmd.base.md_cmd.utils.MDConstants
  * 描述： TODO
  */
 data class RegistrationPlatformEntity(
-    var centerid: String = "",//服务器(数据中心)编号，取值1,2,3
+    var centerid: String = "",//服务器(数据链路)编号，取值1,2,3
     var sNOrProductId: String = "",//设备SN号/产品ID
     var productIdOrDeviceId: String = "",//产品ID/设备ID
     var registrationCodeOrPwd: String = "",//注册码/设备KEY
