@@ -20,11 +20,17 @@ data class MRRS485Port1SensorParam(
     var cmd: String = "",//传感器采集指令
     var ratio: String = "",//倍率
     var dataformat: String = "",//数据类型
-    var calctype: String = "",//解算方式   --目前只支持 0:加权平均
+    var calctype: String = "",//解算方式 --目前只支持 0:加权平均   /振弦传感器是否进行计算   0:不计算  1:计算
     var gateval: String = "",//触发值
     var uplimit: String = "",//上限值
     var lowlimit: String = "",//下限值
     var corrvalue: String = "",//修正值
     var ngateval: String = "",//阈值次数
     var show: String = "",//展示指令信息（终端），1：展示，0：不展示
+    var kvalue: String = "",//灵敏度K
+    var bvalue: String = "",//温度修正系数 b
+    var r0value: String = "",//初始频率 F0
+    var t0value: String = "",//初始温度 T0
+    var l0value: String = "",//初始水位
+    var lvalue: String = ""//堰角高度
 )

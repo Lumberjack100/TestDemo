@@ -84,11 +84,6 @@ class AdmeHomeFragment : UniversalDeviceHomeFragment() {
                 }
                 moduleList.add(
                     ConfigModule(
-                        CommandDebugConfigModule()
-                    )
-                )
-                moduleList.add(
-                    ConfigModule(
                         DeviceOperationModule(
                             name = "高级配置",
                             desc = "计米轮、测斜议、执行机构等",

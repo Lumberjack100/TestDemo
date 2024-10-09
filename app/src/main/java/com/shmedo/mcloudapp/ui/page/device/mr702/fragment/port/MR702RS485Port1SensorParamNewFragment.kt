@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import com.blankj.utilcode.util.ColorUtils
@@ -11,41 +12,44 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.extensions.stringToGBK16UByteString
-import com.shmedo.core.commonlib.utils.AppContants
-import com.shmedo.core.model.DeviceInfo
-import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
+import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRRS485Port1SensorParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRRS485Port1SensorParam
+import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRRS485Port1SensorParamWrapper
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorAddParamNewBinding
+import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorParamNewBinding
 import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.MRRS485Port1
 import com.shmedo.mcloudapp.model.MRSensorItem
-import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port2SensorParamFragment.Companion.SENSOR_MODEL_ITEM
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port1SensorAddParamNewViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port1SensorParamNewViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
-class MR702RS485Port1SensorAddParamNewFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentMr702Rs485Port1SensorAddParamNewBinding
+class MR702RS485Port1SensorParamNewFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentMr702Rs485Port1SensorParamNewBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: MR702RS485Port1SensorAddParamNewViewModel
+    private lateinit var mStates: MR702RS485Port1SensorParamNewViewModel
     private lateinit var portHomeViewModel: MR702PortHomeViewModel
     private val iotParseManager: IOTParserManager by inject()
 
@@ -67,7 +71,7 @@ class MR702RS485Port1SensorAddParamNewFragment : BaseIOTDeviceFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_mr702_rs485_port1_sensor_add_param_new,
+            R.layout.fragment_mr702_rs485_port1_sensor_param_new,
             BR.stateVM,
             mStates
         )
@@ -76,7 +80,7 @@ class MR702RS485Port1SensorAddParamNewFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentMr702Rs485Port1SensorAddParamNewBinding
+        binding = getBinding() as FragmentMr702Rs485Port1SensorParamNewBinding
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)
         }
@@ -85,6 +89,28 @@ class MR702RS485Port1SensorAddParamNewFragment : BaseIOTDeviceFragment() {
                 processBack(true)
             }
         })
+        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
+        toolbarViewModel.toolbarTvActionText.set("取消")
+        toolbarViewModel.toolbarIvActionVisible.set(true)
+        initRefresh()
+    }
+
+    private fun setEditable(editable: Boolean) {
+        toolbarViewModel.toolbarIvActionVisible.set(!editable)
+        toolbarViewModel.toolbarTvActionVisible.set(editable)
+        mStates.isEditable.set(editable)
+    }
+
+    private fun initRefresh() {
+        refreshLayout = binding.refreshLayout
+        binding.refreshLayout.setEnableLoadMore(false)
+        binding.refreshLayout.onRefresh {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return@onRefresh
+            }
+            queryData()
+        }
     }
 
     override fun initData() {
@@ -94,10 +120,9 @@ class MR702RS485Port1SensorAddParamNewFragment : BaseIOTDeviceFragment() {
         }
         binding.llToolbar.toolbar.title = "RS485-1-${sensorItem.sensorName}"
 
-        portHomeViewModel.configPort4851SensorNameToSensorModelMap[sensorItem.sensorName]?.let {
+        portHomeViewModel.modelTokenToSensorModelMap[sensorItem.modelToken]?.let {
             mStates.curSensorModel = it
         }
-        mStates.isCustomSensor.set(mStates.curSensorModel.modelFieldList.isEmpty())//是否自定义传感器
 
         mStates.modelName.set(mStates.curSensorModel.modelName)//物模型名称
         mStates.modelToken.set(mStates.curSensorModel.modelToken)//物模型编号
@@ -259,6 +284,14 @@ class MR702RS485Port1SensorAddParamNewFragment : BaseIOTDeviceFragment() {
     }
 
     inner class ClickProxy : BaseClickProxy() {
+        override fun onToolbarIvClick() {
+            setEditable(true)
+        }
+
+        override fun onToolbarTvClick() {
+            setEditable(false)
+        }
+
         /**
          * 选择数据位
          */
@@ -422,32 +455,48 @@ class MR702RS485Port1SensorAddParamNewFragment : BaseIOTDeviceFragment() {
 
         var entity = MRRS485Port1SensorParamEntity(
             model = mStates.modelToken.get() + "_" + mStates.address.get(),
-            c_model = "1",
+            c_model = "0",
             num = "0",
-            baud = mStates.baudRate.get(),
-            databit = mStates.dataBit.get(),
-            parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
-            stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
-            swtoken = mStates.hydrologicalIdentification.get(),
-            calctype = calculateList.indexOf(mStates.calculate.get()).toString(),
-            kvalue = mStates.sensitivityK.get(),
-            bvalue = mStates.temperatureCorrectionCoefficientB.get(),
-            r0value = mStates.initialFrequencyF0.get(),
-            t0value = mStates.initialTemperatureT0.get(),
-            l0value = mStates.initialWaterLevel.get(),
-            lvalue = mStates.weirHeight.get(),
+            baud = if (mStates.sensorParamWrapper.get().baud == mStates.baudRate.get()) IOTConstants.NULL_KEY else mStates.baudRate.get(),
+            databit = if (mStates.sensorParamWrapper.get().databit == mStates.dataBit.get()) IOTConstants.NULL_KEY else mStates.dataBit.get(),
+            parity = if (mStates.sensorParamWrapper.get().parity.toInt() == checkBitList.indexOf(
+                    mStates.checkBit.get()
+                )
+            ) IOTConstants.NULL_KEY
+            else (checkBitList.indexOf(mStates.checkBit.get())).toString(),
+            stopbit = if (mStates.sensorParamWrapper.get().stopbit.toInt() == stopBitList.indexOf(
+                    mStates.stopBit.get()
+                )
+            ) IOTConstants.NULL_KEY
+            else (stopBitList.indexOf(mStates.stopBit.get())).toString(),
+            swtoken = if (mStates.sensorParamWrapper.get().swtoken == mStates.hydrologicalIdentification.get()) IOTConstants.NULL_KEY else mStates.hydrologicalIdentification.get(),
+            calctype = if (mStates.sensorParamWrapper.get().calctype.toInt() == calculateList.indexOf(
+                    mStates.calculate.get()
+                )
+            ) IOTConstants.NULL_KEY
+            else (calculateList.indexOf(mStates.calculate.get())).toString(),
+            kvalue = if (mStates.sensorParamWrapper.get().kvalue == mStates.sensitivityK.get()) IOTConstants.NULL_KEY else mStates.sensitivityK.get(),
+            bvalue = if (mStates.sensorParamWrapper.get().bvalue == mStates.temperatureCorrectionCoefficientB.get()) IOTConstants.NULL_KEY else mStates.temperatureCorrectionCoefficientB.get(),
+            r0value = if (mStates.sensorParamWrapper.get().r0value == mStates.initialFrequencyF0.get()) IOTConstants.NULL_KEY else mStates.initialFrequencyF0.get(),
+            t0value = if (mStates.sensorParamWrapper.get().t0value == mStates.initialTemperatureT0.get()) IOTConstants.NULL_KEY else mStates.initialTemperatureT0.get(),
+            l0value = if (mStates.sensorParamWrapper.get().l0value == mStates.initialWaterLevel.get()) IOTConstants.NULL_KEY else mStates.initialWaterLevel.get(),
+            lvalue = if (mStates.sensorParamWrapper.get().lvalue == mStates.weirHeight.get()) IOTConstants.NULL_KEY else mStates.weirHeight.get(),
 
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
             mgbk = mStates.modelFieldName.get().stringToGBK16UByteString(),//采集项名称GBK编码
             egbk = mStates.modelFieldUnit.get().stringToGBK16UByteString(),//采集项单位GBK编码
-            cmd = mStates.collectionInstructions.get(),
-            ratio = mStates.ratio.get(),
-            dataformat = (dataFormatList.indexOf(mStates.dataFormat.get())).toString(),
-            gateval = mStates.triggerValue.get(),
-            uplimit = mStates.upperLimit.get(),
-            lowlimit = mStates.lowerLimit.get(),
-            corrvalue = mStates.correctValue.get(),
-            ngateval = mStates.ngateval.get(),
+            cmd = if (mStates.sensorParamWrapper.get().cmd == mStates.collectionInstructions.get()) IOTConstants.NULL_KEY else mStates.collectionInstructions.get(),
+            ratio = if (mStates.sensorParamWrapper.get().ratio == mStates.ratio.get()) IOTConstants.NULL_KEY else mStates.ratio.get(),
+            dataformat = if (mStates.sensorParamWrapper.get().dataformat.toInt() == dataFormatList.indexOf(
+                    mStates.dataFormat.get()
+                )
+            ) IOTConstants.NULL_KEY
+            else (dataFormatList.indexOf(mStates.dataFormat.get())).toString(),
+            gateval = if (mStates.sensorParamWrapper.get().gateval == mStates.triggerValue.get()) IOTConstants.NULL_KEY else mStates.triggerValue.get(),
+            uplimit = if (mStates.sensorParamWrapper.get().uplimit == mStates.upperLimit.get()) IOTConstants.NULL_KEY else mStates.upperLimit.get(),
+            lowlimit = if (mStates.sensorParamWrapper.get().lowlimit == mStates.lowerLimit.get()) IOTConstants.NULL_KEY else mStates.lowerLimit.get(),
+            corrvalue = if (mStates.sensorParamWrapper.get().corrvalue == mStates.correctValue.get()) IOTConstants.NULL_KEY else mStates.correctValue.get(),
+            ngateval = if (mStates.sensorParamWrapper.get().ngateval == mStates.ngateval.get()) IOTConstants.NULL_KEY else mStates.ngateval.get(),
         )
         var command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RS485_PORT1_SENSOR_PARAM,
@@ -457,32 +506,48 @@ class MR702RS485Port1SensorAddParamNewFragment : BaseIOTDeviceFragment() {
 
         entity = MRRS485Port1SensorParamEntity(
             model = mStates.modelToken.get() + "_" + mStates.address.get(),
-            c_model = "1",
+            c_model = "0",
             num = "1",
-            baud = mStates.baudRate.get(),
-            databit = mStates.dataBit.get(),
-            parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
-            stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
-            swtoken = mStates.hydrologicalIdentification.get(),
-            calctype = calculateList.indexOf(mStates.calculate.get()).toString(),
-            kvalue = mStates.sensitivityK.get(),
-            bvalue = mStates.temperatureCorrectionCoefficientB.get(),
-            r0value = mStates.initialFrequencyF0.get(),
-            t0value = mStates.initialTemperatureT0.get(),
-            l0value = mStates.initialWaterLevel.get(),
-            lvalue = mStates.weirHeight.get(),
+            baud = if (mStates.sensorParamWrapper.get().baud == mStates.baudRate.get()) IOTConstants.NULL_KEY else mStates.baudRate.get(),
+            databit = if (mStates.sensorParamWrapper.get().databit == mStates.dataBit.get()) IOTConstants.NULL_KEY else mStates.dataBit.get(),
+            parity = if (mStates.sensorParamWrapper.get().parity.toInt() == checkBitList.indexOf(
+                    mStates.checkBit.get()
+                )
+            ) IOTConstants.NULL_KEY
+            else (checkBitList.indexOf(mStates.checkBit.get())).toString(),
+            stopbit = if (mStates.sensorParamWrapper.get().stopbit.toInt() == stopBitList.indexOf(
+                    mStates.stopBit.get()
+                )
+            ) IOTConstants.NULL_KEY
+            else (stopBitList.indexOf(mStates.stopBit.get())).toString(),
+            swtoken = if (mStates.sensorParamWrapper.get().swtoken == mStates.hydrologicalIdentification.get()) IOTConstants.NULL_KEY else mStates.hydrologicalIdentification.get(),
+            calctype = if (mStates.sensorParamWrapper.get().calctype.toInt() == calculateList.indexOf(
+                    mStates.calculate.get()
+                )
+            ) IOTConstants.NULL_KEY
+            else (calculateList.indexOf(mStates.calculate.get())).toString(),
+            kvalue = if (mStates.sensorParamWrapper.get().kvalue == mStates.sensitivityK.get()) IOTConstants.NULL_KEY else mStates.sensitivityK.get(),
+            bvalue = if (mStates.sensorParamWrapper.get().bvalue == mStates.temperatureCorrectionCoefficientB.get()) IOTConstants.NULL_KEY else mStates.temperatureCorrectionCoefficientB.get(),
+            r0value = if (mStates.sensorParamWrapper.get().r0value == mStates.initialFrequencyF0.get()) IOTConstants.NULL_KEY else mStates.initialFrequencyF0.get(),
+            t0value = if (mStates.sensorParamWrapper.get().t0value == mStates.initialTemperatureT0.get()) IOTConstants.NULL_KEY else mStates.initialTemperatureT0.get(),
+            l0value = if (mStates.sensorParamWrapper.get().l0value == mStates.initialWaterLevel.get()) IOTConstants.NULL_KEY else mStates.initialWaterLevel.get(),
+            lvalue = if (mStates.sensorParamWrapper.get().lvalue == mStates.weirHeight.get()) IOTConstants.NULL_KEY else mStates.weirHeight.get(),
 
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
             mgbk = mStates.modelFieldName2.get().stringToGBK16UByteString(),//采集项名称GBK编码
             egbk = mStates.modelFieldUnit2.get().stringToGBK16UByteString(),//采集项单位GBK编码
-            cmd = mStates.collectionInstructions2.get(),
-            ratio = mStates.ratio2.get(),
-            dataformat = (dataFormatList.indexOf(mStates.dataFormat2.get())).toString(),
-            gateval = mStates.triggerValue2.get(),
-            uplimit = mStates.upperLimit2.get(),
-            lowlimit = mStates.lowerLimit2.get(),
-            corrvalue = mStates.correctValue2.get(),
-            ngateval = mStates.ngateval2.get(),
+            cmd = if (mStates.sensorParamWrapper.get().cmd == mStates.collectionInstructions2.get()) IOTConstants.NULL_KEY else mStates.collectionInstructions2.get(),
+            ratio = if (mStates.sensorParamWrapper.get().ratio == mStates.ratio2.get()) IOTConstants.NULL_KEY else mStates.ratio2.get(),
+            dataformat = if (mStates.sensorParamWrapper.get().dataformat.toInt() == dataFormatList.indexOf(
+                    mStates.dataFormat2.get()
+                )
+            ) IOTConstants.NULL_KEY
+            else (dataFormatList.indexOf(mStates.dataFormat2.get())).toString(),
+            gateval = if (mStates.sensorParamWrapper.get().gateval == mStates.triggerValue2.get()) IOTConstants.NULL_KEY else mStates.triggerValue2.get(),
+            uplimit = if (mStates.sensorParamWrapper.get().uplimit == mStates.upperLimit2.get()) IOTConstants.NULL_KEY else mStates.upperLimit2.get(),
+            lowlimit = if (mStates.sensorParamWrapper.get().lowlimit == mStates.lowerLimit2.get()) IOTConstants.NULL_KEY else mStates.lowerLimit2.get(),
+            corrvalue = if (mStates.sensorParamWrapper.get().corrvalue == mStates.correctValue2.get()) IOTConstants.NULL_KEY else mStates.correctValue2.get(),
+            ngateval = if (mStates.sensorParamWrapper.get().ngateval == mStates.ngateval2.get()) IOTConstants.NULL_KEY else mStates.ngateval2.get(),
         )
         command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RS485_PORT1_SENSOR_PARAM,
@@ -578,8 +643,50 @@ class MR702RS485Port1SensorAddParamNewFragment : BaseIOTDeviceFragment() {
         return true
     }
 
+    override fun lazyLoadData() {
+        binding.refreshLayout.autoRefresh()
+    }
+
+    private fun queryData() {
+        commandItems.clear()
+        var command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_MR_GET_RS485_PORT1_SENSOR_PARAM,
+            "model=${sensorItem.modelToken}_${sensorItem.addr}&index=0"
+        )
+        commandItems.add(command)
+
+        command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_MR_GET_RS485_PORT1_SENSOR_PARAM,
+            "model=${sensorItem.modelToken}_${sensorItem.addr}&index=1"
+        )
+        commandItems.add(command)
+
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_MR_GET_RS485_PORT1_SENSOR_PARAM -> {
+                val result = iotParseManager.parse<String>(
+                    cmdStr,
+                    IOTCommandType.MD_MR_GET_RS485_PORT1_SENSOR_PARAM
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询参数出错: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initParamData(result.data)
+                    }
+                }
+            }
+
             IOTCommandType.MD_MR_SET_RS485_PORT1_SENSOR_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
@@ -599,6 +706,76 @@ class MR702RS485Port1SensorAddParamNewFragment : BaseIOTDeviceFragment() {
 
             else -> {
                 cancelNearbyCommunicationTimeoutJob()
+            }
+        }
+    }
+
+    private fun initParamData(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val sensorParamWrapper = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<MRRS485Port1SensorParamWrapper>(content)
+                } ?: return@launchWithViewLifecycle
+
+                sensorParamWrapper.port1_param.let { portParam ->
+                    val sensorParam: MRRS485Port1SensorParam = portParam[0]
+                    mStates.sensorParamWrapper.set(sensorParam)
+
+                    val strs = sensorParam.model.split("_")
+                    mStates.address.set(strs[1])
+                    mStates.modelToken.set(strs[0])
+                    mStates.baudRate.set(sensorParam.baud)
+                    mStates.dataBit.set(sensorParam.databit)
+                    sensorParam.parity.toInt().let { value ->
+                        if (value in checkBitList.indices) {
+                            mStates.checkBit.set(checkBitList[value])
+                        }
+                    }
+                    sensorParam.stopbit.toInt().let { value ->
+                        if (value in stopBitList.indices) {
+                            mStates.stopBit.set(stopBitList[value])
+                        }
+                    }
+                    mStates.hydrologicalIdentification.set(sensorParam.swtoken)
+                    mStates.calculate.set(if (sensorParam.calctype == "1") calculateList[1] else calculateList[0])
+                    mStates.sensitivityK.set(sensorParam.kvalue)
+                    mStates.temperatureCorrectionCoefficientB.set(sensorParam.bvalue)
+                    mStates.initialFrequencyF0.set(sensorParam.r0value)
+                    mStates.initialTemperatureT0.set(sensorParam.t0value)
+                    mStates.initialWaterLevel.set(sensorParam.l0value)
+                    mStates.weirHeight.set(sensorParam.lvalue)
+
+                    if (sensorParam.num == "0") {
+                        mStates.collectionInstructions.set(sensorParam.cmd)
+                        mStates.ratio.set(sensorParam.ratio)
+                        sensorParam.dataformat.toInt().let { value ->
+                            if (value in dataFormatList.indices) {
+                                mStates.dataFormat.set(dataFormatList[value])
+                            }
+                        }
+                        mStates.triggerValue.set(sensorParam.gateval)
+                        mStates.upperLimit.set(sensorParam.uplimit)
+                        mStates.lowerLimit.set(sensorParam.lowlimit)
+                        mStates.correctValue.set(sensorParam.corrvalue)
+                        mStates.ngateval.set(sensorParam.ngateval)
+                    } else {
+                        mStates.collectionInstructions2.set(sensorParam.cmd)
+                        mStates.ratio2.set(sensorParam.ratio)
+                        sensorParam.dataformat.toInt().let { value ->
+                            if (value in dataFormatList.indices) {
+                                mStates.dataFormat2.set(dataFormatList[value])
+                            }
+                        }
+                        mStates.triggerValue2.set(sensorParam.gateval)
+                        mStates.upperLimit2.set(sensorParam.uplimit)
+                        mStates.lowerLimit2.set(sensorParam.lowlimit)
+                        mStates.correctValue2.set(sensorParam.corrvalue)
+                        mStates.ngateval2.set(sensorParam.ngateval)
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }
@@ -623,25 +800,5 @@ class MR702RS485Port1SensorAddParamNewFragment : BaseIOTDeviceFragment() {
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
-    }
-
-    companion object {
-        private const val SENSOR_MODEL_ITEM = "sensor_model_item"
-
-        fun newBundleArguments(
-            sensorItem: MRSensorItem,
-            type: ProductType = ProductType.UnKnown,
-            communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: DeviceInfo,
-            bleDevice: DiscoveredBluetoothDevice? = null,
-            statusBarColor: Int = R.color.white
-        ): Bundle = Bundle().apply {
-            putParcelable(SENSOR_MODEL_ITEM, sensorItem)
-            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
-        }
     }
 }
