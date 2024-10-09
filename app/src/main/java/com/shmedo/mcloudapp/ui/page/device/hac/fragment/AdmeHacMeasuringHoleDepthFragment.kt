@@ -60,9 +60,10 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
     private val measureWayList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_hole_depth_method) }
     private val motionTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_hole_depth_motor_motion_type) }
+
+    private var safeDistance: String = "" //安全距离补偿
     private val holeNumList = ArrayList<String>()
     private val holeAreaDepthInfoArrayList = ArrayList<HacHoleAreaDepthInfo>()
-    private var safeDistance: String = "" //安全距离补偿
 
     private var autoMeasuringHoleDepthBottomDialog: AdmeHacAutoMeasuringHoleDepthBottomDialog? =
         null
@@ -70,7 +71,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         null
 
     private var queryMotionStateJob: Job? = null
-
 
 
     override fun initViewModel() {
@@ -93,11 +93,9 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentAdmeHacMeasuringHoleDepthBinding
         binding.llToolbar.toolbar.title = "孔深测量"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         toolbarViewModel.toolbarIvActionVisible.set(false)
@@ -162,6 +160,26 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         loadAutoLastHistoryData()
     }
 
+    /**
+     * 自动测孔深模式加载本地缓存的参数
+     */
+    private fun loadAutoLastHistoryData() {
+        mStates.downSpeed.set(MmkvCacheUtil.getAdmeAutoLastMotorDropSpeed())
+    }
+
+    /**
+     * 手动测孔深模式加载本地缓存的参数
+     */
+    private fun loadManualLastHistoryData() {
+        if (mStates.motionType.get() == motionTypeList[0]) {//上拉
+            mStates.speed.set(MmkvCacheUtil.getAdmeManualLastMotorPullUpSpeed())
+            mStates.distanceGoal.set(MmkvCacheUtil.getAdmeManualLastMotorPullUpDistance())
+        } else {
+            mStates.speed.set(MmkvCacheUtil.getAdmeManualLastMotorDropSpeed())
+            mStates.distanceGoal.set(MmkvCacheUtil.getAdmeManualLastMotorDropDistance())
+        }
+    }
+
     inner class ClickProxy : BaseClickProxy() {
         /**
          * 测量孔深模式
@@ -221,26 +239,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 return
             }
             initSaveCommand()
-        }
-    }
-
-    /**
-     * 自动测孔深模式加载本地缓存的参数
-     */
-    private fun loadAutoLastHistoryData() {
-        mStates.downSpeed.set(MmkvCacheUtil.getAdmeAutoLastMotorDropSpeed())
-    }
-
-    /**
-     * 手动测孔深模式加载本地缓存的参数
-     */
-    private fun loadManualLastHistoryData() {
-        if (mStates.motionType.get() == motionTypeList[0]) {//上拉
-            mStates.speed.set(MmkvCacheUtil.getAdmeManualLastMotorPullUpSpeed())
-            mStates.distanceGoal.set(MmkvCacheUtil.getAdmeManualLastMotorPullUpDistance())
-        } else {
-            mStates.speed.set(MmkvCacheUtil.getAdmeManualLastMotorDropSpeed())
-            mStates.distanceGoal.set(MmkvCacheUtil.getAdmeManualLastMotorDropDistance())
         }
     }
 
