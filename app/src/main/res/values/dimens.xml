@@ -113,4 +113,7 @@
     <dimen name="fastscroll_handle_width">6dp</dimen>
     <dimen name="fastscroll_handle_radius">2dp</dimen>
 
+    <dimen name="progress_stroke_width">3dp</dimen>
+
+
 </resources>

@@ -783,6 +783,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             if (motorMotionDistanceInfo.realholedepth.isNotEmpty() && safeDistance.isNotEmpty()) {
                 val holeValue = abs(motorMotionDistanceInfo.realholedepth.toDouble())
                 val safeValue = abs(safeDistance.toDouble())
+//                Timber.d("safeDistance=$safeDistance，holeValue=$holeValue")
                 //测孔深值不等于安全补偿距离表示测孔深值有效
                 if (holeValue != safeValue) {
                     mStates.realHoleDepth.set(motorMotionDistanceInfo.realholedepth)

@@ -107,7 +107,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_size_10">
 
-            <com.google.android.material.button.MaterialButton
+            <com.shmedo.mcloudapp.ui.widget.ProgressMaterialButton
+                android:id="@+id/btn_measure_data"
                 style="@style/MeasureData_Button_Style"
                 android:onClick="@{()->click.onMeasureDataClick()}"
                 android:text='@{stateVM.isMeasuring() ? "测量中" : "测量"}'
@@ -139,47 +140,6 @@
                 app:icon="@drawable/ic_device_sensor_data_history"
                 app:iconSize="@dimen/dimen_size_18"
                 app:iconTint="@{!stateVM.isConnectOperateVisible ? @color/colorPrimary : @color/black_30}" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            onClickWithDebouncing="@{()->click.onMeasureDataClick()}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_15"
-            android:enabled="@{!stateVM.isMeasuring()}"
-            android:gravity="center_horizontal"
-            android:orientation="vertical">
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="@dimen/dimen_size_20"
-                    android:layout_height="@dimen/dimen_size_20"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_device_measure_data" />
-
-                <ProgressBar
-                    android:id="@+id/progress_bar"
-                    visible="@{stateVM.isMeasuring()}"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_gravity="center"
-                    android:indeterminate="true"
-                    android:indeterminateDrawable="@drawable/circular_progress_bar" />
-
-            </FrameLayout>
-
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_size_2"
-                android:text='@{stateVM.isMeasuring() ? "测量中" : "测量"}'
-                android:textColor="@color/device_home_module_item_normal_text_color"
-                android:textSize="@dimen/page_content_item_text_size_14"
-                tools:text="测量" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>
