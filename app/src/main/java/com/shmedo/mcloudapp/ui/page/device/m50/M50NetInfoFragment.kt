@@ -77,10 +77,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList.add(
                         DeviceStatusInfoSignalItem(
                             name = "信号强度",
-                            signalValue = if (temp <= 0)
-                                temp
-                            else
-                                temp * 2 - 113
+                            signalValue = temp
                         )
                     )
                 }

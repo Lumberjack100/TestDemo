@@ -128,7 +128,7 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 )
 
                 groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                groupList.add(DeviceStatusInfoGroupItem("工作信息"))
+                groupList.add(DeviceStatusInfoGroupItem("存储信息"))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "可用空间",

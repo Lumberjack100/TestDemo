@@ -54,11 +54,20 @@
                 style="@style/DeviceCurrentState_Item_Title_Style2"
                 android:text="UTC时间" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_ClickableItem_Value_Style2"
+                android:layout_width="145dp"
+                android:layout_height="wrap_content"
                 android:drawableEnd="@null"
+                android:gravity="start"
                 android:text="@{stateVM.utcTime}"
-                tools:text="2024.01.05 04:34:45" />
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                tools:text="2024-01-05 04:34:45" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -71,11 +80,20 @@
                 style="@style/DeviceCurrentState_Item_Title_Style2"
                 android:text="经度" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_ClickableItem_Value_Style2"
+                android:layout_width="145dp"
+                android:layout_height="wrap_content"
                 android:drawableEnd="@null"
+                android:gravity="start"
                 android:text="@{stateVM.longitude}"
-                tools:text="121.5983860" />
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                tools:text="E 121.594208" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -88,11 +106,20 @@
                 style="@style/DeviceCurrentState_Item_Title_Style2"
                 android:text="纬度" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_ClickableItem_Value_Style2"
+                android:layout_width="145dp"
+                android:layout_height="wrap_content"
                 android:drawableEnd="@null"
+                android:gravity="start"
                 android:text="@{stateVM.latitude}"
-                tools:text="1.210353" />
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                tools:text="N 31.212475" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

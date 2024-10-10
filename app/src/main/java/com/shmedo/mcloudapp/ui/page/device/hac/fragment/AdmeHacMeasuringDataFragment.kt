@@ -16,11 +16,8 @@ import com.hjq.toast.Toaster
 import com.kongzue.dialogx.dialogs.MessageDialog
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
-import com.shmedo.mcloudapp.utils.IOTRegexContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.hac.HacMeasuringDataEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -34,16 +31,19 @@ import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentAdmeHacMeasuringDataBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeHacMeasuringDataViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.databinding.FragmentAdmeHacMeasuringDataBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showAdmeErrorProtectionDialog
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeHacMeasuringDataViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.utils.IOTRegexContants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -398,6 +398,9 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                 }
                 mStates.isSingleWayTest.set(info.onewaytest == "1")
                 mStates.isCheckReverse.set(info.checkreverse == "1")
+                if (mStates.equipmodel.get() == "1") {
+                    return@launchWithViewLifecycle
+                }
 
                 val tempHoleList = withContext(Dispatchers.IO) {
                     MoshiUtil.fromJson<List<HacHoleAreaDepthInfo>>(info.holelist)

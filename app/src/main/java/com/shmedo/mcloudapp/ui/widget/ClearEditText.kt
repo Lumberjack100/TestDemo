@@ -1,18 +1,16 @@
-package com.shmedo.mcloudapp.ui.widget;
+package com.shmedo.mcloudapp.ui.widget
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
-
-import androidx.appcompat.widget.AppCompatEditText;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-
-import com.shmedo.mcloudapp.R;
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.AttributeSet
+import android.view.MotionEvent
+import android.view.View
+import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import com.shmedo.mcloudapp.R
 
 /**
  * 项目名：  eMeasApp
@@ -22,112 +20,99 @@ import com.shmedo.mcloudapp.R;
  * 创建时间:  2017/9/6 15:12
  */
 
-public class ClearEditText extends AppCompatEditText
-        implements View.OnTouchListener, View.OnFocusChangeListener, TextWatcher {
+class ClearEditText @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) : AppCompatEditText(context, attrs, defStyleAttr), View.OnTouchListener,
+    View.OnFocusChangeListener, TextWatcher {
 
-    private Drawable mClearTextIcon;
-    private OnFocusChangeListener mOnFocusChangeListener;
-    private OnTouchListener mOnTouchListener;
+    private lateinit var mClearTextIcon: Drawable
+    private var mOnFocusChangeListener: OnFocusChangeListener? = null
 
-    public ClearEditText(final Context context) {
-        super(context);
-        init(context);
+    init {
+        init(context)
+        isFocusable = true
+        isFocusableInTouchMode = true
     }
 
-    public ClearEditText(final Context context, final AttributeSet attrs) {
-        super(context, attrs);
-        init(context);
-    }
-
-    public ClearEditText(final Context context, final AttributeSet attrs, final int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init(context);
-    }
-
-    private void init(final Context context) {
-        //final Drawable drawable = ContextCompat.getDrawable(context, R.drawable.icon_delete);
-        //final Drawable wrappedDrawable = DrawableCompat.wrap(drawable); //Wrap the drawable so that it can be tinted pre Lollipop
-        //DrawableCompat.setTint(wrappedDrawable, getCurrentHintTextColor());
-        //mClearTextIcon = wrappedDrawable;
-        mClearTextIcon = getCompoundDrawables()[2];
-        if (mClearTextIcon == null) {
-            final Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_clear);
-            final Drawable wrapDrawable = DrawableCompat.wrap(drawable);
-            DrawableCompat.setTint(wrapDrawable, getCurrentHintTextColor());
-            mClearTextIcon = wrapDrawable;
+    private fun init(context: Context) {
+        mClearTextIcon = compoundDrawables[2] ?: run {
+            val drawable = ContextCompat.getDrawable(context, R.drawable.ic_clear)!!
+            val wrapDrawable = DrawableCompat.wrap(drawable)
+            DrawableCompat.setTint(wrapDrawable, currentHintTextColor)
+            wrapDrawable
         }
 
-        mClearTextIcon.setBounds(0, 0, mClearTextIcon.getIntrinsicHeight(), mClearTextIcon.getIntrinsicHeight());
-        setClearIconVisible(false);
-        super.setOnTouchListener(this);
-        setOnFocusChangeListener(this);
-        addTextChangedListener(this);
+        mClearTextIcon.setBounds(
+            0,
+            0,
+            mClearTextIcon.intrinsicHeight,
+            mClearTextIcon.intrinsicHeight
+        )
+        setClearIconVisible(false)
+        setOnTouchListener(this)
+        onFocusChangeListener = this
+        addTextChangedListener(this)
     }
 
-    public void setOutSideFocusChangeListener(OnFocusChangeListener l) {
-        mOnFocusChangeListener = l;
+    fun setOutSideFocusChangeListener(l: OnFocusChangeListener?) {
+        mOnFocusChangeListener = l
     }
 
-    @Override
-    public void setOnTouchListener(OnTouchListener l) {
-        mOnTouchListener = l;
-    }
-
-    @Override
-    public void onFocusChange(View view, boolean hasFocus) {
+    override fun onFocusChange(view: View, hasFocus: Boolean) {
         if (hasFocus) {
-            setClearIconVisible(getText().length() > 0);
-            view.post(new Runnable() {
-                @Override
-                public void run() {
-                    setSelection(getText().length());
+            setClearIconVisible(text?.isNotEmpty() == true)
+            post {
+                text?.let {
+                    setSelection(it.length)
                 }
-            });
-        } else {
-            setClearIconVisible(false);
-        }
-        if (mOnFocusChangeListener != null) {
-            mOnFocusChangeListener.onFocusChange(view, hasFocus);
-        }
-    }
-
-    @Override
-    public boolean onTouch(View view, MotionEvent motionEvent) {
-        final int x = (int) motionEvent.getX();
-        if (mClearTextIcon.isVisible() && x > getWidth() - getPaddingRight() - mClearTextIcon.getIntrinsicWidth()) {
-            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-                setError(null);
-                setText("");
             }
-            return true;
+        } else {
+            setClearIconVisible(false)
         }
-        return mOnTouchListener != null && mOnTouchListener.onTouch(view, motionEvent);
+        mOnFocusChangeListener?.onFocusChange(view, hasFocus)
     }
 
-    @Override
-    public final void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
-        if (isFocused()) {
-            setClearIconVisible(text.length() > 0);
+    override fun onTouch(view: View, motionEvent: MotionEvent): Boolean {
+        val x = motionEvent.x.toInt()
+        if (mClearTextIcon.isVisible && x > width - paddingRight - mClearTextIcon.intrinsicWidth) {
+            if (motionEvent.action == MotionEvent.ACTION_UP) {
+                error = null
+                setText("")
+            }
+            return true
+        }
+        return super.onTouchEvent(motionEvent)
+    }
+
+    override fun onTextChanged(
+        text: CharSequence?,
+        start: Int,
+        lengthBefore: Int,
+        lengthAfter: Int
+    ) {
+        if (isFocused) {
+            setClearIconVisible(text?.isNotEmpty() == true)
         }
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        // Not used
     }
 
-    @Override
-    public void afterTextChanged(Editable s) {
-
+    override fun afterTextChanged(s: Editable?) {
+        // Not used
     }
 
-    private void setClearIconVisible(final boolean visible) {
-        mClearTextIcon.setVisible(visible, false);
-        final Drawable[] compoundDrawables = getCompoundDrawables();
+    private fun setClearIconVisible(visible: Boolean) {
+        mClearTextIcon.setVisible(visible, false)
+        val compoundDrawables = compoundDrawables
         setCompoundDrawables(
-                compoundDrawables[0],
-                compoundDrawables[1],
-                visible ? mClearTextIcon : null,
-                compoundDrawables[3]);
+            compoundDrawables[0],
+            compoundDrawables[1],
+            if (visible) mClearTextIcon else null,
+            compoundDrawables[3]
+        )
     }
 }
