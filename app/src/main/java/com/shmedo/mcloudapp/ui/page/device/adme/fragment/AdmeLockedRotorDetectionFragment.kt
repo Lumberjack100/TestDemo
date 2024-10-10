@@ -11,7 +11,6 @@ import com.jaygoo.widget.OnRangeChangedListener
 import com.jaygoo.widget.RangeSeekBar
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.adme.AdmeLockedRotorDetectionEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeLockedRotorDetectionInfo
@@ -22,16 +21,17 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentAdmeLockedRotorDetectionBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeLockedRotorDetectionViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.databinding.FragmentAdmeLockedRotorDetectionBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeLockedRotorDetectionViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
@@ -101,12 +101,12 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                 }
             })
         //下放加速距离
-        binding.etDownSlowStartInterval.setOnFocusChangeListener { v, hasFocus ->
+        binding.etDownSlowStartInterval.setOutSideFocusChangeListener { v, hasFocus ->
             //失去焦点时
             if (!hasFocus) {
                 if (mStates.downSlowStartIntervalEndValue.get().isEmpty()) {
                     showMessageDialog("请输入下放加速距离")
-                    return@setOnFocusChangeListener
+                    return@setOutSideFocusChangeListener
                 }
                 try {
                     val leftValue = mStates.downSlowStartIntervalEndValue.get().toFloat()
@@ -115,11 +115,11 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                     Timber.d("leftValue:$leftValue,rightValue:$rightValue,holedepth:$holedepth")
                     if ((leftValue + rightValue) > holedepth) {
                         showMessageDialog("下放加速距离与下放减速距离之和不能超过下放总距离(" + holedepth + "毫米)")
-                        return@setOnFocusChangeListener
+                        return@setOutSideFocusChangeListener
                     }
                     if (leftValue > holedepth / 2) {
                         showMessageDialog("下放加速距离不能超过下放总距离(" + holedepth + "毫米) 的 50%")
-                        return@setOnFocusChangeListener
+                        return@setOutSideFocusChangeListener
                     }
                     decimalFormat.applyPattern("#.#")
                     val leftProgress = decimalFormat.format((leftValue / holedepth) * 100).toFloat()
@@ -134,12 +134,12 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             }
         }
         //下放减速距离
-        binding.etDownSlowStopInterval.setOnFocusChangeListener { v, hasFocus ->
+        binding.etDownSlowStopInterval.setOutSideFocusChangeListener { v, hasFocus ->
             //失去焦点时
             if (!hasFocus) {
                 if (mStates.downSlowStopIntervalStartValue.get().isEmpty()) {
                     showMessageDialog("请输入下放减速距离")
-                    return@setOnFocusChangeListener
+                    return@setOutSideFocusChangeListener
                 }
                 try {
                     val leftValue = if (mStates.downSlowStartIntervalEndValue.get().isEmpty()) 0f
@@ -147,11 +147,11 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                     val rightValue = mStates.downSlowStopIntervalStartValue.get().toFloat()
                     if (leftValue + rightValue > holedepth) {
                         showMessageDialog("下放加速距离与下放减速距离之和不能超过下放总距离(" + holedepth + "毫米)")
-                        return@setOnFocusChangeListener
+                        return@setOutSideFocusChangeListener
                     }
                     if (rightValue > holedepth / 2) {
                         showMessageDialog("下放减速距离不能小于下放总距离(" + holedepth + "毫米) 的 50%")
-                        return@setOnFocusChangeListener
+                        return@setOutSideFocusChangeListener
                     }
                     decimalFormat.applyPattern("0")
                     val rightProgress =
@@ -175,12 +175,12 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             }
         }
         //上拉加速距离
-        binding.etPullUpSlowStartInterval.setOnFocusChangeListener { v, hasFocus ->
+        binding.etPullUpSlowStartInterval.setOutSideFocusChangeListener { v, hasFocus ->
             //失去焦点时
             if (!hasFocus) {
                 if (mStates.pullUpSlowStartIntervalEndValue.get().isEmpty()) {
                     showMessageDialog("请输入上拉加速距离")
-                    return@setOnFocusChangeListener
+                    return@setOutSideFocusChangeListener
                 }
                 try {
                     val leftValue = mStates.pullUpSlowStartIntervalEndValue.get().toFloat()
@@ -189,11 +189,11 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                         else mStates.pullUpSlowStopIntervalStartValue.get().toFloat()
                     if (leftValue + rightValue > measpacing) {
                         showMessageDialog("上拉加速距离与上拉减速距离之和不能超过上拉测量间距(" + measpacing + "毫米)")
-                        return@setOnFocusChangeListener
+                        return@setOutSideFocusChangeListener
                     }
                     if (leftValue > measpacing / 2) {
                         showMessageDialog("上拉加速距离不能超过上拉测量间距(" + measpacing + "毫米) 的 50%")
-                        return@setOnFocusChangeListener
+                        return@setOutSideFocusChangeListener
                     }
                     decimalFormat.applyPattern("0")
                     val leftProgress =
@@ -209,12 +209,12 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
             }
         }
         //上拉减速距离
-        binding.etPullUpSlowStopInterval.setOnFocusChangeListener { v, hasFocus ->
+        binding.etPullUpSlowStopInterval.setOutSideFocusChangeListener { v, hasFocus ->
             //失去焦点时
             if (!hasFocus) {
                 if (mStates.pullUpSlowStopIntervalStartValue.get().isEmpty()) {
                     showMessageDialog("请输入上拉减速距离")
-                    return@setOnFocusChangeListener
+                    return@setOutSideFocusChangeListener
                 }
                 try {
                     val leftValue = if (mStates.pullUpSlowStartIntervalEndValue.get().isEmpty()) 0f
@@ -222,11 +222,11 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
                     val rightValue = mStates.pullUpSlowStopIntervalStartValue.get().toFloat()
                     if (leftValue + rightValue > measpacing) {
                         showMessageDialog("上拉加速距离与上拉减速距离之和不能超过上拉测量间距(" + measpacing + "毫米)")
-                        return@setOnFocusChangeListener
+                        return@setOutSideFocusChangeListener
                     }
                     if (rightValue > measpacing / 2) {
                         showMessageDialog("上拉减速距离不能小于上拉测量间距(" + measpacing + "毫米) 的 50%")
-                        return@setOnFocusChangeListener
+                        return@setOutSideFocusChangeListener
                     }
                     decimalFormat.applyPattern("0")
                     val rightProgress =

@@ -20,11 +20,10 @@ import com.shmedo.mcloudapp.R;
  * 文件名:   ClearEditText
  * 创建者:   dpc
  * 创建时间:  2017/9/6 15:12
- *
  */
 
 public class ClearEditText extends AppCompatEditText
-    implements View.OnTouchListener, View.OnFocusChangeListener, TextWatcher {
+        implements View.OnTouchListener, View.OnFocusChangeListener, TextWatcher {
 
     private Drawable mClearTextIcon;
     private OnFocusChangeListener mOnFocusChangeListener;
@@ -51,7 +50,7 @@ public class ClearEditText extends AppCompatEditText
         //DrawableCompat.setTint(wrappedDrawable, getCurrentHintTextColor());
         //mClearTextIcon = wrappedDrawable;
         mClearTextIcon = getCompoundDrawables()[2];
-        if(mClearTextIcon == null){
+        if (mClearTextIcon == null) {
             final Drawable drawable = ContextCompat.getDrawable(context, R.drawable.ic_clear);
             final Drawable wrapDrawable = DrawableCompat.wrap(drawable);
             DrawableCompat.setTint(wrapDrawable, getCurrentHintTextColor());
@@ -61,12 +60,11 @@ public class ClearEditText extends AppCompatEditText
         mClearTextIcon.setBounds(0, 0, mClearTextIcon.getIntrinsicHeight(), mClearTextIcon.getIntrinsicHeight());
         setClearIconVisible(false);
         super.setOnTouchListener(this);
-        super.setOnFocusChangeListener(this);
+        setOnFocusChangeListener(this);
         addTextChangedListener(this);
     }
 
-    @Override
-    public void setOnFocusChangeListener(OnFocusChangeListener l) {
+    public void setOutSideFocusChangeListener(OnFocusChangeListener l) {
         mOnFocusChangeListener = l;
     }
 
@@ -76,14 +74,20 @@ public class ClearEditText extends AppCompatEditText
     }
 
     @Override
-    public void onFocusChange(View v, boolean hasFocus) {
+    public void onFocusChange(View view, boolean hasFocus) {
         if (hasFocus) {
             setClearIconVisible(getText().length() > 0);
+            view.post(new Runnable() {
+                @Override
+                public void run() {
+                    setSelection(getText().length());
+                }
+            });
         } else {
             setClearIconVisible(false);
         }
         if (mOnFocusChangeListener != null) {
-            mOnFocusChangeListener.onFocusChange(v, hasFocus);
+            mOnFocusChangeListener.onFocusChange(view, hasFocus);
         }
     }
 
@@ -121,9 +125,9 @@ public class ClearEditText extends AppCompatEditText
         mClearTextIcon.setVisible(visible, false);
         final Drawable[] compoundDrawables = getCompoundDrawables();
         setCompoundDrawables(
-            compoundDrawables[0],
-            compoundDrawables[1],
-            visible ? mClearTextIcon : null,
-            compoundDrawables[3]);
+                compoundDrawables[0],
+                compoundDrawables[1],
+                visible ? mClearTextIcon : null,
+                compoundDrawables[3]);
     }
 }
