@@ -109,7 +109,6 @@
 
             <com.google.android.material.button.MaterialButton
                 style="@style/MeasureData_Button_Style"
-                android:gravity="center"
                 android:onClick="@{()->click.onMeasureDataClick()}"
                 android:text='@{stateVM.isMeasuring() ? "测量中" : "测量"}'
                 app:backgroundTint="@color/colorPrimary_10"
