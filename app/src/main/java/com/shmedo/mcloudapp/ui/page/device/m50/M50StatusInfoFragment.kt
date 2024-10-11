@@ -132,7 +132,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = stateInfo.gnss.uppercase().compareAndReturn("OK", "正常", "异常"),
                     textColorRes = if (stateInfo.gnss.uppercase() == "OK") ColorUtils.getColor(
                         R.color.online_colorPrimary
-                    ) else R.color.error_FF4400
+                    ) else ColorUtils.getColor(R.color.error_FF4400)
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
@@ -140,7 +140,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = stateInfo.scl.uppercase().compareAndReturn("OK", "正常", "异常"),
                     textColorRes = if (stateInfo.scl.uppercase() == "OK") ColorUtils.getColor(
                         R.color.online_colorPrimary
-                    ) else R.color.error_FF4400
+                    ) else ColorUtils.getColor(R.color.error_FF4400)
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
@@ -148,7 +148,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = stateInfo._4g.uppercase().compareAndReturn("OK", "正常", "异常"),
                     textColorRes = if (stateInfo._4g.uppercase() == "OK") ColorUtils.getColor(
                         R.color.online_colorPrimary
-                    ) else R.color.error_FF4400
+                    ) else ColorUtils.getColor(R.color.error_FF4400)
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
@@ -156,7 +156,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = stateInfo.bt.uppercase().compareAndReturn("OK", "正常", "异常"),
                     textColorRes = if (stateInfo.bt.uppercase() == "OK") ColorUtils.getColor(
                         R.color.online_colorPrimary
-                    ) else R.color.error_FF4400
+                    ) else ColorUtils.getColor(R.color.error_FF4400)
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
@@ -172,7 +172,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = stateInfo.sd.uppercase().compareAndReturn("OK", "正常", "异常"),
                     textColorRes = if (stateInfo.sd.uppercase() == "OK") ColorUtils.getColor(
                         R.color.online_colorPrimary
-                    ) else R.color.error_FF4400
+                    ) else ColorUtils.getColor(R.color.error_FF4400)
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
@@ -180,7 +180,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = stateInfo.sht21.uppercase().compareAndReturn("OK", "正常", "异常"),
                     textColorRes = if (stateInfo.sht21.uppercase() == "OK") ColorUtils.getColor(
                         R.color.online_colorPrimary
-                    ) else R.color.error_FF4400,
+                    ) else ColorUtils.getColor(R.color.error_FF4400),
                     isBottomItem = true
                 )
 

@@ -68,7 +68,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = stateInfo.mobileNet.compareAndReturn("1", "已连接", "未连接"),
                     textColorRes = if (stateInfo.mobileNet == "1") ColorUtils.getColor(
                         R.color.online_colorPrimary
-                    ) else  ColorUtils.getColor(R.color.error_FF4400)
+                    ) else ColorUtils.getColor(R.color.error_FF4400)
                 )
 
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(

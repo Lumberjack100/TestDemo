@@ -20,6 +20,7 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -43,12 +44,13 @@ class UDSensorDataHistoryFragment : BaseFragment() {
     private val mStates: UDSensorDataHistoryViewModel by viewModels()
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
 
+    private var productType = ProductType.UnKnown
     private lateinit var deviceInfo: DeviceInfo
 
-    private val modelNameList = arrayListOf("液面高程", "安装角度", "抓拍图片")
-    private val modelTokenList = arrayListOf("904", "206", "10001")
-    private val modelValueDescList = arrayListOf("高度(m)", "角度(°)", "操作")
-    private val modelFieldJsonPathList = arrayListOf("liquid_surface_alt", "z")
+    private val modelNameList: MutableList<String> = arrayListOf()
+    private val modelTokenList: MutableList<String> = arrayListOf()
+    private val modelValueDescList: MutableList<String> = arrayListOf()
+    private val modelFieldJsonPathList: MutableList<String> = arrayListOf()
 
     private val sensorIDList: MutableList<String> = arrayListOf()
     private val mImageData: ArrayList<LocalMedia> = ArrayList()
@@ -94,13 +96,6 @@ class UDSensorDataHistoryFragment : BaseFragment() {
 
     private fun initAdapter() {
         binding.recyclerview.linear().setup { rv ->
-//            rv.addItemDecoration(
-//                RecycleViewDivider(
-//                    LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(0.5f), ColorUtils.getColor(
-//                        R.color.divider_line_bg
-//                    )
-//                )
-//            )
             addType<HoverHeaderModel>(R.layout.item_ud_sensor_data_header)
             addType<Map<String, String>>(R.layout.item_ud_sensor_data)
             onBind {
@@ -122,26 +117,6 @@ class UDSensorDataHistoryFragment : BaseFragment() {
 
                             val itemMap = getModel<Map<String, String>>()
                             when (mStates.modelName.get()) {
-                                "液面高程" -> {
-                                    itemBinding.tvTime.text =
-                                        TimeUtils.date2String(
-                                            TimeUtils.string2Date(itemMap["time"]),
-                                            "yy.MM.dd HH:mm:ss"
-                                        )
-                                    itemBinding.tvName.text = mStates.modelName.get()
-                                    itemBinding.tvValue.text = itemMap[modelFieldJsonPathList[0]]
-                                }
-
-                                "安装角度" -> {
-                                    itemBinding.tvTime.text =
-                                        TimeUtils.date2String(
-                                            TimeUtils.string2Date(itemMap["time"]),
-                                            "yy.MM.dd HH:mm:ss"
-                                        )
-                                    itemBinding.tvName.text = mStates.modelName.get()
-                                    itemBinding.tvValue.text = itemMap[modelFieldJsonPathList[1]]
-                                }
-
                                 "抓拍图片" -> {
                                     itemBinding.tvTime.text =
                                         TimeUtils.date2String(
@@ -151,7 +126,16 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                                     itemBinding.tvName.text = mStates.modelName.get()
                                 }
 
-                                else -> {}
+                                else -> {
+                                    itemBinding.tvTime.text =
+                                        TimeUtils.date2String(
+                                            TimeUtils.string2Date(itemMap["time"]),
+                                            "yy.MM.dd HH:mm:ss"
+                                        )
+                                    itemBinding.tvName.text = mStates.modelName.get()
+                                    itemBinding.tvValue.text =
+                                        itemMap[modelFieldJsonPathList[modelNameList.indexOf(mStates.modelName.get())]]
+                                }
                             }
                         }
 
@@ -180,7 +164,71 @@ class UDSensorDataHistoryFragment : BaseFragment() {
 
     override fun initData() {
         arguments?.let {
+            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
             deviceInfo = it.getParcelable(AppContants.Extras.DEVICE_INFO)!!
+        }
+        when (productType) {
+            ProductType.U_D_1, ProductType.U_D_2 -> {
+                modelNameList.addAll(
+                    arrayListOf(
+                        "液面高程",
+                        "安装角度",
+                        "抓拍图片"
+                    )
+                )
+                modelTokenList.addAll(
+                    arrayListOf(
+                        "904",
+                        "206",
+                        "10001"
+                    )
+                )
+                modelValueDescList.addAll(
+                    arrayListOf(
+                        "高度(m)",
+                        "角度(°)",
+                        "操作"
+                    )
+                )
+                modelFieldJsonPathList.addAll(
+                    arrayListOf(
+                        "liquid_surface_alt",
+                        "z"
+                    )
+                )
+            }
+
+            ProductType.GNSS_M_5 -> {
+                modelNameList.addAll(
+                    arrayListOf(
+                        "合位移量",
+                        "安装角度",
+                        "抓拍图片"
+                    )
+                )
+                modelTokenList.addAll(
+                    arrayListOf(
+                        "904",
+                        "103",
+                        "10001"
+                    )
+                )
+                modelValueDescList.addAll(
+                    arrayListOf(
+                        "高度(mm)",
+                        "角度(°)",
+                        "操作"
+                    )
+                )
+                modelFieldJsonPathList.addAll(
+                    arrayListOf(
+                        "liquid_surface_alt",
+                        "z"
+                    )
+                )
+            }
+
+            else -> {}
         }
         resetDefaultParams()
     }
@@ -387,8 +435,10 @@ class UDSensorDataHistoryFragment : BaseFragment() {
     companion object {
         private const val PAGE_SIZE = 50
         fun newBundleArguments(
+            type: ProductType = ProductType.UnKnown,
             deviceInfo: DeviceInfo,
         ): Bundle = Bundle().apply {
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
             putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
         }
     }

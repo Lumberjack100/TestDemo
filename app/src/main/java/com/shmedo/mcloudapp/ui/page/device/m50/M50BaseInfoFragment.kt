@@ -64,9 +64,13 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     DeviceStatusInfoBasicItem(
                         name = "设备状态",
                         value = deviceStatus,
-                        textColorRes = if (deviceStatus == "正常") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
-                            R.color.error_FF4400
-                        )
+                        textColorRes = when (deviceStatus) {
+                            "正常" -> ColorUtils.getColor(R.color.online_colorPrimary)
+                            "告警" -> ColorUtils.getColor(
+                                R.color.warn_FF9D00
+                            )
+                            else -> ColorUtils.getColor(R.color.error_FF4400)
+                        }
                     )
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -119,11 +123,12 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "上报模式",
                     value = if (stateInfo.reportMode == "0") "常在线" else "低功耗",
                 )
+               val frequency = stateInfo.captureFrequency.toIntOrNull()?.let { it / 60 } ?: 0
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "抓拍频率",
-                    value = stateInfo.captureFrequency,
-                    unit = "分钟/次",
+                    value = if (frequency <= 0) stateInfo.captureFrequency else frequency.toString(),
+                    unit = if (frequency <= 0) "分钟/次" else "小时/次",
                     isBottomItem = true
                 )
 
@@ -142,7 +147,6 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 )
 
                 binding.recyclerview.models = groupList
-
             } catch (e: Exception) {
                 Timber.e(e)
                 addLogItem(Log.ERROR, e.errorMsg)

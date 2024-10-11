@@ -381,7 +381,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         fun onGoToSensorDataHistoryClick() {
             nav().navigate(
                 R.id.action_global_to_udMonitorDataHistoryFragment,
-                UDSensorDataHistoryFragment.newBundleArguments(deviceInfo)
+                UDSensorDataHistoryFragment.newBundleArguments(productType, deviceInfo)
             )
         }
     }
