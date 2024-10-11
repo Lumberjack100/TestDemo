@@ -6,7 +6,7 @@
         android:width="1dp"
         android:color="@color/divider_line_bg3" />
 
-    <solid android:color="@color/gray_f1f1f1" />
+    <solid android:color="@color/gray_F1F1F1" />
 
     <corners android:radius="6dp" />
 

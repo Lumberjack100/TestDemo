@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.utils
 
 import com.blankj.utilcode.util.ColorUtils
-import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.notNullKey
@@ -53,7 +52,7 @@ object DeviceStatusInfoProcessor {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = name,
-                    value = it.compareAndReturn(AppContants.PLACE_HOLDER_VALUE, it, "$it$unit"),
+                    value = if (it == AppContants.PLACE_HOLDER_VALUE || it.contains("异常")) it else "$it$unit",
                     textColorRes = textColorRes,
                     isBottomItem = isBottomItem
                 )

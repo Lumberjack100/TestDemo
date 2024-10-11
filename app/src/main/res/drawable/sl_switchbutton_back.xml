@@ -16,9 +16,9 @@
     </item>
     <item>
         <shape>
-            <solid android:color="@color/gray_757575" />
+            <solid android:color="@color/main_bg_gray_757575" />
             <corners android:radius="99dp" />
-            <stroke android:width="0.5dp" android:color="@color/gray_757575" />
+            <stroke android:width="0.5dp" android:color="@color/main_bg_gray_757575" />
         </shape>
     </item>
 

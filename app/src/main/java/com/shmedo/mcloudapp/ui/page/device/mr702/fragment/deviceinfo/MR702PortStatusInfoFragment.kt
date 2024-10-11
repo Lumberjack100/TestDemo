@@ -344,7 +344,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "K1",
                 textBold = false,
                 textColorResId = ColorUtils.getColor(R.color.title_text_color),
-                bgColorResId = ColorUtils.getColor(R.color.gray_f5f6f8)
+                bgColorResId = ColorUtils.getColor(R.color.gray_F5F6F8)
             )
         )
         ioStatusInfo.k5.notNullKey {
@@ -364,7 +364,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "K2",
                 textBold = false,
                 textColorResId = ColorUtils.getColor(R.color.title_text_color),
-                bgColorResId = ColorUtils.getColor(R.color.gray_f5f6f8)
+                bgColorResId = ColorUtils.getColor(R.color.gray_F5F6F8)
             )
         )
         ioStatusInfo.k6.notNullKey {
@@ -384,7 +384,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "K3",
                 textBold = false,
                 textColorResId = ColorUtils.getColor(R.color.title_text_color),
-                bgColorResId = ColorUtils.getColor(R.color.gray_f5f6f8)
+                bgColorResId = ColorUtils.getColor(R.color.gray_F5F6F8)
             )
         )
         ioStatusInfo.k7.notNullKey {
@@ -404,7 +404,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "K4",
                 textBold = false,
                 textColorResId = ColorUtils.getColor(R.color.title_text_color),
-                bgColorResId = ColorUtils.getColor(R.color.gray_f5f6f8)
+                bgColorResId = ColorUtils.getColor(R.color.gray_F5F6F8)
             )
         )
         ioStatusInfo.k8.notNullKey {
@@ -424,7 +424,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "DO1",
                 textBold = false,
                 textColorResId = ColorUtils.getColor(R.color.title_text_color),
-                bgColorResId = ColorUtils.getColor(R.color.gray_f5f6f8)
+                bgColorResId = ColorUtils.getColor(R.color.gray_F5F6F8)
             )
         )
         ioStatusInfo.k1.notNullKey {
@@ -444,7 +444,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "DO2",
                 textBold = false,
                 textColorResId = ColorUtils.getColor(R.color.title_text_color),
-                bgColorResId = ColorUtils.getColor(R.color.gray_f5f6f8)
+                bgColorResId = ColorUtils.getColor(R.color.gray_F5F6F8)
             )
         )
         ioStatusInfo.k2.notNullKey {
@@ -464,7 +464,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "DO3",
                 textBold = false,
                 textColorResId = ColorUtils.getColor(R.color.title_text_color),
-                bgColorResId = ColorUtils.getColor(R.color.gray_f5f6f8)
+                bgColorResId = ColorUtils.getColor(R.color.gray_F5F6F8)
             )
         )
         ioStatusInfo.k3.notNullKey {
@@ -484,7 +484,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "DO4",
                 textBold = false,
                 textColorResId = ColorUtils.getColor(R.color.title_text_color),
-                bgColorResId = ColorUtils.getColor(R.color.gray_f5f6f8)
+                bgColorResId = ColorUtils.getColor(R.color.gray_F5F6F8)
             )
         )
         ioStatusInfo.k4.notNullKey {
@@ -505,7 +505,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "DI1",
                 textBold = false,
                 textColorResId = ColorUtils.getColor(R.color.title_text_color),
-                bgColorResId = ColorUtils.getColor(R.color.gray_f5f6f8)
+                bgColorResId = ColorUtils.getColor(R.color.gray_F5F6F8)
             )
         )
         ioStatusInfo.in1.notNullKey {
@@ -525,7 +525,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "DI2",
                 textBold = false,
                 textColorResId = ColorUtils.getColor(R.color.title_text_color),
-                bgColorResId = ColorUtils.getColor(R.color.gray_f5f6f8)
+                bgColorResId = ColorUtils.getColor(R.color.gray_F5F6F8)
             )
         )
         ioStatusInfo.in2.notNullKey {
@@ -545,7 +545,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "DI3",
                 textBold = false,
                 textColorResId = ColorUtils.getColor(R.color.title_text_color),
-                bgColorResId = ColorUtils.getColor(R.color.gray_f5f6f8)
+                bgColorResId = ColorUtils.getColor(R.color.gray_F5F6F8)
             )
         )
         ioStatusInfo.in3.notNullKey {
@@ -566,7 +566,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "DI4",
                 textBold = false,
                 textColorResId = ColorUtils.getColor(R.color.title_text_color),
-                bgColorResId = ColorUtils.getColor(R.color.gray_f5f6f8)
+                bgColorResId = ColorUtils.getColor(R.color.gray_F5F6F8)
             )
         )
         ioStatusInfo.in4.notNullKey {
@@ -586,7 +586,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "雨量",
                 textBold = false,
                 textColorResId = ColorUtils.getColor(R.color.title_text_color),
-                bgColorResId = ColorUtils.getColor(R.color.gray_f5f6f8)
+                bgColorResId = ColorUtils.getColor(R.color.gray_F5F6F8)
             )
         )
         ioStatusInfo.rain.notNullKey {
@@ -606,7 +606,7 @@ class MR702PortStatusInfoFragment : BaseIOTDeviceFragment() {
                 name = "干节点",
                 textBold = false,
                 textColorResId = ColorUtils.getColor(R.color.title_text_color),
-                bgColorResId = ColorUtils.getColor(R.color.gray_f5f6f8)
+                bgColorResId = ColorUtils.getColor(R.color.gray_F5F6F8)
             )
         )
         ioStatusInfo.dry.notNullKey {

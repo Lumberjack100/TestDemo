@@ -141,17 +141,21 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         )
                     )
                 )
+
+                var frequency = stateInfo.reportFrequency.toIntOrNull()?.let { it / 60 } ?: 0
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "上报频率",
-                    value = stateInfo.reportFrequency,
-                    unit = "分钟/次",
+                    value = if (frequency <= 0) stateInfo.reportFrequency else frequency.toString(),
+                    unit = if (frequency <= 0) "分钟/次" else "小时/次",
                 )
+
+                frequency = stateInfo.captureFrequency.toIntOrNull()?.let { it / 60 } ?: 0
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "抓拍频率",
-                    value = stateInfo.captureFrequency,
-                    unit = "分钟/次",
+                    value = if (frequency <= 0) stateInfo.captureFrequency else frequency.toString(),
+                    unit = if (frequency <= 0) "分钟/次" else "小时/次",
                     isBottomItem = true
                 )
                 binding.recyclerview.models = groupList

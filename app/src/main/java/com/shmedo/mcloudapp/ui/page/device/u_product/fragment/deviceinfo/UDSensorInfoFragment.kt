@@ -68,41 +68,64 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList,
                     name = "电池电压",
                     value = stateInfo.batteryStatus.compareAndReturn(
-                        "-3",
-                        AppContants.PLACE_HOLDER_VALUE,
-                        stateInfo.batteryVoltage.ifEmpty { AppContants.PLACE_HOLDER_VALUE }),
+                        "0",
+                        stateInfo.batteryVoltage.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                        "电池异常"
+                    ),
+                    textColorRes = if (stateInfo.batteryStatus == "0") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                        R.color.error_FF4400
+                    ),
                     unit = "V",
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "电池电量",
                     value = stateInfo.batteryStatus.compareAndReturn(
-                        "-3",
-                        AppContants.PLACE_HOLDER_VALUE,
-                        stateInfo.batteryCapacity.ifEmpty { AppContants.PLACE_HOLDER_VALUE }),
+                        "0",
+                        stateInfo.batteryCapacity.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                        "电池异常"
+                    ),
+                    textColorRes = if (stateInfo.batteryStatus == "0") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                        R.color.error_FF4400
+                    ),
                     unit = "%",
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "电池温度",
                     value = stateInfo.batteryStatus.compareAndReturn(
-                        "-3",
-                        AppContants.PLACE_HOLDER_VALUE,
-                        stateInfo.batteryTemp.ifEmpty { AppContants.PLACE_HOLDER_VALUE }),
+                        "0",
+                        stateInfo.batteryTemp.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                        "电池异常"
+                    ),
+                    textColorRes = if (stateInfo.batteryStatus == "0") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                        R.color.error_FF4400
+                    ),
                     unit = "℃",
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "充放状态",
-                    value = if (stateInfo.batteryStatus == "1") "充电中" else if (stateInfo.batteryStatus == "0") "放电中" else AppContants.PLACE_HOLDER_VALUE,
+                    value = stateInfo.batteryStatus.compareAndReturn(
+                        "0",
+                        if (stateInfo.batteryChargeStatus == "1") "充电中" else "放电中",
+                        "电池异常"
+                    ),
+                    textColorRes = if (stateInfo.batteryStatus == "0") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                        R.color.error_FF4400
+                    ),
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "电池健康度",
                     value = stateInfo.batteryStatus.compareAndReturn(
-                        "-3",
-                        AppContants.PLACE_HOLDER_VALUE,
-                        stateInfo.batteryHealth.ifEmpty { AppContants.PLACE_HOLDER_VALUE }),
+                        "0",
+                        stateInfo.batteryHealth.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                        "电池异常"
+                    ),
+                    textColorRes = if (stateInfo.batteryStatus == "0") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                        R.color.error_FF4400
+                    ),
                     unit = "%",
                     isBottomItem = true
                 )

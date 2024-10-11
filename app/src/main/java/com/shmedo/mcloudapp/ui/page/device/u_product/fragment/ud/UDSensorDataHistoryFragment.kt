@@ -1,7 +1,6 @@
 package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
 import android.content.Context
-import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -36,6 +35,7 @@ import com.shmedo.mcloudapp.extensions.showDatePickerDialog
 import com.shmedo.mcloudapp.model.HoverHeaderModel
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDSensorDataHistoryViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.utils.image.GlideEngine
@@ -43,6 +43,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class UDSensorDataHistoryFragment : BaseFragment() {
     private lateinit var binding: FragmentUdSensorDataHistoryBinding
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: UDSensorDataHistoryViewModel by viewModels()
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
 
@@ -61,14 +62,14 @@ class UDSensorDataHistoryFragment : BaseFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_ud_sensor_data_history, BR.stateVM, mStates)
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        mActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+//        mActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         binding = getBinding() as FragmentUdSensorDataHistoryBinding
-        binding.llToolbar.toolbar.title = "历史数据"
-//        toolbarViewModel.toolbarTitleText.set("历史数据")
+        toolbarViewModel.toolbarTitleText.set("历史数据")
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             nav().navigateUp()
         }
@@ -121,21 +122,30 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                             when (mStates.modelName.get()) {
                                 "液面高程" -> {
                                     itemBinding.tvTime.text =
-                                        TimeUtils.date2String(TimeUtils.string2Date(itemMap["time"]))
+                                        TimeUtils.date2String(
+                                            TimeUtils.string2Date(itemMap["time"]),
+                                            "yy.MM.dd HH:mm:ss"
+                                        )
                                     itemBinding.tvName.text = mStates.modelName.get()
                                     itemBinding.tvValue.text = itemMap[modelFieldJsonPathList[0]]
                                 }
 
                                 "安装角度" -> {
                                     itemBinding.tvTime.text =
-                                        TimeUtils.date2String(TimeUtils.string2Date(itemMap["time"]))
+                                        TimeUtils.date2String(
+                                            TimeUtils.string2Date(itemMap["time"]),
+                                            "yy.MM.dd HH:mm:ss"
+                                        )
                                     itemBinding.tvName.text = mStates.modelName.get()
                                     itemBinding.tvValue.text = itemMap[modelFieldJsonPathList[1]]
                                 }
 
                                 "抓拍图片" -> {
                                     itemBinding.tvTime.text =
-                                        TimeUtils.date2String(TimeUtils.string2Date(itemMap["uploadTime"]))
+                                        TimeUtils.date2String(
+                                            TimeUtils.string2Date(itemMap["uploadTime"]),
+                                            "yy.MM.dd HH:mm:ss"
+                                        )
                                     itemBinding.tvName.text = mStates.modelName.get()
                                 }
 
@@ -180,14 +190,14 @@ class UDSensorDataHistoryFragment : BaseFragment() {
         mStates.startTime.set(
             TimeUtils.millis2String(
                 mStates.startTimeMills.get(),
-                "yyyy-MM-dd HH:mm"
-            ) + ":00"
+                "yy.MM.dd HH:mm"
+            )
         )
         mStates.endTime.set(
             TimeUtils.millis2String(
                 mStates.endTimeMills.get(),
-                "yyyy-MM-dd HH:mm"
-            ) + ":00"
+                "yy.MM.dd HH:mm"
+            )
         )
         mStates.modelName.set(modelNameList[0])
     }
@@ -196,6 +206,7 @@ class UDSensorDataHistoryFragment : BaseFragment() {
         deviceRequestViewModel.sensorDataListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<Any>> ->
             if (!listDataResult.responseStatus.isSuccess) {
                 Toaster.show(listDataResult.responseStatus.errorMessage)
+                binding.refreshLayout.showError()
                 return@observe
             }
             listDataResult.result?.let {
@@ -212,14 +223,14 @@ class UDSensorDataHistoryFragment : BaseFragment() {
         fun onChooseStartTimeClick() {
             requireContext().showDatePickerDialog(defaultDate = if (mStates.startTimeMills.get() == 0L) TimeUtils.getNowMills() else mStates.startTimeMills.get()) { time: Long ->
                 if (TimeUtils.millis2String(
-                        time, "yyyy-MM-dd HH:mm"
+                        time, "yy.MM.dd HH:mm"
                     ) != mStates.endTime.get() && time > mStates.endTimeMills.get() && mStates.endTimeMills.get() != 0L
                 ) {
                     Toaster.show("开始时间不能大于结束时间")
                     return@showDatePickerDialog
                 }
                 mStates.startTimeMills.set(time)
-                mStates.startTime.set(TimeUtils.millis2String(time, "yyyy-MM-dd HH:mm") + ":00")
+                mStates.startTime.set(TimeUtils.millis2String(time, "yy.MM.dd HH:mm"))
                 if (mStates.endTimeMills.get() == 0L) {
                     binding.refreshLayout.showLoading()
                 }
@@ -233,7 +244,7 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                     return@showDatePickerDialog
                 }
                 mStates.endTimeMills.set(time)
-                mStates.endTime.set(TimeUtils.millis2String(time, "yyyy-MM-dd HH:mm") + ":00")
+                mStates.endTime.set(TimeUtils.millis2String(time, "yy.MM.dd HH:mm"))
                 if (mStates.startTimeMills.get() == 0L) {
                     binding.refreshLayout.showLoading()
                 }
@@ -294,8 +305,14 @@ class UDSensorDataHistoryFragment : BaseFragment() {
         deviceRequestViewModel.queryMonitorDataListWithPage(
             deviceToken = deviceInfo.deviceToken,
             sensorIDList = sensorIDList,
-            begin = mStates.startTime.get(),
-            end = mStates.endTime.get(),
+            begin = TimeUtils.millis2String(
+                mStates.startTimeMills.get(),
+                "yyyy-MM-dd HH:mm"
+            ) + ":00",
+            end = TimeUtils.millis2String(
+                mStates.endTimeMills.get(),
+                "yyyy-MM-dd HH:mm"
+            ) + ":00",
             currentPage = binding.refreshLayout.index,
             pageSize = PAGE_SIZE
         )
@@ -332,7 +349,7 @@ class UDSensorDataHistoryFragment : BaseFragment() {
     }
 
     override fun onDestroyView() {
-        mActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+//        mActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         super.onDestroyView()
     }
 

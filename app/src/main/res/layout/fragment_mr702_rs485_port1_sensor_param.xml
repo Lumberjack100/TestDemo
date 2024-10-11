@@ -427,8 +427,8 @@
                             android:textSize="@dimen/text_size_16"
                             android:textStyle="bold"
                             app:drawable_radius="@{6}"
-                            app:drawable_solidColor="@{@color/gray_f5f6f8}"
-                            tools:background="@color/gray_f5f6f8" />
+                            app:drawable_solidColor="@{@color/gray_F5F6F8}"
+                            tools:background="@color/gray_F5F6F8" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
