@@ -7,9 +7,9 @@ package com.shmedo.lib.cmd.base.md_cmd.model.common
  *
  * $$8893,1,4,mqtt.shmedo.com 6883,300,150000L,150000L,a84b42b1-cb30-410f-8285-5f4de6f9d319,
  * 2,mqtt.shmedo.com 80,fXQQROerSlJ0bqTPCoMnyqgR-2dzhytztk3eYV6nuA0OBQljkqG_exXYtNfr,,,
- * 查询数据中心参数：##889n\r\n，其中 n：表示中心编号，取值1，2，3
+ * 查询数据链路参数：##889n\r\n，其中 n：表示中心编号，取值1，2，3
  * 返回参数：##889n,(1),(2),(3),(4),(5),(6),(7),(8),(9),(10),(11),(12)\r\n
- * (1):数据中心开关，0：关闭，1：打开
+ * (1):数据链路开关，0：关闭，1：打开
  * (2):通讯协议，2：MDM协议，4：MQTT自动注册，5：MQTT手动注册
  * (3):数据平台地址
  * (4):keepAlive

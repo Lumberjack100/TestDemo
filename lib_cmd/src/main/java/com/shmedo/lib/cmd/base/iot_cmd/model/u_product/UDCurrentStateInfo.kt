@@ -56,11 +56,11 @@ data class UDCurrentStateInfo(
     val radioEnableStatus: String = IOTConstants.NULL_KEY, //电台（启用/未启用）0：未启用  1：启用
     val bt_connected: String = IOTConstants.NULL_KEY, //蓝牙（连接/未连接） 0：未连接 1：已连接
     @Json(name = "dataCenterUseSta")
-    val dataCenterEnableStatus: String = IOTConstants.NULL_KEY, //数据中心启用状态 "1,0,0,0"
+    val dataCenterEnableStatus: String = IOTConstants.NULL_KEY, //数据链路启用状态 "1,0,0,0"
     @Json(name = "dataCenterStatus")
-    val dataCenterLinkStatus: String = IOTConstants.NULL_KEY, //数据中心连接状态 "0,0,0,0"
+    val dataCenterLinkStatus: String = IOTConstants.NULL_KEY, //数据链路连接状态 "0,0,0,0"
     @Json(name = "dataCenterPlatform")
-    val dataCenterPlatformType: String = IOTConstants.NULL_KEY, //数据中心连接平台类型 "2,7,0,0"
+    val dataCenterPlatformType: String = IOTConstants.NULL_KEY, //数据链路连接平台类型 "2,7,0,0"
     @Json(name = "extern_volt")
     val externalVoltage: String = IOTConstants.NULL_KEY, //外部电压  float  "0.00"
     @Json(name = "bat_volt")
@@ -70,7 +70,9 @@ data class UDCurrentStateInfo(
     @Json(name = "bat_temp")
     val batteryTemp: String = IOTConstants.NULL_KEY, //电池温度  "28.15"
     @Json(name = "bat_sta")
-    val batteryStatus: String = IOTConstants.NULL_KEY, //电池充放状态   0: 放电中  1: 充电中 -3：电池异常
+    val batteryStatus: String = IOTConstants.NULL_KEY, //电池状态   -3：电池异常   0: 正常
+    @Json(name = "bat_charge")
+    val batteryChargeStatus: String = IOTConstants.NULL_KEY, //电池充放状态   0: 放电中  1: 充电中
     @Json(name = "bat_health")
     val batteryHealth: String = IOTConstants.NULL_KEY, //电池健康度  "100"
     @Json(name = "inside_temp")
@@ -86,7 +88,9 @@ data class UDCurrentStateInfo(
     var pixx: String = IOTConstants.NULL_KEY,//图片水平分辨率  "1920"
     var pixy: String = IOTConstants.NULL_KEY,//图片垂直分辨率  "1080"
     @Json(name = "adxl_sta")
-    val accelerometerStatus: String = IOTConstants.NULL_KEY, //加速度计 -3：模块异常  -2：数据异常 0：正常
+    val accelerometerStatus: String = IOTConstants.NULL_KEY, //加速度计 -3：模块异常  -2：数据异常  0：正常
+    @Json(name = "gnss_sta")
+    val gnssStatus: String = IOTConstants.NULL_KEY, //GNSS状态     0：正常
     @Json(name = "utc_time")
     val utcTime: String = IOTConstants.NULL_KEY, //UTC时间  "2024.08.30 01:31:29"
     @Json(name = "lng_dir")

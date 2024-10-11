@@ -39,7 +39,7 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: CommonCommunicationInfoViewModel
     private val iotParseManager: IOTParserManager by inject()
     private val tableAdapter: CommunicationDataTableAdapter by lazy { CommunicationDataTableAdapter() }
-    private var centerNum = 0//数据中心数量
+    private var centerNum = 0//数据链路数量
 
     override fun initViewModel() {
         super.initViewModel()
@@ -307,7 +307,7 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
                         columnCellDataList.add(
                             CommunicationDataCellModel(
                                 mData = if (enableStatusList[i] == "0") "未开启" else if (onlineStatusList[i] == "1") "已连接" else "未连接",
-                                textColorResId = if (enableStatusList[i] == "1" && onlineStatusList[i] == "1") R.color.green_00B26B else R.color.error_FF4400
+                                textColorResId = if (enableStatusList[i] == "1" && onlineStatusList[i] == "1") R.color.online_colorPrimary else R.color.error_FF4400
                             )
                         )
                     }

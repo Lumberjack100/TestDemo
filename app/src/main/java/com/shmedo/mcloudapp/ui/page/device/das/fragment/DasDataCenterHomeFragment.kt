@@ -68,13 +68,11 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentDasDataCenterHomeBinding
-        toolbarViewModel.toolbarTitleText.set("数据中心")
+        toolbarViewModel.toolbarTitleText.set("数据链路")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         initRefresh()
@@ -263,7 +261,7 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询数据中心状态出错: ${result.message}"
+                        val errMsg = "查询数据链路状态出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -332,9 +330,24 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun getAdapterData() = mutableListOf(
-        DataCenterStatusItem(1, "数据中心01", "0"),
-        DataCenterStatusItem(2, "数据中心02", "0"),
-        DataCenterStatusItem(3, "数据中心03", "0"),
+        DataCenterStatusItem(
+            centerid = 1,
+            name = "数据链路1",
+            status = "0",
+            bgResId = R.drawable.layer_common_click_item_top_corner_4_with_divider
+        ),
+        DataCenterStatusItem(
+            centerid = 2,
+            name = "数据链路2",
+            status = "0",
+            bgResId = R.drawable.layer_common_click_item_with_divider
+        ),
+        DataCenterStatusItem(
+            centerid = 3,
+            name = "数据链路3",
+            status = "0",
+            bgResId = R.drawable.shape_common_click_item_bottom_corner_4
+        )
     )
 
     override fun onResume() {

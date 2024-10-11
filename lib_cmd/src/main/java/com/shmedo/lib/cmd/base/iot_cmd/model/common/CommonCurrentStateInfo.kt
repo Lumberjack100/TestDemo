@@ -94,10 +94,10 @@ data class CommonCurrentStateInfo(
     @Json(name = "eMMC Free")
     var eMMCFree: String = IOTConstants.NULL_KEY, //存储状态
     var emmc_storage: String = IOTConstants.NULL_KEY,//emmc存储
-    var dataCenter1: Int = 0, //数据中心1
-    var dataCenter2: Int = 0, //数据中心2
-    var dataCenter3: Int = 0, //数据中心3
-    var dataCenter4: Int = 0, //数据中心4
+    var dataCenter1: Int = 0, //数据链路1
+    var dataCenter2: Int = 0, //数据链路2
+    var dataCenter3: Int = 0, //数据链路3
+    var dataCenter4: Int = 0, //数据链路4
     var starNum: Int = 0, //星数
     var gpsCard: String = IOTConstants.NULL_KEY, //板卡
     var self_check: String = IOTConstants.NULL_KEY,//设备自检

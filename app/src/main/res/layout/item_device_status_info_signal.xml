@@ -34,7 +34,7 @@
             android:layout_marginStart="10dp"
             app:bind_signal_value="@{m.signalValue}"
             app:connected="true"
-            app:primary_color="@color/text_color_cccccc"
+            app:primary_color="@color/text_color_CCCCCC"
             app:shadow_color="@color/green_00B26B"
             app:shadow_open="false"
             app:signal_maximum="4"

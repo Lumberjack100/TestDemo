@@ -73,7 +73,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentBleDasDataCenterParamBinding
-        binding.llToolbar.toolbar.title = "数据中心"
+        binding.llToolbar.toolbar.title = "链路配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)
         }
@@ -123,7 +123,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             }
             mStates.isCenterOpened.set(isChecked)
             if (!isChecked) {
-                showMessage("确定要关闭数据中心吗？", "温馨提示", "确定", {
+                showMessage("确定要关闭链路吗？", "温馨提示", "确定", {
                     closeDataServer()
                 }, "取消", {
                     mStates.isCenterOpened.set(true)
@@ -203,8 +203,8 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 关闭数据中心</br>
-     * addr和port设置为空时，关闭该数据中心
+     * 关闭数据链路</br>
+     * addr和port设置为空时，关闭该数据链路
      */
     private fun closeDataServer() {
         commandItems.clear()
@@ -221,21 +221,21 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
     private fun initSaveCommand() {
         commandItems.clear()
         if (mStates.centerServerAddress.get().isEmpty()) {
-            showMessageDialog("请输入数据中心地址!")
+            showMessageDialog("请输入链路地址!")
             return
         }
         if (mStates.centerServerPort.get().isEmpty()) {
-            showMessageDialog("请输入数据中心端口号!")
+            showMessageDialog("请输入链路端口号!")
             return
         }
         try {
             val port: Int = mStates.centerServerPort.get().toInt()
             if (port < 0 || port > 65535) {
-                showMessageDialog("数据中心端口号数值范围[0,65535]!")
+                showMessageDialog("链路端口号数值范围[0,65535]!")
                 return
             }
         } catch (ex: Exception) {
-            showMessageDialog("数据中心端口号数值范围[0,65535]!")
+            showMessageDialog("链路端口号数值范围[0,65535]!")
             return
         }
         if (mStates.transferProtocol.get().equals(transferProtocolList[1], true)) {
@@ -437,13 +437,13 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
 //        commandItems.add(command)
 //        Timber.d("查询数据服务器%s的地址===%s", statusItem.centerid.toString(), command)
 
-        //查询数据中心参数
+        //查询数据链路参数
         val command = MDCommandUtil.getCommand(
             MDCommandType.QUERY_DATA_CENTER_PARAM,
             statusItem.centerid.toString()
         )
         commandItems.add(command)
-        Timber.d("查询数据中心%s的参数===%s", statusItem.centerid.toString(), command)
+        Timber.d("查询数据链路%s的参数===%s", statusItem.centerid.toString(), command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -457,7 +457,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        val errMsg = "查询数据中心地址出错"
+                        val errMsg = "查询数据链路地址出错"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -471,14 +471,14 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            MDCommandType.QUERY_DATA_CENTER_PARAM -> {//查询数据中心 1、2、3 参数
+            MDCommandType.QUERY_DATA_CENTER_PARAM -> {//查询数据链路 1、2、3 参数
                 val result = mdParseManager.parse<BleDataCenterInfo>(
                     cmdStr,
                     MDCommandType.QUERY_DATA_CENTER_PARAM
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        val errMsg = "查询数据中心参数出错"
+                        val errMsg = "查询数据链路参数出错"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -509,7 +509,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             MDCommandType.SET_SERVER_ADDRESS_PORT -> {//设置数据服务器地址、端口应答
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        val errMsg = "设置数据中心地址、端口错误!"
+                        val errMsg = "设置数据链路地址、端口错误!"
                         handleFailureResult(errMsg)
                         return
                     }

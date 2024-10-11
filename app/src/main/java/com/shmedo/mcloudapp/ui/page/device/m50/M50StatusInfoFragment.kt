@@ -131,7 +131,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "GNSS模组",
                     value = stateInfo.gnss.uppercase().compareAndReturn("OK", "正常", "异常"),
                     textColorRes = if (stateInfo.gnss.uppercase() == "OK") ColorUtils.getColor(
-                        R.color.green_00B26B
+                        R.color.online_colorPrimary
                     ) else R.color.error_FF4400
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -139,7 +139,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "加速度计",
                     value = stateInfo.scl.uppercase().compareAndReturn("OK", "正常", "异常"),
                     textColorRes = if (stateInfo.scl.uppercase() == "OK") ColorUtils.getColor(
-                        R.color.green_00B26B
+                        R.color.online_colorPrimary
                     ) else R.color.error_FF4400
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -147,7 +147,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "4G模组",
                     value = stateInfo._4g.uppercase().compareAndReturn("OK", "正常", "异常"),
                     textColorRes = if (stateInfo._4g.uppercase() == "OK") ColorUtils.getColor(
-                        R.color.green_00B26B
+                        R.color.online_colorPrimary
                     ) else R.color.error_FF4400
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -155,7 +155,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "蓝牙模组",
                     value = stateInfo.bt.uppercase().compareAndReturn("OK", "正常", "异常"),
                     textColorRes = if (stateInfo.bt.uppercase() == "OK") ColorUtils.getColor(
-                        R.color.green_00B26B
+                        R.color.online_colorPrimary
                     ) else R.color.error_FF4400
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -163,7 +163,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "Lora模组",
                     value = stateInfo.lora.uppercase().compareAndReturn("OK", "正常", "异常"),
                     textColorRes = if (stateInfo.lora.uppercase() == "OK") ColorUtils.getColor(
-                        R.color.green_00B26B
+                        R.color.online_colorPrimary
                     ) else R.color.error_FF4400
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -171,7 +171,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "存储卡",
                     value = stateInfo.sd.uppercase().compareAndReturn("OK", "正常", "异常"),
                     textColorRes = if (stateInfo.sd.uppercase() == "OK") ColorUtils.getColor(
-                        R.color.green_00B26B
+                        R.color.online_colorPrimary
                     ) else R.color.error_FF4400
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -179,7 +179,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "温湿度模组",
                     value = stateInfo.sht21.uppercase().compareAndReturn("OK", "正常", "异常"),
                     textColorRes = if (stateInfo.sht21.uppercase() == "OK") ColorUtils.getColor(
-                        R.color.green_00B26B
+                        R.color.online_colorPrimary
                     ) else R.color.error_FF4400,
                     isBottomItem = true
                 )

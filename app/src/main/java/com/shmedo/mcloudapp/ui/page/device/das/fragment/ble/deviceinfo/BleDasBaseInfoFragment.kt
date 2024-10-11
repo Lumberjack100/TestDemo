@@ -325,7 +325,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         name = "状态",
                         value = if (info.solarControllerStatus != "1") "正常" else "异常",
                         textColorRes = if (info.solarControllerStatus != "1") ColorUtils.getColor(
-                            R.color.green_00B26B
+                            R.color.online_colorPrimary
                         ) else ColorUtils.getColor(
                             R.color.error_FF4400
                         )
@@ -369,7 +369,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         name = "状态",
                         value = if (info.internalTempHumidityStatus != "1") "正常" else "异常",
                         textColorRes = if (info.internalTempHumidityStatus != "1") ColorUtils.getColor(
-                            R.color.green_00B26B
+                            R.color.online_colorPrimary
                         ) else ColorUtils.getColor(
                             R.color.error_FF4400
                         )
@@ -399,7 +399,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         name = "状态",
                         value = if (info.externalTempHumidityStatus != "1") "正常" else "异常",
                         textColorRes = if (info.externalTempHumidityStatus != "1") ColorUtils.getColor(
-                            R.color.green_00B26B
+                            R.color.online_colorPrimary
                         ) else ColorUtils.getColor(
                             R.color.error_FF4400
                         )

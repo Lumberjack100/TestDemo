@@ -45,8 +45,8 @@ data class CommonCurrentStateInfo2(
     var flash: String = IOTConstants.NULL_KEY, // 外部存储芯片状态 OK/FAIL
     var fram: String = IOTConstants.NULL_KEY, // fram状态 OK/FAIL
     var rtc: String = IOTConstants.NULL_KEY, //rtc状态  OK/FAIL
-    var mdCenterSta: String = IOTConstants.NULL_KEY, //米度数据中心连接状态  OK/FAIL
-    var amsCenterSta: String = IOTConstants.NULL_KEY, //AMS数据中心连接状态  OK/FAIL
+    var mdCenterSta: String = IOTConstants.NULL_KEY, //米度数据链路连接状态  OK/FAIL
+    var amsCenterSta: String = IOTConstants.NULL_KEY, //AMS数据链路连接状态  OK/FAIL
     var starSearchSta: String = IOTConstants.NULL_KEY, //搜星状态 OK/FAIL（搜星数量小于4 -> FAIL）
     var solarInsertSta: String = IOTConstants.NULL_KEY, //太阳能控制检验 OK/FAIL
     var extPowerVolt: String = IOTConstants.NULL_KEY, //外部电压  12.0  供电电压是设备自检出来的电压值
@@ -64,8 +64,8 @@ data class CommonCurrentStateInfo2(
     var ccid: String = IOTConstants.NULL_KEY, //CCID
     var imei: String = IOTConstants.NULL_KEY, //IMEI
     var imsi: String = IOTConstants.NULL_KEY, //IMSI
-    var dataCenterStatus: String = IOTConstants.NULL_KEY, //数据中心连接状态 [0,1,1]
-    var dataCenterUseSta: String = IOTConstants.NULL_KEY, //数据中心启用状态 [0,1,1]
+    var dataCenterStatus: String = IOTConstants.NULL_KEY, //数据链路连接状态 [0,1,1]
+    var dataCenterUseSta: String = IOTConstants.NULL_KEY, //数据链路启用状态 [0,1,1]
     var starSearchNum: String = IOTConstants.NULL_KEY, //搜星数
     var location: String = IOTConstants.NULL_KEY, //坐标 12135.648003E, 3112.752093N
     var worktime: String = IOTConstants.NULL_KEY,//运行时间

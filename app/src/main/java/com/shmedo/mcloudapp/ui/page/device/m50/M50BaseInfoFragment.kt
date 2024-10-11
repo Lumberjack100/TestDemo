@@ -64,7 +64,7 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     DeviceStatusInfoBasicItem(
                         name = "设备状态",
                         value = deviceStatus,
-                        textColorRes = if (deviceStatus == "正常") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
+                        textColorRes = if (deviceStatus == "正常") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
                             R.color.error_FF4400
                         )
                     )
@@ -128,7 +128,7 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 )
 
                 groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                groupList.add(DeviceStatusInfoGroupItem("工作信息"))
+                groupList.add(DeviceStatusInfoGroupItem("存储信息"))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "可用空间",

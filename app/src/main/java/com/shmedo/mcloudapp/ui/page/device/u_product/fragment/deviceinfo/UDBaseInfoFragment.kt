@@ -74,9 +74,13 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     DeviceStatusInfoBasicItem(
                         name = "设备状态",
                         value = deviceStatus,
-                        textColorRes = if (deviceStatus == "正常") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
-                            R.color.error_FF4400
-                        )
+                        textColorRes = when (deviceStatus) {
+                            "正常" -> ColorUtils.getColor(R.color.online_colorPrimary)
+                            "告警" -> ColorUtils.getColor(
+                                R.color.warn_FF9D00
+                            )
+                            else -> ColorUtils.getColor(R.color.error_FF4400)
+                        }
                     )
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -136,22 +140,26 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     DeviceStatusInfoBasicItem(
                         name = "上报状态",
                         value = reportStatus,
-                        textColorRes = if (reportStatus == "正常") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
+                        textColorRes = if (reportStatus == "正常") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
                             R.color.error_FF4400
                         )
                     )
                 )
+
+                var frequency = stateInfo.reportFrequency.toIntOrNull()?.let { it / 60 } ?: 0
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "上报频率",
-                    value = stateInfo.reportFrequency,
-                    unit = "分钟/次",
+                    value = if (frequency <= 0) stateInfo.reportFrequency else frequency.toString(),
+                    unit = if (frequency <= 0) "分钟/次" else "小时/次",
                 )
+
+                frequency = stateInfo.captureFrequency.toIntOrNull()?.let { it / 60 } ?: 0
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "抓拍频率",
-                    value = stateInfo.captureFrequency,
-                    unit = "分钟/次",
+                    value = if (frequency <= 0) stateInfo.captureFrequency else frequency.toString(),
+                    unit = if (frequency <= 0) "分钟/次" else "小时/次",
                     isBottomItem = true
                 )
                 binding.recyclerview.models = groupList

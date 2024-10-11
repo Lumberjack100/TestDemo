@@ -61,7 +61,7 @@ data class LB20SCurrentStateInfo(
     var sw_version: String = IOTConstants.NULL_KEY, //固件版本
     var location: String = IOTConstants.NULL_KEY, //设备位置-经纬度，经度在前,纬度在后。E表示东经，W表示西经，N表示北纬，S表示南纬。
     var volumelevel: String = IOTConstants.NULL_KEY, //音量强度，分4个等级，无：0、低：1、中：2、高：3
-    var datacenterStatus: String = IOTConstants.NULL_KEY, //数据中心转状态显示，[0,1,1]按照左至右的顺序表数据中心1、2、3，0表示未连接，1表示已连接
+    var datacenterStatus: String = IOTConstants.NULL_KEY, //数据链路转状态显示，[0,1,1]按照左至右的顺序表数据链路1、2、3，0表示未连接，1表示已连接
     var sensor_errno: List<SensorErrnoBean>? = arrayListOf(), //传感器异常信息,
     var attach_data: Map<String, String>? = mapOf()
 )

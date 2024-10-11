@@ -59,6 +59,7 @@
                 android:paddingTop="@dimen/page_content_container_padding_top_12">
 
                 <include
+                    android:id="@+id/ll_radar_water_gauge_measure_data"
                     layout="@layout/include_radar_water_gauge_measure_data_layout"
                     app:click="@{click}"
                     app:stateVM="@{stateVM}" />

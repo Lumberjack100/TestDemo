@@ -335,7 +335,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             motionState.incvoltage.toDoubleOrNull()?.let {
                 mStates.inclinometerBatteryColorRes.set(
                     if (it <= 20) ColorUtils.getColor(R.color.error_FF4400) else ColorUtils.getColor(
-                        R.color.green_00B26B
+                        R.color.online_colorPrimary
                     )
                 )
             }
@@ -343,7 +343,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             motionState.driveinputv.toDoubleOrNull()?.let {
                 mStates.deviceBatteryColorRes.set(
                     if (it <= 20) ColorUtils.getColor(R.color.error_FF4400) else ColorUtils.getColor(
-                        R.color.green_00B26B
+                        R.color.online_colorPrimary
                     )
                 )
             }

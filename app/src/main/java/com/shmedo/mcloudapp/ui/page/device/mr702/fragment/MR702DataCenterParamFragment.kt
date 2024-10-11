@@ -15,12 +15,9 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.utils.AppContants
-import com.shmedo.core.model.DeviceInfo
-import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.CenterNumberEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRDataCenterParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.StationCode
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRDataCenterParam
@@ -38,9 +35,7 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
-import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702DataCenterParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -77,7 +72,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentMr702DataCenterParamBinding
-        binding.llToolbar.toolbar.title = "数据中心"
+        binding.llToolbar.toolbar.title = "链路配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)
         }
@@ -157,7 +152,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             }
             mStates.isCenterOpened.set(isChecked)
             if (!isChecked) {
-                showMessage("确定要关闭数据中心吗？", "温馨提示", "确定", {
+                showMessage("确定要关闭链路吗？", "温馨提示", "确定", {
                     closeDataServer()
                 }, "取消", {
                     mStates.isCenterOpened.set(true)
@@ -352,21 +347,21 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
     private fun initSaveCommand() {
         commandItems.clear()
         if (mStates.centerServerAddress.get().isEmpty()) {
-            showMessageDialog("请输入数据中心地址!")
+            showMessageDialog("请输入链路地址!")
             return
         }
         if (mStates.centerServerPort.get().isEmpty()) {
-            showMessageDialog("请输入数据中心端口号!")
+            showMessageDialog("请输入链路端口号!")
             return
         }
         try {
             val port: Int = mStates.centerServerPort.get().toInt()
             if (port < 0 || port > 65535) {
-                showMessageDialog("数据中心端口号数值范围[0,65535]!")
+                showMessageDialog("链路端口号数值范围[0,65535]!")
                 return
             }
         } catch (ex: Exception) {
-            showMessageDialog("数据中心端口号数值范围[0,65535]!")
+            showMessageDialog("链路端口号数值范围[0,65535]!")
             return
         }
 
@@ -473,7 +468,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询数据中心参数出错: ${result.message}"
+                        val errMsg = "查询数据链路参数出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -606,28 +601,10 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             delay(1000)
             //巡护事件需要给上一级浏览页面传递最新的事件信息
             setFragmentResult(
-                com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702DataCenterHomeFragment.FRAGMENT_RESULT_REQUEST_KEY,
-                bundleOf(com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702DataCenterHomeFragment.REFRESH_DATA to true)
+                AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY,
+                bundleOf(MR702DataCenterHomeFragment.REFRESH_DATA to true)
             )
             nav().navigateUp()
-        }
-    }
-
-    companion object {
-        fun newBundleArguments(
-            item: DataCenterStatusItem,
-            type: ProductType = ProductType.UnKnown,
-            communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: DeviceInfo,
-            bleDevice: DiscoveredBluetoothDevice? = null,
-            statusBarColor: Int = R.color.white
-        ): Bundle = Bundle().apply {
-            putParcelable(AppContants.Extras.SERVER_NUMBER, item)
-            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

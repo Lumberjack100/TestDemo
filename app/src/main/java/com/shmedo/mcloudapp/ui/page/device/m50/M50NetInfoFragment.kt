@@ -77,10 +77,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList.add(
                         DeviceStatusInfoSignalItem(
                             name = "信号强度",
-                            signalValue = if (temp <= 0)
-                                temp
-                            else
-                                temp * 2 - 113
+                            signalValue = temp
                         )
                     )
                 }
@@ -99,7 +96,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "电台",
                     value = stateInfo.radioEnableStatus.compareAndReturn("1", "已启用", "未启用"),
                     textColorRes = if (stateInfo.radioEnableStatus == "1") ColorUtils.getColor(
-                        R.color.green_00B26B
+                        R.color.online_colorPrimary
                     ) else 0
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -107,7 +104,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "蓝牙",
                     value = stateInfo.bt_connected.compareAndReturn("1", "已连接", "未连接"),
                     textColorRes = if (stateInfo.radioEnableStatus == "1") ColorUtils.getColor(
-                        R.color.green_00B26B
+                        R.color.online_colorPrimary
                     ) else 0,
                     isBottomItem = true
                 )
@@ -145,7 +142,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             ),
                             textColorRes = if (status == "0" || onlineStatus == "未连接") ColorUtils.getColor(
                                 R.color.error_FF4400
-                            ) else ColorUtils.getColor(R.color.green_00B26B),
+                            ) else ColorUtils.getColor(R.color.online_colorPrimary),
                             isBottomItem = true
                         )
                     }

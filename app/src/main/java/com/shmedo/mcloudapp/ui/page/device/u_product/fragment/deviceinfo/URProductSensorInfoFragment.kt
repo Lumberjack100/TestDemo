@@ -47,7 +47,7 @@ class URProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                     DeviceStatusInfoBasicItem(
                         name = "雨量传感器状态",
                         value = "正常",
-                        textColorRes =  ColorUtils.getColor(R.color.green_00B26B)
+                        textColorRes =  ColorUtils.getColor(R.color.online_colorPrimary)
                     )
                 )
                 uRSensorInfoList.forEach { info ->

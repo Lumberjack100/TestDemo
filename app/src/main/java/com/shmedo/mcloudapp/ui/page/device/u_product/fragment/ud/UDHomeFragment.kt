@@ -211,7 +211,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     }
                 }
             }
-
         }
     }
 
@@ -282,13 +281,14 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 ),
                 ConfigModule(
                     DataCenterModule(
+                        name = "链路配置",
                         resID = R.drawable.ic_module_datacenter_new,
                         navId = R.id.action_global_to_udProductDataCenterHomeFragment
                     )
                 ),
                 ConfigModule(
                     CommonModule(
-                        name = "CORS",
+                        name = "海拔高度",
                         resID = R.drawable.ic_module_cors,
                         navId = R.id.action_global_to_udCORSParamFragment
                     )
@@ -364,6 +364,9 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
+            if (mHeadStates.isMeasuring.get())
+                return
+
             measureData()
         }
 
@@ -606,7 +609,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.QUERY_SAMPLE -> {
-                mHeadStates.isMeasuring.set(false)
+                stopMeasurement()
                 if (cmdStr.contains("value=1")) {
                     Toaster.show("测量数据指令下发出错: $errorMsg")
                     dismissLoadingDialog()
@@ -642,7 +645,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.QUERY_SAMPLE -> {
-                mHeadStates.isMeasuring.set(false)
+                stopMeasurement()
                 if (cmdStr.contains("value=1")) {
                     Toaster.show("测量数据指令响应超时")
                     dismissLoadingDialog()
@@ -688,7 +691,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.QUERY_SAMPLE -> {
-                mHeadStates.isMeasuring.set(false)
+                stopMeasurement()
                 if (cmdStr.contains("value=1")) {
                     super.showNearbyCommunicationTimeoutAlert(
                         cmdStr,
@@ -800,7 +803,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "召测出错: ${result.message}"
                         handleFailureResult(errMsg, isShowErrMsg = false)
-                        mHeadStates.isMeasuring.set(false)
+                        stopMeasurement()
                         clearQueryMeasureDataTimeoutJob()
                         return
                     }
@@ -909,7 +912,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 when (code) {
                     "1" -> {
                         Toaster.show("测量数据指令下发成功,开始测量数据")
-                        mHeadStates.isMeasuring.set(true)
+                        startMeasurement()
                         clearQueryMeasureDataTimeoutJob()
                         processQueryMeasureData()
                     }
@@ -925,7 +928,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                             && resultMap.containsKey("z_angle")
                             && resultMap.containsKey("time")
                         ) {
-                            mHeadStates.isMeasuring.set(false)
+                            stopMeasurement()
                             clearQueryMeasureDataTimeoutJob()
 
                             val waterSurfaceElevation = resultMap["obj_alt"] ?: ""
@@ -950,6 +953,18 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             Timber.e(e)
             addLogItem(Log.ERROR, e.errorMsg)
         }
+    }
+
+    private fun startMeasurement() {
+        // 显示进度条并开始动画
+        mHeadStates.isMeasuring.set(true)
+        binding.llRadarWaterGaugeMeasureData.btnMeasureData.startProgressAnimation()
+    }
+
+    private fun stopMeasurement() {
+        // 隐藏进度条并停止动画
+        mHeadStates.isMeasuring.set(false)
+        binding.llRadarWaterGaugeMeasureData.btnMeasureData.stopProgressAnimation()
     }
 
     private fun processQueryMeasureData() {

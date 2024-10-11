@@ -33,8 +33,8 @@
             android:layout_height="44dp"
             android:layout_margin="@dimen/dimen_size_16"
             app:drawable_radius="@{4}"
-            app:drawable_solidColor="@{@color/gray_f5f6f8}"
-            tools:background="@color/gray_f5f6f8">
+            app:drawable_solidColor="@{@color/gray_F5F6F8}"
+            tools:background="@color/gray_F5F6F8">
 
             <androidx.appcompat.widget.AppCompatSpinner
                 android:id="@+id/spinner"

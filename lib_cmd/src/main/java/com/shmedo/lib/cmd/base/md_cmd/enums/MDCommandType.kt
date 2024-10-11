@@ -341,7 +341,7 @@ enum class MDCommandType(private val commandCode: String) {
     QUERY_MEDO_PLATFORM_APPKEY("812"),
 
     /**
-     * 查询数据中心参数
+     * 查询数据链路参数
      */
     QUERY_DATA_CENTER_PARAM("889"),
 

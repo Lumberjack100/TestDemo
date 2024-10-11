@@ -33,6 +33,7 @@
     <dimen name="text_size_29">29sp</dimen>
     <dimen name="text_size_30">30sp</dimen>
 
+    <dimen name="dimen_size_zero_point_5">0.5dp</dimen>
     <dimen name="dimen_size_1">1dp</dimen>
     <dimen name="dimen_size_2">2dp</dimen>
     <dimen name="dimen_size_3">3dp</dimen>
@@ -112,5 +113,8 @@
     <dimen name="fastscroll_handle_height">40dp</dimen>
     <dimen name="fastscroll_handle_width">6dp</dimen>
     <dimen name="fastscroll_handle_radius">2dp</dimen>
+
+    <dimen name="progress_stroke_width">3dp</dimen>
+
 
 </resources>

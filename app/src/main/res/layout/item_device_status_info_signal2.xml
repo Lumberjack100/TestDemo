@@ -35,12 +35,11 @@
             android:layout_marginStart="10dp"
             app:bind_signal_value="@{m.signalValue}"
             app:connected="true"
-            app:primary_color="@color/text_color_cccccc"
-            app:shadow_color="@color/green_00B26B"
+            app:primary_color="@color/text_color_CCCCCC"
             app:shadow_open="false"
             app:signal_maximum="4"
             app:spacing="1"
-            app:unit_width="8" />
+            app:unit_width="6" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

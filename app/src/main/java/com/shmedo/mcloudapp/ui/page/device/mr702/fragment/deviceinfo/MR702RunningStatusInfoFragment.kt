@@ -183,31 +183,31 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (communicationData.status1 == "0") "未开启" else if (communicationData.status1 == "1") "已连接" else "未连接",
-                            textColorResId = if (communicationData.status1 == "1") R.color.green_00B26B else R.color.error_FF4400
+                            textColorResId = if (communicationData.status1 == "1") R.color.online_colorPrimary else R.color.error_FF4400
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (communicationData.status2 == "0") "未开启" else if (communicationData.status2 == "1") "已连接" else "未连接",
-                            textColorResId = if (communicationData.status2 == "1") R.color.green_00B26B else R.color.error_FF4400
+                            textColorResId = if (communicationData.status2 == "1") R.color.online_colorPrimary else R.color.error_FF4400
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (communicationData.status3 == "0") "未开启" else if (communicationData.status3 == "1") "已连接" else "未连接",
-                            textColorResId = if (communicationData.status3 == "1") R.color.green_00B26B else R.color.error_FF4400
+                            textColorResId = if (communicationData.status3 == "1") R.color.online_colorPrimary else R.color.error_FF4400
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (communicationData.status4 == "0") "未开启" else if (communicationData.status4 == "1") "已连接" else "未连接",
-                            textColorResId = if (communicationData.status4 == "1") R.color.green_00B26B else R.color.error_FF4400
+                            textColorResId = if (communicationData.status4 == "1") R.color.online_colorPrimary else R.color.error_FF4400
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (communicationData.status5 == "0") "未接入" else if (communicationData.status5 == "1") "已连接" else "未连接",
-                            textColorResId = if (communicationData.status5 == "1") R.color.green_00B26B else R.color.error_FF4400
+                            textColorResId = if (communicationData.status5 == "1") R.color.online_colorPrimary else R.color.error_FF4400
                         )
                     )
                 }

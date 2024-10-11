@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.model
 
 import android.os.Parcelable
 import androidx.databinding.BaseObservable
+import com.shmedo.mcloudapp.R
 import kotlinx.parcelize.Parcelize
 
 /**
@@ -14,7 +15,7 @@ data class DataCenterStatusItem(
     val centerid: Int = 1,
     val name: String = "",
     var status: String = "",
-    val bgResId: Int = 0,
+    val bgResId: Int = R.drawable.layer_common_click_item_with_divider,
 ) : Parcelable, BaseObservable() {
 
     fun refreshStatus(status: String) {

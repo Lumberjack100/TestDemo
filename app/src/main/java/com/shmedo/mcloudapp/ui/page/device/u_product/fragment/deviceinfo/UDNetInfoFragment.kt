@@ -65,8 +65,12 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "移动网络",
-                    value = stateInfo.mobileNet.compareAndReturn("1", "开启", "关闭"),
+                    value = stateInfo.mobileNet.compareAndReturn("1", "已连接", "未连接"),
+                    textColorRes = if (stateInfo.mobileNet == "1") ColorUtils.getColor(
+                        R.color.online_colorPrimary
+                    ) else  ColorUtils.getColor(R.color.error_FF4400)
                 )
+
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "网络类型",
@@ -87,10 +91,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList.add(
                         DeviceStatusInfoSignalItem(
                             name = "信号强度",
-                            signalValue = if (temp <= 0)
-                                temp
-                            else
-                                temp * 2 - 113
+                            signalValue = temp
                         )
                     )
                 }
@@ -109,16 +110,16 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "电台",
                     value = stateInfo.radioEnableStatus.compareAndReturn("1", "已启用", "未启用"),
                     textColorRes = if (stateInfo.radioEnableStatus == "1") ColorUtils.getColor(
-                        R.color.green_00B26B
-                    ) else 0
+                        R.color.online_colorPrimary
+                    ) else ColorUtils.getColor(R.color.error_FF4400)
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "蓝牙",
                     value = stateInfo.bt_connected.compareAndReturn("1", "已连接", "未连接"),
-                    textColorRes = if (stateInfo.radioEnableStatus == "1") ColorUtils.getColor(
-                        R.color.green_00B26B
-                    ) else 0,
+                    textColorRes = if (stateInfo.bt_connected == "1") ColorUtils.getColor(
+                        R.color.online_colorPrimary
+                    ) else ColorUtils.getColor(R.color.error_FF4400),
                     isBottomItem = true
                 )
 
@@ -155,7 +156,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             ),
                             textColorRes = if (enableStatus == "0" || onlineStatus == "未连接") ColorUtils.getColor(
                                 R.color.error_FF4400
-                            ) else ColorUtils.getColor(R.color.green_00B26B),
+                            ) else ColorUtils.getColor(R.color.online_colorPrimary),
                             isBottomItem = true
                         )
                     }

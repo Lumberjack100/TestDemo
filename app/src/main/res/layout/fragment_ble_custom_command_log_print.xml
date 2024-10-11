@@ -97,7 +97,7 @@
                 android:padding="@dimen/dimen_size_4"
                 android:text="@={stateVM.command}"
                 android:textColor="@color/title_text_color"
-                android:textColorHint="@color/text_color_b3b3b3"
+                android:textColorHint="@color/text_color_B3B3B3"
                 android:textSize="@dimen/text_size_14"
                 app:drawable_radius="@{4}"
                 app:drawable_solidColor="@{@color/search_bg_gray_color}"

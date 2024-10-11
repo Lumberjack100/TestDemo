@@ -26,8 +26,8 @@
             android:layout_margin="@dimen/dimen_size_16"
             android:padding="@dimen/dimen_size_16"
             app:drawable_radius="@{4}"
-            app:drawable_solidColor="@{@color/gray_f5f6f8}"
-            tools:background="@color/gray_f5f6f8">
+            app:drawable_solidColor="@{@color/gray_F5F6F8}"
+            tools:background="@color/gray_F5F6F8">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_center_name"
@@ -39,7 +39,7 @@
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="数据中心03-TCP" />
+                tools:text="数据链路01" />
 
             <View
                 android:id="@+id/view_line"

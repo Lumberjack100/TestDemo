@@ -151,8 +151,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-100]"
-                            android:text="@={stateVM.downSpeed}"
                             android:inputType="number"
+                            android:text="@={stateVM.downSpeed}"
                             app:lengthFilter="@{3}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -196,7 +196,8 @@
                     <RelativeLayout
                         style="@style/SwitchButton_Item_Layout_Style"
                         visible="@{!stateVM.isAutoMeasuringMode}"
-                        android:background="@drawable/layer_common_click_item_with_divider">
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        tools:visibility="gone">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/SwitchButton_Item_Title_Style"
@@ -220,7 +221,8 @@
                         onClickWithDebouncing="@{()->click.onMotionTypeClick()}"
                         visible="@{!stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:enabled="@{stateVM.isEditable }"
+                        tools:visibility="gone">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
@@ -238,7 +240,8 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
                         visible="@{!stateVM.isAutoMeasuringMode}"
-                        android:background="@drawable/layer_common_click_item_with_divider">
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        tools:visibility="gone">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
@@ -250,8 +253,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-100]"
-                            android:text="@={stateVM.speed}"
                             android:inputType="number"
+                            android:text="@={stateVM.speed}"
                             app:lengthFilter="@{3}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -259,7 +262,8 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
                         visible="@{!stateVM.isAutoMeasuringMode}"
-                        android:background="@drawable/layer_common_click_item_with_divider">
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        tools:visibility="gone">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"

@@ -31,6 +31,13 @@ data class MRRS485Port1SensorParamEntity(
     val mgbk: String = IOTConstants.NULL_KEY,//采集项名称GBK编码
     val egbk: String = IOTConstants.NULL_KEY,//采集项单位GBK编码
     val sgbk: String = IOTConstants.NULL_KEY,//传感器名称GBK编码
+
+    val kvalue: String = IOTConstants.NULL_KEY,//灵敏度K
+    val bvalue: String = IOTConstants.NULL_KEY,//温度修正系数 b
+    val r0value: String = IOTConstants.NULL_KEY,//初始频率 F0
+    val t0value: String = IOTConstants.NULL_KEY,//初始温度 T0
+    val l0value: String = IOTConstants.NULL_KEY,//初始水位
+    val lvalue: String = IOTConstants.NULL_KEY//堰角高度
 ) {
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)

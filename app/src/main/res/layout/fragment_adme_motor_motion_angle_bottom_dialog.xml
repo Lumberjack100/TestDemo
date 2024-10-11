@@ -69,8 +69,8 @@
                 android:paddingEnd="10dp"
                 android:paddingBottom="24dp"
                 app:drawable_radius="@{3}"
-                app:drawable_solidColor="@{@color/main_bg_gray_f9f9f9}"
-                tools:background="@color/main_bg_gray_f9f9f9">
+                app:drawable_solidColor="@{@color/main_bg_gray_F9F9F9}"
+                tools:background="@color/main_bg_gray_F9F9F9">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_data_left_title"
@@ -108,8 +108,8 @@
                 android:paddingEnd="10dp"
                 android:paddingBottom="24dp"
                 app:drawable_radius="@{3}"
-                app:drawable_solidColor="@{@color/main_bg_gray_f9f9f9}"
-                tools:background="@color/main_bg_gray_f9f9f9">
+                app:drawable_solidColor="@{@color/main_bg_gray_F9F9F9}"
+                tools:background="@color/main_bg_gray_F9F9F9">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"

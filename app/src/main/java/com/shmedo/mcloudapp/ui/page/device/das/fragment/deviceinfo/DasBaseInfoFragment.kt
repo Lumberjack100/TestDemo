@@ -216,7 +216,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         name = "状态",
                         value = if (info.solar.errno == "1") "正常" else "异常",
                         textColorRes = if (info.solar.errno == "1") ColorUtils.getColor(
-                            R.color.green_00B26B
+                            R.color.online_colorPrimary
                         ) else ColorUtils.getColor(
                             R.color.error_FF4400
                         )
@@ -281,7 +281,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                             name = "状态",
                             value = if (info.inth.errno == "1") "正常" else "异常",
                             textColorRes = if (info.inth.errno == "1") ColorUtils.getColor(
-                                R.color.green_00B26B
+                                R.color.online_colorPrimary
                             ) else ColorUtils.getColor(
                                 R.color.error_FF4400
                             )
@@ -311,7 +311,7 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                             name = "状态",
                             value = if (info.outth.errno == "1") "正常" else "异常",
                             textColorRes = if (info.outth.errno == "1") ColorUtils.getColor(
-                                R.color.green_00B26B
+                                R.color.online_colorPrimary
                             ) else ColorUtils.getColor(
                                 R.color.error_FF4400
                             )

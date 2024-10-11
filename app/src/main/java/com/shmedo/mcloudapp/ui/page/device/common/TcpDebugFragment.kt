@@ -178,7 +178,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
                     is ConnectedResult -> {
                         printLog(
                             "蓝牙连接成功",
-                            ColorUtils.getColor(R.color.green_00B26B)
+                            ColorUtils.getColor(R.color.online_colorPrimary)
                         )
                     }
 
@@ -233,7 +233,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
 
                 is TcpConnectedResult -> {
                     mStates.tcpConnected.set(true)
-                    printLog("TCP 连接成功", ColorUtils.getColor(R.color.green_00B26B))
+                    printLog("TCP 连接成功", ColorUtils.getColor(R.color.online_colorPrimary))
                 }
 
                 is TcpSuccessResult -> {

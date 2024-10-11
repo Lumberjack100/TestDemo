@@ -5,10 +5,9 @@ import com.shmedo.core.model.DeviceSensorBasicInfo
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 class UDSensorDataHistoryViewModel : ViewModel() {
+    val periodDate = NonNullObservableField("")
     val startTime = NonNullObservableField("")
     val endTime = NonNullObservableField("")
-    val startTimeMills = NonNullObservableField(0L)
-    val endTimeMills = NonNullObservableField(0L)
 
     val modelName = NonNullObservableField("")//
 

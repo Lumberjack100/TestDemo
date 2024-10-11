@@ -78,7 +78,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentDataCenterParamBinding
-        binding.llToolbar.toolbar.title = "数据中心"
+        toolbarViewModel.toolbarTitleText.set("链路配置")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)
         }
@@ -160,7 +160,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             }
             mStates.isCenterOpened.set(isChecked)
             if (!isChecked) {
-                showMessage("确定要关闭数据中心吗？", "温馨提示", "确定", {
+                showMessage("确定要关闭链路吗？", "温馨提示", "确定", {
                     closeDataServer()
                 }, "取消", {
                     mStates.isCenterOpened.set(true)
@@ -307,21 +307,21 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
     private fun initSaveCommand() {
         commandItems.clear()
         if (mStates.centerServerAddress.get().isEmpty()) {
-            showMessageDialog("请输入数据中心地址!")
+            showMessageDialog("请输入链路地址!")
             return
         }
         if (mStates.centerServerPort.get().isEmpty()) {
-            showMessageDialog("请输入数据中心端口号!")
+            showMessageDialog("请输入链路端口号!")
             return
         }
         try {
             val port: Int = mStates.centerServerPort.get().toInt()
             if (port < 0 || port > 65535) {
-                showMessageDialog("数据中心端口号数值范围[0,65535]!")
+                showMessageDialog("链路端口号数值范围[0,65535]!")
                 return
             }
         } catch (ex: Exception) {
-            showMessageDialog("数据中心端口号数值范围[0,65535]!")
+            showMessageDialog("链路端口号数值范围[0,65535]!")
             return
         }
         val entity = DataCenterParamEntity(
@@ -413,7 +413,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询数据中心参数出错: ${result.message}"
+                        val errMsg = "查询链路参数出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -436,7 +436,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 //                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置数据中心参数出错: ${result.message}"
+                        val errMsg = "设置链路参数出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }

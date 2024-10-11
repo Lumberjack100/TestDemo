@@ -114,20 +114,8 @@ class RebootModule(
     navId = navId,
 )
 
-class RestoreFactoryModule(
-    name: String = "恢复出厂",
-    desc: String = "设备恢复到出厂设置",
-    resID: Int = R.drawable.ic_module_reset,
-    navId: Int = 0,
-) : DeviceFunctionModule(
-    name = name,
-    desc = desc,
-    iconResId = resID,
-    navId = navId,
-)
-
 class DataCenterModule(
-    name: String = "数据中心",
+    name: String = "链路配置",
     desc: String = "连接平台参数配置",
     resID: Int = R.drawable.ic_module_datacenter,
     navId: Int = 0,
@@ -148,16 +136,6 @@ class AdvancedSettingsModule(
     desc = desc,
     iconResId = resID,
     navId = navId,
-)
-
-class FirmwareUpgradeModule(
-    name: String = "固件升级",
-    desc: String = "选择固件升级系统",
-    resID: Int = R.drawable.ic_module_firmware_upgrade,
-    navId: Int = 0,
-    isSupport: Boolean = true
-) : DeviceFunctionModule(
-    name = name, desc = desc, iconResId = resID, navId = navId, isSupport = isSupport
 )
 
 class LoraConfigModule(

@@ -38,14 +38,14 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/4/29
- * 描述： 一体化雷达泥位计数据中心主页面
+ * 描述： 一体化雷达泥位计数据链路主页面
  */
 class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUniversalDataCenterHomeBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: UniversalDataCenterHomeViewModel
     private val iotParseManager: IOTParserManager by inject()
-    private var centerNum = 0//数据中心数量
+    private var centerNum = 0//数据链路数量
 
     override fun initViewModel() {
         super.initViewModel()
@@ -65,7 +65,7 @@ class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUniversalDataCenterHomeBinding
-        toolbarViewModel.toolbarTitleText.set("数据中心")
+        toolbarViewModel.toolbarTitleText.set("数据链路")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }
@@ -74,6 +74,15 @@ class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
         }
         initRefresh()
         initAdapter()
+    }
+
+    override fun initData() {
+        super.initData()
+        arguments?.let {
+            centerNum = it.getInt(UniversalDataCenterHomeFragment.CENTER_NUM)
+        }
+        mStates.isSupportedReportInterval.set(false)
+        binding.recyclerView.bindingAdapter.models = getAdapterData()
     }
 
     private fun initRefresh() {
@@ -108,15 +117,6 @@ class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun initData() {
-        super.initData()
-        arguments?.let {
-            centerNum = it.getInt(UniversalDataCenterHomeFragment.CENTER_NUM)
-        }
-        mStates.isSupportedReportInterval.set(false)
-        binding.recyclerView.bindingAdapter.models = getAdapterData()
-    }
-
     override fun createObserver() {
         super.createObserver()
         //从编辑页面返回需要刷新事件详情页面
@@ -146,7 +146,7 @@ class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询数据中心状态出错: ${result.message}"
+                        val errMsg = "查询数据链路状态出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -207,7 +207,7 @@ class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
             list.add(
                 DataCenterStatusItem(
                     centerid = i,
-                    name = "数据中心$i",
+                    name = "数据链路$i",
                     status = "0",
                     bgResId = when (i) {
                         1 -> R.drawable.layer_common_click_item_top_corner_4_with_divider

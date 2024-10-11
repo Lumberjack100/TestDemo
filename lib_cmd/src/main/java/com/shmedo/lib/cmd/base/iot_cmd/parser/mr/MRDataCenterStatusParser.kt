@@ -7,7 +7,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRDataCenterStatus
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2023/9/28 <br/>
- * 描述：    获取数据中心状态
+ * 描述：    获取数据链路状态
  */
 class MRDataCenterStatusParser : IOTCommandParser<MRDataCenterStatus> {
 
