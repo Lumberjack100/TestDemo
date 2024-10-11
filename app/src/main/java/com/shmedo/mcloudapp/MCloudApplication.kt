@@ -130,7 +130,7 @@ class MCloudApplication : BaseApp() {
             }
         }
         SmartRefreshLayout.setDefaultRefreshHeaderCreator { context, _ ->
-            MaterialHeader(context)
+            MaterialHeader(context).setColorSchemeResources(R.color.colorPrimary)
         }
         SmartRefreshLayout.setDefaultRefreshFooterCreator { context, _ ->
             ClassicsFooter(context)

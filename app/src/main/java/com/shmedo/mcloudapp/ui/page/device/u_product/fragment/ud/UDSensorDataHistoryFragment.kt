@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
-import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.drake.brv.PageRefreshLayout
@@ -31,13 +29,11 @@ import com.shmedo.mcloudapp.databinding.ItemUdSensorDataBinding
 import com.shmedo.mcloudapp.databinding.ItemUdSensorDataHeaderBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.extensions.showDatePickerDialog
 import com.shmedo.mcloudapp.model.HoverHeaderModel
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDSensorDataHistoryViewModel
-import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.utils.image.GlideEngine
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -56,7 +52,13 @@ class UDSensorDataHistoryFragment : BaseFragment() {
 
     private val sensorIDList: MutableList<String> = arrayListOf()
     private val mImageData: ArrayList<LocalMedia> = ArrayList()
-
+    private val periodDateList: MutableList<String> = arrayListOf(
+        "一天内",
+        "三天内",
+        "一周内",
+        "一个月内",
+        "三个月内"
+    )
 
     override fun initViewModel() {}
 
@@ -92,13 +94,13 @@ class UDSensorDataHistoryFragment : BaseFragment() {
 
     private fun initAdapter() {
         binding.recyclerview.linear().setup { rv ->
-            rv.addItemDecoration(
-                RecycleViewDivider(
-                    LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(1f), ColorUtils.getColor(
-                        R.color.divider_line_bg
-                    )
-                )
-            )
+//            rv.addItemDecoration(
+//                RecycleViewDivider(
+//                    LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(0.5f), ColorUtils.getColor(
+//                        R.color.divider_line_bg
+//                    )
+//                )
+//            )
             addType<HoverHeaderModel>(R.layout.item_ud_sensor_data_header)
             addType<Map<String, String>>(R.layout.item_ud_sensor_data)
             onBind {
@@ -185,19 +187,18 @@ class UDSensorDataHistoryFragment : BaseFragment() {
 
     private fun resetDefaultParams() {
         //一周前
-        mStates.startTimeMills.set(TimeUtils.getNowMills() - 7 * 24 * 3600 * 1000)
-        mStates.endTimeMills.set(TimeUtils.getNowMills())
+        mStates.periodDate.set(periodDateList[2])
         mStates.startTime.set(
             TimeUtils.millis2String(
-                mStates.startTimeMills.get(),
-                "yy.MM.dd HH:mm"
-            )
+                TimeUtils.getNowMills() - 7 * 24 * 3600 * 1000,
+                "yyyy-MM-dd HH:mm"
+            ) + ":00"
         )
         mStates.endTime.set(
             TimeUtils.millis2String(
-                mStates.endTimeMills.get(),
-                "yy.MM.dd HH:mm"
-            )
+                TimeUtils.getNowMills(),
+                "yyyy-MM-dd HH:mm"
+            ) + ":00"
         )
         mStates.modelName.set(modelNameList[0])
     }
@@ -220,36 +221,77 @@ class UDSensorDataHistoryFragment : BaseFragment() {
     }
 
     inner class ClickProxy : BaseClickProxy() {
-        fun onChooseStartTimeClick() {
-            requireContext().showDatePickerDialog(defaultDate = if (mStates.startTimeMills.get() == 0L) TimeUtils.getNowMills() else mStates.startTimeMills.get()) { time: Long ->
-                if (TimeUtils.millis2String(
-                        time, "yy.MM.dd HH:mm"
-                    ) != mStates.endTime.get() && time > mStates.endTimeMills.get() && mStates.endTimeMills.get() != 0L
-                ) {
-                    Toaster.show("开始时间不能大于结束时间")
-                    return@showDatePickerDialog
-                }
-                mStates.startTimeMills.set(time)
-                mStates.startTime.set(TimeUtils.millis2String(time, "yy.MM.dd HH:mm"))
-                if (mStates.endTimeMills.get() == 0L) {
-                    binding.refreshLayout.showLoading()
-                }
-            }
+
+        fun onChooseTimeClick() {
+            val selectedIndex = periodDateList.indexOf(mStates.periodDate.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "", periodDateList.toTypedArray(),
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.periodDate.set(text)
+                        when (position) {
+                            0 -> {//一天内
+                                mStates.startTime.set(
+                                    TimeUtils.millis2String(
+                                        TimeUtils.getNowMills() - 1 * 24 * 3600 * 1000,
+                                        "yyyy-MM-dd HH:mm"
+                                    ) + ":00"
+                                )
+                            }
+
+                            1 -> {//三天内
+                                mStates.startTime.set(
+                                    TimeUtils.millis2String(
+                                        TimeUtils.getNowMills() - 3L * 24 * 3600 * 1000,
+                                        "yyyy-MM-dd HH:mm"
+                                    ) + ":00"
+                                )
+                            }
+
+                            2 -> {//一周内
+                                mStates.startTime.set(
+                                    TimeUtils.millis2String(
+                                        TimeUtils.getNowMills() - 7L * 24 * 3600 * 1000,
+                                        "yyyy-MM-dd HH:mm"
+                                    ) + ":00"
+                                )
+                            }
+
+                            3 -> {//一个月内
+                                mStates.startTime.set(
+                                    TimeUtils.millis2String(
+                                        TimeUtils.getNowMills() - 30L * 24 * 3600 * 1000,
+                                        "yyyy-MM-dd HH:mm"
+                                    ) + ":00"
+                                )
+                            }
+
+                            4 -> {//三个月内
+                                mStates.startTime.set(
+                                    TimeUtils.millis2String(
+                                        TimeUtils.getNowMills() - 90L * 24 * 3600 * 1000,
+                                        "yyyy-MM-dd HH:mm"
+                                    ) + ":00"
+                                )
+                            }
+                        }
+                        mStates.endTime.set(
+                            TimeUtils.millis2String(
+                                TimeUtils.getNowMills(),
+                                "yyyy-MM-dd HH:mm"
+                            ) + ":00"
+                        )
+                        binding.refreshLayout.showLoading()
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
         }
 
-        fun onChooseEndTimeClick() {
-            requireContext().showDatePickerDialog(defaultDate = if (mStates.endTimeMills.get() == 0L) TimeUtils.getNowMills() else mStates.endTimeMills.get()) { time: Long ->
-                if (mStates.startTimeMills.get() > time) {
-                    Toaster.show("结束时间不能小于开始时间")
-                    return@showDatePickerDialog
-                }
-                mStates.endTimeMills.set(time)
-                mStates.endTime.set(TimeUtils.millis2String(time, "yy.MM.dd HH:mm"))
-                if (mStates.startTimeMills.get() == 0L) {
-                    binding.refreshLayout.showLoading()
-                }
-            }
-        }
 
         /**
          * 选择监测类型
@@ -305,14 +347,8 @@ class UDSensorDataHistoryFragment : BaseFragment() {
         deviceRequestViewModel.queryMonitorDataListWithPage(
             deviceToken = deviceInfo.deviceToken,
             sensorIDList = sensorIDList,
-            begin = TimeUtils.millis2String(
-                mStates.startTimeMills.get(),
-                "yyyy-MM-dd HH:mm"
-            ) + ":00",
-            end = TimeUtils.millis2String(
-                mStates.endTimeMills.get(),
-                "yyyy-MM-dd HH:mm"
-            ) + ":00",
+            begin = mStates.startTime.get(),
+            end = mStates.endTime.get(),
             currentPage = binding.refreshLayout.index,
             pageSize = PAGE_SIZE
         )
@@ -348,13 +384,8 @@ class UDSensorDataHistoryFragment : BaseFragment() {
         initImmersionBar(binding.llToolbar.toolbar)
     }
 
-    override fun onDestroyView() {
-//        mActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        super.onDestroyView()
-    }
-
     companion object {
-        private const val PAGE_SIZE = 100
+        private const val PAGE_SIZE = 50
         fun newBundleArguments(
             deviceInfo: DeviceInfo,
         ): Bundle = Bundle().apply {
