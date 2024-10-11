@@ -89,6 +89,8 @@ data class UDCurrentStateInfo(
     var pixy: String = IOTConstants.NULL_KEY,//图片垂直分辨率  "1080"
     @Json(name = "adxl_sta")
     val accelerometerStatus: String = IOTConstants.NULL_KEY, //加速度计 -3：模块异常  -2：数据异常  0：正常
+    @Json(name = "gnss_sta")
+    val gnssStatus: String = IOTConstants.NULL_KEY, //GNSS状态     0：正常
     @Json(name = "utc_time")
     val utcTime: String = IOTConstants.NULL_KEY, //UTC时间  "2024.08.30 01:31:29"
     @Json(name = "lng_dir")

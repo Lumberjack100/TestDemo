@@ -74,9 +74,13 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     DeviceStatusInfoBasicItem(
                         name = "设备状态",
                         value = deviceStatus,
-                        textColorRes = if (deviceStatus == "正常") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
-                            R.color.error_FF4400
-                        )
+                        textColorRes = when (deviceStatus) {
+                            "正常" -> ColorUtils.getColor(R.color.online_colorPrimary)
+                            "告警" -> ColorUtils.getColor(
+                                R.color.warn_FF9D00
+                            )
+                            else -> ColorUtils.getColor(R.color.error_FF4400)
+                        }
                     )
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(

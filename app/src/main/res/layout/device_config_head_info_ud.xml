@@ -53,11 +53,11 @@
                 android:layout_marginTop="@dimen/dimen_size_5"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:gravity="center_vertical"
-                android:text='@{stateVM.deviceName+" | "+stateVM.deviceToken}'
+                android:gravity="bottom"
+                android:text='@{stateVM.deviceName+" I "+stateVM.deviceToken}'
                 android:textColor="@color/black_40"
                 android:textSize="@dimen/text_size_14"
-                tools:text="MD-DR030 | 21E118L" />
+                tools:text="MD-DR030 I 21E118L" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_platform"

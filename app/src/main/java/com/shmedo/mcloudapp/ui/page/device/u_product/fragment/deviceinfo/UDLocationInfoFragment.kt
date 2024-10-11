@@ -179,12 +179,18 @@ class UDLocationInfoFragment : BaseIOTDeviceFragment() {
                 val stateInfo = withContext(Dispatchers.IO) {
                     MoshiUtil.fromJson<UDCurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
+                if (stateInfo.gnssStatus != "0") {
+                    mStates.longitude.set("--")
+                    mStates.latitude.set("--")
+                    return@launchWithViewLifecycle
+                }
 
-                mStates.longitude.set("${stateInfo.longitudeDirection} ${stateInfo.longitude}°")
-                mStates.latitude.set("${stateInfo.latitudeDirection} ${stateInfo.latitude}°")
                 if (stateInfo.longitude != IOTConstants.NULL_KEY
                     && stateInfo.latitude != IOTConstants.NULL_KEY
                 ) {
+                    mStates.longitude.set("${stateInfo.longitudeDirection} ${stateInfo.longitude}°")
+                    mStates.latitude.set("${stateInfo.latitudeDirection} ${stateInfo.latitude}°")
+
                     val longitude = stateInfo.longitude.toDouble()
                     val latitude = stateInfo.latitude.toDouble()
                     gcjLatLng = CustomLatLng(latitude, longitude).toGcj02LatLng().apply {

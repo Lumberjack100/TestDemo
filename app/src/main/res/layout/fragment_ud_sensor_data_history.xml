@@ -94,6 +94,7 @@
                     android:layout_marginStart="@dimen/dimen_size_5"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_arrow_down" />
+
             </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -102,6 +103,10 @@
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginHorizontal="@dimen/page_content_container_padding_horizontal_12"
+            android:layout_marginBottom="@dimen/dimen_size_20"
+            android:background="@drawable/shape_common_click_item_bottom_corner_4"
+            android:paddingHorizontal="@dimen/dimen_size_10"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -111,11 +116,7 @@
                 android:id="@+id/recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/page_content_container_padding_horizontal_12"
-                android:layout_marginBottom="@dimen/dimen_size_20"
-                android:background="@drawable/shape_common_click_item_bottom_corner_4"
                 android:clipToPadding="false"
-                android:paddingHorizontal="@dimen/dimen_size_10"
                 android:splitMotionEvents="false"
                 tools:itemCount="30"
                 tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

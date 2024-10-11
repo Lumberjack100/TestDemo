@@ -72,7 +72,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         stateInfo.batteryVoltage.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                         "电池异常"
                     ),
-                    textColorRes = if (stateInfo.batteryStatus == "0") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                    textColorRes = if (stateInfo.batteryStatus == "0") 0 else ColorUtils.getColor(
                         R.color.error_FF4400
                     ),
                     unit = "V",
@@ -85,7 +85,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         stateInfo.batteryCapacity.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                         "电池异常"
                     ),
-                    textColorRes = if (stateInfo.batteryStatus == "0") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                    textColorRes = if (stateInfo.batteryStatus == "0") 0 else ColorUtils.getColor(
                         R.color.error_FF4400
                     ),
                     unit = "%",
@@ -98,7 +98,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         stateInfo.batteryTemp.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                         "电池异常"
                     ),
-                    textColorRes = if (stateInfo.batteryStatus == "0") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                    textColorRes = if (stateInfo.batteryStatus == "0") 0 else ColorUtils.getColor(
                         R.color.error_FF4400
                     ),
                     unit = "℃",
@@ -111,7 +111,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         if (stateInfo.batteryChargeStatus == "1") "充电中" else "放电中",
                         "电池异常"
                     ),
-                    textColorRes = if (stateInfo.batteryStatus == "0") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                    textColorRes = if (stateInfo.batteryStatus == "0") 0 else ColorUtils.getColor(
                         R.color.error_FF4400
                     ),
                 )
@@ -123,7 +123,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         stateInfo.batteryHealth.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                         "电池异常"
                     ),
-                    textColorRes = if (stateInfo.batteryStatus == "0") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                    textColorRes = if (stateInfo.batteryStatus == "0") 0 else ColorUtils.getColor(
                         R.color.error_FF4400
                     ),
                     unit = "%",

@@ -117,7 +117,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList,
                     name = "蓝牙",
                     value = stateInfo.bt_connected.compareAndReturn("1", "已连接", "未连接"),
-                    textColorRes = if (stateInfo.radioEnableStatus == "1") ColorUtils.getColor(
+                    textColorRes = if (stateInfo.bt_connected == "1") ColorUtils.getColor(
                         R.color.online_colorPrimary
                     ) else ColorUtils.getColor(R.color.error_FF4400),
                     isBottomItem = true
