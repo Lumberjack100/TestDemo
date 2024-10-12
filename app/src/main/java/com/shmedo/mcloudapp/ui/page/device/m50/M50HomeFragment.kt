@@ -321,7 +321,13 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             )
         )
         if (communicateWay is BleConnect) {
-            configModuleTree.configModules.add(ConfigModule(CommandDebugConfigModule()))
+            configModuleTree.configModules.add(
+                ConfigModule(
+                    CommandDebugConfigModule(
+                        resID = R.drawable.ic_module_cmd_debug_new,
+                    )
+                )
+            )
         }
         groupList.add(configModuleTree)
 

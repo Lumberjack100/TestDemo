@@ -86,8 +86,7 @@
 
                             <com.kyleduo.switchbutton.SwitchButton
                                 style="@style/SwitchButton_Item_Button_Style"
-                                checkedImmediatelyNoEvent="@{stateVM.alarmEnable}"
-                                android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
+                                android:checked="@={stateVM.alarmEnable}"
                                 app:kswAnimationDuration="100"
                                 app:kswBackDrawable="@drawable/sl_switchbutton_back"
                                 app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
