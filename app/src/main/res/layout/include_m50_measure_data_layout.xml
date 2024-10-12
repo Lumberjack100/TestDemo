@@ -40,65 +40,78 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <com.google.android.material.textview.MaterialTextView
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_10"
-            android:text='@{"合位移量："+stateVM.resultantDisplacement}'
-            android:textColor="@color/title_text_color_black_90"
-            android:textSize="@dimen/page_content_item_text_size_14"
-            tools:text="合位移量：5.333m" />
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:text="合位移量："
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/page_content_item_text_size_14" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:text='@{stateVM.resultantDisplacement}'
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/text_size_18"
+                android:textStyle="bold"
+                tools:text="5.333m" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/ll_air_distance"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dimen_size_20"
             android:layout_marginTop="@dimen/dimen_size_10">
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_air_distance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text='@{"X轴位移量："+stateVM.xDisplacement}'
-                android:textColor="@color/sub_title_text_color_black_60"
-                android:textSize="@dimen/page_content_item_text_size_14"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="X轴位移量：5.38m" />
 
             <View
                 android:id="@+id/vertical_divider_line"
                 android:layout_width="1dp"
                 android:layout_height="0dp"
                 android:layout_marginVertical="@dimen/dimen_size_2"
-                android:background="@color/divider_line_bg"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_air_distance"
+                android:background="@color/divider_line_bg2"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/tv_air_distance" />
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_air_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dimen_size_20"
+                android:text='@{"X轴位移量："+stateVM.xDisplacement}'
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="X轴位移量：5.38m" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_installation_angle"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dimen_size_20"
                 android:layout_marginStart="@dimen/dimen_size_16"
                 android:text='@{"Y轴位移量："+stateVM.yDisplacement}'
-                android:textColor="@color/sub_title_text_color_black_60"
+                android:textColor="@color/title_text_color_black_90"
                 android:textSize="@dimen/page_content_item_text_size_14"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/vertical_divider_line"
-                app:layout_constraintTop_toTopOf="parent"
                 tools:text="Y轴位移量：5.38m" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dimen_size_20"
             android:layout_marginTop="@dimen/dimen_size_10"
             android:text='@{"Z轴位移量："+stateVM.zDisplacement}'
-            android:textColor="@color/sub_title_text_color_black_60"
+            android:textColor="@color/title_text_color_black_90"
             android:textSize="@dimen/page_content_item_text_size_14"
             tools:text="Z轴位移量：3.22m" />
 

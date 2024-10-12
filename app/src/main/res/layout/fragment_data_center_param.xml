@@ -53,16 +53,27 @@
                     android:paddingTop="@dimen/page_content_container_padding_top_12"
                     android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
-                    <include
-                        android:id="@+id/ll_data_center_param_head"
-                        layout="@layout/data_center_param_head"
-                        app:click="@{click}"
-                        app:vm="@{stateVM}" />
+                    <RelativeLayout
+                        style="@style/SwitchButton_Item_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/SwitchButton_Item_Title_Style"
+                            android:text="链路启用" />
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            android:id="@+id/statusSB"
+                            style="@style/SwitchButton_Item_Button_Style"
+                            android:checked="@={stateVM.isCenterOpened}"
+                            app:kswAnimationDuration="100"
+                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
+
+                    </RelativeLayout>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
-                        android:layout_marginTop="@dimen/page_content_item_margin_top_12"
-                        android:background="@drawable/shape_common_click_item_top_corner_4">
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
@@ -449,8 +460,8 @@
 
                                 <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"
-                                    textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                                    textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:inputType="number"
                                     android:text="@={stateVM.maintainReportInterval}"
                                     app:lengthFilter="@{3}" />
@@ -498,11 +509,17 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_reset"
+                        style="@style/ResetButton_Style2"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:onClick="@{()->click.onResetClick()}"
+                        android:text="@string/button_reset_text" />
+
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_confirm"
                         style="@style/SubmitButton_Style2"
-                        onClickWithDebouncing="@{()->click.onSubmitClick()}"
-                        visible="@{stateVM.isEditable &amp;&amp; stateVM.isCenterOpened}"
-                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                        android:layout_marginTop="@dimen/summit_button_margin_top_20"
                         android:text="@string/button_save_text" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>

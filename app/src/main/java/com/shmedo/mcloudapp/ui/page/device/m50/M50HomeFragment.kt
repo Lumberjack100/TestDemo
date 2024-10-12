@@ -123,9 +123,9 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         mHeadStates.productLogoResId.set(R.drawable.device_logo_m50)
-        mHeadStates.productName.set("一体化GNSS接收机")
+        mHeadStates.productName.set("一体化GNSS监测站")
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
-        mHeadStates.deviceName.set(if (deviceInfo.deviceName == deviceInfo.deviceToken) deviceInfo.productToken else deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
+        mHeadStates.deviceName.set("M50")
 
         when (communicateWay) {
             NetPlatformConnect -> {
