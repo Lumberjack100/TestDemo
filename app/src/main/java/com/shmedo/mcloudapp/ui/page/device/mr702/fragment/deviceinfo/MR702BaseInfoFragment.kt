@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo
 import android.util.Log
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRDeviceInfoEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRBaseInfo
@@ -92,7 +93,7 @@ class MR702BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "MAC",
-                    value = "--",
+                    value = AppContants.PLACE_HOLDER_VALUE,
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
@@ -116,7 +117,7 @@ class MR702BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     groupList,
                     name = "湿度",
                     value = stateInfo.hum,
-                    defaultValue = "--",
+                    defaultValue = AppContants.PLACE_HOLDER_VALUE,
                     digit = 2,
                     unit = "%",
                 )
@@ -124,7 +125,7 @@ class MR702BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     groupList,
                     name = "外部供电电压",
                     value = stateInfo.volt,
-                    defaultValue = "--",
+                    defaultValue = AppContants.PLACE_HOLDER_VALUE,
                     downLimitValue = 5.0,
                     digit = 2,
                     unit = "V",

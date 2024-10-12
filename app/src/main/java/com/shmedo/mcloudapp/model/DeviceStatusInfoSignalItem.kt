@@ -9,4 +9,5 @@ data class DeviceStatusInfoSignalItem(
     val name: String = "",
     var signalValue: Int = 0,
     var colorRes: Int = 0,
+    var isBottomItem: Boolean = false,
 )

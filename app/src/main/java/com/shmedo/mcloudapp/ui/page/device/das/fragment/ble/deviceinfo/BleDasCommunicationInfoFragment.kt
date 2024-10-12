@@ -80,7 +80,7 @@ class BleDasCommunicationInfoFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
 
         /**
-         * 查询数据中心网络状态 ##044n\r\n<br/>
+         * 查询数据链路网络状态 ##044n\r\n<br/>
          * 应答:$$044n,(1),(2),(3),(4),(5),(6),(7),(8),(9),(10)\r\n<br/>
          * 注：n取值1，2，3<br/>
          * （1）已发送数据<br/>
@@ -116,7 +116,7 @@ class BleDasCommunicationInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is MDCommandResult.Failure -> {
-                        val errMsg = "查询数据中心状态错"
+                        val errMsg = "查询数据链路状态错"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -189,19 +189,19 @@ class BleDasCommunicationInfoFragment : BaseIOTDeviceFragment() {
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (dataList[0].errno.toString() == "0") "未开启" else if (dataList[0].errno.toString() == "1") "已连接" else "未连接",
-                            textColorResId = if (dataList[0].errno.toString() == "1") R.color.green_00B26B else R.color.red_F13838
+                            textColorResId = if (dataList[0].errno.toString() == "1") R.color.online_colorPrimary else R.color.error_FF4400
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (dataList[1].errno.toString() == "0") "未开启" else if (dataList[1].errno.toString() == "1") "已连接" else "未连接",
-                            textColorResId = if (dataList[1].errno.toString() == "1") R.color.green_00B26B else R.color.red_F13838
+                            textColorResId = if (dataList[1].errno.toString() == "1") R.color.online_colorPrimary else R.color.error_FF4400
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             mData = if (dataList[2].errno.toString() == "0") "未开启" else if (dataList[2].errno.toString() == "1") "已连接" else "未连接",
-                            textColorResId = if (dataList[2].errno.toString() == "1") R.color.green_00B26B else R.color.red_F13838
+                            textColorResId = if (dataList[2].errno.toString() == "1") R.color.online_colorPrimary else R.color.error_FF4400
                         )
                     )
                 }
@@ -216,19 +216,19 @@ class BleDasCommunicationInfoFragment : BaseIOTDeviceFragment() {
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             dataList[0].unsend.toString(),
-                            R.color.red_F13838
+                            R.color.error_FF4400
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             dataList[1].unsend.toString(),
-                            R.color.red_F13838
+                            R.color.error_FF4400
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
                             dataList[2].unsend.toString(),
-                            R.color.red_F13838
+                            R.color.error_FF4400
                         )
                     )
                 }

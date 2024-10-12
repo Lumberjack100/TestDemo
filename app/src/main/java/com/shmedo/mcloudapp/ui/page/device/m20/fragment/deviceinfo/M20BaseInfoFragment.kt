@@ -71,7 +71,7 @@ class M20BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "工作模式",
-                    value = if (stateInfo.workMode.contains("1")) "基准站" else "移动站",
+                    value = if (stateInfo.workMode.contains("1")) "基站" else "测站",
                 )
                 stateInfo.self_check.notNullKey {
                     deviceAbnormalList.clear()
@@ -81,8 +81,8 @@ class M20BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                             name = "设备状态",
                             value = if (deviceAbnormalList.isEmpty()) "正常" else "异常",
                             textColorRes = if (deviceAbnormalList.isEmpty()) ColorUtils.getColor(
-                                R.color.green_00B26B
-                            ) else ColorUtils.getColor(R.color.red_F13838),
+                                R.color.online_colorPrimary
+                            ) else ColorUtils.getColor(R.color.error_FF4400),
                             isClickable = deviceAbnormalList.isNotEmpty()
                         )
                     )

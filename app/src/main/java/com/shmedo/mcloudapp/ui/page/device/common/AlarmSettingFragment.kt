@@ -35,7 +35,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/4/25
- * @desc: 报警设置
+ * @desc: 报警配置
  *
  */
 class AlarmSettingFragment : BaseIOTDeviceFragment() {
@@ -62,7 +62,7 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentAlarmSettingBinding
-        binding.llToolbar.toolbar.title = "报警设置"
+        binding.llToolbar.toolbar.title = "报警配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
@@ -161,8 +161,7 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
                 bleDevice
             )
             nav().navigate(
-                if (productType == ProductType.U_D_1 || productType == ProductType.U_D_2) R.id.action_global_to_udAlarmParamSettingFragment
-                else R.id.action_global_to_alarmParamSettingFragment,
+                R.id.action_global_to_alarmParamSettingFragment,
                 bundle
             )
         }

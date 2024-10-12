@@ -21,10 +21,6 @@ import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702PortSt
 import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702RunningStatusInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.LR200BaseInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.LR200SensorInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDBaseInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDLocationInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDNetInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDSensorInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UIProductSensorInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UProductBaseInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.URProductSensorInfoFragment
@@ -54,12 +50,6 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
             ProductType.COLLECTOR_R_2 -> {//水利遥测终端机
                 tabs.clear()
                 tabs.addAll(listOf("基本信息", "运行状态", "接口状态", "模块状态"))
-            }
-
-            ProductType.U_D_1,
-            ProductType.U_D_2 -> {//一体化雷达泥位计
-                tabs.clear()
-                tabs.addAll(listOf("基本信息", "网络信息", "状态信息", "位置信息"))
             }
 
             else -> {
@@ -97,30 +87,6 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                 )
                 fragmentList.add(
                     LR200SensorInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-            }
-
-            ProductType.U_D_1,//
-            ProductType.U_D_2 -> {//一体化雷达泥位计
-                fragmentList.add(
-                    UDBaseInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    UDNetInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    UDSensorInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    UDLocationInfoFragment.newInstance().apply {
                         arguments = bundle
                     }
                 )

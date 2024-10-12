@@ -15,18 +15,27 @@
             type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
     </data>
 
-    <androidx.appcompat.widget.Toolbar
+    <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
+        style="@style/Widget.MyApp.MaterialToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/white"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        app:layout_scrollFlags="scroll|enterAlways"
-        app:navigationIcon="@drawable/ic_navigation_black2"
-        app:popupTheme="@style/AppTheme.PopupOverlay"
-        app:titleTextAppearance="@style/Toolbar_TitleText"
-        app:titleTextColor="@color/title_text_color"
-        tools:title="消息">
+        app:navigationIcon="@drawable/ic_arrow_back_black"
+        app:subtitle=""
+        app:subtitleTextColor="@color/sub_title_text_color"
+        app:title=""
+        app:titleTextColor="@color/title_text_color">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@{vm.toolbarTitleText}"
+            android:textColor="@color/black_90"
+            android:textSize="@dimen/text_size_17"
+            android:textStyle="bold"
+            tools:text="配置" />
 
         <FrameLayout
             android:layout_width="wrap_content"
@@ -37,28 +46,27 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_action"
                 imageResId="@{vm.toolbarIvActionResId}"
+                onClickWithDebouncing="@{()->click.onToolbarIvClick()}"
                 visible="@{vm.toolbarIvActionVisible}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                onClickWithDebouncing="@{()->click.onToolbarIvClick()}"
                 android:padding="5dp"
-                tools:src="@drawable/ic_query_device_data"
+                tools:src="@drawable/ic_ble_connect"
                 tools:visibility="visible" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_action"
+                onClickWithDebouncing="@{()->click.onToolbarTvClick()}"
                 visible="@{vm.toolbarTvActionVisible}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                onClickWithDebouncing="@{()->click.onToolbarTvClick()}"
                 android:singleLine="true"
                 android:text="@{vm.toolbarTvActionText}"
                 android:textColor="@color/colorPrimary"
-                android:textSize="@dimen/text_size_15"
+                android:textSize="@dimen/text_size_14"
                 tools:text="编辑"
                 tools:visibility="visible" />
-
         </FrameLayout>
 
-    </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.MaterialToolbar>
 </layout>

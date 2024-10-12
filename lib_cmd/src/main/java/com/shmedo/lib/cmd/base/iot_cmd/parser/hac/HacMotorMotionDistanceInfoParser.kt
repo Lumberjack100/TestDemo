@@ -15,7 +15,7 @@ class HacMotorMotionDistanceInfoParser : IOTCommandParser<HacMotorMotionDistance
             pulsenumber = keyValueMap.getOrDefault("pulsenumber", pulsenumber)
             realmovedistance = keyValueMap.getOrDefault("realmovedistance", realmovedistance)
             realholedepth = keyValueMap.getOrDefault("realholedepth", realholedepth)
-            recoholedepth = keyValueMap.getOrDefault("abndinjection", recoholedepth)
+            recoholedepth = keyValueMap.getOrDefault("recoholedepth", recoholedepth)
             abndiasis = keyValueMap.getOrDefault("abndiasis", abndiasis)
         }
     }

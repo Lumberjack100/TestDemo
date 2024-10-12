@@ -130,66 +130,78 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
         mStates.checkBit.set(checkBitList[0])//默认校验位 无
         mStates.stopBit.set(stopBitList[0])//默认停止位 1
 
+        //采集项名称
         mStates.modelFieldName.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[modelFieldIndex].fieldName
             else ""
         )
+        //采集项单位
         mStates.modelFieldUnit.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[modelFieldIndex].engUnit
             else ""
         )
+        //水文识别
         mStates.hydrologicalIdentification.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[modelFieldIndex].hydrologicalIdentification
             else ""
-        )//水文识别
+        )
+        //采集指令
         mStates.collectionInstructions.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[modelFieldIndex].collectionInstructions
             else ""
-        )//采集指令
+        )
+        //倍率 1
         mStates.ratio.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[modelFieldIndex].ratio
             else "1"
-        )//默认倍率 1
+        )
+        //数据类型
         mStates.dataFormat.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[modelFieldIndex].dataFormat
             else dataFormatList[0]
         )
+        //解算方法 加权平均
         mStates.solutionMethod.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[modelFieldIndex].solutionMethod
             else solutionMethodList[0]
-        )//默认解算方法 加权平均
+        )
+        //触发值
         mStates.triggerValue.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[modelFieldIndex].triggerValue
             else "0"
-        )//默认触发值 0
+        )
+        //上限值
         mStates.upperLimit.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[modelFieldIndex].upperLimit
             else "100"
-        )//默认上限 100
+        )
+        //下限值
         mStates.lowerLimit.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[modelFieldIndex].lowerLimit
             else "0"
-        )//默认下限 0
+        )
+        //默认修正值 0
         mStates.correctValue.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[modelFieldIndex].correctValue
             else "0"
-        )//默认修正值 0
+        )
+        //阈值次数 3
         mStates.ngateval.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[modelFieldIndex].ngateval
             else "3"
-        )//默认阈值次数 3
+        )
     }
 
     inner class ClickProxy : BaseClickProxy() {

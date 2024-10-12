@@ -208,7 +208,7 @@ class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
             moduleList.add(
                 ConfigModule(
                     CommonModule(
-                        name = "报警设置",
+                        name = "报警配置",
                         desc = "参数配置",
                         resID = R.drawable.ic_basic_config,
                         navId = R.id.action_admeAdvancedConfigurationFragment_to_admeHacAlarmSettingFragment

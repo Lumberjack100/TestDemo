@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.M50HomeViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.ui.page.device.m50.M50HomeFragment.ClickProxy" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/page_content_item_padding_horizontal_16"
+        app:drawable_radius="@{4}"
+        app:drawable_solidColor="@{@color/white}"
+        tools:background="@color/white">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <View
+                android:layout_width="3dp"
+                android:layout_height="14dp"
+                android:background="@color/black" />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/Common_GroupItem_Title_Style2"
+                android:layout_marginStart="@dimen/dimen_size_8"
+                android:text="测量数据" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:text='@{"合位移量："+stateVM.resultantDisplacement}'
+            android:textColor="@color/title_text_color_black_90"
+            android:textSize="@dimen/page_content_item_text_size_14"
+            tools:text="合位移量：5.333m" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ll_air_distance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_air_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{"X轴位移量："+stateVM.xDisplacement}'
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="X轴位移量：5.38m" />
+
+            <View
+                android:id="@+id/vertical_divider_line"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_marginVertical="@dimen/dimen_size_2"
+                android:background="@color/divider_line_bg"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_air_distance"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tv_air_distance" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_installation_angle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_16"
+                android:text='@{"Y轴位移量："+stateVM.yDisplacement}'
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/vertical_divider_line"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Y轴位移量：5.38m" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:text='@{"Z轴位移量："+stateVM.zDisplacement}'
+            android:textColor="@color/sub_title_text_color_black_60"
+            android:textSize="@dimen/page_content_item_text_size_14"
+            tools:text="Z轴位移量：3.22m" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10">
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/MeasureData_Button_Style"
+                android:gravity="center"
+                android:onClick="@{()->click.onGotoLocaionClick()}"
+                android:text='位置'
+                app:backgroundTint="@color/colorPrimary_10"
+                app:icon="@drawable/ic_module_location_info"
+                app:iconSize="@dimen/dimen_size_18" />
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/MeasureData_Button_Style"
+                android:layout_marginStart="@dimen/dimen_size_10"
+                android:enabled="false"
+                android:onClick="@{()->click.onTakePhotoClick()}"
+                android:text='拍照'
+                android:textColor="@color/black_30"
+                app:backgroundTint="@color/black_4"
+                app:icon="@drawable/ic_device_take_photo"
+                app:iconSize="@dimen/dimen_size_18"
+                app:iconTint="@color/black_30" />
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/MeasureData_Button_Style"
+                android:layout_marginStart="@dimen/dimen_size_10"
+                android:enabled="@{!stateVM.isConnectOperateVisible}"
+                android:onClick="@{()->click.onGoToSensorDataHistoryClick()}"
+                android:text='历史'
+                android:textColor="@{!stateVM.isConnectOperateVisible ? @color/colorPrimary : @color/black_30}"
+                app:backgroundTint="@drawable/button_background_tint"
+                app:icon="@drawable/ic_device_sensor_data_history"
+                app:iconSize="@dimen/dimen_size_18"
+                app:iconTint="@{!stateVM.isConnectOperateVisible ? @color/colorPrimary : @color/black_30}" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

@@ -156,7 +156,9 @@
         <activity
             android:name=".ui.page.webview.WebviewActivity"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/LightStatusBarActivity" />
+
         <activity
             android:name=".ui.page.base.activity.ErrorActivity"
             android:label="错误界面"

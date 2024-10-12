@@ -79,17 +79,17 @@ enum class IOTCommandType(private val value: String) {
     MD_SET_DATA_REPORT_TIME("md_setreportdatatime"),
 
     /**
-     * 获取数据中心状态
+     * 获取数据链路状态
      */
     MD_GET_DATA_CENTER_STATUS("md_getdatacenterstatus"),
 
     /**
-     * 获取数据中心参数
+     * 获取数据链路参数
      */
     MD_GET_DATA_CENTER("md_getdatacenter"),
 
     /**
-     * 设置数据中心参数
+     * 设置数据链路参数
      */
     MD_SET_DATA_CENTER("md_setdatacenter"),
 
@@ -121,7 +121,7 @@ enum class IOTCommandType(private val value: String) {
     DAS_MD_GET_DEVICE_BASE("md_getdevicebase"),
 
     /**
-     * 获取数据中心状态
+     * 获取数据链路状态
      */
     DAS_MD_GET_NET_STATUS("md_getnetstatus"),
 
@@ -742,7 +742,7 @@ enum class IOTCommandType(private val value: String) {
     MD_MR_SET_SCREEN_PARAM("md_mrsetscreen"),
 
     /**
-     * 获取数据中心状态
+     * 获取数据链路状态
      */
     MD_MR_GET_DATA_CENTER_STATUS("md_mrgetcenterstatus"),
     MD_MR_GET_DATA_CENTER("md_mrgetdatacenter"),
@@ -977,6 +977,11 @@ enum class IOTCommandType(private val value: String) {
      */
     MD_GET_INSTALL_LOCATION("md_getloc"),
     MD_SET_INSTALL_LOCATION("md_setloc"),
+
+    /**
+     * M50 串口参数
+     */
+    M50_MD_SET_SERIAL_PORT("md_gm_setportparam"),
 
     /**
      * 指令透传

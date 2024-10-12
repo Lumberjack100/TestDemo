@@ -13,7 +13,7 @@ class AdmeHacMeasuringDataViewModel : ViewModel() {
     val realHoleDepth = NonNullObservableField("")//测斜管孔深阈值
     val recommendHoleDepth = NonNullObservableField("")//推荐孔深
 
-    val decentralizationWaitingTime = NonNullObservableField("")//下放等待时间(min)
+    val decentralizationWaitingTime = NonNullObservableField("")//下放等待时间(s)
     val dataSettlementMethod = NonNullObservableField("")//数据解算方式
     val isSingleWayTest = NonNullObservableField(false)//单向测量
     val isCheckReverse = NonNullObservableField(false)//测斜仪反转自检

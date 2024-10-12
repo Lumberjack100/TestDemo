@@ -12,6 +12,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.common.RadioCommunicateInfo
 class RadioCommunicateInfoParser : IOTCommandParser<RadioCommunicateInfo> {
     override fun parseInstance(keyValueMap: Map<String, String>): RadioCommunicateInfo {
         return RadioCommunicateInfo().apply {
+            sw = keyValueMap.getOrDefault("sw", sw)
             airbaud = keyValueMap.getOrDefault("airbaud", airbaud)
             rxchl = keyValueMap.getOrDefault("rxchl", rxchl)
             txchl = keyValueMap.getOrDefault("txchl", txchl)

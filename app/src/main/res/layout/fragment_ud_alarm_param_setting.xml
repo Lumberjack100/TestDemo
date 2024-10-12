@@ -49,26 +49,58 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="200dp">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_GroupName_Style"
-                        android:text="语音设置" />
+                    android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                    android:paddingTop="@dimen/page_content_container_padding_top_12"
+                    android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="14dp"
+                            android:background="@color/black" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_GroupItem_Title_Style2"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:text="报警信息" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <RelativeLayout
+                        style="@style/SwitchButton_Item_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/SwitchButton_Item_Title_Style"
+                            android:text="报警启用" />
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            style="@style/SwitchButton_Item_Button_Style"
+                            checkedImmediatelyNoEvent="@{stateVM.isOpened}"
+                            android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
+                            app:kswAnimationDuration="100"
+                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
+
+                    </RelativeLayout>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onMonitorPointChooseClick()}"
-                        android:layout_marginTop="@dimen/dimen_size_1"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isOpened }">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:text="监测点编号" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.monitorPoint}"
@@ -76,202 +108,276 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="播报次数" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[0-255]"
-                            android:text="@={stateVM.broadcastTimes}"
                             android:inputType="number"
+                            android:text="@={stateVM.broadcastTimes}"
                             app:lengthFilter="@{3}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="一级报警语音编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
-                            android:text="@={stateVM.firstAlarmVoice}"
                             android:inputType="number"
+                            android:text="@={stateVM.firstAlarmVoice}"
                             app:lengthFilter="@{3}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="二级报警语音编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
-                            android:text="@={stateVM.secondAlarmVoice}"
                             android:inputType="number"
+                            android:text="@={stateVM.secondAlarmVoice}"
                             app:lengthFilter="@{3}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="三级报警语音编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
-                            android:text="@={stateVM.thirdAlarmVoice}"
                             android:inputType="number"
+                            android:text="@={stateVM.thirdAlarmVoice}"
                             app:lengthFilter="@{3}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
-                        android:background="@drawable/layer_common_click_item_with_divider">
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="四级报警语音编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="数值范围[1-255]"
-                            android:text="@={stateVM.fourthAlarmVoice}"
                             android:inputType="number"
+                            android:text="@={stateVM.fourthAlarmVoice}"
                             app:lengthFilter="@{3}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_GroupName_Style"
-                        android:text="报警间隔" />
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="14dp"
+                            android:background="@color/black" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_GroupItem_Title_Style2"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:text="报警间隔" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isOpened}"
+                            style="@style/Common_ClickableItem_Title_Style"
                             android:text="@{stateVM.firstAlarmReportIntervalTitle}"
                             tools:text="一级报警间隔(秒)" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
-                            android:text="@={stateVM.firstAlarmReportInterval}"
                             android:inputType="number"
+                            android:text="@={stateVM.firstAlarmReportInterval}"
                             app:lengthFilter="@{4}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isOpened}"
+                            style="@style/Common_ClickableItem_Title_Style"
                             android:text="@{stateVM.secondAlarmReportIntervalTitle}"
                             tools:text="二级报警间隔(秒)" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
-                            android:text="@={stateVM.secondAlarmReportInterval}"
                             android:inputType="number"
+                            android:text="@={stateVM.secondAlarmReportInterval}"
                             app:lengthFilter="@{4}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isOpened}"
+                            style="@style/Common_ClickableItem_Title_Style"
                             android:text="@{stateVM.thirdAlarmReportIntervalTitle}"
                             tools:text="三级报警间隔(秒)" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
-                            android:text="@={stateVM.thirdAlarmReportInterval}"
                             android:inputType="number"
+                            android:text="@={stateVM.thirdAlarmReportInterval}"
                             app:lengthFilter="@{4}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
-                        android:background="@drawable/layer_common_click_item_with_divider">
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
-                            textViewEnabled="@{stateVM.isOpened}"
+                            style="@style/Common_ClickableItem_Title_Style"
                             android:text="@{stateVM.fourthAlarmReportIntervalTitle}"
                             tools:text="四级报警间隔(秒)" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
-                            android:text="@={stateVM.fourthAlarmReportInterval}"
                             android:inputType="number"
+                            android:text="@={stateVM.fourthAlarmReportInterval}"
                             app:lengthFilter="@{4}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="14dp"
+                            android:background="@color/black" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_GroupItem_Title_Style2"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:text="报警测试" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            enabledTextColor="@{@color/colorPrimary}"
+                            onClickWithDebouncing="@{()->click.onTestFirstAlarmClick()}"
+                            textViewEnabled="@{stateVM.isOpened}"
+                            android:text="一级报警测试"
+                            android:textStyle="bold"
+                            tools:textColor="@color/colorPrimary" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            enabledTextColor="@{@color/colorPrimary}"
+                            onClickWithDebouncing="@{()->click.onTestSecondAlarmClick()}"
+                            textViewEnabled="@{stateVM.isOpened}"
+                            android:text="二级报警测试"
+                            android:textStyle="bold"
+                            tools:textColor="@color/colorPrimary" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            enabledTextColor="@{@color/colorPrimary}"
+                            onClickWithDebouncing="@{()->click.onTestThirdAlarmClick()}"
+                            textViewEnabled="@{stateVM.isOpened}"
+                            android:text="三级报警测试"
+                            android:textStyle="bold"
+                            tools:textColor="@color/colorPrimary" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            enabledTextColor="@{@color/colorPrimary}"
+                            onClickWithDebouncing="@{()->click.onTestFourthAlarmClick()}"
+                            textViewEnabled="@{stateVM.isOpened}"
+                            android:text="四级报警测试"
+                            android:textStyle="bold"
+                            tools:textColor="@color/colorPrimary" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_reset"
+                        style="@style/ResetButton_Style2"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:onClick="@{()->click.onResetClick()}"
+                        android:text="@string/button_reset_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_confirm"
+                        style="@style/SubmitButton_Style2"
+                        onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                        android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                        android:text="@string/button_save_text" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_reset"
-            style="@style/ResetButton_ColorPrimary"
-            onClickWithDebouncing="@{()->click.onResetClick()}"
-            visible="@{stateVM.isOpened }"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="30dp"
-            android:text="@string/button_reset_text"
-            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_ColorPrimary"
-            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-            visible="@{stateVM.isOpened }"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="35dp"
-            android:text="@string/button_save_text"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -54,19 +54,19 @@
                     android:paddingBottom="@dimen/dimen_size_25">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_GroupName_Style"
+                        style="@style/Common_GroupItem_Title_Style"
                         android:text="通道参数" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_LayoutStyle"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             android:text="物模型名称" />
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_ValueStyle"
+                            style="@style/Common_ClickableItem_Value_Style"
                             android:drawableEnd="@null"
                             android:text="@{stateVM.modelName}"
                             tools:text="MODO渗压计" />
@@ -74,11 +74,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             android:text="物模型编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
@@ -91,11 +91,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             android:text="通道编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
@@ -107,11 +107,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="水文标识" />
 
@@ -131,18 +131,18 @@
                         android:orientation="vertical">
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_ClickableItem_LayoutStyle"
+                            style="@style/Common_ClickableItem_Layout_Style"
                             onClickWithDebouncing="@{()->click.onIsCalculateChooseClick()}"
                             android:background="@drawable/layer_common_click_item_with_divider"
                             android:enabled="@{stateVM.isEditable }">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable }"
                                 android:text="是否计算" />
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_ValueStyle"
+                                style="@style/Common_ClickableItem_Value_Style"
                                 textViewEnabled="@{stateVM.isEditable }"
                                 android:drawableEnd="@drawable/ic_arrow_down"
                                 android:text="@{stateVM.calculate}"
@@ -150,18 +150,18 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_ClickableItem_LayoutStyle"
+                            style="@style/Common_ClickableItem_Layout_Style"
                             onClickWithDebouncing="@{()->click.onCalculateFormulaChooseClick()}"
                             android:background="@drawable/layer_common_click_item_with_divider"
                             android:enabled="@{stateVM.isEditable }">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable }"
                                 android:text="计算公式" />
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_ValueStyle"
+                                style="@style/Common_ClickableItem_Value_Style"
                                 textViewEnabled="@{stateVM.isEditable }"
                                 android:drawableEnd="@drawable/ic_arrow_down"
                                 android:text="@{stateVM.calculateFormula}"
@@ -169,11 +169,11 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
+                            style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable }"
                                 android:text="灵敏度K值" />
 
@@ -188,11 +188,11 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
+                            style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable }"
                                 android:text="温度修正系数b值" />
 
@@ -207,11 +207,11 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
+                            style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable }"
                                 android:text="初始频率F0值" />
 
@@ -225,11 +225,11 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
+                            style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable }"
                                 android:text="初始温度T0值" />
 
@@ -243,11 +243,11 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
+                            style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable }"
                                 android:text="初始水位值(米)" />
 
@@ -262,11 +262,11 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
-                            style="@style/Common_EditItem_LayoutStyle"
+                            style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/Common_ClickableItem_TitleStyle"
+                                style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable }"
                                 android:text="堰角高度值(米)" />
 
@@ -283,15 +283,15 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_GroupName_Style"
+                        style="@style/Common_GroupItem_Title_Style"
                         android:text="通道采集数据处理" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="滤波次数" />
 
@@ -304,11 +304,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="触发值" />
 
@@ -323,11 +323,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="上限值" />
 
@@ -342,11 +342,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="下限值" />
 
@@ -361,11 +361,11 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_LayoutStyle"
+                        style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_TitleStyle"
+                            style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="修正值" />
 
@@ -385,7 +385,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_ColorPrimary"
+            style="@style/SubmitButton_Style"
             onClickWithDebouncing="@{()->click.onSubmitClick()}"
             visible="@{stateVM.isEditable}"
             android:layout_marginTop="0dp"

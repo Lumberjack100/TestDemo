@@ -121,7 +121,7 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                                     DeviceStatusInfoBasicItem(
                                         name = "状态",
                                         value = "未接入",
-                                        textColorRes = ColorUtils.getColor(R.color.red_F13838)
+                                        textColorRes = ColorUtils.getColor(R.color.error_FF4400)
                                     )
                                 )
                             }
@@ -131,7 +131,7 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                                     DeviceStatusInfoBasicItem(
                                         name = "状态",
                                         value = "接入",
-                                        textColorRes = ColorUtils.getColor(R.color.green_00B26B)
+                                        textColorRes = ColorUtils.getColor(R.color.online_colorPrimary)
                                     )
                                 )
                                 groupList.add(
@@ -147,15 +147,15 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                                     DeviceStatusInfoBasicItem(
                                         name = "状态",
                                         value = "接入",
-                                        textColorRes = ColorUtils.getColor(R.color.green_00B26B)
+                                        textColorRes = ColorUtils.getColor(R.color.online_colorPrimary)
                                     )
                                 )
                                 groupList.add(
                                     DeviceStatusInfoBasicItem(
                                         name = "断线报警器",
                                         value = if (ioBean.vaule == "1") "断线" else "未断线",
-                                        textColorRes = if (ioBean.vaule == "1") ColorUtils.getColor(R.color.red_F13838) else ColorUtils.getColor(
-                                            R.color.green_00B26B
+                                        textColorRes = if (ioBean.vaule == "1") ColorUtils.getColor(R.color.error_FF4400) else ColorUtils.getColor(
+                                            R.color.online_colorPrimary
                                         )
                                     )
                                 )
@@ -175,9 +175,9 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                                     vwpBean.errno
                                 ),
                                 textColorRes = if (vwpBean.errno == "0") ColorUtils.getColor(
-                                    R.color.green_00B26B
+                                    R.color.online_colorPrimary
                                 ) else ColorUtils.getColor(
-                                    R.color.red_F13838
+                                    R.color.error_FF4400
                                 )
                             )
                         )
@@ -221,9 +221,9 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                                     memsBean.errno
                                 ),
                                 textColorRes = if (memsBean.errno == "0") ColorUtils.getColor(
-                                    R.color.green_00B26B
+                                    R.color.online_colorPrimary
                                 ) else ColorUtils.getColor(
-                                    R.color.red_F13838
+                                    R.color.error_FF4400
                                 )
                             )
                         )

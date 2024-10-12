@@ -50,8 +50,8 @@
                     android:layout_marginTop="@dimen/dimen_size_8"
                     android:layout_marginEnd="@dimen/dimen_size_15"
                     app:drawable_radius="@{4}"
-                    app:drawable_solidColor="@{@color/gray_f5f6f8}"
-                    tools:background="@color/gray_f5f6f8">
+                    app:drawable_solidColor="@{@color/gray_F5F6F8}"
+                    tools:background="@color/gray_F5F6F8">
 
                     <androidx.appcompat.widget.AppCompatSpinner
                         android:id="@+id/spinner"
@@ -77,8 +77,8 @@
                     android:layout_marginTop="@dimen/dimen_size_8"
                     android:layout_marginEnd="@dimen/dimen_size_15"
                     app:drawable_radius="@{4}"
-                    app:drawable_solidColor="@{@color/gray_f5f6f8}"
-                    tools:background="@color/gray_f5f6f8">
+                    app:drawable_solidColor="@{@color/gray_F5F6F8}"
+                    tools:background="@color/gray_F5F6F8">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_time"

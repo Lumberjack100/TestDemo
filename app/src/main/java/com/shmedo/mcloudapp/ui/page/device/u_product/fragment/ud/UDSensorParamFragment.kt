@@ -18,7 +18,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.u_product.UDInitialValueE
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.u_product.UDModuleGapParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.UDCommonCurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -75,7 +75,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUDProductSensorParamBinding
-        binding.llToolbar.toolbar.title = "传感设置"
+        toolbarViewModel.toolbarTitleText.set("传感设置")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }
@@ -350,28 +350,28 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
     private fun initParamData(content: String) {
         launchWithViewLifecycle {
             try {
-                val udCommonCurrentStateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<UDCommonCurrentStateInfo>(content)
+                val udCurrentStateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<UDCurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
 
-                mStates.measureInterval.set(udCommonCurrentStateInfo.radarMeasureInterval)
-                mStates.installAngleOffsetThreshold.set(udCommonCurrentStateInfo.installAngleOffsetThreshold)
+                mStates.measureInterval.set(udCurrentStateInfo.radarMeasureInterval)
+                mStates.installAngleOffsetThreshold.set(udCurrentStateInfo.installAngleOffsetThreshold)
                 mStates.altitude.set(
-                    udCommonCurrentStateInfo.altitude.formatDoubleValue(
+                    udCurrentStateInfo.altitude.formatDoubleValue(
                         "",
                         3
                     )
                 )
-                captureFrequencyMinList.indexOf(udCommonCurrentStateInfo.captureFrequency)
+                captureFrequencyMinList.indexOf(udCurrentStateInfo.captureFrequency)
                     .let { index ->
                         if (index in captureFrequencyList.indices) {
                             mStates.captureFrequency.set(captureFrequencyList[index])
                         }
                     }
-                mStates.imageResolution.set("${udCommonCurrentStateInfo.pixx}x${udCommonCurrentStateInfo.pixy}")
+                mStates.imageResolution.set("${udCurrentStateInfo.pixx}x${udCurrentStateInfo.pixy}")
 
                 mStates.altitudeMeasureMode.set(
-                    if (udCommonCurrentStateInfo.altitudeMeasureMode == "0") "自动" else "手动"
+                    if (udCurrentStateInfo.altitudeMeasureMode == "0") "自动" else "手动"
                 )
 
             } catch (e: Exception) {

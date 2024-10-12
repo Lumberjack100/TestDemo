@@ -17,6 +17,6 @@ object CommonMMKVOwner : MMKVOwner(mmapID = "common_settings") {
 
     var iotDeviceLogSessionId by mmkvString(default = "")//物联网设备日志
 
-    var isCommandDebugMode by mmkvBool(default = false)//指令调试模式
+    var isCommandDebugMode by mmkvBool(default = false)//指令下发模式
 
 }

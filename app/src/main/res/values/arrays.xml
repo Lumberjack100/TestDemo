@@ -327,7 +327,6 @@
     </string-array>
     <!-- ADME end-->
 
-
     <!-- LORA 收发频点-->
     <string-array name="lora_channel">
         <item>410.00MHz</item>
@@ -354,7 +353,6 @@
 
     <!-- 自组网网关、M20S 电台频点-->
     <string-array name="radio_channel">
-        <item>450.15MHz</item>
         <item>451.15MHz</item>
         <item>452.15MHz</item>
         <item>453.15MHz</item>
@@ -374,10 +372,11 @@
         <item>467.15MHz</item>
         <item>468.15MHz</item>
         <item>469.15MHz</item>
+        <item>470.15MHz</item>
     </string-array>
 
     <!-- 预警广播设备 电台频点 451.125MHz、452.125MHz 到 480.125MHz-->
-    <string-array name="radio_alarm_broadcast_channel">
+    <string-array name="lb20s_radio_channel">
         <item>451.125MHz</item>
         <item>452.125MHz</item>
         <item>453.125MHz</item>

@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
+
         <variable
             name="vm"
             type="com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -14,9 +24,11 @@
 
         <include
             android:id="@+id/ll_toolbar"
-            layout="@layout/include_toolbar_white" />
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:vm="@{toolbarVM}" />
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -46,7 +58,7 @@
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/errorRestart"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -54,7 +66,7 @@
                     android:text="重新启动"
                     android:textSize="15sp" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/errorSendError"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -63,6 +75,6 @@
                     android:textSize="15sp"
                     android:visibility="gone" />
             </androidx.appcompat.widget.LinearLayoutCompat>
-        </ScrollView>
+        </androidx.core.widget.NestedScrollView>
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

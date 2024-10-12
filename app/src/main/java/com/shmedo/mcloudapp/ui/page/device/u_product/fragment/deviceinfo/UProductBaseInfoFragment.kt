@@ -93,8 +93,8 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         name = "设备状态",
                         value = if (deviceAbnormalList.isEmpty()) "正常" else "异常",
                         textColorRes = if (deviceAbnormalList.isEmpty()) ColorUtils.getColor(
-                            R.color.green_00B26B
-                        ) else ColorUtils.getColor(R.color.red_F13838),
+                            R.color.online_colorPrimary
+                        ) else ColorUtils.getColor(R.color.error_FF4400),
                         isClickable = deviceAbnormalList.isNotEmpty()
                     )
                 )

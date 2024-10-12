@@ -36,7 +36,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_ble_connect"
-            style="@style/Common_ClickableItem_LayoutStyle"
+            style="@style/Common_ClickableItem_Layout_Style"
             android:layout_marginTop="@dimen/dimen_size_15"
             android:background="@drawable/layer_common_click_item_with_divider"
             android:gravity="center"
@@ -47,7 +47,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_4g_connect"
-            style="@style/Common_ClickableItem_LayoutStyle"
+            style="@style/Common_ClickableItem_Layout_Style"
             android:layout_marginBottom="@dimen/text_size_10"
             android:gravity="center"
             android:text="4G连接"

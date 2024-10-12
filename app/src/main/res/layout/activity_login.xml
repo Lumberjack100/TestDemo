@@ -121,7 +121,7 @@
                             android:paddingEnd="20dp"
                             android:text="@={vm.name}"
                             android:textColor="@color/title_text_color"
-                            android:textColorHint="@color/text_color_cccccc"
+                            android:textColorHint="@color/text_color_CCCCCC"
                             android:textSize="@dimen/text_size_18"
                             app:inputTypeFilter='@{"character"}'
                             app:lengthFilter="@{20}" />
@@ -157,7 +157,7 @@
                             android:paddingEnd="20dp"
                             android:text="@={vm.password}"
                             android:textColor="@color/title_text_color"
-                            android:textColorHint="@color/text_color_cccccc"
+                            android:textColorHint="@color/text_color_CCCCCC"
                             android:textSize="@dimen/text_size_18" />
 
                         <androidx.appcompat.widget.AppCompatImageView
@@ -208,7 +208,7 @@
                             android:paddingEnd="20dp"
                             android:text="@={vm.phone}"
                             android:textColor="@color/title_text_color"
-                            android:textColorHint="@color/text_color_cccccc"
+                            android:textColorHint="@color/text_color_CCCCCC"
                             android:textSize="@dimen/text_size_18" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -236,7 +236,7 @@
                             android:paddingEnd="20dp"
                             android:text="@={vm.code}"
                             android:textColor="@color/title_text_color"
-                            android:textColorHint="@color/text_color_cccccc"
+                            android:textColorHint="@color/text_color_CCCCCC"
                             android:textSize="@dimen/text_size_18" />
 
                         <View
@@ -244,7 +244,7 @@
                             android:layout_height="15dp"
                             android:layout_marginStart="15dp"
                             android:layout_marginEnd="19dp"
-                            android:background="@color/text_color_cccccc" />
+                            android:background="@color/text_color_CCCCCC" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_get_code"
@@ -280,7 +280,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="@string/login_protocol_desc"
-                android:textColor="@color/text_color_b3b3b3"
+                android:textColor="@color/text_color_B3B3B3"
                 android:textSize="@dimen/text_size_13" />
 
             <View
@@ -315,7 +315,7 @@
                 android:layout_marginBottom="15dp"
                 android:gravity="center"
                 android:text="@string/login_medo_copyright"
-                android:textColor="@color/text_color_cccccc"
+                android:textColor="@color/text_color_CCCCCC"
                 android:textSize="11sp" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>

@@ -23,7 +23,7 @@ class AdmeBasicParamConfigViewModel : ViewModel() {
     val startTimePerRound = NonNullObservableField("")//每轮开始时间
     val inclinometerTubeHoleDepth = NonNullObservableField("")//测斜管孔深(m)
     val decentralizationSpeed = NonNullObservableField("")//下放速度(r/min)
-    val decentralizationWaitingTime = NonNullObservableField("")//下放等待时间(min)
+    val decentralizationWaitingTime = NonNullObservableField("")//下放等待时间(s)
 
     val lockedRotorDetectionInfoWrapper = NonNullObservableField(AdmeLockedRotorDetectionInfo())
     val downEnable = NonNullObservableField(false)//下放堵转检测使能

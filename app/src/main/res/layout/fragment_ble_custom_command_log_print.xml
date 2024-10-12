@@ -4,6 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
             name="stateVM"
@@ -20,37 +23,31 @@
         android:layout_height="match_parent"
         android:background="@color/main_bg_gray">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/white"
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:navigationIcon="@drawable/ic_navigation_black2"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:subtitleTextAppearance="@style/Toolbar_SubTitleText"
-            app:subtitleTextColor="@color/sub_title_text_color"
-            app:titleTextAppearance="@style/Toolbar_TitleText"
-            app:titleTextColor="@color/title_text_color"
-            tools:title="消息" />
+            app:vm="@{toolbarVM}" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/ll_mode"
-            style="@style/Common_ClickableItem_LayoutStyle"
+            style="@style/Common_ClickableItem_Layout_Style"
             onClickWithDebouncing="@{()->click.onDebugModeChooseClick()}"
             android:layout_marginTop="@dimen/dimen_size_1"
             android:background="@drawable/layer_common_click_item_with_divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 android:text="设备日志输出模式" />
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_ValueStyle"
+                style="@style/Common_ClickableItem_Value_Style"
                 android:drawableEnd="@drawable/ic_arrow_down"
                 android:text="@{stateVM.debugMode}"
                 tools:text="关" />
@@ -100,7 +97,7 @@
                 android:padding="@dimen/dimen_size_4"
                 android:text="@={stateVM.command}"
                 android:textColor="@color/title_text_color"
-                android:textColorHint="@color/text_color_b3b3b3"
+                android:textColorHint="@color/text_color_B3B3B3"
                 android:textSize="@dimen/text_size_14"
                 app:drawable_radius="@{4}"
                 app:drawable_solidColor="@{@color/search_bg_gray_color}"

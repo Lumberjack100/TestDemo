@@ -6,6 +6,10 @@
     <data>
 
         <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
+
+        <variable
             name="stateVM"
             type="com.shmedo.mcloudapp.ui.viewmodel.state.UDLocationInfoViewModel" />
 
@@ -18,17 +22,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/main_bg_gray"
-        android:orientation="vertical"
-        android:paddingHorizontal="@dimen/dimen_size_10"
-        android:paddingTop="@dimen/dimen_size_10"
-        android:paddingBottom="@dimen/dimen_size_15">
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:vm="@{toolbarVM}" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/DeviceCurrentState_SingleItem_Style"
-            android:background="@drawable/layer_common_click_item_with_divider">
+            style="@style/DeviceCurrentState_Item_Layout_Style2"
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
+            android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+            android:background="@drawable/shape_common_click_item_top_corner_4">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                style="@style/DeviceCurrentState_Item_Title_Style2"
                 onClickWithDebouncing="@{()->click.refreshLocation()}"
                 android:text="位置更新"
                 android:textColor="@color/colorPrimary"
@@ -37,55 +46,106 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/DeviceCurrentState_SingleItem_Style"
+            style="@style/DeviceCurrentState_Item_Layout_Style2"
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                style="@style/DeviceCurrentState_Item_Title_Style2"
                 android:text="UTC时间" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                android:layout_width="145dp"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@null"
+                android:gravity="start"
                 android:text="@{stateVM.utcTime}"
-                tools:text="2024.01.05 04:34:45" />
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                tools:text="2024-01-05 04:34:45" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/DeviceCurrentState_SingleItem_Style"
+            style="@style/DeviceCurrentState_Item_Layout_Style2"
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                style="@style/DeviceCurrentState_Item_Title_Style2"
                 android:text="经度" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                android:layout_width="145dp"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@null"
+                android:gravity="start"
                 android:text="@{stateVM.longitude}"
-                tools:text="121.5983860" />
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                tools:text="E 121.594208" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/DeviceCurrentState_SingleItem_Style"
-            android:background="@drawable/layer_common_click_item_with_divider">
+            style="@style/DeviceCurrentState_Item_Layout_Style2"
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
+            android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                style="@style/DeviceCurrentState_Item_Title_Style2"
                 android:text="纬度" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                android:layout_width="145dp"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@null"
+                android:gravity="start"
                 android:text="@{stateVM.latitude}"
-                tools:text="1.210353" />
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                tools:text="N 31.212475" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <com.amap.api.maps.TextureMapView
-            android:id="@+id/textureMapView"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_margin="@dimen/page_content_item_margin_horizontal_12"
+            android:layout_weight="1">
 
+            <com.amap.api.maps.TextureMapView
+                android:id="@+id/textureMapView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:layout_marginEnd="@dimen/dimen_size_10"
+                android:onClick="@{()->click.backLocation()}"
+                app:backgroundTint="@color/white"
+                app:fabSize="mini"
+                app:srcCompat="@drawable/ic_map_locate"
+                app:tint="@color/black" />
+
+        </FrameLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

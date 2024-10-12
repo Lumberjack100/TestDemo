@@ -5,6 +5,7 @@ import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.drake.brv.utils.mutable
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.cmd.base.md_cmd.model.das.DeviceStatusInfoOne
 import com.shmedo.lib.cmd.base.md_cmd.model.das.DeviceStatusInfoTwo
@@ -324,9 +325,9 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         name = "状态",
                         value = if (info.solarControllerStatus != "1") "正常" else "异常",
                         textColorRes = if (info.solarControllerStatus != "1") ColorUtils.getColor(
-                            R.color.green_00B26B
+                            R.color.online_colorPrimary
                         ) else ColorUtils.getColor(
-                            R.color.red_F13838
+                            R.color.error_FF4400
                         )
                     )
                 )
@@ -368,9 +369,9 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         name = "状态",
                         value = if (info.internalTempHumidityStatus != "1") "正常" else "异常",
                         textColorRes = if (info.internalTempHumidityStatus != "1") ColorUtils.getColor(
-                            R.color.green_00B26B
+                            R.color.online_colorPrimary
                         ) else ColorUtils.getColor(
-                            R.color.red_F13838
+                            R.color.error_FF4400
                         )
                     )
                 )
@@ -378,7 +379,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     groupList,
                     name = "温度",
                     value = info.internalTemperature,
-                    defaultValue = "--",
+                    defaultValue = AppContants.PLACE_HOLDER_VALUE,
                     digit = 2,
                     unit = "℃",
                 )
@@ -386,7 +387,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     groupList,
                     name = "湿度",
                     value = info.internalHumidity,
-                    defaultValue = "--",
+                    defaultValue = AppContants.PLACE_HOLDER_VALUE,
                     digit = 2,
                     unit = "%",
                 )
@@ -398,9 +399,9 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                         name = "状态",
                         value = if (info.externalTempHumidityStatus != "1") "正常" else "异常",
                         textColorRes = if (info.externalTempHumidityStatus != "1") ColorUtils.getColor(
-                            R.color.green_00B26B
+                            R.color.online_colorPrimary
                         ) else ColorUtils.getColor(
-                            R.color.red_F13838
+                            R.color.error_FF4400
                         )
                     )
                 )
@@ -408,7 +409,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     groupList,
                     name = "温度",
                     value = info.externalTemperature,
-                    defaultValue = "--",
+                    defaultValue = AppContants.PLACE_HOLDER_VALUE,
                     digit = 2,
                     unit = "℃",
                 )
@@ -416,7 +417,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     groupList,
                     name = "湿度",
                     value = info.externalHumidity,
-                    defaultValue = "--",
+                    defaultValue = AppContants.PLACE_HOLDER_VALUE,
                     digit = 2,
                     unit = "%",
                 )

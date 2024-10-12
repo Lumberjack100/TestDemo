@@ -41,47 +41,47 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                style="@style/Common_ClickableItem_LayoutStyle"
+                style="@style/Common_ClickableItem_Layout_Style"
                 onClickWithDebouncing="@{()->click.onRadioSettingsClick()}"
                 android:layout_marginTop="@dimen/dimen_size_1"
                 android:background="@drawable/layer_common_click_item_with_divider"
                 android:enabled="@{stateVM.isEditable }">
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_ClickableItem_TitleStyle"
+                    style="@style/Common_ClickableItem_Title_Style"
                     textViewEnabled="@{stateVM.isEditable }"
                     android:text="电台设置" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_ClickableItem_ValueStyle"
+                    style="@style/Common_ClickableItem_Value_Style"
                     textViewEnabled="@{stateVM.isEditable }"
                     android:drawableEnd="@drawable/ic_arrow_right" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                style="@style/Common_ClickableItem_LayoutStyle"
+                style="@style/Common_ClickableItem_Layout_Style"
                 onClickWithDebouncing="@{()->click.onLoRaSettingsClick()}"
                 android:layout_marginTop="@dimen/dimen_size_1"
                 android:background="@drawable/layer_common_click_item_with_divider"
                 android:enabled="@{stateVM.isEditable }">
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_ClickableItem_TitleStyle"
+                    style="@style/Common_ClickableItem_Title_Style"
                     textViewEnabled="@{stateVM.isEditable }"
                     android:text="LoRa设置" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_ClickableItem_ValueStyle"
+                    style="@style/Common_ClickableItem_Value_Style"
                     textViewEnabled="@{stateVM.isEditable }"
                     android:drawableEnd="@drawable/ic_arrow_right" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                style="@style/Common_EditItem_LayoutStyle"
+                style="@style/Common_EditItem_Layout_Style"
                 android:background="@drawable/layer_common_click_item_with_divider">
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_ClickableItem_TitleStyle"
+                    style="@style/Common_ClickableItem_Title_Style"
                     enabledTextColor="@{@color/colorPrimary}"
                     onClickWithDebouncing="@{()->click.onGatewaySchoolTimeClick()}"
                     textViewEnabled="@{stateVM.isEditable }"
@@ -92,11 +92,11 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                style="@style/Common_EditItem_LayoutStyle"
+                style="@style/Common_EditItem_Layout_Style"
                 android:background="@drawable/layer_common_click_item_with_divider">
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_ClickableItem_TitleStyle"
+                    style="@style/Common_ClickableItem_Title_Style"
                     enabledTextColor="@{@color/colorPrimary}"
                     onClickWithDebouncing="@{()->click.onGatewayRestartClick()}"
                     textViewEnabled="@{stateVM.isEditable }"
@@ -107,11 +107,11 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                style="@style/Common_EditItem_LayoutStyle"
+                style="@style/Common_EditItem_Layout_Style"
                 android:background="@drawable/layer_common_click_item_with_divider">
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_ClickableItem_TitleStyle"
+                    style="@style/Common_ClickableItem_Title_Style"
                     enabledTextColor="@{@color/colorPrimary}"
                     onClickWithDebouncing="@{()->click.onRestoreGatewayToFactoryClick()}"
                     textViewEnabled="@{stateVM.isEditable }"

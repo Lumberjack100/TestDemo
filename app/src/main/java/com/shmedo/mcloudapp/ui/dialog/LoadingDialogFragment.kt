@@ -7,6 +7,7 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
+import com.google.android.material.textview.MaterialTextView
 import com.shmedo.mcloudapp.R
 
 /**
@@ -30,10 +31,14 @@ class LoadingDialogFragment : DialogFragment() {
 
         // 设置消息文本，可以通过参数传递
         dialog.getCustomView()
-            .findViewById<com.google.android.material.textview.MaterialTextView>(R.id.loading_tips)?.text =
+            .findViewById<MaterialTextView>(R.id.loading_tips)?.text =
             arguments?.getString("message") ?: "请求网络中"
 
         return dialog
+    }
+
+    fun updateMessage(message: String) {
+        view?.findViewById<MaterialTextView>(R.id.loading_tips)?.text = message
     }
 
     override fun onDestroyView() {

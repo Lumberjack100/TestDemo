@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -13,7 +21,14 @@
 
         <include
             android:id="@+id/ll_toolbar"
-            layout="@layout/include_toolbar_primary" />
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:vm="@{toolbarVM}" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/divider_line_bg" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

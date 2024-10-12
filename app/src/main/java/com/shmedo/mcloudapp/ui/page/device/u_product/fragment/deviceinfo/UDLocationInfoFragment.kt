@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.fragment.app.viewModels
 import com.amap.api.maps.AMap
 import com.amap.api.maps.AMapOptions
@@ -11,11 +12,12 @@ import com.amap.api.maps.model.LatLng
 import com.amap.api.maps.model.Marker
 import com.amap.api.maps.model.MarkerOptions
 import com.blankj.utilcode.util.StringUtils
+import com.blankj.utilcode.util.TimeUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.UDCommonCurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -26,11 +28,18 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentUdLocationInfoBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.toGcj02LatLng
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDLocationInfoViewModel
 import com.shmedo.mcloudapp.utils.map.CustomLatLng
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -43,12 +52,16 @@ import timber.log.Timber
  */
 class UDLocationInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUdLocationInfoBinding
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: UDLocationInfoViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private lateinit var aMap: AMap //地图控制器对象
     private var curMaker: Marker? = null
     private var mZoomLevel = 15f //地图的缩放级别一共分为 17 级，从 3 到 19。数字越大，展示的图面信息越精细。
+
+    private var gcjLatLng: LatLng? = null //当前定位经纬度,中国国测局地理坐标（GCJ-02）
+    private var timerClockJob: Job? = null
 
 
     override fun initViewModel() {
@@ -61,11 +74,19 @@ class UDLocationInfoFragment : BaseIOTDeviceFragment() {
             BR.stateVM,
             mStates
         )
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdLocationInfoBinding
+        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
+            nav().navigateUp()
+        }
+        registerOnBackPressedDispatcher {
+            nav().navigateUp()
+        }
+        toolbarViewModel.toolbarTitleText.set("位置")
         binding.textureMapView.onCreate(savedInstanceState)
         setUpMap()
     }
@@ -95,9 +116,19 @@ class UDLocationInfoFragment : BaseIOTDeviceFragment() {
             }
             queryInfo()
         }
+
+        fun backLocation() {
+            moveCameraToLocation(gcjLatLng ?: return)
+        }
+    }
+
+    override fun initData() {
+        super.initData()
+        moveCameraToLocation(LatLng(31.21032874, 121.59840681))
     }
 
     override fun lazyLoadData() {
+        startTimer()
         queryInfo()
     }
 
@@ -106,6 +137,7 @@ class UDLocationInfoFragment : BaseIOTDeviceFragment() {
 
         val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "value=3")
         commandItems.add(command)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
@@ -145,19 +177,25 @@ class UDLocationInfoFragment : BaseIOTDeviceFragment() {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<UDCommonCurrentStateInfo>(content)
+                    MoshiUtil.fromJson<UDCurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
+                if (stateInfo.gnssStatus != "0") {
+                    mStates.longitude.set("--")
+                    mStates.latitude.set("--")
+                    return@launchWithViewLifecycle
+                }
 
-                mStates.utcTime.set(stateInfo.utcTime)
-                mStates.longitude.set("${stateInfo.longitudeDirection} ${stateInfo.longitude}°")
-                mStates.latitude.set("${stateInfo.latitudeDirection} ${stateInfo.latitude}°")
                 if (stateInfo.longitude != IOTConstants.NULL_KEY
                     && stateInfo.latitude != IOTConstants.NULL_KEY
                 ) {
+                    mStates.longitude.set("${stateInfo.longitudeDirection} ${stateInfo.longitude}°")
+                    mStates.latitude.set("${stateInfo.latitudeDirection} ${stateInfo.latitude}°")
+
                     val longitude = stateInfo.longitude.toDouble()
                     val latitude = stateInfo.latitude.toDouble()
-                    val gcj02LatLng = CustomLatLng(latitude, longitude).toGcj02LatLng()
-                    addMarker(gcj02LatLng)
+                    gcjLatLng = CustomLatLng(latitude, longitude).toGcj02LatLng().apply {
+                        addMarker(this)
+                    }
                 }
             } catch (e: Exception) {
                 Timber.e(e)
@@ -188,11 +226,24 @@ class UDLocationInfoFragment : BaseIOTDeviceFragment() {
         aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, mZoomLevel))
     }
 
+
+    private fun startTimer() {
+        //启动一个新的协程作为超时Job
+        timerClockJob?.cancel()
+        timerClockJob = launchWithViewLifecycle {
+            while (isActive) {
+                delay(1000)
+                mStates.utcTime.set(TimeUtils.getNowString())
+            }
+        }
+    }
+
     /**
      * 方法必须重写
      */
     override fun onResume() {
         super.onResume()
+        initImmersionBar(binding.llToolbar.toolbar)
         binding.textureMapView.onResume()
     }
 

@@ -95,7 +95,7 @@ class LoginActivity : BaseActivity() {
             }
             Toaster.show("验证码已发送")
             val timer = MyCountDownTimer(binding.tvGetCode, 60000, 1000)
-            timer.setTextColor(R.color.title_text_color, R.color.text_color_b3b3b3)
+            timer.setTextColor(R.color.title_text_color, R.color.text_color_B3B3B3)
             timer.start()
         }
         loginRequestViewModel.loginResult.observe(this) { dataResult: DataResult<String> ->

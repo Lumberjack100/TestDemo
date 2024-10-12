@@ -545,7 +545,6 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     }
 
     companion object {
-        fun newInstance() = MR702RS485Port1SensorParamFragment()
         private const val SENSOR_MODEL_ITEM = "sensor_model_item"
 
         fun newBundleArguments(

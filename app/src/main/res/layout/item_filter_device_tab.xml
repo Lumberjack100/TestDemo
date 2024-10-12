@@ -18,8 +18,8 @@
         android:gravity="center_vertical"
         android:paddingHorizontal="@dimen/dimen_size_5"
         app:drawable_radius="@{20}"
-        app:drawable_solidColor="@{@color/gray_f5f6f8}"
-        tools:background="@color/gray_f5f6f8">
+        app:drawable_solidColor="@{@color/gray_F5F6F8}"
+        tools:background="@color/gray_F5F6F8">
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"

@@ -1,13 +1,16 @@
 package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo
 
+import android.os.Bundle
 import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.Utils
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.UDCommonCurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
@@ -16,6 +19,7 @@ import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem
+import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +34,12 @@ import timber.log.Timber
 class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
 
+
+    override fun initView(savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
+        toolbarViewModel.toolbarTitleText.set("网络信息")
+    }
+
     override fun queryStatusInfo() {
         commandItems.clear()
 
@@ -42,7 +52,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<UDCommonCurrentStateInfo>(content)
+                    MoshiUtil.fromJson<UDCurrentStateInfo>(content)
                 }
                 if (stateInfo == null) {
                     binding.refreshLayout.showEmpty()
@@ -51,12 +61,16 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
 
-                groupList.add(DeviceStatusInfoGroupItem("数据网络", bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)))
+                groupList.add(DeviceStatusInfoGroupItem("数据网络"))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "移动网络",
-                    value = stateInfo.mobileNet.compareAndReturn("1", "开启", "关闭"),
+                    value = stateInfo.mobileNet.compareAndReturn("1", "已连接", "未连接"),
+                    textColorRes = if (stateInfo.mobileNet == "1") ColorUtils.getColor(
+                        R.color.online_colorPrimary
+                    ) else ColorUtils.getColor(R.color.error_FF4400)
                 )
+
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "网络类型",
@@ -69,7 +83,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "CMCC" -> "中国移动"
                         "CU" -> "中国联通"
                         "CT" -> "中国电信"
-                        else -> "--"
+                        else -> AppContants.PLACE_HOLDER_VALUE
                     }
                 )
                 stateInfo.csq.notNullKey {
@@ -77,10 +91,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList.add(
                         DeviceStatusInfoSignalItem(
                             name = "信号强度",
-                            signalValue = if (temp <= 0)
-                                temp
-                            else
-                                temp * 2 - 113
+                            signalValue = temp
                         )
                     )
                 }
@@ -99,18 +110,21 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "电台",
                     value = stateInfo.radioEnableStatus.compareAndReturn("1", "已启用", "未启用"),
                     textColorRes = if (stateInfo.radioEnableStatus == "1") ColorUtils.getColor(
-                        R.color.green_00B26B
-                    ) else 0
+                        R.color.online_colorPrimary
+                    ) else ColorUtils.getColor(R.color.error_FF4400)
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "蓝牙",
                     value = stateInfo.bt_connected.compareAndReturn("1", "已连接", "未连接"),
-                    textColorRes = if (stateInfo.radioEnableStatus == "1") ColorUtils.getColor(
-                        R.color.green_00B26B
-                    ) else 0
+                    textColorRes = if (stateInfo.bt_connected == "1") ColorUtils.getColor(
+                        R.color.online_colorPrimary
+                    ) else ColorUtils.getColor(R.color.error_FF4400),
+                    isBottomItem = true
                 )
-                groupList.add(DeviceStatusInfoGroupItem("数据链路", bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)))
+
+                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                groupList.add(DeviceStatusInfoGroupItem("数据链路"))
                 if (stateInfo.dataCenterEnableStatus != IOTConstants.NULL_KEY
                     && stateInfo.dataCenterLinkStatus != IOTConstants.NULL_KEY
                     && stateInfo.dataCenterPlatformType != IOTConstants.NULL_KEY
@@ -141,8 +155,9 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                                 "未启用"
                             ),
                             textColorRes = if (enableStatus == "0" || onlineStatus == "未连接") ColorUtils.getColor(
-                                R.color.red_F13838
-                            ) else ColorUtils.getColor(R.color.green_00B26B)
+                                R.color.error_FF4400
+                            ) else ColorUtils.getColor(R.color.online_colorPrimary),
+                            isBottomItem = true
                         )
                     }
                 }
@@ -155,7 +170,8 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         }
     }
 
-    companion object {
-        fun newInstance() = UDNetInfoFragment()
+    override fun onResume() {
+        super.onResume()
+        initImmersionBar(binding.llToolbar.toolbar)
     }
 }

@@ -334,16 +334,16 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             mStates.inclinometerBattery.set(motionState.incvoltage + "%")
             motionState.incvoltage.toDoubleOrNull()?.let {
                 mStates.inclinometerBatteryColorRes.set(
-                    if (it <= 20) ColorUtils.getColor(R.color.red_F13838) else ColorUtils.getColor(
-                        R.color.green_00B26B
+                    if (it <= 20) ColorUtils.getColor(R.color.error_FF4400) else ColorUtils.getColor(
+                        R.color.online_colorPrimary
                     )
                 )
             }
             mStates.deviceBattery.set(motionState.driveinputv + "%")
             motionState.driveinputv.toDoubleOrNull()?.let {
                 mStates.deviceBatteryColorRes.set(
-                    if (it <= 20) ColorUtils.getColor(R.color.red_F13838) else ColorUtils.getColor(
-                        R.color.green_00B26B
+                    if (it <= 20) ColorUtils.getColor(R.color.error_FF4400) else ColorUtils.getColor(
+                        R.color.online_colorPrimary
                     )
                 )
             }
@@ -577,7 +577,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     private fun getMinTime(): String {
         val decimalFormat = DecimalFormat("#", DecimalFormatSymbols(Locale.getDefault()))
         mStates.motionStateWrapper.get().let { motionState ->
-            if (TextUtils.isEmpty(motionState.waittime)) return "--"
+            if (TextUtils.isEmpty(motionState.waittime)) return AppContants.PLACE_HOLDER_VALUE
             try {
                 val second = motionState.waittime.toInt()
                 val min = second.toFloat() / 60 + 1
@@ -585,7 +585,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 return decimalFormat.format(min.toDouble())
             } catch (exception: Exception) {
                 Timber.e(exception)
-                return "--"
+                return AppContants.PLACE_HOLDER_VALUE
             }
         }
     }

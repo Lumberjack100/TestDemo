@@ -3,9 +3,6 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.setFragmentResultListener
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.blankj.utilcode.util.ColorUtils
-import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.setup
@@ -14,7 +11,7 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.UDCommonCurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -33,7 +30,6 @@ import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragmen
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UniversalDataCenterHomeViewModel
-import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -42,14 +38,14 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/4/29
- * 描述： 一体化雷达泥位计数据中心主页面
+ * 描述： 一体化雷达泥位计数据链路主页面
  */
 class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUniversalDataCenterHomeBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: UniversalDataCenterHomeViewModel
     private val iotParseManager: IOTParserManager by inject()
-    private var centerNum = 0//数据中心数量
+    private var centerNum = 0//数据链路数量
 
     override fun initViewModel() {
         super.initViewModel()
@@ -69,17 +65,24 @@ class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUniversalDataCenterHomeBinding
-        binding.llToolbar.toolbar.title = "数据中心"
+        toolbarViewModel.toolbarTitleText.set("数据链路")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         initRefresh()
         initAdapter()
+    }
+
+    override fun initData() {
+        super.initData()
+        arguments?.let {
+            centerNum = it.getInt(UniversalDataCenterHomeFragment.CENTER_NUM)
+        }
+        mStates.isSupportedReportInterval.set(false)
+        binding.recyclerView.bindingAdapter.models = getAdapterData()
     }
 
     private fun initRefresh() {
@@ -96,13 +99,6 @@ class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     private fun initAdapter() {
         binding.recyclerView.setup { rv ->
-            rv.addItemDecoration(
-                RecycleViewDivider(
-                    LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(8f), ColorUtils.getColor(
-                        R.color.transparent
-                    )
-                )
-            )
             addType<DataCenterStatusItem>(R.layout.data_center_status_item)
             R.id.item.onClick {
                 val item = getModel<DataCenterStatusItem>()
@@ -119,15 +115,6 @@ class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 )
             }
         }
-    }
-
-    override fun initData() {
-        super.initData()
-        arguments?.let {
-            centerNum = it.getInt(UniversalDataCenterHomeFragment.CENTER_NUM)
-        }
-        mStates.isSupportedReportInterval.set(false)
-        binding.recyclerView.bindingAdapter.models = getAdapterData()
     }
 
     override fun createObserver() {
@@ -159,7 +146,7 @@ class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询数据中心状态出错: ${result.message}"
+                        val errMsg = "查询数据链路状态出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -183,7 +170,7 @@ class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<UDCommonCurrentStateInfo>(content)
+                    MoshiUtil.fromJson<UDCurrentStateInfo>(content)
                 }
                 if (stateInfo == null) {
                     binding.refreshLayout.showEmpty()
@@ -217,7 +204,18 @@ class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private fun getAdapterData(): MutableList<DataCenterStatusItem> {
         val list = mutableListOf<DataCenterStatusItem>()
         for (i in 1..centerNum) {
-            list.add(DataCenterStatusItem(i, "数据中心$i", "0"))
+            list.add(
+                DataCenterStatusItem(
+                    centerid = i,
+                    name = "数据链路$i",
+                    status = "0",
+                    bgResId = when (i) {
+                        1 -> R.drawable.layer_common_click_item_top_corner_4_with_divider
+                        centerNum -> R.drawable.shape_common_click_item_bottom_corner_4
+                        else -> R.drawable.layer_common_click_item_with_divider
+                    }
+                )
+            )
         }
         return list
     }

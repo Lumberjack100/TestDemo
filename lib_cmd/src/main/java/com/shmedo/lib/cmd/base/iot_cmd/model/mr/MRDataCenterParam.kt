@@ -3,7 +3,7 @@ package com.shmedo.lib.cmd.base.iot_cmd.model.mr
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2023/9/28 <br/>
- * 描述：     数据中心配置
+ * 描述：     数据链路配置
  */
 data class MRDataCenterParam(
     var centerid: String = "",
@@ -13,8 +13,8 @@ data class MRDataCenterParam(
     var line: String = "",//通信线路选择  1：4G 2：有线
     var level: String = "",//网络协议 1:ipv4 2:ipv6
     var type: String = "", //协议类型 1:TCP 2:UDP
-    var addr: String = "",//数据中心地址
-    var port: String = "", //数据中心端口
+    var addr: String = "",//数据链路地址
+    var port: String = "", //数据链路端口
     var plattype: String = "", //平台类型 DIDA:地大平台  ZYWL:成都理工平台  GHIOT:米度平台 DIDA2:地大平台2 HWPEC:河南水利 MDSW:米度水文
     var datatype: String = "", //数据协议,1：TCP-C 2:MQTT 3:SL651水文协议
 

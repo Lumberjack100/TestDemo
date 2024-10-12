@@ -18,31 +18,28 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:background="@drawable/bg_white_corner_4dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dimen_size_16"
-            android:paddingStart="@dimen/dimen_size_10"
-            android:paddingTop="@dimen/dimen_size_14"
-            android:paddingEnd="@dimen/dimen_size_10"
-            android:paddingBottom="@dimen/dimen_size_14"
+            android:padding="@dimen/dimen_size_16"
             app:drawable_radius="@{4}"
-            app:drawable_solidColor="@{@color/gray_f5f6f8}"
-            tools:background="@color/gray_f5f6f8">
+            app:drawable_solidColor="@{@color/gray_F5F6F8}"
+            tools:background="@color/gray_F5F6F8">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_center_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{vm.centerName}"
-                android:textColor="@color/title_text_color"
-                android:textSize="@dimen/text_size_17"
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/text_size_16"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="数据中心03-TCP" />
+                tools:text="数据链路01" />
 
             <View
                 android:id="@+id/view_line"
@@ -60,8 +57,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_size_10"
                 android:text="状态："
-                android:textColor="@color/title_text_color"
-                android:textSize="@dimen/text_size_17"
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/text_size_14"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/view_line" />
 
@@ -70,7 +67,7 @@
                 dataCenterStatus='@{vm.centerStatus}'
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size_17"
+                android:textSize="@dimen/text_size_14"
                 app:layout_constraintStart_toEndOf="@+id/tv_status_title"
                 app:layout_constraintTop_toTopOf="@+id/tv_status_title"
                 tools:text="未开启"
@@ -80,14 +77,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="开启状态："
-                android:textColor="@color/title_text_color"
-                android:textSize="@dimen/text_size_17"
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/text_size_14"
                 app:layout_constraintEnd_toStartOf="@+id/statusSB"
                 app:layout_constraintTop_toTopOf="@+id/tv_status_title" />
 
             <com.kyleduo.switchbutton.SwitchButton
                 android:id="@+id/statusSB"
-                style="@style/SwitchButton_ButtonStyle"
+                style="@style/SwitchButton_Item_Button_Style"
                 checkedImmediatelyNoEvent="@{vm.isCenterOpened}"
                 android:layout_marginTop="@dimen/dimen_size_10"
                 android:enabled="@{vm.isEditable}"

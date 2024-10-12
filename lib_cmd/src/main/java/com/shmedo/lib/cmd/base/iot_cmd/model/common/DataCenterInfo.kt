@@ -3,15 +3,15 @@ package com.shmedo.lib.cmd.base.iot_cmd.model.common
 /**
  * 创建者:   gonghe <br></br>
  * 创建时间:  11/18/20 <br></br>
- * 描述：     数据中心参数信息
+ * 描述：     数据链路参数信息
  */
 data class DataCenterInfo(
     var centerid: String = "",
     var protocol: String = "", //传输协议;TCP-C/TCP-S/MQTT
     var datatype: String = "",//数据协议,由设备类型决定
     var plattype: String = "", //平台类型
-    var addr: String = "", //数据中心地址,addr和port设置为空时，关闭该数据中心
-    var port: String = "", //数据中心端口
+    var addr: String = "", //数据链路地址,addr和port设置为空时，关闭该数据链路
+    var port: String = "", //数据链路端口
 
     /**
      * MQTT 协议特有配置参数

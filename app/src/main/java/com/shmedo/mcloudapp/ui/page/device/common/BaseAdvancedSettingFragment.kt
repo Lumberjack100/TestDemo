@@ -7,7 +7,6 @@ import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Lifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.amap.api.location.AMapLocation
 import com.amap.api.services.core.AMapException
 import com.amap.api.services.core.LatLonPoint
@@ -15,8 +14,6 @@ import com.amap.api.services.geocoder.GeocodeResult
 import com.amap.api.services.geocoder.GeocodeSearch
 import com.amap.api.services.geocoder.RegeocodeQuery
 import com.amap.api.services.geocoder.RegeocodeResult
-import com.blankj.utilcode.util.ColorUtils
-import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
@@ -36,6 +33,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAdvancedSettingBinding
+import com.shmedo.mcloudapp.databinding.ItemAdvancedSettingBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -50,7 +48,6 @@ import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.dialog.SyncInstallat
 import com.shmedo.mcloudapp.ui.viewmodel.request.LocationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.AdvancedSettingViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
 import com.shmedo.mcloudapp.utils.map.CustomLatLng
 import com.shmedo.mcloudapp.utils.map.JZLocationConverter
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper
@@ -63,7 +60,7 @@ import java.util.Locale
 /**
  * 创建者：gonghe
  * 创建时间：2024/5/17
- * 描述： TODO
+ * 描述： 系统配置页面
  */
 open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
     GeocodeSearch.OnGeocodeSearchListener {
@@ -94,13 +91,11 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentAdvancedSettingBinding
-        binding.llToolbar.toolbar.title = "高级设置"
+        toolbarViewModel.toolbarTitleText.set("系统配置")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            //mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
-            //mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         initAdapter()
@@ -109,14 +104,15 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
 
     private fun initAdapter() {
         binding.recyclerview.linear().setup { rv ->
-            rv.addItemDecoration(
-                RecycleViewDivider(
-                    LinearLayoutManager.VERTICAL, ConvertUtils.dp2px(8f), ColorUtils.getColor(
-                        R.color.transparent
-                    )
-                )
-            )
             addType<AdvancedSettingItem>(R.layout.item_advanced_setting)
+            onBind {
+                val itemBinding = getBinding<ItemAdvancedSettingBinding>()
+                when (modelPosition) {
+                    0 -> itemBinding.item.setBackgroundResource(R.drawable.layer_common_click_item_top_corner_4_with_divider)
+                    modelCount - 1 -> itemBinding.item.setBackgroundResource(R.drawable.shape_common_click_item_bottom_corner_4)
+                    else -> itemBinding.item.setBackgroundResource(R.drawable.layer_common_click_item_with_divider)
+                }
+            }
             R.id.item.onClick {
                 val item = getModel<AdvancedSettingItem>()
                 processItemClick(item)
@@ -191,8 +187,8 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
 
     private fun isNeedSyncLocation(): Boolean {
         return communicateWay is BleConnect && (productType == ProductType.LR200
-                || productType == ProductType.LB20S || productType == ProductType.U_D_1
-                || productType == ProductType.U_D_2 || productType == ProductType.U_R_1 || productType == ProductType.U_I_1)
+                || productType == ProductType.LB20S
+                || productType == ProductType.U_R_1 || productType == ProductType.U_I_1)
     }
 
     /**
@@ -246,7 +242,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
         when (item.type) {
             AdvancedSettingItem.Type.REBOOT -> {
                 showMessage("确定重启吗？", "温馨提示", "确定", {
-                    restoreFactory()
+                    reboot()
                 }, "取消")
             }
 

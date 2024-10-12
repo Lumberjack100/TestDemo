@@ -7,7 +7,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRDataCenterParam
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2023/9/28 <br/>
- * 描述：     数据中心解析器
+ * 描述：     数据链路解析器
  */
 class MRDataCenterParser : IOTCommandParser<MRDataCenterParam> {
 

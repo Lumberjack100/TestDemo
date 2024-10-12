@@ -20,17 +20,15 @@
         android:layout_height="match_parent"
         android:background="@color/main_bg_gray">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/white"
             app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/ic_navigation_black2"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:subtitleTextAppearance="@style/Toolbar_SubTitleText"
+            style="@style/Widget.MyApp.MaterialToolbar"
             app:subtitleTextColor="@color/sub_title_text_color"
-            app:titleTextAppearance="@style/Toolbar_TitleText"
             app:titleTextColor="@color/title_text_color"
             tools:subtitle="192.168.0.107:1088"
             tools:title="TCP远程调试">
@@ -63,7 +61,7 @@
                     android:src="@drawable/ic_more_18dp"
                     app:tint="@color/colorPrimary" />
             </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.MaterialToolbar>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/layoutCount"

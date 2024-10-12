@@ -1,17 +1,20 @@
 package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo
 
+import android.os.Bundle
 import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.UDCommonCurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
+import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
@@ -25,6 +28,11 @@ import timber.log.Timber
  */
 class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
+    override fun initView(savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
+        toolbarViewModel.toolbarTitleText.set("基本信息")
+    }
+
     override fun queryStatusInfo() {
         commandItems.clear()
 
@@ -37,7 +45,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<UDCommonCurrentStateInfo>(content)
+                    MoshiUtil.fromJson<UDCurrentStateInfo>(content)
                 }
                 if (stateInfo == null) {
                     binding.refreshLayout.showEmpty()
@@ -46,8 +54,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
 
-                groupList.add(DeviceStatusInfoGroupItem("设备信息",
-                    bgColorRes = ColorUtils.getColor(R.color.main_bg_gray) ))
+                groupList.add(DeviceStatusInfoGroupItem("设备信息"))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "设备型号",
@@ -58,14 +65,22 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "设备SN",
                     value = stateInfo.sn,
                 )
-                val deviceStatus = if (stateInfo.deviceStatus == "0") "正常" else "异常"
+                val deviceStatus = when (stateInfo.deviceStatus) {
+                    "-2" -> "告警"
+                    "-3" -> "故障"
+                    else -> "正常"
+                }
                 groupList.add(
                     DeviceStatusInfoBasicItem(
                         name = "设备状态",
                         value = deviceStatus,
-                        textColorRes = if (deviceStatus == "正常") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
-                            R.color.red_F13838
-                        )
+                        textColorRes = when (deviceStatus) {
+                            "正常" -> ColorUtils.getColor(R.color.online_colorPrimary)
+                            "告警" -> ColorUtils.getColor(
+                                R.color.warn_FF9D00
+                            )
+                            else -> ColorUtils.getColor(R.color.error_FF4400)
+                        }
                     )
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -100,11 +115,14 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList.add(
                         DeviceStatusInfoBasicItem(
                             name = "累计运行时间",
-                            value = DeviceStatusInfoProcessor.millis2FitTimeSpan(it * 1000L, 3)
+                            value = DeviceStatusInfoProcessor.millis2FitTimeSpan(it * 1000L, 3),
+                            isBottomItem = true
                         )
                     )
                 }
-                groupList.add(DeviceStatusInfoGroupItem("工作信息", bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)))
+
+                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                groupList.add(DeviceStatusInfoGroupItem("工作信息"))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "上报模式",
@@ -122,22 +140,27 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     DeviceStatusInfoBasicItem(
                         name = "上报状态",
                         value = reportStatus,
-                        textColorRes = if (reportStatus == "正常") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
-                            R.color.red_F13838
+                        textColorRes = if (reportStatus == "正常") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                            R.color.error_FF4400
                         )
                     )
                 )
+
+                var frequency = stateInfo.reportFrequency.toIntOrNull()?.let { it / 60 } ?: 0
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "上报频率",
-                    value = stateInfo.reportFrequency,
-                    unit = "分钟/次",
+                    value = if (frequency <= 0) stateInfo.reportFrequency else frequency.toString(),
+                    unit = if (frequency <= 0) "分钟/次" else "小时/次",
                 )
+
+                frequency = stateInfo.captureFrequency.toIntOrNull()?.let { it / 60 } ?: 0
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "抓拍频率",
-                    value = stateInfo.captureFrequency,
-                    unit = "分钟/次",
+                    value = if (frequency <= 0) stateInfo.captureFrequency else frequency.toString(),
+                    unit = if (frequency <= 0) "分钟/次" else "小时/次",
+                    isBottomItem = true
                 )
                 binding.recyclerview.models = groupList
 
@@ -148,7 +171,8 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         }
     }
 
-    companion object {
-        fun newInstance() = UDBaseInfoFragment()
+    override fun onResume() {
+        super.onResume()
+        initImmersionBar(binding.llToolbar.toolbar)
     }
 }

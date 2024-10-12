@@ -4,7 +4,8 @@ import androidx.lifecycle.ViewModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 class M20SRadioSettingViewModel : ViewModel() {
-    val isEditable = NonNullObservableField(true)
+    val isOpened = NonNullObservableField(true)
+    val isSupportSwitch = NonNullObservableField(false)
 
     val rtcmChannel = NonNullObservableField("")//RTCM数据频点
     val receiveChannel = NonNullObservableField("")//广播接收频点

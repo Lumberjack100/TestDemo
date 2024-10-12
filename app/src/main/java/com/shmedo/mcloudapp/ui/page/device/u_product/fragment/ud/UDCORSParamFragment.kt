@@ -58,7 +58,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdCorsParamBinding
-        binding.llToolbar.toolbar.title = "CORS测高"
+        toolbarViewModel.toolbarTitleText.set("海拔高度")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }
@@ -123,7 +123,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
             commandItems.clear()
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_SET_MUD_LEVEL_METER_DIFF_LOCATE,
-                "switch=0"
+                "switch=1"
             )
             commandItems.add(command)
 

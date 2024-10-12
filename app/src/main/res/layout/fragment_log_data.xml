@@ -4,7 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
 
     </data>
 
@@ -13,27 +19,21 @@
         android:layout_height="match_parent"
         android:background="@color/main_bg_gray">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/white"
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:navigationIcon="@drawable/ic_navigation_black2"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:subtitleTextAppearance="@style/Toolbar_SubTitleText"
-            app:subtitleTextColor="@color/sub_title_text_color"
-            app:titleTextAppearance="@style/Toolbar_TitleText"
-            app:titleTextColor="@color/title_text_color"
-            tools:title="消息" />
+            app:vm="@{toolbarVM}" />
 
         <com.drake.statelayout.StateLayout
             android:id="@+id/stateLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <com.l4digital.fastscroll.FastScrollRecyclerView
                 android:id="@+id/recyclerview"

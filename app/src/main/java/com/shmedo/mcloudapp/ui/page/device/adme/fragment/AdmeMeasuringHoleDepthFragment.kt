@@ -76,7 +76,6 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     private var queryMotionStateJob: Job? = null
 
 
-
     override fun initViewModel() {
         super.initViewModel()
         toolbarViewModel = getFragmentScopeViewModel()
@@ -143,6 +142,26 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         mStates.decentralizedEnable.set(true)//进入页面默认自动测孔深，需要打开堵转检测使能
         mStates.isClearMotionDataVisible.set(true)
         loadAutoLastHistoryData()
+    }
+
+    /**
+     * 自动测孔深模式加载本地缓存的参数
+     */
+    private fun loadAutoLastHistoryData() {
+        mStates.speed.set(MmkvCacheUtil.getAdmeAutoLastMotorDropSpeed())
+    }
+
+    /**
+     * 手动测孔深模式加载本地缓存的参数
+     */
+    private fun loadManualLastHistoryData() {
+        if (mStates.motionType.get() == motionTypeList[0]) {//上拉
+            mStates.speed.set(MmkvCacheUtil.getAdmeManualLastMotorPullUpSpeed())
+            mStates.distanceGoal.set(MmkvCacheUtil.getAdmeManualLastMotorPullUpDistance())
+        } else {
+            mStates.speed.set(MmkvCacheUtil.getAdmeManualLastMotorDropSpeed())
+            mStates.distanceGoal.set(MmkvCacheUtil.getAdmeManualLastMotorDropDistance())
+        }
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -234,26 +253,6 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             showMessage("确认清除设备运动记录数据吗?", "温馨提示", "确定", {
                 clearMotorMotionData()
             }, "取消")
-        }
-    }
-
-    /**
-     * 自动测孔深模式加载本地缓存的参数
-     */
-    private fun loadAutoLastHistoryData() {
-        mStates.speed.set(MmkvCacheUtil.getAdmeAutoLastMotorDropSpeed())
-    }
-
-    /**
-     * 手动测孔深模式加载本地缓存的参数
-     */
-    private fun loadManualLastHistoryData() {
-        if (mStates.motionType.get() == motionTypeList[0]) {//上拉
-            mStates.speed.set(MmkvCacheUtil.getAdmeManualLastMotorPullUpSpeed())
-            mStates.distanceGoal.set(MmkvCacheUtil.getAdmeManualLastMotorPullUpDistance())
-        } else {
-            mStates.speed.set(MmkvCacheUtil.getAdmeManualLastMotorDropSpeed())
-            mStates.distanceGoal.set(MmkvCacheUtil.getAdmeManualLastMotorDropDistance())
         }
     }
 
@@ -523,17 +522,27 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         isShowMsg: Boolean,
         msg: String
     ) {
-            when (IOTCommandUtil.extractCommandType(cmdStr)) {
-                IOTCommandType.ADME_MD_GET_MEASURING_HOLEDEPTH_PULSE,
-                -> {
-                    super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, false, msg)
-                    getMotorMotionData(DELAY_2000_MILLIS)
-                }
-
-                else -> {
-                    super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, isShowMsg, msg)
-                }
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.ADME_MD_GET_MEASURING_HOLEDEPTH_PULSE,
+            -> {
+                super.showNearbyCommunicationTimeoutAlert(
+                    cmdStr,
+                    isDismissLoadingDialog,
+                    false,
+                    msg
+                )
+                getMotorMotionData(DELAY_2000_MILLIS)
             }
+
+            else -> {
+                super.showNearbyCommunicationTimeoutAlert(
+                    cmdStr,
+                    isDismissLoadingDialog,
+                    isShowMsg,
+                    msg
+                )
+            }
+        }
     }
 
     override fun setResultData(cmdStr: String) {
@@ -848,7 +857,7 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
                     override fun onRefresh() {
                         if (communicateWay is BleConnect && bleViewModel.isConnected() && !mStates.isStopQueryMotorState.get()) {
-                            getMotorMotionData(AdmeHacMeasuringHoleDepthFragment.DELAY_2000_MILLIS)
+                            getMotorMotionData(DELAY_2000_MILLIS)
                         }
                     }
 
@@ -891,8 +900,10 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         try {
             if (lastMotionDistance.isEmpty())
                 lastMotionDistance = motorMotionDistanceInfo.realmovedistance
+
             if (safeDistance.isEmpty())
                 safeDistance = motorMotionDistanceInfo.realholedepth
+
             if (motorMotionDistanceInfo.realholedepth.isNotEmpty() && safeDistance.isNotEmpty()) {
                 val holeValue = abs(motorMotionDistanceInfo.realholedepth.toDouble())
                 val safeValue = abs(safeDistance.toDouble())

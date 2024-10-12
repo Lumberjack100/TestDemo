@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@{stateVM.motorInfo}"
-                android:textColor="@{stateVM.isMotorInfoNormal ? @color/text_color_54DA99 : @color/red_F13838}"
+                android:textColor="@{stateVM.isMotorInfoNormal ? @color/online_colorPrimary : @color/error_FF4400}"
                 android:textSize="@dimen/text_size_13"
                 tools:text="设备欠压,测斜仪配对失败,伺服电机接线错误,计米器基数脉冲不足" />
 
@@ -96,8 +96,8 @@
                 android:paddingEnd="10dp"
                 android:paddingBottom="24dp"
                 app:drawable_radius="@{3}"
-                app:drawable_solidColor="@{@color/main_bg_gray_f9f9f9}"
-                tools:background="@color/main_bg_gray_f9f9f9">
+                app:drawable_solidColor="@{@color/main_bg_gray_F9F9F9}"
+                tools:background="@color/main_bg_gray_F9F9F9">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_data_left_title"
@@ -135,8 +135,8 @@
                 android:paddingEnd="10dp"
                 android:paddingBottom="24dp"
                 app:drawable_radius="@{3}"
-                app:drawable_solidColor="@{@color/main_bg_gray_f9f9f9}"
-                tools:background="@color/main_bg_gray_f9f9f9">
+                app:drawable_solidColor="@{@color/main_bg_gray_F9F9F9}"
+                tools:background="@color/main_bg_gray_F9F9F9">
 
                 <com.google.android.material.textview.MaterialTextView
                     android:layout_width="wrap_content"

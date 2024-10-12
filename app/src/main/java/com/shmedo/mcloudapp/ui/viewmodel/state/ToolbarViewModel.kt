@@ -1,8 +1,8 @@
 package com.shmedo.mcloudapp.ui.viewmodel.state
 
 import androidx.lifecycle.ViewModel
-import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 /**
  * 创建者:   gonghe <br/>
@@ -10,6 +10,7 @@ import com.shmedo.mcloudapp.R
  * 描述：     TODO
  */
 class ToolbarViewModel : ViewModel() {
+    val toolbarTitleText = NonNullObservableField("")
     val toolbarIvActionResId = NonNullObservableField(R.drawable.ic_query_device_data)
     val toolbarIvActionVisible = NonNullObservableField(false)
     val toolbarTvActionText = NonNullObservableField("取消")

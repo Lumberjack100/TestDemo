@@ -27,46 +27,46 @@
                 android:orientation="vertical">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    style="@style/DeviceCurrentState_Item_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        style="@style/DeviceCurrentState_Item_Title_Style"
                         android:text="设备搜星数量" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        style="@style/DeviceCurrentState_Item_Value_Style"
                         android:text='@{stateVM.starNum+""}'
                         tools:text="34" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    style="@style/DeviceCurrentState_Item_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        style="@style/DeviceCurrentState_Item_Title_Style"
                         android:text="AMS连接状态" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        style="@style/DeviceCurrentState_Item_Value_Style"
                         android:text="@{stateVM.amsState}"
                         tools:text="在线" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/DeviceCurrentState_SingleItem_Style"
+                    style="@style/DeviceCurrentState_Item_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/DeviceCurrentState_SingleItem_NameStyle"
+                        style="@style/DeviceCurrentState_Item_Title_Style"
                         android:text="4G信号强度" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/tv_4g_signal_strength"
-                        style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+                        style="@style/DeviceCurrentState_Item_Value_Style"
                         android:text='@{stateVM.signalValue==0?"--dBm":stateVM.signalValue+"dBm" }'
                         tools:text="-51dBm" />
 
@@ -77,7 +77,7 @@
                         android:layout_marginStart="10dp"
                         app:bind_signal_value="@{stateVM.signalValue}"
                         app:connected="true"
-                        app:primary_color="@color/text_color_cccccc"
+                        app:primary_color="@color/text_color_CCCCCC"
                         app:shadow_color="@color/green_00B26B"
                         app:shadow_open="false"
                         app:signal_maximum="4"
@@ -93,7 +93,7 @@
                     android:layout_marginTop="@dimen/dimen_size_15"
                     android:layout_marginBottom="@dimen/dimen_size_15"
                     android:drawablePadding="-80dp"
-                    android:text="数据中心"
+                    android:text="数据链路"
                     android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_17"
                     android:textStyle="bold"

@@ -17,12 +17,6 @@
         android:label="AlarmParamSettingFragment"
         tools:layout="@layout/fragment_alarm_param_setting" />
 
-    <fragment
-        android:id="@+id/udAlarmParamSettingFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDAlarmParamSettingFragment"
-        android:label="UDAlarmParamSettingFragment"
-        tools:layout="@layout/fragment_ud_alarm_param_setting" />
-
 
     <action
         android:id="@+id/action_global_to_alarmParamSettingFragment"

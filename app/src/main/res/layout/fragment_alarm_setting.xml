@@ -45,16 +45,16 @@
                 android:orientation="vertical">
 
                 <RelativeLayout
-                    style="@style/SwitchButton_LayoutStyle"
+                    style="@style/SwitchButton_Item_Layout_Style"
                     android:layout_marginTop="@dimen/dimen_size_1"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/SwitchButton_TitleStyle"
+                        style="@style/SwitchButton_Item_Title_Style"
                         android:text="报警启用" />
 
                     <com.kyleduo.switchbutton.SwitchButton
-                        style="@style/SwitchButton_ButtonStyle"
+                        style="@style/SwitchButton_Item_Button_Style"
                         checkedImmediatelyNoEvent="@{stateVM.isOpened}"
                         android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                         app:kswAnimationDuration="100"
@@ -64,7 +64,7 @@
                 </RelativeLayout>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_LayoutStyle"
+                    style="@style/Common_ClickableItem_Layout_Style"
                     android:layout_height="40dp"
                     android:background="@color/transparent"
                     android:onClick="@{()->click.onGoToParamSettingClick()}">
@@ -92,15 +92,15 @@
                     android:background="@color/white" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_GroupName_Style"
+                    style="@style/Common_GroupItem_Title_Style"
                     android:text="报警测试" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         enabledTextColor="@{@color/colorPrimary}"
                         onClickWithDebouncing="@{()->click.onTestFirstAlarmClick()}"
                         textViewEnabled="@{stateVM.isOpened}"
@@ -114,7 +114,7 @@
                         android:layout_weight="1" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         enabledTextColor="@{@color/colorPrimary}"
                         onClickWithDebouncing="@{()->click.onTestSecondAlarmClick()}"
                         textViewEnabled="@{stateVM.isOpened}"
@@ -125,11 +125,11 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_LayoutStyle"
+                    style="@style/Common_EditItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         enabledTextColor="@{@color/colorPrimary}"
                         onClickWithDebouncing="@{()->click.onTestThirdAlarmClick()}"
                         textViewEnabled="@{stateVM.isOpened}"
@@ -143,7 +143,7 @@
                         android:layout_weight="1" />
 
                     <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_TitleStyle"
+                        style="@style/Common_ClickableItem_Title_Style"
                         enabledTextColor="@{@color/colorPrimary}"
                         onClickWithDebouncing="@{()->click.onTestFourthAlarmClick()}"
                         textViewEnabled="@{stateVM.isOpened}"

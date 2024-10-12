@@ -12,17 +12,17 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/item"
-        style="@style/DeviceCurrentState_SingleItem_Style"
+        style="@style/DeviceCurrentState_Item_Layout_Style"
         android:background="@drawable/layer_common_click_item_with_divider">
 
         <com.google.android.material.textview.MaterialTextView
-            style="@style/DeviceCurrentState_SingleItem_NameStyle"
+            style="@style/DeviceCurrentState_Item_Title_Style"
             android:maxLines="1"
             android:text="@{m.name}"
             tools:text="设备SN" />
 
         <com.google.android.material.textview.MaterialTextView
-            style="@style/DeviceCurrentState_SingleItem_ValueStyle"
+            style="@style/DeviceCurrentState_Item_Value_Style"
             android:text="@{m.value}"
             tools:text="modo-1819929190" />
 

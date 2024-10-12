@@ -19,8 +19,8 @@
         android:paddingTop="@dimen/dimen_size_20"
         android:paddingBottom="@dimen/dimen_size_20"
         app:drawable_radiusRT="@{4}"
-        app:drawable_solidColor="@{@color/gray_f5f6f8}"
-        tools:background="@color/gray_f5f6f8">
+        app:drawable_solidColor="@{@color/gray_F5F6F8}"
+        tools:background="@color/gray_F5F6F8">
 
         <com.google.android.material.textview.MaterialTextView
             visible="@{!m.num1.empty}"

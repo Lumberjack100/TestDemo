@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_size_20"
-            android:textColor="@color/red_F13838"
+            android:textColor="@color/error_FF4400"
             android:textSize="@dimen/text_size_16"
             android:text='@{stateVM.content}'
             tools:text="测斜仪配对失败；\n伺服电机低力矩；\n计米器基数脉冲不足\n" />

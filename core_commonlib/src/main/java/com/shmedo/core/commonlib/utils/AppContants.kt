@@ -8,7 +8,7 @@ package com.shmedo.core.commonlib.utils
 interface AppContants {
 
     companion object {
-
+        const val PLACE_HOLDER_VALUE = "--"
     }
 
     interface Extras {

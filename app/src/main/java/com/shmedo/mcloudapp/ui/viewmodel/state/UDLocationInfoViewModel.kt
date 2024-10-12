@@ -8,6 +8,4 @@ class UDLocationInfoViewModel : ViewModel() {
     val longitude = NonNullObservableField("")//经度
     val latitude = NonNullObservableField("")//纬度
     val altitude = NonNullObservableField("") //海拔
-    val locationMethod = NonNullObservableField("")//定位方式
-    val pdop = NonNullObservableField("")
 }

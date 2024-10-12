@@ -55,7 +55,7 @@ class AdmeHacAlarmSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentAdmeHacAlarmSettingBinding
-        binding.llToolbar.toolbar.title = "报警设置"
+        binding.llToolbar.toolbar.title = "报警配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()

@@ -79,9 +79,20 @@ object CommonBindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter(value = ["imageResId"], requireAll = false)
-    fun imageResId(view: ImageView, resId: Int) {
+    @BindingAdapter(value = ["imageResId", "imageSize"], requireAll = false)
+    fun imageResId(view: ImageView, resId: Int, size: Int? = null) {
+        if (size == null) {
+            view.setImageResource(resId)
+            return
+        }
+        view.layoutParams.width = size
+        view.layoutParams.height = size
         view.setImageResource(resId)
+
+//        Glide.with(view.context)
+//            .load(resId)
+//            .apply(RequestOptions.overrideOf(size, size))
+//            .into(view)
     }
 
     @JvmStatic

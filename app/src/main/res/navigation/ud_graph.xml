@@ -6,9 +6,7 @@
     app:startDestination="@id/udHomeFragment">
 
     <include app:graph="@navigation/include_query_data_graph" />
-    <include app:graph="@navigation/include_common_running_device_info_style2_graph" />
     <include app:graph="@navigation/include_lora_graph" />
-    <include app:graph="@navigation/include_alarm_setting_graph" />
     <include app:graph="@navigation/include_firmware_upgrade_graph" />
     <include app:graph="@navigation/include_ble_command_debug_graph" />
     <include app:graph="@navigation/include_remote_command_debug_graph" />
@@ -30,6 +28,30 @@
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDSensorDataHistoryFragment"
         android:label="UDMonitorDataHistoryFragment"
         tools:layout="@layout/fragment_ud_sensor_data_history" />
+
+    <fragment
+        android:id="@+id/udBaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDBaseInfoFragment"
+        android:label="UDBaseInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
+        android:id="@+id/udNetInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDNetInfoFragment"
+        android:label="UDNetInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
+        android:id="@+id/udSensorInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDSensorInfoFragment"
+        android:label="UDSensorInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
+        android:id="@+id/udLocationInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDLocationInfoFragment"
+        android:label="UDLocationInfoFragment"
+        tools:layout="@layout/fragment_ud_location_info" />
 
     <fragment
         android:id="@+id/udWorkModelParamFragment"
@@ -80,11 +102,16 @@
         tools:layout="@layout/fragment_ud_radio_param" />
 
     <fragment
+        android:id="@+id/udAlarmParamSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDAlarmParamSettingFragment"
+        android:label="UDAlarmParamSettingFragment"
+        tools:layout="@layout/fragment_ud_alarm_param_setting" />
+
+    <fragment
         android:id="@+id/advancedSettingFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.common.BaseAdvancedSettingFragment"
         android:label="BaseAdvancedSettingFragment"
         tools:layout="@layout/fragment_advanced_setting" />
-
 
     <action
         android:id="@+id/action_global_to_queryDeviceDataFragment"
@@ -95,12 +122,37 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_commonRunningDeviceInfoStyle2Fragment"
-        app:destination="@id/common_running_device_info_style2_graph"
+        android:id="@+id/action_global_to_udBaseInfoFragment"
+        app:destination="@id/udBaseInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_udNetInfoFragment"
+        app:destination="@id/udNetInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_udSensorInfoFragment"
+        app:destination="@id/udSensorInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_udLocationInfoFragment"
+        app:destination="@id/udLocationInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
 
     <action
         android:id="@+id/action_global_to_capturedPictureViewFragment"
@@ -184,7 +236,7 @@
 
     <action
         android:id="@+id/action_global_to_alarmSettingFragment"
-        app:destination="@id/alarm_setting_graph"
+        app:destination="@id/udAlarmParamSettingFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

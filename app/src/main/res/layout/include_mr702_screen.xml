@@ -20,11 +20,11 @@
         tools:background="@color/white">
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/Common_EditItem_LayoutStyle"
+            style="@style/Common_EditItem_Layout_Style"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 android:text="屏幕更新周期(秒)"
                 tools:textColor="@color/title_text_color" />
 
@@ -37,11 +37,11 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/Common_EditItem_LayoutStyle"
+            style="@style/Common_EditItem_Layout_Style"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 android:text="亮屏时间(秒)"
                 tools:textColor="@color/title_text_color" />
 
@@ -54,11 +54,11 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/Common_EditItem_LayoutStyle"
+            style="@style/Common_EditItem_Layout_Style"
             android:background="@drawable/layer_common_click_item_with_divider">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 android:text="通电时间(秒)"
                 tools:textColor="@color/title_text_color" />
 
@@ -70,10 +70,10 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <androidx.appcompat.widget.LinearLayoutCompat style="@style/Common_EditItem_LayoutStyle">
+        <androidx.appcompat.widget.LinearLayoutCompat style="@style/Common_EditItem_Layout_Style">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 android:text="屏幕亮度设置"
                 tools:textColor="@color/title_text_color" />
 

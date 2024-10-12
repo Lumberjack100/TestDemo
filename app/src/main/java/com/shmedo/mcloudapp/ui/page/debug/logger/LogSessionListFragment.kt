@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.viewModels
 import com.drake.brv.PageRefreshLayout
 import com.drake.brv.listener.OnHoverAttachListener
 import com.drake.brv.utils.linear
@@ -11,22 +12,25 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.data.source.local.entity.LogSession
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentLogSessionListBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.model.HoverHeaderModel
+import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 class LogSessionListFragment : BaseFragment() {
     private lateinit var binding: FragmentLogSessionListBinding
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
     private lateinit var mStates: EmptyViewModel
     private lateinit var logViewModel: LogViewModel
 
@@ -38,19 +42,18 @@ class LogSessionListFragment : BaseFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_log_session_list, BR.vm, mStates)
-            .addBindingParam(BR.click, ClickProxy())
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, BaseClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentLogSessionListBinding
-        binding.llToolbar.toolbar.title = "应用日志"
+        toolbarViewModel.toolbarTitleText.set("应用日志")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
                 nav().navigateUp()
             }
         })
@@ -99,9 +102,6 @@ class LogSessionListFragment : BaseFragment() {
         loadLogSessionList()
     }
 
-    inner class ClickProxy {
-
-    }
 
     private fun loadLogSessionList() {
         launchWithViewLifecycle {

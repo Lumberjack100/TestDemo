@@ -15,8 +15,8 @@ data class DataCenterParamEntity(
     var protocol: String = IOTConstants.NULL_KEY, //传输协议;TCP-C/TCP-S/MQTT
     val datatype: String = IOTConstants.NULL_KEY, //数据协议
     val plattype: String = IOTConstants.NULL_KEY, //平台类型
-    val addr: String = "",//数据中心地址
-    val port: String = "", //数据中心端口
+    val addr: String = "",//数据链路地址
+    val port: String = "", //数据链路端口
 
     /**
      * MQTT 协议特有配置参数

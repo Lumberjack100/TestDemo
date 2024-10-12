@@ -13,6 +13,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.content.FileProvider
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import com.blankj.utilcode.util.FileIOUtils
 import com.blankj.utilcode.util.Utils
@@ -25,6 +26,7 @@ import com.shmedo.core.data.source.local.entity.LogLevel
 import com.shmedo.core.data.source.local.entity.LogSession
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentLogDataBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
@@ -32,6 +34,7 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import java.io.File
 import java.text.SimpleDateFormat
@@ -40,6 +43,7 @@ import java.util.Locale
 
 class LogDataFragment : BaseFragment() {
     private lateinit var binding: FragmentLogDataBinding
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
     private lateinit var mStates: EmptyViewModel
     private lateinit var logViewModel: LogViewModel
 
@@ -58,20 +62,20 @@ class LogDataFragment : BaseFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_log_data, BR.vm, mStates)
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, BaseClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentLogDataBinding
         //设置menu 关键代码
-        mActivity.setSupportActionBar(binding.toolbar)
+        mActivity.setSupportActionBar(binding.llToolbar.toolbar)
         addMenu()
-        binding.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
+        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }
         mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
                 nav().navigateUp()
             }
         })
@@ -87,10 +91,11 @@ class LogDataFragment : BaseFragment() {
     override fun initData() {
         arguments?.let {
             sessionInfo = it.getParcelable(SESSION_INFO)!!
-            statusBarColor = it.getInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR)
+            statusBarColor =
+                it.getInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR)
         }
-        binding.toolbar.title = sessionInfo.name
-        binding.toolbar.subtitle = sessionInfo.key
+        binding.llToolbar.toolbar.title = sessionInfo.name
+        binding.llToolbar.toolbar.subtitle = sessionInfo.key
         loadLogList()
     }
 
@@ -220,7 +225,7 @@ class LogDataFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        initImmersionBar(binding.toolbar)
+        initImmersionBar(binding.llToolbar.toolbar)
     }
 
     companion object {
@@ -230,7 +235,10 @@ class LogDataFragment : BaseFragment() {
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
             putParcelable(SESSION_INFO, sessionInfo)
-            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putInt(
+                com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR,
+                statusBarColor
+            )
         }
     }
 }

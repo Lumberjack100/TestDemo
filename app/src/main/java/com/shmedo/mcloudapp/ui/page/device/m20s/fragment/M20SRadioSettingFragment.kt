@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.m20s.fragment
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.CompoundButton
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -10,26 +11,30 @@ import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.RadioCommunicateEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.RadioCommunicateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentM20sRadioSettingBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.M20SRadioSettingViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.databinding.FragmentM20sRadioSettingBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessage
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.M20SRadioSettingViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -39,9 +44,9 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: M20SRadioSettingViewModel
     private val iotParseManager: IOTParserManager by inject()
 
-    private val radioReceiveChannelList by lazy { Utils.getApp().resources.getStringArray(R.array.radio_channel) }
-    private val transmitPowerList: List<String> = (0..22).map { it.toString() }
-    private val airSpeedList: List<String> = (0..2).map { it.toString() }
+    private val radioChannelList by lazy { Utils.getApp().resources.getStringArray(R.array.radio_channel) }
+    private var transmitPowerList: List<String> = emptyList()//发射功率
+    private var airSpeedList: List<String> = emptyList()//空中速率
 
     override fun initViewModel() {
         super.initViewModel()
@@ -63,19 +68,12 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentM20sRadioSettingBinding
         binding.llToolbar.toolbar.title = "电台设置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         initRefresh()
-    }
-
-    override fun initData() {
-        super.initData()
-        resetParams()
     }
 
     private fun initRefresh() {
@@ -90,19 +88,81 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    override fun initData() {
+        super.initData()
+        transmitPowerList =
+            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_1)
+                (0..22).map { it.toString() }
+            else
+                (10..22).map { it.toString() }
+
+        airSpeedList =
+            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_1)
+                (0..2).map { it.toString() }
+            else
+                (1..3).map { it.toString() }
+
+        mStates.isSupportSwitch.set(productType == ProductType.GNSS_M_5)
+
+        resetDefaultParams()
+    }
+
+    private fun resetDefaultParams() {
+        when (productType) {
+            ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {//M20S 载波频率以 450.15Mhz 为起始，间隔 1Mhz，进行信道划分，共划分 20 个信道
+                mStates.rtcmChannel.set(radioChannelList[0])//RTCM数据频点以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 默认0
+                mStates.receiveChannel.set(radioChannelList[13])//接收默认 13 即 463.15MHz
+                mStates.sendChannel.set(radioChannelList[6])//发送默认 6 即 456.15MHz
+                mStates.transmitPower.set(transmitPowerList.last())//发射功率 [0~22] 默认22
+                mStates.airSpeed.set(airSpeedList[1])//空中速率  [0~2] 默认1
+            }
+
+            ProductType.GNSS_M_5 -> {//M50 载波频率以 450.15Mhz 为起始，间隔 1Mhz，进行信道划分，共划分 20 个信道
+                mStates.isOpened.set(false)
+                mStates.rtcmChannel.set(radioChannelList[0])//RTCM数据频点
+                mStates.receiveChannel.set(radioChannelList[0])//接收
+                mStates.sendChannel.set(radioChannelList[0])//发送
+                mStates.transmitPower.set(transmitPowerList.last())//发射功率   22
+                mStates.airSpeed.set(airSpeedList[0])//空中速率  1
+            }
+
+            else -> {
+
+            }
+        }
+    }
+
+
     inner class ClickProxy : BaseClickProxy() {
+        override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
+                return
+            }
+            mStates.isOpened.set(isChecked)
+            if (!isChecked) {
+                showMessage("确定要关闭吗？", "温馨提示", "确定", {
+                    disableRadio()
+                }, "取消", {
+                    mStates.isOpened.set(true)
+                    (button as SwitchButton).setCheckedImmediatelyNoEvent(true)
+                })
+            }
+        }
+
         /**
          * 选择RTCM数据频点
          */
         fun onRTCMDataChannelChooseClick() {
-            val selectedIndex = radioReceiveChannelList.indexOf(mStates.rtcmChannel.get())
+            val selectedIndex = radioChannelList.indexOf(mStates.rtcmChannel.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", radioReceiveChannelList,
+                    "", radioChannelList,
                     null, selectedIndex,
                     { position, text ->
                         mStates.rtcmChannel.set(text)
@@ -115,14 +175,14 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
          * 选择接收频点
          */
         fun onReceiveChannelChooseClick() {
-            val selectedIndex = radioReceiveChannelList.indexOf(mStates.receiveChannel.get())
+            val selectedIndex = radioChannelList.indexOf(mStates.receiveChannel.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", radioReceiveChannelList,
+                    "", radioChannelList,
                     null, selectedIndex,
                     { position, text ->
                         mStates.receiveChannel.set(text)
@@ -135,14 +195,14 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
          * 选择发送频点
          */
         fun onSendChannelChooseClick() {
-            val selectedIndex = radioReceiveChannelList.indexOf(mStates.sendChannel.get())
+            val selectedIndex = radioChannelList.indexOf(mStates.sendChannel.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", radioReceiveChannelList,
+                    "", radioChannelList,
                     null, selectedIndex,
                     { position, text ->
                         mStates.sendChannel.set(text)
@@ -195,7 +255,7 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
          * 恢复默认配置
          */
         fun onResetClick() {
-            resetParams()
+            resetDefaultParams()
         }
 
         override fun onSubmitButtonClick() {
@@ -208,20 +268,28 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun resetParams() {
-        mStates.rtcmChannel.set(radioReceiveChannelList[0])//RTCM数据频点以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 默认0
-        mStates.receiveChannel.set(radioReceiveChannelList[13])//载波频率以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 自组网网关：接收默认6，发送默认13 M20S：接收默认13，发送默认6
-        mStates.sendChannel.set(radioReceiveChannelList[6])//自组网网关：接收默认6，发送默认13
-        mStates.transmitPower.set(transmitPowerList[transmitPowerList.lastIndex])//发射功率 [0~22] 默认22
-        mStates.airSpeed.set(airSpeedList[1])//空中速率  [0~2] 默认1
+    /**
+     * 关闭
+     */
+    private fun disableRadio() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_SET_RADIO_CTRL,
+            "sw=0"
+        )
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun initSaveCommand() {
         commandItems.clear()
         val entity = RadioCommunicateEntity(
-            bcchl = radioReceiveChannelList.indexOf(mStates.rtcmChannel.get()).toString(),
-            rxchl = radioReceiveChannelList.indexOf(mStates.receiveChannel.get()).toString(),
-            txchl = radioReceiveChannelList.indexOf(mStates.sendChannel.get()).toString(),
+            sw = if (mStates.isSupportSwitch.get()) "1" else IOTConstants.NULL_KEY,
+            bcchl = radioChannelList.indexOf(mStates.rtcmChannel.get()).toString(),
+            rxchl = radioChannelList.indexOf(mStates.receiveChannel.get()).toString(),
+            txchl = radioChannelList.indexOf(mStates.sendChannel.get()).toString(),
             outpwr = mStates.transmitPower.get(),
             airbaud = mStates.airSpeed.get(),
         )
@@ -294,19 +362,20 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
 
     private fun initRadioData(info: RadioCommunicateInfo) {
         try {
+            mStates.isOpened.set(info.sw == "1")
             info.bcchl.toInt().let {
-                if (it in radioReceiveChannelList.indices) {
-                    mStates.rtcmChannel.set(radioReceiveChannelList[it])
+                if (it in radioChannelList.indices) {
+                    mStates.rtcmChannel.set(radioChannelList[it])
                 }
             }
             info.rxchl.toInt().let {
-                if (it in radioReceiveChannelList.indices) {
-                    mStates.receiveChannel.set(radioReceiveChannelList[it])
+                if (it in radioChannelList.indices) {
+                    mStates.receiveChannel.set(radioChannelList[it])
                 }
             }
             info.txchl.toInt().let {
-                if (it in radioReceiveChannelList.indices) {
-                    mStates.sendChannel.set(radioReceiveChannelList[it])
+                if (it in radioChannelList.indices) {
+                    mStates.sendChannel.set(radioChannelList[it])
                 }
             }
             mStates.transmitPower.set(info.outpwr)

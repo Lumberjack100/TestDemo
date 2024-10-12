@@ -35,7 +35,7 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/ll_broadcast_num"
-            style="@style/Common_ClickableItem_LayoutStyle"
+            style="@style/Common_ClickableItem_Layout_Style"
             onClickWithDebouncing="@{()->click.onBroadcastNumChooseClick()}"
             android:layout_marginTop="@dimen/dimen_size_1"
             android:background="@drawable/layer_common_click_item_with_divider"
@@ -45,12 +45,13 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable }"
                 android:text="播报次数" />
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_ValueStyle"
+                style="@style/Common_ClickableItem_Value_Style"
+                enabledTextColor="@{@color/sub_title_text_color_black_60}"
                 textViewEnabled="@{stateVM.isEditable }"
                 android:drawableEnd="@drawable/ic_arrow_down"
                 android:text="@{stateVM.broadcastNum}"
@@ -58,19 +59,20 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/Common_EditItem_LayoutStyle"
+            style="@style/Common_EditItem_Layout_Style"
             android:background="@drawable/layer_common_click_item_with_divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_broadcast_num">
 
             <com.google.android.material.textview.MaterialTextView
-                style="@style/Common_ClickableItem_TitleStyle"
+                style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable}"
                 android:text="播报内容" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
+                enabledTextColor="@{@color/sub_title_text_color_black_60}"
                 textViewEnabled="@{stateVM.isEditable }"
                 android:text="@={stateVM.broadcastContent}"
                 app:lengthFilter="@{100}" />
@@ -79,7 +81,7 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_ColorPrimary"
+            style="@style/SubmitButton_Style"
             onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
             visible="@{stateVM.isEditable }"
             android:layout_marginTop="0dp"

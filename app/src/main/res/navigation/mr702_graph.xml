@@ -69,7 +69,7 @@
         android:id="@+id/mR702DataCenterHomeFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702DataCenterHomeFragment"
         android:label="MR702DataCenterHomeFragment"
-        tools:layout="@layout/fragment_mr702_data_center_home">
+        tools:layout="@layout/fragment_universal_data_center_home">
 
         <action
             android:id="@+id/action_mR702DataCenterHomeFragment_to_mR702DataCenterParamFragment"
@@ -110,6 +110,22 @@
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
+            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1SensorAddParamNewFragment"
+            app:destination="@id/mR702RS485Port1SensorAddParamNewFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
+            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1SensorParamNewFragment"
+            app:destination="@id/mR702RS485Port1SensorParamNewFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
             android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port2SensorParamFragment"
             app:destination="@id/mR702RS485Port2SensorParamFragment"
             app:enterAnim="@anim/activity_open_enter"
@@ -137,6 +153,18 @@
         android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SensorParamFragment"
         android:label="MR702RS485Port1SensorParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port1_sensor_param" />
+
+    <fragment
+        android:id="@+id/mR702RS485Port1SensorAddParamNewFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SensorAddParamNewFragment"
+        android:label="MR702RS485Port1SensorAddParamFragment"
+        tools:layout="@layout/fragment_mr702_rs485_port1_sensor_add_param_new" />
+
+    <fragment
+        android:id="@+id/mR702RS485Port1SensorParamNewFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SensorParamNewFragment"
+        android:label="MR702RS485Port1SensorParamNewFragment"
+        tools:layout="@layout/fragment_mr702_rs485_port1_sensor_param_new" />
 
     <fragment
         android:id="@+id/mR702RS485Port2SensorParamFragment"

@@ -2,9 +2,15 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo
 
 import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
+import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
+import com.drake.brv.utils.mutable
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.URCurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
@@ -25,7 +31,67 @@ import timber.log.Timber
  *
  */
 class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
+
+    override fun queryStatusInfo() {
+        commandItems.clear()
+
+        var command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS)
+        commandItems.add(command)
+
+        command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
+        commandItems.add(command)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+
     override fun initStatusInfo(content: String) {
+        val groupList = mutableListOf<Any>()
+
+        groupList.add(DeviceStatusInfoGroupItem("倾角计"))
+        if (content.contains("attach_data")) {
+            initStatusInfo2(content)
+        } else {
+            initStatusInfo1(content)
+        }
+    }
+
+    private fun initStatusInfo1(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val commonCurrentStateInfoList = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<List<CommonCurrentStateInfo2>>(content)
+                }
+                if (commonCurrentStateInfoList.isNullOrEmpty()) {
+                    binding.refreshLayout.showEmpty()
+                    return@launchWithViewLifecycle
+                }
+                val stateInfo = commonCurrentStateInfoList[0]
+                val groupList = mutableListOf<Any>()
+
+                val camState =
+                    if (stateInfo.scl != IOTConstants.NULL_KEY && stateInfo.scl.uppercase()
+                            .contains("OK")
+                    )
+                        "正常" else "异常"
+                groupList.add(
+                    DeviceStatusInfoBasicItem(
+                        name = "倾角MEMS状态",
+                        value = camState,
+                        textColorRes = if (camState == "正常") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                            R.color.error_FF4400
+                        )
+                    )
+                )
+
+                binding.recyclerview.models = groupList
+            } catch (e: Exception) {
+                Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
+    private fun initStatusInfo2(content: String) {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
@@ -43,22 +109,8 @@ class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                 binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
 
-                groupList.add(DeviceStatusInfoGroupItem("倾角计"))
                 uRSensorInfoList.forEach { info ->
                     when (info.key) {
-                        "memsstatus" -> {
-                            val camState = if (info.value.contains("1")) "正常" else "异常"
-                            groupList.add(
-                                DeviceStatusInfoBasicItem(
-                                    name = "倾角MEMS状态",
-                                    value = camState,
-                                    textColorRes = if (camState == "正常") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
-                                        R.color.red_F13838
-                                    )
-                                )
-                            )
-                        }
-
                         "initAngle" -> {
                             info.value.notNullKey { value ->
                                 //根据逗号分隔
@@ -191,12 +243,14 @@ class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                     }
                 }
 
-                binding.recyclerview.models = groupList
+                binding.recyclerview.mutable.addAll(groupList)
+                binding.recyclerview.bindingAdapter.notifyDataSetChanged()
             } catch (e: Exception) {
                 Timber.e(e)
                 addLogItem(Log.ERROR, e.errorMsg)
             }
         }
+
     }
 
     companion object {

@@ -7,6 +7,6 @@ package com.shmedo.lib.cmd.base.md_cmd.model.common
  */
 data class ServerAddressInfo(
     var centerid: String = "",
-    var addr: String = "", //数据中心地址,addr和port设置为空时，关闭该数据中心
-    var port: String = "", //数据中心端口
+    var addr: String = "", //数据链路地址,addr和port设置为空时，关闭该数据链路
+    var port: String = "", //数据链路端口
 )

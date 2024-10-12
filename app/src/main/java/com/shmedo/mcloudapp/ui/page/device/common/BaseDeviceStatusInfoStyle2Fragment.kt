@@ -2,12 +2,12 @@ package com.shmedo.mcloudapp.ui.page.device.common
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.ViewCompat
+import androidx.annotation.CallSuper
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ClipboardUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.VibrateUtils
-import com.drake.brv.listener.OnHoverAttachListener
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -25,10 +25,12 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentBaseDeviceStatusInfoStyle2Binding
 import com.shmedo.mcloudapp.databinding.ItemDasSensorStatusBinding
-import com.shmedo.mcloudapp.databinding.ItemDeviceStatusInfoBasicBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.databinding.ItemDeviceStatusInfoBasic2Binding
+import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.model.DasSensorSubMonitorStatusItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
@@ -36,6 +38,7 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.android.ext.android.inject
 
@@ -46,22 +49,34 @@ import org.koin.android.ext.android.inject
  */
 abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentBaseDeviceStatusInfoStyle2Binding
-    private lateinit var mStates: EmptyViewModel
+    protected val toolbarViewModel: ToolbarViewModel by viewModels()
+    protected val mStates: EmptyViewModel by viewModels()
     protected val iotParseManager: IOTParserManager by inject()
     protected val mdParseManager: MDParserManager by inject()
 
 
     override fun initViewModel() {
         super.initViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_base_device_status_info_style2, BR.stateVM, mStates)
+        return DataBindingConfig(
+            R.layout.fragment_base_device_status_info_style2,
+            BR.stateVM,
+            mStates
+        ).addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, BaseClickProxy())
     }
 
+    @CallSuper
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentBaseDeviceStatusInfoStyle2Binding
+        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
+            nav().navigateUp()
+        }
+        registerOnBackPressedDispatcher {
+            nav().navigateUp()
+        }
         initRefresh()
         initAdapter()
     }
@@ -82,8 +97,8 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
     private fun initAdapter() {
         binding.recyclerview.linear().setup { rv ->
             addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group2)
-            addType<DeviceStatusInfoBasicItem>(R.layout.item_device_status_info_basic)
-            addType<DeviceStatusInfoSignalItem>(R.layout.item_device_status_info_signal)
+            addType<DeviceStatusInfoBasicItem>(R.layout.item_device_status_info_basic2)
+            addType<DeviceStatusInfoSignalItem>(R.layout.item_device_status_info_signal2)
             addType<DasSensorStatusInfo>(R.layout.item_das_sensor_status)
             addType<GapItem>(R.layout.item_device_status_info_gap)
             onCreate {
@@ -106,8 +121,8 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
             }
             onBind {
                 when (itemViewType) {
-                    R.layout.item_device_status_info_basic -> {
-                        val itemBinding = getBinding<ItemDeviceStatusInfoBasicBinding>()
+                    R.layout.item_device_status_info_basic2 -> {
+                        val itemBinding = getBinding<ItemDeviceStatusInfoBasic2Binding>()
                         val item = getModel<DeviceStatusInfoBasicItem>()
                         //必须要在事件发生之前就watch，如果你写在onLongClickListener中的话，就拿不到触摸点了，触摸事件被长按消费了
                         val builder = XPopup.Builder(context)
@@ -161,7 +176,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
             }
             R.id.item.onClick {
                 when (itemViewType) {
-                    R.layout.item_device_status_info_basic -> {
+                    R.layout.item_device_status_info_basic2 -> {
                         val item = getModel<DeviceStatusInfoBasicItem>()
                         processItemClick(item)
                     }
@@ -169,16 +184,6 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                     else -> {
 
                     }
-                }
-            }
-            // 可选项, 粘性监听器
-            onHoverAttachListener = object : OnHoverAttachListener {
-                override fun attachHover(v: View) {
-                    ViewCompat.setElevation(v, 10F) // 悬停时显示阴影
-                }
-
-                override fun detachHover(v: View) {
-                    ViewCompat.setElevation(v, 0F) // 非悬停时隐藏阴影
                 }
             }
         }

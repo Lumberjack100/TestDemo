@@ -62,7 +62,7 @@ class UDAltitudeParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdAltitudeParamBinding
-        binding.llToolbar.toolbar.title = "海拔高度"
+        toolbarViewModel.toolbarTitleText.set("海拔高度")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }

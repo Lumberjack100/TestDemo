@@ -4,21 +4,21 @@
         <shape>
             <solid android:color="@color/colorPrimary" />
             <corners android:radius="99dp" />
-            <stroke android:width="0.5dp" android:color="@color/gray_BABABA" />
+            <stroke android:width="0.5dp" android:color="@color/colorPrimary" />
         </shape>
     </item>
     <item android:state_checked="true" android:state_enabled="false">
         <shape>
             <solid android:color="@color/blue_disabled" />
             <corners android:radius="99dp" />
-            <stroke android:width="0.5dp" android:color="@color/gray_BABABA" />
+            <stroke android:width="0.5dp" android:color="@color/blue_disabled" />
         </shape>
     </item>
     <item>
         <shape>
-            <solid android:color="@color/main_bg_gray" />
+            <solid android:color="@color/main_bg_gray_757575" />
             <corners android:radius="99dp" />
-            <stroke android:width="0.5dp" android:color="@color/gray_BABABA" />
+            <stroke android:width="0.5dp" android:color="@color/main_bg_gray_757575" />
         </shape>
     </item>
 

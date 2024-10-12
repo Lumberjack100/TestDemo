@@ -6,7 +6,7 @@ import kotlinx.parcelize.Parcelize
 /**
  * 创建者:   gonghe <br></br>
  * 创建时间:  11/16/20 <br></br>
- * 描述：     服务器(数据中心)编号
+ * 描述：     服务器(数据链路)编号
  */
 
 @Parcelize

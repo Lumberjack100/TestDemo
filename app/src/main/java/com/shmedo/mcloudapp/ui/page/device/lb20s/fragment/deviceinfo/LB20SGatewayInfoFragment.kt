@@ -73,8 +73,8 @@ class LB20SGatewayInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "LoRa状态",
                             value = camState,
-                            textColorRes = if (camState == "OK") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
-                                R.color.red_F13838
+                            textColorRes = if (camState == "OK") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                                R.color.error_FF4400
                             )
                         )
                     )
@@ -90,8 +90,8 @@ class LB20SGatewayInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "蓝牙状态",
                             value = camState,
-                            textColorRes = if (camState == "OK") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
-                                R.color.red_F13838
+                            textColorRes = if (camState == "OK") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                                R.color.error_FF4400
                             )
                         )
                     )
@@ -107,8 +107,8 @@ class LB20SGatewayInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "电台状态",
                             value = camState,
-                            textColorRes = if (camState == "OK") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
-                                R.color.red_F13838
+                            textColorRes = if (camState == "OK") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                                R.color.error_FF4400
                             )
                         )
                     )
@@ -129,8 +129,8 @@ class LB20SGatewayInfoFragment : BaseDeviceStatusInfoFragment() {
                         DeviceStatusInfoBasicItem(
                             name = "flash状态",
                             value = camState,
-                            textColorRes = if (camState == "OK") ColorUtils.getColor(R.color.green_00B26B) else ColorUtils.getColor(
-                                R.color.red_F13838
+                            textColorRes = if (camState == "OK") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                                R.color.error_FF4400
                             )
                         )
                     )

@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.utils
 
 import com.blankj.utilcode.util.ColorUtils
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
@@ -45,16 +46,18 @@ object DeviceStatusInfoProcessor {
         value: String,
         unit: String = "",
         textColorRes: Int = 0,
+        isBottomItem: Boolean = false,
     ) {
-        value.notNullKey {
+        value.notNullKey(action = {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = name,
-                    value = "$it$unit",
-                    textColorRes = textColorRes
+                    value = if (it == AppContants.PLACE_HOLDER_VALUE || it.contains("异常")) it else "$it$unit",
+                    textColorRes = textColorRes,
+                    isBottomItem = isBottomItem
                 )
             )
-        }
+        })
     }
 
     /**
@@ -72,13 +75,15 @@ object DeviceStatusInfoProcessor {
         value: String,
         defaultValue: String = "0",
         digit: Int = 2,
-        unit: String = ""
+        unit: String = "",
+        isBottomItem: Boolean = false,
     ) {
         value.notNullKey {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = name,
-                    value = "${formatDoubleValue(it, defaultValue, digit)}$unit"
+                    value = "${formatDoubleValue(it, defaultValue, digit)}$unit",
+                    isBottomItem = isBottomItem
                 )
             )
         }
@@ -100,7 +105,8 @@ object DeviceStatusInfoProcessor {
         defaultValue: String = "0",
         downLimitValue: Double = 5.0,
         digit: Int = 2,
-        unit: String = ""
+        unit: String = "",
+        isBottomItem: Boolean = false,
     ) {
         value.notNullKey {
             val tempValue = formatDoubleValue(
@@ -113,9 +119,10 @@ object DeviceStatusInfoProcessor {
                     name = name,
                     value = "$tempValue$unit",
                     textColorRes = if (tempValue.toDouble() <= downLimitValue)
-                        ColorUtils.getColor(R.color.red_F13838)
+                        ColorUtils.getColor(R.color.error_FF4400)
                     else
-                        ColorUtils.getColor(R.color.green_00B26B)
+                        ColorUtils.getColor(R.color.online_colorPrimary),
+                    isBottomItem = isBottomItem,
                 )
             )
         }
@@ -152,9 +159,9 @@ object DeviceStatusInfoProcessor {
                     name = name,
                     value = "$tempValue$unit",
                     textColorRes = if (tempValue.toDouble() < downLimitValue || tempValue.toDouble() > upLimitValue)
-                        ColorUtils.getColor(R.color.red_F13838)
+                        ColorUtils.getColor(R.color.error_FF4400)
                     else
-                        ColorUtils.getColor(R.color.green_00B26B)
+                        ColorUtils.getColor(R.color.online_colorPrimary)
                 )
             )
         }
@@ -163,24 +170,20 @@ object DeviceStatusInfoProcessor {
     /**
      * 将毫秒转换为合适的时间格式
      */
-    fun millis2FitTimeSpan(millis: Long, precision: Int): String {
-        var millis = millis
-        var precision = precision
-        if (precision <= 0) return ""
-        precision = min(precision.toDouble(), 5.0).toInt()
+    fun millis2FitTimeSpan(millis: Long, precis: Int): String {
         val units = arrayOf("天", "小时", "分钟", "秒", "毫秒")
-        if (millis == 0L) return 0.toString() + units[precision - 1]
+        val unitLen = intArrayOf(86400000, 3600000, 60000, 1000, 1)
+
+        if (millis < 0 || precis <= 0) return "--"
+        val precision = min(precis.toDouble(), 5.0).toInt()
+        var millisecond = millis
+        if (millisecond == 0L || millisecond < unitLen[precision - 1]) return "0${units[precision - 1]}"
 
         val sb = StringBuilder()
-        if (millis < 0) {
-            sb.append("-")
-            millis = -millis
-        }
-        val unitLen = intArrayOf(86400000, 3600000, 60000, 1000, 1)
         for (i in 0 until precision) {
-            if (millis >= unitLen[i]) {
-                val mode = millis / unitLen[i]
-                millis -= mode * unitLen[i]
+            if (millisecond >= unitLen[i]) {
+                val mode = millisecond / unitLen[i]
+                millisecond -= mode * unitLen[i]
                 sb.append(mode).append(units[i])
             }
         }

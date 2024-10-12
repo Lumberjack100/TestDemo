@@ -23,22 +23,22 @@ object IOTDeviceBindingAdapter {
         when (status) {
             "0" -> {
                 view.text = "未开启"
-                view.setTextColor(ColorUtils.getColor(R.color.device_unopened_platform))
+                view.setTextColor(ColorUtils.getColor(R.color.offline_BABABA))
             }
 
             "1" -> {
                 view.text = "已连接"
-                view.setTextColor(ColorUtils.getColor(R.color.green_00B26B))
+                view.setTextColor(ColorUtils.getColor(R.color.online_colorPrimary))
             }
 
             "2" -> {
                 view.text = "未连接"
-                view.setTextColor(ColorUtils.getColor(R.color.red_F13838))
+                view.setTextColor(ColorUtils.getColor(R.color.error_FF4400))
             }
 
             else -> {
                 view.text = "未连接"
-                view.setTextColor(ColorUtils.getColor(R.color.red_F13838))
+                view.setTextColor(ColorUtils.getColor(R.color.error_FF4400))
             }
         }
     }
@@ -49,12 +49,12 @@ object IOTDeviceBindingAdapter {
         when (errno) {
             "1" -> {
                 view.text = "正常"
-                view.setTextColor(ColorUtils.getColor(R.color.green_00B26B))
+                view.setTextColor(ColorUtils.getColor(R.color.online_colorPrimary))
             }
 
             else -> {
                 view.text = "异常"
-                view.setTextColor(ColorUtils.getColor(R.color.red_F13838))
+                view.setTextColor(ColorUtils.getColor(R.color.error_FF4400))
             }
         }
     }
@@ -65,11 +65,11 @@ object IOTDeviceBindingAdapter {
         view.text = SensorErrorType.getErrorMessageByCode(errno.toString())
         when (errno) {
             "0" -> {
-                view.setTextColor(ColorUtils.getColor(R.color.green_00B26B))
+                view.setTextColor(ColorUtils.getColor(R.color.online_colorPrimary))
             }
 
             else -> {
-                view.setTextColor(ColorUtils.getColor(R.color.red_F13838))
+                view.setTextColor(ColorUtils.getColor(R.color.error_FF4400))
             }
         }
     }
@@ -88,9 +88,9 @@ object IOTDeviceBindingAdapter {
         textView.isEnabled = enabled
         textView.setTextColor(
             if (enabled) {
-                if (enabledColorRes == 0) ColorUtils.getColor(R.color.title_text_color) else enabledColorRes
+                if (enabledColorRes == 0) ColorUtils.getColor(R.color.title_text_color_black_90) else enabledColorRes
             } else {
-                if (disabledColorRes == 0) ColorUtils.getColor(R.color.sub_title_text_color) else disabledColorRes
+                if (disabledColorRes == 0) ColorUtils.getColor(R.color.title_text_color_black_25) else disabledColorRes
             }
         )
     }
@@ -125,22 +125,22 @@ object IOTDeviceBindingAdapter {
             -113, 0, 85 -> view.setSignalLevel(0)
             in -110..-96 -> {
                 view.setSignalLevel(1)
-                view.setLevelColor(ColorUtils.getColor(R.color.orange))
+                view.setLevelColor(ColorUtils.getColor(R.color.warn_FF9D00))
             }
 
             in -95..-86 -> {
                 view.setSignalLevel(2)
-                view.setLevelColor(ColorUtils.getColor(R.color.orange))
+                view.setLevelColor(ColorUtils.getColor(R.color.warn_FF9D00))
             }
 
             in -85..-76 -> {
                 view.setSignalLevel(3)
-                view.setLevelColor(ColorUtils.getColor(R.color.green_00B26B))
+                view.setLevelColor(ColorUtils.getColor(R.color.online_colorPrimary))
             }
 
             in -75..-50 -> {
                 view.setSignalLevel(4)
-                view.setLevelColor(ColorUtils.getColor(R.color.green_00B26B))
+                view.setLevelColor(ColorUtils.getColor(R.color.online_colorPrimary))
             }
         }
     }
@@ -156,16 +156,16 @@ object IOTDeviceBindingAdapter {
             //移除 % 并转成 Double类型数值,如果值小于等于 10 textView 设置 R.color.device_offline_platform，否则 textView 设置 R.color.text_color_3AD094
             val volt = value.replace("%", "").toDoubleOrNull() ?: 0.0
             if (volt <= 10) {
-                textView.setTextColor(ColorUtils.getColor(R.color.red_F13838))
+                textView.setTextColor(ColorUtils.getColor(R.color.error_FF4400))
             } else {
-                textView.setTextColor(ColorUtils.getColor(R.color.green_00B26B))
+                textView.setTextColor(ColorUtils.getColor(R.color.online_colorPrimary))
             }
         } else {
             val volt = value.toDoubleOrNull() ?: 0.0
             if (volt <= 5) {
-                textView.setTextColor(ColorUtils.getColor(R.color.red_F13838))
+                textView.setTextColor(ColorUtils.getColor(R.color.error_FF4400))
             } else {
-                textView.setTextColor(ColorUtils.getColor(R.color.green_00B26B))
+                textView.setTextColor(ColorUtils.getColor(R.color.online_colorPrimary))
             }
         }
     }
