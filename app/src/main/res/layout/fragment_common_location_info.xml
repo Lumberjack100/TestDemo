@@ -11,11 +11,11 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.M50LocationInfoViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.CommonLocationInfoViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.m50.M50LocationInfoFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.common.CommonLocationInfoFragment.ClickProxy" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -54,14 +54,22 @@
                 style="@style/DeviceCurrentState_Item_Title_Style2"
                 android:text="UTC时间" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_ClickableItem_Value_Style2"
+                android:layout_width="145dp"
+                android:layout_height="wrap_content"
                 android:drawableEnd="@null"
+                android:gravity="start"
                 android:text="@{stateVM.utcTime}"
-                tools:text="2024.01.05 04:34:45" />
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                tools:text="2024-01-05 04:34:45" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
-
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/DeviceCurrentState_Item_Layout_Style2"
@@ -72,28 +80,73 @@
                 style="@style/DeviceCurrentState_Item_Title_Style2"
                 android:text="经度" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_ClickableItem_Value_Style2"
+                android:layout_width="145dp"
+                android:layout_height="wrap_content"
                 android:drawableEnd="@null"
+                android:gravity="start"
                 android:text="@{stateVM.longitude}"
-                tools:text="121.5983860" />
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                tools:text="E 121.594208" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/DeviceCurrentState_Item_Layout_Style2"
             android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
-            android:background="@drawable/shape_common_click_item_bottom_corner_4">
+            android:background='@{stateVM.elevation.empty ?@drawable/shape_common_click_item_bottom_corner_4:@drawable/layer_common_click_item_with_divider}'>
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/DeviceCurrentState_Item_Title_Style2"
                 android:text="纬度" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
             <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_ClickableItem_Value_Style2"
+                android:layout_width="145dp"
+                android:layout_height="wrap_content"
                 android:drawableEnd="@null"
+                android:gravity="start"
                 android:text="@{stateVM.latitude}"
-                tools:text="1.210353" />
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                tools:text="N 31.212475" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            style="@style/DeviceCurrentState_Item_Layout_Style2"
+            visible='@{!stateVM.elevation.empty}'
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
+            android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/DeviceCurrentState_Item_Title_Style2"
+                android:text="高程" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="145dp"
+                android:layout_height="wrap_content"
+                android:drawableEnd="@null"
+                android:gravity="start"
+                android:text="@{stateVM.elevation}"
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                tools:text="33.0862米" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

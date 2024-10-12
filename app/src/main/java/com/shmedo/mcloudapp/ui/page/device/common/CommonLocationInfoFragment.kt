@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m50
+package com.shmedo.mcloudapp.ui.page.device.common
 
 import android.os.Bundle
 import android.util.Log
@@ -17,22 +17,25 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentM50LocationInfoBinding
+import com.shmedo.mcloudapp.databinding.FragmentCommonLocationInfoBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.toGcj02LatLng
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.M50LocationInfoViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.CommonLocationInfoViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.utils.map.CustomLatLng
 import kotlinx.coroutines.Dispatchers
@@ -43,10 +46,16 @@ import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class M50LocationInfoFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentM50LocationInfoBinding
+/**
+ * @author：gonghe
+ * @time: 2024/8/21
+ * @desc: 一体化雷达水位计位置信息
+ *
+ */
+class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentCommonLocationInfoBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: M50LocationInfoViewModel by viewModels()
+    private val mStates: CommonLocationInfoViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private lateinit var aMap: AMap //地图控制器对象
@@ -57,9 +66,13 @@ class M50LocationInfoFragment : BaseIOTDeviceFragment() {
     private var timerClockJob: Job? = null
 
 
+    override fun initViewModel() {
+        super.initViewModel()
+    }
+
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_m50_location_info,
+            R.layout.fragment_common_location_info,
             BR.stateVM,
             mStates
         )
@@ -68,7 +81,7 @@ class M50LocationInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentM50LocationInfoBinding
+        binding = getBinding() as FragmentCommonLocationInfoBinding
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }
@@ -113,7 +126,7 @@ class M50LocationInfoFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        moveCameraToLocation(LatLng(31.21032874, 121.59840681))//默认上海米度
+        moveCameraToLocation(LatLng(31.21032874, 121.59840681))
     }
 
     override fun lazyLoadData() {
@@ -124,9 +137,17 @@ class M50LocationInfoFragment : BaseIOTDeviceFragment() {
     private fun queryInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
+        val command = when (productType) {
+            ProductType.U_D_1, ProductType.U_D_2 -> IOTCommandUtil.getCommand(
+                IOTCommandType.MD_GET_DEVICE_STATUS,
+                "value=3"
+            )
+
+            else -> IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
+        }
         commandItems.add(command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
+
+        showLoadingDialog(StringUtils.getString(R.string.loading))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
@@ -136,6 +157,26 @@ class M50LocationInfoFragment : BaseIOTDeviceFragment() {
             return
         }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DEVICE_STATUS -> {
+                val result = iotParseManager.parse<String>(
+                    cmdStr,
+                    IOTCommandType.MD_GET_DEVICE_STATUS
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                        val errMsg = "查询位置信息出错: ${result.message}"
+                        Toaster.show(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList {}
+                        initUDStatusInfo(result.data)
+                    }
+                }
+            }
+
             IOTCommandType.QUERY_DEVICE_STATUS -> {
                 val result = iotParseManager.parse<String>(
                     cmdStr,
@@ -151,7 +192,7 @@ class M50LocationInfoFragment : BaseIOTDeviceFragment() {
 
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList {}
-                        initStatusInfo(result.data)
+                        initM50StatusInfo(result.data)
                     }
                 }
             }
@@ -162,7 +203,38 @@ class M50LocationInfoFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initStatusInfo(content: String) {
+    private fun initUDStatusInfo(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val stateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<UDCurrentStateInfo>(content)
+                } ?: return@launchWithViewLifecycle
+                if (stateInfo.gnssStatus != "0") {
+                    mStates.longitude.set("--")
+                    mStates.latitude.set("--")
+                    return@launchWithViewLifecycle
+                }
+
+                if (stateInfo.longitude != IOTConstants.NULL_KEY
+                    && stateInfo.latitude != IOTConstants.NULL_KEY
+                ) {
+                    mStates.longitude.set("${stateInfo.longitudeDirection} ${stateInfo.longitude}°")
+                    mStates.latitude.set("${stateInfo.latitudeDirection} ${stateInfo.latitude}°")
+
+                    val longitude = stateInfo.longitude.toDouble()
+                    val latitude = stateInfo.latitude.toDouble()
+                    gcjLatLng = CustomLatLng(latitude, longitude).toGcj02LatLng().apply {
+                        addMarker(this)
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+                addLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
+    private fun initM50StatusInfo(content: String) {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
@@ -257,5 +329,6 @@ class M50LocationInfoFragment : BaseIOTDeviceFragment() {
     companion object {
         private const val MAX_ZOOM_LEVEL = 18f //高德地图最大缩放级别
         private const val MIN_ZOOM_LEVEL = 3f  //高德地图最小缩放级别
+        fun newInstance() = CommonLocationInfoViewModel()
     }
 }

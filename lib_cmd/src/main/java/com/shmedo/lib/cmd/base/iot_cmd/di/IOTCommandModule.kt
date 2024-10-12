@@ -32,6 +32,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DataCenterInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DataCenterStatusParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DeviceCurrentStateParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DeviceCurrentStateParser2
+import com.shmedo.lib.cmd.base.iot_cmd.parser.common.GNSSSateliteInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.LoraCommunicateInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.RadioCommunicateInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.RtkParamInfoParser
@@ -145,6 +146,7 @@ val iotCommandModule = module {
     factory { DasInternalSensorStatusParser() }
     factory { M20BaseInfoParser() }
     factory { M50SerialPortParamParser() }
+    factory { GNSSSateliteInfoParser() }
     factory { DeviceCurrentStateParser() }
     factory { DeviceCurrentStateParser2() }
     factory { MRWirelessNetParser() }
@@ -234,6 +236,7 @@ val iotCommandModule = module {
             get<DasInternalSensorStatusParser>(),
             get<M20BaseInfoParser>(),
             get<M50SerialPortParamParser>(),
+            get<GNSSSateliteInfoParser>(),
             get<DeviceCurrentStateParser>(),
             get<DeviceCurrentStateParser2>(),
             get<MRWirelessNetParser>(),

@@ -635,12 +635,6 @@ enum class IOTCommandType(private val value: String) {
 
     //<editor-fold desc="E40 指令">
     /**
-     * 获取设备卫星状态
-     */
-    E40_MD_GET_SATELITTE("md_getsatelitte"),
-
-
-    /**
      * 获取E40 的 CORS 服务参数
      */
     E40_MD_GET_CORS("md_getntrip"),
@@ -982,6 +976,12 @@ enum class IOTCommandType(private val value: String) {
      * M50 串口参数
      */
     M50_MD_SET_SERIAL_PORT("md_gm_setportparam"),
+
+    /**
+     * 获取设备卫星状态
+     */
+    MD_GET_SATELITE_INFO("md_getskyinfo"),
+
 
     /**
      * 指令透传

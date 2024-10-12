@@ -110,7 +110,7 @@
             <com.google.android.material.button.MaterialButton
                 style="@style/MeasureData_Button_Style"
                 android:gravity="center"
-                android:onClick="@{()->click.onGotoLocaionClick()}"
+                android:onClick="@{()->click.onGotoLocationClick()}"
                 android:text='位置'
                 app:backgroundTint="@color/colorPrimary_10"
                 app:icon="@drawable/ic_module_location_info"

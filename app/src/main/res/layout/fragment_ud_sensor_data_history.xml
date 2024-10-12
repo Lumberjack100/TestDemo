@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDSensorDataHistoryFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.common.UDSensorDataHistoryFragment" />
 
     </data>
 

@@ -51,13 +51,12 @@ import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.LoraConfigModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.PlatformLabel
-import com.shmedo.mcloudapp.model.RunningStatusModule
 import com.shmedo.mcloudapp.model.SensorConfigModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.model.WorkModeModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoParentFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
+import com.shmedo.mcloudapp.ui.page.device.common.UDSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
@@ -392,26 +391,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             return
         }
         when (module) {
-            is RunningStatusModule -> {
-                val index = when (module.name) {
-                    "基本信息" -> 0
-                    "网络信息" -> 1
-                    "状态信息" -> 2
-                    "位置信息" -> 3
-                    else -> 0
-                }
-                nav().navigate(
-                    module.navId,
-                    BaseDeviceStatusInfoParentFragment.newBundleArguments(
-                        productType,
-                        communicateWay,
-                        deviceInfo,
-                        bleDevice,
-                        tabIndex = index
-                    )
-                )
-            }
-
             is TimeCalibrationModule -> {//时间校准
                 queryTerminalTime()
             }

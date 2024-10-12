@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
+package com.shmedo.mcloudapp.ui.page.device.common
 
 import android.content.Context
 import android.os.Bundle

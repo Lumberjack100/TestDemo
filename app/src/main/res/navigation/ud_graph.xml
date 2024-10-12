@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/udMonitorDataHistoryFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDSensorDataHistoryFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.UDSensorDataHistoryFragment"
         android:label="UDMonitorDataHistoryFragment"
         tools:layout="@layout/fragment_ud_sensor_data_history" />
 
@@ -49,9 +49,9 @@
 
     <fragment
         android:id="@+id/udLocationInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDLocationInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.CommonLocationInfoFragment"
         android:label="UDLocationInfoFragment"
-        tools:layout="@layout/fragment_ud_location_info" />
+        tools:layout="@layout/fragment_common_location_info" />
 
     <fragment
         android:id="@+id/udWorkModelParamFragment"
