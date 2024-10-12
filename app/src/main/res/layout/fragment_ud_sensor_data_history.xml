@@ -47,7 +47,7 @@
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                onClickWithDebouncing="@{() -> click.onChooseTimeClick()}"
+                android:onClick="@{() -> click.onChooseTimeClick()}"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dimen_size_25"
                 android:background="@drawable/bg_label_blue_corner_15dp"
@@ -72,7 +72,7 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                onClickWithDebouncing="@{() -> click.onModelChooseClick()}"
+                android:onClick="@{() -> click.onModelChooseClick()}"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dimen_size_25"
                 android:layout_marginStart="@dimen/dimen_size_20"
