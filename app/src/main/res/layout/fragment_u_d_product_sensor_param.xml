@@ -65,7 +65,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_GroupItem_Title_Style2"
                             android:layout_marginStart="@dimen/dimen_size_8"
-                            android:text="雷达设置" />
+                            android:text="雷达配置" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -154,7 +154,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_GroupItem_Title_Style2"
                             android:layout_marginStart="@dimen/dimen_size_8"
-                            android:text="相机设置" />
+                            android:text="相机配置" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

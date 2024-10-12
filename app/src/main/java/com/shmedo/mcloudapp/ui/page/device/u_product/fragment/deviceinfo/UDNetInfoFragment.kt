@@ -99,11 +99,13 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList,
                     name = "IMEI",
                     value = stateInfo.imei,
+                    isClipboard = true
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "ICCID",
                     value = stateInfo.iccid,
+                    isClipboard = true
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,

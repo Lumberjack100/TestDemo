@@ -88,11 +88,13 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList,
                     name = "IMEI",
                     value = stateInfo.imei,
+                    isClipboard = true
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "ICCID",
                     value = stateInfo.ccid,
+                    isClipboard = true
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,

@@ -39,6 +39,8 @@ object DeviceStatusInfoProcessor {
      * @param value 值
      * @param unit 单位
      * @param textColorRes 字体颜色
+     * @param isClipboard 是否支持复制
+     * @param isBottomItem 是否是底部项
      */
     fun addDeviceStatusInfoBasicItemFromString(
         groupList: MutableList<Any>,
@@ -46,6 +48,7 @@ object DeviceStatusInfoProcessor {
         value: String,
         unit: String = "",
         textColorRes: Int = 0,
+        isClipboard: Boolean = false,
         isBottomItem: Boolean = false,
     ) {
         value.notNullKey(action = {
@@ -54,6 +57,7 @@ object DeviceStatusInfoProcessor {
                     name = name,
                     value = if (it == AppContants.PLACE_HOLDER_VALUE || it.contains("异常")) it else "$it$unit",
                     textColorRes = textColorRes,
+                    isClipboard = isClipboard,
                     isBottomItem = isBottomItem
                 )
             )
@@ -67,7 +71,8 @@ object DeviceStatusInfoProcessor {
      * @param defaultValue 默认值
      * @param digit 小数点位数
      * @param unit 单位
-     *
+     * @param isClipboard 是否支持复制
+     * @param isBottomItem 是否是底部项
      */
     fun addDeviceStatusInfoBasicItemFromDouble(
         groupList: MutableList<Any>,
@@ -76,6 +81,7 @@ object DeviceStatusInfoProcessor {
         defaultValue: String = "0",
         digit: Int = 2,
         unit: String = "",
+        isClipboard: Boolean = false,
         isBottomItem: Boolean = false,
     ) {
         value.notNullKey {
@@ -83,6 +89,7 @@ object DeviceStatusInfoProcessor {
                 DeviceStatusInfoBasicItem(
                     name = name,
                     value = "${formatDoubleValue(it, defaultValue, digit)}$unit",
+                    isClipboard = isClipboard,
                     isBottomItem = isBottomItem
                 )
             )
@@ -97,6 +104,8 @@ object DeviceStatusInfoProcessor {
      * @param downLimitValue 低于此值时字体颜色变红
      * @param digit 小数点位数
      * @param unit 单位
+     * @param isClipboard 是否支持复制
+     * @param isBottomItem 是否是底部项
      */
     fun addDeviceStatusInfoBatteryLevel(
         groupList: MutableList<Any>,
@@ -106,6 +115,7 @@ object DeviceStatusInfoProcessor {
         downLimitValue: Double = 5.0,
         digit: Int = 2,
         unit: String = "",
+        isClipboard: Boolean = false,
         isBottomItem: Boolean = false,
     ) {
         value.notNullKey {
@@ -122,6 +132,7 @@ object DeviceStatusInfoProcessor {
                         ColorUtils.getColor(R.color.error_FF4400)
                     else
                         ColorUtils.getColor(R.color.online_colorPrimary),
+                    isClipboard = isClipboard,
                     isBottomItem = isBottomItem,
                 )
             )
@@ -137,6 +148,7 @@ object DeviceStatusInfoProcessor {
      * @param upLimitValue 高于此值时字体颜色变红
      * @param digit 小数点位数
      * @param unit 单位
+     *
      */
     fun addMR702SerialPortStatusInfoItem(
         groupList: MutableList<Any>,

@@ -307,16 +307,17 @@
 
     <!--设备运行状态单条项目标题样式-->
     <style name="DeviceCurrentState_Item_Title_Style2">
-        <item name="android:layout_width">wrap_content</item>
+
+        <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
         <item name="android:textColor">@color/title_text_color_black_90</item>
         <item name="android:textSize">@dimen/page_content_item_text_size_14</item>
     </style>
 
     <style name="DeviceCurrentState_ClickableItem_Value_Style2">
-        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_weight">1</item>
         <item name="android:layout_marginStart">10dp</item>
         <item name="android:drawablePadding">8dp</item>
         <item name="android:drawableEnd">@drawable/ic_arrow_right</item>
