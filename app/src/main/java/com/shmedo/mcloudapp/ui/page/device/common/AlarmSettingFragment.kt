@@ -147,7 +147,7 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
          */
         fun onGoToParamSettingClick() {
             if (!mStates.isOpened.get()) {
-                Toaster.show("请先启用报警")
+                Toaster.show("请先开启报警")
                 return
             }
             if (isBleDisconnected()) {

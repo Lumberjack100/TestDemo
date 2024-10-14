@@ -120,7 +120,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
     private fun resetDefaultParams() {
         mStates.reportModel.set("自动")
 
-        mStates.alarmEnable.set(true)//是否启用报警
+        mStates.alarmEnable.set(true)//是否开启报警
         mStates.firstAlarmThreshold.set("20")//一级报警阈值
         mStates.secondAlarmThreshold.set("50")//二级报警阈值
         mStates.thirdAlarmThreshold.set("100")//三级报警阈值
@@ -190,7 +190,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
 
         if (mStates.reportModel.get() == "自动") {
-            //四级预警未启用
+            //四级预警未开启
             if (!mStates.alarmEnable.get()) {
                 val reportModeEntity = UDAlarmReportModeEntity(
                     rept_mode = "0",
@@ -207,7 +207,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
                 return
             }
 
-            //四级预警启用
+            //四级预警开启
             if (mStates.firstAlarmThreshold.get().isEmpty()) {
                 showMessageDialog("请输入一级报警阈值!")
                 return

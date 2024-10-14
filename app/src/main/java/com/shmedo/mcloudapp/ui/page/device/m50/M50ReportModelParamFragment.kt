@@ -104,7 +104,7 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
         mStates.workModel.set(workModelList[1])//默认测站
         mStates.reportModel.set(reportModelList[0])//默认常在线
         mStates.memsThreshold.set("5")//MEMS阈值
-        mStates.alarmEnable.set(false)//是否启用报警
+        mStates.alarmEnable.set(false)//是否开启报警
         mStates.firstAlarmThreshold.set("20")//一级报警阈值
         mStates.secondAlarmThreshold.set("50")//二级报警阈值
         mStates.thirdAlarmThreshold.set("100")//三级报警阈值

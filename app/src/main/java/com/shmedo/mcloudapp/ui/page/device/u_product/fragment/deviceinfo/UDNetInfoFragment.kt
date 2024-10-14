@@ -110,7 +110,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "电台",
-                    value = stateInfo.radioEnableStatus.compareAndReturn("1", "已启用", "未启用"),
+                    value = stateInfo.radioEnableStatus.compareAndReturn("1", "已开启", "未开启"),
                     textColorRes = if (stateInfo.radioEnableStatus == "1") ColorUtils.getColor(
                         R.color.online_colorPrimary
                     ) else ColorUtils.getColor(R.color.error_FF4400)
@@ -154,7 +154,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             value = enableStatus.compareAndReturn(
                                 "1",
                                 "$onlineStatus($platformType)",
-                                "未启用"
+                                "未开启"
                             ),
                             textColorRes = if (enableStatus == "0" || onlineStatus == "未连接") ColorUtils.getColor(
                                 R.color.error_FF4400
