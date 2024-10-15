@@ -93,6 +93,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "固件日期",
                     value = stateInfo.firmwareDate,
                 )
+                //TODO#GH# 异常启动的代码标为黄色
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "启动代码",
@@ -133,15 +134,15 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     "2" -> "二级报警"
                     "3" -> "三级报警"
                     "4" -> "四级报警"
-                    "5" -> "正常"
-                    else -> "正常"
+                    "5" -> "普通"
+                    else -> "普通"
                 }
                 groupList.add(
                     DeviceStatusInfoBasicItem(
                         name = "上报状态",
                         value = reportStatus,
-                        textColorRes = if (reportStatus == "正常") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
-                            R.color.error_FF4400
+                        textColorRes = if (reportStatus == "普通") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                            R.color.warn_FF9D00
                         )
                     )
                 )

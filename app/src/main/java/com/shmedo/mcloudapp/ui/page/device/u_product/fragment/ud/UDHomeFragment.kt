@@ -20,6 +20,7 @@ import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
@@ -125,10 +126,18 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
-        mHeadStates.productName.set(deviceInfo.productName)
+        when (productType) {
+            ProductType.U_D_1 -> {
+                mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
+            }
+            ProductType.U_D_2 -> {
+                mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
+            }
+            else -> {}
+        }
+        mHeadStates.productName.set(productType.productName)
+        mHeadStates.productToken.set(productType.productToken)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
-        mHeadStates.deviceName.set(if (deviceInfo.deviceName == deviceInfo.deviceToken) deviceInfo.productToken else deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken })
 
         when (communicateWay) {
             NetPlatformConnect -> {

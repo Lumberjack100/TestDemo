@@ -156,7 +156,7 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
-            ProductType.U_D_1, ProductType.U_D_2 -> {
+            ProductType.U_D_1, ProductType.U_D_2, ProductType.U_D_3 -> {
                 navController.setGraph(
                     R.navigation.ud_graph,
                     bundle2
@@ -213,7 +213,7 @@ class DeviceHomeActivity : BaseActivity() {
             }
 
             deviceInfo.productName = deviceInfo.productName.ifEmpty { type.productName }
-            deviceInfo.deviceName = deviceInfo.deviceName.ifEmpty { type.deviceName }
+            deviceInfo.deviceName = deviceInfo.deviceName.ifEmpty { type.productToken }
 
             val intent = Intent(context, DeviceHomeActivity::class.java).apply {
                 putExtra(AppContants.Extras.PRODUCT_TYPE, type as Parcelable)

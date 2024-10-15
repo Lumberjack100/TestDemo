@@ -284,14 +284,18 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
         aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, mZoomLevel))
     }
 
-
     private fun startTimer() {
         //启动一个新的协程作为超时Job
         timerClockJob?.cancel()
         timerClockJob = launchWithViewLifecycle {
             while (isActive) {
                 delay(1000)
-                mStates.utcTime.set(TimeUtils.getNowString())
+                mStates.utcTime.set(
+                    TimeUtils.millis2String(
+                        TimeUtils.getNowMills() - 8 * 3600 * 1000,
+                        "yyyy-MM-dd HH:mm:ss"
+                    ) + ":00"
+                )
             }
         }
     }

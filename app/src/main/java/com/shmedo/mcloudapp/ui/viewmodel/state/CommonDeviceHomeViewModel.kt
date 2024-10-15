@@ -11,7 +11,7 @@ open class CommonDeviceHomeViewModel : ViewModel() {
     val productLogoResId = NonNullObservableField(R.drawable.ic_device_logo_def)
 
     val productName = NonNullObservableField("")
-    val deviceName = NonNullObservableField("")
+    val productToken = NonNullObservableField("")
     val deviceToken = NonNullObservableField("")
     val firmwareVersion = NonNullObservableField("")
 

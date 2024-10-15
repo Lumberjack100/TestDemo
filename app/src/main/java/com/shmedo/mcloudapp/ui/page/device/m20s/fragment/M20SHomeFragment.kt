@@ -34,7 +34,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
         mHeadStates.productGrayResId.set(R.drawable.device_logo_m20_gray)
         mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
         mHeadStates.isIOTPlatformStateVisible.set(false)
-        mHeadStates.deviceName.set(if (deviceInfo.deviceToken.endsWith(ProductType.GNSS_M_1.newSuffix)) "M20 (单北斗)" else "M20 (全星座)")
+        mHeadStates.productToken.set(if (deviceInfo.deviceToken.endsWith(ProductType.GNSS_M_1.newSuffix)) "M20 (单北斗)" else "M20 (全星座)")
     }
 
     override fun updateConfigModuleData() {

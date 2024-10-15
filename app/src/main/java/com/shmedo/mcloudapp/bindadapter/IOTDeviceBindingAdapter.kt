@@ -122,7 +122,6 @@ object IOTDeviceBindingAdapter {
     @BindingAdapter("bind_signal_value")
     fun setSignalLevelBydBmValue(view: SignalView, value: Int) {
         when (value) {
-            -113, 0, 85 -> view.setSignalLevel(0)
             in -110..-96 -> {
                 view.setSignalLevel(1)
                 view.setLevelColor(ColorUtils.getColor(R.color.warn_FF9D00))
@@ -141,6 +140,10 @@ object IOTDeviceBindingAdapter {
             in -75..-50 -> {
                 view.setSignalLevel(4)
                 view.setLevelColor(ColorUtils.getColor(R.color.online_colorPrimary))
+            }
+
+            else -> {
+                view.setSignalLevel(0)
             }
         }
     }
@@ -173,7 +176,8 @@ object IOTDeviceBindingAdapter {
     @JvmStatic
     @BindingAdapter("progressDrawableReadingData")
     fun setProgressDrawableReadingData(progressBar: ProgressBar, isReadingData: Boolean) {
-        val drawableResId = if (isReadingData) R.drawable.custom_progress_horizontal_blue else R.drawable.custom_progress_horizontal_green
+        val drawableResId =
+            if (isReadingData) R.drawable.custom_progress_horizontal_blue else R.drawable.custom_progress_horizontal_green
         progressBar.progressDrawable = ContextCompat.getDrawable(progressBar.context, drawableResId)
     }
 

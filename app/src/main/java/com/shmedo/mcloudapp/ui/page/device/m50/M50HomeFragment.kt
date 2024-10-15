@@ -125,7 +125,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         mHeadStates.productLogoResId.set(R.drawable.device_logo_m50)
         mHeadStates.productName.set("一体化GNSS监测站")
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
-        mHeadStates.deviceName.set("M50")
+        mHeadStates.productToken.set("M50")
 
         when (communicateWay) {
             NetPlatformConnect -> {

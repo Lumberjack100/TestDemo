@@ -144,7 +144,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         mStates.productLogoResId.set(mStates.productLightResId.get())
         mStates.productName.set(deviceInfo.productName)
         mStates.deviceToken.set(deviceInfo.deviceToken)
-        mStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken }
+        mStates.productToken.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken }
             .replace("BHY-RDS", "BHY-3S"))
         mStates.firmwareVersion.set(deviceInfo.firmwareVersion)
 

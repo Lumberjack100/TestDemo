@@ -8,6 +8,6 @@ package com.shmedo.mcloudapp.model
 data class DeviceStatusInfoSignalItem(
     val name: String = "",
     var signalValue: Int = 0,
-    var colorRes: Int = 0,
+    var textColorRes: Int = 0,
     var isBottomItem: Boolean = false,
 )
