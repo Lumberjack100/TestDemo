@@ -36,7 +36,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     override fun queryStatusInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "value=0")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "method=0")
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }

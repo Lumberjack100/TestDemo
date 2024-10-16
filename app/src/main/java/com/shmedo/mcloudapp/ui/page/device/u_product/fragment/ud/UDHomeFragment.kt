@@ -3,16 +3,13 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.viewModels
-import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
+import com.blankj.utilcode.util.NetworkUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
-import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
-import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
-import com.google.android.flexbox.FlexboxLayoutManager
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
@@ -35,6 +32,7 @@ import com.shmedo.mcloudapp.databinding.ItemSubConfigModuleBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.notNullKeyEmpty
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
@@ -51,7 +49,6 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.LoraConfigModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
-import com.shmedo.mcloudapp.model.PlatformLabel
 import com.shmedo.mcloudapp.model.SensorConfigModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.model.WorkModeModule
@@ -60,6 +57,7 @@ import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragme
 import com.shmedo.mcloudapp.ui.page.device.common.UDSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.TimeCalibrationPopupView
+import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDHomeViewModel
@@ -68,8 +66,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 /**
@@ -83,8 +83,10 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mHeadStates: UDHomeViewModel by viewModels()
     private val mCommandResponseStates: CommandResponseViewModel by viewModels()
+    private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
     private val iotParseManager: IOTParserManager by inject()
 
+    private var abnormalInfoJob: Job? = null
     private var queryMeasureDataTimeoutJob: Job? = null
     private var repeatPollNum = 0 //重复轮询次数
 
@@ -113,15 +115,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             }
             mActivity.finish()
         }
-        initPlatformAdapter()
         initModuleAdapter()
-    }
-
-    private fun initPlatformAdapter() {
-        binding.llDeviceInfo.rvPlatform.setup { rv ->
-            rv.layoutManager = FlexboxLayoutManager(context)
-            addType<PlatformLabel>(R.layout.item_platform_label)
-        }
     }
 
     override fun initData() {
@@ -130,9 +124,11 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             ProductType.U_D_1 -> {
                 mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
             }
+
             ProductType.U_D_2 -> {
                 mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
             }
+
             else -> {}
         }
         mHeadStates.productName.set(productType.productName)
@@ -153,7 +149,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
             else -> {}
         }
-
         initModuleData()
     }
 
@@ -162,11 +157,11 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         if (isConnected) {
             toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
             mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
-            initPlatformStatus("蓝牙已连接", "1")
+            mHeadStates.iotPlatformStateText.set("蓝牙已连接")
         } else {
             toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
             mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
-            initPlatformStatus("蓝牙已断开", "0")
+            mHeadStates.iotPlatformStateText.set("蓝牙已断开")
         }
 
         //刷新模块状态
@@ -448,7 +443,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     private fun queryStatusInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "value=0")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "method=0")
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -458,7 +453,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
      */
     private fun queryMeasureData() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "value=0")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "method=0")
         commandItems.add(command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -469,7 +464,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
      */
     private fun measureData() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "value=1")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "method=1")
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
@@ -481,7 +476,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
      */
     private fun takePhoto() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "value=2")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "method=2")
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
@@ -538,21 +533,70 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         } else {
             bleViewModel.launch(bleDevice!!)
         }
+        initLastHistorySensorData()
     }
 
     private fun onNetPlatformReady() {
         if (deviceInfo.onlineStatus) {
-            initPlatformStatus("米度平台在线", "1")
+            mHeadStates.iotPlatformStateText.set("米度平台在线")
             queryStatusInfo()
         } else {
             mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
-            initPlatformStatus("米度平台离线", "0")
+            mHeadStates.iotPlatformStateText.set("米度平台离线")
         }
+        val ss = """
+    {
+        "dev_type": "MD-DR030",
+        "dev_sn": "248T888UD2",
+        "dev_sta": -3,
+        "dev_warn": "{\"loc_offset\": -1,\"angle_offset\": -1,\"extern_volt\": -1,\"bat_cap\": -1,\"bat_temp\": -1,\"bat_health\": -1,\"inside_temp\": -1,\"sim_card\": -1}",
+        "dev_error": "{\"ld\": -2,\"cam\": -2,\"qj\": -2,\"4G\": -2,\"bt\": -2,\"radio\": -2}",
+        "rttVersion": "4.1.0",
+        "hardwareVersion": "1",
+        "sw_version": "2.1.0-M7",
+        "sw_date": "2024.10.12",
+        "boot_code": "2003",
+        "boot_time": "2024.10.14 13:59:32",
+        "run_time": 8500,
+        "total_run_time": 13262,
+        "rept_mode": 1,
+        "rept_sta": 5,
+        "rept_freq": 15,
+        "cap_freq": 5,
+        "warning_switch": 0
+    }
+"""
+        initStatusInfo("method=0", ss)
+
     }
 
     override fun onBleDeviceReady() {
         super.onBleDeviceReady()
         queryStatusInfo()
+    }
+
+    private fun initLastHistorySensorData() {
+        if (NetworkUtils.isConnected()) {
+            launchWithViewLifecycle {
+                val sensorData: Map<String, String> =
+                    deviceRequestViewModel.queryLatestSensorData(
+                        deviceInfo.deviceToken,
+                        iotSensorTypeList = arrayListOf("904", "206")
+                    )
+                if (sensorData.isEmpty())
+                    return@launchWithViewLifecycle
+
+                val waterSurfaceElevation = sensorData["liquid_surface_alt"] ?: ""
+                val airDistance = sensorData["ullage"] ?: ""
+                val installationAngle = sensorData["z"] ?: ""
+                val measurementTime = sensorData["time"]?.replace(".000", "")?.replace("-", ".") ?: ""
+
+                mHeadStates.waterSurfaceElevation.set("$waterSurfaceElevation m")
+                mHeadStates.airDistance.set("$airDistance m")
+                mHeadStates.installationAngle.set("$installationAngle°")
+                mHeadStates.measurementTime.set(measurementTime)
+            }
+        }
     }
 
     /**
@@ -598,13 +642,13 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
             IOTCommandType.QUERY_SAMPLE -> {
                 stopMeasurement()
-                if (cmdStr.contains("value=1")) {
+                if (cmdStr.contains("method=1")) {
                     Toaster.show("测量数据指令下发出错: $errorMsg")
                     dismissLoadingDialog()
-                } else if (cmdStr.contains("value=2")) {
+                } else if (cmdStr.contains("method=2")) {
                     Toaster.show("拍照指令下发出错: $errorMsg")
                     dismissLoadingDialog()
-                } else if (cmdStr.contains("value=0")) {
+                } else if (cmdStr.contains("method=0")) {
                     clearQueryMeasureDataTimeoutJob()
                 }
             }
@@ -634,13 +678,13 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
             IOTCommandType.QUERY_SAMPLE -> {
                 stopMeasurement()
-                if (cmdStr.contains("value=1")) {
+                if (cmdStr.contains("method=1")) {
                     Toaster.show("测量数据指令响应超时")
                     dismissLoadingDialog()
-                } else if (cmdStr.contains("value=2")) {
+                } else if (cmdStr.contains("method=2")) {
                     Toaster.show("拍照指令响应超时")
                     dismissLoadingDialog()
-                } else if (cmdStr.contains("value=0")) {
+                } else if (cmdStr.contains("method=0")) {
                     clearQueryMeasureDataTimeoutJob()
                 }
             }
@@ -680,21 +724,21 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
             IOTCommandType.QUERY_SAMPLE -> {
                 stopMeasurement()
-                if (cmdStr.contains("value=1")) {
+                if (cmdStr.contains("method=1")) {
                     super.showNearbyCommunicationTimeoutAlert(
                         cmdStr,
                         isDismissLoadingDialog,
                         isShowMsg,
                         msg = "测量数据指令响应超时"
                     )
-                } else if (cmdStr.contains("value=2")) {
+                } else if (cmdStr.contains("method=2")) {
                     super.showNearbyCommunicationTimeoutAlert(
                         cmdStr,
                         isDismissLoadingDialog,
                         isShowMsg,
                         msg = "拍照指令响应超时"
                     )
-                } else if (cmdStr.contains("value=0")) {
+                } else if (cmdStr.contains("method=0")) {
                     clearQueryMeasureDataTimeoutJob()
                     super.showNearbyCommunicationTimeoutAlert(
                         cmdStr,
@@ -732,7 +776,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList()
-                        initStatusInfo(result.data)
+                        initStatusInfo(cmdStr, result.data)
                     }
                 }
             }
@@ -809,30 +853,10 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initPlatformStatus(content: String, status: String) {
-        val platformLabels = mutableListOf<PlatformLabel>()
-        platformLabels.add(
-            PlatformLabel(
-                content,
-                textColorRes = status.compareAndReturn(
-                    "1",
-                    ColorUtils.getColor(R.color.online_colorPrimary),
-                    ColorUtils.getColor(R.color.offline_BABABA)
-                ),
-                bgResId = status.compareAndReturn(
-                    "1",
-                    R.drawable.bg_label_online_corner_1dp,
-                    R.drawable.bg_label_offline_corner_1dp
-                )
-            )
-        )
-        binding.llDeviceInfo.rvPlatform.models = platformLabels
-    }
-
-    private fun initStatusInfo(content: String) {
-        if (binding.llDeviceInfo.rvPlatform.mutable.size >= 2) {
+    private fun initStatusInfo(cmdStr: String, content: String) {
+        if (!cmdStr.contains("method=0"))
             return
-        }
+
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
@@ -855,34 +879,81 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         )
                     )
                 )
-
-                val platformLabel = PlatformLabel(
-                    status, textColorRes = status.compareAndReturn(
-                        "故障",
-                        ColorUtils.getColor(R.color.error_FF4400),
-                        status.compareAndReturn(
-                            "告警",
-                            ColorUtils.getColor(R.color.warn_FF9D00),
-                            ColorUtils.getColor(R.color.online_colorPrimary)
-                        )
-                    ),
-                    bgResId = status.compareAndReturn(
-                        "故障",
-                        R.drawable.bg_label_error_corner_1dp,
-                        status.compareAndReturn(
-                            "告警",
-                            R.drawable.bg_label_warn_corner_1dp,
-                            R.drawable.bg_label_online_corner_1dp
-                        )
-                    )
-                )
-                binding.llDeviceInfo.rvPlatform.bindingAdapter.apply {
-                    mutable.add(platformLabel)
-                    notifyItemInserted(itemCount)
+                if (status == "正常") {
+                    mHeadStates.warnErrorText.set("正常")
+                    return@launchWithViewLifecycle
                 }
+                val errorInfoList = mutableListOf<String>()
+                stateInfo.deviceError.notNullKeyEmpty { errorStr ->
+                    var unescapedErrorStr = errorStr.replace("{", "").replace("}", "")
+                    // 首先将 errorStr 转为为json字符串
+                    unescapedErrorStr = """
+                    {$unescapedErrorStr} 
+                        """.trimIndent()
+                    //然后将解析出的字符串再次解析为 Map
+                    val resultMap =
+                        MoshiUtil.fromJson<Map<String, Any>>(unescapedErrorStr) ?: mapOf()
+                    resultMap["ld"]?.let { errorInfoList.add("雷达故障") }
+                    resultMap["cam"]?.let { errorInfoList.add("摄像头故障") }
+                    resultMap["qj"]?.let { errorInfoList.add("加速度计故障") }
+                    resultMap["4G"]?.let { errorInfoList.add("4G故障") }
+                    resultMap["bt"]?.let { errorInfoList.add("蓝牙故障") }
+                    resultMap["radio"]?.let { errorInfoList.add("电台故障") }
+                    resultMap["flash"]?.let { errorInfoList.add("存储故障") }
+                    resultMap["ath"]?.let { errorInfoList.add("温湿度故障") }
+                }
+                stateInfo.deviceWarn.notNullKeyEmpty { warnStr ->
+                    var unescapedWarnStr = warnStr.replace("{", "").replace("}", "")
+                    // 首先将 errorStr 转为为json字符串
+                    unescapedWarnStr = """
+                    {$unescapedWarnStr} 
+                        """.trimIndent()
+                    // 然后将解析出的字符串再次解析为 Map
+                    val resultMap = MoshiUtil.fromJson<Map<String, Any>>(
+                        unescapedWarnStr
+                    ) ?: mapOf()
+
+                    resultMap["loc_offset"]?.let { errorInfoList.add("位置偏移") }
+                    resultMap["angle_offset"]?.let { errorInfoList.add("角度偏移") }
+                    resultMap["extern_volt"]?.let { volt -> errorInfoList.add(if (volt == "-1") "外部电压过高" else "外部电压过低") }
+                    resultMap["bat_cap"]?.let { errorInfoList.add("电池电量过低") }
+                    resultMap["bat_temp"]?.let { errorInfoList.add("电池温度过高") }
+                    resultMap["bat_health"]?.let { errorInfoList.add("电池容量过低") }
+                    resultMap["inside_temp"]?.let { temp -> errorInfoList.add(if (temp == "-1") "内部温度过高" else "内部温度过低") }
+                    resultMap["sim_card"]?.let { errorInfoList.add("无SIM卡") }
+                }
+                handleAbnormalInfo(errorInfoList)
             } catch (e: Exception) {
                 Timber.e(e)
                 addLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
+    /**
+     * 轮播异常信息
+     * 每隔3秒切换一次，取出异常信息列表中的每一条异常信息，轮播显示
+     */
+    private fun handleAbnormalInfo(errorInfoList: List<String>) {
+        // 取消之前的job（如果存在）
+        abnormalInfoJob?.cancel()
+
+        // 如果列表为空，直接返回
+        if (errorInfoList.isEmpty()) {
+            mHeadStates.warnErrorText.set("正常")
+            return
+        }
+        abnormalInfoJob = launchWithViewLifecycle {
+            flow {
+                while (true) {
+                    errorInfoList.forEach { errorInfo ->
+                        emit(errorInfo)
+                        delay(1500) // 延迟3秒
+                    }
+                }
+            }.collect { errorInfo ->
+                mHeadStates.warnErrorText.set(errorInfo)
+                mHeadStates.isError.set(errorInfo.contains("故障"))
             }
         }
     }

@@ -264,7 +264,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_DEVICE_STATUS, "value=4"
+            IOTCommandType.MD_GET_DEVICE_STATUS, "method=4"
         )
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)

@@ -18,6 +18,10 @@ data class UDCurrentStateInfo(
     val sn: String = IOTConstants.NULL_KEY, //设备SN号
     @Json(name = "dev_sta")
     val deviceStatus: String = IOTConstants.NULL_KEY, //设备状态 0：正常 -2:告警  -3：设备故障
+    @Json(name = "dev_warn")
+    val deviceWarn: String = IOTConstants.NULL_KEY, //设备告警信息
+    @Json(name = "dev_error")
+    val deviceError: String = IOTConstants.NULL_KEY, //设备故障信息
     val rttVersion: String = IOTConstants.NULL_KEY, //RTT操作系统版本  "4.1.0"
     var hardwareVersion: String = IOTConstants.NULL_KEY, //硬件版本 "1"
     @Json(name = "sw_version")
@@ -80,7 +84,7 @@ data class UDCurrentStateInfo(
     @Json(name = "inside_hum")
     val internalHumidity: String = IOTConstants.NULL_KEY, //内部湿度  "70.4"
     @Json(name = "ld_sta")
-    val ldStatus: String = IOTConstants.NULL_KEY, //雷达状态   -3：模块异常  -2:数据异常  0:正常
+    val ldStatus: String = IOTConstants.NULL_KEY, //雷达状态   0：正常 -2：数据异常  -3：模块异常
     @Json(name = "alt")
     val altitude: String = IOTConstants.NULL_KEY, //海拔高度  "23.590"
     @Json(name = "cam_sta")
@@ -88,11 +92,9 @@ data class UDCurrentStateInfo(
     var pixx: String = IOTConstants.NULL_KEY,//图片水平分辨率  "1920"
     var pixy: String = IOTConstants.NULL_KEY,//图片垂直分辨率  "1080"
     @Json(name = "adxl_sta")
-    val accelerometerStatus: String = IOTConstants.NULL_KEY, //加速度计 -3：模块异常  -2：数据异常  0：正常
+    val accelerometerStatus: String = IOTConstants.NULL_KEY, //加速度计 0：正常 -2：数据异常  -3：模块异常
     @Json(name = "gnss_sta")
-    val gnssStatus: String = IOTConstants.NULL_KEY, //GNSS状态     0：正常
-    @Json(name = "utc_time")
-    val utcTime: String = IOTConstants.NULL_KEY, //UTC时间  "2024.08.30 01:31:29"
+    val gnssStatus: String = IOTConstants.NULL_KEY, //GNSS状态     0：正常 -2：数据异常  -3：模块异常
     @Json(name = "lng_dir")
     val longitudeDirection: String = IOTConstants.NULL_KEY, //经度方向  "E"
     @Json(name = "lng")

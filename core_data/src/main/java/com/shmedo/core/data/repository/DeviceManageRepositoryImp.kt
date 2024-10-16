@@ -21,12 +21,15 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
      */
     suspend fun queryDeviceSensorListWithPage(
         deviceToken: String = "",//SN号
+        iotSensorType: String = "",//传感器类型
         currentPage: Int = 1,
         pageSize: Int = 100,
         onCatch: ((Throwable) -> Unit)? = null
     ): PageList<DeviceSensorBasicInfo>? {
         val jsonObject = JSONObject().apply {
             put("deviceToken", deviceToken)
+            if (iotSensorType.isNotEmpty())
+                put("iotSensorType", iotSensorType)
             put("sensorValid", true)
             put("currentPage", currentPage)
             put("pageSize", pageSize)
@@ -36,6 +39,28 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
         return commonPostResponseString<PageList<DeviceSensorBasicInfo>>(
             baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
             shortMethodUrl = "/QueryDeviceSensor",
+            jsonParam = jsonObject.toString(),
+            headers = headers,
+            onCatch = onCatch
+        )
+    }
+
+    /**
+     * 查询单个传感器最新数据
+     * @param sensorID 传感器编号。如果传感器有设备，则校验设备权限。无，则校验公司权限。两种情况都有一起校验。
+     */
+    suspend fun querySensorNewData(
+        sensorID: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): List<Map<String, String>>? {
+        val jsonObject = JSONObject().apply {
+            put("sensorID", sensorID)
+        }
+        val headers: Map<String, String> = mapOf("Authorization" to MmkvCacheUtil.getToken())
+
+        return commonPostResponseString<List<Map<String, String>>>(
+            baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
+            shortMethodUrl = "/DescribeSensorNewData",
             jsonParam = jsonObject.toString(),
             headers = headers,
             onCatch = onCatch

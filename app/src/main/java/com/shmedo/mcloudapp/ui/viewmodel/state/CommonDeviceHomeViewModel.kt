@@ -31,6 +31,9 @@ open class CommonDeviceHomeViewModel : ViewModel() {
 
     val isPlatformListVisible = NonNullObservableField(false)//是否显示已连接的平台
 
+    val isError = NonNullObservableField<Boolean>(false)
+    val warnErrorText = NonNullObservableField("正常")
+
     //ADME模式选择
     val isAdmeModeChooseViewVisible = NonNullObservableField(false)
     val admeModeText = NonNullObservableField("设备配置模式")

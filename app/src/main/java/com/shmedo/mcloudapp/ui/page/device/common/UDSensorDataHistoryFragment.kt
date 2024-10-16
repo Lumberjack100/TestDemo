@@ -59,7 +59,9 @@ class UDSensorDataHistoryFragment : BaseFragment() {
         "三天内",
         "一周内",
         "一个月内",
-        "三个月内"
+        "三个月内",
+        "半年内",
+        "所有"
     )
 
     override fun initViewModel() {}
@@ -71,7 +73,6 @@ class UDSensorDataHistoryFragment : BaseFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-//        mActivity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         binding = getBinding() as FragmentUdSensorDataHistoryBinding
         toolbarViewModel.toolbarTitleText.set("历史数据")
         binding.llToolbar.toolbar.setNavigationOnClickListener {
@@ -172,12 +173,14 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                 modelNameList.addAll(
                     arrayListOf(
                         "液面高程",
+                        "空高距离",
                         "安装角度",
                         "抓拍图片"
                     )
                 )
                 modelTokenList.addAll(
                     arrayListOf(
+                        "904",
                         "904",
                         "206",
                         "10001"
@@ -186,6 +189,7 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                 modelValueDescList.addAll(
                     arrayListOf(
                         "高度(m)",
+                        "高度(m)",
                         "角度(°)",
                         "操作"
                     )
@@ -193,6 +197,7 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                 modelFieldJsonPathList.addAll(
                     arrayListOf(
                         "liquid_surface_alt",
+                        "ullage",
                         "z"
                     )
                 )
@@ -269,7 +274,6 @@ class UDSensorDataHistoryFragment : BaseFragment() {
     }
 
     inner class ClickProxy : BaseClickProxy() {
-
         fun onChooseTimeClick() {
             val selectedIndex = periodDateList.indexOf(mStates.periodDate.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -323,6 +327,24 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                                 mStates.startTime.set(
                                     TimeUtils.millis2String(
                                         TimeUtils.getNowMills() - 90L * 24 * 3600 * 1000,
+                                        "yyyy-MM-dd HH:mm"
+                                    ) + ":00"
+                                )
+                            }
+
+                            5 -> {//半年内
+                                mStates.startTime.set(
+                                    TimeUtils.millis2String(
+                                        TimeUtils.getNowMills() - 180L * 24 * 3600 * 1000,
+                                        "yyyy-MM-dd HH:mm"
+                                    ) + ":00"
+                                )
+                            }
+
+                            6 -> {//所有
+                                mStates.startTime.set(
+                                    TimeUtils.millis2String(
+                                        TimeUtils.getNowMills() - 10 * 365L * 24 * 3600 * 1000,
                                         "yyyy-MM-dd HH:mm"
                                     ) + ":00"
                                 )

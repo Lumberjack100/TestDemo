@@ -39,7 +39,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     override fun queryStatusInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "value=2")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "method=2")
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -157,12 +157,10 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         R.color.error_FF4400
                     )
                 )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "海拔高度",
-                    value = stateInfo.altitude,
-                    defaultValue = AppContants.PLACE_HOLDER_VALUE,
-                    digit = 3,
+                    value = stateInfo.altitude.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                     unit = "m",
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(

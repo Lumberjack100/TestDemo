@@ -7,12 +7,9 @@ import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
-import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
-import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
-import com.google.android.flexbox.FlexboxLayoutManager
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
@@ -109,15 +106,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             }
             mActivity.finish()
         }
-        initPlatformAdapter()
         initModuleAdapter()
-    }
-
-    private fun initPlatformAdapter() {
-        binding.llDeviceInfo.rvPlatform.setup { rv ->
-            rv.layoutManager = FlexboxLayoutManager(context)
-            addType<PlatformLabel>(R.layout.item_platform_label)
-        }
     }
 
     override fun initData() {
@@ -442,7 +431,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         var command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
         commandItems.add(command)
 
-        command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "value=0")
+        command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "method=0")
         commandItems.add(command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -453,7 +442,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
      */
     private fun takePhoto() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "value=1")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "method=1")
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
@@ -569,7 +558,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.QUERY_SAMPLE -> {
-                if (cmdStr.contains("value=1")) {
+                if (cmdStr.contains("method=1")) {
                     Toaster.show("拍照指令下发出错: $errorMsg")
                     dismissLoadingDialog()
                 }
@@ -599,7 +588,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.QUERY_SAMPLE -> {
-                if (cmdStr.contains("value=1")) {
+                if (cmdStr.contains("method=1")) {
                     Toaster.show("拍照指令响应超时")
                     dismissLoadingDialog()
                 }
@@ -639,7 +628,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.QUERY_SAMPLE -> {
-                if (cmdStr.contains("value=1")) {
+                if (cmdStr.contains("method=1")) {
                     super.showNearbyCommunicationTimeoutAlert(
                         cmdStr,
                         isDismissLoadingDialog,
@@ -768,13 +757,11 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 )
             )
         )
-        binding.llDeviceInfo.rvPlatform.models = platformLabels
+//        binding.llDeviceInfo.rvPlatform.models = platformLabels
     }
 
     private fun initStatusInfo(content: String) {
-        if (binding.llDeviceInfo.rvPlatform.mutable.size >= 2) {
-            return
-        }
+
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
@@ -818,10 +805,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                         )
                     )
                 )
-                binding.llDeviceInfo.rvPlatform.bindingAdapter.apply {
-                    mutable.add(platformLabel)
-                    notifyItemInserted(itemCount)
-                }
+
             } catch (e: Exception) {
                 Timber.e(e)
                 addLogItem(Log.ERROR, e.errorMsg)

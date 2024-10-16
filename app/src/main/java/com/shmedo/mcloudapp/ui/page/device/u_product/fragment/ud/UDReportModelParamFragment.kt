@@ -298,7 +298,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
 
         var command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_DEVICE_STATUS, "value=0"
+            IOTCommandType.MD_GET_DEVICE_STATUS, "method=0"
         )
         commandItems.add(command)
 
