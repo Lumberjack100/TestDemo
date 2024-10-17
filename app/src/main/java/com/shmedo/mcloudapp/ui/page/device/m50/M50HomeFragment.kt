@@ -543,7 +543,12 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     /**
      * 4G 下发指令响应失败
      */
-    override fun doCmdResponseResultError(cmdStr: String, errorMsg: String) {
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_DEVICE_STATUS -> {
                 dismissLoadingDialog()
@@ -554,18 +559,23 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set(errorMsg)
+                mCommandResponseStates.responseContent.set(errMsg)
             }
 
             IOTCommandType.QUERY_SAMPLE -> {
                 if (cmdStr.contains("method=1")) {
-                    Toaster.show("拍照指令下发出错: $errorMsg")
+                    Toaster.show("拍照指令下发出错: $errMsg")
                     dismissLoadingDialog()
                 }
             }
 
             else -> {
-                super.doCmdResponseResultError(cmdStr, errorMsg)
+                super.doCmdResponseResultError(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog
+                )
             }
         }
     }
@@ -573,7 +583,12 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     /**
      * 4G 下发指令响应超时
      */
-    override fun doCmdResponseResultTimeOut(cmdStr: String, errorMsg: String) {
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_DEVICE_STATUS -> {
                 dismissLoadingDialog()
@@ -584,7 +599,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set("指令响应超时")
+                mCommandResponseStates.responseContent.set("设备未响应")
             }
 
             IOTCommandType.QUERY_SAMPLE -> {
@@ -595,7 +610,12 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                super.doCmdResponseResultTimeOut(cmdStr, errorMsg)
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog
+                )
             }
         }
     }
@@ -606,16 +626,18 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     override fun showNearbyCommunicationTimeoutAlert(
         cmdStr: String,
         isDismissLoadingDialog: Boolean,
-        isShowMsg: Boolean,
-        msg: String
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_DEVICE_STATUS -> {
                 super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr,
-                    isDismissLoadingDialog,
-                    isShowMsg = false,
-                    msg
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = false,
+                    isMessageDialog = isMessageDialog,
+                    errMsg = errMsg
                 )
             }
 
@@ -630,20 +652,22 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             IOTCommandType.QUERY_SAMPLE -> {
                 if (cmdStr.contains("method=1")) {
                     super.showNearbyCommunicationTimeoutAlert(
-                        cmdStr,
-                        isDismissLoadingDialog,
-                        isShowMsg,
-                        msg = "拍照指令响应超时"
+                        cmdStr = cmdStr,
+                        isDismissLoadingDialog = isDismissLoadingDialog,
+                        isShowErrMsg = isShowErrMsg,
+                        isMessageDialog = isMessageDialog,
+                        errMsg = "拍照指令响应超时"
                     )
                 }
             }
 
             else -> {
                 super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr,
-                    isDismissLoadingDialog,
-                    isShowMsg,
-                    msg
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog,
+                    errMsg = errMsg
                 )
             }
         }

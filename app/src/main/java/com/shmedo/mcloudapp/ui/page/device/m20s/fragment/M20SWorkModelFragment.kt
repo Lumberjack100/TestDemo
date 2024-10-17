@@ -202,7 +202,7 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
                         if (cmdStr.contains("method=0")) {
                             initParamData(result.data as RtkParamInfo)
                         } else {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
                         }
                     }
                 }

@@ -147,7 +147,7 @@
                 android:layout_marginStart="@dimen/dimen_size_10"
                 android:onClick="@{()->click.onGoToSensorDataHistoryClick()}"
                 android:text='历史'
-                android:textColor="@{!stateVM.isConnectOperateVisible ? @color/colorPrimary : @color/black_30}"
+                android:textColor="@color/colorPrimary"
                 app:backgroundTint="@drawable/measure_data_button_background_tint"
                 app:icon="@drawable/ic_device_sensor_data_history"
                 app:iconSize="@dimen/dimen_size_18"

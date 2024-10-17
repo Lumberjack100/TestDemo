@@ -298,7 +298,7 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
                         if (cmdStr.contains("method=0")) {
                             initParamData(result.data as M50SerialPortParam)
                         } else {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
                         }
                     }
                 }

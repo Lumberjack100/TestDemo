@@ -910,16 +910,6 @@ enum class IOTCommandType(private val value: String) {
     MD_SET_SENSOR_INITIAL("md_cfginitval"),
 
     /**
-     * 获取RTK
-     */
-    MD_GET_RTK("md_getrtk"),
-
-    /**
-     * 设置 RTK
-     */
-    MD_SET_RTK("md_setrtk"),
-
-    /**
      * 米度一体式泥位计上报模式配置
      */
     MD_SET_MUD_LEVEL_METER_SENSOR("md_setsense"),
@@ -927,7 +917,7 @@ enum class IOTCommandType(private val value: String) {
     /**
      * 米度一体式泥位计差分定位模式
      */
-    MD_SET_MUD_LEVEL_METER_DIFF_LOCATE("md_setlocate"),
+    MD_UD_DIFF_LOCATE("md_updatealt"),
 
     /**
      * 米度一体式泥位计海拔高度测量方式 0:自动(差分)  1:手动

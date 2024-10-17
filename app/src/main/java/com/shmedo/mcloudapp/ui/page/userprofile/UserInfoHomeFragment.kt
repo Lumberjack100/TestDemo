@@ -121,7 +121,7 @@ class UserInfoHomeFragment : BaseFragment() {
                 Toaster.show(dataResult.responseStatus.errorMessage)
                 return@observe
             }
-            Toaster.show("保存成功")
+            Toaster.show("数据保存成功")
             setFragmentResult(
                 MineFragment.requestKey,
                 bundleOf(com.shmedo.core.commonlib.utils.AppContants.Extras.IS_REFRESH_USER_INFO to true)

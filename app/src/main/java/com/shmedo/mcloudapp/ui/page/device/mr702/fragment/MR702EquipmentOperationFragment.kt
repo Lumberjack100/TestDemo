@@ -10,8 +10,6 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
@@ -20,11 +18,12 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.databinding.FragmentMr702EquipmentOperationBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
-import com.shmedo.mcloudapp.databinding.FragmentMr702EquipmentOperationBinding
-import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.DeviceLogUploadModule
@@ -42,12 +41,11 @@ import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.MR702ParamExportPopupVie
 import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.MR702ParamImportPopupView
 import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.TelemetryPopupView
 import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.TimeCalibrationPopupView
-
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702EquipmentOperationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 /**
  * @author：gonghe
@@ -378,30 +376,47 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun doCmdResponseResultError(cmdStr: String, errorMsg: String) {
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
 //        super.doCmdResponseResultError(errorMsg)
         mStates.isResponseLoading.set(false)
         mStates.isResponseSuccess.set(false)
-        mStates.responseContent.set(errorMsg)
+        mStates.responseContent.set(errMsg)
     }
 
-    override fun doCmdResponseResultTimeOut(cmdStr: String, errorMsg: String) {
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
 //        super.doCmdResponseResultTimeOut(errorMsg)
         mStates.isResponseLoading.set(false)
         mStates.isResponseSuccess.set(false)
-        mStates.responseContent.set("指令响应超时")
+        mStates.responseContent.set("设备未响应")
     }
 
     override fun showNearbyCommunicationTimeoutAlert(
         cmdStr: String,
         isDismissLoadingDialog: Boolean,
-        isShowMsg: Boolean,
-        msg: String
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
     ) {
-        super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, false, msg)
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = false,
+            isMessageDialog = isMessageDialog,
+            errMsg = errMsg
+        )
         mStates.isResponseLoading.set(false)
         mStates.isResponseSuccess.set(false)
-        mStates.responseContent.set("指令响应超时")
+        mStates.responseContent.set("设备未响应")
     }
 
     override fun setResultData(cmdStr: String) {

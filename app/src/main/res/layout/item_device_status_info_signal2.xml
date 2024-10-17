@@ -25,7 +25,7 @@
             android:id="@+id/tv_4g_signal_strength"
             style="@style/DeviceCurrentState_ClickableItem_Value_Style2"
             android:drawableEnd="@null"
-            android:text='@{m.signalValue==0?"--dBm":m.signalValue+"dBm" }'
+            android:text='@{m.signalValue==0?"-- dBm":m.signalValue+" dBm" }'
             android:textColor="@{m.textColorRes==0?@color/sub_title_text_color_black_60:m.textColorRes}"
             tools:text="-51dBm" />
 

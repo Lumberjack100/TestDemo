@@ -55,7 +55,7 @@ object DeviceStatusInfoProcessor {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = name,
-                    value = if (it == AppContants.PLACE_HOLDER_VALUE || it.contains("异常")) it else "$it$unit",
+                    value = if (it == AppContants.PLACE_HOLDER_VALUE || it.contains("异常")) it else "$it $unit",
                     textColorRes = textColorRes,
                     isClipboard = isClipboard,
                     isBottomItem = isBottomItem
@@ -88,7 +88,7 @@ object DeviceStatusInfoProcessor {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = name,
-                    value = "${formatDoubleValue(it, defaultValue, digit)}$unit",
+                    value = "${formatDoubleValue(it, defaultValue, digit)} $unit",
                     isClipboard = isClipboard,
                     isBottomItem = isBottomItem
                 )
@@ -127,7 +127,7 @@ object DeviceStatusInfoProcessor {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = name,
-                    value = "$tempValue$unit",
+                    value = "$tempValue $unit",
                     textColorRes = if (tempValue.toDouble() <= downLimitValue)
                         ColorUtils.getColor(R.color.error_FF4400)
                     else
@@ -169,7 +169,7 @@ object DeviceStatusInfoProcessor {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = name,
-                    value = "$tempValue$unit",
+                    value = "$tempValue $unit",
                     textColorRes = if (tempValue.toDouble() < downLimitValue || tempValue.toDouble() > upLimitValue)
                         ColorUtils.getColor(R.color.error_FF4400)
                     else

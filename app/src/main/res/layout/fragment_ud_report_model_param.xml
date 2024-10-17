@@ -109,7 +109,7 @@
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
                                 android:inputType="numberDecimal"
-                                android:maxLength="6"
+                                android:maxLength="10"
                                 android:text="@={stateVM.firstAlarmThreshold}" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -129,7 +129,7 @@
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
                                 android:inputType="numberDecimal"
-                                android:maxLength="6"
+                                android:maxLength="10"
                                 android:text="@={stateVM.secondAlarmThreshold}" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -149,7 +149,7 @@
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
                                 android:inputType="numberDecimal"
-                                android:maxLength="6"
+                                android:maxLength="10"
                                 android:text="@={stateVM.thirdAlarmThreshold}" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -169,7 +169,7 @@
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
                                 android:inputType="numberDecimal"
-                                android:maxLength="6"
+                                android:maxLength="10"
                                 android:text="@={stateVM.fourthAlarmThreshold}" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -210,6 +210,7 @@
                         style="@style/SubmitButton_Style2"
                         onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
                         android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                        android:enabled="@{stateVM.isDataModified}"
                         android:text="@string/button_save_text" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>

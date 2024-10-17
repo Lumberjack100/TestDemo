@@ -39,6 +39,7 @@
             <com.google.android.material.textview.MaterialTextView
                 style="@style/DeviceCurrentState_Item_Title_Style2"
                 onClickWithDebouncing="@{()->click.updateLocation()}"
+                android:background="?attr/selectableItemBackground"
                 android:text="位置更新"
                 android:textColor="@color/colorPrimary"
                 android:textStyle="bold" />

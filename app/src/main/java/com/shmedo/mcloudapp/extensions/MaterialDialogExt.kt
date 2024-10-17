@@ -245,7 +245,7 @@ fun AppCompatActivity.showMessageDialog(
 fun Fragment.showMessageDialog(
     message: String,
     title: String = "提示",
-    positiveButtonText: String = "我已知晓"
+    positiveButtonText: String = "确认"
 ) {
     MessageDialog.show(
         title,

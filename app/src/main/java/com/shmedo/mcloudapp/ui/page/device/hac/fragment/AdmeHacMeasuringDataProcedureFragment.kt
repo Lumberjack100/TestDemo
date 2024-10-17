@@ -225,14 +225,16 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     override fun showNearbyCommunicationTimeoutAlert(
         cmdStr: String,
         isDismissLoadingDialog: Boolean,
-        isShowMsg: Boolean,
-        msg: String
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
     ) {
         super.showNearbyCommunicationTimeoutAlert(
-            cmdStr,
-            isDismissLoadingDialog,
-            false,
-            msg
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = false,
+            isMessageDialog = isMessageDialog,
+            errMsg = errMsg
         )
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE,
@@ -672,7 +674,10 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
             putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
             putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putInt(
+                com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR,
+                statusBarColor
+            )
         }
     }
 }

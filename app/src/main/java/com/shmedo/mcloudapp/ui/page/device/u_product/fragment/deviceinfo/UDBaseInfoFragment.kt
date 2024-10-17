@@ -79,6 +79,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             "告警" -> ColorUtils.getColor(
                                 R.color.warn_FF9D00
                             )
+
                             else -> ColorUtils.getColor(R.color.error_FF4400)
                         }
                     )
@@ -93,11 +94,17 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "固件日期",
                     value = stateInfo.firmwareDate,
                 )
-                //TODO#GH# 异常启动的代码标为黄色
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "启动代码",
                     value = stateInfo.bootCode,
+                    //代码以 36 开头或者是 2026、2027、2028 的显示告警色
+                    textColorRes = if (stateInfo.bootCode.startsWith("36") || stateInfo.bootCode in listOf(
+                            "2026",
+                            "2027",
+                            "2028"
+                        )
+                    ) ColorUtils.getColor(R.color.warn_FF9D00) else 0
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,

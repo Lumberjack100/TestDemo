@@ -30,7 +30,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentCommonLocationInfoBinding
-import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -67,7 +66,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
     private var gcjLatLng: LatLng? = null //当前定位经纬度,中国国测局地理坐标（GCJ-02）
     private var timerClockJob: Job? = null
 
-    private var queryMeasureTimeoutJob: Job? = null
+    private var queryMeasureResultTimeoutJob: Job? = null
     private var repeatPollNum = 0 //重复轮询次数
 
 
@@ -141,7 +140,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
         if (method == "1")
             showLoadingDialog(StringUtils.getString(R.string.processing))
 
-        sendCommandFromCmdList(isStartTimeoutJob = false)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun initData() {
@@ -174,20 +173,30 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
     /**
      * 4G 下发指令响应失败
      */
-    override fun doCmdResponseResultError(cmdStr: String, errorMsg: String) {
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_INSTALL_LOCATION -> {
-                stopMeasurement()
-                if (cmdStr.contains("method=1")) {
-                    Toaster.show("位置更新指令下发出错: $errorMsg")
-                    dismissLoadingDialog()
-                } else if (cmdStr.contains("method=0")) {
-                    clearQueryMeasureTimeoutJob()
-                }
+                super.doCmdResponseResultError(
+                    cmdStr = cmdStr,
+                    errMsg = "位置更新指令下发出错: $errMsg",
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
+                clearQueryMeasureResultTimeoutJob()
             }
 
             else -> {
-                super.doCmdResponseResultError(cmdStr, errorMsg)
+                super.doCmdResponseResultError(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog
+                )
             }
         }
     }
@@ -195,20 +204,30 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
     /**
      * 4G 下发指令响应超时
      */
-    override fun doCmdResponseResultTimeOut(cmdStr: String, errorMsg: String) {
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_INSTALL_LOCATION -> {
-                stopMeasurement()
-                if (cmdStr.contains("method=1")) {
-                    Toaster.show("位置更新指令响应超时")
-                    dismissLoadingDialog()
-                } else if (cmdStr.contains("method=0")) {
-                    clearQueryMeasureTimeoutJob()
-                }
+                clearQueryMeasureResultTimeoutJob()
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = "设备未响应",
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
             }
 
             else -> {
-                super.doCmdResponseResultTimeOut(cmdStr, errorMsg)
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog
+                )
             }
         }
     }
@@ -219,36 +238,29 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
     override fun showNearbyCommunicationTimeoutAlert(
         cmdStr: String,
         isDismissLoadingDialog: Boolean,
-        isShowMsg: Boolean,
-        msg: String
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_INSTALL_LOCATION -> {
-                stopMeasurement()
-                if (cmdStr.contains("method=1")) {
-                    super.showNearbyCommunicationTimeoutAlert(
-                        cmdStr,
-                        isDismissLoadingDialog,
-                        isShowMsg,
-                        msg = "位置更新指令响应超时"
-                    )
-                } else if (cmdStr.contains("method=0")) {
-                    clearQueryMeasureTimeoutJob()
-                    super.showNearbyCommunicationTimeoutAlert(
-                        cmdStr,
-                        isDismissLoadingDialog,
-                        isShowMsg = false,
-                        msg
-                    )
-                }
+                clearQueryMeasureResultTimeoutJob()
+                super.showNearbyCommunicationTimeoutAlert(
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = true,
+                    isMessageDialog = isMessageDialog,
+                    errMsg = "设备未响应"
+                )
             }
 
             else -> {
                 super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr,
-                    isDismissLoadingDialog,
-                    isShowMsg,
-                    msg
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog,
+                    errMsg = errMsg
                 )
             }
         }
@@ -267,9 +279,8 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询位置信息出错: ${result.message}"
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -287,9 +298,8 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
                         val errMsg = "查询位置信息出错: ${result.message}"
-                        Toaster.show(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -307,10 +317,9 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
+                        clearQueryMeasureResultTimeoutJob()
                         val errMsg = "位置更新出错: ${result.message}"
-                        handleFailureResult(errMsg, isShowErrMsg = false)
-                        stopMeasurement()
-                        clearQueryMeasureTimeoutJob()
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -431,8 +440,8 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
             resultMap["method"]?.let { code ->
                 when (code) {
                     "1" -> {
-                        clearQueryMeasureTimeoutJob()
-                        processQueryMeasure()
+                        clearQueryMeasureResultTimeoutJob()
+                        startQueryMeasureResultJob()
                     }
 
                     "0" -> {
@@ -442,8 +451,9 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                             && resultMap.containsKey("lat_dir")
                             && resultMap.containsKey("lat")
                         ) {
-                            stopMeasurement()
-                            clearQueryMeasureTimeoutJob()
+                            cancelNearbyCommunicationTimeoutJob()
+                            clearQueryMeasureResultTimeoutJob()
+                            Toaster.show("位置更新成功")
 
                             val longitudeDirection = resultMap["lng_dir"] ?: ""
                             val longitudeStr = resultMap["lng"] ?: ""
@@ -460,7 +470,9 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                             }
                             return
                         }
-                        processQueryMeasure()
+
+                        cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog = false)
+                        startQueryMeasureResultJob()
                     }
 
                     else -> {}
@@ -472,28 +484,24 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun stopMeasurement() {
-        cancelNearbyCommunicationTimeoutJob()
-    }
-
-    private fun processQueryMeasure() {
+    private fun startQueryMeasureResultJob() {
         //启动一个新的协程作为超时Job
-        queryMeasureTimeoutJob?.cancel()
-        queryMeasureTimeoutJob = launchWithViewLifecycle {
-            if (repeatPollNum >= 10) {
-                clearQueryMeasureTimeoutJob()
+        queryMeasureResultTimeoutJob?.cancel()
+        queryMeasureResultTimeoutJob = launchWithViewLifecycle {
+            if (repeatPollNum >= REPEAT_POLL_NUM) {
+                clearQueryMeasureResultTimeoutJob()
                 return@launchWithViewLifecycle
             }
             delay(AppContants.Communication.DELAY_5000_MILLIS) //延迟 timeMillis 秒
             repeatPollNum++
-            Timber.d("查询测量数据轮询次数：$repeatPollNum")
+            Timber.d("查询测量结果轮询次数：$repeatPollNum")
             measureLocation("0")
         }
     }
 
-    private fun clearQueryMeasureTimeoutJob() {
-        queryMeasureTimeoutJob?.cancel()
-        queryMeasureTimeoutJob = null
+    private fun clearQueryMeasureResultTimeoutJob() {
+        queryMeasureResultTimeoutJob?.cancel()
+        queryMeasureResultTimeoutJob = null
         repeatPollNum = 0
     }
 
@@ -530,6 +538,6 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
     companion object {
         private const val MAX_ZOOM_LEVEL = 18f //高德地图最大缩放级别
         private const val MIN_ZOOM_LEVEL = 3f  //高德地图最小缩放级别
-        fun newInstance() = CommonLocationInfoViewModel()
+        const val REPEAT_POLL_NUM = 10
     }
 }

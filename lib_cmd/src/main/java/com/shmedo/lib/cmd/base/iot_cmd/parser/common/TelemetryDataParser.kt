@@ -8,9 +8,9 @@ import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
  * 创建时间:  2023/9/22 <br/>
  * 描述：     遥测
  */
-class TelemetryDataParser: IOTCommandParser<String> {
+class TelemetryDataParser : IOTCommandParser<String> {
     override fun parseInstance(keyValueMap: Map<String, String>): String {
-        return keyValueMap["datastreams"]!!
+        return keyValueMap["datastreams"] ?: ""
     }
 
     override fun commandType(): IOTCommandType = IOTCommandType.QUERY_SAMPLE

@@ -24,7 +24,7 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_4g_signal_strength"
             style="@style/DeviceCurrentState_Item_Value_Style"
-            android:text='@{m.signalValue==0?"--dBm":m.signalValue+"dBm" }'
+            android:text='@{m.signalValue==0?"-- dBm":m.signalValue+" dBm" }'
             tools:text="-51dBm" />
 
         <com.shmedo.mcloudapp.ui.widget.SignalView
