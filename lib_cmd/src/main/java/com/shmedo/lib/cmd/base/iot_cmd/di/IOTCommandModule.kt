@@ -39,6 +39,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.common.RtkParamInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.TelemetryDataParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.TerminalIdInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.TimeCalibrationDataParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.common.UpdateLocationInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.WorkModeParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.das.AudibleAlarmParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.das.DasBaseInfoParser
@@ -100,6 +101,7 @@ val iotCommandModule = module {
     factory { TimeCalibrationDataParser() }
     factory { WorkModeParser() }
     factory { DataCenterStatusParser() }
+    factory { UpdateLocationInfoParser() }
     factory { DataCenterInfoParser() }
     factory { AdmeBaseInfoParser() }
     factory { AdmeMotionStateParser() }
@@ -190,6 +192,7 @@ val iotCommandModule = module {
             get<TimeCalibrationDataParser>(),
             get<WorkModeParser>(),
             get<DataCenterStatusParser>(),
+            get<UpdateLocationInfoParser>(),
             get<DataCenterInfoParser>(),
             get<AdmeBaseInfoParser>(),
             get<AdmeMotionStateParser>(),

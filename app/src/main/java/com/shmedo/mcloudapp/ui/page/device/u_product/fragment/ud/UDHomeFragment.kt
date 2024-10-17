@@ -32,7 +32,7 @@ import com.shmedo.mcloudapp.databinding.ItemSubConfigModuleBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.extensions.notNullKeyEmpty
+import com.shmedo.mcloudapp.extensions.notNull
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
@@ -544,30 +544,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
             mHeadStates.iotPlatformStateText.set("米度平台离线")
         }
-        val ss = """
-    {
-        "dev_type": "MD-DR030",
-        "dev_sn": "248T888UD2",
-        "dev_sta": -3,
-        "dev_warn": "{\"loc_offset\": -1,\"angle_offset\": -1,\"extern_volt\": -1,\"bat_cap\": -1,\"bat_temp\": -1,\"bat_health\": -1,\"inside_temp\": -1,\"sim_card\": -1}",
-        "dev_error": "{\"ld\": -2,\"cam\": -2,\"qj\": -2,\"4G\": -2,\"bt\": -2,\"radio\": -2}",
-        "rttVersion": "4.1.0",
-        "hardwareVersion": "1",
-        "sw_version": "2.1.0-M7",
-        "sw_date": "2024.10.12",
-        "boot_code": "2003",
-        "boot_time": "2024.10.14 13:59:32",
-        "run_time": 8500,
-        "total_run_time": 13262,
-        "rept_mode": 1,
-        "rept_sta": 5,
-        "rept_freq": 15,
-        "cap_freq": 5,
-        "warning_switch": 0
-    }
-"""
-        initStatusInfo("method=0", ss)
-
     }
 
     override fun onBleDeviceReady() {
@@ -589,7 +565,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 val waterSurfaceElevation = sensorData["liquid_surface_alt"] ?: ""
                 val airDistance = sensorData["ullage"] ?: ""
                 val installationAngle = sensorData["z"] ?: ""
-                val measurementTime = sensorData["time"]?.replace(".000", "")?.replace("-", ".") ?: ""
+                val measurementTime =
+                    sensorData["time"]?.replace(".000", "")?.replace("-", ".") ?: ""
 
                 mHeadStates.waterSurfaceElevation.set("$waterSurfaceElevation m")
                 mHeadStates.airDistance.set("$airDistance m")
@@ -842,7 +819,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList()
-                        processSampleResponse(result.data)
+                        processSampleResponse(cmdStr, result.data)
                     }
                 }
             }
@@ -884,15 +861,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     return@launchWithViewLifecycle
                 }
                 val errorInfoList = mutableListOf<String>()
-                stateInfo.deviceError.notNullKeyEmpty { errorStr ->
-                    var unescapedErrorStr = errorStr.replace("{", "").replace("}", "")
-                    // 首先将 errorStr 转为为json字符串
-                    unescapedErrorStr = """
-                    {$unescapedErrorStr} 
-                        """.trimIndent()
-                    //然后将解析出的字符串再次解析为 Map
-                    val resultMap =
-                        MoshiUtil.fromJson<Map<String, Any>>(unescapedErrorStr) ?: mapOf()
+                stateInfo.deviceError.notNull(notNullAction = { resultMap ->
                     resultMap["ld"]?.let { errorInfoList.add("雷达故障") }
                     resultMap["cam"]?.let { errorInfoList.add("摄像头故障") }
                     resultMap["qj"]?.let { errorInfoList.add("加速度计故障") }
@@ -901,18 +870,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     resultMap["radio"]?.let { errorInfoList.add("电台故障") }
                     resultMap["flash"]?.let { errorInfoList.add("存储故障") }
                     resultMap["ath"]?.let { errorInfoList.add("温湿度故障") }
-                }
-                stateInfo.deviceWarn.notNullKeyEmpty { warnStr ->
-                    var unescapedWarnStr = warnStr.replace("{", "").replace("}", "")
-                    // 首先将 errorStr 转为为json字符串
-                    unescapedWarnStr = """
-                    {$unescapedWarnStr} 
-                        """.trimIndent()
-                    // 然后将解析出的字符串再次解析为 Map
-                    val resultMap = MoshiUtil.fromJson<Map<String, Any>>(
-                        unescapedWarnStr
-                    ) ?: mapOf()
-
+                })
+                stateInfo.deviceWarn.notNull(notNullAction = { resultMap ->
                     resultMap["loc_offset"]?.let { errorInfoList.add("位置偏移") }
                     resultMap["angle_offset"]?.let { errorInfoList.add("角度偏移") }
                     resultMap["extern_volt"]?.let { volt -> errorInfoList.add(if (volt == "-1") "外部电压过高" else "外部电压过低") }
@@ -921,7 +880,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     resultMap["bat_health"]?.let { errorInfoList.add("电池容量过低") }
                     resultMap["inside_temp"]?.let { temp -> errorInfoList.add(if (temp == "-1") "内部温度过高" else "内部温度过低") }
                     resultMap["sim_card"]?.let { errorInfoList.add("无SIM卡") }
-                }
+                })
                 handleAbnormalInfo(errorInfoList)
             } catch (e: Exception) {
                 Timber.e(e)
@@ -961,52 +920,41 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     /**
      * 处理召测响应
      */
-    private fun processSampleResponse(content: String) {
+    private fun processSampleResponse(cmdStr: String, content: String) {
         try {
-            //{"value":1,"time":"2024-09-04 11:07:34"}
-            //{"value":2,"filename":"20240904111431"}
-            //{"value":0,"obj_alt":28.320,"ld_value":3.514,"z_angle":86.4,"time":"2024-09-04 14:32:32"}
-            val resultMap = MoshiUtil.fromJson<Map<String, String>>(content) ?: return
-            resultMap["value"]?.let { code ->
-                when (code) {
-                    "1" -> {
-                        Toaster.show("测量数据指令下发成功,开始测量数据")
-                        startMeasurement()
-                        clearQueryMeasureDataTimeoutJob()
-                        processQueryMeasureData()
-                    }
+            //{"time":"2024-09-04 11:07:34"}
+            //{"filename":"20240904111431"}
+            //{"obj_alt":28.320,"ld_value":3.514,"z_angle":86.4,"time":"2024-09-04 14:32:32"}
+            val resultMap = MoshiUtil.fromJson<Map<String, String>>(content) ?: mapOf()
+            if (cmdStr.contains("method=1")) {
+                Toaster.show("测量数据指令下发成功,开始测量数据")
+                startMeasurement()
+                clearQueryMeasureDataTimeoutJob()
+                processQueryMeasureData()
+            } else if (cmdStr.contains("method=2")) {
+                Toaster.show("拍照指令下发成功，请稍后在历史中查看图片")
+            } else {
+                //已经有数据
+                if (resultMap.containsKey("obj_alt")
+                    && resultMap.containsKey("ld_value")
+                    && resultMap.containsKey("z_angle")
+                    && resultMap.containsKey("time")
+                ) {
+                    stopMeasurement()
+                    clearQueryMeasureDataTimeoutJob()
 
-                    "2" -> {
-                        Toaster.show("拍照指令下发成功，请稍后在历史中查看图片")
-                    }
+                    val waterSurfaceElevation = resultMap["obj_alt"] ?: ""
+                    val airDistance = resultMap["ld_value"] ?: ""
+                    val installationAngle = resultMap["z_angle"] ?: ""
+                    val measurementTime = resultMap["time"]?.replace("-", ".") ?: ""
 
-                    "0" -> {
-                        //已经有数据
-                        if (resultMap.containsKey("obj_alt")
-                            && resultMap.containsKey("ld_value")
-                            && resultMap.containsKey("z_angle")
-                            && resultMap.containsKey("time")
-                        ) {
-                            stopMeasurement()
-                            clearQueryMeasureDataTimeoutJob()
-
-                            val waterSurfaceElevation = resultMap["obj_alt"] ?: ""
-                            val airDistance = resultMap["ld_value"] ?: ""
-                            val installationAngle = resultMap["z_angle"] ?: ""
-                            val measurementTime = resultMap["time"]?.replace("-", ".") ?: ""
-
-                            mHeadStates.waterSurfaceElevation.set("$waterSurfaceElevation m")
-                            mHeadStates.airDistance.set("$airDistance m")
-                            mHeadStates.installationAngle.set("$installationAngle°")
-                            mHeadStates.measurementTime.set(measurementTime)
-                            return
-                        }
-
-                        processQueryMeasureData()
-                    }
-
-                    else -> {}
+                    mHeadStates.waterSurfaceElevation.set("$waterSurfaceElevation m")
+                    mHeadStates.airDistance.set("$airDistance m")
+                    mHeadStates.installationAngle.set("$installationAngle°")
+                    mHeadStates.measurementTime.set(measurementTime)
+                    return
                 }
+                processQueryMeasureData()
             }
         } catch (e: Exception) {
             Timber.e(e)
@@ -1030,11 +978,11 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         //启动一个新的协程作为超时Job
         queryMeasureDataTimeoutJob?.cancel()
         queryMeasureDataTimeoutJob = launchWithViewLifecycle {
-            if (repeatPollNum >= 6) {
+            if (repeatPollNum >= 12) {
                 clearQueryMeasureDataTimeoutJob()
                 return@launchWithViewLifecycle
             }
-            delay(AppContants.Communication.DELAY_10000_MILLIS) //延迟 timeMillis 秒
+            delay(AppContants.Communication.DELAY_5000_MILLIS) //延迟 timeMillis 秒
             repeatPollNum++
             Timber.d("查询测量数据轮询次数：$repeatPollNum")
             queryMeasureData()

@@ -19,9 +19,9 @@ data class UDCurrentStateInfo(
     @Json(name = "dev_sta")
     val deviceStatus: String = IOTConstants.NULL_KEY, //设备状态 0：正常 -2:告警  -3：设备故障
     @Json(name = "dev_warn")
-    val deviceWarn: String = IOTConstants.NULL_KEY, //设备告警信息
+    val deviceWarn: Map<String, String>? = null, //设备告警信息
     @Json(name = "dev_error")
-    val deviceError: String = IOTConstants.NULL_KEY, //设备故障信息
+    val deviceError: Map<String, String>? = null, //设备故障信息
     val rttVersion: String = IOTConstants.NULL_KEY, //RTT操作系统版本  "4.1.0"
     var hardwareVersion: String = IOTConstants.NULL_KEY, //硬件版本 "1"
     @Json(name = "sw_version")
