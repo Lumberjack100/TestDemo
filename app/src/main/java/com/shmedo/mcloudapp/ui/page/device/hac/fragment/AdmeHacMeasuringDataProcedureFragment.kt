@@ -568,11 +568,15 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     }
 
     private fun setHorizontalMaxProgress() {
-        mStates.horizontalProgress.set(mStates.horizontalMaxProgress.get())
         mStates.processDataNum.set(
             "${mStates.horizontalMaxProgress.get()}/${mStates.horizontalMaxProgress.get()}"
         )
         mStates.processDataPercent.set("100%")
+        if (mStates.horizontalMaxProgress.get() == 0) {
+            mStates.horizontalMaxProgress.set(100)
+            mStates.horizontalProgress.set(100)
+        } else
+            mStates.horizontalProgress.set(mStates.horizontalMaxProgress.get())
     }
 
 

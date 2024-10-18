@@ -13,6 +13,7 @@ data class AdmeCurrentStateInfo(
     var simid: String = IOTConstants.NULL_KEY, //物联网卡号
     var imeid: String = IOTConstants.NULL_KEY, //IMEI卡号
     var firversion: String = IOTConstants.NULL_KEY, //固件版本
+    var motorrv: String = IOTConstants.NULL_KEY, //力矩驱动器固件版本
     var ctrinputv: String = IOTConstants.NULL_KEY, //CTR驱动器输入电压
     var driveinputv: String = IOTConstants.NULL_KEY, //CTR驱动器输入电压
     var temperature: String = IOTConstants.NULL_KEY, //CTR驱动器温度
