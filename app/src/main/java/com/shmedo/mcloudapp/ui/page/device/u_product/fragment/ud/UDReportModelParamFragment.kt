@@ -415,7 +415,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置上报模式出错: ${result.message}"
+                        val errMsg = "数据保存出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
@@ -432,7 +432,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置报警阈值出错: ${result.message}"
+                        val errMsg = "数据保存出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }

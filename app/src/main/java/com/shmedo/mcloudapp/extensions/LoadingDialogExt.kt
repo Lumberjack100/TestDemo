@@ -2,48 +2,74 @@ package com.shmedo.mcloudapp.extensions
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.ui.dialog.LoadingDialogFragment
 
-fun FragmentActivity.showLoadingDialog(message: String = "请求网络中") {
-    val loadingDialog = supportFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) as? LoadingDialogFragment
-        ?: LoadingDialogFragment.newInstance(message)
+/**
+ * 显示加载对话框。
+ * @param message 要显示的消息，默认为 "请求网络中..."。
+ */
+fun FragmentActivity.showLoadingDialog(message: String = this.getString(R.string.loading_requesting_network)) {
+    val loadingDialog =
+        supportFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) as? LoadingDialogFragment
+            ?: LoadingDialogFragment.newInstance(message)
 
     if (!loadingDialog.isAdded) {
         loadingDialog.show(supportFragmentManager, LoadingDialogFragment.TAG)
-    } else {
-        loadingDialog.updateMessage(message)
     }
 }
 
+/**
+ * 关闭加载对话框。
+ */
 fun FragmentActivity.dismissLoadingDialog() {
-    val loadingDialog = supportFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) as? LoadingDialogFragment
-    loadingDialog?.dismissAllowingStateLoss()
+    (supportFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) as? LoadingDialogFragment)?.dismissAllowingStateLoss()
 }
 
+/**
+ * 更新加载对话框的消息。
+ * @param message 新的消息。
+ */
 fun FragmentActivity.updateLoadingMessage(message: String) {
-    val loadingDialog = supportFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) as? LoadingDialogFragment
-    loadingDialog?.updateMessage(message)
+    (supportFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) as? LoadingDialogFragment)?.apply {
+        if (isAdded && isVisible) {
+            viewModel.updateMessage(message)
+        }
+    }
 }
 
-fun Fragment.showLoadingDialog(message: String = "请求网络中") {
+
+/**
+ * 显示加载对话框。
+ * @param message 要显示的消息，默认为 "请求网络中..."。
+ */
+fun Fragment.showLoadingDialog(message: String = getString(R.string.loading_requesting_network)) {
     val loadingDialog = childFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) as? LoadingDialogFragment
         ?: LoadingDialogFragment.newInstance(message)
 
     if (!loadingDialog.isAdded) {
         loadingDialog.show(childFragmentManager, LoadingDialogFragment.TAG)
-    } else {
-        loadingDialog.updateMessage(message)
+    }
+}
+/**
+ * 关闭加载对话框。
+ */
+fun Fragment.dismissLoadingDialog() {
+    (childFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) as? LoadingDialogFragment)?.dismissAllowingStateLoss()
+}
+
+/**
+ * 更新加载对话框的消息。
+ * @param message 新的消息。
+ */
+fun Fragment.updateLoadingMessage(message: String) {
+    (childFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) as? LoadingDialogFragment)?.apply {
+        if (isAdded && isVisible) {
+            viewModel.updateMessage(message)
+        }
     }
 }
 
-fun Fragment.dismissLoadingDialog() {
-    val loadingDialog = childFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) as? LoadingDialogFragment
-    loadingDialog?.dismiss()
-}
 
-fun Fragment.updateLoadingMessage(message: String) {
-    val loadingDialog = childFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) as? LoadingDialogFragment
-    loadingDialog?.updateMessage(message)
-}
 
 

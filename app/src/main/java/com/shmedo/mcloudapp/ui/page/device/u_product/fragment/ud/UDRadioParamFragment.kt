@@ -23,12 +23,15 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentUdRadioParamBinding
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDRadioParamViewModel
+import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -67,10 +70,10 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentUdRadioParamBinding
         toolbarViewModel.toolbarTitleText.set("电台配置")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            nav().navigateUp()
+            processBack()
         }
         registerOnBackPressedDispatcher {
-            nav().navigateUp()
+            processBack()
         }
         initRefresh()
     }
@@ -94,6 +97,8 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
             (it.toFloat() / 1000).toString() + "MHz"
         }
         resetDefaultParams()
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
     }
 
     private fun resetDefaultParams() {
@@ -256,6 +261,59 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = errMsg
+        )
+    }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_RADIO_CTRL -> {
@@ -266,7 +324,7 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询电台参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -282,14 +340,15 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_RADIO_CTRL -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置电台参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        val errMsg = "数据保存出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -318,10 +377,40 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
                 }
             mStates.transmitPower.set(info.outpwr)
             mStates.airSpeed.set(info.airbaud)
+
+            //添加这行来保存初始状态
+            mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
             addLogItem(Log.ERROR, e.errorMsg)
         }
+    }
+
+    private fun processNavigateUp() {
+        launchWithViewLifecycle {
+            delay(1500)
+            nav().navigateUp()
+        }
+    }
+
+    private fun processBack() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
+    }
+
+    private fun showExitConfirmationDialog() {
+        showMessage(
+            StringUtils.getString(R.string.data_modified_warn),
+            "提示",
+            "确定",
+            {
+                nav().navigateUp()
+            },
+            "取消"
+        )
     }
 
     override fun onResume() {

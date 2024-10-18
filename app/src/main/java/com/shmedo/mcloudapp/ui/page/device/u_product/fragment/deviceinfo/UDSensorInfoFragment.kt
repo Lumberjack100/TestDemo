@@ -82,7 +82,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     ) else 0,
                 )
 
-                val batteryVoltage = stateInfo.externalVoltage.toDoubleOrNull() ?: -1000.0
+                val batteryVoltage = stateInfo.batteryVoltage.toDoubleOrNull() ?: -1000.0
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "电池电压",

@@ -90,12 +90,6 @@
         tools:layout="@layout/fragment_u_d_product_sensor_param" />
 
     <fragment
-        android:id="@+id/udAltitudeParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDAltitudeParamFragment"
-        android:label="UDAltitudeParamFragment"
-        tools:layout="@layout/fragment_ud_altitude_param" />
-
-    <fragment
         android:id="@+id/udRadioParamFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDRadioParamFragment"
         android:label="UDRadioParamFragment"
@@ -213,14 +207,6 @@
     <action
         android:id="@+id/action_global_to_udProductSensorParamFragment"
         app:destination="@id/udProductSensorParamFragment"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <action
-        android:id="@+id/action_global_to_udAltitudeParamFragment"
-        app:destination="@id/udAltitudeParamFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

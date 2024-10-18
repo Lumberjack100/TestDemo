@@ -436,7 +436,6 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                     "1" -> {
                         clearQueryMeasureResultTimeoutJob()
                         startQueryMeasureResultJob()
-                        showLoadingDialog("位置更新中")
                     }
 
                     "0" -> {

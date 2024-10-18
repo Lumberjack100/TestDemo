@@ -94,7 +94,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         resetDefaultParams()
-        //添加这行来保存初始状态
+        //保存初始状态
         mStates.saveInitialState()
     }
 
@@ -221,7 +221,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 4G 下发指令响应失败
+     * 4G 下发指令响应错误
      */
     override fun doCmdResponseResultError(
         cmdStr: String,
@@ -268,25 +268,12 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_UD_DIFF_LOCATE -> {
-                super.doCmdResponseResultTimeOut(
-                    cmdStr = cmdStr,
-                    errMsg = "设备未响应",
-                    isShowErrMsg = true,
-                    isMessageDialog = true
-                )
-            }
-
-            else -> {
-                super.doCmdResponseResultTimeOut(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
-                    isMessageDialog = isMessageDialog
-                )
-            }
-        }
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = "设备未响应",
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
     }
 
     /**

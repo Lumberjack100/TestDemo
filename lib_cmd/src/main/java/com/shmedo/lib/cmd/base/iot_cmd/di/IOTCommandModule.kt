@@ -36,6 +36,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.common.GNSSSateliteInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.LoraCommunicateInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.RadioCommunicateInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.RtkParamInfoParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.common.SensorInitialParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.TelemetryDataParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.TerminalIdInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.TimeCalibrationDataParser
@@ -181,6 +182,7 @@ val iotCommandModule = module {
     factory { AlarmTriggerValueInfoParser() }
     factory { AlarmReportIntervalInfoParser() }
     factory { UDCORSParamParser() }
+    factory { SensorInitialParser() }
     factory { LR200ZeroValueParser() }
 
 
@@ -272,6 +274,7 @@ val iotCommandModule = module {
             get<AlarmTriggerValueInfoParser>(),
             get<AlarmReportIntervalInfoParser>(),
             get<UDCORSParamParser>(),
+            get<SensorInitialParser>(),
             get<LR200ZeroValueParser>(),
         )
         IOTParserManager(parsers)

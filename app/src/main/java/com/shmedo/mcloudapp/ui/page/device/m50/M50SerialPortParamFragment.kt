@@ -73,7 +73,7 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentM50SerialPortParamBinding
-        binding.llToolbar.toolbar.title = "串口设置"
+        binding.llToolbar.toolbar.title = "串口配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }

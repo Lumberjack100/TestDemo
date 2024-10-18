@@ -66,8 +66,8 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
         moduleList.add(
             ConfigModule(
                 CommonModule(
-                    name = "电台设置",
-                    desc = "RTCM电台设置",
+                    name = "电台配置",
+                    desc = "RTCM电台配置",
                     resID = R.drawable.ic_module_lora,
                     navId = R.id.action_m20SHomeFragment_to_m20SRadioSettingFragment
                 )
@@ -85,7 +85,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
             ConfigModule(
                 CommonModule(
                     name = "卫星通信",
-                    desc = "卫星通信终端设置",
+                    desc = "卫星通信终端配置",
                     resID = R.drawable.ic_module_cors,
                     navId = 0,
                     isSupport = false

@@ -117,6 +117,11 @@ data class UDCurrentStateInfo(
     val radarMeasureInterval: String = IOTConstants.NULL_KEY, //雷达测量间隔 单位：分钟  "60"
     @Json(name = "angle_threshol")
     val installAngleOffsetThreshold: String = IOTConstants.NULL_KEY, //安装角度偏移阈值  "0.0"
+    @Json(name = "ld_init_value")
+    val airAltitudeInitialValue: String = IOTConstants.NULL_KEY, //雷达空高测量初始值
+    @Json(name = "loc_init_value")
+    val locationInitialValue: String = IOTConstants.NULL_KEY, // GNSS 位置初始值
     @Json(name = "alt_get_mode")
     val altitudeMeasureMode: String = IOTConstants.NULL_KEY, //海拔高度获取模式  0：自动   1：手动
+
 )

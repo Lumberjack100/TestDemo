@@ -63,7 +63,7 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentM20sRadioSettingBinding
-        binding.llToolbar.toolbar.title = "电台设置"
+        binding.llToolbar.toolbar.title = "电台配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }

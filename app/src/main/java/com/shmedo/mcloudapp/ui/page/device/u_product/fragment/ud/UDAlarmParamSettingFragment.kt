@@ -70,7 +70,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdAlarmParamSettingBinding
-        toolbarViewModel.toolbarTitleText.set("报警参数设置")
+        toolbarViewModel.toolbarTitleText.set("报警参数配置")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }
