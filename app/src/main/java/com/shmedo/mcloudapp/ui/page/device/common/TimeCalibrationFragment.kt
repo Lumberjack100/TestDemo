@@ -8,6 +8,7 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
@@ -16,6 +17,7 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentTimeCalibrationBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.TimeCalibrationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -80,15 +82,19 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
     }
 
     override fun lazyLoadData() {
-
+        queryTerminalTime()
     }
 
-    private fun queryData() {
+    /**
+     * 查询终端时间
+     */
+    private fun queryTerminalTime() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_GET_DATA_NETWORK
-        )
+        val command =
+            IOTCommandUtil.getCommand(IOTCommandType.QUERY_TERMINAL_TIME)
         commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.loading))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
@@ -146,7 +152,32 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.QUERY_TERMINAL_TIME -> {
+                val result = iotParseManager.parse<String>(
+                    cmdStr,
+                    IOTCommandType.QUERY_TERMINAL_TIME
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询设备时间出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
 
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList {}
+                        mStates.deviceTime.set(result.data)
+                        mStates.systemTime.set(result.data)
+
+                    }
+                }
+            }
+
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
+        }
     }
 
     override fun onResume() {

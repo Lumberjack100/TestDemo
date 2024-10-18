@@ -350,7 +350,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
                         val domain = resultMap["host"] ?: ""
                         val port = resultMap["port"] ?: ""
                         val diffAccount = resultMap["username"] ?: ""
-                        val diffPassword = resultMap["username"] ?: ""
+                        val diffPassword = resultMap["password"] ?: ""
                         val altitude = resultMap["alt"] ?: ""
 
                         mStates.altitudeMeasureMode.set(

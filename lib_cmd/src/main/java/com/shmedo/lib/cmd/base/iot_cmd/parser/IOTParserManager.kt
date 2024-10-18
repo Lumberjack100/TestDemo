@@ -60,13 +60,4 @@ class IOTParserManager constructor(
             IOTCommandUtil.extractCommandType(resultCmdStr)
         )
     }
-
-//    companion object {
-//        @Volatile
-//        private var INSTANCE: IOTParserManager? = null
-//        fun getInstance(parsers: List<IOTCommandParser<*>>): IOTParserManager =
-//            INSTANCE ?: synchronized(this) {
-//                INSTANCE ?: IOTParserManager(parsers).also { INSTANCE = it }
-//            }
-//    }
 }
