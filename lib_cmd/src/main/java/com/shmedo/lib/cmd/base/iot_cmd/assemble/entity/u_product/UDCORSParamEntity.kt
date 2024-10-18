@@ -11,11 +11,12 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 class UDCORSParamEntity(
-    val use: String = "", //服务启用 0：不启用；1：启用
+    val alt_get_mode: String = IOTConstants.NULL_KEY, //测高模式 0：自动；1：手动
     val host: String = IOTConstants.NULL_KEY, //域名 可为ip或域名
     val port: String = IOTConstants.NULL_KEY, //端口
     val username: String = IOTConstants.NULL_KEY, //差分账号
     val password: String = IOTConstants.NULL_KEY, //密码
+    val alt: String = IOTConstants.NULL_KEY, //密码
 ) {
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)

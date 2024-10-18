@@ -14,7 +14,7 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/item"
         style="@style/DeviceCurrentState_Item_Layout_Style2"
-        android:background="@{m.isBottomItem?@drawable/shape_common_click_item_bottom_corner_4:@drawable/layer_common_click_item_with_divider}">
+        android:background="@{m.bottomItem?@drawable/shape_common_click_item_bottom_corner_4:@drawable/layer_common_click_item_with_divider}">
 
         <com.google.android.material.textview.MaterialTextView
             style="@style/DeviceCurrentState_Item_Title_Style2"
@@ -25,7 +25,7 @@
             android:id="@+id/tv_value"
             style="@style/DeviceCurrentState_ClickableItem_Value_Style2"
             rightArrowVisible="@{m.clickable}"
-            android:layout_width="wrap_content"
+            android:enabled="@{m.clipboard}"
             android:text="@{m.value}"
             android:textColor="@{m.textColorRes==0?@color/sub_title_text_color_black_60:m.textColorRes}"
             tools:text="1212" />

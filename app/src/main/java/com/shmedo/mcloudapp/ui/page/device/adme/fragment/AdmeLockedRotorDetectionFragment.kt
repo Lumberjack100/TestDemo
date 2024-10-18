@@ -572,26 +572,53 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
     override fun showNearbyCommunicationTimeoutAlert(
         cmdStr: String,
         isDismissLoadingDialog: Boolean,
-        isShowMsg: Boolean,
-        msg: String
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
     ) {
-        super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, isShowMsg, msg)
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = isShowErrMsg,
+            isMessageDialog = isMessageDialog,
+            errMsg = errMsg
+        )
         if (IOTCommandUtil.extractCommandType(cmdStr) == IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION) {
             //隐藏编辑按钮
             toolbarViewModel.toolbarIvActionVisible.set(false)
         }
     }
 
-    override fun doCmdResponseResultError(cmdStr: String, errorMsg: String) {
-        super.doCmdResponseResultError(cmdStr, errorMsg)
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = isShowErrMsg,
+            isMessageDialog = isMessageDialog
+        )
         if (IOTCommandUtil.extractCommandType(cmdStr) == IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION) {
             //隐藏编辑按钮
             toolbarViewModel.toolbarIvActionVisible.set(false)
         }
     }
 
-    override fun doCmdResponseResultTimeOut(cmdStr: String, errorMsg: String) {
-        super.doCmdResponseResultTimeOut(cmdStr, errorMsg)
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = isShowErrMsg,
+            isMessageDialog = isMessageDialog
+        )
         if (IOTCommandUtil.extractCommandType(cmdStr) == IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION) {
             //隐藏编辑按钮
             toolbarViewModel.toolbarIvActionVisible.set(false)
@@ -648,7 +675,7 @@ class AdmeLockedRotorDetectionFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
                         }
                     }
                 }

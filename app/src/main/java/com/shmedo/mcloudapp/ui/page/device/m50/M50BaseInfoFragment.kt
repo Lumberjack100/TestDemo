@@ -138,11 +138,13 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList,
                     name = "可用空间",
                     value = stateInfo.emmcFree,
+                    unit = "GB"
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "总空间",
                     value = stateInfo.emmcStorage,
+                    unit = "GB",
                     isBottomItem = true
                 )
 

@@ -250,32 +250,52 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun doCmdResponseResultError(cmdStr: String, errorMsg: String) {
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME,
             -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set(errorMsg)
+                mCommandResponseStates.responseContent.set(errMsg)
             }
 
             else -> {
-                super.doCmdResponseResultError(cmdStr, errorMsg)
+                super.doCmdResponseResultError(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog
+                )
             }
         }
     }
 
-    override fun doCmdResponseResultTimeOut(cmdStr: String, errorMsg: String) {
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME,
             -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set("指令响应超时")
+                mCommandResponseStates.responseContent.set("设备未响应")
             }
 
             else -> {
-                super.doCmdResponseResultTimeOut(cmdStr, errorMsg)
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog
+                )
             }
         }
     }
@@ -283,16 +303,23 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
     override fun showNearbyCommunicationTimeoutAlert(
         cmdStr: String,
         isDismissLoadingDialog: Boolean,
-        isShowMsg: Boolean,
-        msg: String
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
     ) {
-        super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, false, msg)
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = false,
+            isMessageDialog = isMessageDialog,
+            errMsg = errMsg
+        )
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME,
             -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set("指令响应超时")
+                mCommandResponseStates.responseContent.set("设备未响应")
             }
 
             else -> {

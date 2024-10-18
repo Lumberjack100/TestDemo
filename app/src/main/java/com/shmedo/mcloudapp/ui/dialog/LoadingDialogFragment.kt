@@ -1,58 +1,94 @@
 package com.shmedo.mcloudapp.ui.dialog
 
-import android.app.Dialog
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.customview.customView
-import com.afollestad.materialdialogs.customview.getCustomView
-import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
-import com.google.android.material.textview.MaterialTextView
+import androidx.fragment.app.viewModels
+import com.blankj.utilcode.util.StringUtils
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.databinding.FragmentLoadingDialogBinding
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.ui.viewmodel.state.LoadingDialogViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.LoadingState
 
 /**
  * 创建者：gonghe
- * 创建时间：2024/1/31
+ * 创建时间：2024/10/18
  * 描述： TODO
  */
 class LoadingDialogFragment : DialogFragment() {
+    private var _binding: FragmentLoadingDialogBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // 创建对话框实例
-        val dialog = MaterialDialog(requireContext())
-            .cancelable(true)
-            .lifecycleOwner(this)
-            .cancelable(true)
-            .cancelOnTouchOutside(false)
-            .maxWidth(R.dimen.dimen_size_200)
-            .customView(R.layout.layout_custom_progress_dialog_view)
+    val viewModel: LoadingDialogViewModel by viewModels()
 
-        dialog.view.setBackgroundResource(R.color.transparent)
 
-        // 设置消息文本，可以通过参数传递
-        dialog.getCustomView()
-            .findViewById<MaterialTextView>(R.id.loading_tips)?.text =
-            arguments?.getString("message") ?: "请求网络中"
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NO_TITLE, R.style.TransparentLoadingDialog)
+        isCancelable = false
 
-        return dialog
+        // 初始化 ViewModel 的状态，仅在第一次创建时设置
+        if (savedInstanceState == null) {
+            // 可以从 arguments 获取初始消息，默认为 "加载中..."
+            val initialMessage =
+                arguments?.getString(ARG_MESSAGE) ?: StringUtils.getString(R.string.loading)
+            viewModel.showLoading(initialMessage)
+        }
     }
 
-    fun updateMessage(message: String) {
-        view?.findViewById<MaterialTextView>(R.id.loading_tips)?.text = message
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentLoadingDialogBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        observeViewModel()
+    }
+
+    /**
+     * 观察 ViewModel 的加载状态并更新 UI 或关闭对话框。
+     */
+    private fun observeViewModel() {
+        launchWithViewLifecycle {
+            viewModel.loadingState.collect { state ->
+                when (state) {
+                    is LoadingState.Visible -> updateMessage(state.message)
+                    LoadingState.Hidden -> dismissAllowingStateLoss()
+                }
+            }
+        }
+    }
+
+    private fun updateMessage(newMessage: String) {
+        binding.tvMessage.text = newMessage
     }
 
     override fun onDestroyView() {
-        // 防止内存泄漏
-        dialog?.setDismissMessage(null)
         super.onDestroyView()
+        _binding = null
     }
 
     companion object {
-        const val TAG = "com.shmedo.mcloudapp.common.fragment.LoadingDialogFragment"
-        fun newInstance(message: String = "请求网络中"): LoadingDialogFragment {
+        val TAG = LoadingDialogFragment::class.java.simpleName
+        private const val ARG_MESSAGE = "arg_message"
+
+        /**
+         * 创建 `LoadingDialogFragment` 的新实例。
+         * @param message 初始消息，默认为 "加载中..."。
+         * @return 一个新的 `LoadingDialogFragment` 实例。
+         */
+        fun newInstance(message: String = StringUtils.getString(R.string.loading_requesting_network)): LoadingDialogFragment {
             return LoadingDialogFragment().apply {
                 arguments = Bundle().apply {
-                    putString("message", message)
+                    putString(ARG_MESSAGE, message)
                 }
             }
         }

@@ -43,7 +43,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     override fun queryStatusInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "value=1")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "method=1")
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -68,7 +68,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = stateInfo.mobileNet.compareAndReturn("1", "已连接", "未连接"),
                     textColorRes = if (stateInfo.mobileNet == "1") ColorUtils.getColor(
                         R.color.online_colorPrimary
-                    ) else ColorUtils.getColor(R.color.error_FF4400)
+                    ) else 0
                 )
 
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -76,6 +76,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "网络类型",
                     value = stateInfo.netType,
                 )
+
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "运营商",
@@ -87,11 +88,17 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     }
                 )
                 stateInfo.csq.notNullKey {
-                    val temp = it.toIntOrNull() ?: 0
+                    var temp = it.toIntOrNull() ?: 0
+                    if (temp !in -110..-50) {
+                        temp = 0
+                    }
                     groupList.add(
                         DeviceStatusInfoSignalItem(
                             name = "信号强度",
-                            signalValue = temp
+                            signalValue = temp,
+                            textColorRes = if (temp == 0) ColorUtils.getColor(
+                                R.color.error_FF4400
+                            ) else 0
                         )
                     )
                 }
@@ -99,11 +106,13 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList,
                     name = "IMEI",
                     value = stateInfo.imei,
+                    isClipboard = true
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "ICCID",
                     value = stateInfo.iccid,
+                    isClipboard = true
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
@@ -111,7 +120,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = stateInfo.radioEnableStatus.compareAndReturn("1", "已启用", "未启用"),
                     textColorRes = if (stateInfo.radioEnableStatus == "1") ColorUtils.getColor(
                         R.color.online_colorPrimary
-                    ) else ColorUtils.getColor(R.color.error_FF4400)
+                    ) else 0
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
@@ -119,7 +128,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = stateInfo.bt_connected.compareAndReturn("1", "已连接", "未连接"),
                     textColorRes = if (stateInfo.bt_connected == "1") ColorUtils.getColor(
                         R.color.online_colorPrimary
-                    ) else ColorUtils.getColor(R.color.error_FF4400),
+                    ) else 0,
                     isBottomItem = true
                 )
 
@@ -154,9 +163,9 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                                 "$onlineStatus($platformType)",
                                 "未启用"
                             ),
-                            textColorRes = if (enableStatus == "0" || onlineStatus == "未连接") ColorUtils.getColor(
-                                R.color.error_FF4400
-                            ) else ColorUtils.getColor(R.color.online_colorPrimary),
+                            textColorRes = if (enableStatus == "0" || onlineStatus == "未连接") 0 else ColorUtils.getColor(
+                                R.color.online_colorPrimary
+                            ),
                             isBottomItem = true
                         )
                     }

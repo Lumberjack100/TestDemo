@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kunminx.architecture.domain.message.MutableResult
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.data.extensions.getLogItem
 import com.shmedo.core.data.repository.LoggerRepositoryImp
@@ -35,11 +36,14 @@ open class BaseRequestViewModel(private val loggerRepositoryImp: LoggerRepositor
             priority = Log.ERROR,
             data = msg
         )
+        //非法的标记或者标记已经过期,清空token
+        if (error.errorCode == 11)
+            AuthMMKVOwner.token = ""
 
         val responseStatus = ResponseStatus().apply {
             isSuccess = false
             responseCode = error.errorCode.toString()
-            errorMessage = error.errorMsg
+            errorMessage = if (error.errorCode == 11) "登录已过期，请重新登录" else error.errorMsg
             source = ResultSource.NETWORK
         }
         result.postValue(DataResult(responseStatus = responseStatus))

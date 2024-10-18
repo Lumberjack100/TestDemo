@@ -65,7 +65,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_GroupItem_Title_Style2"
                             android:layout_marginStart="@dimen/dimen_size_8"
-                            android:text="雷达设置" />
+                            android:text="雷达配置" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -101,28 +101,27 @@
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="请输入"
-                            android:inputType="number"
-                            android:maxLength="4"
+                            android:inputType="numberDecimal"
+                            android:maxLength="15"
                             android:text="@={stateVM.installAngleOffsetThreshold}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
-                        onClickWithDebouncing="@{()->click.onGoToAltitudeClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isEditable }">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="海拔高度(m)" />
+                            android:text="空高测量初始值(m)" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_right"
-                            android:text="@{stateVM.altitude}"
+                            android:drawableEnd="@null"
+                            android:text="@{stateVM.airAltitudeInitialValue}"
                             tools:text="1" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -133,9 +132,9 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             enabledTextColor="@{@color/colorPrimary}"
-                            onClickWithDebouncing="@{()->click.onSetInitialValueClick()}"
+                            onClickWithDebouncing="@{()->click.onUpdateAirAltitudeInitialValueClick()}"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="更新雷达测量初值"
+                            android:text="更新雷达测量初始值"
                             android:textStyle="bold"
                             tools:textColor="@color/colorPrimary" />
 
@@ -154,7 +153,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_GroupItem_Title_Style2"
                             android:layout_marginStart="@dimen/dimen_size_8"
-                            android:text="相机设置" />
+                            android:text="相机配置" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -198,6 +197,57 @@
                             tools:text="1600 x 1200" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="14dp"
+                            android:background="@color/black" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_GroupItem_Title_Style2"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:text="GNSS 配置" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable }">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="位置初始值" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:drawableEnd="@null"
+                            android:text="@{stateVM.locationInitialValue}"
+                            tools:text="1" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            enabledTextColor="@{@color/colorPrimary}"
+                            onClickWithDebouncing="@{()->click.onUpdateLocationInitialValueClick()}"
+                            textViewEnabled="@{stateVM.isEditable }"
+                            android:text="更新位置初始值"
+                            android:textStyle="bold"
+                            tools:textColor="@color/colorPrimary" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_reset"
                         style="@style/ResetButton_Style2"
@@ -210,6 +260,7 @@
                         style="@style/SubmitButton_Style2"
                         onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
                         android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                        android:enabled="@{stateVM.isDataModified}"
                         android:text="@string/button_save_text" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>

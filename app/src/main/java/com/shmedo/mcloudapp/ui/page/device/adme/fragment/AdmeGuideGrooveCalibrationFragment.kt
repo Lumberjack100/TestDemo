@@ -10,8 +10,6 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.adme.AdmeGuideGrooveCalibrationEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeGuideGrooveCalibrationInfo
@@ -22,18 +20,20 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentAdmeGuideGrooveCalibrationBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeGuideGrooveCalibrationViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.databinding.FragmentAdmeGuideGrooveCalibrationBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.isViewLifecycleActive
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.adme.dialog.AdmeMotorMotionAngleBottomDialog
+import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeGuideGrooveCalibrationViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
@@ -60,7 +60,6 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
 
     private var motorMotionAngleFragmentBottomDialog: AdmeMotorMotionAngleBottomDialog? = null
     private var queryMotionStateJob: Job? = null
-
 
 
     override fun initViewModel() {
@@ -301,27 +300,30 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
     override fun showNearbyCommunicationTimeoutAlert(
         cmdStr: String,
         isDismissLoadingDialog: Boolean,
-        isShowMsg: Boolean,
-        msg: String
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.ADME_MD_GET_GUIDE_GROOVE_CALIBRATION_PULSE,
             -> {
                 super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr,
-                    isDismissLoadingDialog,
-                    false,
-                    msg
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = false,
+                    isMessageDialog = isMessageDialog,
+                    errMsg = errMsg
                 )
                 getMotorMotionData(DELAY_2000_MILLIS)
             }
 
             else -> {
                 super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr,
-                    isDismissLoadingDialog,
-                    isShowMsg,
-                    msg
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog,
+                    errMsg = errMsg
                 )
             }
         }

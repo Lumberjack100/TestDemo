@@ -36,7 +36,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     override fun queryStatusInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "value=0")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "method=0")
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -79,6 +79,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             "告警" -> ColorUtils.getColor(
                                 R.color.warn_FF9D00
                             )
+
                             else -> ColorUtils.getColor(R.color.error_FF4400)
                         }
                     )
@@ -97,6 +98,13 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList,
                     name = "启动代码",
                     value = stateInfo.bootCode,
+                    //代码以 36 开头或者是 2026、2027、2028 的显示告警色
+                    textColorRes = if (stateInfo.bootCode.startsWith("36") || stateInfo.bootCode in listOf(
+                            "2026",
+                            "2027",
+                            "2028"
+                        )
+                    ) ColorUtils.getColor(R.color.warn_FF9D00) else 0
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
@@ -133,15 +141,15 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     "2" -> "二级报警"
                     "3" -> "三级报警"
                     "4" -> "四级报警"
-                    "5" -> "正常"
-                    else -> "正常"
+                    "5" -> "普通"
+                    else -> "普通"
                 }
                 groupList.add(
                     DeviceStatusInfoBasicItem(
                         name = "上报状态",
                         value = reportStatus,
-                        textColorRes = if (reportStatus == "正常") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
-                            R.color.error_FF4400
+                        textColorRes = if (reportStatus == "普通") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                            R.color.warn_FF9D00
                         )
                     )
                 )

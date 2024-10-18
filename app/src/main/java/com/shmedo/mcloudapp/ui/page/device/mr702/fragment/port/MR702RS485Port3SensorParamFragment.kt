@@ -447,7 +447,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
                             processBack()
                         }
                     }

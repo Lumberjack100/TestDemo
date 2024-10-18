@@ -3,17 +3,16 @@ package com.shmedo.mcloudapp.ui.page.device.common
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.CompoundButton
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
@@ -38,7 +37,6 @@ import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
@@ -78,7 +76,6 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentDataCenterParamBinding
-        toolbarViewModel.toolbarTitleText.set("链路配置")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)
         }
@@ -87,10 +84,6 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                 processBack(true)
             }
         })
-//        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
-//        toolbarViewModel.toolbarTvActionText.set("取消")
-        toolbarViewModel.toolbarIvActionVisible.set(false)
-        mStates.isEditable.set(true)
         initRefresh()
     }
 
@@ -111,15 +104,15 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         arguments?.let {
             statusItem = it.getParcelable(AppContants.Extras.SERVER_NUMBER)!!
         }
-        initDefaultParam()
+        mStates.isEditable.set(true)
+        resetDefaultParams()
     }
 
     /**
      * 初始化默认参数
      */
-    private fun initDefaultParam() {
-        mStates.centerName.set(statusItem.name)
-        mStates.centerStatus.set(statusItem.status)
+    private fun resetDefaultParams() {
+        toolbarViewModel.toolbarTitleText.set(statusItem.name.replace("数据", "") + "配置")
         mStates.isCenterOpened.set(statusItem.status != "0")
         mStates.isDataTypeVisible.set(
             productType == ProductType.GNSS_E_1 || productType == ProductType.GNSS_E_2 || productType == ProductType.GNSS_E_3
@@ -130,45 +123,14 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.platformType.set(platformList[2])//默认选择米度物联平台
 
         mStates.stationType.set(StationCode.RESERVOIR.description)//默认选择水库(湖泊)
-//        mStates.timingReport.set(true)
         mStates.maintainReport.set(true)
         mStates.maintainReportInterval.set("30")//维持上报间隔（秒）
         mStates.reissuingDataValidDays.set("180")//数据补发有效天数
         mStates.reissuingDataInterval.set("30")//数据补发间隔(分钟)
     }
 
-    /* private fun setEditable(editable: Boolean) {
-         toolbarViewModel.toolbarIvActionVisible.set(!editable)
-         toolbarViewModel.toolbarTvActionVisible.set(editable)
-         mStates.isEditable.set(editable)
-     }*/
 
     inner class ClickProxy : BaseClickProxy() {
-//        override fun onToolbarIvClick() {
-//            setEditable(true)
-//        }
-//
-//        override fun onToolbarTvClick() {
-//            setEditable(false)
-//        }
-
-        override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
-                return
-            }
-            mStates.isCenterOpened.set(isChecked)
-            if (!isChecked) {
-                showMessage("确定要关闭链路吗？", "温馨提示", "确定", {
-                    closeDataServer()
-                }, "取消", {
-                    mStates.isCenterOpened.set(true)
-                    (button as SwitchButton).setCheckedImmediatelyNoEvent(true)
-                })
-            }
-        }
-
         /**
          * 数据类型
          */
@@ -279,9 +241,21 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             mStates.isAdvancedItemVisible.set(!mStates.isAdvancedItemVisible.get())
         }
 
-        fun onSubmitClick() {
+        /**
+         * 恢复默认配置
+         */
+        fun onResetClick() {
+            resetDefaultParams()
+        }
+
+        override fun onSubmitButtonClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            if (!mStates.isCenterOpened.get()) {
+                closeDataServer()
                 return
             }
             initSaveCommand()
@@ -443,7 +417,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
                             processBack()
                         }
                     }

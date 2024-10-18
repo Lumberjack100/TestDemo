@@ -142,7 +142,7 @@ class BleDasIOSensorFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 设置开关量传感器启用情况
+     * 设置开关量传感器开启情况
      */
     private fun setIOSensorState(value: String) {
         commandItems.clear()
@@ -262,8 +262,8 @@ class BleDasIOSensorFragment : BaseIOTDeviceFragment() {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
                         val errMsg =
-                            if (cmdStr.contains("0051")) "启用雨量计出错" else if (cmdStr.contains("0052")) "关闭开关量传感器出错"
-                            else "启用断线报警器出错"
+                            if (cmdStr.contains("0051")) "开启雨量计出错" else if (cmdStr.contains("0052")) "关闭开关量传感器出错"
+                            else "开启断线报警器出错"
 
                         handleFailureResult(errMsg)
                         return
@@ -305,7 +305,7 @@ class BleDasIOSensorFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
                         }
                     }
                 }

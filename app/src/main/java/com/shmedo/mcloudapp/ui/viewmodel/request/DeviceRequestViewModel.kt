@@ -27,6 +27,9 @@ import com.shmedo.mcloudapp.model.HoverHeaderModel
 import com.shmedo.mcloudapp.model.SingleSelectionItem
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
@@ -581,16 +584,56 @@ class DeviceRequestViewModel(
     //<editor-fold desc="获取传感器数据">
     suspend fun queryDeviceSensor(
         deviceToken: String = "",
+        iotSensorType: String = "",//传感器类型
         currentPage: Int = 1,
         pageSize: Int = 100,
     ): List<DeviceSensorBasicInfo> = withContext(Dispatchers.Default) {
         val sensorList = deviceManageRepositoryImp.queryDeviceSensorListWithPage(
             deviceToken = deviceToken,
+            iotSensorType = iotSensorType,
             currentPage = currentPage,
             pageSize = pageSize
         )?.currentPageData ?: emptyList()
 
         sensorList
+    }
+
+    /**
+     * 查询设备最新监测数据
+     */
+    suspend fun queryLatestSensorData(
+        deviceToken: String = "",
+        iotSensorTypeList: List<String> = emptyList(),
+    ): Map<String, String> {
+        if (iotSensorTypeList.isEmpty()) return emptyMap()
+
+        // 根据 iotSensorTypeList 获取对应的传感器ID列表
+        val sensorIDList = iotSensorTypeList.mapNotNull { iotSensorType ->
+            queryDeviceSensor(deviceToken, iotSensorType).firstOrNull()?.id
+        }
+        if (sensorIDList.isEmpty()) return emptyMap()
+
+        // 使用协程并发查询每个传感器的最新数据
+        val resultSensorDataList = coroutineScope {
+            sensorIDList.map { sensorID ->
+                async {
+                    // 查询传感器数据并取出第一条记录
+                    deviceManageRepositoryImp.querySensorNewData(sensorID)?.firstOrNull()
+                }
+            }.awaitAll().filterNotNull()
+        }
+
+        // 将所有传感器第一条数据合并成一个映射，优先保留第一个传感器的键值对
+        val resultMap = mutableMapOf<String, String>()
+        for (sensorData in resultSensorDataList) {
+            for ((key, value) in sensorData) {
+                if (key !in resultMap) {
+                    resultMap[key] = value
+                }
+            }
+        }
+
+        return resultMap
     }
 
     /**

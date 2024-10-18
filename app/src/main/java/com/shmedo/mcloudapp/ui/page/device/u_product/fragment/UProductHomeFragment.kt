@@ -51,7 +51,7 @@ class UProductHomeFragment : UniversalDeviceHomeFragment() {
             }
 
             ProductType.LR200 -> {//米度一体式裂缝计
-                mHeadStates.deviceName.set("BHY-3-LR200")
+                mHeadStates.productToken.set("BHY-3-LR200")
             }
 
             else -> {

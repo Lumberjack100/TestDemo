@@ -137,7 +137,7 @@
                 android:onClick="@{()->click.onTakePhotoClick()}"
                 android:text='拍照'
                 android:textColor="@{!stateVM.isConnectOperateVisible ? @color/colorPrimary : @color/black_30}"
-                app:backgroundTint="@drawable/button_background_tint"
+                app:backgroundTint="@drawable/measure_data_button_background_tint"
                 app:icon="@drawable/ic_device_take_photo"
                 app:iconSize="@dimen/dimen_size_18"
                 app:iconTint="@{!stateVM.isConnectOperateVisible ? @color/colorPrimary : @color/black_30}" />
@@ -145,14 +145,13 @@
             <com.google.android.material.button.MaterialButton
                 style="@style/MeasureData_Button_Style"
                 android:layout_marginStart="@dimen/dimen_size_10"
-                android:enabled="@{!stateVM.isConnectOperateVisible}"
                 android:onClick="@{()->click.onGoToSensorDataHistoryClick()}"
                 android:text='历史'
-                android:textColor="@{!stateVM.isConnectOperateVisible ? @color/colorPrimary : @color/black_30}"
-                app:backgroundTint="@drawable/button_background_tint"
+                android:textColor="@color/colorPrimary"
+                app:backgroundTint="@drawable/measure_data_button_background_tint"
                 app:icon="@drawable/ic_device_sensor_data_history"
                 app:iconSize="@dimen/dimen_size_18"
-                app:iconTint="@{!stateVM.isConnectOperateVisible ? @color/colorPrimary : @color/black_30}" />
+                app:iconTint="@color/colorPrimary" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.appcompat.widget.LinearLayoutCompat>

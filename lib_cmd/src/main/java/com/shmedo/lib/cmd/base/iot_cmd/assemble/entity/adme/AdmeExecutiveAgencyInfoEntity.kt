@@ -17,7 +17,7 @@ import com.squareup.moshi.JsonClass
 data class AdmeExecutiveAgencyInfoEntity(
     val meastype: String = IOTConstants.NULL_KEY, //测量方式（0:实时测量，1:整时整点测量，2:定时定点测量）
     val datatype: String = IOTConstants.NULL_KEY, //数据解算方式（0:顶部固定法，1底部固定法）
-    val datareply: String = IOTConstants.NULL_KEY,//数据应答（0:关闭，1:启用）
+    val datareply: String = IOTConstants.NULL_KEY,//数据应答（0:关闭，1:开启）
     val roundwaitetime: String = IOTConstants.NULL_KEY, //每轮等待时间
     val roundmeasinval: String = IOTConstants.NULL_KEY, //每轮测量间隔
     val invalday: String = IOTConstants.NULL_KEY, //间隔天数

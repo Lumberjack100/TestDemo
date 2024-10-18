@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.CompoundButton
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
@@ -11,7 +10,6 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.AlarmTriggerValueEntity
@@ -29,16 +27,17 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentUdReportModelParamBinding
-import com.shmedo.mcloudapp.extensions.formatDoubleValue
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDReportModelParamViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -79,10 +78,10 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentUdReportModelParamBinding
         toolbarViewModel.toolbarTitleText.set("工作模式")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            nav().navigateUp()
+            processBack()
         }
         registerOnBackPressedDispatcher {
-            nav().navigateUp()
+            processBack()
         }
         initRefresh()
     }
@@ -103,6 +102,8 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         super.initData()
         initThresholdTitles()
         resetDefaultParams()
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
     }
 
     private fun initThresholdTitles() {
@@ -115,14 +116,14 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
                 mStates.thirdAlarmThresholdTitle.set("三级报警阈值(毫米)")
                 mStates.fourthAlarmThresholdTitle.set("四级报警阈值(毫米)")
             }
+
             else -> {}
         }
     }
 
     private fun resetDefaultParams() {
         mStates.reportModel.set("自动")
-
-        mStates.alarmEnable.set(true)//是否启用报警
+        mStates.alarmEnable.set(true)//是否开启报警
         mStates.firstAlarmThreshold.set("20")//一级报警阈值
         mStates.secondAlarmThreshold.set("50")//二级报警阈值
         mStates.thirdAlarmThreshold.set("100")//三级报警阈值
@@ -149,15 +150,6 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
-        }
-
-        override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
-                return
-            }
-            mStates.alarmEnable.set(isChecked)
         }
 
         /**
@@ -201,7 +193,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
 
         if (mStates.reportModel.get() == "自动") {
-            //四级预警未启用
+            //四级预警未开启
             if (!mStates.alarmEnable.get()) {
                 val reportModeEntity = UDAlarmReportModeEntity(
                     rept_mode = "0",
@@ -218,7 +210,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
                 return
             }
 
-            //四级预警启用
+            //四级预警开启
             if (mStates.firstAlarmThreshold.get().isEmpty()) {
                 showMessageDialog("请输入一级报警阈值!")
                 return
@@ -309,7 +301,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
 
         var command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_DEVICE_STATUS, "value=0"
+            IOTCommandType.MD_GET_DEVICE_STATUS, "method=0"
         )
         commandItems.add(command)
 
@@ -319,6 +311,60 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         commandItems.add(command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = errMsg
+        )
     }
 
     override fun setResultData(cmdStr: String) {
@@ -331,7 +377,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询上报模式出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -353,7 +399,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询报警阈值出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -369,14 +415,15 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置上报模式出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        val errMsg = "数据保存出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -385,14 +432,15 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置报警阈值出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        val errMsg = "数据保存出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -419,6 +467,8 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
                             mStates.reportFrequency.set(reportFrequencyList[index])
                         }
                     }
+                //添加这行来保存初始状态
+                mStates.saveInitialState()
             } catch (e: Exception) {
                 Timber.e(e)
                 addLogItem(Log.ERROR, e.errorMsg)
@@ -430,10 +480,40 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
      * 初始化报警阈值数据
      */
     private fun initAlarmTriggerValueData(info: AlarmTriggerValueInfo) {
-        mStates.firstAlarmThreshold.set(info.level1.formatDoubleValue("", 1))
-        mStates.secondAlarmThreshold.set(info.level2.formatDoubleValue("", 1))
-        mStates.thirdAlarmThreshold.set(info.level3.formatDoubleValue("", 1))
-        mStates.fourthAlarmThreshold.set(info.level4.formatDoubleValue("", 1))
+        mStates.firstAlarmThreshold.set(info.level1)
+        mStates.secondAlarmThreshold.set(info.level2)
+        mStates.thirdAlarmThreshold.set(info.level3)
+        mStates.fourthAlarmThreshold.set(info.level4)
+
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
+    }
+
+    private fun processNavigateUp() {
+        launchWithViewLifecycle {
+            delay(1500)
+            nav().navigateUp()
+        }
+    }
+
+    private fun processBack() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
+    }
+
+    private fun showExitConfirmationDialog() {
+        showMessage(
+            StringUtils.getString(R.string.data_modified_warn),
+            "提示",
+            "确定",
+            {
+                nav().navigateUp()
+            },
+            "取消"
+        )
     }
 
     override fun onResume() {

@@ -161,7 +161,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        android:text="@{vm.deviceName}"
+                        android:text="@{vm.productToken}"
                         android:textColor="@color/title_text_color"
                         android:textSize="@dimen/text_size_13"
                         tools:text="21E118L" />

@@ -123,7 +123,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
         val deviceName =
             if (deviceInfo.deviceName == deviceInfo.deviceToken) deviceInfo.productToken else deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken }
-        mHeadStates.deviceName.set(deviceName.replace("BHY-RDS", "BHY-3S"))
+        mHeadStates.productToken.set(deviceName.replace("BHY-RDS", "BHY-3S"))
         mHeadStates.firmwareVersion.set(deviceInfo.firmwareVersion.ifEmpty { AppContants.PLACE_HOLDER_VALUE })
         mHeadStates.isRunningStateVisible.set(false)
         mHeadStates.isPlatformListVisible.set(false)
@@ -335,34 +335,54 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun doCmdResponseResultError(cmdStr: String, errorMsg: String) {
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME,
             IOTCommandType.SET_TERMINAL_TIME,
             IOTCommandType.QUERY_SAMPLE -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set(errorMsg)
+                mCommandResponseStates.responseContent.set(errMsg)
             }
 
             else -> {
-                super.doCmdResponseResultError(cmdStr, errorMsg)
+                super.doCmdResponseResultError(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog
+                )
             }
         }
     }
 
-    override fun doCmdResponseResultTimeOut(cmdStr: String, errorMsg: String) {
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME,
             IOTCommandType.SET_TERMINAL_TIME,
             IOTCommandType.QUERY_SAMPLE -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set("指令响应超时")
+                mCommandResponseStates.responseContent.set("设备未响应")
             }
 
             else -> {
-                super.doCmdResponseResultTimeOut(cmdStr, errorMsg)
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog
+                )
             }
         }
     }
@@ -370,17 +390,24 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     override fun showNearbyCommunicationTimeoutAlert(
         cmdStr: String,
         isDismissLoadingDialog: Boolean,
-        isShowMsg: Boolean,
-        msg: String
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
     ) {
-        super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, false, msg)
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = false,
+            isMessageDialog = isMessageDialog,
+            errMsg = errMsg
+        )
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME,
             IOTCommandType.SET_TERMINAL_TIME,
             IOTCommandType.QUERY_SAMPLE -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set("指令响应超时")
+                mCommandResponseStates.responseContent.set("设备未响应")
             }
 
             else -> {
@@ -493,7 +520,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
                         }
                     }
                 }

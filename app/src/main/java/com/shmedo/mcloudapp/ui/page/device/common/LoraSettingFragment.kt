@@ -66,7 +66,7 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentLoraSettingBinding
-        binding.llToolbar.toolbar.title = "LORA设置"
+        binding.llToolbar.toolbar.title = "LORA配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
@@ -314,7 +314,7 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
                         }
                     }
                 }

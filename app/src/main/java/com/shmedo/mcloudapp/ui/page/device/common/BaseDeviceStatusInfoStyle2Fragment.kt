@@ -14,7 +14,6 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
@@ -128,19 +127,13 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                         val builder = XPopup.Builder(context)
                             .hasShadowBg(false)
                             .watchView(itemBinding.tvValue)
-                            .setPopupCallback(object : SimpleCallback() {
-                                override fun onClickOutside(popupView: BasePopupView?) {
-                                    item.refreshClipboardState(false)
-                                }
-                            })
+                            .setPopupCallback(object : SimpleCallback() {})
                         itemBinding.tvValue.setOnLongClickListener {
-                            item.refreshClipboardState(true)
                             VibrateUtils.vibrate(300)
                             builder.asAttachList(arrayListOf("复制").toTypedArray(), null)
                             { _, text ->
                                 when (text) {
                                     "复制" -> {
-                                        item.refreshClipboardState(false)
                                         ClipboardUtils.copyText(item.value)
                                         Toaster.show("已复制到剪贴板")
                                     }

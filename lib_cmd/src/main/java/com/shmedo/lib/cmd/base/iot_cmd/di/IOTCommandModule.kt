@@ -32,12 +32,15 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DataCenterInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DataCenterStatusParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DeviceCurrentStateParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DeviceCurrentStateParser2
+import com.shmedo.lib.cmd.base.iot_cmd.parser.common.GNSSSateliteInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.LoraCommunicateInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.RadioCommunicateInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.RtkParamInfoParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.common.SensorInitialParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.TelemetryDataParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.TerminalIdInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.TimeCalibrationDataParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.common.UpdateLocationInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.WorkModeParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.das.AudibleAlarmParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.das.DasBaseInfoParser
@@ -99,6 +102,7 @@ val iotCommandModule = module {
     factory { TimeCalibrationDataParser() }
     factory { WorkModeParser() }
     factory { DataCenterStatusParser() }
+    factory { UpdateLocationInfoParser() }
     factory { DataCenterInfoParser() }
     factory { AdmeBaseInfoParser() }
     factory { AdmeMotionStateParser() }
@@ -145,6 +149,7 @@ val iotCommandModule = module {
     factory { DasInternalSensorStatusParser() }
     factory { M20BaseInfoParser() }
     factory { M50SerialPortParamParser() }
+    factory { GNSSSateliteInfoParser() }
     factory { DeviceCurrentStateParser() }
     factory { DeviceCurrentStateParser2() }
     factory { MRWirelessNetParser() }
@@ -177,6 +182,7 @@ val iotCommandModule = module {
     factory { AlarmTriggerValueInfoParser() }
     factory { AlarmReportIntervalInfoParser() }
     factory { UDCORSParamParser() }
+    factory { SensorInitialParser() }
     factory { LR200ZeroValueParser() }
 
 
@@ -188,6 +194,7 @@ val iotCommandModule = module {
             get<TimeCalibrationDataParser>(),
             get<WorkModeParser>(),
             get<DataCenterStatusParser>(),
+            get<UpdateLocationInfoParser>(),
             get<DataCenterInfoParser>(),
             get<AdmeBaseInfoParser>(),
             get<AdmeMotionStateParser>(),
@@ -234,6 +241,7 @@ val iotCommandModule = module {
             get<DasInternalSensorStatusParser>(),
             get<M20BaseInfoParser>(),
             get<M50SerialPortParamParser>(),
+            get<GNSSSateliteInfoParser>(),
             get<DeviceCurrentStateParser>(),
             get<DeviceCurrentStateParser2>(),
             get<MRWirelessNetParser>(),
@@ -266,6 +274,7 @@ val iotCommandModule = module {
             get<AlarmTriggerValueInfoParser>(),
             get<AlarmReportIntervalInfoParser>(),
             get<UDCORSParamParser>(),
+            get<SensorInitialParser>(),
             get<LR200ZeroValueParser>(),
         )
         IOTParserManager(parsers)

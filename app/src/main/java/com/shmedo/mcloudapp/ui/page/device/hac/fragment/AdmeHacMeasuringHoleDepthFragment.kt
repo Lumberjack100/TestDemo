@@ -470,28 +470,31 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     override fun showNearbyCommunicationTimeoutAlert(
         cmdStr: String,
         isDismissLoadingDialog: Boolean,
-        isShowMsg: Boolean,
-        msg: String
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
     ) {
 
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.ADME_HAC_MD_GET_HOLE_MEASURE_PULSE,
             -> {
                 super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr,
-                    isDismissLoadingDialog,
-                    false,
-                    msg
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = false,
+                    isMessageDialog = isMessageDialog,
+                    errMsg = errMsg
                 )
                 getMotorMotionData(DELAY_2000_MILLIS)
             }
 
             else -> {
                 super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr,
-                    isDismissLoadingDialog,
-                    isShowMsg,
-                    msg
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog,
+                    errMsg = errMsg
                 )
             }
         }
@@ -842,7 +845,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
     override fun onResume() {
         super.onResume()
-        // 启用屏幕长亮
+        // 开启屏幕长亮
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         initImmersionBar(binding.llToolbar.toolbar)
     }

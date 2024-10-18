@@ -53,55 +53,49 @@
                     android:paddingTop="@dimen/page_content_container_padding_top_12"
                     android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
-                    <RelativeLayout
-                        style="@style/SwitchButton_Item_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_top_corner_4_with_divider">
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_top_corner_4_with_divider"
+                        android:onClick="@{()->click.onModelChooseClick()}">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/SwitchButton_Item_Title_Style"
-                            android:text="CORS服务启用" />
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="测高模式" />
 
-                        <com.kyleduo.switchbutton.SwitchButton
-                            style="@style/SwitchButton_Item_Button_Style"
-                            checkedImmediatelyNoEvent="@{stateVM.isOpened}"
-                            android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
-                            app:kswAnimationDuration="100"
-                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
-                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
-
-                    </RelativeLayout>
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:drawableEnd="@drawable/ic_arrow_down"
+                            android:text="@{stateVM.altitudeMeasureMode}"
+                            tools:text="自动" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
+                        visible='@{stateVM.altitudeMeasureMode == "自动"}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isOpened}"
                             android:text="域名" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
-                            android:maxLength="50"
+                            android:maxLength="60"
                             android:text="@={stateVM.domain}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
+                        visible='@{stateVM.altitudeMeasureMode == "自动"}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isOpened}"
                             android:text="端口" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:inputType="number"
                             android:maxLength="6"
@@ -110,17 +104,15 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
+                        visible='@{stateVM.altitudeMeasureMode == "自动"}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isOpened}"
                             android:text="差分账号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:maxLength="20"
                             android:text="@={stateVM.diffAccount}" />
@@ -128,17 +120,15 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
+                        visible='@{stateVM.altitudeMeasureMode == "自动"}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isOpened}"
                             android:text="密码" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:maxLength="20"
                             android:text="@={stateVM.diffPassword}" />
@@ -150,19 +140,20 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            enabledTextColor="@{@color/colorPrimary}"
-                            onClickWithDebouncing="@{()->click.onMeasureHeightClick()}"
-                            textViewEnabled="@{stateVM.isOpened }"
-                            android:text="更新海拔高度"
-                            android:textStyle="bold"
-                            tools:textColor="@color/colorPrimary" />
+                            android:text="海拔高度(米)" />
 
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            android:enabled='@{stateVM.altitudeMeasureMode == "手动"}'
+                            android:hint="请输入"
+                            android:inputType="numberDecimal"
+                            android:maxLength="15"
+                            android:text="@={stateVM.altitude}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_reset"
                         style="@style/ResetButton_Style2"
-                        visible='@{ stateVM.isOpened}'
                         android:layout_marginTop="@dimen/reset_button_margin_top_50"
                         android:onClick="@{()->click.onResetClick()}"
                         android:text="@string/button_reset_text" />
@@ -170,10 +161,9 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_confirm"
                         style="@style/SubmitButton_Style2"
-                        onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-                        visible='@{ stateVM.isOpened}'
+                        onClickWithDebouncing="@{()->click.onMeasureHeightClick()}"
                         android:layout_marginTop="@dimen/summit_button_margin_top_20"
-                        android:text="@string/button_save_text" />
+                        android:text="更新海拔高度" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>

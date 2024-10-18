@@ -11,7 +11,7 @@ import com.squareup.moshi.JsonClass
  */
 @JsonClass(generateAdapter = true)
 data class UDInitialValueEntity(
-    val method: String = "", //0：读取  1：设置
+    val method: String = IOTConstants.NULL_KEY, //0：读取  1：设置
     val type: String = IOTConstants.NULL_KEY, //1：雷达  2：倾角
 ) {
     fun toCommandString(): String {

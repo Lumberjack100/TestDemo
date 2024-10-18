@@ -71,7 +71,7 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentURProductSensorParamBinding
-        binding.llToolbar.toolbar.title = "传感设置"
+        binding.llToolbar.toolbar.title = "传感配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
@@ -222,7 +222,7 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
                         }
                     }
                 }

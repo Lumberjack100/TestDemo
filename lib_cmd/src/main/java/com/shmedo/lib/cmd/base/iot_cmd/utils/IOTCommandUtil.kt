@@ -53,7 +53,17 @@ object IOTCommandUtil {
                     IOTCommandType.MD_MR_SET_RS485_PORT1_SENSOR_PARAM -> {
                         when (reason) {
                             "swtoken" -> "水文标识错误"
+                            else -> reason
+                        }
+                    }
 
+                    IOTCommandType.MD_UD_DIFF_LOCATE -> {
+                        when (reason) {
+                            "PSRDIFF_ERROR_ACCOUNT" -> "RTK 账密信息有误"
+                            "PSRDIFF_ERROR_NET" -> "网络错误"
+                            "PSRDIFF_ERROR_CORS" -> "CORS 服务无响应"
+                            "PSRDIFF_ERROR_GNSS" -> "GNSS 模块异常"
+                            "PSRDIFF_ERROR_GPGGA" -> "GNSS 信号不可用"
                             else -> reason
                         }
                     }
