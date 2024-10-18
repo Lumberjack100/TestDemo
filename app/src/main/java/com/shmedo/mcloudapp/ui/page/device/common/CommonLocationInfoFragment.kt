@@ -34,6 +34,7 @@ import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.extensions.toGcj02LatLng
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommonLocationInfoViewModel
@@ -132,6 +133,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
      * 测量位置
      */
     private fun measureLocation(method: String) {
+        Timber.d("查询测量结果轮询次数：$repeatPollNum")
         commandItems.clear()
         val command =
             IOTCommandUtil.getCommand(IOTCommandType.MD_GET_INSTALL_LOCATION, "method=$method")
@@ -187,7 +189,6 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                     isShowErrMsg = true,
                     isMessageDialog = true
                 )
-                clearQueryMeasureResultTimeoutJob()
             }
 
             else -> {
@@ -212,7 +213,6 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_INSTALL_LOCATION -> {
-                clearQueryMeasureResultTimeoutJob()
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
                     errMsg = "设备未响应",
@@ -244,7 +244,6 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_INSTALL_LOCATION -> {
-                clearQueryMeasureResultTimeoutJob()
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
                     isDismissLoadingDialog = isDismissLoadingDialog,
@@ -267,10 +266,6 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
-        //判断是否页面是否处于 resume 状态
-        if (!isResumed) {
-            return
-        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_DEVICE_STATUS -> {
                 val result = iotParseManager.parse<String>(
@@ -317,7 +312,6 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        clearQueryMeasureResultTimeoutJob()
                         val errMsg = "位置更新出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
                         return
@@ -442,6 +436,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                     "1" -> {
                         clearQueryMeasureResultTimeoutJob()
                         startQueryMeasureResultJob()
+                        showLoadingDialog("位置更新中")
                     }
 
                     "0" -> {
@@ -452,7 +447,6 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                             && resultMap.containsKey("lat")
                         ) {
                             cancelNearbyCommunicationTimeoutJob()
-                            clearQueryMeasureResultTimeoutJob()
                             Toaster.show("位置更新成功")
 
                             val longitudeDirection = resultMap["lng_dir"] ?: ""
@@ -489,20 +483,20 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
         queryMeasureResultTimeoutJob?.cancel()
         queryMeasureResultTimeoutJob = launchWithViewLifecycle {
             if (repeatPollNum >= REPEAT_POLL_NUM) {
-                clearQueryMeasureResultTimeoutJob()
+                cancelNearbyCommunicationTimeoutJob()
+                showMessageDialog("位置更新失败，请稍后重试")
                 return@launchWithViewLifecycle
             }
             delay(AppContants.Communication.DELAY_5000_MILLIS) //延迟 timeMillis 秒
             repeatPollNum++
-            Timber.d("查询测量结果轮询次数：$repeatPollNum")
             measureLocation("0")
         }
     }
 
     private fun clearQueryMeasureResultTimeoutJob() {
+        repeatPollNum = 0
         queryMeasureResultTimeoutJob?.cancel()
         queryMeasureResultTimeoutJob = null
-        repeatPollNum = 0
     }
 
     /**

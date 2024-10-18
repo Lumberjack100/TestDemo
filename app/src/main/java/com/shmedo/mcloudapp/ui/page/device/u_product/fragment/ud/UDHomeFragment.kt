@@ -292,7 +292,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 ),
                 ConfigModule(
                     CommonModule(
-                        name = "海拔高度",
+                        name = "海拔配置",
                         resID = R.drawable.ic_module_cors,
                         navId = R.id.action_global_to_udCORSParamFragment
                     )
@@ -639,8 +639,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         isShowErrMsg = true,
                         isMessageDialog = true
                     )
-                } else if (cmdStr.contains("method=0")) {
-                    clearQueryMeasureResultTimeoutJob()
                 }
             }
 
@@ -679,9 +677,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
             IOTCommandType.QUERY_SAMPLE -> {
                 stopMeasurement()
-                if (cmdStr.contains("method=0")) {
-                    clearQueryMeasureResultTimeoutJob()
-                } else {
+                if (!cmdStr.contains("method=0")) {
                     super.doCmdResponseResultTimeOut(
                         cmdStr = cmdStr,
                         errMsg = "设备未响应",
@@ -734,7 +730,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             IOTCommandType.QUERY_SAMPLE -> {
                 stopMeasurement()
                 if (cmdStr.contains("method=0")) {
-                    clearQueryMeasureResultTimeoutJob()
                     super.showNearbyCommunicationTimeoutAlert(
                         cmdStr = cmdStr,
                         isDismissLoadingDialog = isDismissLoadingDialog,
@@ -841,7 +836,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         val errMsg = "召测出错: ${result.message}"
                         handleFailureResult(errMsg, isShowErrMsg = false)
                         stopMeasurement()
-                        clearQueryMeasureResultTimeoutJob()
                         return
                     }
 
@@ -918,7 +912,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 轮播异常信息
+     * 处理设备异常信息轮播展示
      * 每隔3秒切换一次，取出异常信息列表中的每一条异常信息，轮播显示
      */
     private fun handleAbnormalInfo(errorInfoList: List<String>) {
@@ -972,7 +966,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     && resultMap.containsKey("time")
                 ) {
                     stopMeasurement()
-                    clearQueryMeasureResultTimeoutJob()
 
                     val waterSurfaceElevation = resultMap["obj_alt"] ?: ""
                     val airDistance = resultMap["ld_value"] ?: ""
@@ -990,7 +983,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             }
         } catch (e: Exception) {
             stopMeasurement()
-            clearQueryMeasureResultTimeoutJob()
             Timber.e(e)
             addLogItem(Log.ERROR, e.errorMsg)
         }
@@ -1013,7 +1005,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         queryMeasureResultTimeoutJob?.cancel()
         queryMeasureResultTimeoutJob = launchWithViewLifecycle {
             if (repeatPollNum >= REPEAT_POLL_NUM) {
-                clearQueryMeasureResultTimeoutJob()
                 return@launchWithViewLifecycle
             }
             delay(AppContants.Communication.DELAY_5000_MILLIS) //延迟 timeMillis 秒
@@ -1024,9 +1015,9 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun clearQueryMeasureResultTimeoutJob() {
+        repeatPollNum = 0
         queryMeasureResultTimeoutJob?.cancel()
         queryMeasureResultTimeoutJob = null
-        repeatPollNum = 0
     }
 
     override fun createObserver() {

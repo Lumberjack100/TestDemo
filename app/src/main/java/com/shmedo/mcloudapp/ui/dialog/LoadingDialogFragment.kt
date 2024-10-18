@@ -2,58 +2,57 @@ package com.shmedo.mcloudapp.ui.dialog
 
 import android.app.Dialog
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
 import androidx.fragment.app.DialogFragment
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.customview.customView
-import com.afollestad.materialdialogs.customview.getCustomView
-import com.afollestad.materialdialogs.lifecycle.lifecycleOwner
-import com.google.android.material.textview.MaterialTextView
-import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.databinding.FragmentLoadingDialogBinding
 
 /**
  * 创建者：gonghe
- * 创建时间：2024/1/31
+ * 创建时间：2024/10/18
  * 描述： TODO
  */
 class LoadingDialogFragment : DialogFragment() {
+    private lateinit var binding: FragmentLoadingDialogBinding
+    private var message: String = "Loading..."
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentLoadingDialogBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        updateMessage(message)
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        // 创建对话框实例
-        val dialog = MaterialDialog(requireContext())
-            .cancelable(true)
-            .lifecycleOwner(this)
-            .cancelable(true)
-            .cancelOnTouchOutside(false)
-            .maxWidth(R.dimen.dimen_size_200)
-            .customView(R.layout.layout_custom_progress_dialog_view)
-
-        dialog.view.setBackgroundResource(R.color.transparent)
-
-        // 设置消息文本，可以通过参数传递
-        dialog.getCustomView()
-            .findViewById<MaterialTextView>(R.id.loading_tips)?.text =
-            arguments?.getString("message") ?: "请求网络中"
-
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        isCancelable = false
+        dialog.setCanceledOnTouchOutside(false)
         return dialog
     }
 
-    fun updateMessage(message: String) {
-        view?.findViewById<MaterialTextView>(R.id.loading_tips)?.text = message
-    }
-
-    override fun onDestroyView() {
-        // 防止内存泄漏
-        dialog?.setDismissMessage(null)
-        super.onDestroyView()
+    fun updateMessage(newMessage: String) {
+        message = newMessage
+        if (::binding.isInitialized) {
+            binding.tvMessage.text = message
+        }
     }
 
     companion object {
-        const val TAG = "com.shmedo.mcloudapp.common.fragment.LoadingDialogFragment"
-        fun newInstance(message: String = "请求网络中"): LoadingDialogFragment {
+        const val TAG = "LoadingDialogFragment"
+        fun newInstance(message: String = "Loading..."): LoadingDialogFragment {
             return LoadingDialogFragment().apply {
-                arguments = Bundle().apply {
-                    putString("message", message)
-                }
+                this.message = message
             }
         }
     }

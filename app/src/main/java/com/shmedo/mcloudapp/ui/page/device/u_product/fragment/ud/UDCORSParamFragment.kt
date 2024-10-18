@@ -211,6 +211,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
      * 轮询测得的海拔高度结果
      */
     private fun pollMeasureResult() {
+        Timber.d("查询测量结果轮询次数：$repeatPollNum")
         commandItems.clear()
         val command =
             IOTCommandUtil.getCommand(IOTCommandType.MD_UD_DIFF_LOCATE, "method=2")
@@ -238,7 +239,6 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
                         isMessageDialog = true
                     )
                 } else {
-                    clearQueryMeasureResultTimeoutJob()
                     super.doCmdResponseResultError(
                         cmdStr = cmdStr,
                         errMsg = "更新海拔高度指令下发出错: $errMsg",
@@ -270,7 +270,6 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_UD_DIFF_LOCATE -> {
-                clearQueryMeasureResultTimeoutJob()
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
                     errMsg = "设备未响应",
@@ -302,7 +301,6 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_UD_DIFF_LOCATE -> {
-                clearQueryMeasureResultTimeoutJob()
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
                     isDismissLoadingDialog = isDismissLoadingDialog,
@@ -333,7 +331,6 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        clearQueryMeasureResultTimeoutJob()
                         val errMsg =
                             if (cmdStr.contains("method=0")) "查询参数出错: ${result.message}" else "更新海拔高度出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
@@ -391,14 +388,17 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
                         //已经有数据
                         if (resultMap.containsKey("alt")) {
                             cancelNearbyCommunicationTimeoutJob()
-                            clearQueryMeasureResultTimeoutJob()
+                            Toaster.show("更新海拔高度成功")
 
                             val altitude = resultMap["alt"] ?: ""
                             mStates.altitude.set(altitude)
-                            Toaster.show("更新海拔高度成功")
+
+                            //添加这行来保存初始状态
+                            mStates.saveInitialState()
 //                            processNavigateUp()
                             return
                         }
+
                         cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog = false)
                         startQueryMeasureResultJob()
                     }
@@ -417,20 +417,20 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
         queryMeasureResultTimeoutJob?.cancel()
         queryMeasureResultTimeoutJob = launchWithViewLifecycle {
             if (repeatPollNum >= REPEAT_POLL_NUM) {
-                clearQueryMeasureResultTimeoutJob()
+                cancelNearbyCommunicationTimeoutJob()
+                showMessageDialog("更新海拔高度失败，请稍后重试")
                 return@launchWithViewLifecycle
             }
             delay(AppContants.Communication.DELAY_5000_MILLIS) //延迟 timeMillis 秒
             repeatPollNum++
-            Timber.d("查询测量结果轮询次数：$repeatPollNum")
             pollMeasureResult()
         }
     }
 
     private fun clearQueryMeasureResultTimeoutJob() {
+        repeatPollNum = 0
         queryMeasureResultTimeoutJob?.cancel()
         queryMeasureResultTimeoutJob = null
-        repeatPollNum = 0
     }
 
     private fun processNavigateUp() {
