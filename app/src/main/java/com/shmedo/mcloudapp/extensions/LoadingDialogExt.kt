@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.extensions
 
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.shmedo.mcloudapp.R
@@ -44,20 +45,9 @@ fun FragmentActivity.updateLoadingMessage(message: String) {
  * @param message 要显示的消息，默认为 "请求网络中..."。
  */
 fun Fragment.showLoadingDialog(message: String = getString(R.string.loading_requesting_network)) {
-    val loadingDialog =
-        childFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) as? LoadingDialogFragment
-            ?: LoadingDialogFragment.newInstance(message)
-
-    if (!loadingDialog.isAdded) {
-        loadingDialog.show(childFragmentManager, LoadingDialogFragment.TAG)
+    showDialogFragment(LoadingDialogFragment.TAG) {
+        LoadingDialogFragment.newInstance(message)
     }
-}
-
-/**
- * 关闭加载对话框。
- */
-fun Fragment.dismissLoadingDialog() {
-    (childFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) as? LoadingDialogFragment)?.dismissAllowingStateLoss()
 }
 
 /**
@@ -72,6 +62,33 @@ fun Fragment.updateLoadingMessage(message: String) {
     }
 }
 
+/**
+ * 关闭加载对话框。
+ */
+fun Fragment.dismissLoadingDialog() {
+    dismissDialogFragment(LoadingDialogFragment.TAG)
+}
 
 
+/**
+ * 显示对话框。
+ */
+inline fun <reified T : DialogFragment> Fragment.showDialogFragment(
+    tag: String,
+    crossinline createFragment: () -> T
+) {
+    val dialogFragment = childFragmentManager.findFragmentByTag(tag) as? T
+        ?: createFragment()
+
+    if (!dialogFragment.isAdded) {
+        dialogFragment.show(childFragmentManager, tag)
+    }
+}
+
+/**
+ * 关闭对话框。
+ */
+fun Fragment.dismissDialogFragment(tag: String) {
+    (childFragmentManager.findFragmentByTag(tag) as? DialogFragment)?.dismissAllowingStateLoss()
+}
 
