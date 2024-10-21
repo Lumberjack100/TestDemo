@@ -226,7 +226,7 @@ class UDMobileNetworkParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_MR_SET_DATA_NETWORK -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置参数出错: ${result.message}"
+                        val errMsg = "数据保存出错: ${result.message}"
                         handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }

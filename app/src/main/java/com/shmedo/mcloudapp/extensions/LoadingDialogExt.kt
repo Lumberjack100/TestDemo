@@ -44,13 +44,15 @@ fun FragmentActivity.updateLoadingMessage(message: String) {
  * @param message 要显示的消息，默认为 "请求网络中..."。
  */
 fun Fragment.showLoadingDialog(message: String = getString(R.string.loading_requesting_network)) {
-    val loadingDialog = childFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) as? LoadingDialogFragment
-        ?: LoadingDialogFragment.newInstance(message)
+    val loadingDialog =
+        childFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) as? LoadingDialogFragment
+            ?: LoadingDialogFragment.newInstance(message)
 
     if (!loadingDialog.isAdded) {
         loadingDialog.show(childFragmentManager, LoadingDialogFragment.TAG)
     }
 }
+
 /**
  * 关闭加载对话框。
  */

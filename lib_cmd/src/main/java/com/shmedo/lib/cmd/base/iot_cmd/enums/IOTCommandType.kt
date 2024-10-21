@@ -972,6 +972,10 @@ enum class IOTCommandType(private val value: String) {
      */
     MD_GET_SATELITE_INFO("md_getskyinfo"),
 
+    /**
+     * 设备查找指令
+     */
+    MD_SEARCH_DEVICE("md_searchdev"),
 
     /**
      * 指令透传

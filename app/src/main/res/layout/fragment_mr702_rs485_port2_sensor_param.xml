@@ -101,8 +101,8 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             android:hint="数值范围[1-16]"
-                            android:text="@={stateVM.channelNumber}"
                             android:inputType="number"
+                            android:text="@={stateVM.channelNumber}"
                             app:lengthFilter="@{2}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -181,9 +181,9 @@
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable}"
                                 android:hint="请输入"
-                                android:text="@={stateVM.sensitivityK}"
                                 android:inputType="numberDecimal|numberSigned"
-                                android:maxLength="10" />
+                                android:maxLength="17"
+                                android:text="@={stateVM.sensitivityK}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -200,9 +200,9 @@
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable}"
                                 android:hint="请输入"
-                                android:text="@={stateVM.temperatureCorrectionCoefficientB}"
                                 android:inputType="numberDecimal|numberSigned"
-                                android:maxLength="17" />
+                                android:maxLength="17"
+                                android:text="@={stateVM.temperatureCorrectionCoefficientB}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -219,8 +219,9 @@
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable}"
                                 android:hint="请输入"
-                                android:text="@={stateVM.initialFrequencyF0}"
-                                app:lengthFilter="@{20}" />
+                                android:inputType="numberDecimal|numberSigned"
+                                android:maxLength="17"
+                                android:text="@={stateVM.initialFrequencyF0}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -237,8 +238,9 @@
                                 style="@style/Common_EditItem_EditText_Style"
                                 textViewEnabled="@{stateVM.isEditable}"
                                 android:hint="请输入"
-                                android:text="@={stateVM.initialTemperatureT0}"
-                                app:lengthFilter="@{20}" />
+                                android:inputType="numberDecimal|numberSigned"
+                                android:maxLength="17"
+                                android:text="@={stateVM.initialTemperatureT0}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -256,7 +258,7 @@
                                 textViewEnabled="@{stateVM.isEditable}"
                                 android:hint="请输入"
                                 android:inputType="numberDecimal|numberSigned"
-                                android:maxLength="5"
+                                android:maxLength="17"
                                 android:text="@={stateVM.initialWaterLevel}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -275,8 +277,68 @@
                                 textViewEnabled="@{stateVM.isEditable}"
                                 android:hint="请输入"
                                 android:inputType="numberDecimal|numberSigned"
-                                android:maxLength="5"
+                                android:maxLength="17"
                                 android:text="@={stateVM.weirHeight}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/layer_common_click_item_with_divider"
+                            android:visibility="gone">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable }"
+                                android:text="多项式系数 A" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable}"
+                                android:hint="请输入"
+                                android:inputType="numberDecimal|numberSigned"
+                                android:maxLength="17"
+                                android:text="@={stateVM.polyA}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/layer_common_click_item_with_divider"
+                            android:visibility="gone">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable }"
+                                android:text="多项式系数 B" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable}"
+                                android:hint="请输入"
+                                android:inputType="numberDecimal|numberSigned"
+                                android:maxLength="17"
+                                android:text="@={stateVM.polyB}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/layer_common_click_item_with_divider"
+                            android:visibility="gone">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable }"
+                                android:text="多项式系数 C" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEditable}"
+                                android:hint="请输入"
+                                android:inputType="numberDecimal|numberSigned"
+                                android:maxLength="17"
+                                android:text="@={stateVM.polyC}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
 

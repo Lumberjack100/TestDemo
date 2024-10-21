@@ -7,7 +7,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -54,15 +53,15 @@ abstract class BaseVmDbDialogFragment : DialogFragment() {
      */
     protected open fun initData() {}
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(STYLE_NO_TITLE, R.style.TransparentLoadingDialog)
+        isCancelable = false
+    }
+
     protected open fun setWindowStyle(gravity: Int = Gravity.BOTTOM) {
-        dialog?.setCanceledOnTouchOutside(false)
         dialog?.window?.let {
-            //无标题  必须放在setContextView之前调用
-            it.requestFeature(Window.FEATURE_NO_TITLE)
-            //Sets whether this dialog is cancelable with the BACK key.
-            isCancelable = false
-            it.setWindowAnimations(R.style.DialogFragmentAnimation)
-            it.setBackgroundDrawableResource(android.R.color.transparent)
             it.decorView.setPadding(0, 0, 0, 0)
             val wlp = it.attributes
             wlp.gravity = gravity

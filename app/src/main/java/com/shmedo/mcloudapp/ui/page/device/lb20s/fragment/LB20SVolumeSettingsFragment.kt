@@ -134,7 +134,7 @@ class LB20SVolumeSettingsFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_VOICE_BROADCAST_VOLUME_RESPONSE -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置参数出错: ${result.message}"
+                        val errMsg = "数据保存出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }

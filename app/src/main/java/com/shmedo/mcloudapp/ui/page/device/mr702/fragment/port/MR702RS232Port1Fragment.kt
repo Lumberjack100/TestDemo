@@ -291,7 +291,7 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_MR_SET_RS232_PORT1_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置参数出错: ${result.message}"
+                        val errMsg = "数据保存出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }

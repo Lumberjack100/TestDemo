@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/time_calibration_graph"
+    app:startDestination="@id/timeCalibrationFragment">
+
+    <fragment
+        android:id="@+id/timeCalibrationFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.TimeCalibrationFragment"
+        android:label="TimeCalibrationFragment"
+        tools:layout="@layout/fragment_time_calibration" />
+
+</navigation>

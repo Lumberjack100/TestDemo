@@ -6,6 +6,7 @@
     app:startDestination="@id/udHomeFragment">
 
     <include app:graph="@navigation/include_query_data_graph" />
+    <include app:graph="@navigation/include_time_calibration_graph" />
     <include app:graph="@navigation/include_lora_graph" />
     <include app:graph="@navigation/include_firmware_upgrade_graph" />
     <include app:graph="@navigation/include_ble_command_debug_graph" />
@@ -255,6 +256,14 @@
     <action
         android:id="@+id/action_global_to_remoteDebugFragment"
         app:destination="@id/remote_command_debug_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_time_calibration"
+        app:destination="@id/time_calibration_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

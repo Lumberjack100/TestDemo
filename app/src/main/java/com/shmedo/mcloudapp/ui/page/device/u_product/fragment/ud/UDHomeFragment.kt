@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.NetworkUtils
@@ -12,7 +13,6 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
@@ -27,6 +27,7 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.baseclickproxy.DoubleClickListener
 import com.shmedo.mcloudapp.databinding.FragmentUdHomeBinding
 import com.shmedo.mcloudapp.databinding.ItemSubConfigModuleBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
@@ -57,7 +58,6 @@ import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UDSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -116,7 +116,19 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             }
             mActivity.finish()
         }
+        initDeviceLogoDoubleClickListener()
         initModuleAdapter()
+    }
+
+    private fun initDeviceLogoDoubleClickListener() {
+        binding.llDeviceInfo.ivDeviceLogo.setOnClickListener(object : DoubleClickListener() {
+            override fun onDoubleClick(v: View) {
+                if (isBleDisconnected() || isNetDisconnected()) {
+                    return
+                }
+                searchDevice()
+            }
+        })
     }
 
     override fun initData() {
@@ -321,6 +333,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     TimeCalibrationModule(
                         name = "时间校准",
                         resID = R.drawable.ic_module_time_calibration_new,
+                        navId = R.id.action_global_to_time_calibration
                     )
                 ),
                 ConfigModule(
@@ -396,10 +409,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             return
         }
         when (module) {
-            is TimeCalibrationModule -> {//时间校准
-                queryTerminalTime()
-            }
-
             is DataCenterModule -> {
                 nav().navigate(
                     module.navId,
@@ -484,49 +493,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    /**
-     * 查询终端时间
-     */
-    private fun queryTerminalTime() {
-        commandItems.clear()
-        val command =
-            IOTCommandUtil.getCommand(IOTCommandType.QUERY_TERMINAL_TIME)
-        commandItems.add(command)
-
-        if (communicateWay is BleConnect) {
-            mCommandResponseStates.isResponseLoading.set(true)
-            showTimeCalibrationPopup()
-        }
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
-     * 显示时间校准弹窗
-     */
-    private fun showTimeCalibrationPopup() {
-        val popupView = TimeCalibrationPopupView(requireContext())
-        popupView.setTitle("时间校准", mCommandResponseStates)
-            .setClickListener(object : TimeCalibrationPopupView.OnClickListener {
-                override fun onSettingClick() {
-                    commandItems.clear()
-                    val command = IOTCommandUtil.getCommand(
-                        IOTCommandType.SET_TERMINAL_TIME,
-                        "time=${TimeUtils.getNowString()}"
-                    )
-                    commandItems.add(command)
-                    showLoadingDialog(StringUtils.getString(R.string.processing))
-                    sendCommandFromCmdList(isStartTimeoutJob = true)
-                }
-            })
-        XPopup.Builder(context)
-            .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
-            .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
-            .enableDrag(false)
-            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-            .asCustom(popupView)
-            .show()
-    }
-
     override fun lazyLoadData() {
         //4G 模式下，直接查询设备工作模式
         if (communicateWay is NetPlatformConnect) {
@@ -578,30 +544,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 4G 透传指令成功
-     */
-    override fun doNetDispatchSuccess(cmdStr: String) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_TERMINAL_TIME -> {
-                super.doNetDispatchSuccess(cmdStr)
-                mCommandResponseStates.isResponseLoading.set(true)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                showTimeCalibrationPopup()
-            }
-
-            IOTCommandType.SET_TERMINAL_TIME -> {
-                super.doNetDispatchSuccess(cmdStr)
-                mCommandResponseStates.isResponseLoading.set(true)
-                mCommandResponseStates.isResponseSuccess.set(false)
-            }
-
-            else -> {
-                super.doNetDispatchSuccess(cmdStr)
-            }
-        }
-    }
-
-    /**
      * 4G 下发指令响应失败
      */
     override fun doCmdResponseResultError(
@@ -613,14 +555,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_DEVICE_STATUS -> {
                 dismissLoadingDialog()
-            }
-
-            IOTCommandType.QUERY_TERMINAL_TIME,
-            IOTCommandType.SET_TERMINAL_TIME,
-            -> {
-                mCommandResponseStates.isResponseLoading.set(false)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set(errMsg)
             }
 
             IOTCommandType.QUERY_SAMPLE -> {
@@ -640,6 +574,15 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         isMessageDialog = true
                     )
                 }
+            }
+
+            IOTCommandType.MD_SEARCH_DEVICE -> {
+                super.doCmdResponseResultError(
+                    cmdStr = cmdStr,
+                    errMsg = "设备查找出错: $errMsg",
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
             }
 
             else -> {
@@ -667,14 +610,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 dismissLoadingDialog()
             }
 
-            IOTCommandType.QUERY_TERMINAL_TIME,
-            IOTCommandType.SET_TERMINAL_TIME,
-            -> {
-                mCommandResponseStates.isResponseLoading.set(false)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set("设备未响应")
-            }
-
             IOTCommandType.QUERY_SAMPLE -> {
                 stopMeasurement()
                 if (!cmdStr.contains("method=0")) {
@@ -685,6 +620,15 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         isMessageDialog = true
                     )
                 }
+            }
+
+            IOTCommandType.MD_SEARCH_DEVICE -> {
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = "设备未响应",
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
             }
 
             else -> {
@@ -719,14 +663,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-            IOTCommandType.QUERY_TERMINAL_TIME,
-            IOTCommandType.SET_TERMINAL_TIME,
-            -> {
-                mCommandResponseStates.isResponseLoading.set(false)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set("指令响应超时")
-            }
-
             IOTCommandType.QUERY_SAMPLE -> {
                 stopMeasurement()
                 if (cmdStr.contains("method=0")) {
@@ -746,6 +682,16 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         errMsg = "设备未响应"
                     )
                 }
+            }
+
+            IOTCommandType.MD_SEARCH_DEVICE -> {
+                super.showNearbyCommunicationTimeoutAlert(
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = true,
+                    isMessageDialog = true,
+                    errMsg = "设备未响应"
+                )
             }
 
             else -> {
@@ -781,51 +727,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.QUERY_TERMINAL_TIME -> {//查询终端时间
-                val result = iotParseManager.parse<String>(
-                    cmdStr,
-                    IOTCommandType.QUERY_TERMINAL_TIME
-                )
-                when (result) {
-                    is IOTCommandResult.Failure -> {
-                        handleFailureResult(result.message, false)
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(false)
-                        mCommandResponseStates.responseContent.set(result.message)
-                        return
-                    }
-
-                    is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(true)
-                        mCommandResponseStates.isCalibratingSuccess.set(false)
-                        mCommandResponseStates.deviceTime.set(result.data)
-                        mCommandResponseStates.systemTime.set(TimeUtils.getNowString())
-                    }
-                }
-            }
-
-            IOTCommandType.SET_TERMINAL_TIME -> {//设置终端时间
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        handleFailureResult(result.message, false)
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(false)
-                        mCommandResponseStates.responseContent.set(result.message)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList()
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(true)
-                        mCommandResponseStates.isCalibratingSuccess.set(true)
-                        mCommandResponseStates.deviceTime.set(mCommandResponseStates.systemTime.get())
-                    }
-                }
-            }
-
             IOTCommandType.QUERY_SAMPLE -> {//召测
                 val result = iotParseManager.parse<String>(
                     cmdStr,
@@ -842,6 +743,22 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList()
                         processSampleResponse(cmdStr, result.data)
+                    }
+                }
+            }
+
+            IOTCommandType.MD_SEARCH_DEVICE -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "设备查找出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("设备查找成功")
+                        }
                     }
                 }
             }
