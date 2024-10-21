@@ -127,16 +127,17 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp">
 
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            enabledTextColor="@{@color/colorPrimary}"
-                            onClickWithDebouncing="@{()->click.onUpdateAirAltitudeInitialValueClick()}"
-                            textViewEnabled="@{stateVM.isEditable }"
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/TestButton_Style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/dimen_size_30"
+                            android:onClick="@{()->click.onUpdateAirAltitudeInitialValueClick()}"
                             android:text="更新雷达测量初始值"
-                            android:textStyle="bold"
-                            tools:textColor="@color/colorPrimary" />
+                            android:textStyle="bold" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -235,16 +236,17 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp">
 
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            enabledTextColor="@{@color/colorPrimary}"
-                            onClickWithDebouncing="@{()->click.onUpdateLocationInitialValueClick()}"
-                            textViewEnabled="@{stateVM.isEditable }"
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/TestButton_Style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/dimen_size_30"
+                            android:onClick="@{()->click.onUpdateLocationInitialValueClick()}"
                             android:text="更新位置初始值"
-                            android:textStyle="bold"
-                            tools:textColor="@color/colorPrimary" />
+                            android:textStyle="bold" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

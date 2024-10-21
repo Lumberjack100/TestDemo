@@ -513,6 +513,14 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
             mHeadStates.iotPlatformStateText.set("米度平台离线")
         }
+        //刷新模块状态
+        binding.rvModule.models?.forEach {
+            if (it is ConfigModuleTree) {
+                it.configModules.forEach { configModule ->
+                    configModule.functionModule.refreshStatus(deviceInfo.onlineStatus)
+                }
+            }
+        }
     }
 
     override fun onBleDeviceReady() {

@@ -123,24 +123,27 @@
             <com.shmedo.mcloudapp.ui.widget.ProgressMaterialButton
                 android:id="@+id/btn_measure_data"
                 style="@style/MeasureData_Button_Style"
+                android:enabled='@{stateVM.iotPlatformStateText.contains("在线")||stateVM.iotPlatformStateText.contains("已连接")}'
                 android:onClick="@{()->click.onMeasureDataClick()}"
                 android:text='@{stateVM.isMeasuring() ? "测量中" : "测量"}'
-                app:backgroundTint="@color/colorPrimary_10"
+                android:textColor='@{stateVM.iotPlatformStateText.contains("在线")||stateVM.iotPlatformStateText.contains("已连接") ? @color/colorPrimary : @color/offline_BABABA}'
+                app:backgroundTint="@drawable/measure_data_button_background_tint"
                 app:icon="@drawable/ic_device_measure_data"
                 app:iconSize="@dimen/dimen_size_18"
+                app:iconTint='@{stateVM.iotPlatformStateText.contains("在线")||stateVM.iotPlatformStateText.contains("已连接") ? @color/colorPrimary : @color/offline_BABABA}'
                 tools:text="测量中" />
 
             <com.google.android.material.button.MaterialButton
                 style="@style/MeasureData_Button_Style"
                 android:layout_marginStart="@dimen/dimen_size_10"
-                android:enabled="@{!stateVM.isConnectOperateVisible}"
+                android:enabled='@{stateVM.iotPlatformStateText.contains("在线")}'
                 android:onClick="@{()->click.onTakePhotoClick()}"
                 android:text='拍照'
-                android:textColor="@{!stateVM.isConnectOperateVisible ? @color/colorPrimary : @color/black_30}"
+                android:textColor='@{stateVM.iotPlatformStateText.contains("在线") ? @color/colorPrimary : @color/offline_BABABA}'
                 app:backgroundTint="@drawable/measure_data_button_background_tint"
                 app:icon="@drawable/ic_device_take_photo"
                 app:iconSize="@dimen/dimen_size_18"
-                app:iconTint="@{!stateVM.isConnectOperateVisible ? @color/colorPrimary : @color/black_30}" />
+                app:iconTint='@{stateVM.iotPlatformStateText.contains("在线") ? @color/colorPrimary : @color/offline_BABABA}' />
 
             <com.google.android.material.button.MaterialButton
                 style="@style/MeasureData_Button_Style"

@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
+import com.shmedo.mcloudapp.utils.CurrentActivityProvider
 
 /**
  * 创建者:   gonghe <br/>
@@ -18,6 +19,7 @@ open class BaseApp : Application(), ViewModelStoreOwner {
     override fun onCreate() {
         super.onCreate()
         mAppViewModelStore = ViewModelStore()
+        registerActivityLifecycleCallbacks(CurrentActivityProvider)
     }
 
     /**

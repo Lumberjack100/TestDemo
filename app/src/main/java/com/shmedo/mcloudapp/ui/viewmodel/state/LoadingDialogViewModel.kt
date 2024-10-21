@@ -18,7 +18,7 @@ class LoadingDialogViewModel : ViewModel() {
      * 显示加载对话框，并设置消息。
      * @param message 要显示的消息。
      */
-    fun showLoading(message: String = "加载中...") {
+    fun showLoading(message: String) {
         _loadingState.value = LoadingState.Visible(message)
     }
 

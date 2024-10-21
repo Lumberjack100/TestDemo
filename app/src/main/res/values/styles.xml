@@ -47,7 +47,7 @@
     </style>
 
     <!-- res/values/styles.xml -->
-    <style name="TransparentLoadingDialog" >
+    <style name="TransparentLoadingDialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowAnimationStyle">@style/DialogAnimation</item>
         <item name="android:windowNoTitle">true</item>
@@ -263,6 +263,18 @@
         <item name="android:gravity">center</item>
     </style>
 
+    <style name="TestButton_Style" parent="@style/Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="backgroundTint">@color/transparent</item>
+        <item name="rippleColor">@color/ripple_material_light</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="cornerRadius">4dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textSize">@dimen/page_content_item_text_size_14</item>
+    </style>
+
+
     <!--设备运行状态单条基本信息样式-->
     <style name="DeviceCurrentState_Item_Layout_Style">
         <item name="android:layout_width">match_parent</item>
@@ -315,10 +327,10 @@
 
     <!--设备运行状态单条项目标题样式-->
     <style name="DeviceCurrentState_Item_Title_Style2">
-
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">@color/title_text_color_black_90</item>
         <item name="android:textSize">@dimen/page_content_item_text_size_14</item>
     </style>

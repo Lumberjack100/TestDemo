@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.ui.dialog
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import com.shmedo.mcloudapp.databinding.FragmentLoadingDialogBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.ui.viewmodel.state.LoadingDialogViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.LoadingState
+import com.shmedo.mcloudapp.utils.LoadingDialogManager
 
 /**
  * 创建者：gonghe
@@ -32,7 +34,6 @@ class LoadingDialogFragment : DialogFragment() {
 
         // 初始化 ViewModel 的状态，仅在第一次创建时设置
         if (savedInstanceState == null) {
-            // 可以从 arguments 获取初始消息，默认为 "加载中..."
             val initialMessage =
                 arguments?.getString(ARG_MESSAGE) ?: StringUtils.getString(R.string.loading)
             viewModel.showLoading(initialMessage)
@@ -74,6 +75,16 @@ class LoadingDialogFragment : DialogFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+
+    /**
+     * 用户取消对话框时调用
+     */
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        // 通知 LoadingDialogManager 对话框被取消
+        LoadingDialogManager.onDialogCanceled()
     }
 
     companion object {
