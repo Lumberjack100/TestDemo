@@ -30,6 +30,8 @@ class FindDeviceBeepDialog : BaseVmDbDialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setStyle(STYLE_NO_TITLE, R.style.TransparentLoadingDialog)
+        isCancelable = false
         // 初始化 ViewModel 的状态，仅在第一次创建时设置
         if (savedInstanceState == null) {
             productType =

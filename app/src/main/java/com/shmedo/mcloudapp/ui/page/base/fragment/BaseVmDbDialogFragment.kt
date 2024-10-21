@@ -57,7 +57,7 @@ abstract class BaseVmDbDialogFragment : DialogFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_TITLE, R.style.TransparentLoadingDialog)
-        isCancelable = false
+        isCancelable = true
     }
 
     protected open fun setWindowStyle(gravity: Int = Gravity.BOTTOM) {

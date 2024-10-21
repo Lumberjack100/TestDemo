@@ -47,7 +47,7 @@
     </style>
 
     <!-- res/values/styles.xml -->
-    <style name="TransparentLoadingDialog" parent="Theme.AppCompat.Dialog">
+    <style name="TransparentLoadingDialog" >
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowAnimationStyle">@style/DialogAnimation</item>
         <item name="android:windowNoTitle">true</item>
