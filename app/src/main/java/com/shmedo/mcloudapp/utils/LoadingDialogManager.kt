@@ -11,17 +11,11 @@ import com.shmedo.mcloudapp.ui.dialog.LoadingDialogFragment
 import java.lang.ref.WeakReference
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicInteger
 
 object LoadingDialogManager {
-    // 旧方法相关
-    private val globalLoadingCount = AtomicInteger(0)
-    private var globalLoadingDialogRef: WeakReference<LoadingDialogFragment?> = WeakReference(null)
-
-    // 新方法相关
     private val activeLoadings = ConcurrentHashMap<String, String>() //存储活跃加载请求的唯一标识符及其对应的消息
     private val cancellationCallbacks = ConcurrentHashMap<String, () -> Unit>()  // 存储每个加载请求对应的取消回调
-    private var idBasedLoadingDialogRef: WeakReference<LoadingDialogFragment?> =
+    private var globalLoadingDialogRef: WeakReference<LoadingDialogFragment?> =
         WeakReference(null)// 持有当前显示的 LoadingDialogFragment 的弱引用，防止内存泄漏
 
     // 确保所有操作在主线程上执行
@@ -54,17 +48,12 @@ object LoadingDialogManager {
                 return@post
             }
 
-            val existingDialog =
-                if (loadingId == null) idBasedLoadingDialogRef.get() else globalLoadingDialogRef.get()
+            val existingDialog = globalLoadingDialogRef.get()
 
             if (existingDialog == null || existingDialog.isRemoving) {
                 val newLoadingDialog = LoadingDialogFragment.newInstance(message)
                 newLoadingDialog.show(activity.supportFragmentManager, LoadingDialogFragment.TAG)
-                if (loadingId == null) {
-                    idBasedLoadingDialogRef = WeakReference(newLoadingDialog)
-                } else {
-                    globalLoadingDialogRef = WeakReference(newLoadingDialog)
-                }
+                globalLoadingDialogRef = WeakReference(newLoadingDialog)
             } else {
                 existingDialog.viewModel.updateMessage(message)
             }
@@ -88,12 +77,11 @@ object LoadingDialogManager {
         // 根据 loadingId 关闭对应的对话框
         if (activeLoadings.isEmpty()) {
             mainHandler.post {
-                val loadingDialog = idBasedLoadingDialogRef.get() ?: globalLoadingDialogRef.get()
+                val loadingDialog = globalLoadingDialogRef.get()
                 loadingDialog?.let {
                     if (it.isAdded && !it.isRemoving) {
                         it.dismissAllowingStateLoss()
                     }
-                    idBasedLoadingDialogRef.clear()
                     globalLoadingDialogRef.clear()
                 }
             }
@@ -106,9 +94,7 @@ object LoadingDialogManager {
      */
     fun showLoading(message: String = "加载中...", onCancel: (() -> Unit)? = null) {
         //增加计数
-        if (globalLoadingCount.incrementAndGet() > 0) {
-            showLoadingInternal(message, onCancel = onCancel, loadingId = "GLOBAL_LOADING")
-        }
+        showLoadingInternal(message, onCancel = onCancel, loadingId = "GLOBAL_LOADING")
     }
 
     /**
@@ -116,12 +102,7 @@ object LoadingDialogManager {
      * 通过内部的 loadingId 进行管理
      */
     fun dismissLoading() {
-        if (globalLoadingCount.decrementAndGet() <= 0) {
-            dismissLoadingInternal("GLOBAL_LOADING")
-            if (globalLoadingCount.get() < 0) {
-                globalLoadingCount.set(0)
-            }
-        }
+        dismissLoadingInternal("GLOBAL_LOADING")
     }
 
     /**
@@ -158,7 +139,7 @@ object LoadingDialogManager {
         activeLoadings[loadingId] = message
 
         mainHandler.post {
-            val loadingDialog = idBasedLoadingDialogRef.get() ?: globalLoadingDialogRef.get()
+            val loadingDialog = globalLoadingDialogRef.get()
             if (loadingDialog != null && loadingDialog.isAdded && !loadingDialog.isRemoving) {
                 loadingDialog.viewModel.updateMessage(message)
             }
@@ -180,12 +161,11 @@ object LoadingDialogManager {
             cancellationCallbacks.clear()
 
             // 关闭对话框
-            val loadingDialog = idBasedLoadingDialogRef.get() ?: globalLoadingDialogRef.get()
+            val loadingDialog = globalLoadingDialogRef.get()
             loadingDialog?.let {
                 if (it.isAdded && !it.isRemoving) {
                     it.dismissAllowingStateLoss()
                 }
-                idBasedLoadingDialogRef.clear()
                 globalLoadingDialogRef.clear()
             }
         }
@@ -196,20 +176,17 @@ object LoadingDialogManager {
      * 重置所有加载请求（适用于 Activity 销毁等情况）
      */
     fun resetAll() {
-        globalLoadingCount.set(0)
         activeLoadings.clear()
         cancellationCallbacks.clear()
         globalLoadingDialogRef.clear()
-        idBasedLoadingDialogRef.clear()
 
         mainHandler.post {
             // 关闭对话框
-            val loadingDialog = idBasedLoadingDialogRef.get() ?: globalLoadingDialogRef.get()
+            val loadingDialog = globalLoadingDialogRef.get()
             loadingDialog?.let {
                 if (it.isAdded && !it.isRemoving) {
                     it.dismissAllowingStateLoss()
                 }
-                idBasedLoadingDialogRef.clear()
                 globalLoadingDialogRef.clear()
             }
         }

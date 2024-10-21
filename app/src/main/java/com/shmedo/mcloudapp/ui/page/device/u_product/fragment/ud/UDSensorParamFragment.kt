@@ -516,8 +516,6 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                     } else {
                         mStates.locationInitialValue.set(initValue)
                     }
-                    //添加这行来保存初始状态
-                    mStates.saveInitialState()
                     return
                 }
 

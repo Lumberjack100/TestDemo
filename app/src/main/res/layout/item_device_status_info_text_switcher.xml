@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="com.shmedo.mcloudapp.model.DeviceStatusInfoTextSwitcherItem" />
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/item"
+        style="@style/DeviceCurrentState_Item_Layout_Style2"
+        android:background="@{m.bottomItem?@drawable/shape_common_click_item_bottom_corner_4:@drawable/layer_common_click_item_with_divider}">
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/DeviceCurrentState_Item_Title_Style2"
+            android:text='@{m.name}'
+            tools:text="固件版本" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_value"
+            style="@style/DeviceCurrentState_ClickableItem_Value_Style2"
+            rightArrowVisible="@{false}"
+            visible="@{m.value.equals(`正常`)}"
+            android:text="@{m.value}"
+            android:textColor="@{m.textColorRes==0?@color/sub_title_text_color_black_60:m.textColorRes}"
+            tools:text="1212" />
+
+        <com.shmedo.mcloudapp.ui.widget.AnimatedTextSwitcher
+            visible="@{!m.value.equals(`正常`)}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_size_6"
+            app:animatedText="@{m.value}"
+            app:isError="@{m.isErrorInfo}" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>
