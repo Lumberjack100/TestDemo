@@ -58,8 +58,14 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 
     private val dataTypeList =
         arrayListOf("CMD", "NMEA", "DIFF_IN", "DIFF_OUT", "RAW_OUT", "RES_OUT")
-    private val dataProtocolList = arrayListOf("TCP-C", "TCP-S", "MQTT", "SL651")
-    private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
+    private val dataProtocolList = arrayListOf("MQTT", "TCP-C", "SL651")
+    private val allPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
+    private val tcpPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_tcp_register_platform) }
+    private val mqttPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_mqtt_register_platform) }
+    private val sl651PlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_sl651_register_platform) }
+    private val szy206PlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_szy206_register_platform) }
+
+    private val platformList: MutableList<String> = arrayListOf()
 
 
     override fun initViewModel() {
@@ -104,7 +110,6 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         arguments?.let {
             statusItem = it.getParcelable(AppContants.Extras.SERVER_NUMBER)!!
         }
-        mStates.isEditable.set(true)
         resetDefaultParams()
         //添加这行来保存初始状态
         mStates.saveInitialState()
@@ -115,14 +120,27 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
      */
     private fun resetDefaultParams() {
         toolbarViewModel.toolbarTitleText.set(statusItem.name.replace("数据", "") + "配置")
+        mStates.isEditable.set(true)
         mStates.isCenterOpened.set(statusItem.status != "0")
         mStates.isDataTypeVisible.set(
             productType == ProductType.GNSS_E_1 || productType == ProductType.GNSS_E_2 || productType == ProductType.GNSS_E_3
         )
 
-        mStates.dataType.set(dataTypeList[5])
-        mStates.dataProtocol.set(dataProtocolList[0])//默认选择TCP-C
-        mStates.platformType.set(platformList[2])//默认选择米度物联平台
+        mStates.centerServerAddress.set("")//
+        mStates.centerServerPort.set("")//
+        mStates.dataType.set(dataTypeList.last())
+        mStates.dataProtocol.set("MQTT")//默认选择
+        platformList.clear()
+        platformList.addAll(mqttPlatformList.asList())
+        mStates.platformType.set("米度物联平台")//默认选择米度物联平台
+
+        mStates.isMqttItemVisible.set(true)
+        mStates.productId.set("")//
+        mStates.deviceId.set("")//
+        mStates.deviceKey.set("")//
+        mStates.registerCode.set("")//
+        mStates.registerAddress.set("")//
+        mStates.registerPort.set("")//
 
         mStates.stationType.set(StationCode.RESERVOIR.description)//默认选择水库(湖泊)
         mStates.maintainReport.set(true)
@@ -169,24 +187,28 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                     { position, text ->
                         mStates.dataProtocol.set(text)
                         when (text) {
-                            "TCP-C" -> {//TCP-C
-                                mStates.isMqttItemVisible.set(false)
-                                mStates.isSL651ItemVisible.set(false)
-                            }
-
-                            "TCP-S" -> {//TCP-S
-                                mStates.isMqttItemVisible.set(false)
-                                mStates.isSL651ItemVisible.set(false)
-                            }
-
-                            "MQTT" -> {//MQTT
+                            "MQTT" -> {
                                 mStates.isMqttItemVisible.set(true)
                                 mStates.isSL651ItemVisible.set(false)
+                                platformList.clear()
+                                platformList.addAll(mqttPlatformList.asList())
+                                mStates.platformType.set(platformList.first())
+                            }
+
+                            "TCP-C" -> {
+                                mStates.isMqttItemVisible.set(false)
+                                mStates.isSL651ItemVisible.set(false)
+                                platformList.clear()
+                                platformList.addAll(tcpPlatformList.asList())
+                                mStates.platformType.set(platformList.first())
                             }
 
                             else -> {//SL651
                                 mStates.isMqttItemVisible.set(false)
                                 mStates.isSL651ItemVisible.set(true)
+                                platformList.clear()
+                                platformList.addAll(sl651PlatformList.asList())
+                                mStates.platformType.set(platformList.first())
                             }
                         }
                     }, 0, R.layout.custom_xpopup_adapter_text_center
@@ -205,7 +227,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "请选择平台类型", platformList,
+                    "请选择平台类型", platformList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.platformType.set(text)
@@ -308,9 +330,9 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                 (dataTypeList.indexOf(mStates.dataType.get()) + 1).toString()
             else IOTConstants.NULL_KEY,
             protocol = mStates.dataProtocol.get(),
-            plattype = platformList.indexOf(mStates.platformType.get()).toString()
+            plattype = allPlatformList.indexOf(mStates.platformType.get()).toString()
         )
-        if (mStates.dataProtocol.get() == "MQTT") {//MQTT
+        if (mStates.dataProtocol.get() == "MQTT") {
             //当设备 ID、产品 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
             if (mStates.isRegisterVisible.get() && mStates.deviceId.get()
                     .isEmpty() && mStates.deviceKey.get().isEmpty()
@@ -495,29 +517,30 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         }
         mStates.dataProtocol.set(data.protocol)
         when (data.protocol) {
-            "MQTT" -> {//MQTT
+            "MQTT" -> {//
                 mStates.isMqttItemVisible.set(true)
                 mStates.isSL651ItemVisible.set(false)
+                platformList.clear()
+                platformList.addAll(mqttPlatformList.asList())
             }
 
-            "TCP-C" -> {//TCP-C
+            "TCP-C" -> {//
                 mStates.isMqttItemVisible.set(false)
                 mStates.isSL651ItemVisible.set(false)
-            }
-
-            "TCP-S" -> {//TCP-S
-                mStates.isMqttItemVisible.set(false)
-                mStates.isSL651ItemVisible.set(false)
+                platformList.clear()
+                platformList.addAll(tcpPlatformList.asList())
             }
 
             else -> {//SL651
                 mStates.isMqttItemVisible.set(false)
                 mStates.isSL651ItemVisible.set(true)
+                platformList.clear()
+                platformList.addAll(sl651PlatformList.asList())
             }
         }
         data.plattype.toIntOrNull()?.let {
-            if (it in platformList.indices) {
-                mStates.platformType.set(platformList[it])
+            if (it in allPlatformList.indices) {
+                mStates.platformType.set(allPlatformList[it])
             }
         }
 
@@ -531,7 +554,6 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         //重庆地灾平台不显示注册码、注册地址、注册端口号
         mStates.isRegisterVisible.set(!mStates.platformType.get().contains("重庆地灾"))
 
-
         //SL651 水文协议参数
         mStates.stationType.set(StationCode.valueByCode(data.type_code).description)
         mStates.centerStationAddr.set(data.co_address)
@@ -542,6 +564,13 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.reissuingDataValidDays.set(data.valid_day)
         mStates.reissuingDataInterval.set(data.reissue_time)
 
+        if (communicateWay is NetPlatformConnect && mStates.platformType.get()
+                .contains("米度物联平台")
+        ) {
+            mStates.isEditable.set(false)
+            showMessageDialog("4G模式下，米度物联平台链路不允许修改，以免设备离线")
+        }
+
         //添加这行来保存初始状态
         mStates.saveInitialState()
     }
@@ -550,6 +579,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
     }
+
     override fun processBack() {
         if (mStates.isDataModified.value == true) {
             showExitConfirmationDialog()
