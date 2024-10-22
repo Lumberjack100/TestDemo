@@ -174,8 +174,8 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         refreshLayout?.finish(false)
         dismissLoadingDialog()
         if (isShowErrMsg) {
-            if (isMessageDialog) showMessageDialog("指令响应错误: $errMsg")
-            else Toaster.show("指令响应错误: $errMsg")
+            if (isMessageDialog) showMessageDialog("出错了: $errMsg")
+            else Toaster.show("出错了: $errMsg")
         }
     }
 

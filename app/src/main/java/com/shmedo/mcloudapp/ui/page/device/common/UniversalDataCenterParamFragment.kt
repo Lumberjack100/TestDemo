@@ -77,11 +77,11 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentDataCenterParamBinding
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            processBack(true)
+            processBack()
         }
         mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                processBack(true)
+                processBack()
             }
         })
         initRefresh()
@@ -106,6 +106,8 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         }
         mStates.isEditable.set(true)
         resetDefaultParams()
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
     }
 
     /**
@@ -207,7 +209,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                     null, selectedIndex,
                     { position, text ->
                         mStates.platformType.set(text)
-                        mStates.isRigisterVisible.set(!text.contains("重庆地灾"))
+                        mStates.isRegisterVisible.set(!text.contains("重庆地灾"))
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -310,7 +312,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         )
         if (mStates.dataProtocol.get() == "MQTT") {//MQTT
             //当设备 ID、产品 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
-            if (mStates.isRigisterVisible.get() && mStates.deviceId.get()
+            if (mStates.isRegisterVisible.get() && mStates.deviceId.get()
                     .isEmpty() && mStates.deviceKey.get().isEmpty()
             ) {
                 if (mStates.registerCode.get().isEmpty()) {
@@ -326,7 +328,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                     return
                 }
             }
-            if (mStates.isRigisterVisible.get() && mStates.registerPort.get().isNotEmpty()) {
+            if (mStates.isRegisterVisible.get() && mStates.registerPort.get().isNotEmpty()) {
                 try {
                     val port: Int = mStates.registerPort.get().toInt()
                     if (port < 0 || port > 65535) {
@@ -341,11 +343,11 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             entity.projid = mStates.productId.get()
             entity.deviceid = mStates.deviceId.get()
             entity.devicekey = mStates.deviceKey.get()
-            entity.regcode = if (mStates.isRigisterVisible.get()) mStates.registerCode.get() else ""
+            entity.regcode = if (mStates.isRegisterVisible.get()) mStates.registerCode.get() else ""
             entity.httpaddr =
-                if (mStates.isRigisterVisible.get()) mStates.registerAddress.get() else ""
+                if (mStates.isRegisterVisible.get()) mStates.registerAddress.get() else ""
             entity.httpport =
-                if (mStates.isRigisterVisible.get()) mStates.registerPort.get() else ""
+                if (mStates.isRegisterVisible.get()) mStates.registerPort.get() else ""
         } else if (mStates.dataProtocol.get() == "SL651") {//SL651
             entity.type_code = StationCode.valueByDescription(mStates.stationType.get()).code
             entity.co_address = mStates.centerStationAddr.get()
@@ -378,6 +380,59 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = "设备未响应",
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = "设备未响应"
+        )
+    }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_DATA_CENTER -> {
@@ -388,7 +443,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询链路参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -407,11 +462,10 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.MD_SET_DATA_CENTER -> {
-//                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置链路参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -475,7 +529,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.registerAddress.set(data.httpaddr)
         mStates.registerPort.set(data.httpport)
         //重庆地灾平台不显示注册码、注册地址、注册端口号
-        mStates.isRigisterVisible.set(!mStates.platformType.get().contains("重庆地灾"))
+        mStates.isRegisterVisible.set(!mStates.platformType.get().contains("重庆地灾"))
 
 
         //SL651 水文协议参数
@@ -487,21 +541,26 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.maintainReportInterval.set(data.data_link)
         mStates.reissuingDataValidDays.set(data.valid_day)
         mStates.reissuingDataInterval.set(data.reissue_time)
+
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
     }
 
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
     }
+    override fun processBack() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
+    }
 
-    private fun processBack(isPressBackBtn: Boolean = false) {
+    override fun processNavigateUp() {
         launchWithViewLifecycle {
-            if (isPressBackBtn) {
-                mMessenger.requestStatusBarColor(if (statusBarColor == 0) R.color.colorPrimary else statusBarColor)
-                nav().navigateUp()
-                return@launchWithViewLifecycle
-            }
-            delay(1000)
+            delay(AppContants.Communication.DELAY_15000_MILLIS)
             //巡护事件需要给上一级浏览页面传递最新的事件信息
             setFragmentResult(
                 AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY,
