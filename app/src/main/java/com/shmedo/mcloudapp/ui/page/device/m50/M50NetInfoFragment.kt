@@ -99,7 +99,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "电台",
-                    value = stateInfo.radioEnableStatus.compareAndReturn("1", "已开启", "未开启"),
+                    value = stateInfo.radioEnableStatus.compareAndReturn("1", "已开启", "未启用"),
                     textColorRes = if (stateInfo.radioEnableStatus == "1") ColorUtils.getColor(
                         R.color.online_colorPrimary
                     ) else ColorUtils.getColor(R.color.error_FF4400)
@@ -134,7 +134,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             status.compareAndReturn(
                                 "1",
                                 "已连接",
-                                status.compareAndReturn("2", "未连接", "未开启")
+                                status.compareAndReturn("2", "未连接", "未启用")
                             )
 
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -142,11 +142,11 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             name = "数据链路${index + 1}",
                             value = status.compareAndReturn(
                                 "0",
-                                "未开启",
+                                "未启用",
                                 "$onlineStatus($platformType)"
                             ),
                             textColorRes = if (status == "0" || onlineStatus == "未连接") ColorUtils.getColor(
-                                R.color.error_FF4400
+                                R.color.offline_BABABA
                             ) else ColorUtils.getColor(R.color.online_colorPrimary),
                             isBottomItem = true
                         )

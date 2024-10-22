@@ -28,7 +28,9 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.getAppViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CmdResponseResultError
@@ -444,6 +446,29 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     override fun onDestroy() {
         timeoutJob?.cancel() // 在Fragment销毁时取消timeoutJob
         super.onDestroy()
+    }
+
+    protected open fun processNavigateUp() {
+        launchWithViewLifecycle {
+            delay(AppContants.Communication.DELAY_15000_MILLIS)
+            nav().navigateUp()
+        }
+    }
+
+    protected open fun processBack() {
+
+    }
+
+    protected open fun showExitConfirmationDialog() {
+        showMessage(
+            StringUtils.getString(R.string.data_modified_warn),
+            "提示",
+            "确定",
+            {
+                nav().navigateUp()
+            },
+            "取消"
+        )
     }
 
     companion object {

@@ -102,6 +102,12 @@ object CommonBindingAdapter {
     }
 
     @JvmStatic
+    @BindingAdapter("imageAlpha")
+    fun setImageAlpha(imageView: ImageView, alpha: Float) {
+        imageView.alpha = alpha
+    }
+
+    @JvmStatic
     @BindingAdapter(value = ["drawableStartResId"], requireAll = false)
     fun drawableStartResId(textView: MaterialTextView, resId: Int) {
         textView.setCompoundDrawablesWithIntrinsicBounds(resId, 0, 0, 0)

@@ -17,14 +17,12 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentTimeCalibrationBinding
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.TimeCalibrationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 
 /**
@@ -215,13 +213,6 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
                 4
             )
         )
-    }
-
-    private fun processNavigateUp() {
-        launchWithViewLifecycle {
-            delay(1500)
-            nav().navigateUp()
-        }
     }
 
     override fun onResume() {

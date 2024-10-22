@@ -23,13 +23,12 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_config_logo"
-            imageResId="@{m.functionModule.iconResId}"
-            imageSize="@{m.functionModule.iconSize}"
+            app:imageResId="@{m.functionModule.iconResId}"
+            app:imageSize="@{m.functionModule.iconSize}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tintColor="@{m.functionModule.moduleAvailable ? 0 : @color/offline_BABABA}"
-            tools:src="@drawable/ic_module_net_info"
-            tools:tint="@color/offline_BABABA" />
+            app:imageAlpha="@{m.functionModule.moduleAvailable ? 255 :128}"
+            tools:src="@drawable/ic_module_net_info" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_config_name"

@@ -21,15 +21,12 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentUdMobileNetworkParamBinding
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDMobileNetworkParamViewModel
-import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -261,31 +258,12 @@ class UDMobileNetworkParamFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun processNavigateUp() {
-        launchWithViewLifecycle {
-            delay(1500)
-            nav().navigateUp()
-        }
-    }
-
-    private fun processBack() {
+    override fun processBack() {
         if (mStates.isDataModified.value == true) {
             showExitConfirmationDialog()
             return
         }
         nav().navigateUp()
-    }
-
-    private fun showExitConfirmationDialog() {
-        showMessage(
-            StringUtils.getString(R.string.data_modified_warn),
-            "提示",
-            "确定",
-            {
-                nav().navigateUp()
-            },
-            "取消"
-        )
     }
 
     override fun onResume() {
