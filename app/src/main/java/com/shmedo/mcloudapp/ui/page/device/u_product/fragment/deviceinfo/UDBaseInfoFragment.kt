@@ -231,6 +231,13 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         if (errorInfoList.isEmpty()) {
             return
         }
+        if (errorInfoList.size == 1) {
+            textSwitcherItem?.refreshValue(
+                value = errorInfoList[0],
+                isErrorInfo = errorInfoList[0].contains("故障")
+            )
+            return
+        }
         abnormalInfoJob = launchWithViewLifecycle {
             flow {
                 while (true) {

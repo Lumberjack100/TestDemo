@@ -853,6 +853,11 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             mHeadStates.warnErrorText.set("正常")
             return
         }
+        if (errorInfoList.size == 1) {
+            mHeadStates.warnErrorText.set(errorInfoList[0])
+            mHeadStates.isError.set(errorInfoList[0].contains("故障"))
+            return
+        }
         abnormalInfoJob = launchWithViewLifecycle {
             flow {
                 while (true) {
