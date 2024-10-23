@@ -258,12 +258,12 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
             sensortype = mStates.sensorType.get(),
             chl = mStates.channelNumber.get(),
             model = mStates.modelToken.get() + "_" + mStates.channelNumber.get(),
-            swtoken = if (mStates.sensorParamWrapper.get().swtoken == mStates.hydrologicalIdentification.get()) IOTConstants.NULL_KEY else mStates.hydrologicalIdentification.get(),
-            filtercnt = if (mStates.sensorParamWrapper.get().filtercnt == mStates.filterCoefficient.get()) IOTConstants.NULL_KEY else mStates.filterCoefficient.get(),
-            gateval = if (mStates.sensorParamWrapper.get().gateval == mStates.triggerValue.get()) IOTConstants.NULL_KEY else mStates.triggerValue.get(),
-            uplimit = if (mStates.sensorParamWrapper.get().uplimit == mStates.upperLimit.get()) IOTConstants.NULL_KEY else mStates.upperLimit.get(),
-            lowlimit = if (mStates.sensorParamWrapper.get().lowlimit == mStates.lowerLimit.get()) IOTConstants.NULL_KEY else mStates.lowerLimit.get(),
-            corrvalue = if (mStates.sensorParamWrapper.get().corrvalue == mStates.correctValue.get()) IOTConstants.NULL_KEY else mStates.correctValue.get(),
+            swtoken = mStates.hydrologicalIdentification.get(),
+            filtercnt =  mStates.filterCoefficient.get(),
+            gateval = mStates.triggerValue.get(),
+            uplimit =  mStates.upperLimit.get(),
+            lowlimit =  mStates.lowerLimit.get(),
+            corrvalue =  mStates.correctValue.get(),
 
             calctype = if (mStates.modelToken.get() == "10066") calculateList.indexOf(mStates.calculate.get())
                 .toString() else IOTConstants.NULL_KEY,
