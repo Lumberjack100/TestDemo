@@ -85,6 +85,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_size_6"
+                    app:needBackground="@{true}"
                     app:animatedText="@{stateVM.warnErrorText}"
                     app:isError="@{stateVM.isError}" />
 

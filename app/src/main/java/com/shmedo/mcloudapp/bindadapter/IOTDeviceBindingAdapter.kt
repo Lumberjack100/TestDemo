@@ -178,9 +178,14 @@ object IOTDeviceBindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter("animatedText", "isError")
-    fun setAnimatedText(view: AnimatedTextSwitcher, text: String?, isError: Boolean) {
-        text?.let { view.setText(it, isError) }
+    @BindingAdapter(value = ["animatedText", "isError", "needBackground"], requireAll = false)
+    fun setAnimatedText(
+        view: AnimatedTextSwitcher,
+        text: String?,
+        isError: Boolean,
+        needBackground: Boolean = true
+    ) {
+        text?.let { view.setText(it, isError, needBackground) }
     }
 
 }

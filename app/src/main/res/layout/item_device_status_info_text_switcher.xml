@@ -36,7 +36,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dimen_size_6"
             app:animatedText="@{m.value}"
-            app:isError="@{m.isErrorInfo}" />
+            app:isError="@{m.isErrorInfo}"
+            app:needBackground="@{false}"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

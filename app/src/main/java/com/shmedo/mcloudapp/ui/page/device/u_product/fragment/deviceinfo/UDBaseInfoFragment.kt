@@ -89,7 +89,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     }
                 )
                 groupList.add(textSwitcherItem!!)
-                processAbnormalInfo(stateInfo.deviceError, stateInfo.deviceWarn)
+                processAbnormalInfo(deviceStatus, stateInfo.deviceError, stateInfo.deviceWarn)
 
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
@@ -187,6 +187,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     }
 
     private fun processAbnormalInfo(
+        status: String,
         deviceError: Map<String, String>? = null,
         deviceWarn: Map<String, String>? = null
     ) {
@@ -212,7 +213,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 resultMap["inside_temp"]?.let { temp -> errorInfoList.add(if (temp == "-1") "内部温度过高" else "内部温度过低") }
                 resultMap["sim_card"]?.let { errorInfoList.add("无SIM卡") }
             })
-            handleAbnormalInfo(errorInfoList)
+            handleAbnormalInfo(status, errorInfoList)
         } catch (e: Exception) {
             Timber.e(e)
             addLogItem(Log.ERROR, e.errorMsg)
@@ -223,12 +224,19 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
      * 处理设备异常信息轮播展示
      * 每隔3秒切换一次，取出异常信息列表中的每一条异常信息，轮播显示
      */
-    private fun handleAbnormalInfo(errorInfoList: List<String>) {
+    private fun handleAbnormalInfo(status: String, errorInfoList: List<String>) {
         // 取消之前的job（如果存在）
         abnormalInfoJob?.cancel()
 
         //如果列表为空，直接返回
         if (errorInfoList.isEmpty()) {
+            return
+        }
+        if (errorInfoList.size == 1) {
+            textSwitcherItem?.refreshValue(
+                value = errorInfoList[0],
+                isErrorInfo = status == "故障"
+            )
             return
         }
         abnormalInfoJob = launchWithViewLifecycle {
@@ -242,7 +250,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
             }.collect { errorInfo ->
                 textSwitcherItem?.refreshValue(
                     value = errorInfo,
-                    isErrorInfo = errorInfo.contains("故障")
+                    isErrorInfo = status == "故障"
                 )
             }
         }

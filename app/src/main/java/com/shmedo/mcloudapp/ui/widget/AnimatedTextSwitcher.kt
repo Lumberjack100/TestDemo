@@ -39,14 +39,32 @@ class AnimatedTextSwitcher @JvmOverloads constructor(
         outAnimation = AnimationUtils.loadAnimation(context, R.anim.slide_out_up)
     }
 
-    fun setText(text: String, isError: Boolean) {
+    fun setText(text: String, isError: Boolean, needBackground: Boolean = true) {
         (getChildAt(0) as? TextView)?.apply {
-            setTextColor(ContextCompat.getColor(context, if (isError) R.color.error_FF4400 else R.color.warn_FF9D00))
-            background = ContextCompat.getDrawable(context, if (isError) R.drawable.bg_label_error_corner_1dp else R.drawable.bg_label_warn_corner_1dp)
+            setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    if (isError) R.color.error_FF4400 else R.color.warn_FF9D00
+                )
+            )
+            if (needBackground)
+                background = ContextCompat.getDrawable(
+                    context,
+                    if (isError) R.drawable.bg_label_error_corner_1dp else R.drawable.bg_label_warn_corner_1dp
+                )
         }
         (getChildAt(1) as? TextView)?.apply {
-            setTextColor(ContextCompat.getColor(context, if (isError) R.color.error_FF4400 else R.color.warn_FF9D00))
-            background = ContextCompat.getDrawable(context, if (isError) R.drawable.bg_label_error_corner_1dp else R.drawable.bg_label_warn_corner_1dp)
+            setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    if (isError) R.color.error_FF4400 else R.color.warn_FF9D00
+                )
+            )
+            if (needBackground)
+                background = ContextCompat.getDrawable(
+                    context,
+                    if (isError) R.drawable.bg_label_error_corner_1dp else R.drawable.bg_label_warn_corner_1dp
+                )
         }
         super.setText(text)
     }
