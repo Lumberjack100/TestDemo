@@ -71,10 +71,10 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentUniversalDataCenterHomeBinding
         toolbarViewModel.toolbarTitleText.set("数据链路")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            processBack()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
-            processBack()
+            handleBackByCheckDataModified()
         }
         initRefresh()
         initAdapter()
@@ -312,6 +312,8 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             showMessageDialog("数据保存成功")
+                            //添加这行来保存初始状态
+                            mStates.saveInitialState()
                         }
                     }
                 }
@@ -375,6 +377,15 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
             )
         }
         return list
+    }
+
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
     }
 
     override fun onResume() {

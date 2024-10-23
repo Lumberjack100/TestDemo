@@ -70,10 +70,10 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentUdCorsParamBinding
         toolbarViewModel.toolbarTitleText.set("海拔配置")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            processBack()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
-            processBack()
+            handleBackByCheckDataModified()
         }
         initRefresh()
     }
@@ -419,7 +419,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
         queryMeasureResultTimeoutJob = null
     }
 
-    override fun processBack() {
+    override fun handleBackByCheckDataModified() {
         if (mStates.isDataModified.value == true) {
             showExitConfirmationDialog()
             return

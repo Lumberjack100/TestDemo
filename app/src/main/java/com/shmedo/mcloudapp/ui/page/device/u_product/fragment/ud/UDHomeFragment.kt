@@ -539,15 +539,15 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 if (sensorData.isEmpty())
                     return@launchWithViewLifecycle
 
-                val waterSurfaceElevation = sensorData["liquid_surface_alt"] ?: ""
-                val airDistance = sensorData["ullage"] ?: ""
-                val installationAngle = sensorData["z"] ?: ""
+                val waterSurfaceElevation = sensorData["liquid_surface_alt"]?.let { "$it m" } ?: AppContants.PLACE_HOLDER_VALUE
+                val airDistance = sensorData["ullage"]?.let { "$it m" } ?: AppContants.PLACE_HOLDER_VALUE
+                val installationAngle = sensorData["z"]?.let { "$it °" } ?: AppContants.PLACE_HOLDER_VALUE
                 val measurementTime =
-                    sensorData["time"]?.replace(".000", "")?.replace("-", ".") ?: ""
+                    sensorData["time"]?.replace(".000", "")?.replace("-", ".") ?: AppContants.PLACE_HOLDER_VALUE
 
-                mHeadStates.waterSurfaceElevation.set("$waterSurfaceElevation m")
-                mHeadStates.airDistance.set("$airDistance m")
-                mHeadStates.installationAngle.set("$installationAngle°")
+                mHeadStates.waterSurfaceElevation.set(waterSurfaceElevation)
+                mHeadStates.airDistance.set(airDistance)
+                mHeadStates.installationAngle.set(installationAngle)
                 mHeadStates.measurementTime.set(measurementTime)
             }
         }
@@ -900,14 +900,14 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 ) {
                     stopMeasurement()
 
-                    val waterSurfaceElevation = resultMap["obj_alt"] ?: ""
-                    val airDistance = resultMap["ld_value"] ?: ""
-                    val installationAngle = resultMap["z_angle"] ?: ""
-                    val measurementTime = resultMap["time"]?.replace("-", ".") ?: ""
+                    val waterSurfaceElevation = resultMap["obj_alt"]?.let { "$it m" } ?: AppContants.PLACE_HOLDER_VALUE
+                    val airDistance = resultMap["ld_value"]?.let { "$it m" } ?: AppContants.PLACE_HOLDER_VALUE
+                    val installationAngle = resultMap["z_angle"]?.let { "$it °" } ?: AppContants.PLACE_HOLDER_VALUE
+                    val measurementTime = resultMap["time"]?.replace("-", ".") ?: AppContants.PLACE_HOLDER_VALUE
 
-                    mHeadStates.waterSurfaceElevation.set("$waterSurfaceElevation m")
-                    mHeadStates.airDistance.set("$airDistance m")
-                    mHeadStates.installationAngle.set("$installationAngle°")
+                    mHeadStates.waterSurfaceElevation.set(waterSurfaceElevation)
+                    mHeadStates.airDistance.set(airDistance)
+                    mHeadStates.installationAngle.set(installationAngle)
                     mHeadStates.measurementTime.set(measurementTime)
                     return
                 }

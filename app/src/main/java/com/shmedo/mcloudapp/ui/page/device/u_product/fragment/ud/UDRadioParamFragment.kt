@@ -67,10 +67,10 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentUdRadioParamBinding
         toolbarViewModel.toolbarTitleText.set("电台配置")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            processBack()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
-            processBack()
+            handleBackByCheckDataModified()
         }
         initRefresh()
     }
@@ -91,7 +91,7 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
         super.initData()
         //451.15-470.15，1MHz步进
         radioChannelTextList = (451150..470150 step 1000).map {
-            (it.toFloat() / 1000).toString() + "MHz"
+            (it.toFloat() / 1000).toString()
         }
         resetDefaultParams()
         //添加这行来保存初始状态
@@ -344,7 +344,6 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
                             processNavigateUp()
                         }
                     }
@@ -383,13 +382,14 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun processBack() {
+    override fun handleBackByCheckDataModified() {
         if (mStates.isDataModified.value == true) {
             showExitConfirmationDialog()
             return
         }
         nav().navigateUp()
     }
+
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)

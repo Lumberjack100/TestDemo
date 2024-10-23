@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.annotation.CallSuper
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.PageRefreshLayout
+import com.hjq.toast.ToastParams
 import com.hjq.toast.Toaster
 import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.commonlib.utils.AppContants
@@ -448,14 +449,18 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         super.onDestroy()
     }
 
-    protected open fun processNavigateUp() {
+    protected open fun processNavigateUp(toastMsg: String = "", isShowToast: Boolean = true) {
+        if (isShowToast) Toaster.show(ToastParams().apply {
+            text = toastMsg.ifEmpty { "数据保存成功" }
+            duration = 1000
+        })
         launchWithViewLifecycle {
-            delay(AppContants.Communication.DELAY_15000_MILLIS)
+            delay(1000)
             nav().navigateUp()
         }
     }
 
-    protected open fun processBack() {
+    protected open fun handleBackByCheckDataModified() {
 
     }
 
