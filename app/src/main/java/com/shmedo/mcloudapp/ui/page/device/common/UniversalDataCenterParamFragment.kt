@@ -83,11 +83,11 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentDataCenterParamBinding
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            processBack()
+            handleBackByCheckDataModified()
         }
         mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                processBack()
+                handleBackByCheckDataModified()
             }
         })
         initRefresh()
@@ -494,7 +494,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("数据保存成功")
-                            processBack()
+                            handleBackByCheckDataModified()
                         }
                     }
                 }
@@ -580,7 +580,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         initImmersionBar(binding.llToolbar.toolbar)
     }
 
-    override fun processBack() {
+    override fun handleBackByCheckDataModified() {
         if (mStates.isDataModified.value == true) {
             showExitConfirmationDialog()
             return

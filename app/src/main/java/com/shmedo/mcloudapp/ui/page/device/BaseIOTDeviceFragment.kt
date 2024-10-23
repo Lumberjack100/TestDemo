@@ -455,7 +455,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         }
     }
 
-    protected open fun processBack() {
+    protected open fun handleBackByCheckDataModified() {
 
     }
 

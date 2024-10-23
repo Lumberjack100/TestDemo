@@ -76,10 +76,10 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentUdReportModelParamBinding
         toolbarViewModel.toolbarTitleText.set("工作模式")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            processBack()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
-            processBack()
+            handleBackByCheckDataModified()
         }
         initRefresh()
     }
@@ -487,7 +487,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         mStates.saveInitialState()
     }
 
-    override fun processBack() {
+    override fun handleBackByCheckDataModified() {
         if (mStates.isDataModified.value == true) {
             showExitConfirmationDialog()
             return

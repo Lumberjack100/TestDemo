@@ -61,10 +61,10 @@ class UDMobileNetworkParamFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentUdMobileNetworkParamBinding
         toolbarViewModel.toolbarTitleText.set("网络参数")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            processBack()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
-            processBack()
+            handleBackByCheckDataModified()
         }
         initRefresh()
     }
@@ -258,7 +258,7 @@ class UDMobileNetworkParamFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun processBack() {
+    override fun handleBackByCheckDataModified() {
         if (mStates.isDataModified.value == true) {
             showExitConfirmationDialog()
             return

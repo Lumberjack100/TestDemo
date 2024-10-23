@@ -82,10 +82,10 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentUDProductSensorParamBinding
         toolbarViewModel.toolbarTitleText.set("传感配置")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            processBack()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
-            processBack()
+            handleBackByCheckDataModified()
         }
         initRefresh()
     }
@@ -552,7 +552,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
     }
 
 
-    override fun processBack() {
+    override fun handleBackByCheckDataModified() {
         if (mStates.isDataModified.value == true) {
             showExitConfirmationDialog()
             return
