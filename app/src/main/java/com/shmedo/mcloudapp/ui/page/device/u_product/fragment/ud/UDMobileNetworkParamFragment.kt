@@ -230,7 +230,6 @@ class UDMobileNetworkParamFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
                             processNavigateUp()
                         }
                     }

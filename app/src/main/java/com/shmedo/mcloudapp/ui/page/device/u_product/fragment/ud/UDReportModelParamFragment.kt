@@ -420,7 +420,6 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
                             processNavigateUp()
                         }
                     }
@@ -437,7 +436,6 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
                             processNavigateUp()
                         }
                     }

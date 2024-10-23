@@ -436,7 +436,6 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
                             processNavigateUp()
                         }
                     }
@@ -453,7 +452,6 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
                             processNavigateUp()
                         }
                     }
@@ -485,7 +483,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                     }
                 mStates.imageResolution.set("${udCurrentStateInfo.pixx}x${udCurrentStateInfo.pixy}")
 
-                mStates.locationInitialValue.set(udCurrentStateInfo.locationInitialValue)
+                mStates.locationInitialValue.set(udCurrentStateInfo.locationInitialValue.ifEmpty { AppContants.PLACE_HOLDER_VALUE })
 
                 //添加这行来保存初始状态
                 mStates.saveInitialState()
@@ -513,7 +511,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                     if (type == "1") {
                         mStates.airAltitudeInitialValue.set(initValue)
                     } else {
-                        mStates.locationInitialValue.set(initValue)
+                        mStates.locationInitialValue.set(initValue.ifEmpty { AppContants.PLACE_HOLDER_VALUE })
                     }
                     return
                 }

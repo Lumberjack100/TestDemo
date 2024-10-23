@@ -190,8 +190,7 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("校准成功")
-                            processNavigateUp()
+                            processNavigateUp("校准成功")
                         }
                     }
                 }

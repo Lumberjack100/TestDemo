@@ -588,7 +588,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         nav().navigateUp()
     }
 
-    override fun processNavigateUp() {
+    override fun processNavigateUp(toastMsg: String, isShowToast: Boolean) {
         launchWithViewLifecycle {
             delay(AppContants.Communication.DELAY_15000_MILLIS)
             //巡护事件需要给上一级浏览页面传递最新的事件信息
