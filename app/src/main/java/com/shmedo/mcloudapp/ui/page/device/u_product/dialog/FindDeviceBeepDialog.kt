@@ -122,7 +122,7 @@ class FindDeviceBeepDialog : BaseVmDbDialogFragment() {
 
     companion object {
         val TAG = FindDeviceBeepDialog::class.java.simpleName
-        const val REPEAT_POLL_NUM = 20
+        const val REPEAT_POLL_NUM = 7
 
         fun newInstance(type: ProductType = ProductType.UnKnown): FindDeviceBeepDialog {
             return FindDeviceBeepDialog().apply {
