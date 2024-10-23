@@ -28,7 +28,6 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRRS485Port1SensorParamWrapper
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -149,6 +148,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
         mStates.address.set("1")//传感器地址,默认1
         resetDefaultModelField()
     }
+
     /**
      * 重置采集项
      */
@@ -169,6 +169,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
         mStates.correctValue.set("0")//默认修正值 0
         mStates.ngateval.set("3")//默认阈值次数 3
     }
+
     private fun initTabLayout() {
         val tabLayout = binding.tabs
         tabLayout.removeAllTabs()
@@ -363,40 +364,20 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
             c_model = "0",
             num = selectedFieldIndex.toString(),
             model = mStates.modelToken.get() + "_" + mStates.address.get(),
-            baud = if (mStates.sensorParamWrapper.get().baud == mStates.baudRate.get()) IOTConstants.NULL_KEY else mStates.baudRate.get(),
-            databit = if (mStates.sensorParamWrapper.get().databit == mStates.dataBit.get()) IOTConstants.NULL_KEY else mStates.dataBit.get(),
-            parity = if (mStates.sensorParamWrapper.get().parity.toInt() == checkBitList.indexOf(
-                    mStates.checkBit.get()
-                )
-            ) IOTConstants.NULL_KEY
-            else (checkBitList.indexOf(mStates.checkBit.get())).toString(),
-
-            stopbit = if (mStates.sensorParamWrapper.get().stopbit.toInt() == stopBitList.indexOf(
-                    mStates.stopBit.get()
-                )
-            ) IOTConstants.NULL_KEY
-            else (stopBitList.indexOf(mStates.stopBit.get())).toString(),
-
-            swtoken = if (mStates.sensorParamWrapper.get().swtoken == mStates.hydrologicalIdentification.get()) IOTConstants.NULL_KEY else mStates.hydrologicalIdentification.get(),
-            cmd = if (mStates.sensorParamWrapper.get().cmd == mStates.collectionInstructions.get()) IOTConstants.NULL_KEY else mStates.collectionInstructions.get(),
-            ratio = if (mStates.sensorParamWrapper.get().ratio == mStates.ratio.get()) IOTConstants.NULL_KEY else mStates.ratio.get(),
-            dataformat = if (mStates.sensorParamWrapper.get().dataformat.toInt() == dataFormatList.indexOf(
-                    mStates.dataFormat.get()
-                )
-            ) IOTConstants.NULL_KEY
-            else (dataFormatList.indexOf(mStates.dataFormat.get())).toString(),
-
-            calctype = if (mStates.sensorParamWrapper.get().calctype.toInt() == solutionMethodList.indexOf(
-                    mStates.solutionMethod.get()
-                )
-            ) IOTConstants.NULL_KEY
-            else (solutionMethodList.indexOf(mStates.solutionMethod.get())).toString(),
-
-            gateval = if (mStates.sensorParamWrapper.get().gateval == mStates.triggerValue.get()) IOTConstants.NULL_KEY else mStates.triggerValue.get(),
-            uplimit = if (mStates.sensorParamWrapper.get().uplimit == mStates.upperLimit.get()) IOTConstants.NULL_KEY else mStates.upperLimit.get(),
-            lowlimit = if (mStates.sensorParamWrapper.get().lowlimit == mStates.lowerLimit.get()) IOTConstants.NULL_KEY else mStates.lowerLimit.get(),
-            corrvalue = if (mStates.sensorParamWrapper.get().corrvalue == mStates.correctValue.get()) IOTConstants.NULL_KEY else mStates.correctValue.get(),
-            ngateval = if (mStates.sensorParamWrapper.get().ngateval == mStates.ngateval.get()) IOTConstants.NULL_KEY else mStates.ngateval.get(),
+            baud = mStates.baudRate.get(),
+            databit = mStates.dataBit.get(),
+            parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
+            stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
+            swtoken = mStates.hydrologicalIdentification.get(),
+            cmd = mStates.collectionInstructions.get(),
+            ratio = mStates.ratio.get(),
+            dataformat = (dataFormatList.indexOf(mStates.dataFormat.get())).toString(),
+            calctype = (solutionMethodList.indexOf(mStates.solutionMethod.get())).toString(),
+            gateval = mStates.triggerValue.get(),
+            uplimit = mStates.upperLimit.get(),
+            lowlimit = mStates.lowerLimit.get(),
+            corrvalue = mStates.correctValue.get(),
+            ngateval = mStates.ngateval.get(),
         )
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RS485_PORT1_SENSOR_PARAM,
@@ -448,14 +429,14 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                 setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置参数出错: ${result.message}"
+                        val errMsg = "数据保存出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
                         }
                     }
                 }

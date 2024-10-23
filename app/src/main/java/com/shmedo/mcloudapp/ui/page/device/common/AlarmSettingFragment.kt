@@ -147,7 +147,7 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
          */
         fun onGoToParamSettingClick() {
             if (!mStates.isOpened.get()) {
-                Toaster.show("请先启用报警")
+                Toaster.show("请先开启报警")
                 return
             }
             if (isBleDisconnected()) {
@@ -273,7 +273,7 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
                         }
                     }
                 }
@@ -283,14 +283,14 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg =
-                            if (cmdStr.contains("sw=0")) "关闭出错: ${result.message}" else "设置参数出错: ${result.message}"
+                            if (cmdStr.contains("sw=0")) "关闭出错: ${result.message}" else "数据保存出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
                         }
                     }
                 }

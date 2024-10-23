@@ -22,5 +22,8 @@ data class MRRS485Port2SensorParam(
     var r0value: String = "",//初始频率 F0
     var t0value: String = "",//初始温度 T0
     var l0value: String = "",//初始水位
-    var lvalue: String = ""//堰角高度
+    var lvalue: String = "",//堰角高度
+    var polyavalue: String = "",//多项式系数A值
+    var polybvalue: String = "",//多项式系数B值
+    var polycvalue: String = "",//多项式系数C值
 )

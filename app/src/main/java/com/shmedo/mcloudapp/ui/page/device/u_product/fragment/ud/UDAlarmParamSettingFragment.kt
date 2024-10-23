@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.CompoundButton
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
@@ -11,7 +10,6 @@ import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.AlarmMonitorPointEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.AlarmReportIntervalEntity
@@ -72,12 +70,12 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdAlarmParamSettingBinding
-        toolbarViewModel.toolbarTitleText.set("报警参数设置")
+        toolbarViewModel.toolbarTitleText.set("报警参数配置")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         initRefresh()
     }
@@ -86,6 +84,8 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
         super.initData()
         initTitles()
         resetDefaultParams()
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
     }
 
     private fun initRefresh() {
@@ -131,16 +131,6 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
     }
 
     inner class ClickProxy : BaseClickProxy() {
-        override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
-                return
-            }
-            mStates.isOpened.set(isChecked)
-            disableOrEnableAlram(if (isChecked) "1" else "0")
-        }
-
         /**
          * 选择报警编号
          */
@@ -223,26 +213,6 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    /**
-     * 关闭或者打开报警
-     */
-    private fun disableOrEnableAlram(sw: String = "1") {
-        commandItems.clear()
-        val command =
-            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL,
-                "sw=$sw"
-            )
-            else IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_ALRAM_BROADCAST_SWITCH,
-                "sw=$sw"
-            )
-        commandItems.add(command)
-
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
     private fun initTestAlarmCommand(level: Int) {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
@@ -255,79 +225,81 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initSaveCommand() {
-        if (mStates.broadcastTimes.get().isEmpty()) {
-            showMessageDialog("请输入播报次数!")
-            return
-        }
-        try {
-            val value = mStates.broadcastTimes.get().toInt()
-            if (value < 0 || value > 255) {
-                showMessageDialog("播报次数范围[0,255]!")
+        if (mStates.isOpened.get()) {
+            if (mStates.broadcastTimes.get().isEmpty()) {
+                showMessageDialog("请输入播报次数!")
                 return
             }
-        } catch (ex: Exception) {
-            showMessageDialog("请输入正确的播报次数!")
-            return
-        }
+            try {
+                val value = mStates.broadcastTimes.get().toInt()
+                if (value < 0 || value > 255) {
+                    showMessageDialog("播报次数范围[0,255]!")
+                    return
+                }
+            } catch (ex: Exception) {
+                showMessageDialog("请输入正确的播报次数!")
+                return
+            }
 
-        if (mStates.firstAlarmVoice.get().isEmpty()) {
-            showMessageDialog("请输入一级报警语音编号!")
-            return
-        }
-        try {
-            val value = mStates.firstAlarmVoice.get().toInt()
-            if (value < 1 || value > 255) {
-                showMessageDialog("一级报警语音编号范围[1,255]!")
+            if (mStates.firstAlarmVoice.get().isEmpty()) {
+                showMessageDialog("请输入一级报警语音编号!")
                 return
             }
-        } catch (ex: Exception) {
-            showMessageDialog("请输入正确的一级报警语音编号!")
-            return
-        }
+            try {
+                val value = mStates.firstAlarmVoice.get().toInt()
+                if (value < 1 || value > 255) {
+                    showMessageDialog("一级报警语音编号范围[1,255]!")
+                    return
+                }
+            } catch (ex: Exception) {
+                showMessageDialog("请输入正确的一级报警语音编号!")
+                return
+            }
 
-        if (mStates.secondAlarmVoice.get().isEmpty()) {
-            showMessageDialog("请输入二级报警语音编号!")
-            return
-        }
-        try {
-            val value = mStates.secondAlarmVoice.get().toInt()
-            if (value < 1 || value > 255) {
-                showMessageDialog("二级报警语音编号范围[1,255]!")
+            if (mStates.secondAlarmVoice.get().isEmpty()) {
+                showMessageDialog("请输入二级报警语音编号!")
                 return
             }
-        } catch (ex: Exception) {
-            showMessageDialog("请输入正确的二级报警语音编号!")
-            return
-        }
+            try {
+                val value = mStates.secondAlarmVoice.get().toInt()
+                if (value < 1 || value > 255) {
+                    showMessageDialog("二级报警语音编号范围[1,255]!")
+                    return
+                }
+            } catch (ex: Exception) {
+                showMessageDialog("请输入正确的二级报警语音编号!")
+                return
+            }
 
-        if (mStates.thirdAlarmVoice.get().isEmpty()) {
-            showMessageDialog("请输入三级报警语音编号!")
-            return
-        }
-        try {
-            val value = mStates.thirdAlarmVoice.get().toInt()
-            if (value < 1 || value > 255) {
-                showMessageDialog("三级报警语音编号范围[1,255]!")
+            if (mStates.thirdAlarmVoice.get().isEmpty()) {
+                showMessageDialog("请输入三级报警语音编号!")
                 return
             }
-        } catch (ex: Exception) {
-            showMessageDialog("请输入正确的三级报警语音编号!")
-            return
-        }
+            try {
+                val value = mStates.thirdAlarmVoice.get().toInt()
+                if (value < 1 || value > 255) {
+                    showMessageDialog("三级报警语音编号范围[1,255]!")
+                    return
+                }
+            } catch (ex: Exception) {
+                showMessageDialog("请输入正确的三级报警语音编号!")
+                return
+            }
 
-        if (mStates.fourthAlarmVoice.get().isEmpty()) {
-            showMessageDialog("请输入四级报警语音编号!")
-            return
-        }
-        try {
-            val value = mStates.fourthAlarmVoice.get().toInt()
-            if (value < 1 || value > 255) {
-                showMessageDialog("四级报警语音编号范围[1,255]!")
+            if (mStates.fourthAlarmVoice.get().isEmpty()) {
+                showMessageDialog("请输入四级报警语音编号!")
                 return
             }
-        } catch (ex: Exception) {
-            showMessageDialog("请输入正确的四级报警语音编号!")
-            return
+            try {
+                val value = mStates.fourthAlarmVoice.get().toInt()
+                if (value < 1 || value > 255) {
+                    showMessageDialog("四级报警语音编号范围[1,255]!")
+                    return
+                }
+            } catch (ex: Exception) {
+                showMessageDialog("请输入正确的四级报警语音编号!")
+                return
+            }
         }
 
         if (mStates.firstAlarmReportInterval.get().isEmpty()) {
@@ -375,23 +347,41 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
         }
 
         commandItems.clear()
-
-        val entity = AlarmMonitorPointEntity(
-            sw = if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2)
-                if (mStates.isOpened.get()) "1" else "0"
-            else IOTConstants.NULL_KEY,
-            monitorpoint = mStates.monitorPoint.get(),
-            cnt = mStates.broadcastTimes.get(),
-            level1 = mStates.firstAlarmVoice.get(),
-            level2 = mStates.secondAlarmVoice.get(),
-            level3 = mStates.thirdAlarmVoice.get(),
-            level4 = mStates.fourthAlarmVoice.get()
-        )
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL,
-            entity.toCommandString()
-        )
-        commandItems.add(command)
+        //UD 设备报警启用开关打开或者关闭，都需要发送开关指令
+        if (productType == ProductType.U_D_1 || productType == ProductType.U_D_2) {
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_ALRAM_BROADCAST_SWITCH,
+                "sw=${if (mStates.isOpened.get()) "1" else "0"}"
+            )
+            commandItems.add(command)
+        }
+        //MD 设备报警启用开关关闭时处理
+        if ((productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) && !mStates.isOpened.get()) {
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL,
+                "sw=0"
+            )
+            commandItems.add(command)
+        }
+        //报警启用开关打开时，才发送报警信息设置指令
+        if (mStates.isOpened.get()) {
+            val monitorPointEntity = AlarmMonitorPointEntity(
+                sw = if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2)
+                    "1"
+                else IOTConstants.NULL_KEY,
+                monitorpoint = mStates.monitorPoint.get(),
+                cnt = mStates.broadcastTimes.get(),
+                level1 = mStates.firstAlarmVoice.get(),
+                level2 = mStates.secondAlarmVoice.get(),
+                level3 = mStates.thirdAlarmVoice.get(),
+                level4 = mStates.fourthAlarmVoice.get()
+            )
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL,
+                monitorPointEntity.toCommandString()
+            )
+            commandItems.add(command)
+        }
 
         val reportIntervalEntity = AlarmReportIntervalEntity(
             level1 = mStates.firstAlarmReportInterval.get(),
@@ -399,11 +389,11 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
             level3 = mStates.thirdAlarmReportInterval.get(),
             level4 = mStates.fourthAlarmReportInterval.get()
         )
-        val reportIntervalCommand = IOTCommandUtil.getCommand(
+        val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_SET_ALRAM_BROADCAST_REPORT_INTERVAL,
             reportIntervalEntity.toCommandString()
         )
-        commandItems.add(reportIntervalCommand)
+        commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -517,7 +507,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -535,7 +525,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -551,7 +541,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -567,7 +557,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("预警测试成功")
+                            showMessageDialog("预警测试成功")
                         }
                     }
                 }
@@ -582,6 +572,8 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
     private fun initAlarmSwitch(info: AlarmSwitchInfo) {
         try {
             mStates.isOpened.set(info.sw == "1")
+            //添加这行来保存初始状态
+            mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
             addLogItem(Log.ERROR, e.errorMsg)
@@ -599,6 +591,9 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
             mStates.secondAlarmVoice.set(info.level2)
             mStates.thirdAlarmVoice.set(info.level3)
             mStates.fourthAlarmVoice.set(info.level4)
+
+            //添加这行来保存初始状态
+            mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -612,6 +607,17 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
         mStates.secondAlarmReportInterval.set(info.level2)
         mStates.thirdAlarmReportInterval.set(info.level3)
         mStates.fourthAlarmReportInterval.set(info.level4)
+
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
+    }
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
     }
 
     override fun onResume() {

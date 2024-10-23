@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:selectableItemBackground"
+        android:enabled="@{m.functionModule.moduleAvailable}"
         android:focusable="true"
         android:gravity="center"
         android:orientation="vertical"
@@ -22,11 +23,12 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_config_logo"
-            imageResId="@{m.functionModule.iconResId}"
-            imageSize="@{m.functionModule.iconSize}"
+            app:imageResId="@{m.functionModule.iconResId}"
+            app:imageSize="@{m.functionModule.iconSize}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:src="@drawable/ic_module_basic_info" />
+            app:imageAlpha="@{m.functionModule.moduleAvailable ? 255 :128}"
+            tools:src="@drawable/ic_module_net_info" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_config_name"
@@ -36,7 +38,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:text="@{m.functionModule.name}"
-            android:textColor="@color/sub_title_text_color_black_60"
+            android:textColor="@{m.functionModule.moduleAvailable ? @color/sub_title_text_color_black_60 : @color/offline_BABABA}"
             android:textSize="@dimen/device_home_module_item_text_size"
             tools:text="关于设备" />
 

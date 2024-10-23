@@ -279,7 +279,7 @@ class AdmeSportsCalibrationProcessingFragment : BaseIOTDeviceFragment() {
             IOTCommandType.ADME_MD_SET_CALIBRATION_PROCESSING -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置参数出错: ${result.message}"
+                        val errMsg = "数据保存出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -300,7 +300,7 @@ class AdmeSportsCalibrationProcessingFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
                         }
                     }
                 }

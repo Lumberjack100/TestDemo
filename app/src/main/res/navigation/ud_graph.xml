@@ -6,6 +6,7 @@
     app:startDestination="@id/udHomeFragment">
 
     <include app:graph="@navigation/include_query_data_graph" />
+    <include app:graph="@navigation/include_time_calibration_graph" />
     <include app:graph="@navigation/include_lora_graph" />
     <include app:graph="@navigation/include_firmware_upgrade_graph" />
     <include app:graph="@navigation/include_ble_command_debug_graph" />
@@ -25,7 +26,7 @@
 
     <fragment
         android:id="@+id/udMonitorDataHistoryFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDSensorDataHistoryFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.UDSensorDataHistoryFragment"
         android:label="UDMonitorDataHistoryFragment"
         tools:layout="@layout/fragment_ud_sensor_data_history" />
 
@@ -49,9 +50,9 @@
 
     <fragment
         android:id="@+id/udLocationInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDLocationInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.CommonLocationInfoFragment"
         android:label="UDLocationInfoFragment"
-        tools:layout="@layout/fragment_ud_location_info" />
+        tools:layout="@layout/fragment_common_location_info" />
 
     <fragment
         android:id="@+id/udWorkModelParamFragment"
@@ -88,12 +89,6 @@
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDSensorParamFragment"
         android:label="UDProductSensorParamFragment"
         tools:layout="@layout/fragment_u_d_product_sensor_param" />
-
-    <fragment
-        android:id="@+id/udAltitudeParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDAltitudeParamFragment"
-        android:label="UDAltitudeParamFragment"
-        tools:layout="@layout/fragment_ud_altitude_param" />
 
     <fragment
         android:id="@+id/udRadioParamFragment"
@@ -219,14 +214,6 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_udAltitudeParamFragment"
-        app:destination="@id/udAltitudeParamFragment"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <action
         android:id="@+id/action_global_to_udRadioParamFragment"
         app:destination="@id/udRadioParamFragment"
         app:enterAnim="@anim/activity_open_enter"
@@ -269,6 +256,14 @@
     <action
         android:id="@+id/action_global_to_remoteDebugFragment"
         app:destination="@id/remote_command_debug_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_time_calibration"
+        app:destination="@id/time_calibration_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

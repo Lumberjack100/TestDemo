@@ -478,7 +478,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
                         }
                     }
                 }
@@ -494,7 +494,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
                         }
                     }
                 }
@@ -550,14 +550,16 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                 val sensorStatusList = MoshiUtil.fromJson<List<MRSensorStatus>>(content)
                     ?: return@launchWithViewLifecycle
                 val list = sensorStatusList.map { sensorStatus ->
+                    val sensorType =
+                        if (sensorStatus.sensortype == "1") "10066" else sensorStatus.sensortype
                     MRSensorItem(
                         isPlugin = sensorStatus.sta == "0",
                         chl = sensorStatus.chl,
                         addrDesc = "通道-${sensorStatus.chl}",
-                        sensorName = portHomeViewModel.configPort4851SensorNameToSensorModelMap[sensorStatus.sensortype]?.sensorName
+                        sensorName = portHomeViewModel.configPort4851SensorNameToSensorModelMap[sensorType]?.sensorName
                             ?: "未知类型",
-                        sensorType = sensorStatus.sensortype,
-                        modelToken = portHomeViewModel.configPort4851SensorNameToSensorModelMap[sensorStatus.sensortype]?.modelToken
+                        sensorType = sensorType,
+                        modelToken = portHomeViewModel.configPort4851SensorNameToSensorModelMap[sensorType]?.modelToken
                             ?: "",
                     )
                 }

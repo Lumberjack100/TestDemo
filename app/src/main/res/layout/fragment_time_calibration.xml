@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.TimeCalibrationViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.ui.page.device.common.TimeCalibrationFragment.ClickProxy" />
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:vm="@{toolbarVM}" />
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/Common_GroupItem_Title_Style2"
+            android:layout_marginHorizontal="@dimen/dimen_size_16"
+            android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+            android:text="设备时间" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            style="@style/Common_EditItem_Layout_Style"
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
+            android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+            android:background="@drawable/bg_white_corner_4dp"
+            android:gravity="center">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{stateVM.deviceTime}"
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/text_size_14"
+                tools:text="2023.12.12 10:24:00" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/Common_GroupItem_Title_Style2"
+            android:layout_marginHorizontal="@dimen/dimen_size_16"
+            android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+            android:text="系统时间" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            style="@style/Common_EditItem_Layout_Style"
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
+            android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+            android:background="@drawable/bg_white_corner_4dp"
+            android:gravity="center">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{stateVM.systemTime}"
+                android:textColor="@color/sub_title_text_color_black_60"
+                android:textSize="@dimen/text_size_14"
+                tools:text="2023.12.12 10:24:00" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.google.android.material.textview.MaterialTextView
+            style="@style/Common_GroupItem_Title_Style2"
+            android:layout_marginHorizontal="@dimen/dimen_size_16"
+            android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+            android:text="时间误差" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            style="@style/Common_EditItem_Layout_Style"
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
+            android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+            android:background="@drawable/bg_white_corner_4dp"
+            android:gravity="center">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{stateVM.timeDifference}"
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/text_size_14"
+                android:textStyle="bold"
+                tools:text="2023.12.12 10:24:00" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_confirm"
+            style="@style/SubmitButton_Style2"
+            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+            android:layout_marginTop="@dimen/dimen_size_50"
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
+            android:text="立即校准" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

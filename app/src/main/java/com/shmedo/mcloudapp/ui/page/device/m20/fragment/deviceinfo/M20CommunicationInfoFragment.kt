@@ -120,7 +120,7 @@ class M20CommunicationInfoFragment : BaseIOTDeviceFragment() {
 
             mStates.starNum.set(commonCurrentStateInfo.starNum)
             mStates.amsState.set(
-                if (commonCurrentStateInfo.dataCenter4 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter4 == 1) "已连接" else "未连接"
+                if (commonCurrentStateInfo.dataCenter4 == 0) "未启用" else if (commonCurrentStateInfo.dataCenter4 == 1) "已连接" else "未连接"
             )
             mStates.signalValue.set(commonCurrentStateInfo._4g_signal.let {
                 if (it <= 0)
@@ -157,26 +157,26 @@ class M20CommunicationInfoFragment : BaseIOTDeviceFragment() {
                 "数据状态" -> {
                     columnCellDataList.add(
                         CommunicationDataCellModel(
-                            mData = if (commonCurrentStateInfo.dataCenter1 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter1 == 1) "已连接" else "未连接",
-                            textColorResId = if (commonCurrentStateInfo.dataCenter1 == 1) R.color.online_colorPrimary else R.color.error_FF4400
+                            mData = if (commonCurrentStateInfo.dataCenter1 == 0) "未启用" else if (commonCurrentStateInfo.dataCenter1 == 1) "已连接" else "未连接",
+                            textColorResId = if (commonCurrentStateInfo.dataCenter1 == 1) R.color.online_colorPrimary else R.color.offline_BABABA
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
-                            mData = if (commonCurrentStateInfo.dataCenter2 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter2 == 1) "已连接" else "未连接",
-                            textColorResId = if (commonCurrentStateInfo.dataCenter2 == 1) R.color.online_colorPrimary else R.color.error_FF4400
+                            mData = if (commonCurrentStateInfo.dataCenter2 == 0) "未启用" else if (commonCurrentStateInfo.dataCenter2 == 1) "已连接" else "未连接",
+                            textColorResId = if (commonCurrentStateInfo.dataCenter2 == 1) R.color.online_colorPrimary else R.color.offline_BABABA
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
-                            mData = if (commonCurrentStateInfo.dataCenter3 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter3 == 1) "已连接" else "未连接",
-                            textColorResId = if (commonCurrentStateInfo.dataCenter3 == 1) R.color.online_colorPrimary else R.color.error_FF4400
+                            mData = if (commonCurrentStateInfo.dataCenter3 == 0) "未启用" else if (commonCurrentStateInfo.dataCenter3 == 1) "已连接" else "未连接",
+                            textColorResId = if (commonCurrentStateInfo.dataCenter3 == 1) R.color.online_colorPrimary else R.color.offline_BABABA
                         )
                     )
                     columnCellDataList.add(
                         CommunicationDataCellModel(
-                            mData = if (commonCurrentStateInfo.dataCenter4 == 0) "未开启" else if (commonCurrentStateInfo.dataCenter4 == 1) "已连接" else "未连接",
-                            textColorResId = if (commonCurrentStateInfo.dataCenter4 == 1) R.color.online_colorPrimary else R.color.error_FF4400
+                            mData = if (commonCurrentStateInfo.dataCenter4 == 0) "未启用" else if (commonCurrentStateInfo.dataCenter4 == 1) "已连接" else "未连接",
+                            textColorResId = if (commonCurrentStateInfo.dataCenter4 == 1) R.color.online_colorPrimary else R.color.offline_BABABA
                         )
                     )
                 }

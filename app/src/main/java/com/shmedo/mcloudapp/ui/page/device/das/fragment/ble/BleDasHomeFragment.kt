@@ -144,7 +144,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         mStates.productLogoResId.set(mStates.productLightResId.get())
         mStates.productName.set(deviceInfo.productName)
         mStates.deviceToken.set(deviceInfo.deviceToken)
-        mStates.deviceName.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken }
+        mStates.productToken.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken }
             .replace("BHY-RDS", "BHY-3S"))
         mStates.firmwareVersion.set(deviceInfo.firmwareVersion)
 
@@ -456,16 +456,23 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     override fun showNearbyCommunicationTimeoutAlert(
         cmdStr: String,
         isDismissLoadingDialog: Boolean,
-        isShowMsg: Boolean,
-        msg: String
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
     ) {
-        super.showNearbyCommunicationTimeoutAlert(cmdStr, isDismissLoadingDialog, false, msg)
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = false,
+            isMessageDialog = isMessageDialog,
+            errMsg = errMsg
+        )
         when (MDCommandUtil.extractCommandType(cmdStr)) {
             MDCommandType.LOCAL_TIME,
             -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set("指令响应超时")
+                mCommandResponseStates.responseContent.set("设备未响应")
             }
 
             else -> {

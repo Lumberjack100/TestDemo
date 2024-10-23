@@ -22,6 +22,7 @@ class AdmeCurrentStateInfoParser: IOTCommandParser<AdmeCurrentStateInfo> {
             simid = keyValueMap.getOrDefault("simid", simid)
             imeid = keyValueMap.getOrDefault("imeid", imeid)
             firversion = keyValueMap.getOrDefault("firversion", firversion)
+            motorrv = keyValueMap.getOrDefault("motorrv", motorrv)
             ctrinputv = keyValueMap.getOrDefault("ctrinputv", ctrinputv)
             driveinputv = keyValueMap.getOrDefault("driveinputv", driveinputv)
             inctype = keyValueMap.getOrDefault("inctype", inctype)

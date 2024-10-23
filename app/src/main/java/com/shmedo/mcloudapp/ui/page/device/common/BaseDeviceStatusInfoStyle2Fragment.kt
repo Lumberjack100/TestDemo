@@ -14,7 +14,6 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
@@ -35,6 +34,7 @@ import com.shmedo.mcloudapp.model.DasSensorSubMonitorStatusItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem
+import com.shmedo.mcloudapp.model.DeviceStatusInfoTextSwitcherItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
@@ -98,6 +98,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
         binding.recyclerview.linear().setup { rv ->
             addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group2)
             addType<DeviceStatusInfoBasicItem>(R.layout.item_device_status_info_basic2)
+            addType<DeviceStatusInfoTextSwitcherItem>(R.layout.item_device_status_info_text_switcher)
             addType<DeviceStatusInfoSignalItem>(R.layout.item_device_status_info_signal2)
             addType<DasSensorStatusInfo>(R.layout.item_das_sensor_status)
             addType<GapItem>(R.layout.item_device_status_info_gap)
@@ -128,19 +129,13 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                         val builder = XPopup.Builder(context)
                             .hasShadowBg(false)
                             .watchView(itemBinding.tvValue)
-                            .setPopupCallback(object : SimpleCallback() {
-                                override fun onClickOutside(popupView: BasePopupView?) {
-                                    item.refreshClipboardState(false)
-                                }
-                            })
+                            .setPopupCallback(object : SimpleCallback() {})
                         itemBinding.tvValue.setOnLongClickListener {
-                            item.refreshClipboardState(true)
                             VibrateUtils.vibrate(300)
                             builder.asAttachList(arrayListOf("复制").toTypedArray(), null)
                             { _, text ->
                                 when (text) {
                                     "复制" -> {
-                                        item.refreshClipboardState(false)
                                         ClipboardUtils.copyText(item.value)
                                         Toaster.show("已复制到剪贴板")
                                     }
@@ -664,6 +659,59 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = "查询状态出错: $errMsg",
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = "设备未响应",
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = "设备未响应"
+        )
+    }
+
     override fun setResultData(cmdStr: String) {
         //判断是否页面是否处于 resume 状态
         if (!isResumed) {
@@ -677,8 +725,8 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询信息出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        val errMsg = "查询状态出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -698,8 +746,8 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询信息出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        val errMsg = "查询状态出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 

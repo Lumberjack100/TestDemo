@@ -63,8 +63,7 @@
 
                         <com.kyleduo.switchbutton.SwitchButton
                             style="@style/SwitchButton_Item_Button_Style"
-                            checkedImmediatelyNoEvent="@{stateVM.isOpened}"
-                            android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
+                            android:checked="@={stateVM.isOpened}"
                             app:kswAnimationDuration="100"
                             app:kswBackDrawable="@drawable/sl_switchbutton_back"
                             app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
@@ -80,7 +79,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened }"
-                            android:text="广播接收频点" />
+                            android:text="广播接收频点(MHz)" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
@@ -100,7 +99,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened }"
-                            android:text="广播发射频点" />
+                            android:text="广播发射频点(MHz)" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
@@ -154,7 +153,6 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_reset"
                         style="@style/ResetButton_Style2"
-                        visible="@{stateVM.isOpened }"
                         android:layout_marginTop="@dimen/reset_button_margin_top_50"
                         android:onClick="@{()->click.onResetClick()}"
                         android:text="@string/button_reset_text" />
@@ -163,8 +161,8 @@
                         android:id="@+id/btn_confirm"
                         style="@style/SubmitButton_Style2"
                         onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-                        visible="@{stateVM.isOpened }"
                         android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                        android:enabled="@{stateVM.isDataModified}"
                         android:text="@string/button_save_text" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>

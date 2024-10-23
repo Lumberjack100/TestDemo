@@ -408,7 +408,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                             if (mStates.sensorModelMap.isEmpty()) {
                                 showMessageDialog("采集器地址已修改为0,如继续配置扩展传感器,请先修改采集器地址!")
                             }else{
-                                Toaster.show("保存成功")
+                                Toaster.show("数据保存成功")
                             }
                         }
                     }

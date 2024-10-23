@@ -92,13 +92,11 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-
                             android:text="用户名" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/userNameET"
                             style="@style/Common_EditItem_EditText_Style"
-
                             android:text="@={stateVM.userName}"
                             app:lengthFilter="@{20}" />
 
@@ -110,13 +108,11 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-
                             android:text="密码" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/pwdET"
                             style="@style/Common_EditItem_EditText_Style"
-
                             android:text="@={stateVM.pwd}"
                             app:lengthFilter="@{20}" />
 
@@ -134,6 +130,7 @@
                         style="@style/SubmitButton_Style2"
                         onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
                         android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                        android:enabled="@{stateVM.isDataModified}"
                         android:text="@string/button_save_text" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>

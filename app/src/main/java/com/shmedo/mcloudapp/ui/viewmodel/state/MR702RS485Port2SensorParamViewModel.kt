@@ -41,4 +41,10 @@ class MR702RS485Port2SensorParamViewModel : ViewModel() {
     val initialWaterLevel = NonNullObservableField("")
     //堰角高度
     val weirHeight = NonNullObservableField("")
+    //多项式系数A值
+    val polyA = NonNullObservableField("")
+    //多项式系数B值
+    val polyB = NonNullObservableField("")
+    //多项式系数C值
+    val polyC = NonNullObservableField("")
 }

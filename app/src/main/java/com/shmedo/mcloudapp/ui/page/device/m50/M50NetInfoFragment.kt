@@ -88,16 +88,18 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList,
                     name = "IMEI",
                     value = stateInfo.imei,
+                    isClipboard = true
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "ICCID",
                     value = stateInfo.ccid,
+                    isClipboard = true
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "电台",
-                    value = stateInfo.radioEnableStatus.compareAndReturn("1", "已启用", "未启用"),
+                    value = stateInfo.radioEnableStatus.compareAndReturn("1", "已开启", "未启用"),
                     textColorRes = if (stateInfo.radioEnableStatus == "1") ColorUtils.getColor(
                         R.color.online_colorPrimary
                     ) else ColorUtils.getColor(R.color.error_FF4400)
@@ -144,7 +146,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                                 "$onlineStatus($platformType)"
                             ),
                             textColorRes = if (status == "0" || onlineStatus == "未连接") ColorUtils.getColor(
-                                R.color.error_FF4400
+                                R.color.offline_BABABA
                             ) else ColorUtils.getColor(R.color.online_colorPrimary),
                             isBottomItem = true
                         )

@@ -225,14 +225,16 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     override fun showNearbyCommunicationTimeoutAlert(
         cmdStr: String,
         isDismissLoadingDialog: Boolean,
-        isShowMsg: Boolean,
-        msg: String
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
     ) {
         super.showNearbyCommunicationTimeoutAlert(
-            cmdStr,
-            isDismissLoadingDialog,
-            false,
-            msg
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = false,
+            isMessageDialog = isMessageDialog,
+            errMsg = errMsg
         )
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE,
@@ -422,7 +424,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                     stopQueryMotorState()
                     mStates.isVerticalProgressBarVisible.set(false)
                     mStates.isHorizontalProgressBarReadingData.set(motionState.motorinfo == "9")//正反测模式下，正测阶段只有读取数据过程，没有上传数据，所以不展示上传数据进度框
-                    setHorizontalMaxProgress()
+                    setHorizontalMaxProgress(motionState.measpoint)
                     mStates.motorInfo.set(if (motionState.motorinfo == "9") "测量完成,等待反向测量" else "测量完成")
                     mStates.isRunButtonVisible.set(true)
                     mStates.runButtonText.set("下一步")
@@ -565,12 +567,28 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun setHorizontalMaxProgress() {
-        mStates.horizontalProgress.set(mStates.horizontalMaxProgress.get())
-        mStates.processDataNum.set(
-            "${mStates.horizontalMaxProgress.get()}/${mStates.horizontalMaxProgress.get()}"
-        )
-        mStates.processDataPercent.set("100%")
+    private fun setHorizontalMaxProgress(measurePoint: String = "") {
+        try {
+            val values = measurePoint.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
+            if (values.size > 1 && !TextUtils.isEmpty(values[1]) && RegexUtils.isMatch(
+                    RegexConstants.REGEX_INTEGER,
+                    values[1]
+                )
+            ) {
+                mStates.processDataNum.set(
+                    "${values[1]}/${values[1]}"
+                )
+            }else{
+                mStates.processDataNum.set(
+                    "0/0"
+                )
+            }
+            mStates.processDataPercent.set("100%")
+            mStates.horizontalMaxProgress.set(100)
+            mStates.horizontalProgress.set(100)
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
     }
 
 
@@ -592,7 +610,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
 
     override fun onResume() {
         super.onResume()
-        // 启用屏幕长亮
+        // 开启屏幕长亮
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         initImmersionBar(binding.llToolbar.toolbar)
     }
@@ -672,7 +690,10 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
             putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
             putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
             putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putInt(
+                com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR,
+                statusBarColor
+            )
         }
     }
 }

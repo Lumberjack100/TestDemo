@@ -71,10 +71,10 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentUniversalDataCenterHomeBinding
         toolbarViewModel.toolbarTitleText.set("数据链路")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         initRefresh()
         initAdapter()
@@ -85,7 +85,19 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
         arguments?.let {
             centerNum = it.getInt(CENTER_NUM)
         }
-        mStates.isSupportedReportInterval.set(productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2 || productType == ProductType.U_I_1 || productType == ProductType.U_R_1)
+        resetDefaultParams()
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
+    }
+
+    private fun resetDefaultParams() {
+        mStates.isSupportedReportInterval.set(
+            productType == ProductType.GNSS_M_1
+                    || productType == ProductType.GNSS_M_2
+                    || productType == ProductType.GNSS_M_5
+                    || productType == ProductType.U_I_1
+                    || productType == ProductType.U_R_1
+        )
         binding.recyclerView.bindingAdapter.models = getAdapterData()
     }
 
@@ -124,7 +136,7 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
     override fun createObserver() {
         super.createObserver()
         //从编辑页面返回需要刷新事件详情页面
-        setFragmentResultListener(AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { key, bundle ->
+        setFragmentResultListener(AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { _, bundle ->
             val centerNumber =
                 bundle.getInt(AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
 
@@ -152,7 +164,7 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     private fun initSaveCommand() {
         if (mStates.reportInterval.get().isEmpty()) {
-            showMessageDialog("请输入上报时间间隔!")
+            showMessageDialog("请输入上报间隔!")
             return
         }
         commandItems.clear()
@@ -192,6 +204,59 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = errMsg
+        )
+    }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_DATA_REPORT_TIME -> {
@@ -201,8 +266,8 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询数据上报时间出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        val errMsg = "查询上报间隔出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -223,7 +288,7 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询数据链路状态出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -239,14 +304,16 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_DATA_REPORT_TIME -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "上报参数设置出错: ${result.message}"
+                        val errMsg = "数据保存出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            showMessageDialog("数据保存成功")
+                            //添加这行来保存初始状态
+                            mStates.saveInitialState()
                         }
                     }
                 }
@@ -260,6 +327,8 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     private fun initDataReportTime(dataReportInfo: DasDataReportInfo) {
         mStates.reportInterval.set(dataReportInfo.report_intv)
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
     }
 
     private fun initDataCenterStatus(dataCenterStatus: DataCenterStatus) {
@@ -308,6 +377,15 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
             )
         }
         return list
+    }
+
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
     }
 
     override fun onResume() {

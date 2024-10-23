@@ -12,7 +12,7 @@ class AdmeExecutiveAgencyViewModel : ViewModel() {
     val measureMethodText = NonNullObservableField("")
     val measureMethod = NonNullObservableField(0)//测量方式 （0:实时测量，1:整时整点测量，2:定时定点测量)
     val dataSettlementMethod = NonNullObservableField("")//数据解算方式
-    val dataResponse = NonNullObservableField("")//数据应答（0:关闭，1:启用）
+    val dataResponse = NonNullObservableField("")//数据应答（0:关闭，1:开启）
     val waitingIntervalPerRound = NonNullObservableField("")//每轮等待时间
     val measurementIntervalPerRound = NonNullObservableField("")//每轮测量间隔
     val modifiedDate = NonNullObservableField("")//修改日期

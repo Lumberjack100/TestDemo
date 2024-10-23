@@ -15,6 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
+        android:enabled="@{m.functionModule.moduleAvailable}"
         android:focusable="true"
         android:foreground="?android:selectableItemBackground"
         app:cardCornerRadius="3dp"
@@ -29,9 +30,9 @@
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_config_logo"
                 imageResId="@{m.functionModule.iconResId}"
+                tintColor="@{m.functionModule.moduleAvailable ? @color/colorPrimary : @color/sub_title_text_color}"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:tint="@{m.functionModule.moduleAvailable ? @color/colorPrimary : @color/sub_title_text_color}"
                 tools:src="@drawable/ic_module_current_state" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -48,8 +49,8 @@
                 tools:text="关于设备" />
 
             <com.google.android.material.textview.MaterialTextView
-                visible="@{!m.functionModule.desc.empty}"
                 android:id="@+id/tv_config_desc"
+                visible="@{!m.functionModule.desc.empty}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"

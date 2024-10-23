@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="15dp"
-            android:text="蓝牙未开启，点击打开蓝牙"
+            android:text="蓝牙未启用，点击打开蓝牙"
             android:textColor="@color/sub_title_text_color"
             android:textSize="@dimen/dimen_size_15" />
 

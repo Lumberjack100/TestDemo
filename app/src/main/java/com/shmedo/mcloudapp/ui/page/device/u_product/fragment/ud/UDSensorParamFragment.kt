@@ -13,6 +13,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.u_product.UDAlarmReportModeEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.u_product.UDInitialValueEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.u_product.UDModuleGapParamEntity
@@ -27,7 +28,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentUDProductSensorParamBinding
-import com.shmedo.mcloudapp.extensions.formatDoubleValue
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -37,6 +37,8 @@ import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDSensorParamViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -59,6 +61,9 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
         arrayListOf("15", "30", "60", "120")//抓拍频率
     private val imageResolutionList = arrayListOf("1024x768", "1280x960", "1600x1200", "1920x1080")
 
+    private var queryMeasureResultTimeoutJob: Job? = null
+    private var repeatPollNum = 0 //重复轮询次数
+
     override fun initViewModel() {
         super.initViewModel()
     }
@@ -75,12 +80,12 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUDProductSensorParamBinding
-        toolbarViewModel.toolbarTitleText.set("传感设置")
+        toolbarViewModel.toolbarTitleText.set("传感配置")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         initRefresh()
     }
@@ -100,58 +105,44 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         resetDefaultParams()
+        //保存初始状态
+        mStates.saveInitialState()
     }
 
     private fun resetDefaultParams() {
         mStates.measureInterval.set("5")//测量间隔
         mStates.installAngleOffsetThreshold.set("3")//安装角度偏移阈值
-        mStates.altitude.set("")//海拔
+        mStates.airAltitudeInitialValue.set("")//海拔
 
         mStates.captureFrequency.set(captureFrequencyList[captureFrequencyList.lastIndex])
         mStates.imageResolution.set(imageResolutionList[2])
 
-        mStates.altitudeMeasureMode.set("自动")
+        mStates.locationInitialValue.set("")//位置
     }
 
     inner class ClickProxy : BaseClickProxy() {
         /**
-         * 海拔高度
+         * 更新空高测量初始值
          */
-        fun onGoToAltitudeClick() {
-            val bundle = BaseIOTDeviceFragment.newBundleArguments(
-                productType,
-                communicateWay,
-                deviceInfo,
-                bleDevice
-            )
-            nav().navigate(
-                R.id.action_global_to_udAltitudeParamFragment,
-                bundle
-            )
-        }
-
-        /**
-         * 更新测量初始值
-         */
-        fun onSetInitialValueClick() {
+        fun onUpdateAirAltitudeInitialValueClick() {
             KeyboardUtils.hideSoftInput(binding.root)
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            commandItems.clear()
-            val entity = UDInitialValueEntity(
-                method = "1",
-                type = "1",
-            )
-            val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_SENSOR_INITIAL,
-                entity.toCommandString()
-            )
-            commandItems.add(command)
+            measureInitialValue("1", "1")
+        }
 
-            showLoadingDialog(StringUtils.getString(R.string.processing))
-            sendCommandFromCmdList(isStartTimeoutJob = true)
+        /**
+         * 更新位置初始值
+         */
+        fun onUpdateLocationInitialValueClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            measureInitialValue("1", "2")
         }
 
         /**
@@ -220,17 +211,6 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
             showMessageDialog("请输入安装角度偏移阈值!")
             return
         }
-        try {
-            val value = mStates.installAngleOffsetThreshold.get().toDouble()
-            if (value > 360) {
-                showMessageDialog("安装角度偏移阈值不能大于360!")
-                return
-            }
-        } catch (ex: Exception) {
-            showMessageDialog("请输入正确的安装角度偏移阈值!")
-            return
-        }
-
         commandItems.clear()
         val entity = UDModuleGapParamEntity(
             ld_module = mStates.measureInterval.get(),
@@ -257,6 +237,26 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    private fun measureInitialValue(method: String, type: String) {
+        commandItems.clear()
+        val entity = UDInitialValueEntity(
+            method = method,
+            type = type,
+        )
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_SET_SENSOR_INITIAL,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
+
+        if (method == "1") {
+            showLoadingDialog(StringUtils.getString(R.string.processing))
+        } else {
+            Timber.d("查询测量结果轮询次数：$repeatPollNum")
+        }
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
     }
@@ -264,10 +264,121 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_DEVICE_STATUS, "value=4"
+            IOTCommandType.MD_GET_DEVICE_STATUS, "method=4"
         )
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DEVICE_STATUS -> {
+                super.doCmdResponseResultError(
+                    cmdStr = cmdStr,
+                    errMsg = "查询参数出错: $errMsg",
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
+            }
+
+            IOTCommandType.MD_SET_SENSOR_INITIAL -> {
+                if (cmdStr.contains("method=0")) {
+                    super.doCmdResponseResultError(
+                        cmdStr = cmdStr,
+                        errMsg = "查询测量信息出错: $errMsg",
+                        isShowErrMsg = true,
+                        isMessageDialog = true
+                    )
+                } else {
+                    super.doCmdResponseResultError(
+                        cmdStr = cmdStr,
+                        errMsg = if (cmdStr.contains("type=1")) "更新测量初始值指令下发出错: $errMsg" else "更新位置初始值指令下发出错: $errMsg",
+                        isShowErrMsg = true,
+                        isMessageDialog = true
+                    )
+                }
+            }
+
+            IOTCommandType.MD_SET_MODULE_GAP,
+            IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR -> {
+                super.doCmdResponseResultError(
+                    cmdStr = cmdStr,
+                    errMsg = "数据保存出错: $errMsg",
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
+            }
+
+            else -> {
+                super.doCmdResponseResultError(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog
+                )
+            }
+        }
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DEVICE_STATUS,
+            IOTCommandType.MD_SET_SENSOR_INITIAL,
+            IOTCommandType.MD_SET_MODULE_GAP,
+            IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR -> {
+                super.showNearbyCommunicationTimeoutAlert(
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = true,
+                    isMessageDialog = isMessageDialog,
+                    errMsg = "设备未响应"
+                )
+            }
+
+            else -> {
+                super.showNearbyCommunicationTimeoutAlert(
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog,
+                    errMsg = errMsg
+                )
+            }
+        }
     }
 
     override fun setResultData(cmdStr: String) {
@@ -280,7 +391,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -294,17 +405,23 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.MD_SET_SENSOR_INITIAL -> {//
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                val result = iotParseManager.parse<Map<String, String>>(
+                    cmdStr,
+                    IOTCommandType.MD_SET_SENSOR_INITIAL
+                )
+                when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "更新雷达初始值出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        val errMsg =
+                            if (cmdStr.contains("method=0")) "查询测量信息出错: ${result.message}" else if (cmdStr.contains(
+                                    "type=1"
+                                )
+                            ) "更新测量初始值出错: ${result.message}" else "更新位置初始值出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
-                    else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("更新雷达初始值成功")
-                        }
+                    is IOTCommandResult.Success -> {
+                        processResponse(result.data)
                     }
                 }
             }
@@ -312,14 +429,14 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_MODULE_GAP -> {//设置测量间隔
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        val errMsg = "数据保存出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -328,14 +445,14 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR -> {//设置角度偏移阈值
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        val errMsg = "数据保存出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -356,12 +473,8 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
 
                 mStates.measureInterval.set(udCurrentStateInfo.radarMeasureInterval)
                 mStates.installAngleOffsetThreshold.set(udCurrentStateInfo.installAngleOffsetThreshold)
-                mStates.altitude.set(
-                    udCurrentStateInfo.altitude.formatDoubleValue(
-                        "",
-                        3
-                    )
-                )
+                mStates.airAltitudeInitialValue.set(udCurrentStateInfo.airAltitudeInitialValue)
+
                 captureFrequencyMinList.indexOf(udCurrentStateInfo.captureFrequency)
                     .let { index ->
                         if (index in captureFrequencyList.indices) {
@@ -370,10 +483,10 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                     }
                 mStates.imageResolution.set("${udCurrentStateInfo.pixx}x${udCurrentStateInfo.pixy}")
 
-                mStates.altitudeMeasureMode.set(
-                    if (udCurrentStateInfo.altitudeMeasureMode == "0") "自动" else "手动"
-                )
+                mStates.locationInitialValue.set(udCurrentStateInfo.locationInitialValue.ifEmpty { AppContants.PLACE_HOLDER_VALUE })
 
+                //添加这行来保存初始状态
+                mStates.saveInitialState()
             } catch (e: Exception) {
                 Timber.e(e)
                 addLogItem(Log.ERROR, e.errorMsg)
@@ -381,8 +494,76 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    /**
+     * 处理
+     */
+    private fun processResponse(resultMap: Map<String, String>) {
+        try {
+            val method = resultMap["method"] ?: ""
+            val type = resultMap["type"] ?: ""
+            if (method == "0") {//轮询测得的初始值
+                //已经有数据
+                if (resultMap.containsKey("initvalue")) {
+                    cancelNearbyCommunicationTimeoutJob()
+                    showMessageDialog("初始值更新成功")
+
+                    val initValue = resultMap["initvalue"] ?: ""
+                    if (type == "1") {
+                        mStates.airAltitudeInitialValue.set(initValue)
+                    } else {
+                        mStates.locationInitialValue.set(initValue.ifEmpty { AppContants.PLACE_HOLDER_VALUE })
+                    }
+                    return
+                }
+
+                cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog = false)
+                startQueryMeasureResultJob(type)
+            } else { //更新初始值指令
+                clearQueryMeasureResultTimeoutJob()
+                startQueryMeasureResultJob(type)
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
+    private fun startQueryMeasureResultJob(type: String) {
+        //启动一个新的协程作为超时Job
+        queryMeasureResultTimeoutJob?.cancel()
+        queryMeasureResultTimeoutJob = launchWithViewLifecycle {
+            if (repeatPollNum >= REPEAT_POLL_NUM) {
+                cancelNearbyCommunicationTimeoutJob()
+                showMessageDialog("更新海拔高度失败，请稍后重试")
+                return@launchWithViewLifecycle
+            }
+            delay(AppContants.Communication.DELAY_5000_MILLIS) //延迟 timeMillis 秒
+            repeatPollNum++
+            measureInitialValue("0", type)
+        }
+    }
+
+    private fun clearQueryMeasureResultTimeoutJob() {
+        repeatPollNum = 0
+        queryMeasureResultTimeoutJob?.cancel()
+        queryMeasureResultTimeoutJob = null
+    }
+
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
+    }
+
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    companion object {
+        const val REPEAT_POLL_NUM = 10
     }
 }

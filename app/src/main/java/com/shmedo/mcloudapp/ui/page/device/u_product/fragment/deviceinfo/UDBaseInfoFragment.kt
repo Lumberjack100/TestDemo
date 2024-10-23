@@ -12,12 +12,17 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.notNull
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
+import com.shmedo.mcloudapp.model.DeviceStatusInfoTextSwitcherItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
@@ -27,6 +32,9 @@ import timber.log.Timber
  * 描述： 一体化雷达泥位计基本信息
  */
 class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
+    private var abnormalInfoJob: Job? = null
+
+    private var textSwitcherItem: DeviceStatusInfoTextSwitcherItem? = null
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -34,9 +42,10 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     }
 
     override fun queryStatusInfo() {
+        abnormalInfoJob?.cancel()
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "value=0")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "method=0")
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -70,19 +79,18 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     "-3" -> "故障"
                     else -> "正常"
                 }
-                groupList.add(
-                    DeviceStatusInfoBasicItem(
-                        name = "设备状态",
-                        value = deviceStatus,
-                        textColorRes = when (deviceStatus) {
-                            "正常" -> ColorUtils.getColor(R.color.online_colorPrimary)
-                            "告警" -> ColorUtils.getColor(
-                                R.color.warn_FF9D00
-                            )
-                            else -> ColorUtils.getColor(R.color.error_FF4400)
-                        }
-                    )
+                textSwitcherItem = DeviceStatusInfoTextSwitcherItem(
+                    name = "设备状态",
+                    value = deviceStatus,
+                    textColorRes = when (deviceStatus) {
+                        "正常" -> ColorUtils.getColor(R.color.online_colorPrimary)
+
+                        else -> 0
+                    }
                 )
+                groupList.add(textSwitcherItem!!)
+                processAbnormalInfo(deviceStatus, stateInfo.deviceError, stateInfo.deviceWarn)
+
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "固件版本",
@@ -97,6 +105,13 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList,
                     name = "启动代码",
                     value = stateInfo.bootCode,
+                    //代码以 36 开头或者是 2026、2027、2028 的显示告警色
+                    textColorRes = if (stateInfo.bootCode.startsWith("36") || stateInfo.bootCode in listOf(
+                            "2026",
+                            "2027",
+                            "2028"
+                        )
+                    ) ColorUtils.getColor(R.color.warn_FF9D00) else 0
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
@@ -133,15 +148,15 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     "2" -> "二级报警"
                     "3" -> "三级报警"
                     "4" -> "四级报警"
-                    "5" -> "正常"
-                    else -> "正常"
+                    "5" -> "普通"
+                    else -> "普通"
                 }
                 groupList.add(
                     DeviceStatusInfoBasicItem(
                         name = "上报状态",
                         value = reportStatus,
-                        textColorRes = if (reportStatus == "正常") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
-                            R.color.error_FF4400
+                        textColorRes = if (reportStatus == "普通") ColorUtils.getColor(R.color.online_colorPrimary) else ColorUtils.getColor(
+                            R.color.warn_FF9D00
                         )
                     )
                 )
@@ -167,6 +182,76 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
             } catch (e: Exception) {
                 Timber.e(e)
                 addLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
+    private fun processAbnormalInfo(
+        status: String,
+        deviceError: Map<String, String>? = null,
+        deviceWarn: Map<String, String>? = null
+    ) {
+        val errorInfoList = mutableListOf<String>()
+        try {
+            deviceError.notNull(notNullAction = { resultMap ->
+                resultMap["ld"]?.let { errorInfoList.add("雷达故障") }
+                resultMap["cam"]?.let { errorInfoList.add("摄像头故障") }
+                resultMap["qj"]?.let { errorInfoList.add("加速度计故障") }
+                resultMap["4G"]?.let { errorInfoList.add("4G故障") }
+                resultMap["bt"]?.let { errorInfoList.add("蓝牙故障") }
+                resultMap["radio"]?.let { errorInfoList.add("电台故障") }
+                resultMap["flash"]?.let { errorInfoList.add("存储故障") }
+                resultMap["ath"]?.let { errorInfoList.add("温湿度故障") }
+            })
+            deviceWarn.notNull(notNullAction = { resultMap ->
+                resultMap["loc_offset"]?.let { errorInfoList.add("位置偏移") }
+                resultMap["angle_offset"]?.let { errorInfoList.add("角度偏移") }
+                resultMap["extern_volt"]?.let { volt -> errorInfoList.add(if (volt == "-1") "外部电压过高" else "外部电压过低") }
+                resultMap["bat_cap"]?.let { errorInfoList.add("电池电量过低") }
+                resultMap["bat_temp"]?.let { errorInfoList.add("电池温度过高") }
+                resultMap["bat_health"]?.let { errorInfoList.add("电池容量过低") }
+                resultMap["inside_temp"]?.let { temp -> errorInfoList.add(if (temp == "-1") "内部温度过高" else "内部温度过低") }
+                resultMap["sim_card"]?.let { errorInfoList.add("无SIM卡") }
+            })
+            handleAbnormalInfo(status, errorInfoList)
+        } catch (e: Exception) {
+            Timber.e(e)
+            addLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
+    /**
+     * 处理设备异常信息轮播展示
+     * 每隔3秒切换一次，取出异常信息列表中的每一条异常信息，轮播显示
+     */
+    private fun handleAbnormalInfo(status: String, errorInfoList: List<String>) {
+        // 取消之前的job（如果存在）
+        abnormalInfoJob?.cancel()
+
+        //如果列表为空，直接返回
+        if (errorInfoList.isEmpty()) {
+            return
+        }
+        if (errorInfoList.size == 1) {
+            textSwitcherItem?.refreshValue(
+                value = errorInfoList[0],
+                isErrorInfo = status == "故障"
+            )
+            return
+        }
+        abnormalInfoJob = launchWithViewLifecycle {
+            flow {
+                while (true) {
+                    errorInfoList.forEach { errorInfo ->
+                        emit(errorInfo)
+                        delay(1500) // 延迟3秒
+                    }
+                }
+            }.collect { errorInfo ->
+                textSwitcherItem?.refreshValue(
+                    value = errorInfo,
+                    isErrorInfo = status == "故障"
+                )
             }
         }
     }

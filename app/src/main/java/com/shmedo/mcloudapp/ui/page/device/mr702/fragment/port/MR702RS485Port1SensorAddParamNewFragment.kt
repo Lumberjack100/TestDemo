@@ -583,14 +583,14 @@ class MR702RS485Port1SensorAddParamNewFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_MR_SET_RS485_PORT1_SENSOR_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置参数出错：${result.message}"
+                        val errMsg = "数据保存出错：${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
                             processBack()
                         }
                     }

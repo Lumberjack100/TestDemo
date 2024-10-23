@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.FindDeviceBeepViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog.ClickProxy" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="@dimen/dimen_size_20"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            app:drawable_radius="@{5}"
+            app:drawable_solidColor="@{@color/white}"
+            tools:background="@color/white">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="@dimen/dimen_size_15"
+                android:layout_marginEnd="@dimen/page_content_item_margin_horizontal_12"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:onClick="@{()->click.onCloseClick()}">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_close"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_dispatch_cmd_dialog_close" />
+
+            </FrameLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_device_logo"
+                imageResId="@{stateVM.deviceLogoResId}"
+                android:layout_width="150dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="@dimen/dimen_size_15"
+                tools:src="@drawable/device_logo_niweiji" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_product_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/page_content_item_padding_horizontal_16"
+                android:layout_marginTop="@dimen/dimen_size_20"
+                android:layout_marginBottom="@dimen/dimen_size_35"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="请注意观看设备！"
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/text_size_15"
+                android:textStyle="bold" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </FrameLayout>
+</layout>

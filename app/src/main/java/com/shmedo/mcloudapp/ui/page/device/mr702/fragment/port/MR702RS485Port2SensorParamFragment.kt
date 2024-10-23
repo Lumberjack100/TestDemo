@@ -129,6 +129,15 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
 
         mStates.calculate.set(calculateList[0])//是否计算
         mStates.calculateFormula.set(calculateFormulaList[0])//计算公式
+        mStates.sensitivityK.set("0")//灵敏度K 0
+        mStates.temperatureCorrectionCoefficientB.set("0")//温度修正系数 b 0
+        mStates.initialFrequencyF0.set("0")//初始频率 F0 0
+        mStates.initialTemperatureT0.set("0")//初始温度 T0 0
+        mStates.initialWaterLevel.set("0")//初始水位 0
+        mStates.weirHeight.set("0")//堰角高度 0
+        mStates.polyA.set("0")//多项式系数A值 0
+        mStates.polyB.set("0")//多项式系数B值 0
+        mStates.polyC.set("0")//多项式系数C值 0
 
         mStates.filterCoefficient.set("2")//滤波系数 2
         mStates.triggerValue.set("0")//触发值 0
@@ -249,12 +258,12 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
             sensortype = mStates.sensorType.get(),
             chl = mStates.channelNumber.get(),
             model = mStates.modelToken.get() + "_" + mStates.channelNumber.get(),
-            swtoken = if (mStates.sensorParamWrapper.get().swtoken == mStates.hydrologicalIdentification.get()) IOTConstants.NULL_KEY else mStates.hydrologicalIdentification.get(),
-            filtercnt = if (mStates.sensorParamWrapper.get().filtercnt == mStates.filterCoefficient.get()) IOTConstants.NULL_KEY else mStates.filterCoefficient.get(),
-            gateval = if (mStates.sensorParamWrapper.get().gateval == mStates.triggerValue.get()) IOTConstants.NULL_KEY else mStates.triggerValue.get(),
-            uplimit = if (mStates.sensorParamWrapper.get().uplimit == mStates.upperLimit.get()) IOTConstants.NULL_KEY else mStates.upperLimit.get(),
-            lowlimit = if (mStates.sensorParamWrapper.get().lowlimit == mStates.lowerLimit.get()) IOTConstants.NULL_KEY else mStates.lowerLimit.get(),
-            corrvalue = if (mStates.sensorParamWrapper.get().corrvalue == mStates.correctValue.get()) IOTConstants.NULL_KEY else mStates.correctValue.get(),
+            swtoken = mStates.hydrologicalIdentification.get(),
+            filtercnt =  mStates.filterCoefficient.get(),
+            gateval = mStates.triggerValue.get(),
+            uplimit =  mStates.upperLimit.get(),
+            lowlimit =  mStates.lowerLimit.get(),
+            corrvalue =  mStates.correctValue.get(),
 
             calctype = if (mStates.modelToken.get() == "10066") calculateList.indexOf(mStates.calculate.get())
                 .toString() else IOTConstants.NULL_KEY,
@@ -263,7 +272,10 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
             r0value = if (mStates.modelToken.get() == "10066") mStates.initialFrequencyF0.get() else IOTConstants.NULL_KEY,
             t0value = if (mStates.modelToken.get() == "10066") mStates.initialTemperatureT0.get() else IOTConstants.NULL_KEY,
             l0value = if (mStates.modelToken.get() == "10066") mStates.initialWaterLevel.get() else IOTConstants.NULL_KEY,
-            lvalue = if (mStates.modelToken.get() == "10066") mStates.weirHeight.get() else IOTConstants.NULL_KEY
+            lvalue = if (mStates.modelToken.get() == "10066") mStates.weirHeight.get() else IOTConstants.NULL_KEY,
+//            polyavalue = if (mStates.modelToken.get() == "10066") mStates.polyA.get() else IOTConstants.NULL_KEY,
+//            polybvalue = if (mStates.modelToken.get() == "10066") mStates.polyB.get() else IOTConstants.NULL_KEY,
+//            polycvalue = if (mStates.modelToken.get() == "10066") mStates.polyC.get() else IOTConstants.NULL_KEY
         )
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RS485_PORT2_SENSOR_PARAM,
@@ -317,14 +329,14 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
                 setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置参数出错: ${result.message}"
+                        val errMsg = "数据保存出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("保存成功")
+                            Toaster.show("数据保存成功")
                             processBack()
                         }
                     }
@@ -358,6 +370,9 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
             mStates.initialTemperatureT0.set(sensorParam.t0value)
             mStates.initialWaterLevel.set(sensorParam.l0value)
             mStates.weirHeight.set(sensorParam.lvalue)
+            mStates.polyA.set(sensorParam.polyavalue)
+            mStates.polyB.set(sensorParam.polybvalue)
+            mStates.polyC.set(sensorParam.polycvalue)
         } catch (e: Exception) {
             Timber.e(e)
             addLogItem(Log.ERROR, e.errorMsg)

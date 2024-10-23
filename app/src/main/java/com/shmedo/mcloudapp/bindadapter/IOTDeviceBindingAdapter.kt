@@ -8,6 +8,7 @@ import com.blankj.utilcode.util.ColorUtils
 import com.kyleduo.switchbutton.SwitchButton
 import com.shmedo.lib.cmd.base.iot_cmd.enums.SensorErrorType
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.ui.widget.AnimatedTextSwitcher
 import com.shmedo.mcloudapp.ui.widget.SignalView
 
 /**
@@ -22,7 +23,7 @@ object IOTDeviceBindingAdapter {
     fun setDataCenterStatus(view: TextView, status: String) {
         when (status) {
             "0" -> {
-                view.text = "未开启"
+                view.text = "未启用"
                 view.setTextColor(ColorUtils.getColor(R.color.offline_BABABA))
             }
 
@@ -31,14 +32,9 @@ object IOTDeviceBindingAdapter {
                 view.setTextColor(ColorUtils.getColor(R.color.online_colorPrimary))
             }
 
-            "2" -> {
-                view.text = "未连接"
-                view.setTextColor(ColorUtils.getColor(R.color.error_FF4400))
-            }
-
             else -> {
                 view.text = "未连接"
-                view.setTextColor(ColorUtils.getColor(R.color.error_FF4400))
+                view.setTextColor(ColorUtils.getColor(R.color.offline_BABABA))
             }
         }
     }
@@ -122,25 +118,28 @@ object IOTDeviceBindingAdapter {
     @BindingAdapter("bind_signal_value")
     fun setSignalLevelBydBmValue(view: SignalView, value: Int) {
         when (value) {
-            -113, 0, 85 -> view.setSignalLevel(0)
-            in -110..-96 -> {
+            in -110..-100 -> {
                 view.setSignalLevel(1)
                 view.setLevelColor(ColorUtils.getColor(R.color.warn_FF9D00))
             }
 
-            in -95..-86 -> {
+            in -99..-90 -> {
                 view.setSignalLevel(2)
                 view.setLevelColor(ColorUtils.getColor(R.color.warn_FF9D00))
             }
 
-            in -85..-76 -> {
+            in -89..-80 -> {
                 view.setSignalLevel(3)
                 view.setLevelColor(ColorUtils.getColor(R.color.online_colorPrimary))
             }
 
-            in -75..-50 -> {
+            in -79..-50 -> {
                 view.setSignalLevel(4)
                 view.setLevelColor(ColorUtils.getColor(R.color.online_colorPrimary))
+            }
+
+            else -> {
+                view.setSignalLevel(0)
             }
         }
     }
@@ -173,8 +172,20 @@ object IOTDeviceBindingAdapter {
     @JvmStatic
     @BindingAdapter("progressDrawableReadingData")
     fun setProgressDrawableReadingData(progressBar: ProgressBar, isReadingData: Boolean) {
-        val drawableResId = if (isReadingData) R.drawable.custom_progress_horizontal_blue else R.drawable.custom_progress_horizontal_green
+        val drawableResId =
+            if (isReadingData) R.drawable.custom_progress_horizontal_blue else R.drawable.custom_progress_horizontal_green
         progressBar.progressDrawable = ContextCompat.getDrawable(progressBar.context, drawableResId)
+    }
+
+    @JvmStatic
+    @BindingAdapter(value = ["animatedText", "isError", "needBackground"], requireAll = false)
+    fun setAnimatedText(
+        view: AnimatedTextSwitcher,
+        text: String?,
+        isError: Boolean,
+        needBackground: Boolean = true
+    ) {
+        text?.let { view.setText(it, isError, needBackground) }
     }
 
 }

@@ -3,45 +3,78 @@ package com.shmedo.mcloudapp.extensions
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.shmedo.mcloudapp.ui.dialog.LoadingDialogFragment
+import com.blankj.utilcode.util.StringUtils
+import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.utils.LoadingDialogManager
 
-
-// 公共扩展函数：显示加载对话框
-fun FragmentActivity.showLoadingDialog(message: String = "请求网络中") {
-    val fragmentManager = supportFragmentManager
-    val existingDialog = fragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) as? LoadingDialogFragment
-    if (existingDialog != null) {
-        existingDialog.updateMessage(message)
-    } else {
-        LoadingDialogFragment.newInstance(message)
-            .showNow(fragmentManager, LoadingDialogFragment.TAG)
-    }
+/**
+ * 显示加载对话框。
+ * @param message 要显示的消息，默认为 "请求网络中..."。
+ */
+fun FragmentActivity.showLoadingDialog(message: String = StringUtils.getString(R.string.loading_requesting_network)) {
+    LoadingDialogManager.showLoading(message)
 }
 
-
-// 公共扩展函数：显示加载对话框（用于Fragment）
-fun Fragment.showLoadingDialog(message: String = "请求网络中") {
-    if (isAdded) {
-        val existingDialog = childFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG) as? LoadingDialogFragment
-        if (existingDialog != null) {
-            existingDialog.updateMessage(message)
-        } else {
-            LoadingDialogFragment.newInstance(message)
-                .showNow(childFragmentManager, LoadingDialogFragment.TAG)
-        }
-    }
-}
-
+/**
+ * 关闭加载对话框。
+ */
 fun FragmentActivity.dismissLoadingDialog() {
-    supportFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG)?.let {
-        (it as? DialogFragment)?.dismissAllowingStateLoss()
-    }
+    LoadingDialogManager.dismissLoading()
 }
 
+
+/**
+ * 显示加载对话框。
+ * @param message 要显示的消息，默认为 "请求网络中..."。
+ */
+fun Fragment.showLoadingDialog(
+    message: String = StringUtils.getString(R.string.loading_requesting_network),
+    onCancel: (() -> Unit)? = null
+) {
+    LoadingDialogManager.showLoading(message, onCancel)
+}
+
+/**
+ * 关闭加载对话框。
+ */
 fun Fragment.dismissLoadingDialog() {
-    childFragmentManager.findFragmentByTag(LoadingDialogFragment.TAG)?.let {
-        (it as? DialogFragment)?.dismissAllowingStateLoss()
+    LoadingDialogManager.dismissLoading()
+}
+
+fun Fragment.showLoadingWithId(
+    message: String = StringUtils.getString(R.string.loading_requesting_network),
+    onCancel: (() -> Unit)? = null
+): String {
+    return LoadingDialogManager.showLoadingWithId(message, onCancel)
+}
+
+fun Fragment.dismissLoadingWithId(loadingId: String) {
+    LoadingDialogManager.dismissLoadingWithId(loadingId)
+}
+
+fun Fragment.updateMessageWithId(loadingId: String, message: String) {
+    LoadingDialogManager.updateMessageWithId(loadingId, message)
+}
+
+/**
+ * 显示对话框。
+ */
+inline fun <reified T : DialogFragment> Fragment.showDialogFragment(
+    tag: String,
+    crossinline createFragment: () -> T
+) {
+    val dialogFragment = childFragmentManager.findFragmentByTag(tag) as? T
+        ?: createFragment()
+
+    if (!dialogFragment.isAdded) {
+        dialogFragment.show(childFragmentManager, tag)
     }
 }
 
+/**
+ * 关闭对话框。
+ */
+fun Fragment.dismissDialogFragment(tag: String) {
+    (childFragmentManager.findFragmentByTag(tag) as? DialogFragment)?.dismissAllowingStateLoss()
+}
 
