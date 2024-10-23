@@ -37,8 +37,8 @@ import com.shmedo.mcloudapp.ui.page.device.BleScannerListFragment
 import com.shmedo.mcloudapp.ui.page.device.DeviceHomeActivity
 import com.shmedo.mcloudapp.ui.page.device.NewNetDeviceListFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.DeviceManageHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
-import com.shmedo.mcloudapp.ui.viewmodel.state.ScanQRCodeResultPopupViewViewModel
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper.REQUEST_CODE_SCAN
 import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
@@ -48,7 +48,7 @@ import timber.log.Timber
 class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentDeviceManageHomeBinding
     private lateinit var mMessenger: PageMessenger
-    private lateinit var mStates: ScanQRCodeResultPopupViewViewModel
+    private lateinit var mStates: DeviceManageHomeViewModel
     private lateinit var deviceRequestViewModel: DeviceRequestViewModel
 
     private val activeColor: Int = ColorUtils.getColor(R.color.title_text_color)
@@ -66,7 +66,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_device_manage_home, BR.vm, mStates)
+        return DataBindingConfig(R.layout.fragment_device_manage_home, BR.stateVM, mStates)
             .addBindingParam(BR.click, ClickProxy())
     }
 
@@ -165,10 +165,10 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
          */
         fun onMoreChooseClick() {
             XPopup.Builder(context)
+                .isViewMode(true)
                 .hasShadowBg(false)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
-                .isDarkTheme(false)
                 .popupAnimation(PopupAnimation.TranslateFromRight) //NoAnimation表示禁用动画
                 .atView(binding.ivMore)  // 依附于所点击的View，内部会自动判断在上方或者下方显示
                 .asAttachList(

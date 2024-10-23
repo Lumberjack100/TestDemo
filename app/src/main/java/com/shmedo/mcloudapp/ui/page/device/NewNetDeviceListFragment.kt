@@ -1,9 +1,6 @@
 package com.shmedo.mcloudapp.ui.page.device
 
 import android.os.Bundle
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.AbsoluteSizeSpan
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
@@ -20,7 +17,6 @@ import com.lxj.xpopup.impl.PartShadowPopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.model.DeviceInfo
-import com.shmedo.core.model.DeviceStatisticInfo
 import com.shmedo.core.model.UserInfo
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
@@ -40,7 +36,6 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.NetDeviceListViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
 import org.koin.androidx.viewmodel.ext.android.getViewModel
-import java.text.DecimalFormat
 
 /**
  * 创建者：gonghe
@@ -73,21 +68,13 @@ class NewNetDeviceListFragment : BaseFragment() {
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentNewNetDeviceListBinding
         PageRefreshLayout.startIndex = 1
-        initPageRefresh()
         initDeviceRefresh()
         initTabAdapter()
         initDeviceInfoAdapter()
     }
 
-    private fun initPageRefresh() {
-        binding.pageRoot.onRefresh {
-            refreshDeviceStatus()
-            binding.refreshLayout.showLoading()
-        }
-    }
-
     private fun initDeviceRefresh() {
-        binding.refreshLayout.onRefresh {
+        binding.devicePageRefreshLayout.onRefresh {
             refreshDeviceList()
         }
     }
@@ -124,6 +111,9 @@ class NewNetDeviceListFragment : BaseFragment() {
         }
     }
 
+    /**
+     * 显示产品选择弹窗
+     */
     private fun showProductSelectionPopupView(view: View) {
         if (productSelectionPopupView != null && productSelectionPopupView!!.isShow) {
             return
@@ -138,7 +128,7 @@ class NewNetDeviceListFragment : BaseFragment() {
                 override fun onSelect(selectionItem: SingleSelectionItem, position: Int) {
                     filterDeviceTabItem.refreshValue(selectionItem.name, position)
                     mStates.filterProductID.set(selectionItem.extValue)
-                    binding.refreshLayout.showLoading()
+                    binding.devicePageRefreshLayout.showLoading()
                 }
             })
         }
@@ -159,6 +149,9 @@ class NewNetDeviceListFragment : BaseFragment() {
             .show()
     }
 
+    /**
+     * 显示在线状态选择弹窗
+     */
     private fun showOnlineStatusSelectionPopupView(view: View) {
         if (onlineStatusSelectionPopupView != null && onlineStatusSelectionPopupView!!.isShow) {
             return
@@ -175,7 +168,7 @@ class NewNetDeviceListFragment : BaseFragment() {
                     override fun onSelect(selectionItem: SingleSelectionItem, position: Int) {
                         filterDeviceTabItem.refreshValue(selectionItem.name, position)
                         mStates.filterOnlineStatus.set(if (selectionItem.name == onlineStatusList[0].name) "" else if (selectionItem.name == onlineStatusList[1].name) "true" else "false")
-                        binding.refreshLayout.showLoading()
+                        binding.devicePageRefreshLayout.showLoading()
                     }
                 })
             }
@@ -263,7 +256,6 @@ class NewNetDeviceListFragment : BaseFragment() {
             )
         )
         binding.rvTab.models = tabList
-        deviceRequestViewModel.getAllProductTabList()
     }
 
     private fun initOnlineStatusData() {
@@ -286,18 +278,14 @@ class NewNetDeviceListFragment : BaseFragment() {
         )
     }
 
-    private fun refreshDeviceStatus() {
-        deviceRequestViewModel.getDeviceStatByCompanyID(
-            userInfo.companyID,
-            AuthMMKVOwner.listSuperInfoPermission
-        )
-    }
-
+    /**
+     * 刷新设备列表
+     */
     private fun refreshDeviceList() {
         deviceRequestViewModel.getDeviceList(
             companyID = userInfo.companyID,
             productID = mStates.filterProductID.get(),
-            currentPage = binding.refreshLayout.index,
+            currentPage = binding.devicePageRefreshLayout.index,
             pageSize = PAGE_SIZE,
             isHasListSuperInfoPermission = AuthMMKVOwner.listSuperInfoPermission,
             onlineStatus = mStates.filterOnlineStatus.get()
@@ -313,7 +301,8 @@ class NewNetDeviceListFragment : BaseFragment() {
     }
 
     override fun lazyLoadData() {
-        binding.pageRoot.showLoading()
+        deviceRequestViewModel.getAllProductTabList()
+        binding.devicePageRefreshLayout.showLoading()
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -325,22 +314,8 @@ class NewNetDeviceListFragment : BaseFragment() {
     }
 
     override fun createObserver() {
-        deviceRequestViewModel.deviceStatisticInfoResult.observe(viewLifecycleOwner) { dataResult: DataResult<DeviceStatisticInfo> ->
-            if (!dataResult.responseStatus.isSuccess) {
-                binding.pageRoot.showError()
-                Toaster.show(dataResult.responseStatus.errorMessage)
-                return@observe
-            }
-            dataResult.result?.let {
-                mStates.onlineCount.set(it.onlineCount)
-                mStates.offlineCount.set(it.offlineCount)
-                val df = DecimalFormat("#.##") //格式化小数
-                val rate: String = df.format(it.onlinePercent) + "%"
-                updateTopView(rate)
-                binding.pageRoot.showContent(false)
-            }
-        }
         launchWithViewLifecycle {
+            // 获取产品列表
             deviceRequestViewModel.allProductTabResultFlow.collect {
                 if (!it.responseStatus.isSuccess) {
                     Toaster.show(it.responseStatus.errorMessage)
@@ -352,19 +327,21 @@ class NewNetDeviceListFragment : BaseFragment() {
                 }
             }
         }
+        // 获取设备列表
         deviceRequestViewModel.deviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<DeviceInfo>> ->
             if (!listDataResult.responseStatus.isSuccess) {
                 Toaster.show(listDataResult.responseStatus.errorMessage)
                 return@observe
             }
             listDataResult.result?.let {
-                binding.refreshLayout.addData(it, isEmpty = {
-                    binding.refreshLayout.index == 1 && it.isEmpty()
+                binding.devicePageRefreshLayout.addData(it, isEmpty = {
+                    binding.devicePageRefreshLayout.index == 1 && it.isEmpty()
                 }, hasMore = {
-                    binding.refreshLayout.index < listDataResult.totalPage
+                    binding.devicePageRefreshLayout.index < listDataResult.totalPage
                 })
             }
         }
+        // 收藏设备
         deviceRequestViewModel.followDeviceResult.observe(viewLifecycleOwner) { dataResult: DataResult<String> ->
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)
@@ -372,6 +349,7 @@ class NewNetDeviceListFragment : BaseFragment() {
             }
             Toaster.show("已收藏")
         }
+        // 取消收藏设备
         deviceRequestViewModel.cancelFollowDeviceResult.observe(viewLifecycleOwner) { dataResult: DataResult<String> ->
             if (!dataResult.responseStatus.isSuccess) {
                 Toaster.show(dataResult.responseStatus.errorMessage)
@@ -379,18 +357,6 @@ class NewNetDeviceListFragment : BaseFragment() {
             }
             Toaster.show("已取消收藏")
         }
-    }
-
-    private fun updateTopView(rate: String) {
-        val spannableString = SpannableString(rate)
-        val absoluteSizeSpan = AbsoluteSizeSpan(18, true)
-        spannableString.setSpan(
-            absoluteSizeSpan,
-            rate.indexOf("%"),
-            spannableString.length,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        )
-        binding.llStatistics.tvOnlineRate.text = spannableString
     }
 
     companion object {
