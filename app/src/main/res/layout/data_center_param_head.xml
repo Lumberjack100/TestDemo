@@ -70,7 +70,7 @@
                 android:textSize="@dimen/text_size_14"
                 app:layout_constraintStart_toEndOf="@+id/tv_status_title"
                 app:layout_constraintTop_toTopOf="@+id/tv_status_title"
-                tools:text="未开启"
+                tools:text="未启用"
                 tools:textColor="#BCC0CC" />
 
             <com.google.android.material.textview.MaterialTextView

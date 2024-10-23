@@ -283,7 +283,7 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg =
-                            if (cmdStr.contains("sw=0")) "关闭出错: ${result.message}" else "设置参数出错: ${result.message}"
+                            if (cmdStr.contains("sw=0")) "关闭出错: ${result.message}" else "数据保存出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }

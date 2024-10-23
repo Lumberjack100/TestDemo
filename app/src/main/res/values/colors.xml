@@ -101,6 +101,7 @@
     <color name="online_colorPrimary_4">@color/colorPrimary_4</color>
     <color name="offline_BABABA">#BABABA</color>
     <color name="offline_BABABA_4">#0ABABABA</color>
+    <color name="offline_BABABA_10">#1ABABABA</color>
     <color name="warn_FF9D00">#FF9D00</color>
     <color name="warn_FF9D00_4">#0AFDA251</color>
     <color name="error_FF4400">#FF4400</color>

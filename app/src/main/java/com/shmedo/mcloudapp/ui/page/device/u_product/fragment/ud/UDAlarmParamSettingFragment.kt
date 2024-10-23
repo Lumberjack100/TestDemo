@@ -72,10 +72,10 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentUdAlarmParamSettingBinding
         toolbarViewModel.toolbarTitleText.set("报警参数配置")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            nav().navigateUp()
+            processBack()
         }
         registerOnBackPressedDispatcher {
-            nav().navigateUp()
+            processBack()
         }
         initRefresh()
     }
@@ -84,6 +84,8 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
         super.initData()
         initTitles()
         resetDefaultParams()
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
     }
 
     private fun initRefresh() {
@@ -506,6 +508,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -524,6 +527,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -540,6 +544,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -555,7 +560,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("预警测试成功")
+                            showMessageDialog("预警测试成功")
                         }
                     }
                 }
@@ -570,6 +575,8 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
     private fun initAlarmSwitch(info: AlarmSwitchInfo) {
         try {
             mStates.isOpened.set(info.sw == "1")
+            //添加这行来保存初始状态
+            mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
             addLogItem(Log.ERROR, e.errorMsg)
@@ -587,6 +594,9 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
             mStates.secondAlarmVoice.set(info.level2)
             mStates.thirdAlarmVoice.set(info.level3)
             mStates.fourthAlarmVoice.set(info.level4)
+
+            //添加这行来保存初始状态
+            mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -600,6 +610,17 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
         mStates.secondAlarmReportInterval.set(info.level2)
         mStates.thirdAlarmReportInterval.set(info.level3)
         mStates.fourthAlarmReportInterval.set(info.level4)
+
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
+    }
+
+    override fun processBack() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
     }
 
     override fun onResume() {

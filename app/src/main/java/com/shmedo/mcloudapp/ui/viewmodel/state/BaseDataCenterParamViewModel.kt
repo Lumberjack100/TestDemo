@@ -1,6 +1,6 @@
 package com.shmedo.mcloudapp.ui.viewmodel.state
 
-import androidx.lifecycle.ViewModel
+import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseStateViewModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 /**
@@ -8,7 +8,7 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
  * 创建时间:  2023/10/7 <br/>
  * 描述：     TODO
  */
-open class BaseDataCenterParamViewModel : ViewModel() {
+open class BaseDataCenterParamViewModel : BaseStateViewModel() {
     val isEditable = NonNullObservableField(false)
     val isCenterOpened = NonNullObservableField(true)
     val centerName = NonNullObservableField("")
@@ -31,4 +31,12 @@ open class BaseDataCenterParamViewModel : ViewModel() {
     val registerCode = NonNullObservableField("")//注册码
     val registerAddress = NonNullObservableField("")//注册地址
     val registerPort = NonNullObservableField("")//注册端口
+
+
+    // 设置初始状态
+    override fun saveInitialState() {}
+
+    override fun registerField() {}
+
+    override fun updateModificationStatus() {}
 }

@@ -31,17 +31,19 @@
             app:vm="@{toolbarVM}" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            style="@style/DeviceCurrentState_Item_Layout_Style2"
+            style="@style/Common_EditItem_Layout_Style"
             android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
             android:layout_marginTop="@dimen/page_content_item_margin_top_12"
-            android:background="@drawable/shape_common_click_item_top_corner_4">
+            android:background="@drawable/layer_common_click_item_top_corner_4_with_divider"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp">
 
-            <com.google.android.material.textview.MaterialTextView
-                style="@style/DeviceCurrentState_Item_Title_Style2"
-                onClickWithDebouncing="@{()->click.updateLocation()}"
-                android:background="?attr/selectableItemBackground"
+            <com.google.android.material.button.MaterialButton
+                style="@style/TestButton_Style"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dimen_size_30"
+                android:onClick="@{()->click.updateLocation()}"
                 android:text="位置更新"
-                android:textColor="@color/colorPrimary"
                 android:textStyle="bold" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>

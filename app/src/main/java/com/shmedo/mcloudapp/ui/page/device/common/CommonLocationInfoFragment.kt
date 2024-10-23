@@ -139,8 +139,12 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
             IOTCommandUtil.getCommand(IOTCommandType.MD_GET_INSTALL_LOCATION, "method=$method")
         commandItems.add(command)
 
-        if (method == "1")
-            showLoadingDialog(StringUtils.getString(R.string.processing))
+        if (method == "1") {
+            showLoadingDialog(StringUtils.getString(R.string.processing)) {
+                clearQueryMeasureResultTimeoutJob()
+                cancelNearbyCommunicationTimeoutJob()
+            }
+        }
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -446,7 +450,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                             && resultMap.containsKey("lat")
                         ) {
                             cancelNearbyCommunicationTimeoutJob()
-                            Toaster.show("位置更新成功")
+                            showMessageDialog("位置更新成功")
 
                             val longitudeDirection = resultMap["lng_dir"] ?: ""
                             val longitudeStr = resultMap["lng"] ?: ""

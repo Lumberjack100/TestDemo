@@ -24,6 +24,29 @@
         <item>湖北生态流量平台</item>
     </string-array>
 
+    <string-array name="data_center_tcp_register_platform">
+        <item>AMS解算平台</item>
+    </string-array>
+
+    <string-array name="data_center_mqtt_register_platform">
+        <item>地大平台</item>
+        <item>中移物联平台</item>
+        <item>米度物联平台</item>
+        <item>地大平台2</item>
+        <item>重庆地灾平台</item>
+    </string-array>
+
+    <string-array name="data_center_sl651_register_platform">
+        <item>河南水利平台</item>
+        <item>广东水利平台</item>
+        <item>广西水文平台</item>
+        <item>湖北水文平台</item>
+    </string-array>
+
+    <string-array name="data_center_szy206_register_platform">
+        <item>湖北生态流量平台</item>
+    </string-array>
+
     <string-array name="baud_rates">
         <item>2400</item>
         <item>9600</item>

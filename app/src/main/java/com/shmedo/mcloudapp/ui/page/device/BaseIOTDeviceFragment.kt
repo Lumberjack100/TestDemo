@@ -28,7 +28,9 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.getAppViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CmdResponseResultError
@@ -172,10 +174,8 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         refreshLayout?.finish(false)
         dismissLoadingDialog()
         if (isShowErrMsg) {
-            if (isMessageDialog)
-                showMessageDialog("指令响应错误: $errMsg")
-            else
-                Toaster.show("指令响应错误: $errMsg")
+            if (isMessageDialog) showMessageDialog("出错了: $errMsg")
+            else Toaster.show("出错了: $errMsg")
         }
     }
 
@@ -188,10 +188,8 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         refreshLayout?.finish(false)
         dismissLoadingDialog()
         if (isShowErrMsg) {
-            if (isMessageDialog)
-                showMessageDialog(errMsg.ifEmpty { "设备未响应" })
-            else
-                Toaster.show(errMsg.ifEmpty { "设备未响应" })
+            if (isMessageDialog) showMessageDialog(errMsg.ifEmpty { "设备未响应" })
+            else Toaster.show(errMsg.ifEmpty { "设备未响应" })
         }
     }
     // </editor-fold>
@@ -206,8 +204,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             when (state) {
                 NoDeviceState -> {}
                 is WorkingState -> when (state.result) {
-                    is IdleResult,
-                    is ConnectingResult -> {
+                    is IdleResult, is ConnectingResult -> {
                         addLogItem(Log.INFO, "device ${bleDevice?.address} connecting")
                         showLoadingDialog(StringUtils.getString(R.string.ble_state_connecting))
                     }
@@ -229,8 +226,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
                     is DisconnectedResult -> {
                         addLogItem(
-                            Log.ERROR,
-                            "device disconnected, reason: ${state.result.reason}"
+                            Log.ERROR, "device disconnected, reason: ${state.result.reason}"
                         )
                         dismissLoadingDialog()
                         onConnectionStateChanged(false)
@@ -312,14 +308,15 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             return
         }
         //发送物联网指令
-        if (command.startsWith(IOTConstants.COMMAND_HEADER))
-            bleViewModel.sendIOTCommand(command, deviceInfo.apikey, delaySendMillis)
-        else
-            bleViewModel.sendMDCommand(command, delaySendMillis)//发送MD指令 ##开头
+        if (command.startsWith(IOTConstants.COMMAND_HEADER)) bleViewModel.sendIOTCommand(
+            command,
+            deviceInfo.apikey,
+            delaySendMillis
+        )
+        else bleViewModel.sendMDCommand(command, delaySendMillis)//发送MD指令 ##开头
 
         //启动超时Job
-        if (isStartTimeoutJob)
-            startNearbyCommunicationTimeoutJob(command, timeoutMillis)
+        if (isStartTimeoutJob) startNearbyCommunicationTimeoutJob(command, timeoutMillis)
         /**  蓝牙通信模式  end ***/
     }
 
@@ -327,8 +324,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
      * 启动蓝牙通讯/WIFI通信等近场通信超时 Job
      */
     fun startNearbyCommunicationTimeoutJob(
-        cmdStr: String = "",
-        timeMillis: Long = AppContants.Communication.DELAY_10000_MILLIS
+        cmdStr: String = "", timeMillis: Long = AppContants.Communication.DELAY_10000_MILLIS
     ) {
         // 启动一个新的协程作为超时Job
         timeoutJob?.cancel()
@@ -375,27 +371,24 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             dismissLoadingDialog()
         }
         if (isShowErrMsg) {
-            if (isMessageDialog)
-                showMessageDialog(errMsg.ifEmpty { "设备未响应" })
-            else
-                Toaster.show(errMsg.ifEmpty { "设备未响应" })
+            if (isMessageDialog) showMessageDialog(errMsg.ifEmpty { "设备未响应" })
+            else Toaster.show(errMsg.ifEmpty { "设备未响应" })
         }
     }
 
     protected fun isBleDisconnected() = communicateWay is BleConnect && !bleViewModel.isConnected()
 
+    protected fun isNetDisconnected() =
+        communicateWay is NetPlatformConnect && !deviceInfo.onlineStatus
+
     protected fun handleFailureResult(
-        errMsg: String,
-        isShowErrMsg: Boolean = true,
-        isMessageDialog: Boolean = false
+        errMsg: String, isShowErrMsg: Boolean = true, isMessageDialog: Boolean = false
     ) {
         cancelNearbyCommunicationTimeoutJob()
         Timber.e(errMsg)
         if (isShowErrMsg) {
-            if (isMessageDialog)
-                showMessageDialog(errMsg)
-            else
-                Toaster.show(errMsg)
+            if (isMessageDialog) showMessageDialog(errMsg)
+            else Toaster.show(errMsg)
         }
     }
 
@@ -423,12 +416,22 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    /**
+     * 下发设备查找指令
+     */
+    protected open fun searchDevice() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_SEARCH_DEVICE, "switch=1")
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.device_searching))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
     fun addLogItem(priority: Int, data: String) {
         logViewModel.insertLog(
             getLogItem(
-                sessionId = CommonMMKVOwner.iotDeviceLogSessionId,
-                priority = priority,
-                data = data
+                sessionId = CommonMMKVOwner.iotDeviceLogSessionId, priority = priority, data = data
             )
         )
     }
@@ -443,6 +446,29 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     override fun onDestroy() {
         timeoutJob?.cancel() // 在Fragment销毁时取消timeoutJob
         super.onDestroy()
+    }
+
+    protected open fun processNavigateUp() {
+        launchWithViewLifecycle {
+            delay(AppContants.Communication.DELAY_15000_MILLIS)
+            nav().navigateUp()
+        }
+    }
+
+    protected open fun processBack() {
+
+    }
+
+    protected open fun showExitConfirmationDialog() {
+        showMessage(
+            StringUtils.getString(R.string.data_modified_warn),
+            "提示",
+            "确定",
+            {
+                nav().navigateUp()
+            },
+            "取消"
+        )
     }
 
     companion object {

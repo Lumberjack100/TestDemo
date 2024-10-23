@@ -16,6 +16,7 @@
 package com.shmedo.mcloudapp.bindadapter;
 
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.text.InputFilter
@@ -88,6 +89,22 @@ object CommonBindingAdapter {
         view.layoutParams.width = size
         view.layoutParams.height = size
         view.setImageResource(resId)
+    }
+
+    @JvmStatic
+    @BindingAdapter(value = ["tintColor"], requireAll = false)
+    fun imageTintColor(view: ImageView, tintColor: Int) {
+        if (tintColor != 0) {
+            view.setColorFilter(tintColor, PorterDuff.Mode.SRC_IN)
+        } else {
+            view.clearColorFilter()
+        }
+    }
+
+    @JvmStatic
+    @BindingAdapter("imageAlpha")
+    fun setImageAlpha(imageView: ImageView, alpha: Float) {
+        imageView.alpha = alpha
     }
 
     @JvmStatic

@@ -427,7 +427,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
      */
     private fun initCollectorInfo(collectorInfo: DasCollectorInfo) {
         try {
-            //采集器地址为 0 时，表示采集器未开启，不允许配置传感器，退出页面
+            //采集器地址为 0 时，表示采集器未启用，不允许配置传感器，退出页面
             if (collectorInfo.addr == "0") {
                 cancelNearbyCommunicationTimeoutJob()
                 showMessageDialog("采集器地址为0,无法配置扩展传感器,请先修改采集器地址!")

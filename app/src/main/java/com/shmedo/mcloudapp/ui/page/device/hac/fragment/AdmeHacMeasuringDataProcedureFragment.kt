@@ -424,7 +424,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                     stopQueryMotorState()
                     mStates.isVerticalProgressBarVisible.set(false)
                     mStates.isHorizontalProgressBarReadingData.set(motionState.motorinfo == "9")//正反测模式下，正测阶段只有读取数据过程，没有上传数据，所以不展示上传数据进度框
-                    setHorizontalMaxProgress()
+                    setHorizontalMaxProgress(motionState.measpoint)
                     mStates.motorInfo.set(if (motionState.motorinfo == "9") "测量完成,等待反向测量" else "测量完成")
                     mStates.isRunButtonVisible.set(true)
                     mStates.runButtonText.set("下一步")
@@ -567,16 +567,28 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun setHorizontalMaxProgress() {
-        mStates.processDataNum.set(
-            "${mStates.horizontalMaxProgress.get()}/${mStates.horizontalMaxProgress.get()}"
-        )
-        mStates.processDataPercent.set("100%")
-        if (mStates.horizontalMaxProgress.get() == 0) {
+    private fun setHorizontalMaxProgress(measurePoint: String = "") {
+        try {
+            val values = measurePoint.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
+            if (values.size > 1 && !TextUtils.isEmpty(values[1]) && RegexUtils.isMatch(
+                    RegexConstants.REGEX_INTEGER,
+                    values[1]
+                )
+            ) {
+                mStates.processDataNum.set(
+                    "${values[1]}/${values[1]}"
+                )
+            }else{
+                mStates.processDataNum.set(
+                    "0/0"
+                )
+            }
+            mStates.processDataPercent.set("100%")
             mStates.horizontalMaxProgress.set(100)
             mStates.horizontalProgress.set(100)
-        } else
-            mStates.horizontalProgress.set(mStates.horizontalMaxProgress.get())
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
     }
 
 

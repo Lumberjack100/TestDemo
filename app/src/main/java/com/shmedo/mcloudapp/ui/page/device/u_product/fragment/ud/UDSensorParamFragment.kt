@@ -32,7 +32,6 @@ import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -508,7 +507,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                 //已经有数据
                 if (resultMap.containsKey("initvalue")) {
                     cancelNearbyCommunicationTimeoutJob()
-                    Toaster.show("数据更新成功")
+                    showMessageDialog("初始值更新成功")
 
                     val initValue = resultMap["initvalue"] ?: ""
                     if (type == "1") {
@@ -516,8 +515,6 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                     } else {
                         mStates.locationInitialValue.set(initValue)
                     }
-                    //添加这行来保存初始状态
-                    mStates.saveInitialState()
                     return
                 }
 
@@ -554,31 +551,13 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
         queryMeasureResultTimeoutJob = null
     }
 
-    private fun processNavigateUp() {
-        launchWithViewLifecycle {
-            delay(1500)
-            nav().navigateUp()
-        }
-    }
 
-    private fun processBack() {
+    override fun processBack() {
         if (mStates.isDataModified.value == true) {
             showExitConfirmationDialog()
             return
         }
         nav().navigateUp()
-    }
-
-    private fun showExitConfirmationDialog() {
-        showMessage(
-            StringUtils.getString(R.string.data_modified_warn),
-            "提示",
-            "确定",
-            {
-                nav().navigateUp()
-            },
-            "取消"
-        )
     }
 
     override fun onResume() {

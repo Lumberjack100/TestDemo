@@ -31,13 +31,11 @@ import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDReportModelParamViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -193,7 +191,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
 
         if (mStates.reportModel.get() == "自动") {
-            //四级预警未开启
+            //四级预警未启用
             if (!mStates.alarmEnable.get()) {
                 val reportModeEntity = UDAlarmReportModeEntity(
                     rept_mode = "0",
@@ -489,31 +487,12 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         mStates.saveInitialState()
     }
 
-    private fun processNavigateUp() {
-        launchWithViewLifecycle {
-            delay(1500)
-            nav().navigateUp()
-        }
-    }
-
-    private fun processBack() {
+    override fun processBack() {
         if (mStates.isDataModified.value == true) {
             showExitConfirmationDialog()
             return
         }
         nav().navigateUp()
-    }
-
-    private fun showExitConfirmationDialog() {
-        showMessage(
-            StringUtils.getString(R.string.data_modified_warn),
-            "提示",
-            "确定",
-            {
-                nav().navigateUp()
-            },
-            "取消"
-        )
     }
 
     override fun onResume() {

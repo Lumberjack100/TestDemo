@@ -279,7 +279,7 @@ class DasAudibleAlarmFragment : BaseIOTDeviceFragment() {
             IOTCommandType.DAS_MD_SET_AUDIBLE_ALARM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置参数出错: ${result.message}"
+                        val errMsg = "数据保存出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }

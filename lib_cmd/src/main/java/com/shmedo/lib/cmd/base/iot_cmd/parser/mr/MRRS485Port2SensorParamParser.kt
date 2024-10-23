@@ -30,6 +30,9 @@ class MRRS485Port2SensorParamParser : IOTCommandParser<MRRS485Port2SensorParam> 
             t0value = keyValueMap.getOrDefault("t0value", t0value)
             l0value = keyValueMap.getOrDefault("l0value", l0value)
             lvalue = keyValueMap.getOrDefault("lvalue", lvalue)
+            polyavalue = keyValueMap.getOrDefault("polyavalue", polyavalue)
+            polybvalue = keyValueMap.getOrDefault("polybvalue", polybvalue)
+            polycvalue = keyValueMap.getOrDefault("polycvalue", polycvalue)
         }
     }
 

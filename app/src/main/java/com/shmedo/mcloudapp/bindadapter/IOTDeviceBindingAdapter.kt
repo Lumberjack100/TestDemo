@@ -23,7 +23,7 @@ object IOTDeviceBindingAdapter {
     fun setDataCenterStatus(view: TextView, status: String) {
         when (status) {
             "0" -> {
-                view.text = "未开启"
+                view.text = "未启用"
                 view.setTextColor(ColorUtils.getColor(R.color.offline_BABABA))
             }
 
@@ -32,14 +32,9 @@ object IOTDeviceBindingAdapter {
                 view.setTextColor(ColorUtils.getColor(R.color.online_colorPrimary))
             }
 
-            "2" -> {
-                view.text = "未连接"
-                view.setTextColor(ColorUtils.getColor(R.color.error_FF4400))
-            }
-
             else -> {
                 view.text = "未连接"
-                view.setTextColor(ColorUtils.getColor(R.color.error_FF4400))
+                view.setTextColor(ColorUtils.getColor(R.color.offline_BABABA))
             }
         }
     }

@@ -26,7 +26,10 @@ data class MRRS485Port2SensorParamEntity(
     val r0value: String = IOTConstants.NULL_KEY,//初始频率 F0
     val t0value: String = IOTConstants.NULL_KEY,//初始温度 T0
     val l0value: String = IOTConstants.NULL_KEY,//初始水位
-    val lvalue: String = IOTConstants.NULL_KEY//堰角高度
+    val lvalue: String = IOTConstants.NULL_KEY,//堰角高度
+    val polyavalue: String = IOTConstants.NULL_KEY,//多项式系数A值
+    val polybvalue: String = IOTConstants.NULL_KEY,//多项式系数B值
+    val polycvalue: String = IOTConstants.NULL_KEY,//多项式系数C值
 ){
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)

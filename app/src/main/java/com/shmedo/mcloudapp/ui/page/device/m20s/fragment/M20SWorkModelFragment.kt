@@ -190,7 +190,7 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg =
-                            if (cmdStr.contains("method=0")) "查询信息出错: ${result.message}" else "设置参数出错: ${result.message}"
+                            if (cmdStr.contains("method=0")) "查询信息出错: ${result.message}" else "数据保存出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }

@@ -5,9 +5,11 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
+import com.blankj.utilcode.util.TimeUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -78,7 +80,13 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
 
     private fun initSaveCommand() {
         commandItems.clear()
-
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.SET_TERMINAL_TIME,
+            "time=${mStates.systemTime.get()}"
+        )
+        commandItems.add(command)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun lazyLoadData() {
@@ -109,7 +117,7 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
     ) {
         super.doCmdResponseResultError(
             cmdStr = cmdStr,
-            errMsg = errMsg,
+            errMsg = "出错了：$errMsg",
             isShowErrMsg = true,
             isMessageDialog = true
         )
@@ -126,7 +134,7 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
     ) {
         super.doCmdResponseResultTimeOut(
             cmdStr = cmdStr,
-            errMsg = errMsg,
+            errMsg = "设备未响应",
             isShowErrMsg = true,
             isMessageDialog = true
         )
@@ -167,9 +175,24 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
 
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList {}
-                        mStates.deviceTime.set(result.data)
-                        mStates.systemTime.set(result.data)
+                        initDeviceTime(result.data)
+                    }
+                }
+            }
 
+            IOTCommandType.SET_TERMINAL_TIME -> {//设置终端时间
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "校准出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show("校准成功")
+                            processNavigateUp()
+                        }
                     }
                 }
             }
@@ -178,6 +201,18 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
                 cancelNearbyCommunicationTimeoutJob()
             }
         }
+    }
+
+    private fun initDeviceTime(deviceTime: String) {
+        mStates.deviceTime.set(deviceTime)
+        mStates.systemTime.set(TimeUtils.getNowString())
+        mStates.timeDifference.set(
+            TimeUtils.getFitTimeSpan(
+                TimeUtils.getNowString(),
+                deviceTime,
+                4
+            )
+        )
     }
 
     override fun onResume() {
