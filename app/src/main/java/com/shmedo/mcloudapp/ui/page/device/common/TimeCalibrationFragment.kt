@@ -82,7 +82,7 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.SET_TERMINAL_TIME,
-            "time=${mStates.systemTime.get()}"
+            "time=${TimeUtils.getNowString()}"
         )
         commandItems.add(command)
         showLoadingDialog(StringUtils.getString(R.string.processing))

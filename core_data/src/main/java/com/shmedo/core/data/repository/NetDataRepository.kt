@@ -3,21 +3,16 @@ package com.shmedo.core.data.repository
 import android.annotation.SuppressLint
 import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.model.AppConfigInfo
+import com.shmedo.core.model.BasicCompanyInfo
 import com.shmedo.core.model.BasicUserInfo
-import com.shmedo.core.model.CloudDeviceData
 import com.shmedo.core.model.CompanyInfo
+import com.shmedo.core.model.DeviceBackupInfo
 import com.shmedo.core.model.DeviceDebugAddress
-import com.shmedo.core.model.DeviceStatisticInfo
-import com.shmedo.core.model.DispatchCmdItem
-import com.shmedo.core.model.FirmWareInfo
-import com.shmedo.core.model.ProductInfo
-import com.shmedo.core.model.QueryCmdResult
+import com.shmedo.core.model.DeviceDetailInfo
 import com.shmedo.core.model.UserPermissionInfo
 import com.shmedo.core.model.UserWrapperInfo
-import com.shmedo.lib.network.parser.CloudPlatformApiResponseParser
 import com.shmedo.lib.network.response.PageList
 import com.shmedo.lib.network.util.BaseURL
-import rxhttp.toAwait
 import rxhttp.tryAwait
 import rxhttp.wrapper.param.RxHttp
 import rxhttp.wrapper.param.toAwaitResponse
@@ -29,6 +24,7 @@ import rxhttp.wrapper.param.toAwaitResponse
  */
 @SuppressLint("CheckResult")
 class NetDataRepository private constructor() {
+
     //<editor-fold desc="孙建伟通用配置接口">
     /**
      * 获取App应用信息
@@ -84,7 +80,7 @@ class NetDataRepository private constructor() {
             .tryAwait(onCatch)
     // </editor-fold>
 
-    //<editor-fold desc="用户">
+    //<editor-fold desc="登录、用户信息">
     /**
      * 发送验证码
      */
@@ -180,17 +176,6 @@ class NetDataRepository private constructor() {
             .toAwaitResponse<String>()
             .tryAwait(onCatch)
 
-    suspend fun queryCompanyInfoByID(
-        jsonParam: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): CompanyInfo? =
-        RxHttp.postJson("/GetCompanyInfo")
-            .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
-            .addAll(jsonParam)
-            .toAwaitResponse<CompanyInfo>()
-            .tryAwait(onCatch)
-
     /**
      * 重置用户密码
      */
@@ -218,110 +203,32 @@ class NetDataRepository private constructor() {
             .addAll(jsonParam)
             .toAwaitResponse<List<UserPermissionInfo>>()
             .tryAwait(onCatch)
+
+    suspend fun queryCompanyInfoByID(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): CompanyInfo? =
+        RxHttp.postJson("/GetCompanyInfo")
+            .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
+            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addAll(jsonParam)
+            .toAwaitResponse<CompanyInfo>()
+            .tryAwait(onCatch)
+
+    /**
+     * 查询用户所在的所有公司列表
+     */
+    suspend fun queryUserInCompanyList(
+        jsonParam: String,
+        onCatch: ((Throwable) -> Unit)? = null
+    ): List<BasicCompanyInfo>? =
+        RxHttp.postJson("/QueryUserInCompanyList")
+            .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
+            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addAll(jsonParam)
+            .toAwaitResponse<List<BasicCompanyInfo>>()
+            .tryAwait(onCatch)
     // </editor-fold>
-
-
-    /**
-     * 根据公司ID对公司下的设备进行统计 或者 统计系统所有设备的信息(系统权限，预定义权限，不允许授予第三方)
-     *
-     * 总数 = 启用+未启用= 在线+离线+未知
-     */
-    suspend fun getDeviceStatByCompanyID(
-        jsonParam: String,
-        isHasListSuperInfoPermission: Boolean = false,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): DeviceStatisticInfo? =
-        RxHttp.postJson(if (isHasListSuperInfoPermission) "/ListSuperDeviceStat" else "/GetDeviceStatByCompanyID")
-            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
-            .addAll(jsonParam)
-            .toAwaitResponse<DeviceStatisticInfo>()
-            .tryAwait(onCatch)
-
-    /**
-     * 分页查询产品列表
-     */
-    suspend fun getProductList(
-        jsonParam: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): PageList<ProductInfo>? =
-        RxHttp.postJson("/QueryProduct")
-            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
-            .addAll(jsonParam)
-            .toAwaitResponse<PageList<ProductInfo>>()
-            .tryAwait(onCatch)
-
-    /**
-     * 查询用户在其所在的所有公司的产品列表，包含其所在公司的所有下级公司
-     */
-    suspend fun getUserCompanyProductList(
-        jsonParam: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): PageList<com.shmedo.core.model.ProductInfo>? =
-        RxHttp.postJson("/ListUserCompanyProduct")
-            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
-            .addAll(jsonParam)
-            .toAwaitResponse<PageList<com.shmedo.core.model.ProductInfo>>()
-            .tryAwait(onCatch)
-
-    /**
-     * 分页查询设备列表(默认排序是创建时间倒序)或者 查询系统所有设备列表(系统权限，预定义权限，不允许授予第三方)
-     */
-    suspend fun queryDeviceList(
-        jsonParam: String,
-        isHasListSuperInfoPermission: Boolean = false,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): PageList<com.shmedo.core.model.DeviceInfo>? =
-        RxHttp.postJson(if (isHasListSuperInfoPermission) "/ListSuperDevice" else "/GetDeviceList")
-            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
-            .addAll(jsonParam)
-            .toAwaitResponse<PageList<com.shmedo.core.model.DeviceInfo>>()
-            .tryAwait(onCatch)
-
-    /**
-     * 分页查询用户关注的设备列表
-     */
-    suspend fun queryFollowDeviceList(
-        jsonParam: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): PageList<com.shmedo.core.model.DeviceInfo>? =
-        RxHttp.postJson("/QueryUserFollowDeviceList")
-            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
-            .addAll(jsonParam)
-            .toAwaitResponse<PageList<com.shmedo.core.model.DeviceInfo>>()
-            .tryAwait(onCatch)
-
-    /**
-     * 添加用户收藏设备
-     */
-    suspend fun addUserFollowDevice(
-        jsonParam: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): String? =
-        RxHttp.postJson("/AddUserFollowDevice")
-            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
-            .addAll(jsonParam)
-            .toAwaitResponse<String>()
-            .tryAwait(onCatch)
-
-    /**
-     * 取消用户收藏设备
-     */
-    suspend fun cancelUserFollowDevice(
-        jsonParam: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): String? =
-        RxHttp.postJson("/CancelUserFollowDevice")
-            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
-            .addAll(jsonParam)
-            .toAwaitResponse<String>()
-            .tryAwait(onCatch)
 
     /**
      * 查询设备详细信息
@@ -329,12 +236,12 @@ class NetDataRepository private constructor() {
     suspend fun getDeviceDetailInfo(
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
-    ): com.shmedo.core.model.DeviceDetailInfo? =
+    ): DeviceDetailInfo? =
         RxHttp.postJson("/GetDeviceDetail")
             .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
             .addHeader("Authorization", MmkvCacheUtil.getToken())
             .addAll(jsonParam)
-            .toAwaitResponse<com.shmedo.core.model.DeviceDetailInfo>()
+            .toAwaitResponse<DeviceDetailInfo>()
             .tryAwait(onCatch)
 
     /**
@@ -343,94 +250,12 @@ class NetDataRepository private constructor() {
     suspend fun queryDeviceBackupListWithPage(
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
-    ): PageList<com.shmedo.core.model.DeviceBackupInfo>? =
+    ): PageList<DeviceBackupInfo>? =
         RxHttp.postJson("/QueryDeviceBackup")
             .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
             .addHeader("Authorization", MmkvCacheUtil.getToken())
             .addAll(jsonParam)
-            .toAwaitResponse<PageList<com.shmedo.core.model.DeviceBackupInfo>>()
-            .tryAwait(onCatch)
-
-    /**
-     * 给一个设备应用一个备份
-     */
-    suspend fun applyBackup(
-        jsonParam: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): String? =
-        RxHttp.postJson("/ApplyBackup")
-            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
-            .addAll(jsonParam)
-            .toAwaitResponse<String>()
-            .tryAwait(onCatch)
-
-    /**
-     * 根据产品ID查询固件列表
-     */
-    suspend fun queryFirmwareListByProductIDWithPage(
-        jsonParam: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): PageList<FirmWareInfo>? =
-        RxHttp.postJson("/GetFirmwareListByProductID")
-            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
-            .addAll(jsonParam)
-            .toAwaitResponse<PageList<FirmWareInfo>>()
-            .tryAwait(onCatch)
-
-    /**
-     * 对单个设备进行固件升级
-     */
-    suspend fun applyFirmwareUpgrade(
-        jsonParam: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): String? =
-        RxHttp.postJson("/FirmwareUpgrade")
-            .setDomainIfAbsent(BaseURL.IOT_INTERACTIVE_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
-            .addAll(jsonParam)
-            .toAwaitResponse<String>()
-            .tryAwait(onCatch)
-
-    /**
-     * 批量透明指令下发(限定同一产品)
-     */
-    suspend fun batchDispatchRawCmd(
-        jsonParam: String
-    ): List<DispatchCmdItem> =
-        RxHttp.postJson("/BatchDispatchRawCmd")
-            .setDomainIfAbsent(BaseURL.IOT_INTERACTIVE_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
-            .addAll(jsonParam)
-            .toAwaitResponse<List<DispatchCmdItem>>()
-            .await()
-
-    /**
-     * 查询指令响应结果
-     */
-    suspend fun queryCmdResultByMsgID(
-        jsonParam: String
-    ): List<QueryCmdResult> =
-        RxHttp.postJson("/QueryCmdResultByMsgID")
-            .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
-            .addAll(jsonParam)
-            .toAwaitResponse<List<QueryCmdResult>>()
-            .await()
-
-    /**
-     * 分页查询设备数据列表
-     */
-    suspend fun queryCloudDataExWithPage(
-        jsonParam: String,
-        onCatch: ((Throwable) -> Unit)? = null
-    ): PageList<CloudDeviceData>? =
-        RxHttp.postJson("/QueryCloudDataEx")
-            .setDomainIfAbsent(BaseURL.CLOUD_PLATFORM_DATA_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
-            .addAll(jsonParam)
-            .toAwait(object : CloudPlatformApiResponseParser<PageList<CloudDeviceData>>() {})
+            .toAwaitResponse<PageList<DeviceBackupInfo>>()
             .tryAwait(onCatch)
 
     companion object {

@@ -170,8 +170,19 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 )
 
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList, name = "GNSS模块", value = when (stateInfo.gnssStatus) {
+                        "-3" -> "模块异常"
+                        "-2" -> "数据异常"
+                        "0" -> "正常"
+                        else -> AppContants.PLACE_HOLDER_VALUE
+                    }, textColorRes = if (stateInfo.gnssStatus == "0") 0 else ColorUtils.getColor(
+                        R.color.error_FF4400
+                    )
+                )
+
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
-                    name = "加速度计",
+                    name = "倾角模块",
                     value = when (stateInfo.accelerometerStatus) {
                         "-3" -> "模块异常"
                         "-2" -> "数据异常"

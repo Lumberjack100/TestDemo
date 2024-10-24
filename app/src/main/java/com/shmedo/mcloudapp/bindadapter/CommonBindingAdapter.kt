@@ -80,6 +80,14 @@ object CommonBindingAdapter {
     }
 
     @JvmStatic
+    @BindingAdapter(value = ["imageDrawable"], requireAll = false)
+    fun imageDrawable(view: ImageView, drawable: Drawable?) {
+        drawable?.let {
+            view.setImageDrawable(it)
+        }
+    }
+
+    @JvmStatic
     @BindingAdapter(value = ["imageResId", "imageSize"], requireAll = false)
     fun imageResId(view: ImageView, resId: Int, size: Int? = null) {
         if (size == null) {

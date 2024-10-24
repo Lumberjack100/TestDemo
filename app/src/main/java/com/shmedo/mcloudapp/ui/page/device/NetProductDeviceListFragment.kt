@@ -96,7 +96,7 @@ class NetProductDeviceListFragment : BaseFragment() {
 
     private fun queryDeviceList() {
         deviceRequestViewModel.getDeviceList(
-            companyID = userInfo.companyID,
+            companyID = AuthMMKVOwner.companyID,
             productID = productID.toString(),
             currentPage = binding.refreshLayout.index,
             pageSize = PAGE_SIZE,

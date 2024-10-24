@@ -102,7 +102,7 @@ class DeviceRequestViewModel(
             jsonObjectRequest.put("companyID", companyID)
 
             val data: DeviceStatisticInfo =
-                NetDataRepository.instance.getDeviceStatByCompanyID(
+                deviceManageRepositoryImp.getDeviceStatByCompanyID(
                     jsonObjectRequest.toString(),
                     isHasListSuperInfoPermission
                 ) { error: Throwable ->
@@ -124,7 +124,7 @@ class DeviceRequestViewModel(
         }
     }
 
-    fun getAllProductTabList() {
+    fun getAllProductTabList(companyID: Int, isHasListSuperInfoPermission: Boolean = false) {
         viewModelScope.launch {
             val pageSize = 100
             val tempList = mutableListOf<ProductInfo>()
@@ -141,13 +141,18 @@ class DeviceRequestViewModel(
 
                 while (true) { // Keep fetching pages until there are no more pages left
                     val jsonObjectRequest = JSONObject().apply {
+                        if (!isHasListSuperInfoPermission)
+                            put("companyID", companyID)
                         put("pageSize", pageSize)
                         put("currentPage", currentPage)
                     }
 
                     val data: PageList<ProductInfo>? = withContext(Dispatchers.IO) {
                         try {
-                            NetDataRepository.instance.getUserCompanyProductList(jsonObjectRequest.toString())
+                            deviceManageRepositoryImp.queryProductList(
+                                jsonObjectRequest.toString(),
+                                isHasListSuperInfoPermission
+                            )
                         } catch (error: Throwable) {
                             Timber.e(error)
                             addLogItem(
@@ -221,24 +226,25 @@ class DeviceRequestViewModel(
         onlineStatus: String = "",
     ) {
         viewModelScope.launch {
-            val jsonObjectRequest = JSONObject()
-            jsonObjectRequest.put("companyID", companyID)
-            if (deviceToken.isNotEmpty())
-                jsonObjectRequest.put("deviceToken", deviceToken)//SN号,支持模糊查询
-            if (productID.isNotEmpty() && productID != "-1")
-                jsonObjectRequest.put("productID", productID)//产品ID,null则不指定产品
-            if (onlineStatus.isNotEmpty())
-                jsonObjectRequest.put("onlineStatus", onlineStatus)//在线状态
-            if (isHasListSuperInfoPermission)
-                jsonObjectRequest.put("filterNoPermissionDevice", true)//过滤用户无权限设备
-            jsonObjectRequest.put("deviceStatus", "启用")//ull选择全部，启用选择启用设备，禁用选择未启用设备
-            //jsonObjectRequest.put("sortSNAsc", true)//ture按SN正序，false按Sn逆序
-            jsonObjectRequest.put("tokenAndVersion", false)//sn号和版本号之间得关系
-            jsonObjectRequest.put("currentPage", currentPage)
-            jsonObjectRequest.put("pageSize", pageSize)
+            val jsonObjectRequest = JSONObject().apply {
+                put("companyID", companyID)
+                if (deviceToken.isNotEmpty())
+                    put("deviceToken", deviceToken)//SN号,支持模糊查询
+                if (productID.isNotEmpty() && productID != "-1")
+                    put("productID", productID)//产品ID,null则不指定产品
+                if (onlineStatus.isNotEmpty())
+                    put("onlineStatus", onlineStatus)//在线状态
+                if (isHasListSuperInfoPermission)
+                    put("filterNoPermissionDevice", true)//过滤用户无权限设备
+                put("deviceStatus", "启用")//null选择全部，启用选择启用设备，禁用选择未启用设备
+                //put("sortSNAsc", true)//ture按SN正序，false按Sn逆序
+                put("tokenAndVersion", false)//sn号和版本号之间得关系
+                put("currentPage", currentPage)
+                put("pageSize", pageSize)
+            }
 
             val data: PageList<DeviceInfo> =
-                NetDataRepository.instance.queryDeviceList(
+                deviceManageRepositoryImp.queryDeviceList(
                     jsonObjectRequest.toString(),
                     isHasListSuperInfoPermission
                 ) { error: Throwable ->
@@ -286,7 +292,7 @@ class DeviceRequestViewModel(
             jsonObjectRequest.put("pageSize", pageSize)
 
             val data: PageList<DeviceInfo> =
-                NetDataRepository.instance.queryFollowDeviceList(
+                deviceManageRepositoryImp.queryFollowDeviceList(
                     jsonObjectRequest.toString()
                 ) { error: Throwable ->
                     Timber.e(error)
@@ -319,7 +325,7 @@ class DeviceRequestViewModel(
             val jsonObjectRequest = JSONObject()
             jsonObjectRequest.put("deviceSn", deviceSn)
 
-            val data: String = NetDataRepository.instance.addUserFollowDevice(
+            val data: String = deviceManageRepositoryImp.addUserFollowDevice(
                 jsonObjectRequest.toString(),
             ) { error: Throwable ->
                 error.printStackTrace()
@@ -351,7 +357,7 @@ class DeviceRequestViewModel(
             val jsonObjectRequest = JSONObject()
             jsonObjectRequest.put("deviceSn", deviceSn)
 
-            val data: String = NetDataRepository.instance.cancelUserFollowDevice(
+            val data: String = deviceManageRepositoryImp.cancelUserFollowDevice(
                 jsonObjectRequest.toString(),
             ) { error: Throwable ->
                 error.printStackTrace()
@@ -387,7 +393,7 @@ class DeviceRequestViewModel(
             jsonObjectRequest.put("deviceToken", deviceToken)
 
             val data: DeviceDetailInfo =
-                NetDataRepository.instance.getDeviceDetailInfo(jsonObjectRequest.toString()) { error: Throwable ->
+                deviceManageRepositoryImp.getDeviceDetailInfo(jsonObjectRequest.toString()) { error: Throwable ->
                     Timber.e(error)
                     addLogItem(CommonMMKVOwner.appLogSessionId, Log.ERROR, error.errorMsg)
 
@@ -418,7 +424,7 @@ class DeviceRequestViewModel(
         val jsonObjectRequest = JSONObject()
         jsonObjectRequest.put("deviceToken", deviceToken)
 
-        return NetDataRepository.instance.getDeviceDetailInfo(jsonObjectRequest.toString(), onCatch)
+        return deviceManageRepositoryImp.getDeviceDetailInfo(jsonObjectRequest.toString(), onCatch)
     }
 
     suspend fun applyBackup(
@@ -430,7 +436,7 @@ class DeviceRequestViewModel(
         jsonObjectRequest.put("backupID", backupID)
         jsonObjectRequest.put("deviceID", deviceID)
 
-        return NetDataRepository.instance.applyBackup(jsonObjectRequest.toString(), onCatch)
+        return deviceManageRepositoryImp.applyBackup(jsonObjectRequest.toString(), onCatch)
     }
 
     /**
@@ -460,7 +466,7 @@ class DeviceRequestViewModel(
             jsonObjectRequest.put("pageSize", pageSize)
 
             val data: PageList<CloudDeviceData> =
-                NetDataRepository.instance.queryCloudDataExWithPage(
+                deviceManageRepositoryImp.queryCloudDataExWithPage(
                     jsonObjectRequest.toString()
                 ) { error: Throwable ->
                     Timber.e(error)
@@ -513,7 +519,7 @@ class DeviceRequestViewModel(
             jsonObjectRequest.put("pageSize", pageSize)
 
             val data: PageList<FirmWareInfo> =
-                NetDataRepository.instance.queryFirmwareListByProductIDWithPage(
+                deviceManageRepositoryImp.queryFirmwareListByProductIDWithPage(
                     jsonObjectRequest.toString()
                 ) { error: Throwable ->
                     Timber.e(error)
@@ -550,7 +556,7 @@ class DeviceRequestViewModel(
         jsonObjectRequest.put("deviceToken", deviceToken)
         jsonObjectRequest.put("firmwareID", firmwareID)
 
-        return NetDataRepository.instance.applyFirmwareUpgrade(
+        return deviceManageRepositoryImp.applyFirmwareUpgrade(
             jsonObjectRequest.toString(),
             onCatch
         )
@@ -567,6 +573,8 @@ class DeviceRequestViewModel(
         jsonObjectRequest.put("deviceSn", deviceSn)
         jsonObjectRequest.put("deviceKey", deviceKey)
         jsonObjectRequest.put("reCreate", false)
+
+
         return NetDataRepository.instance.getRemoteDeviceLogin(jsonObjectRequest.toString()) { error: Throwable ->
             error.printStackTrace()
             val msg =

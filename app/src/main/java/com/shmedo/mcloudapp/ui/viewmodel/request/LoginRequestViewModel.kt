@@ -22,9 +22,11 @@ import com.shmedo.lib.network.response.ResponseStatus
 import com.shmedo.lib.network.response.ResultSource
 import com.shmedo.lib.network.util.BaseURL
 import com.shmedo.mcloudapp.BuildConfig
+import com.shmedo.mcloudapp.model.SingleSelectionItem
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import timber.log.Timber
 
@@ -271,6 +273,37 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
         }
     }
 
+    fun requestUpdatePassword(
+        companyID: Int,
+        userID: Int,
+        newPassword: String,
+        confirmPassword: String
+    ) {
+        viewModelScope.launch {
+            val jsonObjectRequest = JSONObject().apply {
+                put("companyID", companyID)
+                put("userID", userID)
+                put("newPassword", newPassword)
+                put("confirmPassword", confirmPassword)
+            }
+
+            val data: String =
+                NetDataRepository.instance.resetPassword(jsonObjectRequest.toString()) { error: Throwable ->
+                    handleError(
+                        _updatePasswordResult,
+                        error,
+                        "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/ResetPassword"
+                    )
+                } ?: return@launch
+
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = true
+            responseStatus.responseCode = "0"
+            responseStatus.source = ResultSource.NETWORK
+            _updatePasswordResult.setValue(DataResult(data, responseStatus))
+        }
+    }
+
     fun refreshUserInfo(companyID: Int = 0, userID: Int = 0) {
         viewModelScope.launch {
             val jsonObjectRequest = JSONObject().apply {
@@ -328,36 +361,22 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
         }
     }
 
-    fun requestUpdatePassword(
-        companyID: Int,
-        userID: Int,
-        newPassword: String,
-        confirmPassword: String
-    ) {
-        viewModelScope.launch {
-            val jsonObjectRequest = JSONObject().apply {
-                put("companyID", companyID)
-                put("userID", userID)
-                put("newPassword", newPassword)
-                put("confirmPassword", confirmPassword)
+    suspend fun getCompanyList(companyName: String = ""): MutableList<SingleSelectionItem> =
+        withContext(Dispatchers.Default) {
+            val jsonObject = JSONObject().apply {
+                put("companyName", companyName)
             }
+            val tempList = NetDataRepository.instance.queryUserInCompanyList(
+                jsonObject.toString()
+            ) ?: emptyList()
 
-            val data: String =
-                NetDataRepository.instance.resetPassword(jsonObjectRequest.toString()) { error: Throwable ->
-                    handleError(
-                        _updatePasswordResult,
-                        error,
-                        "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/ResetPassword"
-                    )
-                } ?: return@launch
-
-            val responseStatus = ResponseStatus()
-            responseStatus.isSuccess = true
-            responseStatus.responseCode = "0"
-            responseStatus.source = ResultSource.NETWORK
-            _updatePasswordResult.setValue(DataResult(data, responseStatus))
+            tempList.map {
+                SingleSelectionItem(
+                    name = it.companyName,
+                    extValue = it.companyID.toString()
+                )
+            }.toMutableList()
         }
-    }
 
     //<editor-fold desc="孙建伟通用配置接口">
     /**

@@ -206,7 +206,7 @@ dependencies {
     //Android 快速构建 RecyclerView, 比 BRVAH 更简单强大 https://github.com/liangjingkanji/BRV
     implementation(libs.liangjingkanji.brv)
     //A ListView-like FastScroller for Android’s RecyclerView.
-    implementation (libs.fastscroll)
+    implementation(libs.fastscroll)
     implementation(libs.tableview)
 
     implementation(libs.agentweb.core)
@@ -230,6 +230,8 @@ dependencies {
     implementation(libs.bugly.crashreport)
 
     implementation(libs.glide)
+    ksp(libs.glide.ksp)
+//    implementation("com.github.bumptech.glide:okhttp3-integration:4.16.0")
     implementation(libs.bundles.pictureselector)
 
     //AndroidUtilCode 是一个强大易用的安卓工具类库

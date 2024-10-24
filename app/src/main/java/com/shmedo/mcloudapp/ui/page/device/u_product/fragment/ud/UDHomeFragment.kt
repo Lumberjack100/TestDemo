@@ -61,7 +61,6 @@ import com.shmedo.mcloudapp.ui.page.device.common.UDSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDHomeViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
@@ -85,7 +84,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUdHomeBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mHeadStates: UDHomeViewModel by viewModels()
-    private val mCommandResponseStates: CommandResponseViewModel by viewModels()
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
     private val iotParseManager: IOTParserManager by inject()
 
@@ -177,6 +175,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
             mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
             mHeadStates.iotPlatformStateText.set("蓝牙已断开")
+
+            mHeadStates.warnErrorText.set("正常")
         }
 
         //刷新模块状态

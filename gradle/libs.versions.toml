@@ -32,7 +32,7 @@ fastscroll = "2.1.0"
 flexbox = "3.0.0"
 fragmentKtx = "1.8.2"
 getActivityLogcat = "11.8"
-glide = "4.16.0"
+glideVersion = "4.16.0"
 hmsScan = "2.12.0.301"
 immersionbar = "3.2.2"
 junit = "4.13.2"
@@ -101,7 +101,8 @@ fastscroll = { module = "io.github.l4digital:fastscroll", version.ref = "fastscr
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 #getActivity-logcat = { module = "com.github.getActivity:Logcat", version.ref = "getActivityLogcat" }
 getActivity-xxpermission = { module = "com.github.getActivity:XXPermissions", version.ref = "xxPermission" }
-glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
+glide-ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glideVersion" }
 hms-scan = { module = "com.huawei.hms:scan", version.ref = "hmsScan" }
 immersionbar = { module = "com.geyifeng.immersionbar:immersionbar", version.ref = "immersionbar" }
 immersionbar-ktx = { module = "com.geyifeng.immersionbar:immersionbar-ktx", version.ref = "immersionbar" }
