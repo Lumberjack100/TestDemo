@@ -36,7 +36,8 @@
                 android:id="@+id/rl_company"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="@dimen/dimen_size_12">
+                android:layout_marginHorizontal="@dimen/dimen_size_12"
+                android:layout_marginTop="@dimen/dimen_size_10">
 
                 <com.google.android.material.textview.MaterialTextView
                     onClickWithDebouncing="@{(view)->click.showCompanySelectionPopupView(view)}"

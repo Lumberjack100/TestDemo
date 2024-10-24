@@ -25,6 +25,7 @@ import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.impl.PartShadowPopupView
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.model.DeviceInfo
+import com.shmedo.core.model.UserInfo
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -67,7 +68,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     private val moreChooseList =
         arrayListOf("扫码连接", "查询数据")//"扫一扫", "WIFI 设备", "USB 设备", "查询数据"
 
-
+    private val userInfo: UserInfo by lazy {  AuthMMKVOwner.userInfo!! }
     private val companyList: MutableList<SingleSelectionItem> = mutableListOf()
     private var companySelectionPopupView: PartShadowPopupView? = null
 
@@ -90,6 +91,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     }
 
     override fun initData() {
+        mStates.companyName.set(userInfo.companyName)
         initCompanyList()
     }
 

@@ -232,7 +232,7 @@ class NewNetDeviceListFragment : BaseFragment() {
     override fun initData() {
         initTabData()
         initOnlineStatusData()
-        deviceRequestViewModel.getAllProductTabList()
+        refreshProductTabList()
     }
 
     private fun initTabData() {
@@ -280,6 +280,16 @@ class NewNetDeviceListFragment : BaseFragment() {
     }
 
     /**
+     * 刷新产品列表
+     */
+    private fun refreshProductTabList() {
+        deviceRequestViewModel.getAllProductTabList(
+            companyID = AuthMMKVOwner.companyID,
+            isHasListSuperInfoPermission = AuthMMKVOwner.listSuperInfoPermission
+        )
+    }
+
+    /**
      * 刷新设备列表
      */
     private fun refreshDeviceList() {
@@ -302,7 +312,6 @@ class NewNetDeviceListFragment : BaseFragment() {
     }
 
     override fun lazyLoadData() {
-        deviceRequestViewModel.getAllProductTabList()
         binding.devicePageRefreshLayout.showLoading()
     }
 
@@ -359,6 +368,7 @@ class NewNetDeviceListFragment : BaseFragment() {
             Toaster.show("已取消收藏")
         }
         mMessenger.isRefreshDeviceList.observe(viewLifecycleOwner) {
+            refreshProductTabList()
             binding.devicePageRefreshLayout.showLoading()
         }
     }

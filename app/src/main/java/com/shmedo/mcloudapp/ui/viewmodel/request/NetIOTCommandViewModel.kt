@@ -1,21 +1,21 @@
 package com.shmedo.mcloudapp.ui.viewmodel.request
 
 import androidx.lifecycle.viewModelScope
-import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.data.repository.DeviceInteractiveRepositoryImp
 import com.shmedo.core.data.repository.LoggerRepositoryImp
+import com.shmedo.core.model.DispatchCmdItem
+import com.shmedo.core.model.DispatchRawCmdParam
+import com.shmedo.core.model.QueryCmdResult
+import com.shmedo.core.model.QueryCmdResultParam
 import com.shmedo.lib.network.ext.errorMsg
-import com.shmedo.core.data.repository.NetDataRepository
 import com.shmedo.mcloudapp.model.CmdDispatch
 import com.shmedo.mcloudapp.model.CmdResponseResultError
 import com.shmedo.mcloudapp.model.CmdResponseResultSuccess
 import com.shmedo.mcloudapp.model.CmdResponseResultTimeOut
 import com.shmedo.mcloudapp.model.DispatchFailed
 import com.shmedo.mcloudapp.model.DispatchSuccess
-import com.shmedo.core.model.DispatchCmdItem
-import com.shmedo.core.model.DispatchRawCmdParam
-import com.shmedo.core.model.QueryCmdResult
-import com.shmedo.core.model.QueryCmdResultParam
+import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -29,7 +29,10 @@ import timber.log.Timber
  * 创建时间：2023/9/4
  * 描述： 物联网平台透传指令
  */
-class NetIOTCommandViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) :
+class NetIOTCommandViewModel(
+    private val deviceInteractiveRepositoryImp: DeviceInteractiveRepositoryImp,
+    private val loggerRepositoryImp: LoggerRepositoryImp
+) :
     BaseRequestViewModel(loggerRepositoryImp) {
     private val _cmdDispatchFlow: MutableSharedFlow<CmdDispatch> = MutableSharedFlow()
     val cmdDispatchFlow = _cmdDispatchFlow.asSharedFlow()
@@ -45,7 +48,7 @@ class NetIOTCommandViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
                 val rawCmdParam = DispatchRawCmdParam(content, deviceTokenList)
                 val jsonParam = MoshiUtil.toJson(rawCmdParam)
                 val data: List<DispatchCmdItem> =
-                    NetDataRepository.instance.batchDispatchRawCmd(jsonParam)
+                    deviceInteractiveRepositoryImp.batchDispatchRawCmd(jsonParam)
 
                 msgIDList.clear()
                 msgIDList.addAll(data.map { it.msgID })
@@ -100,7 +103,7 @@ class NetIOTCommandViewModel(private val loggerRepositoryImp: LoggerRepositoryIm
         return withContext(Dispatchers.IO) {
             // 查询设备对下发/透传的指令响应结果的逻辑
             val data: List<QueryCmdResult> =
-                NetDataRepository.instance.queryCmdResultByMsgID(jsonParam)
+                deviceInteractiveRepositoryImp.queryCmdResultByMsgID(jsonParam)
             val queryCmdResult = data[0]
             queryCmdResult
         }

@@ -35,7 +35,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentNetDeviceListBinding
     private lateinit var mStates: NetDeviceListViewModel
     private lateinit var deviceRequestViewModel: DeviceRequestViewModel
-    private val userInfo: UserInfo by lazy {  AuthMMKVOwner.userInfo!! }
+    private val userInfo: UserInfo by lazy { AuthMMKVOwner.userInfo!! }
 
     private val activeBg: Int = R.drawable.bg_product_tab_checked
     private val normalBg: Int = R.drawable.bg_product_tab_normal
@@ -66,7 +66,10 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     override fun initData() {
         companyID = AuthMMKVOwner.companyID
         productID = -1
-        deviceRequestViewModel.getAllProductTabList()
+        deviceRequestViewModel.getAllProductTabList(
+            companyID = AuthMMKVOwner.companyID,
+            isHasListSuperInfoPermission = AuthMMKVOwner.listSuperInfoPermission
+        )
         binding.page.showLoading(false)
     }
 
@@ -150,7 +153,8 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             TabLayoutMediator(binding.tabs, binding.viewpager) { tab, position ->
                 val tabView = LayoutInflater.from(requireContext())
                     .inflate(R.layout.custom_tab_product, null)
-                val textView = tabView.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.tabText)
+                val textView =
+                    tabView.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.tabText)
                 textView.text = productInfoList[position].productName
                 if (position == 0) {
                     textView.textSize = activeSize
@@ -173,7 +177,8 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     override fun onTabSelected(tab: TabLayout.Tab) {
         tab.customView?.let {
             it.setBackgroundResource(activeBg)
-            val textView = it.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.tabText)
+            val textView =
+                it.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.tabText)
             textView.textSize = activeSize
             textView.setTextColor(activeColor)
             productID = productInfoList[tab.position].id
@@ -183,7 +188,8 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     override fun onTabUnselected(tab: TabLayout.Tab) {
         tab.customView?.let {
             it.setBackgroundResource(normalBg)
-            val textView = it.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.tabText)
+            val textView =
+                it.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.tabText)
             textView.textSize = normalSize
             textView.setTextColor(normalColor)
         }
@@ -200,7 +206,10 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         if (companyID != AuthMMKVOwner.companyID) {
             companyID = AuthMMKVOwner.companyID
             productID = -1
-            deviceRequestViewModel.getAllProductTabList()
+            deviceRequestViewModel.getAllProductTabList(
+                companyID = AuthMMKVOwner.companyID,
+                isHasListSuperInfoPermission = AuthMMKVOwner.listSuperInfoPermission
+            )
         }
         deviceRequestViewModel.getDeviceStatByCompanyID(
             AuthMMKVOwner.companyID,
