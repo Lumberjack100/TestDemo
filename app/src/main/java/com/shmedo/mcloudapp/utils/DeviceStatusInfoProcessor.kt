@@ -186,7 +186,7 @@ object DeviceStatusInfoProcessor {
         val units = arrayOf("天", "小时", "分钟", "秒", "毫秒")
         val unitLen = intArrayOf(86400000, 3600000, 60000, 1000, 1)
 
-        if (millis < 0 || precis <= 0) return "--"
+        if (millis < 0 || precis <= 0) return AppContants.PLACE_HOLDER_VALUE
         val precision = min(precis.toDouble(), 5.0).toInt()
         var millisecond = millis
         if (millisecond == 0L || millisecond < unitLen[precision - 1]) return "0${units[precision - 1]}"

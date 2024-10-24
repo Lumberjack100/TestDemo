@@ -148,36 +148,45 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     )
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList, name = "雷达模块", value = when (stateInfo.ldStatus) {
+                    groupList,
+                    name = "雷达模块",
+                    value = when (stateInfo.ldStatus) {
                         "-3" -> "模块异常"
                         "-2" -> "数据异常"
                         "0" -> "正常"
                         else -> AppContants.PLACE_HOLDER_VALUE
-                    }, textColorRes = if (stateInfo.ldStatus == "0") 0 else ColorUtils.getColor(
+                    },
+                    textColorRes = if (stateInfo.ldStatus == "-2" || stateInfo.ldStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
-                    )
+                    ) else 0
                 )
 
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList, name = "摄像头模块", value = when (stateInfo.cameraStatus) {
+                    groupList,
+                    name = "摄像头模块",
+                    value = when (stateInfo.cameraStatus) {
                         "-3" -> "模块异常"
                         "-2" -> "数据异常"
                         "0" -> "正常"
                         else -> AppContants.PLACE_HOLDER_VALUE
-                    }, textColorRes = if (stateInfo.cameraStatus == "0") 0 else ColorUtils.getColor(
+                    },
+                    textColorRes = if (stateInfo.cameraStatus == "-2" || stateInfo.cameraStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
-                    )
+                    ) else 0
                 )
 
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList, name = "GNSS模块", value = when (stateInfo.gnssStatus) {
+                    groupList,
+                    name = "GNSS模块",
+                    value = when (stateInfo.gnssStatus) {
                         "-3" -> "模块异常"
                         "-2" -> "数据异常"
                         "0" -> "正常"
                         else -> AppContants.PLACE_HOLDER_VALUE
-                    }, textColorRes = if (stateInfo.gnssStatus == "0") 0 else ColorUtils.getColor(
+                    },
+                    textColorRes = if (stateInfo.gnssStatus == "-2" || stateInfo.gnssStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
-                    )
+                    ) else 0
                 )
 
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -189,9 +198,9 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "正常"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
-                    textColorRes = if (stateInfo.accelerometerStatus == "0") 0 else ColorUtils.getColor(
+                    textColorRes = if (stateInfo.accelerometerStatus == "-2" || stateInfo.accelerometerStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
-                    )
+                    ) else 0
                 )
 
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -203,9 +212,9 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "正常"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
-                    textColorRes = if (stateInfo._4gStatus == "0") 0 else ColorUtils.getColor(
+                    textColorRes = if (stateInfo._4gStatus == "-2" || stateInfo._4gStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
-                    )
+                    ) else 0
                 )
 
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -217,9 +226,9 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "正常"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
-                    textColorRes = if (stateInfo.btStatus == "0") 0 else ColorUtils.getColor(
+                    textColorRes = if (stateInfo.btStatus == "-2" || stateInfo.btStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
-                    ),
+                    ) else 0
                 )
 
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -231,9 +240,9 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "正常"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
-                    textColorRes = if (stateInfo.radioStatus == "0") 0 else ColorUtils.getColor(
+                    textColorRes = if (stateInfo.radioStatus == "-2" || stateInfo.radioStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
-                    ),
+                    ) else 0,
                     isBottomItem = true
                 )
 
@@ -246,9 +255,9 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "正常"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
-                    textColorRes = if (stateInfo.flashStatus == "0") 0 else ColorUtils.getColor(
+                    textColorRes = if (stateInfo.flashStatus == "-2" || stateInfo.flashStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
-                    ),
+                    ) else 0,
                 )
 
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -260,9 +269,9 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "正常"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
-                    textColorRes = if (stateInfo.athStatus == "0") 0 else ColorUtils.getColor(
+                    textColorRes = if (stateInfo.athStatus == "-2" || stateInfo.athStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
-                    ),
+                    ) else 0,
                     isBottomItem = true
                 )
 
