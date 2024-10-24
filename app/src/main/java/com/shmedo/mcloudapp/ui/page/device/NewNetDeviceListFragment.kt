@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
@@ -17,13 +18,12 @@ import com.lxj.xpopup.impl.PartShadowPopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.model.DeviceInfo
-import com.shmedo.core.model.UserInfo
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentNewNetDeviceListBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.getAppViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.model.FilterDeviceTabItem
@@ -33,9 +33,10 @@ import com.shmedo.mcloudapp.ui.dialog.SingleSelectionPartShadowPopupView
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.NetDeviceListViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * 创建者：gonghe
@@ -44,9 +45,9 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
  */
 class NewNetDeviceListFragment : BaseFragment() {
     private lateinit var binding: FragmentNewNetDeviceListBinding
-    private lateinit var mStates: NetDeviceListViewModel
-    private lateinit var deviceRequestViewModel: DeviceRequestViewModel
-    private val userInfo: UserInfo by lazy { AuthMMKVOwner.userInfo!! }
+    private lateinit var mMessenger: PageMessenger
+    private val mStates: NetDeviceListViewModel by viewModels()
+    private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
 
     private val productTabList = mutableListOf<SingleSelectionItem>()
     private val onlineStatusList = mutableListOf<SingleSelectionItem>()
@@ -56,8 +57,7 @@ class NewNetDeviceListFragment : BaseFragment() {
 
 
     override fun initViewModel() {
-        mStates = getFragmentScopeViewModel()
-        deviceRequestViewModel = getViewModel()
+        mMessenger = getAppViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -232,6 +232,7 @@ class NewNetDeviceListFragment : BaseFragment() {
     override fun initData() {
         initTabData()
         initOnlineStatusData()
+        deviceRequestViewModel.getAllProductTabList()
     }
 
     private fun initTabData() {
@@ -283,7 +284,7 @@ class NewNetDeviceListFragment : BaseFragment() {
      */
     private fun refreshDeviceList() {
         deviceRequestViewModel.getDeviceList(
-            companyID = userInfo.companyID,
+            companyID = AuthMMKVOwner.companyID,
             productID = mStates.filterProductID.get(),
             currentPage = binding.devicePageRefreshLayout.index,
             pageSize = PAGE_SIZE,
@@ -356,6 +357,9 @@ class NewNetDeviceListFragment : BaseFragment() {
                 return@observe
             }
             Toaster.show("已取消收藏")
+        }
+        mMessenger.isRefreshDeviceList.observe(viewLifecycleOwner) {
+            binding.devicePageRefreshLayout.showLoading()
         }
     }
 

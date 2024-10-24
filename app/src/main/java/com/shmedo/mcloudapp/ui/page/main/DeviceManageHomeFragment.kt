@@ -6,8 +6,10 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Gravity
+import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
@@ -20,54 +22,66 @@ import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.enums.PopupAnimation
+import com.lxj.xpopup.impl.PartShadowPopupView
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentDeviceManageHomeBinding
 import com.shmedo.mcloudapp.extensions.getAppViewModel
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CustomActivityResult
+import com.shmedo.mcloudapp.model.SingleSelectionItem
 import com.shmedo.mcloudapp.ui.adapter.PageAdapter
 import com.shmedo.mcloudapp.ui.dialog.ScanQRCodeResultPopupView
+import com.shmedo.mcloudapp.ui.dialog.SingleSelectionPartShadowPopupView
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.device.BleScannerListFragment
 import com.shmedo.mcloudapp.ui.page.device.DeviceHomeActivity
 import com.shmedo.mcloudapp.ui.page.device.NewNetDeviceListFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.DeviceManageHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper.REQUEST_CODE_SCAN
 import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentDeviceManageHomeBinding
     private lateinit var mMessenger: PageMessenger
-    private lateinit var mStates: DeviceManageHomeViewModel
-    private lateinit var deviceRequestViewModel: DeviceRequestViewModel
+    private val mStates: DeviceManageHomeViewModel by viewModels()
+    private val loginRequestViewModel: LoginRequestViewModel by viewModel()
+    private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
 
     private val activeColor: Int = ColorUtils.getColor(R.color.title_text_color)
     private val normalColor: Int = ColorUtils.getColor(R.color.text_color_666666)
-    private val activeSize: Float = 18f
+    private val activeSize: Float = 20f
     private val normalSize: Float = 16f
     private val tabs = arrayOf("4G", "蓝牙")
     private val moreChooseList =
         arrayListOf("扫码连接", "查询数据")//"扫一扫", "WIFI 设备", "USB 设备", "查询数据"
 
+
+    private val companyList: MutableList<SingleSelectionItem> = mutableListOf()
+    private var companySelectionPopupView: PartShadowPopupView? = null
+
+
     override fun initViewModel() {
         mMessenger = getAppViewModel()
-        mStates = getFragmentScopeViewModel()
-        deviceRequestViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_device_manage_home, BR.stateVM, mStates)
-            .addBindingParam(BR.click, ClickProxy())
+        return DataBindingConfig(
+            R.layout.fragment_device_manage_home,
+            BR.stateVM,
+            mStates
+        ).addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -75,7 +89,9 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
         initViewPager()
     }
 
-    override fun initData() {}
+    override fun initData() {
+        initCompanyList()
+    }
 
     override fun createObserver() {
         mMessenger.activityResultDispatcher.observe(
@@ -104,11 +120,9 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     }
 
     private fun initViewPager() {
-        val mFragments =
-            listOf<Fragment>(
-                NewNetDeviceListFragment.newInstance(),
-                BleScannerListFragment.newInstance()
-            )
+        val mFragments = listOf<Fragment>(
+            NewNetDeviceListFragment.newInstance(), BleScannerListFragment.newInstance()
+        )
         binding.viewpager.adapter = PageAdapter(this, mFragments)
         binding.viewpager.offscreenPageLimit = mFragments.size
         binding.viewpager.isUserInputEnabled = false
@@ -154,27 +168,37 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
 
     override fun onTabReselected(tab: TabLayout.Tab) {}
 
+    private fun initCompanyList() {
+        launchWithViewLifecycle {
+            val tempList = loginRequestViewModel.getCompanyList()
+            if (tempList.isEmpty())
+                return@launchWithViewLifecycle
+
+            companyList.clear()
+            companyList.addAll(tempList)
+        }
+    }
+
     override fun onResume() {
         super.onResume()
-        initImmersionBar(binding.toolbar, isStatusBarDarkFont = true)
+        binding.root.post {
+            initImmersionBar(binding.statusBarView, isTitleBar = false, isStatusBarDarkFont = true)
+        }
     }
 
     inner class ClickProxy {
         /**
-         * 恢复默认配置
+         *
          */
         fun onMoreChooseClick() {
-            XPopup.Builder(context)
-                .isViewMode(true)
-                .hasShadowBg(false)
+            XPopup.Builder(context).isViewMode(true).hasShadowBg(false)
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .popupAnimation(PopupAnimation.TranslateFromRight) //NoAnimation表示禁用动画
                 .atView(binding.ivMore)  // 依附于所点击的View，内部会自动判断在上方或者下方显示
                 .asAttachList(
-                    moreChooseList.toTypedArray(),
-                    null
-                ) { position, text ->
+                    moreChooseList.toTypedArray(), null
+                ) { _, text ->
                     when (text) {
                         "扫码连接" -> {
                             requestPermissionForBluetooth()
@@ -184,11 +208,51 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
                             nav().navigate(R.id.action_global_to_queryDeviceDataFragment)
                         }
                     }
+                }.show()
+        }
+
+        /**
+         * 切换企业
+         */
+        fun showCompanySelectionPopupView(view: View) {
+            if (companySelectionPopupView != null && companySelectionPopupView!!.isShow) {
+                return
+            }
+
+            val position =
+                if (mStates.companyIndex in companyList.indices) mStates.companyIndex else 0
+            companySelectionPopupView =
+                SingleSelectionPartShadowPopupView(requireContext()).apply {
+                    setData(
+                        companyList,
+                        position
+                    )
+                    setSelectListener(object :
+                        SingleSelectionPartShadowPopupView.OnSelectListener {
+                        override fun onSelect(selectionItem: SingleSelectionItem, position: Int) {
+                            mStates.companyName.set(selectionItem.name)
+                            mStates.companyIndex = position
+                            AuthMMKVOwner.companyID = selectionItem.extValue.toIntOrNull() ?: 0
+                            //延迟 500ms 刷新设备列表
+                            view.postDelayed({
+                                mMessenger.requestRefreshDeviceList()
+                            }, 500)
+                        }
+                    })
                 }
+            XPopup.Builder(context)
+                .atView(binding.rlCompany)
+                .isClickThrough(true)
+                .isViewMode(true)
+                .isRequestFocus(false)
+                .dismissOnTouchOutside(true)// 点击外部是否关闭弹窗，默认为true
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .asCustom(companySelectionPopupView)
                 .show()
         }
     }
 
+    //<editor-fold desc="扫码处理">
     private fun requestPermissionForBluetooth() {
         XXPermissions.with(this)
             // 申请多个权限
@@ -203,20 +267,16 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
             //.unchecked()
             .request(object : OnPermissionCallback {
                 override fun onGranted(
-                    grantedPermissions: MutableList<String>,
-                    allGranted: Boolean
+                    grantedPermissions: MutableList<String>, allGranted: Boolean
                 ) {
                     if (!allGranted) {
                         return
                     }
                     // 扫一扫
                     val options = HmsScanAnalyzerOptions.Creator().setErrorCheck(true)
-                        .setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE)
-                        .create()
+                        .setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE).create()
                     ScanUtil.startScan(
-                        mActivity,
-                        PermissionHelper.REQUEST_CODE_SCAN,
-                        options
+                        mActivity, PermissionHelper.REQUEST_CODE_SCAN, options
                     )
                 }
             })
@@ -279,7 +339,6 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
         showChooseConnectType()
     }
 
-
     private fun showChooseConnectType() {
         val popupView = ScanQRCodeResultPopupView(requireContext())
         popupView.setTitle("选择连接方式", mStates)
@@ -293,14 +352,13 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
                     deviceRequestViewModel.getDeviceDetailInfo(mStates.scanQRCodeResult.get())
                 }
             })
-        XPopup.Builder(context)
-            .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
+        XPopup.Builder(context).dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
             .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
-            .enableDrag(false)
-            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-            .asCustom(popupView)
-            .show()
+            .enableDrag(false).isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+            .asCustom(popupView).show()
     }
+
+    // </editor-fold>
 }
 
 

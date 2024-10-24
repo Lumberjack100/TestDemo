@@ -64,7 +64,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     }
 
     override fun initData() {
-        companyID = userInfo.companyID
+        companyID = AuthMMKVOwner.companyID
         productID = -1
         deviceRequestViewModel.getAllProductTabList()
         binding.page.showLoading(false)
@@ -192,18 +192,18 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     override fun onTabReselected(tab: TabLayout.Tab) {}
 
 //    override fun lazyLoadData() {
-//        deviceRequestViewModel.getProductList(userInfo.companyID)
+//        deviceRequestViewModel.getProductList(AuthMMKVOwner.companyID)
 //    }
 
     override fun onResume() {
         super.onResume()
-        if (companyID != userInfo.companyID) {
-            companyID = userInfo.companyID
+        if (companyID != AuthMMKVOwner.companyID) {
+            companyID = AuthMMKVOwner.companyID
             productID = -1
             deviceRequestViewModel.getAllProductTabList()
         }
         deviceRequestViewModel.getDeviceStatByCompanyID(
-            userInfo.companyID,
+            AuthMMKVOwner.companyID,
             AuthMMKVOwner.listSuperInfoPermission
         )
     }

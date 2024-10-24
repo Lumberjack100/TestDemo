@@ -61,7 +61,6 @@ import com.shmedo.mcloudapp.ui.page.device.common.UDSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDHomeViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
@@ -85,7 +84,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUdHomeBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mHeadStates: UDHomeViewModel by viewModels()
-    private val mCommandResponseStates: CommandResponseViewModel by viewModels()
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
     private val iotParseManager: IOTParserManager by inject()
 

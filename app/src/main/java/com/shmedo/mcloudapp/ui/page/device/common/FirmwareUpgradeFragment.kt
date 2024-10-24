@@ -160,7 +160,7 @@ class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
     private fun refreshData() {
         deviceRequestViewModel.queryFirmwareListByProductIDWithPage(
             productID = deviceInfo.productID,
-            companyID = userInfo.companyID,
+            companyID = AuthMMKVOwner.companyID,
             fwStatus = if (mStates.firmwareStatus.get() == "全部") ""
             else if (mStates.firmwareStatus.get() == "测试") "0" else "1",
             fwName = mStates.searchText.get(),
