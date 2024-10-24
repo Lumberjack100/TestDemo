@@ -6,7 +6,6 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Gravity
-import android.view.View
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -21,8 +20,10 @@ import com.huawei.hms.ml.scan.HmsScan
 import com.huawei.hms.ml.scan.HmsScanAnalyzerOptions
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.enums.PopupAnimation
 import com.lxj.xpopup.impl.PartShadowPopupView
+import com.lxj.xpopup.interfaces.SimpleCallback
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.core.model.UserInfo
@@ -68,7 +69,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     private val moreChooseList =
         arrayListOf("扫码连接", "查询数据")//"扫一扫", "WIFI 设备", "USB 设备", "查询数据"
 
-    private val userInfo: UserInfo by lazy {  AuthMMKVOwner.userInfo!! }
+    private val userInfo: UserInfo by lazy { AuthMMKVOwner.userInfo!! }
     private val companyList: MutableList<SingleSelectionItem> = mutableListOf()
     private var companySelectionPopupView: PartShadowPopupView? = null
 
@@ -91,8 +92,11 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     }
 
     override fun initData() {
+        mStates.isHasListSuperInfoPermission.set(AuthMMKVOwner.listSuperInfoPermission)
         mStates.companyName.set(userInfo.companyName)
-        initCompanyList()
+        //如果没有运维权限，需要初始化企业列表，用于切换企业
+        if (!AuthMMKVOwner.listSuperInfoPermission)
+            initCompanyList()
     }
 
     override fun createObserver() {
@@ -216,11 +220,10 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
         /**
          * 切换企业
          */
-        fun showCompanySelectionPopupView(view: View) {
+        fun showCompanySelectionPopupView() {
             if (companySelectionPopupView != null && companySelectionPopupView!!.isShow) {
                 return
             }
-
             val position =
                 if (mStates.companyIndex in companyList.indices) mStates.companyIndex else 0
             companySelectionPopupView =
@@ -236,7 +239,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
                             mStates.companyIndex = position
                             AuthMMKVOwner.companyID = selectionItem.extValue.toIntOrNull() ?: 0
                             //延迟 500ms 刷新设备列表
-                            view.postDelayed({
+                            binding.rlCompany.postDelayed({
                                 mMessenger.requestRefreshDeviceList()
                             }, 500)
                         }
@@ -249,6 +252,18 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
                 .isRequestFocus(false)
                 .dismissOnTouchOutside(true)// 点击外部是否关闭弹窗，默认为true
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .setPopupCallback(object : SimpleCallback() {
+                    override fun onCreated(popupView: BasePopupView?) {
+                        super.onCreated(popupView)
+                        mStates.isShowCompanySelectionPopupView.set(true)
+                    }
+
+                    override fun onDismiss(popupView: BasePopupView?) {
+                        super.onDismiss(popupView)
+                        mStates.isShowCompanySelectionPopupView.set(false)
+                        companySelectionPopupView = null
+                    }
+                })
                 .asCustom(companySelectionPopupView)
                 .show()
         }

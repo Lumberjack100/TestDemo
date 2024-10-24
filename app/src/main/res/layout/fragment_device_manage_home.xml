@@ -40,22 +40,33 @@
                 android:layout_marginTop="@dimen/dimen_size_10">
 
                 <com.google.android.material.textview.MaterialTextView
-                    onClickWithDebouncing="@{(view)->click.showCompanySelectionPopupView(view)}"
+                    android:id="@+id/tv_company_name"
+                    visible="@{!stateVM.isHasListSuperInfoPermission}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
-                    android:drawableEnd="@drawable/ic_arrow_down"
-                    android:drawablePadding="@dimen/dimen_size_12"
                     android:ellipsize="end"
-                    android:ems="13"
+                    android:maxEms="13"
                     android:maxLines="1"
+                    android:onClick="@{()->click.showCompanySelectionPopupView()}"
                     android:paddingVertical="@dimen/dimen_size_3"
                     android:text="@{stateVM.companyName}"
                     android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_14"
                     android:textStyle="bold"
                     tools:text="新疆克力多铁矿选矿厂尾矿库在线监测" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_triangle_down"
+                    imageDrawable='@{stateVM.isShowCompanySelectionPopupView ? @drawable/ic_triangle_up : @drawable/ic_triangle_down}'
+                    visible="@{!stateVM.isHasListSuperInfoPermission}"
+                    android:layout_width="@dimen/dimen_size_12"
+                    android:layout_height="@dimen/dimen_size_12"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/dimen_size_5"
+                    android:layout_toEndOf="@+id/tv_company_name"
+                    android:scaleType="centerCrop" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_more"
@@ -66,6 +77,13 @@
                     android:layout_centerVertical="true"
                     android:scaleType="centerCrop"
                     android:src="@drawable/ic_add_more" />
+
+                <View
+                    visible="@{stateVM.isShowCompanySelectionPopupView}"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/divider_line_bg2" />
 
             </RelativeLayout>
 

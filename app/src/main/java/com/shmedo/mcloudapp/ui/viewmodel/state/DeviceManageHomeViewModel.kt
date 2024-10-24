@@ -7,4 +7,8 @@ class DeviceManageHomeViewModel : ViewModel() {
     val scanQRCodeResult = NonNullObservableField("")//
     val companyName = NonNullObservableField("")//
     var companyIndex = 0
+
+    val isHasListSuperInfoPermission = NonNullObservableField(false)//
+    val isShowCompanySelectionPopupView = NonNullObservableField(false)//
+
 }
