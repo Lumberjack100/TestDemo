@@ -175,6 +175,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
             mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
             mHeadStates.iotPlatformStateText.set("蓝牙已断开")
+
+            mHeadStates.warnErrorText.set("正常")
         }
 
         //刷新模块状态

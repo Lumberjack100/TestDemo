@@ -93,6 +93,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         resetDefaultParams()
+        mStates.saveInitialState()
     }
 
     private fun resetDefaultParams() {
@@ -355,9 +356,11 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
                         )
                         mStates.domain.set(domain)
                         mStates.port.set(port)
-//                        mStates.diffAccount.set(diffAccount)
-//                        mStates.diffPassword.set(diffPassword)
+                        mStates.diffAccount.set("")
+                        mStates.diffPassword.set("")
                         mStates.altitude.set(altitude)
+
+                        mStates.saveInitialState()
                     }
 
                     "1" -> {//更新海拔高度
@@ -376,7 +379,6 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
 
                             //添加这行来保存初始状态
                             mStates.saveInitialState()
-//                            processNavigateUp()
                             return
                         }
 
