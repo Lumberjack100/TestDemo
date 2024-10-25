@@ -151,13 +151,11 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         when (communicateWay) {
             NetPlatformConnect -> {
                 toolbarViewModel.toolbarIvActionVisible.set(false)
-                mHeadStates.isConnectOperateVisible.set(false)
             }
 
             BleConnect -> {
                 toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
                 toolbarViewModel.toolbarIvActionVisible.set(true)
-                mHeadStates.isConnectOperateVisible.set(true)
             }
 
             else -> {}
@@ -242,7 +240,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     ConfigModule(
                         CommonModule(
                             name = "基本信息",
-                            desc = "查看设备基本信息",
                             resID = R.drawable.ic_module_basic_info,
                             iconSize = ConvertUtils.dp2px(34f),
                             navId = R.id.action_global_to_udBaseInfoFragment
@@ -251,7 +248,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     ConfigModule(
                         CommonModule(
                             name = "网络信息",
-                            desc = "查看设备网络信息",
                             resID = R.drawable.ic_module_net_info,
                             iconSize = ConvertUtils.dp2px(34f),
                             navId = R.id.action_global_to_udNetInfoFragment
@@ -260,7 +256,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     ConfigModule(
                         CommonModule(
                             name = "状态信息",
-                            desc = "查看设备运行状态信息",
                             resID = R.drawable.ic_module_state_info,
                             iconSize = ConvertUtils.dp2px(34f),
                             navId = R.id.action_global_to_udSensorInfoFragment
@@ -269,7 +264,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     ConfigModule(
                         CommonModule(
                             name = "位置信息",
-                            desc = "查看设备位置信息",
                             resID = R.drawable.ic_module_location_info,
                             iconSize = ConvertUtils.dp2px(34f),
                             navId = R.id.action_global_to_udLocationInfoFragment
@@ -447,6 +441,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         module.navId,
                         bundle
                     )
+                }else {
+                    Toaster.show("正在开发中")
                 }
             }
         }

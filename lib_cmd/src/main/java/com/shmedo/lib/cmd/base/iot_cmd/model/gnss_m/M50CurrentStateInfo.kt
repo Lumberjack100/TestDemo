@@ -17,6 +17,10 @@ data class M50CurrentStateInfo(
     val sn: String = IOTConstants.NULL_KEY, //设备SN号
     @Json(name = "device_status")
     val deviceStatus: String = IOTConstants.NULL_KEY, //设备状态(0：正常  -2:告警  -3：设备故障)
+    @Json(name = "dev_warn")
+    val deviceWarn: Map<String, String>? = null, //设备告警信息
+    @Json(name = "dev_error")
+    val deviceError: Map<String, String>? = null, //设备故障信息
     @Json(name = "sw_version")
     val firmwareVersion: String = IOTConstants.NULL_KEY, //固件版本 2.0.1-M2
     @Json(name = "sw_date")

@@ -2,8 +2,8 @@ package com.shmedo.mcloudapp.ui.page.device.m50
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.fragment.app.viewModels
-import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -12,11 +12,11 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
@@ -26,12 +26,15 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.baseclickproxy.DoubleClickListener
 import com.shmedo.mcloudapp.databinding.FragmentM50HomeBinding
 import com.shmedo.mcloudapp.databinding.ItemSubConfigModuleBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.notNull
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
@@ -47,7 +50,6 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.LoraConfigModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
-import com.shmedo.mcloudapp.model.PlatformLabel
 import com.shmedo.mcloudapp.model.SensorConfigModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.model.WorkModeModule
@@ -55,14 +57,15 @@ import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UDSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.TimeCalibrationPopupView
-import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
+import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import com.shmedo.mcloudapp.ui.viewmodel.state.M50HomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
-import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
@@ -77,8 +80,9 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentM50HomeBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mHeadStates: M50HomeViewModel by viewModels()
-    private val mCommandResponseStates: CommandResponseViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
+
+    private var abnormalInfoJob: Job? = null
 
 
     override fun initViewModel() {
@@ -106,26 +110,36 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             }
             mActivity.finish()
         }
+        initDeviceLogoDoubleClickListener()
         initModuleAdapter()
+    }
+
+    private fun initDeviceLogoDoubleClickListener() {
+        binding.llDeviceInfo.ivDeviceLogo.setOnClickListener(object : DoubleClickListener() {
+            override fun onDoubleClick(v: View) {
+                if (isBleDisconnected() || isNetDisconnected()) {
+                    return
+                }
+                searchDevice()
+            }
+        })
     }
 
     override fun initData() {
         super.initData()
         mHeadStates.productLogoResId.set(R.drawable.device_logo_m50)
-        mHeadStates.productName.set("一体化GNSS监测站")
+        mHeadStates.productName.set(productType.productName)
+        mHeadStates.productToken.set(productType.productToken)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
-        mHeadStates.productToken.set("M50")
 
         when (communicateWay) {
             NetPlatformConnect -> {
                 toolbarViewModel.toolbarIvActionVisible.set(false)
-                mHeadStates.isConnectOperateVisible.set(false)
             }
 
             BleConnect -> {
                 toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
                 toolbarViewModel.toolbarIvActionVisible.set(true)
-                mHeadStates.isConnectOperateVisible.set(true)
             }
 
             else -> {}
@@ -139,11 +153,13 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         if (isConnected) {
             toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
             mHeadStates.productLogoResId.set(R.drawable.device_logo_m50)
-            initPlatformStatus("蓝牙已连接", "1")
+            mHeadStates.iotPlatformStateText.set("蓝牙已连接")
         } else {
             toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
             mHeadStates.productLogoResId.set(R.drawable.device_logo_m50_offline)
-            initPlatformStatus("蓝牙已断开", "0")
+            mHeadStates.iotPlatformStateText.set("蓝牙已断开")
+
+            mHeadStates.warnErrorText.set("正常")
         }
 
         //刷新模块状态
@@ -262,6 +278,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 ),
                 ConfigModule(
                     DataCenterModule(
+                        name = "链路配置",
                         resID = R.drawable.ic_module_datacenter_new,
                         navId = R.id.action_global_to_universalDataCenterHomeFragment
                     )
@@ -298,6 +315,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                     TimeCalibrationModule(
                         name = "时间校准",
                         resID = R.drawable.ic_module_time_calibration_new,
+                        navId = R.id.action_global_to_time_calibration
                     )
                 ),
                 ConfigModule(
@@ -378,10 +396,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             return
         }
         when (module) {
-            is TimeCalibrationModule -> {//时间校准
-                queryTerminalTime()
-            }
-
             is DataCenterModule -> {
                 nav().navigate(
                     module.navId,
@@ -449,49 +463,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    /**
-     * 查询终端时间
-     */
-    private fun queryTerminalTime() {
-        commandItems.clear()
-        val command =
-            IOTCommandUtil.getCommand(IOTCommandType.QUERY_TERMINAL_TIME)
-        commandItems.add(command)
-
-        if (communicateWay is BleConnect) {
-            mCommandResponseStates.isResponseLoading.set(true)
-            showTimeCalibrationPopup()
-        }
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
-     * 显示时间校准弹窗
-     */
-    private fun showTimeCalibrationPopup() {
-        val popupView = TimeCalibrationPopupView(requireContext())
-        popupView.setTitle("时间校准", mCommandResponseStates)
-            .setClickListener(object : TimeCalibrationPopupView.OnClickListener {
-                override fun onSettingClick() {
-                    commandItems.clear()
-                    val command = IOTCommandUtil.getCommand(
-                        IOTCommandType.SET_TERMINAL_TIME,
-                        "time=${TimeUtils.getNowString()}"
-                    )
-                    commandItems.add(command)
-                    showLoadingDialog(StringUtils.getString(R.string.processing))
-                    sendCommandFromCmdList(isStartTimeoutJob = true)
-                }
-            })
-        XPopup.Builder(context)
-            .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
-            .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
-            .enableDrag(false)
-            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-            .asCustom(popupView)
-            .show()
-    }
-
     override fun lazyLoadData() {
         //4G 模式下，直接查询设备工作模式
         if (communicateWay is NetPlatformConnect) {
@@ -503,41 +474,25 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
 
     private fun onNetPlatformReady() {
         if (deviceInfo.onlineStatus) {
-            initPlatformStatus("米度平台在线", "1")
+            mHeadStates.iotPlatformStateText.set("米度平台在线")
             queryStatusInfo()
         } else {
             mHeadStates.productLogoResId.set(R.drawable.device_logo_m50_offline)
-            initPlatformStatus("米度平台离线", "0")
+            mHeadStates.iotPlatformStateText.set("米度平台离线")
+        }
+        //刷新模块状态
+        binding.rvModule.models?.forEach {
+            if (it is ConfigModuleTree) {
+                it.configModules.forEach { configModule ->
+                    configModule.functionModule.refreshStatus(deviceInfo.onlineStatus)
+                }
+            }
         }
     }
 
     override fun onBleDeviceReady() {
         super.onBleDeviceReady()
         queryStatusInfo()
-    }
-
-    /**
-     * 4G 透传指令成功
-     */
-    override fun doNetDispatchSuccess(cmdStr: String) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_TERMINAL_TIME -> {
-                super.doNetDispatchSuccess(cmdStr)
-                mCommandResponseStates.isResponseLoading.set(true)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                showTimeCalibrationPopup()
-            }
-
-            IOTCommandType.SET_TERMINAL_TIME -> {
-                super.doNetDispatchSuccess(cmdStr)
-                mCommandResponseStates.isResponseLoading.set(true)
-                mCommandResponseStates.isResponseSuccess.set(false)
-            }
-
-            else -> {
-                super.doNetDispatchSuccess(cmdStr)
-            }
-        }
     }
 
     /**
@@ -554,19 +509,24 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 dismissLoadingDialog()
             }
 
-            IOTCommandType.QUERY_TERMINAL_TIME,
-            IOTCommandType.SET_TERMINAL_TIME,
-            -> {
-                mCommandResponseStates.isResponseLoading.set(false)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set(errMsg)
-            }
-
             IOTCommandType.QUERY_SAMPLE -> {
                 if (cmdStr.contains("method=1")) {
-                    Toaster.show("拍照指令下发出错: $errMsg")
-                    dismissLoadingDialog()
+                    super.doCmdResponseResultError(
+                        cmdStr = cmdStr,
+                        errMsg = "拍照指令下发出错: $errMsg",
+                        isShowErrMsg = true,
+                        isMessageDialog = true
+                    )
                 }
+            }
+
+            IOTCommandType.MD_SEARCH_DEVICE -> {
+                super.doCmdResponseResultError(
+                    cmdStr = cmdStr,
+                    errMsg = "设备查找出错: $errMsg",
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
             }
 
             else -> {
@@ -594,19 +554,24 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 dismissLoadingDialog()
             }
 
-            IOTCommandType.QUERY_TERMINAL_TIME,
-            IOTCommandType.SET_TERMINAL_TIME,
-            -> {
-                mCommandResponseStates.isResponseLoading.set(false)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set("设备未响应")
-            }
-
             IOTCommandType.QUERY_SAMPLE -> {
                 if (cmdStr.contains("method=1")) {
-                    Toaster.show("拍照指令响应超时")
-                    dismissLoadingDialog()
+                    super.doCmdResponseResultTimeOut(
+                        cmdStr = cmdStr,
+                        errMsg = "设备未响应",
+                        isShowErrMsg = true,
+                        isMessageDialog = true
+                    )
                 }
+            }
+
+            IOTCommandType.MD_SEARCH_DEVICE -> {
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = "设备未响应",
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
             }
 
             else -> {
@@ -641,24 +606,26 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-            IOTCommandType.QUERY_TERMINAL_TIME,
-            IOTCommandType.SET_TERMINAL_TIME,
-            -> {
-                mCommandResponseStates.isResponseLoading.set(false)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set("指令响应超时")
-            }
-
             IOTCommandType.QUERY_SAMPLE -> {
                 if (cmdStr.contains("method=1")) {
                     super.showNearbyCommunicationTimeoutAlert(
                         cmdStr = cmdStr,
                         isDismissLoadingDialog = isDismissLoadingDialog,
-                        isShowErrMsg = isShowErrMsg,
-                        isMessageDialog = isMessageDialog,
-                        errMsg = "拍照指令响应超时"
+                        isShowErrMsg = true,
+                        isMessageDialog = true,
+                        errMsg = "设备未响应"
                     )
                 }
+            }
+
+            IOTCommandType.MD_SEARCH_DEVICE -> {
+                super.showNearbyCommunicationTimeoutAlert(
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = true,
+                    isMessageDialog = true,
+                    errMsg = "设备未响应"
+                )
             }
 
             else -> {
@@ -713,47 +680,20 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.QUERY_TERMINAL_TIME -> {//查询终端时间
-                val result = iotParseManager.parse<String>(
-                    cmdStr,
-                    IOTCommandType.QUERY_TERMINAL_TIME
-                )
-                when (result) {
-                    is IOTCommandResult.Failure -> {
-                        handleFailureResult(result.message, false)
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(false)
-                        mCommandResponseStates.responseContent.set(result.message)
-                        return
-                    }
-
-                    is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(true)
-                        mCommandResponseStates.isCalibratingSuccess.set(false)
-                        mCommandResponseStates.deviceTime.set(result.data)
-                        mCommandResponseStates.systemTime.set(TimeUtils.getNowString())
-                    }
-                }
-            }
-
-            IOTCommandType.SET_TERMINAL_TIME -> {//设置终端时间
+            IOTCommandType.MD_SEARCH_DEVICE -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        handleFailureResult(result.message, false)
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(false)
-                        mCommandResponseStates.responseContent.set(result.message)
+                        val errMsg = "设备查找出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     else -> {
-                        sendCommandFromCmdList()
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(true)
-                        mCommandResponseStates.isCalibratingSuccess.set(true)
-                        mCommandResponseStates.deviceTime.set(mCommandResponseStates.systemTime.get())
+                        sendCommandFromCmdList {
+                            showDialogFragment(FindDeviceBeepDialog.TAG) {
+                                FindDeviceBeepDialog.newInstance(ProductType.GNSS_M_5)
+                            }
+                        }
                     }
                 }
             }
@@ -762,26 +702,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
 
             }
         }
-    }
-
-    private fun initPlatformStatus(content: String, status: String) {
-        val platformLabels = mutableListOf<PlatformLabel>()
-        platformLabels.add(
-            PlatformLabel(
-                content,
-                textColorRes = status.compareAndReturn(
-                    "1",
-                    ColorUtils.getColor(R.color.online_colorPrimary),
-                    ColorUtils.getColor(R.color.offline_BABABA)
-                ),
-                bgResId = status.compareAndReturn(
-                    "1",
-                    R.drawable.bg_label_online_corner_1dp,
-                    R.drawable.bg_label_offline_corner_1dp
-                )
-            )
-        )
-//        binding.llDeviceInfo.rvPlatform.models = platformLabels
     }
 
     private fun initStatusInfo(content: String) {
@@ -808,31 +728,68 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                         )
                     )
                 )
-
-                val platformLabel = PlatformLabel(
-                    status, textColorRes = status.compareAndReturn(
-                        "故障",
-                        ColorUtils.getColor(R.color.error_FF4400),
-                        status.compareAndReturn(
-                            "告警",
-                            ColorUtils.getColor(R.color.warn_FF9D00),
-                            ColorUtils.getColor(R.color.online_colorPrimary)
-                        )
-                    ),
-                    bgResId = status.compareAndReturn(
-                        "故障",
-                        R.drawable.bg_label_error_corner_1dp,
-                        status.compareAndReturn(
-                            "告警",
-                            R.drawable.bg_label_warn_corner_1dp,
-                            R.drawable.bg_label_online_corner_1dp
-                        )
-                    )
-                )
+                if (status == "正常") {
+                    mHeadStates.warnErrorText.set("正常")
+                    return@launchWithViewLifecycle
+                }
+                val errorInfoList = mutableListOf<String>()
+                stateInfo.deviceError.notNull(notNullAction = { resultMap ->
+                    resultMap["ld"]?.let { errorInfoList.add("雷达故障") }
+                    resultMap["cam"]?.let { errorInfoList.add("摄像头故障") }
+                    resultMap["qj"]?.let { errorInfoList.add("加速度计故障") }
+                    resultMap["4G"]?.let { errorInfoList.add("4G故障") }
+                    resultMap["bt"]?.let { errorInfoList.add("蓝牙故障") }
+                    resultMap["radio"]?.let { errorInfoList.add("电台故障") }
+                    resultMap["flash"]?.let { errorInfoList.add("存储故障") }
+                    resultMap["ath"]?.let { errorInfoList.add("温湿度故障") }
+                })
+                stateInfo.deviceWarn.notNull(notNullAction = { resultMap ->
+                    resultMap["loc_offset"]?.let { errorInfoList.add("位置偏移") }
+                    resultMap["angle_offset"]?.let { errorInfoList.add("角度偏移") }
+                    resultMap["extern_volt"]?.let { volt -> errorInfoList.add(if (volt == "-1") "外部电压过高" else "外部电压过低") }
+                    resultMap["bat_cap"]?.let { errorInfoList.add("电池电量过低") }
+                    resultMap["bat_temp"]?.let { errorInfoList.add("电池温度过高") }
+                    resultMap["bat_health"]?.let { errorInfoList.add("电池容量过低") }
+                    resultMap["inside_temp"]?.let { temp -> errorInfoList.add(if (temp == "-1") "内部温度过高" else "内部温度过低") }
+                    resultMap["sim_card"]?.let { errorInfoList.add("无SIM卡") }
+                })
+                handleAbnormalInfo(status, errorInfoList)
 
             } catch (e: Exception) {
                 Timber.e(e)
                 addLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
+    /**
+     * 处理设备异常信息轮播展示
+     * 每隔3秒切换一次，取出异常信息列表中的每一条异常信息，轮播显示
+     */
+    private fun handleAbnormalInfo(status: String, errorInfoList: List<String>) {
+        //取消之前的job（如果存在）
+        abnormalInfoJob?.cancel()
+
+        //如果列表为空，直接返回
+        if (errorInfoList.isEmpty()) {
+            return
+        }
+        if (errorInfoList.size == 1) {
+            mHeadStates.warnErrorText.set(errorInfoList[0])
+            mHeadStates.isError.set(status == "故障")
+            return
+        }
+        abnormalInfoJob = launchWithViewLifecycle {
+            flow {
+                while (true) {
+                    errorInfoList.forEach { errorInfo ->
+                        emit(errorInfo)
+                        delay(1500) // 延迟3秒
+                    }
+                }
+            }.collect { errorInfo ->
+                mHeadStates.warnErrorText.set(errorInfo)
+                mHeadStates.isError.set(status == "故障")
             }
         }
     }
@@ -849,19 +806,25 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 && resultMap.containsKey("y_value")
                 && resultMap.containsKey("z_value")
             ) {
-                val resultantDisplacement =
-                    DeviceStatusInfoProcessor.formatDoubleValue(resultMap["sum_value"], "--", 1)
-                val xDisplacement =
-                    DeviceStatusInfoProcessor.formatDoubleValue(resultMap["x_value"], "--", 1)
-                val yDisplacement =
-                    DeviceStatusInfoProcessor.formatDoubleValue(resultMap["y_value"], "--", 1)
-                val zDisplacement =
-                    DeviceStatusInfoProcessor.formatDoubleValue(resultMap["z_value"], "--", 1)
+//                val resultantDisplacement =
+//                    DeviceStatusInfoProcessor.formatDoubleValue(resultMap["sum_value"], "--", 1)
+//                val xDisplacement =
+//                    DeviceStatusInfoProcessor.formatDoubleValue(resultMap["x_value"], "--", 1)
+//                val yDisplacement =
+//                    DeviceStatusInfoProcessor.formatDoubleValue(resultMap["y_value"], "--", 1)
+//                val zDisplacement =
+//                    DeviceStatusInfoProcessor.formatDoubleValue(resultMap["z_value"], "--", 1)
 
-                mHeadStates.resultantDisplacement.set("${resultantDisplacement}mm")
-                mHeadStates.xDisplacement.set("${xDisplacement}mm")
-                mHeadStates.yDisplacement.set("${yDisplacement}mm")
-                mHeadStates.zDisplacement.set("${zDisplacement}mm")
+                val resultantDisplacement =
+                    resultMap["sum_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+                val xDisplacement = resultMap["x_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+                val yDisplacement = resultMap["y_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+                val zDisplacement = resultMap["z_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+
+                mHeadStates.resultantDisplacement.set(resultantDisplacement)
+                mHeadStates.xDisplacement.set(xDisplacement)
+                mHeadStates.yDisplacement.set(yDisplacement)
+                mHeadStates.zDisplacement.set(zDisplacement)
                 return
             }
         } catch (e: Exception) {

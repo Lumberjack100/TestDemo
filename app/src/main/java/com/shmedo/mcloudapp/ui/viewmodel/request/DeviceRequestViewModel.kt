@@ -106,21 +106,18 @@ class DeviceRequestViewModel(
                     jsonObjectRequest.toString(),
                     isHasListSuperInfoPermission
                 ) { error: Throwable ->
-                    Timber.e(error)
-                    addLogItem(CommonMMKVOwner.appLogSessionId, Log.ERROR, error.errorMsg)
-
-                    val responseStatus = ResponseStatus()
-                    responseStatus.isSuccess = false
-                    responseStatus.errorMessage = error.errorMsg
-                    responseStatus.source = ResultSource.NETWORK
-                    _deviceStatisticInfoResult.setValue(DataResult(responseStatus = responseStatus))
+                    handleError(
+                        _deviceStatisticInfoResult,
+                        error,
+                        "getDeviceStatByCompanyID"
+                    )
                 } ?: return@launch
 
             val responseStatus = ResponseStatus()
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _deviceStatisticInfoResult.setValue(DataResult(data, responseStatus = responseStatus))
+            _deviceStatisticInfoResult.postValue(DataResult(data, responseStatus = responseStatus))
         }
     }
 
@@ -248,21 +245,14 @@ class DeviceRequestViewModel(
                     jsonObjectRequest.toString(),
                     isHasListSuperInfoPermission
                 ) { error: Throwable ->
-                    Timber.e(error)
-                    addLogItem(CommonMMKVOwner.appLogSessionId, Log.ERROR, error.errorMsg)
-
-                    val responseStatus = ResponseStatus()
-                    responseStatus.isSuccess = false
-                    responseStatus.errorMessage = error.errorMsg
-                    responseStatus.source = ResultSource.NETWORK
-                    _deviceListResult.setValue(DataResult(responseStatus = responseStatus))
+                    handleError(_deviceListResult, error, "queryDeviceList")
                 } ?: return@launch
 
             val responseStatus = ResponseStatus()
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _deviceListResult.setValue(
+            _deviceListResult.postValue(
                 DataResult(
                     data.currentPageData,
                     responseStatus = responseStatus,
@@ -295,21 +285,15 @@ class DeviceRequestViewModel(
                 deviceManageRepositoryImp.queryFollowDeviceList(
                     jsonObjectRequest.toString()
                 ) { error: Throwable ->
-                    Timber.e(error)
-                    addLogItem(CommonMMKVOwner.appLogSessionId, Log.ERROR, error.errorMsg)
+                    handleError(_followDeviceListResult, error, "queryFollowDeviceList")
 
-                    val responseStatus = ResponseStatus()
-                    responseStatus.isSuccess = false
-                    responseStatus.errorMessage = error.errorMsg
-                    responseStatus.source = ResultSource.NETWORK
-                    _followDeviceListResult.setValue(DataResult(responseStatus = responseStatus))
                 } ?: return@launch
 
             val responseStatus = ResponseStatus()
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _followDeviceListResult.setValue(
+            _followDeviceListResult.postValue(
                 DataResult(
                     data.currentPageData,
                     responseStatus = responseStatus,
@@ -328,27 +312,19 @@ class DeviceRequestViewModel(
             val data: String = deviceManageRepositoryImp.addUserFollowDevice(
                 jsonObjectRequest.toString(),
             ) { error: Throwable ->
-                error.printStackTrace()
-                val msg =
-                    "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/AddUserFollowDevice error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
-                addLogItem(
-                    sessionId = CommonMMKVOwner.appLogSessionId,
-                    priority = Log.ERROR,
-                    data = msg
+                handleError(
+                    _followDeviceResult,
+                    error,
+                    "${BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl}/AddUserFollowDevice"
                 )
 
-                val responseStatus = ResponseStatus()
-                responseStatus.isSuccess = false
-                responseStatus.errorMessage = error.errorMsg
-                responseStatus.source = ResultSource.NETWORK
-                _followDeviceResult.setValue(DataResult(responseStatus = responseStatus))
             } ?: return@launch
 
             val responseStatus = ResponseStatus()
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _followDeviceResult.setValue(DataResult(data, responseStatus = responseStatus))
+            _followDeviceResult.postValue(DataResult(data, responseStatus = responseStatus))
         }
     }
 
@@ -360,27 +336,19 @@ class DeviceRequestViewModel(
             val data: String = deviceManageRepositoryImp.cancelUserFollowDevice(
                 jsonObjectRequest.toString(),
             ) { error: Throwable ->
-                error.printStackTrace()
-                val msg =
-                    "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/CancelUserFollowDevice error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
-                addLogItem(
-                    sessionId = CommonMMKVOwner.appLogSessionId,
-                    priority = Log.ERROR,
-                    data = msg
+                handleError(
+                    _cancelFollowDeviceResult,
+                    error,
+                    "${BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl}/CancelUserFollowDevice"
                 )
 
-                val responseStatus = ResponseStatus()
-                responseStatus.isSuccess = false
-                responseStatus.errorMessage = error.errorMsg
-                responseStatus.source = ResultSource.NETWORK
-                _cancelFollowDeviceResult.setValue(DataResult(responseStatus = responseStatus))
             } ?: return@launch
 
             val responseStatus = ResponseStatus()
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _cancelFollowDeviceResult.setValue(DataResult(data, responseStatus = responseStatus))
+            _cancelFollowDeviceResult.postValue(DataResult(data, responseStatus = responseStatus))
         }
     }
 
@@ -394,21 +362,19 @@ class DeviceRequestViewModel(
 
             val data: DeviceDetailInfo =
                 deviceManageRepositoryImp.getDeviceDetailInfo(jsonObjectRequest.toString()) { error: Throwable ->
-                    Timber.e(error)
-                    addLogItem(CommonMMKVOwner.appLogSessionId, Log.ERROR, error.errorMsg)
+                    handleError(
+                        _deviceInfoResult,
+                        error,
+                        "${BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl}/GetDeviceDetail"
+                    )
 
-                    val responseStatus = ResponseStatus()
-                    responseStatus.isSuccess = false
-                    responseStatus.errorMessage = error.errorMsg
-                    responseStatus.source = ResultSource.NETWORK
-                    _deviceInfoResult.setValue(DataResult(responseStatus = responseStatus))
                 } ?: return@launch
 
             val responseStatus = ResponseStatus()
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _deviceInfoResult.setValue(
+            _deviceInfoResult.postValue(
                 DataResult(
                     data.deviceInfo,
                     responseStatus = responseStatus
@@ -469,21 +435,19 @@ class DeviceRequestViewModel(
                 deviceManageRepositoryImp.queryCloudDataExWithPage(
                     jsonObjectRequest.toString()
                 ) { error: Throwable ->
-                    Timber.e(error)
-                    addLogItem(CommonMMKVOwner.appLogSessionId, Log.ERROR, error.errorMsg)
+                    handleError(
+                        _cloudDeviceDataListResult,
+                        error,
+                        "${BaseURL.CLOUD_PLATFORM_DATA_ADDRESS.baseUrl}/QueryCloudDataEx"
+                    )
 
-                    val responseStatus = ResponseStatus()
-                    responseStatus.isSuccess = false
-                    responseStatus.errorMessage = error.errorMsg
-                    responseStatus.source = ResultSource.NETWORK
-                    _cloudDeviceDataListResult.setValue(DataResult(responseStatus = responseStatus))
                 } ?: return@launch
 
             val responseStatus = ResponseStatus()
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _cloudDeviceDataListResult.setValue(
+            _cloudDeviceDataListResult.postValue(
                 DataResult(
                     data.currentPageData,
                     responseStatus = responseStatus,
@@ -522,21 +486,19 @@ class DeviceRequestViewModel(
                 deviceManageRepositoryImp.queryFirmwareListByProductIDWithPage(
                     jsonObjectRequest.toString()
                 ) { error: Throwable ->
-                    Timber.e(error)
-                    addLogItem(CommonMMKVOwner.appLogSessionId, Log.ERROR, error.errorMsg)
+                    handleError(
+                        _firmWareListResult,
+                        error,
+                        "${BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl}/GetFirmwareListByProductID"
+                    )
 
-                    val responseStatus = ResponseStatus()
-                    responseStatus.isSuccess = false
-                    responseStatus.errorMessage = error.errorMsg
-                    responseStatus.source = ResultSource.NETWORK
-                    _firmWareListResult.setValue(DataResult(responseStatus = responseStatus))
                 } ?: return@launch
 
             val responseStatus = ResponseStatus()
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _firmWareListResult.setValue(
+            _firmWareListResult.postValue(
                 DataResult(
                     data.currentPageData,
                     responseStatus = responseStatus,
@@ -574,15 +536,11 @@ class DeviceRequestViewModel(
         jsonObjectRequest.put("deviceKey", deviceKey)
         jsonObjectRequest.put("reCreate", false)
 
-
         return NetDataRepository.instance.getRemoteDeviceLogin(jsonObjectRequest.toString()) { error: Throwable ->
-            error.printStackTrace()
-            val msg =
-                "${BaseURL.AMS_CONFIG_ADDRESS.baseUrl}/Login error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
-            addLogItem(
-                sessionId = CommonMMKVOwner.appLogSessionId,
-                priority = Log.ERROR,
-                data = msg
+            handleError(
+                MutableResult<DataResult<Unit>>(),
+                error,
+                "${BaseURL.AMS_CONFIG_ADDRESS.baseUrl}/Login"
             )
             onCatch?.invoke(error)
         }

@@ -94,9 +94,9 @@ enum class ProductType(
         prefix = "",
         oldSuffix = "",
         newSuffix = "GM5",
-        productName = "测地形GNSS接收机",
-        productToken = "",
-        description = "自供电版,待立项"
+        productName = "一体化GNSS监测站",
+        productToken = "M50",
+        description = "自供电版"
     ),
 
 
