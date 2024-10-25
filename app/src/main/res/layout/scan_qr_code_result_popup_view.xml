@@ -7,14 +7,14 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.ScanQRCodeResultPopupViewViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.DeviceManageHomeViewModel" />
 
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@drawable/bg_white_top_corner_10dp"
         android:orientation="vertical">
 
         <include

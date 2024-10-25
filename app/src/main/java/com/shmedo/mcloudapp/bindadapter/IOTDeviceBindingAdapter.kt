@@ -177,15 +177,15 @@ object IOTDeviceBindingAdapter {
         progressBar.progressDrawable = ContextCompat.getDrawable(progressBar.context, drawableResId)
     }
 
+
     @JvmStatic
-    @BindingAdapter(value = ["animatedText", "isError", "needBackground"], requireAll = false)
-    fun setAnimatedText(
-        view: AnimatedTextSwitcher,
-        text: String?,
-        isError: Boolean,
-        needBackground: Boolean = true
-    ) {
-        text?.let { view.setText(it, isError, needBackground) }
+    @BindingAdapter(
+        value = ["animatedText", "isAnimatedTextError"],
+        requireAll = false
+    )
+    fun setAnimatedText(view: AnimatedTextSwitcher, text: String?, isError: Boolean) {
+        text?.let { view.setText(it, isError) }
     }
+
 
 }

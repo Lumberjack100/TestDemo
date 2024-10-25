@@ -5,11 +5,11 @@ import androidx.databinding.DataBindingUtil
 import com.lxj.xpopup.core.BottomPopupView
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.ScanQrCodeResultPopupViewBinding
-import com.shmedo.mcloudapp.ui.viewmodel.state.ScanQRCodeResultPopupViewViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.DeviceManageHomeViewModel
 
 class ScanQRCodeResultPopupView (context: Context) : BottomPopupView(context) {
     private lateinit var binding: ScanQrCodeResultPopupViewBinding
-    private lateinit var stateVM: ScanQRCodeResultPopupViewViewModel
+    private lateinit var stateVM: DeviceManageHomeViewModel
 
     private var title: String = ""
     private var clickListener: OnClickListener? = null
@@ -17,7 +17,7 @@ class ScanQRCodeResultPopupView (context: Context) : BottomPopupView(context) {
 
     fun setTitle(
         title: String = "",
-        vm: ScanQRCodeResultPopupViewViewModel
+        vm: DeviceManageHomeViewModel
     ): ScanQRCodeResultPopupView {
         this.title = title
         this.stateVM = vm

@@ -26,7 +26,7 @@
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="4"
+            android:layout_weight="3.5"
             android:gravity="center"
             android:text="时间"
             android:textColor="@color/title_text_color"
@@ -35,7 +35,7 @@
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="2"
             android:gravity="center"
             android:text="监测项"
             android:textColor="@color/title_text_color"
@@ -45,10 +45,21 @@
             android:id="@+id/tv_value_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="1.5"
             android:gravity="center"
             android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_13"
+            tools:text="高度(m)" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_opt_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_13"
+            android:visibility="visible"
             tools:text="高度(m)" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>

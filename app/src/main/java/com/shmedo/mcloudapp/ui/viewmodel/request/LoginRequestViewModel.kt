@@ -22,9 +22,11 @@ import com.shmedo.lib.network.response.ResponseStatus
 import com.shmedo.lib.network.response.ResultSource
 import com.shmedo.lib.network.util.BaseURL
 import com.shmedo.mcloudapp.BuildConfig
+import com.shmedo.mcloudapp.model.SingleSelectionItem
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import timber.log.Timber
 
@@ -84,7 +86,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _sendCodeResult.setValue(DataResult(data, responseStatus = responseStatus))
+            _sendCodeResult.postValue(DataResult(data, responseStatus = responseStatus))
         }
     }
 
@@ -248,7 +250,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _updateUserInfoResult.setValue(DataResult(data, responseStatus = responseStatus))
+            _updateUserInfoResult.postValue(DataResult(data, responseStatus = responseStatus))
         }
     }
 
@@ -267,64 +269,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _uploadUserAvataResult.setValue(DataResult(data, responseStatus = responseStatus))
-        }
-    }
-
-    fun refreshUserInfo(companyID: Int = 0, userID: Int = 0) {
-        viewModelScope.launch {
-            val jsonObjectRequest = JSONObject().apply {
-                put("companyID", companyID)
-                put("userID", userID)
-            }
-            val userWrapperInfo: UserWrapperInfo =
-                NetDataRepository.instance.queryUserByID(jsonObjectRequest.toString()) { error: Throwable ->
-                    handleError(
-                        _userWrapperInfoResult,
-                        error,
-                        "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/QueryUserByID"
-                    )
-                } ?: return@launch
-            AuthMMKVOwner.userInfo = userWrapperInfo.user
-
-            val responseStatus = ResponseStatus()
-            responseStatus.isSuccess = true
-            responseStatus.responseCode = "0"
-            responseStatus.source = ResultSource.NETWORK
-            _userWrapperInfoResult.setValue(
-                DataResult(
-                    userWrapperInfo,
-                    responseStatus = responseStatus
-                )
-            )
-        }
-    }
-
-    fun queryCompanyInfoByID(companyID: Int = 0) {
-        viewModelScope.launch {
-            val jsonObjectRequest = JSONObject().apply {
-                put("companyID", companyID)
-            }
-
-            val companyInfo: CompanyInfo =
-                NetDataRepository.instance.queryCompanyInfoByID(jsonObjectRequest.toString()) { error: Throwable ->
-                    handleError(
-                        _companyInfoResult,
-                        error,
-                        "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/GetCompanyInfo"
-                    )
-                } ?: return@launch
-
-            val responseStatus = ResponseStatus()
-            responseStatus.isSuccess = true
-            responseStatus.responseCode = "0"
-            responseStatus.source = ResultSource.NETWORK
-            _companyInfoResult.setValue(
-                DataResult(
-                    companyInfo,
-                    responseStatus = responseStatus
-                )
-            )
+            _uploadUserAvataResult.postValue(DataResult(data, responseStatus = responseStatus))
         }
     }
 
@@ -355,9 +300,83 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _updatePasswordResult.setValue(DataResult(data, responseStatus))
+            _updatePasswordResult.postValue(DataResult(data, responseStatus))
         }
     }
+
+    fun refreshUserInfo(companyID: Int = 0, userID: Int = 0) {
+        viewModelScope.launch {
+            val jsonObjectRequest = JSONObject().apply {
+                put("companyID", companyID)
+                put("userID", userID)
+            }
+            val userWrapperInfo: UserWrapperInfo =
+                NetDataRepository.instance.queryUserByID(jsonObjectRequest.toString()) { error: Throwable ->
+                    handleError(
+                        _userWrapperInfoResult,
+                        error,
+                        "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/QueryUserByID"
+                    )
+                } ?: return@launch
+            AuthMMKVOwner.userInfo = userWrapperInfo.user
+
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = true
+            responseStatus.responseCode = "0"
+            responseStatus.source = ResultSource.NETWORK
+            _userWrapperInfoResult.postValue(
+                DataResult(
+                    userWrapperInfo,
+                    responseStatus = responseStatus
+                )
+            )
+        }
+    }
+
+    fun queryCompanyInfoByID(companyID: Int = 0) {
+        viewModelScope.launch {
+            val jsonObjectRequest = JSONObject().apply {
+                put("companyID", companyID)
+            }
+
+            val companyInfo: CompanyInfo =
+                NetDataRepository.instance.queryCompanyInfoByID(jsonObjectRequest.toString()) { error: Throwable ->
+                    handleError(
+                        _companyInfoResult,
+                        error,
+                        "${BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl}/GetCompanyInfo"
+                    )
+                } ?: return@launch
+
+            val responseStatus = ResponseStatus()
+            responseStatus.isSuccess = true
+            responseStatus.responseCode = "0"
+            responseStatus.source = ResultSource.NETWORK
+            _companyInfoResult.postValue(
+                DataResult(
+                    companyInfo,
+                    responseStatus = responseStatus
+                )
+            )
+        }
+    }
+
+    suspend fun getCompanyList(companyName: String = ""): MutableList<SingleSelectionItem> =
+        withContext(Dispatchers.Default) {
+            val jsonObject = JSONObject().apply {
+                put("companyName", companyName)
+            }
+            val tempList = NetDataRepository.instance.queryUserInCompanyList(
+                jsonObject.toString()
+            ) ?: emptyList()
+
+            tempList.map {
+                SingleSelectionItem(
+                    name = it.companyName,
+                    extValue = it.companyID.toString()
+                )
+            }.toMutableList()
+        }
 
     //<editor-fold desc="孙建伟通用配置接口">
     /**

@@ -108,7 +108,7 @@
                                 enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
-                                android:inputType="numberDecimal"
+                                android:inputType="number"
                                 android:maxLength="10"
                                 android:text="@={stateVM.firstAlarmThreshold}" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -128,7 +128,7 @@
                                 enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
-                                android:inputType="numberDecimal"
+                                android:inputType="number"
                                 android:maxLength="10"
                                 android:text="@={stateVM.secondAlarmThreshold}" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -148,7 +148,7 @@
                                 enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
-                                android:inputType="numberDecimal"
+                                android:inputType="number"
                                 android:maxLength="10"
                                 android:text="@={stateVM.thirdAlarmThreshold}" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -168,7 +168,7 @@
                                 enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
-                                android:inputType="numberDecimal"
+                                android:inputType="number"
                                 android:maxLength="10"
                                 android:text="@={stateVM.fourthAlarmThreshold}" />
                         </androidx.appcompat.widget.LinearLayoutCompat>

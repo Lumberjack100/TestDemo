@@ -168,7 +168,7 @@ class DeviceSearchResultFragment : BaseFragment() {
 
     private fun queryDeviceList() {
         deviceRequestViewModel.getDeviceList(
-            companyID = userInfo.companyID,
+            companyID = AuthMMKVOwner.companyID,
             deviceToken = keyWord,
             currentPage = binding.refreshLayout.index,
             pageSize = PAGE_SIZE,

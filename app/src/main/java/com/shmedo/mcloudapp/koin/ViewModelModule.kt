@@ -33,7 +33,7 @@ val viewModelModule = module {
     viewModel { LogViewModel(get()) }
     viewModel { BleViewModel(get(), get()) }
     viewModel { TcpViewModel(get(), get()) }
-    viewModel { NetIOTCommandViewModel(get()) }
+    viewModel { NetIOTCommandViewModel(get(), get()) }
     viewModel { DeviceRequestViewModel(get(), get()) }
     viewModel { RequestSearchViewModel(get()) }
     viewModel { AppUpdateViewModel(get(), get()) }

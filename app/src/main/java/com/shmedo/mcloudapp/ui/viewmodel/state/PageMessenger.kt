@@ -3,9 +3,9 @@ package com.shmedo.mcloudapp.ui.viewmodel.state
 import androidx.lifecycle.ViewModel
 import com.kunminx.architecture.domain.message.MutableResult
 import com.kunminx.architecture.domain.message.Result
-import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 import com.shmedo.mcloudapp.model.CustomActivityResult
 import com.shmedo.mcloudapp.model.MRPortSensorRefreshResult
+import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 /**
  * 创建者：gonghe
@@ -36,6 +36,9 @@ class PageMessenger : ViewModel(){
     private val _scanSNResult = MutableResult<String>()
     val scanSNResult: Result<String> = _scanSNResult
 
+    private val _isRefreshDeviceList = MutableResult<Unit>()
+    val isRefreshDeviceList: Result<Unit> = _isRefreshDeviceList
+
     //ADME 设备模式 0：设备配置模式，1：自动检测模式，2：异常保护模式
     val admeDeviceMode = NonNullObservableField("0")
 
@@ -53,6 +56,10 @@ class PageMessenger : ViewModel(){
 
     fun dispatchScanSNResult(sn: String) {
         _scanSNResult.postValue(sn)
+    }
+
+    fun requestRefreshDeviceList() {
+        _isRefreshDeviceList.postValue(Unit)
     }
 
     fun requestMR702Rs485PortSensorRefresh(port: MRPortSensorRefreshResult) {

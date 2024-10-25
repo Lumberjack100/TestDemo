@@ -10,56 +10,85 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/item"
         android:layout_width="match_parent"
-        android:layout_height="34dp"
+        android:layout_height="38dp"
         android:background="@drawable/layer_common_click_item_with_divider"
         android:gravity="center_vertical">
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_index"
+        <!-- 序号列 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_13"
-            tools:text="01" />
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_index"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_default="wrap"
+                app:layout_constraintWidth_percent="0.8"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_13"
+                tools:text="01" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- 时间列 -->
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="4"
+            android:layout_weight="3.5"
             android:gravity="center"
+            android:maxLines="1"
             android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_13"
             tools:text="2023-12-24 23:13:00" />
 
+        <!-- 名称列 -->
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
+            android:layout_weight="2"
             android:gravity="center"
+            android:maxLines="1"
             android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_13"
             tools:text="液面高程" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/tv_value"
+        <!-- 值列 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_value"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:gravity="center"
-            android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_13"
-            android:visibility="gone"
-            tools:text="8.903" />
+            android:layout_height="match_parent"
+            android:layout_weight="1.5">
 
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_value"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_default="wrap"
+                app:layout_constraintWidth_percent="0.8"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_13"
+                tools:text="8.903" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- 操作列 -->
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/ll_opt"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="3"
+            android:layout_weight="2"
             android:gravity="center"
             android:visibility="visible">
 

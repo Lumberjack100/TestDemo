@@ -104,14 +104,22 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                     when (itemViewType) {
                         R.layout.item_ud_sensor_data_header -> {
                             val itemBinding = getBinding<ItemUdSensorDataHeaderBinding>()
-                            itemBinding.tvValueName.text =
-                                modelValueDescList[modelNameList.indexOf(mStates.modelName.get())]
+                            if (mStates.modelName.get() == "抓拍图片") {
+                                itemBinding.tvValueName.visibility = View.GONE
+                                itemBinding.tvOptName.visibility = View.VISIBLE
+                                itemBinding.tvOptName.text = modelValueDescList[modelNameList.indexOf(mStates.modelName.get())]
+                            } else {
+                                itemBinding.tvValueName.visibility = View.VISIBLE
+                                itemBinding.tvOptName.visibility = View.GONE
+                                itemBinding.tvValueName.text =
+                                    modelValueDescList[modelNameList.indexOf(mStates.modelName.get())]
+                            }
                         }
 
                         R.layout.item_ud_sensor_data -> {
                             val itemBinding = getBinding<ItemUdSensorDataBinding>()
                             itemBinding.tvIndex.text = modelPosition.toString()
-                            itemBinding.tvValue.visibility = mStates.modelName.get()
+                            itemBinding.clValue.visibility = mStates.modelName.get()
                                 .compareAndReturn("抓拍图片", View.GONE, View.VISIBLE)
                             itemBinding.llOpt.visibility = mStates.modelName.get()
                                 .compareAndReturn("抓拍图片", View.VISIBLE, View.GONE)

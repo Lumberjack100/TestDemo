@@ -51,6 +51,10 @@ class SingleSelectionPartShadowPopupView(context: Context) : PartShadowPopupView
         binding.rv.setup { rv ->
             addType<SingleSelectionItem>(R.layout.item_single_seclection_part_shadow)
             R.id.item.onClick {
+                if (lastSelectedIndex == modelPosition) {
+                    dismiss()
+                    return@onClick
+                }
                 val selectionItem = getModel<SingleSelectionItem>()
                 if (lastSelectedIndex != -1) {
                     getModel<SingleSelectionItem>(lastSelectedIndex).refreshChecked(false)

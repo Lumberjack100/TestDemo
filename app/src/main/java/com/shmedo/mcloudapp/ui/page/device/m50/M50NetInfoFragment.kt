@@ -58,8 +58,9 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = stateInfo.mobileNet.compareAndReturn("1", "已连接", "未连接"),
                     textColorRes = if (stateInfo.mobileNet == "1") ColorUtils.getColor(
                         R.color.online_colorPrimary
-                    ) else ColorUtils.getColor(R.color.error_FF4400)
+                    ) else 0
                 )
+
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "网络类型",
@@ -76,14 +77,21 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     }
                 )
                 stateInfo.csq.notNullKey {
-                    val temp = it.toIntOrNull() ?: 0
+                    var temp = it.toIntOrNull() ?: 0
+                    if (temp !in -110..-50) {
+                        temp = 0
+                    }
                     groupList.add(
                         DeviceStatusInfoSignalItem(
                             name = "信号强度",
-                            signalValue = temp
+                            signalValue = temp,
+                            textColorRes = if (temp == 0) ColorUtils.getColor(
+                                R.color.error_FF4400
+                            ) else 0
                         )
                     )
                 }
+
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "IMEI",
@@ -99,10 +107,10 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "电台",
-                    value = stateInfo.radioEnableStatus.compareAndReturn("1", "已开启", "未启用"),
+                    value = stateInfo.radioEnableStatus.compareAndReturn("1", "已启用", "未启用"),
                     textColorRes = if (stateInfo.radioEnableStatus == "1") ColorUtils.getColor(
                         R.color.online_colorPrimary
-                    ) else ColorUtils.getColor(R.color.error_FF4400)
+                    ) else 0
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
@@ -110,7 +118,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = stateInfo.bt_connected.compareAndReturn("1", "已连接", "未连接"),
                     textColorRes = if (stateInfo.bt_connected == "1") ColorUtils.getColor(
                         R.color.online_colorPrimary
-                    ) else ColorUtils.getColor(R.color.error_FF4400),
+                    ) else 0,
                     isBottomItem = true
                 )
 
@@ -145,9 +153,9 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                                 "未启用",
                                 "$onlineStatus($platformType)"
                             ),
-                            textColorRes = if (status == "0" || onlineStatus == "未连接") ColorUtils.getColor(
-                                R.color.offline_BABABA
-                            ) else ColorUtils.getColor(R.color.online_colorPrimary),
+                            textColorRes = if (status == "0" || onlineStatus == "未连接") 0 else ColorUtils.getColor(
+                                R.color.online_colorPrimary
+                            ),
                             isBottomItem = true
                         )
                     }
