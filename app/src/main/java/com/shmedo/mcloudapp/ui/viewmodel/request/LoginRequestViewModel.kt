@@ -86,7 +86,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _sendCodeResult.setValue(DataResult(data, responseStatus = responseStatus))
+            _sendCodeResult.postValue(DataResult(data, responseStatus = responseStatus))
         }
     }
 
@@ -250,7 +250,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _updateUserInfoResult.setValue(DataResult(data, responseStatus = responseStatus))
+            _updateUserInfoResult.postValue(DataResult(data, responseStatus = responseStatus))
         }
     }
 
@@ -269,7 +269,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _uploadUserAvataResult.setValue(DataResult(data, responseStatus = responseStatus))
+            _uploadUserAvataResult.postValue(DataResult(data, responseStatus = responseStatus))
         }
     }
 
@@ -300,7 +300,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _updatePasswordResult.setValue(DataResult(data, responseStatus))
+            _updatePasswordResult.postValue(DataResult(data, responseStatus))
         }
     }
 
@@ -324,7 +324,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _userWrapperInfoResult.setValue(
+            _userWrapperInfoResult.postValue(
                 DataResult(
                     userWrapperInfo,
                     responseStatus = responseStatus
@@ -352,7 +352,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             responseStatus.isSuccess = true
             responseStatus.responseCode = "0"
             responseStatus.source = ResultSource.NETWORK
-            _companyInfoResult.setValue(
+            _companyInfoResult.postValue(
                 DataResult(
                     companyInfo,
                     responseStatus = responseStatus

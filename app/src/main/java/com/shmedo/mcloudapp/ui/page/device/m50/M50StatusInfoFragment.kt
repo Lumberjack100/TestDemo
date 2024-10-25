@@ -46,11 +46,15 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 val groupList = mutableListOf<Any>()
 
                 groupList.add(DeviceStatusInfoGroupItem("供电信息"))
+                val externalVoltage = stateInfo.externalVoltage.toDoubleOrNull() ?: -1000.0
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "外接电压",
-                    value = stateInfo.externalVoltage.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                    value = if (externalVoltage == 0.0) "0" else stateInfo.externalVoltage.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                     unit = "V",
+                    textColorRes = if ((externalVoltage >= 9 && externalVoltage < 28) || externalVoltage == -1000.0) 0 else ColorUtils.getColor(
+                        R.color.warn_FF9D00
+                    ),
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,

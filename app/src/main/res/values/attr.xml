@@ -61,4 +61,25 @@
         <attr name="civ_circle_background_color" format="color" />
     </declare-styleable>
 
+
+    <!-- 在 attrs.xml 中修改 AnimatedTextSwitcher 的属性定义 -->
+    <declare-styleable name="AnimatedTextSwitcher">
+        <attr name="defaultTextSize" format="dimension"/>
+        <attr name="errorTextColor" format="color"/>
+        <attr name="warnTextColor" format="color"/>
+        <attr name="textGravity">
+            <flag name="center" value="17"/>
+            <flag name="center_horizontal" value="1"/>
+            <flag name="center_vertical" value="16"/>
+            <flag name="start" value="8388611"/>
+            <flag name="end" value="8388613"/>
+        </attr>
+        <attr name="maxEms" format="integer"/>
+        <attr name="needBackground" format="boolean"/>
+        <attr name="errorBackground" format="reference"/>
+        <attr name="warnBackground" format="reference"/>
+        <attr name="paddingHorizontal" format="dimension"/>
+        <attr name="paddingVertical" format="dimension"/>
+    </declare-styleable>
+
 </resources>
