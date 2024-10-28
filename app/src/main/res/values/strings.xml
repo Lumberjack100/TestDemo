@@ -120,5 +120,12 @@
     <string name="button_save_text">保存</string>
     <string name="button_reset_text">恢复默认配置</string>
 
+    <string name="ps_prompt_image_content">是否保存图片至手机？</string>
+    <string name="ps_prompt_video_content">是否保存视频至手机？</string>
+    <string name="ps_prompt_audio_content">是否保存音频至手机？</string>
+    <string name="ps_save_image_error">图片保存失败</string>
+    <string name="ps_save_video_error">视频保存失败</string>
+    <string name="ps_save_audio_error">音频保存失败</string>
+    <string name="ps_save_success">文件保存成功至</string>
 
 </resources>

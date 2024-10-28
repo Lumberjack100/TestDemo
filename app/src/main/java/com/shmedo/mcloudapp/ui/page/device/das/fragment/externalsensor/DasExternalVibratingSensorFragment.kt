@@ -151,14 +151,14 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     mStates.sensorTypeName.set(IOTSensorType.KANG_PERCOLATE.description)
 
                     mStates.isExtension1Support.set(true)
-                    mStates.extension1Title.set("触发值(毫米)")
+                    mStates.extension1Title.set("触发值（毫米）")
                     decimalFormat.applyPattern("0")
                     sensorInfo.threshold.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
 
                     mStates.isExtension2Support.set(true)
-                    mStates.extension2Title.set("修正值(米)")
+                    mStates.extension2Title.set("修正值（米）")
                     decimalFormat.applyPattern("#.###")
                     mStates.extension2Value.set("0")//默认值 0
                     sensorInfo.corrval.toDoubleOrNull()?.let {
@@ -200,7 +200,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
 
                     //绳长，精确到小数点后三位
                     mStates.isExtension8Support.set(true)
-                    mStates.extension8Title.set("绳长(米)")
+                    mStates.extension8Title.set("绳长（米）")
                     decimalFormat.applyPattern("#.###")
                     sensorInfo.ropelen.toDoubleOrNull()?.let {
                         mStates.extension8Value.set(decimalFormat.format(it))
@@ -208,7 +208,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
 
                     //安装高程，精确到小数点后三位
                     mStates.isExtension9Support.set(true)
-                    mStates.extension9Title.set("安装高程(米)")
+                    mStates.extension9Title.set("安装高程（米）")
                     decimalFormat.applyPattern("#.###")
                     sensorInfo.tubealti.toDoubleOrNull()?.let {
                         mStates.extension9Value.set(decimalFormat.format(it))
@@ -222,14 +222,14 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     mStates.sensorTypeName.set(IOTSensorType.GUDAN_PERCOLATE.description)
 
                     mStates.isExtension1Support.set(true)
-                    mStates.extension1Title.set("触发值(毫米)")
+                    mStates.extension1Title.set("触发值（毫米）")
                     decimalFormat.applyPattern("0")
                     sensorInfo.threshold.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
 
                     mStates.isExtension2Support.set(true)
-                    mStates.extension2Title.set("修正值(米)")
+                    mStates.extension2Title.set("修正值（米）")
                     decimalFormat.applyPattern("#.###")
                     mStates.extension2Value.set("0")//默认值 0
                     sensorInfo.corrval.toDoubleOrNull()?.let {
@@ -265,7 +265,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
 
                     //绳长，精确到小数点后三位
                     mStates.isExtension7Support.set(true)
-                    mStates.extension7Title.set("绳长(米)")
+                    mStates.extension7Title.set("绳长（米）")
                     decimalFormat.applyPattern("#.###")
                     sensorInfo.ropelen.toDoubleOrNull()?.let {
                         mStates.extension7Value.set(decimalFormat.format(it))
@@ -273,7 +273,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
 
                     //安装高程，精确到小数点后三位
                     mStates.isExtension8Support.set(true)
-                    mStates.extension8Title.set("安装高程(米)")
+                    mStates.extension8Title.set("安装高程（米）")
                     decimalFormat.applyPattern("#.###")
                     sensorInfo.tubealti.toDoubleOrNull()?.let {
                         mStates.extension8Value.set(decimalFormat.format(it))
@@ -288,14 +288,14 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     mStates.sensorTypeName.set(IOTSensorType.JUNXING_ZLJ_300T.description)
 
                     mStates.isExtension1Support.set(true)
-                    mStates.extension1Title.set("触发值(千牛)")
+                    mStates.extension1Title.set("触发值（千牛）")
                     decimalFormat.applyPattern("#.###")
                     sensorInfo.threshold.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
 
                     mStates.isExtension2Support.set(true)
-                    mStates.extension2Title.set("修正值(千牛)")
+                    mStates.extension2Title.set("修正值（千牛）")
                     decimalFormat.applyPattern("#.###")
                     mStates.extension2Value.set("0")//默认值 0
                     sensorInfo.corrval.toDoubleOrNull()?.let {
@@ -340,14 +340,14 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     mStates.sensorTypeName.set(IOTSensorType.GUDAN_STRESS.description)
 
                     mStates.isExtension1Support.set(true)
-                    mStates.extension1Title.set("触发值(千牛)")
+                    mStates.extension1Title.set("触发值（千牛）")
                     decimalFormat.applyPattern("#.###")
                     sensorInfo.threshold.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
 
                     mStates.isExtension2Support.set(true)
-                    mStates.extension2Title.set("修正值(千牛)")
+                    mStates.extension2Title.set("修正值（千牛）")
                     decimalFormat.applyPattern("#.###")
                     mStates.extension2Value.set("0")//默认值 0
                     sensorInfo.corrval.toDoubleOrNull()?.let {
@@ -465,7 +465,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     mStates.sensorTypeName.set(MCU_PREFIX + IOTSensorType.WATER_LEVEL_GAUGE.description)
                     //修正值、绳长、安装高程
                     mStates.isExtension1Support.set(true)
-                    mStates.extension1Title.set("修正值(毫米)")
+                    mStates.extension1Title.set("修正值（毫米）")
                     decimalFormat.applyPattern("0")
                     mStates.extension1Value.set("0")//默认值 0
                     sensorInfo.corrval.toDoubleOrNull()?.let {
@@ -473,14 +473,14 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     }
 
                     mStates.isExtension2Support.set(true)
-                    mStates.extension2Title.set("绳长(毫米)")
+                    mStates.extension2Title.set("绳长（毫米）")
                     decimalFormat.applyPattern("0")
                     sensorInfo.ropelen.toDoubleOrNull()?.let {
                         mStates.extension2Value.set(decimalFormat.format(it))
                     }
 
                     mStates.isExtension3Support.set(true)
-                    mStates.extension3Title.set("安装高程(毫米)")
+                    mStates.extension3Title.set("安装高程（毫米）")
                     decimalFormat.applyPattern("0")
                     sensorInfo.tubealti.toDoubleOrNull()?.let {
                         mStates.extension3Value.set(decimalFormat.format(it))

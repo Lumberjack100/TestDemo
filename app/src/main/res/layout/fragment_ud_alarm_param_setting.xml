@@ -226,7 +226,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             android:text="@{stateVM.firstAlarmReportIntervalTitle}"
-                            tools:text="一级报警间隔(秒)" />
+                            tools:text="一级报警间隔（秒）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -243,7 +243,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             android:text="@{stateVM.secondAlarmReportIntervalTitle}"
-                            tools:text="二级报警间隔(秒)" />
+                            tools:text="二级报警间隔（秒）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -260,7 +260,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             android:text="@{stateVM.thirdAlarmReportIntervalTitle}"
-                            tools:text="三级报警间隔(秒)" />
+                            tools:text="三级报警间隔（秒）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -277,7 +277,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             android:text="@{stateVM.fourthAlarmReportIntervalTitle}"
-                            tools:text="四级报警间隔(秒)" />
+                            tools:text="四级报警间隔（秒）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"

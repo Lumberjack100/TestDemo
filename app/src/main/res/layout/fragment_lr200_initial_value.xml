@@ -74,7 +74,7 @@
                     android:drawableStart="@{!stateVM.isAutoInit?@drawable/ic_radio_checked:@drawable/ic_radio_uncheck}"
                     android:drawablePadding="@dimen/dimen_size_6"
                     android:gravity="center_vertical"
-                    android:text="手动初始化(毫米)"
+                    android:text="手动初始化（毫米）"
                     android:textColor="@{!stateVM.isAutoInit?@color/title_text_color:@color/sub_title_text_color}"
                     android:textSize="@dimen/text_size_16"
                     tools:drawableStart="@drawable/ic_radio_checked" />

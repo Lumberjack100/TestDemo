@@ -11,7 +11,7 @@ plugins {
 
 val majorVersion = 5
 val minorVersion = 2
-val patchVersion = 3
+val patchVersion = 4
 
 /**
  * 获取Git库HEAD的SHA1码前5位
@@ -136,7 +136,7 @@ android {
             dimension = "version"
             applicationIdSuffix = ".v5"
             versionCode = getReversion()
-            versionName = "5.0.48"
+            versionName = "5.0.49"
             resValue("string", "app_name", "米易通V5")   // 设置默认的app_name
             buildConfigField("String", "APP_NAME", "\"米易通V5\"")
             buildConfigField("String", "PGY_API_KEY", "\"db9ce8a6bd3b8b95c20c66e4205194d9\"")
@@ -233,6 +233,8 @@ dependencies {
     ksp(libs.glide.ksp)
 //    implementation("com.github.bumptech.glide:okhttp3-integration:4.16.0")
     implementation(libs.bundles.pictureselector)
+    implementation(libs.subsampling.scale.image.view)
+
 
     //AndroidUtilCode 是一个强大易用的安卓工具类库
     implementation(libs.utilcodex)

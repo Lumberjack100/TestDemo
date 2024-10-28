@@ -13,7 +13,7 @@ import com.squareup.moshi.JsonClass
 data class DasReportEntity(
     var type: String = "0", //上报方式  0 固定间隔上报 1 定时定点上报
     var timepoint: String = "0",//上报间隔  分钟,数字
-    var timegap: String = IOTConstants.NULL_KEY,//上报起始时间(基准时间)   数字,   0-23点(小时)  固定间隔上报下需不需要一个起始时间
+    var timegap: String = IOTConstants.NULL_KEY,//上报起始时间(基准时间)   数字,   0-23点（小时）  固定间隔上报下需不需要一个起始时间
 ){
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)

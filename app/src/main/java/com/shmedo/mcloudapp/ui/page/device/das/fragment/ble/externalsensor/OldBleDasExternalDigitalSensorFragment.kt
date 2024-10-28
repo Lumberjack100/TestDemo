@@ -127,22 +127,22 @@ class OldBleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                 IOTSensorType.RAIN_GAUGE,//压电式雨量计
                 IOTSensorType.WIRE_SHIFT //拉线位移计
                 -> {
-                    mStates.triggerTitle.set("触发值(单位:毫米)")
-                    mStates.correctTitle.set("修正值(单位:米)")
+                    mStates.triggerTitle.set("触发值（毫米）")
+                    mStates.correctTitle.set("修正值（米）")
                 }
 
                 IOTSensorType.SOIL_MOISTURE //土壤含水率
                 -> {
-                    mStates.triggerTitle.set("触发值(单位:%rh)")
-                    mStates.correctTitle.set("修正值(单位:%rh)")
+                    mStates.triggerTitle.set("触发值(%rh)")
+                    mStates.correctTitle.set("修正值(%rh)")
                 }
 
                 IOTSensorType.INCLINOMETER //测斜仪
                 -> {
-                    mStates.triggerTitle.set("触发值(单位:毫米)")
-                    mStates.correctTitle.set("修正值(单位:米)")
+                    mStates.triggerTitle.set("触发值（毫米）")
+                    mStates.correctTitle.set("修正值（米）")
                     mStates.isExtension1Support.set(true)
-                    mStates.extension1Title.set("测段长(单位:毫米)")
+                    mStates.extension1Title.set("测段长（毫米）")
                     decimalFormat.applyPattern("#.#")
                     sensorInfo.spacing.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
@@ -151,13 +151,13 @@ class OldBleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
                 IOTSensorType.ULTRASONIC_LEVEL_GAUGE, //超声波物位计
                 IOTSensorType.RADAR_LEVEL_GAUGE -> {//雷达物位计
-                    mStates.triggerTitle.set("触发值(单位:毫米)")
-                    mStates.correctTitle.set("安装高程(单位:米)")
+                    mStates.triggerTitle.set("触发值（毫米）")
+                    mStates.correctTitle.set("安装高程（米）")
                 }
 
                 IOTSensorType.LUYAN_INCLINOMETER //倾角仪
                 -> {
-                    mStates.triggerTitle.set("触发值(单位:°)")
+                    mStates.triggerTitle.set("触发值(°)")
                     mStates.isCorrectSupport.set(false)
 
                     mStates.isExtension1Support.set(true)
@@ -185,19 +185,19 @@ class OldBleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
                 IOTSensorType.INFRASOUND //次声
                 -> {
-                    mStates.triggerTitle.set("触发值(单位:Hz)")
-                    mStates.correctTitle.set("修正值(单位:Hz)")
+                    mStates.triggerTitle.set("触发值(Hz)")
+                    mStates.correctTitle.set("修正值(Hz)")
                 }
 
                 IOTSensorType.WEIR //量水堰计
                 -> {
-                    mStates.triggerTitle.set("触发值(单位:m³/s)")
-                    mStates.correctTitle.set("修正值(单位:毫米)")
+                    mStates.triggerTitle.set("触发值(m³/s)")
+                    mStates.correctTitle.set("修正值（毫米）")
                     mStates.isCorrectTipBtnSupport.set(true)
 
                     mStates.isExtension1Support.set(true)
                     mStates.isExtension1TipBtnSupport.set(true)
-                    mStates.extension1Title.set("初始读数(毫米)")
+                    mStates.extension1Title.set("初始读数（毫米）")
                     decimalFormat.applyPattern("#.#")
                     sensorInfo.lsycsds.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
@@ -205,7 +205,7 @@ class OldBleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
                     mStates.isExtension2Support.set(true)
                     mStates.isExtension2TipBtnSupport.set(true)
-                    mStates.extension2Title.set("初始堰上水头(毫米)")
+                    mStates.extension2Title.set("初始堰上水头（毫米）")
                     decimalFormat.applyPattern("#.#")
                     sensorInfo.lsyysst.toDoubleOrNull()?.let {
                         mStates.extension2Value.set(decimalFormat.format(it))
@@ -215,11 +215,11 @@ class OldBleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                 IOTSensorType.STATIC_LEVEL,//静力水准
                 IOTSensorType.SEDIMENTATION_METER,//沉降仪
                 -> {
-                    mStates.triggerTitle.set("触发值(单位:毫米)")
-                    mStates.correctTitle.set("修正值(单位:毫米)")
+                    mStates.triggerTitle.set("触发值（毫米）")
+                    mStates.correctTitle.set("修正值（毫米）")
 
                     mStates.isExtension1Support.set(true)
-                    mStates.extension1Title.set("初始值(毫米)")
+                    mStates.extension1Title.set("初始值（毫米）")
                     decimalFormat.applyPattern("#.#")
                     sensorInfo.initval.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
@@ -230,11 +230,11 @@ class OldBleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
                 IOTSensorType.VERTICAL_COORDINATE,//垂线坐标仪
                 -> {
-                    mStates.triggerTitle.set("触发值(单位:毫米)")
+                    mStates.triggerTitle.set("触发值（毫米）")
                     mStates.isCorrectSupport.set(false)
 
                     mStates.isExtension1Support.set(true)
-                    mStates.extension1Title.set("X轴初始值(毫米)")
+                    mStates.extension1Title.set("X轴初始值（毫米）")
                     mStates.extension1Value.set(
                         DeviceStatusInfoProcessor.formatDoubleValue(
                             sensorInfo.corrval,
@@ -244,7 +244,7 @@ class OldBleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                     )
 
                     mStates.isExtension2Support.set(true)
-                    mStates.extension2Title.set("Y轴初始值(毫米)")
+                    mStates.extension2Title.set("Y轴初始值（毫米）")
                     mStates.extension2Value.set(
                         DeviceStatusInfoProcessor.formatDoubleValue(
                             sensorInfo.initval,
@@ -259,24 +259,24 @@ class OldBleDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                 IOTSensorType.WEATHER_STATION, //气象计
                 IOTSensorType.TURBIDITY_METER //浊度仪
                 -> {
-                    mStates.triggerTitle.set("触发值(单位:米/秒)")
-                    mStates.correctTitle.set("修正值(单位:米/秒)")
+                    mStates.triggerTitle.set("触发值（米/秒）")
+                    mStates.correctTitle.set("修正值（米/秒）")
                 }
 
                 IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE //数字式水位计
                 -> {
-                    mStates.triggerTitle.set("触发值(单位:毫米)")
-                    mStates.correctTitle.set("修正值(单位:毫米)")
+                    mStates.triggerTitle.set("触发值（毫米）")
+                    mStates.correctTitle.set("修正值（毫米）")
 
                     mStates.isExtension1Support.set(true)
-                    mStates.extension1Title.set("安装高程(米)")
+                    mStates.extension1Title.set("安装高程（米）")
                     decimalFormat.applyPattern("#.###")
                     sensorInfo.tubealti.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
 
                     mStates.isExtension2Support.set(true)
-                    mStates.extension2Title.set("绳长(米)")
+                    mStates.extension2Title.set("绳长（米）")
                     decimalFormat.applyPattern("#.###")
                     sensorInfo.ropelen.toDoubleOrNull()?.let {
                         mStates.extension2Value.set(decimalFormat.format(it))

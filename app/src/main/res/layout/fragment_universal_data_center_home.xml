@@ -79,7 +79,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            android:text="上报间隔(分钟)"
+                            android:text="上报间隔（分钟）"
                             tools:textColor="@color/title_text_color" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText

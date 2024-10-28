@@ -1,14 +1,21 @@
 package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
-import android.graphics.Bitmap
-import android.graphics.Matrix
 import android.os.Bundle
-import android.provider.MediaStore
-import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import com.bumptech.glide.Glide
+import androidx.viewpager2.widget.CompositePageTransformer
+import androidx.viewpager2.widget.MarginPageTransformer
+import androidx.viewpager2.widget.ViewPager2
+import com.blankj.utilcode.util.ConvertUtils
+import com.hjq.permissions.OnPermissionCallback
+import com.hjq.permissions.Permission
+import com.hjq.permissions.XXPermissions
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.luck.picture.lib.adapter.PicturePreviewAdapter
+import com.luck.picture.lib.basic.PictureMediaScannerConnection
+import com.luck.picture.lib.config.PictureMimeType
+import com.luck.picture.lib.utils.DownloadFileUtils
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
@@ -16,28 +23,32 @@ import com.shmedo.mcloudapp.databinding.FragmentCapturedPictureViewBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
+import com.shmedo.mcloudapp.ui.page.device.image_preview.CustomPreviewAdapter
 import com.shmedo.mcloudapp.ui.viewmodel.state.CapturedPictureViewViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.shmedo.mcloudapp.utils.LoadingDialogManager.dismissLoading
+import com.shmedo.mcloudapp.utils.LoadingDialogManager.showLoading
+import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
+import kotlin.math.abs
 
 class CapturedPictureViewFragment : BaseFragment() {
     private lateinit var binding: FragmentCapturedPictureViewBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: CapturedPictureViewViewModel by viewModels()
+    private val mStates: CapturedPictureViewViewModel by activityViewModels()
 
-    private var currentBitmap: Bitmap? = null
-    private var originalBitmap: Bitmap? = null
-    private var rotateAngle = 0f
-    private val job = Job()
-    private val uiScope = CoroutineScope(Dispatchers.Main + job)
+    private lateinit var viewPager: ViewPager2
+    private lateinit var viewPageAdapter: PicturePreviewAdapter
+    private var curPosition: Int = 0
 
-    override fun initViewModel() {
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            curPosition = it.getInt(CURRENT_POSITION)
+        }
     }
+
+    override fun initViewModel() {}
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -51,114 +62,141 @@ class CapturedPictureViewFragment : BaseFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentCapturedPictureViewBinding
-        binding.llToolbar.toolbar.title = "抓拍图片"
-        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
-        }
-        registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
-        }
-
-        loadImage()
+        initToolbar()
+        initViewPage()
     }
 
+    private fun initToolbar() {
+        toolbarViewModel.toolbarTitleText.set("返回")
+        binding.llToolbar.toolbar.apply {
+            setNavigationOnClickListener { nav().navigateUp() }
+        }
+        registerOnBackPressedDispatcher {
+            nav().navigateUp()
+        }
+    }
+
+    private fun initViewPage() {
+        viewPager = ViewPager2(requireContext()).apply {
+            orientation = ViewPager2.ORIENTATION_HORIZONTAL
+            // 预加载数量
+            offscreenPageLimit = 1
+        }
+        binding.magical.setMagicalContent(viewPager)
+
+        viewPageAdapter = CustomPreviewAdapter().apply {
+            setData(mStates.mData)
+        }
+        viewPager.apply {
+            adapter = viewPageAdapter
+            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                    super.onPageScrolled(position, positionOffset, positionOffsetPixels)
+                }
+
+                override fun onPageSelected(position: Int) {
+                    super.onPageSelected(position)
+                    curPosition = position
+                }
+            })
+
+            // 添加页面切换动画
+            setPageTransformer(CompositePageTransformer().apply {
+                addTransformer(MarginPageTransformer(ConvertUtils.dp2px(3f)))
+                addTransformer { page, position ->
+                    val r = 1 - abs(position)
+                    page.scaleY = 0.85f + r * 0.15f
+                }
+            })
+
+            setCurrentItem(curPosition, false)
+        }
+    }
 
     inner class ClickProxy : BaseClickProxy() {
         /**
-         *
+         * 点击查看上一张图片
          */
-        fun onRotateClick() {
-            rotateImage(-90f)
+        fun onViewPreImageClick() {
+            if (curPosition > 0) {
+                viewPager.setCurrentItem(curPosition - 1, true)
+            } else {
+                Toaster.show("已经是第一张了")
+            }
         }
 
         /**
-         *
+         * 点击查看下一张图片
          */
-        fun onResetRotationClick() {
-            resetImage()
+        fun onViewNextImageClick() {
+            val total = mStates.mData.size
+            if (curPosition < total - 1) {
+                viewPager.setCurrentItem(curPosition + 1, true)
+            } else {
+                Toaster.show("已经是最后一张了")
+            }
         }
 
         /**
          *
          */
         fun onDownloadImageClick() {
-            saveImage()
-
+            //申请存储权限
+            XXPermissions.with(this@CapturedPictureViewFragment)
+                .permission(Permission.MANAGE_EXTERNAL_STORAGE)
+                .interceptor(PermissionInterceptor())
+                .request(OnPermissionCallback { permissions, allGranted ->
+                    if (!allGranted) {
+                        return@OnPermissionCallback
+                    }
+                    saveImage()
+                })
         }
-    }
-
-
-    private fun loadImage() {
-        uiScope.launch(Dispatchers.IO) {
-            // 假设图片资源为 R.drawable.sample_image
-            val bitmap = Glide.with(requireContext())
-                .asBitmap()
-                .load(R.drawable.capture1) //mStates.imageUrl.get()
-                .submit()
-                .get()
-
-            withContext(Dispatchers.Main) {
-                originalBitmap = bitmap
-                currentBitmap = bitmap
-                binding.imageView.setImageBitmap(bitmap)
-            }
-        }
-    }
-
-    private fun rotateImage(degrees: Float) {
-//        rotateAngle += degrees
-//        val newDegrees = if (rotateAngle < 0) {
-//            rotateAngle % 360 + 360
-//        } else {
-//            rotateAngle % 360
-//        }
-//        Timber.d("rotateAngle: $rotateAngle")
-//        Timber.d("newDegrees: $newDegrees")
-
-        currentBitmap?.let {
-            val matrix = Matrix()
-//            rotateAngle += degrees
-            matrix.postRotate(degrees)
-            val rotatedBitmap = Bitmap.createBitmap(it, 0, 0, it.width, it.height, matrix, true)
-            currentBitmap = rotatedBitmap
-            binding.imageView.setImageBitmap(rotatedBitmap)
-        }
-    }
-
-    private fun resetImage() {
-        currentBitmap = originalBitmap
-        rotateAngle = 0f
-        binding.imageView.setImageBitmap(originalBitmap)
     }
 
     private fun saveImage() {
-        currentBitmap?.let { bitmap ->
-            uiScope.launch(Dispatchers.IO) {
-                try {
-                    val savedImageURL = MediaStore.Images.Media.insertImage(
-                        requireContext().contentResolver,
-                        bitmap,
-                        "Rotated Image",
-                        "Image rotated by 90 degrees"
-                    )
-                    withContext(Dispatchers.Main) {
-                        // 可以提示用户图片保存成功
-                        Toaster.show("图片保存成功")
+        val media = mStates.mData.getOrNull(curPosition) ?: return
+
+        try {
+            val fileName = "${media.fileName}.jpg"
+            val path = media.availablePath
+            if (PictureMimeType.isHasHttp(path)) {
+                showLoading("下载中...")
+            }
+            DownloadFileUtils.saveLocalFile(
+                context, path, media.mimeType
+            ) { realPath: String? ->
+                dismissLoading()
+                if (realPath.isNullOrEmpty()) {
+                    val errorMsg = when {
+                        PictureMimeType.isHasAudio(media.mimeType) -> getString(R.string.ps_save_audio_error)
+                        PictureMimeType.isHasVideo(media.mimeType) -> getString(R.string.ps_save_video_error)
+                        else -> getString(R.string.ps_save_image_error)
                     }
-                } catch (e: Exception) {
-                    withContext(Dispatchers.Main) {
-                        Toaster.show("保存图片失败")
-                    }
+                    Toaster.show(errorMsg)
+                } else {
+                    PictureMediaScannerConnection(activity, realPath)
+                    Toaster.show(getString(R.string.ps_save_success) + "\n" + realPath)
                 }
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            val errorMsg = when {
+                PictureMimeType.isHasAudio(media.mimeType) -> getString(R.string.ps_save_audio_error)
+                PictureMimeType.isHasVideo(media.mimeType) -> getString(R.string.ps_save_video_error)
+                else -> getString(R.string.ps_save_image_error)
+            }
+            Toaster.show(errorMsg)
         }
     }
 
     override fun onDestroyView() {
+        viewPager.unregisterOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {})
         super.onDestroyView()
-        job.cancel()
     }
 
     override fun onResume() {
@@ -167,6 +205,12 @@ class CapturedPictureViewFragment : BaseFragment() {
     }
 
     companion object {
-        fun newInstance() = CapturedPictureViewFragment()
+        const val CURRENT_POSITION = "current_position"
+
+        fun newBundleArguments(
+            position: Int = 0,
+        ): Bundle = Bundle().apply {
+            putInt(CURRENT_POSITION, position)
+        }
     }
 }

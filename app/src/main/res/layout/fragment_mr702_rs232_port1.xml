@@ -123,7 +123,7 @@
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
-                        android:text="拍照间隔(分钟)"
+                        android:text="拍照间隔（分钟）"
                         tools:textColor="@color/title_text_color" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText

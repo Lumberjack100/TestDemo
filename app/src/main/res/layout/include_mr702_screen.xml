@@ -25,7 +25,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
-                android:text="屏幕更新周期(秒)"
+                android:text="屏幕更新周期（秒）"
                 tools:textColor="@color/title_text_color" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
@@ -42,7 +42,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
-                android:text="亮屏时间(秒)"
+                android:text="亮屏时间（秒）"
                 tools:textColor="@color/title_text_color" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
@@ -59,7 +59,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
-                android:text="通电时间(秒)"
+                android:text="通电时间（秒）"
                 tools:textColor="@color/title_text_color" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText

@@ -19,10 +19,10 @@ class AlarmParamSettingViewModel : ViewModel() {
     //四级报警语音编号  [1~255] 默认 1
     val fourthAlarmVoice = NonNullObservableField("1")
 
-    val firstAlarmThresholdTitle = NonNullObservableField("一级报警阈值(毫米)")
-    val secondAlarmThresholdTitle = NonNullObservableField("二级报警阈值(毫米)")
-    val thirdAlarmThresholdTitle = NonNullObservableField("三级报警阈值(毫米)")
-    val fourthAlarmThresholdTitle = NonNullObservableField("四级报警阈值(毫米)")
+    val firstAlarmThresholdTitle = NonNullObservableField("一级报警阈值（毫米）")
+    val secondAlarmThresholdTitle = NonNullObservableField("二级报警阈值（毫米）")
+    val thirdAlarmThresholdTitle = NonNullObservableField("三级报警阈值（毫米）")
+    val fourthAlarmThresholdTitle = NonNullObservableField("四级报警阈值（毫米）")
 
     //一级报警阈值 默认40
     val firstAlarmThreshold = NonNullObservableField("40")
@@ -33,10 +33,10 @@ class AlarmParamSettingViewModel : ViewModel() {
     //四级报警阈值 默认5
     val fourthAlarmThreshold = NonNullObservableField("5")
 
-    val firstAlarmReportIntervalTitle = NonNullObservableField("一级报警间隔(秒)")
-    val secondAlarmReportIntervalTitle = NonNullObservableField("二级报警间隔(秒)")
-    val thirdAlarmReportIntervalTitle = NonNullObservableField("三级报警间隔(秒)")
-    val fourthAlarmReportIntervalTitle = NonNullObservableField("四级报警间隔(秒)")
+    val firstAlarmReportIntervalTitle = NonNullObservableField("一级报警间隔（秒）")
+    val secondAlarmReportIntervalTitle = NonNullObservableField("二级报警间隔（秒）")
+    val thirdAlarmReportIntervalTitle = NonNullObservableField("三级报警间隔（秒）")
+    val fourthAlarmReportIntervalTitle = NonNullObservableField("四级报警间隔（秒）")
 
     //一级报警上报间隔 默认60,单位s
     val firstAlarmReportInterval = NonNullObservableField("60")

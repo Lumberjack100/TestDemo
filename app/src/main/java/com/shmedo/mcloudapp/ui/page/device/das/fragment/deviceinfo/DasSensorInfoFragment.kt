@@ -136,7 +136,7 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                                 )
                                 groupList.add(
                                     DeviceStatusInfoBasicItem(
-                                        name = "雨量值(毫米)",
+                                        name = "雨量值（毫米）",
                                         value = ioBean.vaule
                                     )
                                 )
@@ -187,7 +187,7 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         if (dataList.isNotEmpty()) {
                             groupList.add(
                                 DeviceStatusInfoBasicItem(
-                                    name = "水深(米)",
+                                    name = "水深（米）",
                                     value = dataList[0]
                                 )
                             )
@@ -195,7 +195,7 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                         if (dataList.size >= 2) {
                             groupList.add(
                                 DeviceStatusInfoBasicItem(
-                                    name = "空管距离(米)",
+                                    name = "空管距离（米）",
                                     value = dataList[1]
                                 )
                             )

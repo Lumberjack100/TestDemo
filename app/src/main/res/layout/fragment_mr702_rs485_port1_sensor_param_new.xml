@@ -299,7 +299,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            android:text="初始水位值(米)" />
+                            android:text="初始水位值（米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -316,7 +316,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            android:text="堰角高度值(米)" />
+                            android:text="堰角高度值（米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -397,7 +397,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            android:text="倍率(精度)"
+                            android:text="倍率（精度）"
                             tools:textColor="@color/title_text_color" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
@@ -583,7 +583,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            android:text="倍率(精度)"
+                            android:text="倍率（精度）"
                             tools:textColor="@color/title_text_color" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText

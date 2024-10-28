@@ -295,13 +295,13 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
             val list = mutableListOf<MRRunningDataItem>()
             list.add(
                 MRRunningDataItem(
-                    "运行时长(小时)",
+                    "运行时长（小时）",
                     decimalFormat.format(totalRunningTime)
                 )
             )
             list.add(
                 MRRunningDataItem(
-                    "单次运行时长(小时)",
+                    "单次运行时长（小时）",
                     decimalFormat.format(singleRunningTime)
                 )
             )

@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.viewmodel.state
 import androidx.lifecycle.ViewModel
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.model.DeviceStatusEnum
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 open class CommonDeviceHomeViewModel : ViewModel() {
@@ -31,6 +32,7 @@ open class CommonDeviceHomeViewModel : ViewModel() {
 
     val isPlatformListVisible = NonNullObservableField(false)//是否显示已连接的平台
 
+    val deviceStatusCode = NonNullObservableField(DeviceStatusEnum.UNKNOWN.code)
     val isError = NonNullObservableField<Boolean>(false)
     val warnErrorText = NonNullObservableField("正常")
 

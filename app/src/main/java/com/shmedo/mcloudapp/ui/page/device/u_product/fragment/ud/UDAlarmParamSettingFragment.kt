@@ -101,10 +101,10 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initTitles() {
-        mStates.firstAlarmReportIntervalTitle.set("一级报警间隔(秒)")
-        mStates.secondAlarmReportIntervalTitle.set("二级报警间隔(秒)")
-        mStates.thirdAlarmReportIntervalTitle.set("三级报警间隔(秒)")
-        mStates.fourthAlarmReportIntervalTitle.set("四级报警间隔(秒)")
+        mStates.firstAlarmReportIntervalTitle.set("一级报警间隔（秒）")
+        mStates.secondAlarmReportIntervalTitle.set("二级报警间隔（秒）")
+        mStates.thirdAlarmReportIntervalTitle.set("三级报警间隔（秒）")
+        mStates.fourthAlarmReportIntervalTitle.set("四级报警间隔（秒）")
     }
 
     private fun resetDefaultParams() {

@@ -57,7 +57,7 @@
             android:text="@{m.name}"
             android:textColor="@color/text_color_666666"
             android:textSize="15sp"
-            tools:text="单次运行时长(小时)" />
+            tools:text="单次运行时长（小时）" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

@@ -372,4 +372,17 @@
         <item name="android:textSize">17sp</item>
     </style>
 
+
+    <style name="ColorPrimary.FloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.FloatingActionButton</item>
+        <item name="pressedTranslationZ">0dp</item>
+        <item name="rippleColor">@color/ripple_material_light</item>
+    </style>
+
+    <style name="ThemeOverlay.App.FloatingActionButton" parent="">
+        <item name="colorSecondary">@color/colorPrimary_10</item>
+        <item name="colorOnSecondary">@color/colorPrimary</item>
+        <item name="colorOnSurface">@color/colorPrimary_10</item>
+    </style>
+
 </resources>
