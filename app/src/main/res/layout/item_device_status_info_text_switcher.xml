@@ -36,14 +36,14 @@
             android:layout_height="wrap_content"
             app:animatedText="@{m.value}"
             app:defaultTextSize="@dimen/page_content_item_text_size_14"
+            app:deviceStatusCode="@{m.deviceStatusCode}"
             app:errorTextColor="@color/error_FF4400"
-            app:isAnimatedTextError="@{m.isErrorInfo}"
             app:maxEms="7"
             app:needBackground="false"
-            app:textGravity="center_vertical|end"
-            app:warnTextColor="@color/warn_FF9D00"
             app:paddingHorizontal="0dp"
-            app:paddingVertical="0dp" />
+            app:paddingVertical="0dp"
+            app:textGravity="center_vertical|end"
+            app:warnTextColor="@color/warn_FF9D00" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

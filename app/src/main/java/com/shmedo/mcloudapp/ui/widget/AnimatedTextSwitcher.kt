@@ -11,6 +11,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.google.android.material.textview.MaterialTextView
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.model.DeviceStatusEnum
 
 
 class AnimatedTextSwitcher @JvmOverloads constructor(
@@ -20,13 +21,15 @@ class AnimatedTextSwitcher @JvmOverloads constructor(
 
     private var _textSize: Float =
         context.resources.getDimension(R.dimen.page_content_item_text_size_14)
-    private var errorTextColor: Int = ContextCompat.getColor(context, R.color.error_FF4400)
-    private var warnTextColor: Int = ContextCompat.getColor(context, R.color.warn_FF9D00)
     private var textGravity: Int = Gravity.CENTER
     private var _maxEms: Int = 7
+    private var defaultTextColor: Int = ContextCompat.getColor(context, R.color.online_colorPrimary)
+    private var warnTextColor: Int = ContextCompat.getColor(context, R.color.warn_FF9D00)
+    private var errorTextColor: Int = ContextCompat.getColor(context, R.color.error_FF4400)
     private var needBackground: Boolean = true
-    private var errorBackground: Int = R.drawable.bg_label_error_corner_1dp
+    private var defaultBackground: Int = R.drawable.bg_label_online_corner_1dp
     private var warnBackground: Int = R.drawable.bg_label_warn_corner_1dp
+    private var errorBackground: Int = R.drawable.bg_label_error_corner_1dp
     private var paddingHorizontal: Int = resources.getDimensionPixelSize(R.dimen.dimen_size_7)
     private var paddingVertical: Int = resources.getDimensionPixelSize(R.dimen.dimen_size_2)
 
@@ -41,18 +44,25 @@ class AnimatedTextSwitcher @JvmOverloads constructor(
             try {
                 _textSize =
                     getDimension(R.styleable.AnimatedTextSwitcher_defaultTextSize, _textSize)
-                errorTextColor =
-                    getColor(R.styleable.AnimatedTextSwitcher_errorTextColor, errorTextColor)
+                defaultTextColor =
+                    getColor(R.styleable.AnimatedTextSwitcher_warnTextColor, defaultTextColor)
                 warnTextColor =
                     getColor(R.styleable.AnimatedTextSwitcher_warnTextColor, warnTextColor)
+                errorTextColor =
+                    getColor(R.styleable.AnimatedTextSwitcher_errorTextColor, errorTextColor)
                 textGravity = getInt(R.styleable.AnimatedTextSwitcher_textGravity, textGravity)
                 _maxEms = getInt(R.styleable.AnimatedTextSwitcher_maxEms, _maxEms)
                 needBackground =
                     getBoolean(R.styleable.AnimatedTextSwitcher_needBackground, needBackground)
-                errorBackground =
-                    getResourceId(R.styleable.AnimatedTextSwitcher_errorBackground, errorBackground)
+                defaultBackground =
+                    getResourceId(
+                        R.styleable.AnimatedTextSwitcher_warnBackground,
+                        defaultBackground
+                    )
                 warnBackground =
                     getResourceId(R.styleable.AnimatedTextSwitcher_warnBackground, warnBackground)
+                errorBackground =
+                    getResourceId(R.styleable.AnimatedTextSwitcher_errorBackground, errorBackground)
                 paddingHorizontal = getDimensionPixelSize(
                     R.styleable.AnimatedTextSwitcher_paddingHorizontal,
                     paddingHorizontal
@@ -82,12 +92,22 @@ class AnimatedTextSwitcher @JvmOverloads constructor(
     }
 
     private fun setTextStyle(
-        isError: Boolean = false,
+        statusEnum: DeviceStatusEnum,
         textSize: Float = this._textSize,
         needBackground: Boolean = this.needBackground
     ) {
-        val color = if (isError) errorTextColor else warnTextColor
-        val backgroundRes = if (isError) errorBackground else warnBackground
+        val color = when (statusEnum) {
+            DeviceStatusEnum.NORMAL -> defaultTextColor
+            DeviceStatusEnum.DEVICE_WARN -> warnTextColor
+            DeviceStatusEnum.DEVICE_ERROR -> errorTextColor
+            else -> defaultTextColor
+        }
+        val backgroundRes = when (statusEnum) {
+            DeviceStatusEnum.NORMAL -> defaultBackground
+            DeviceStatusEnum.DEVICE_WARN -> warnBackground
+            DeviceStatusEnum.DEVICE_ERROR -> errorBackground
+            else -> defaultBackground
+        }
 
         (0..1).forEach { index ->
             (getChildAt(index) as? TextView)?.apply {
@@ -100,8 +120,8 @@ class AnimatedTextSwitcher @JvmOverloads constructor(
         }
     }
 
-    fun setText(text: String, isError: Boolean = false) {
-        setTextStyle(isError)
+    fun setText(text: String, statusEnum: DeviceStatusEnum) {
+        setTextStyle(statusEnum)
         super.setText(text)
     }
 

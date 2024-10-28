@@ -82,28 +82,15 @@
                     tools:text="米度平台在线"
                     tools:textColor="@color/online_colorPrimary" />
 
-                <com.google.android.material.textview.MaterialTextView
-                    visible='@{stateVM.warnErrorText.equals(`正常`) &amp;&amp; (stateVM.iotPlatformStateText.contains("在线")||stateVM.iotPlatformStateText.contains("已连接"))}'
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_size_6"
-                    android:background="@drawable/bg_label_online_corner_1dp"
-                    android:gravity="center"
-                    android:paddingHorizontal="@dimen/dimen_size_7"
-                    android:paddingVertical="@dimen/dimen_size_2"
-                    android:text="正常"
-                    android:textColor='@color/online_colorPrimary'
-                    android:textSize="@dimen/text_size_11" />
-
                 <com.shmedo.mcloudapp.ui.widget.AnimatedTextSwitcher
-                    visible="@{!stateVM.warnErrorText.equals(`正常`)}"
+                    visible="@{stateVM.deviceStatusCode!=DeviceStatusEnum.UNKNOWN.code}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_size_6"
                     app:animatedText="@{stateVM.warnErrorText}"
                     app:defaultTextSize="@dimen/text_size_11"
+                    app:deviceStatusCode="@{stateVM.deviceStatusCode}"
                     app:errorTextColor="@color/error_FF4400"
-                    app:isAnimatedTextError="@{stateVM.isError}"
                     app:maxEms="7"
                     app:needBackground="true" />
 

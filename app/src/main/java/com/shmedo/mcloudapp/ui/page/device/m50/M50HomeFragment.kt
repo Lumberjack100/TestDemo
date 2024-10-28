@@ -46,6 +46,7 @@ import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
+import com.shmedo.mcloudapp.model.DeviceStatusEnum
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.LoraConfigModule
@@ -159,7 +160,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             mHeadStates.productLogoResId.set(R.drawable.device_logo_m50_offline)
             mHeadStates.iotPlatformStateText.set("蓝牙已断开")
 
-            mHeadStates.warnErrorText.set("正常")
+            mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
 
         //刷新模块状态
@@ -479,6 +480,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         } else {
             mHeadStates.productLogoResId.set(R.drawable.device_logo_m50_offline)
             mHeadStates.iotPlatformStateText.set("米度平台离线")
+            mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
         //刷新模块状态
         binding.rvModule.models?.forEach {
@@ -705,7 +707,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initStatusInfo(content: String) {
-
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
@@ -717,6 +718,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                     "-3" -> "故障"
                     else -> "正常"
                 }
+                mHeadStates.deviceStatusCode.set(stateInfo.deviceStatus)
                 mHeadStates.productLogoResId.set(
                     status.compareAndReturn(
                         "故障",
@@ -753,7 +755,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                     resultMap["inside_temp"]?.let { temp -> errorInfoList.add(if (temp == "-1") "内部温度过高" else "内部温度过低") }
                     resultMap["sim_card"]?.let { errorInfoList.add("无SIM卡") }
                 })
-                handleAbnormalInfo(status, errorInfoList)
+                handleAbnormalInfo(errorInfoList)
 
             } catch (e: Exception) {
                 Timber.e(e)
@@ -766,7 +768,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
      * 处理设备异常信息轮播展示
      * 每隔3秒切换一次，取出异常信息列表中的每一条异常信息，轮播显示
      */
-    private fun handleAbnormalInfo(status: String, errorInfoList: List<String>) {
+    private fun handleAbnormalInfo(errorInfoList: List<String>) {
         //取消之前的job（如果存在）
         abnormalInfoJob?.cancel()
 
@@ -776,7 +778,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         }
         if (errorInfoList.size == 1) {
             mHeadStates.warnErrorText.set(errorInfoList[0])
-            mHeadStates.isError.set(status == "故障")
             return
         }
         abnormalInfoJob = launchWithViewLifecycle {
@@ -789,7 +790,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 }
             }.collect { errorInfo ->
                 mHeadStates.warnErrorText.set(errorInfo)
-                mHeadStates.isError.set(status == "故障")
             }
         }
     }
@@ -817,9 +817,12 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
 
                 val resultantDisplacement =
                     resultMap["sum_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
-                val xDisplacement = resultMap["x_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
-                val yDisplacement = resultMap["y_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
-                val zDisplacement = resultMap["z_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+                val xDisplacement =
+                    resultMap["x_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+                val yDisplacement =
+                    resultMap["y_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+                val zDisplacement =
+                    resultMap["z_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
 
                 mHeadStates.resultantDisplacement.set(resultantDisplacement)
                 mHeadStates.xDisplacement.set(xDisplacement)

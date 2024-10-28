@@ -8,6 +8,7 @@ import com.blankj.utilcode.util.ColorUtils
 import com.kyleduo.switchbutton.SwitchButton
 import com.shmedo.lib.cmd.base.iot_cmd.enums.SensorErrorType
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.model.DeviceStatusEnum
 import com.shmedo.mcloudapp.ui.widget.AnimatedTextSwitcher
 import com.shmedo.mcloudapp.ui.widget.SignalView
 
@@ -180,12 +181,15 @@ object IOTDeviceBindingAdapter {
 
     @JvmStatic
     @BindingAdapter(
-        value = ["animatedText", "isAnimatedTextError"],
+        value = ["animatedText", "deviceStatusCode"],
         requireAll = false
     )
-    fun setAnimatedText(view: AnimatedTextSwitcher, text: String?, isError: Boolean) {
-        text?.let { view.setText(it, isError) }
+    fun setAnimatedText(
+        view: AnimatedTextSwitcher,
+        text: String?,
+        statusCode: String = DeviceStatusEnum.UNKNOWN.code
+    ) {
+        text?.let { view.setText(it, DeviceStatusEnum.valueByCode(statusCode)) }
     }
-
 
 }
