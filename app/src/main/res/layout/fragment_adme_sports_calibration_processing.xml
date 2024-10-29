@@ -81,7 +81,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
-                            android:text="归零差(毫米)" />
+                            android:text="归零差（毫米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -101,7 +101,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
-                            android:text="定位误差区间(毫米)" />
+                            android:text="定位误差区间（毫米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -161,7 +161,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
-                            android:text="k值阈值(毫米)" />
+                            android:text="k值阈值（毫米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -181,7 +181,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
-                            android:text="中误差阈值(毫米)" />
+                            android:text="中误差阈值（毫米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -241,7 +241,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
-                            android:text="累加值差值(毫米)" />
+                            android:text="累加值差值（毫米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"

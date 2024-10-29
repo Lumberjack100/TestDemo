@@ -82,7 +82,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
-                            android:text="水位报警值(毫米)" />
+                            android:text="水位报警值（毫米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -100,7 +100,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
-                            android:text="水深修正值(毫米)" />
+                            android:text="水深修正值（毫米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -118,7 +118,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
-                            android:text="绳长(米)" />
+                            android:text="绳长（米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -136,7 +136,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
-                            android:text="安装高程值(米)" />
+                            android:text="安装高程值（米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"

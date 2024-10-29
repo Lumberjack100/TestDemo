@@ -61,7 +61,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{!stateVM.isEditable }"
-                            android:text="测量间隔(毫秒)" />
+                            android:text="测量间隔（毫秒）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"

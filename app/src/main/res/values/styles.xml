@@ -49,12 +49,12 @@
     <!-- res/values/styles.xml -->
     <style name="TransparentLoadingDialog">
         <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowAnimationStyle">@style/DialogAnimation</item>
+        <item name="android:windowAnimationStyle">@style/LoadingDialogAnimation</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
     </style>
 
-    <style name="DialogAnimation">
+    <style name="LoadingDialogAnimation">
         <item name="android:windowEnterAnimation">@anim/fade_in</item>
         <item name="android:windowExitAnimation">@anim/fade_out</item>
     </style>
@@ -370,6 +370,19 @@
         <item name="android:textColorHint">@color/text_color_hint</item>
         <item name="android:textColor">@color/title_text_color</item>
         <item name="android:textSize">17sp</item>
+    </style>
+
+
+    <style name="ColorPrimary.FloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.FloatingActionButton</item>
+        <item name="pressedTranslationZ">0dp</item>
+        <item name="rippleColor">@color/ripple_material_light</item>
+    </style>
+
+    <style name="ThemeOverlay.App.FloatingActionButton" parent="">
+        <item name="colorSecondary">@color/colorPrimary_10</item>
+        <item name="colorOnSecondary">@color/colorPrimary</item>
+        <item name="colorOnSurface">@color/colorPrimary_10</item>
     </style>
 
 </resources>

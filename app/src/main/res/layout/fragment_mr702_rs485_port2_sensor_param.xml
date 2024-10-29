@@ -251,7 +251,7 @@
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable }"
-                                android:text="初始水位值(米)" />
+                                android:text="初始水位值（米）" />
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
@@ -270,7 +270,7 @@
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
                                 textViewEnabled="@{stateVM.isEditable }"
-                                android:text="堰角高度值(米)" />
+                                android:text="堰角高度值（米）" />
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"

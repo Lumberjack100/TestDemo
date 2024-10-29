@@ -112,7 +112,7 @@
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
-                        android:text="消抖系数(秒/次)"
+                        android:text="消抖系数（秒/次）"
                         tools:textColor="@color/title_text_color" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText

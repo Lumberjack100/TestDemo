@@ -46,6 +46,7 @@ import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
+import com.shmedo.mcloudapp.model.DeviceStatusEnum
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.LoraConfigModule
@@ -58,6 +59,7 @@ import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragme
 import com.shmedo.mcloudapp.ui.page.device.common.UDSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
+import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.M50HomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
@@ -66,8 +68,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 /**
@@ -80,8 +84,10 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentM50HomeBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mHeadStates: M50HomeViewModel by viewModels()
+    private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
     private val iotParseManager: IOTParserManager by inject()
 
+    private var deviceStatusCheckJob: Job? = null
     private var abnormalInfoJob: Job? = null
 
 
@@ -159,7 +165,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             mHeadStates.productLogoResId.set(R.drawable.device_logo_m50_offline)
             mHeadStates.iotPlatformStateText.set("蓝牙已断开")
 
-            mHeadStates.warnErrorText.set("正常")
+            mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
 
         //刷新模块状态
@@ -251,7 +257,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                             name = "卫星信息",
                             resID = R.drawable.ic_module_satellite_info,
                             iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_m50SatelliteInfoFragment
+                            navId = 0 //R.id.action_global_to_m50SatelliteInfoFragment
                         )
                     )
                 )
@@ -479,6 +485,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         } else {
             mHeadStates.productLogoResId.set(R.drawable.device_logo_m50_offline)
             mHeadStates.iotPlatformStateText.set("米度平台离线")
+            mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
         //刷新模块状态
         binding.rvModule.models?.forEach {
@@ -705,7 +712,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initStatusInfo(content: String) {
-
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
@@ -717,6 +723,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                     "-3" -> "故障"
                     else -> "正常"
                 }
+                mHeadStates.deviceStatusCode.set(stateInfo.deviceStatus)
                 mHeadStates.productLogoResId.set(
                     status.compareAndReturn(
                         "故障",
@@ -753,7 +760,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                     resultMap["inside_temp"]?.let { temp -> errorInfoList.add(if (temp == "-1") "内部温度过高" else "内部温度过低") }
                     resultMap["sim_card"]?.let { errorInfoList.add("无SIM卡") }
                 })
-                handleAbnormalInfo(status, errorInfoList)
+                handleAbnormalInfo(errorInfoList)
 
             } catch (e: Exception) {
                 Timber.e(e)
@@ -766,7 +773,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
      * 处理设备异常信息轮播展示
      * 每隔3秒切换一次，取出异常信息列表中的每一条异常信息，轮播显示
      */
-    private fun handleAbnormalInfo(status: String, errorInfoList: List<String>) {
+    private fun handleAbnormalInfo(errorInfoList: List<String>) {
         //取消之前的job（如果存在）
         abnormalInfoJob?.cancel()
 
@@ -776,7 +783,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         }
         if (errorInfoList.size == 1) {
             mHeadStates.warnErrorText.set(errorInfoList[0])
-            mHeadStates.isError.set(status == "故障")
             return
         }
         abnormalInfoJob = launchWithViewLifecycle {
@@ -789,7 +795,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 }
             }.collect { errorInfo ->
                 mHeadStates.warnErrorText.set(errorInfo)
-                mHeadStates.isError.set(status == "故障")
             }
         }
     }
@@ -806,20 +811,14 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 && resultMap.containsKey("y_value")
                 && resultMap.containsKey("z_value")
             ) {
-//                val resultantDisplacement =
-//                    DeviceStatusInfoProcessor.formatDoubleValue(resultMap["sum_value"], "--", 1)
-//                val xDisplacement =
-//                    DeviceStatusInfoProcessor.formatDoubleValue(resultMap["x_value"], "--", 1)
-//                val yDisplacement =
-//                    DeviceStatusInfoProcessor.formatDoubleValue(resultMap["y_value"], "--", 1)
-//                val zDisplacement =
-//                    DeviceStatusInfoProcessor.formatDoubleValue(resultMap["z_value"], "--", 1)
-
                 val resultantDisplacement =
                     resultMap["sum_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
-                val xDisplacement = resultMap["x_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
-                val yDisplacement = resultMap["y_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
-                val zDisplacement = resultMap["z_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+                val xDisplacement =
+                    resultMap["x_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+                val yDisplacement =
+                    resultMap["y_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+                val zDisplacement =
+                    resultMap["z_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
 
                 mHeadStates.resultantDisplacement.set(resultantDisplacement)
                 mHeadStates.xDisplacement.set(xDisplacement)
@@ -836,6 +835,9 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     override fun createObserver() {
         super.createObserver()
         setupHeartbeat()
+        if (communicateWay is NetPlatformConnect) {
+            checkDeviceOnlineStatus()
+        }
     }
 
     /**
@@ -859,10 +861,40 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    private fun checkDeviceOnlineStatus() {
+        // 取消现有的job
+        deviceStatusCheckJob?.cancel()
+
+        // 创建新的job，每30秒执行一次
+        deviceStatusCheckJob = launchWithViewLifecycle {
+            while (isActive) {
+                try {
+                    deviceRequestViewModel.getDeviceDetailInfo(deviceInfo.deviceToken) { error: Throwable ->
+                        addLogItem(Log.ERROR, error.errorMsg)
+                    }?.let { deviceDetailInfo ->
+                        deviceInfo = deviceDetailInfo.deviceInfo
+                        // 如果设备在线状态发生变化，更新UI
+                        if (deviceInfo.onlineStatus != mHeadStates.isConnected.get()) {
+                            onNetPlatformReady()
+                        }
+                    }
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
+                delay(30000) // 延迟30秒
+            }
+        }
+    }
+
+    // 在 onDestroy 中取消 job
+    override fun onDestroy() {
+        super.onDestroy()
+        deviceStatusCheckJob?.cancel()
+        deviceStatusCheckJob = null
+    }
+
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
     }
-
-
 }

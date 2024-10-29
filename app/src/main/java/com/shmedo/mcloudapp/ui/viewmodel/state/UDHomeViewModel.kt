@@ -11,4 +11,5 @@ class UDHomeViewModel : CommonDeviceHomeViewModel() {
 
     //是否测量中
     val isMeasuring = NonNullObservableField(false)
+    var measureDataLoadingDialogId = ""
 }

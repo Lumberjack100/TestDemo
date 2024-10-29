@@ -26,7 +26,7 @@
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:text="播放时长(秒)"
+                android:text="播放时长（秒）"
                 tools:textColor="@color/title_text_color" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
@@ -46,7 +46,7 @@
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:text="切换间隔(毫秒)"
+                android:text="切换间隔（毫秒）"
                 tools:textColor="@color/title_text_color" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
@@ -89,7 +89,7 @@
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:text="一级报警(毫米)"
+                android:text="一级报警（毫米）"
                 tools:textColor="@color/title_text_color" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
@@ -108,7 +108,7 @@
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:text="二级报警(毫米)"
+                android:text="二级报警（毫米）"
                 tools:textColor="@color/title_text_color" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
@@ -127,7 +127,7 @@
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:text="三级报警(毫米)"
+                android:text="三级报警（毫米）"
                 tools:textColor="@color/title_text_color" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
@@ -150,7 +150,7 @@
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:text="一级报警(毫米)"
+                android:text="一级报警（毫米）"
                 tools:textColor="@color/title_text_color" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
@@ -169,7 +169,7 @@
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:text="二级报警(毫米)"
+                android:text="二级报警（毫米）"
                 tools:textColor="@color/title_text_color" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
@@ -188,7 +188,7 @@
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:text="三级报警(毫米)"
+                android:text="三级报警（毫米）"
                 tools:textColor="@color/title_text_color" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText

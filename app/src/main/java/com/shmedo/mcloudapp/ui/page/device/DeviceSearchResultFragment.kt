@@ -136,6 +136,7 @@ class DeviceSearchResultFragment : BaseFragment() {
         deviceRequestViewModel.deviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<DeviceInfo>> ->
             if (!listDataResult.responseStatus.isSuccess) {
                 Toaster.show(listDataResult.responseStatus.errorMessage)
+                binding.refreshLayout.showError()
                 return@observe
             }
             if (listDataResult.result.isNullOrEmpty()) {

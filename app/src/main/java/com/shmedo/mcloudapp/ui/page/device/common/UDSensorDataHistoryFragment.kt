@@ -4,18 +4,23 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.drake.brv.PageRefreshLayout
 import com.drake.brv.utils.linear
+import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener
+import com.luck.picture.lib.style.PictureSelectorStyle
+import com.luck.picture.lib.style.SelectMainStyle
+import com.luck.picture.lib.style.TitleBarStyle
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.utils.AppContants
@@ -32,10 +37,14 @@ import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.model.HoverHeaderModel
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
+import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.CapturedPictureViewFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.CapturedPictureViewViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDSensorDataHistoryViewModel
 import com.shmedo.mcloudapp.utils.image.GlideEngine
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class UDSensorDataHistoryFragment : BaseFragment() {
@@ -43,6 +52,7 @@ class UDSensorDataHistoryFragment : BaseFragment() {
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: UDSensorDataHistoryViewModel by viewModels()
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
+    private val capturedPictureViewViewModel: CapturedPictureViewViewModel by activityViewModels()
 
     private var productType = ProductType.UnKnown
     private lateinit var deviceInfo: DeviceInfo
@@ -107,7 +117,8 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                             if (mStates.modelName.get() == "抓拍图片") {
                                 itemBinding.tvValueName.visibility = View.GONE
                                 itemBinding.tvOptName.visibility = View.VISIBLE
-                                itemBinding.tvOptName.text = modelValueDescList[modelNameList.indexOf(mStates.modelName.get())]
+                                itemBinding.tvOptName.text =
+                                    modelValueDescList[modelNameList.indexOf(mStates.modelName.get())]
                             } else {
                                 itemBinding.tvValueName.visibility = View.VISIBLE
                                 itemBinding.tvOptName.visibility = View.GONE
@@ -155,17 +166,27 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                 }
             }
             R.id.tv_opt.onClick {
-                val itemMap = getModel<Map<String, String>>()
-                if (itemMap.containsKey("filePath")) {
-                    val filePath = itemMap["filePath"]
-                    val shortFileName = itemMap["fileName"]
+                launchWithViewLifecycle {
+                    capturedPictureViewViewModel.mData.clear()
+                    withContext(Dispatchers.IO) {
+                        binding.recyclerview.mutable.map {
+                            if (it is Map<*, *>) {
+                                val filePath = it["filePath"] as String
+                                val shortFileName = it["fileName"] as String
+                                capturedPictureViewViewModel.mData.add(LocalMedia.generateHttpAsLocalMedia(
+                                    filePath
+                                )
+                                    .apply {
+                                        fileName = shortFileName
+                                    })
+                            }
+                        }
+                    }
 
-                    mImageData.clear()
-                    mImageData.add(LocalMedia.generateHttpAsLocalMedia(filePath)
-                        .apply {
-                            fileName = shortFileName
-                        })
-                    openPreview(0)
+                    nav().navigate(
+                        R.id.action_global_to_capturedPictureViewFragment,
+                        CapturedPictureViewFragment.newBundleArguments(modelPosition)
+                    )
                 }
             }
         }
@@ -439,9 +460,31 @@ class UDSensorDataHistoryFragment : BaseFragment() {
         // 预览图片、视频、音频
         PictureSelector.create(requireContext()).openPreview()
             .setImageEngine(GlideEngine.createGlideEngine())
+            .setSelectorUIStyle(getUIStyle())
             .setExternalPreviewEventListener(ImagePreviewEventListener())
             .isHidePreviewDownload(false)
             .startActivityPreview(currentPosition, false, mImageData)
+    }
+
+    private fun getUIStyle(): PictureSelectorStyle {
+        val whiteTitleBarStyle = TitleBarStyle().apply {
+            titleBackgroundColor = ColorUtils.getColor(R.color.white)
+            titleLeftBackResource = R.drawable.ic_arrow_back_black
+            titleTextColor = ColorUtils.getColor(R.color.title_text_color)
+            titleDefaultText = "返回"
+            isDisplayTitleBarLine = false
+        }
+        val mSelectMainStyle = SelectMainStyle().apply {
+            statusBarColor = ColorUtils.getColor(R.color.white)
+            isDarkStatusBarBlack = true
+            previewBackgroundColor = ColorUtils.getColor(R.color.main_bg_gray)
+        }
+
+
+        return PictureSelectorStyle().apply {
+            titleBarStyle = whiteTitleBarStyle
+            selectMainStyle = mSelectMainStyle
+        }
     }
 
     /**

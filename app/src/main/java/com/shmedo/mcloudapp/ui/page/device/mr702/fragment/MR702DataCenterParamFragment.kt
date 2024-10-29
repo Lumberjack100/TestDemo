@@ -126,7 +126,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.maintainReport.set(true)
         mStates.maintainReportInterval.set("30")//维持上报间隔（秒）
         mStates.reissuingDataValidDays.set("180")//数据补发有效天数
-        mStates.reissuingDataInterval.set("30")//数据补发间隔(分钟)
+        mStates.reissuingDataInterval.set("30")//数据补发间隔（分钟）
     }
 
     private fun setEditable(editable: Boolean) {

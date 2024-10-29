@@ -45,7 +45,7 @@
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:text="显示时长(分钟)"
+                android:text="显示时长（分钟）"
                 tools:textColor="@color/title_text_color" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
@@ -65,7 +65,7 @@
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:text="更新间隔(秒)"
+                android:text="更新间隔（秒）"
                 tools:textColor="@color/title_text_color" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
@@ -85,7 +85,7 @@
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
-                android:text="熄屏时长(分钟)"
+                android:text="熄屏时长（分钟）"
                 tools:textColor="@color/title_text_color" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText

@@ -7,12 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
-import com.blankj.utilcode.util.StringUtils
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentLoadingDialogBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.ui.viewmodel.state.LoadingConfig
+import com.shmedo.mcloudapp.ui.viewmodel.state.LoadingDialogState
 import com.shmedo.mcloudapp.ui.viewmodel.state.LoadingDialogViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.LoadingState
 import com.shmedo.mcloudapp.utils.LoadingDialogManager
 
 /**
@@ -25,18 +25,23 @@ class LoadingDialogFragment : DialogFragment() {
     private val binding get() = _binding!!
 
     val viewModel: LoadingDialogViewModel by viewModels()
-
+    private var currentLoadingId: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(STYLE_NO_TITLE, R.style.TransparentLoadingDialog)
-        isCancelable = true
 
-        // 初始化 ViewModel 的状态，仅在第一次创建时设置
-        if (savedInstanceState == null) {
-            val initialMessage =
-                arguments?.getString(ARG_MESSAGE) ?: StringUtils.getString(R.string.loading)
-            viewModel.showLoading(initialMessage)
+        arguments?.let { args ->
+            val config = LoadingConfig(
+                message = args.getString(ARG_MESSAGE, ""),
+                loadingId = args.getString(ARG_LOADING_ID, LoadingDialogState.GLOBAL_LOADING),
+                isCancelable = args.getBoolean(ARG_CANCELABLE, true),
+                timeoutDuration = args.getLong(ARG_TIMEOUT, LoadingDialogState.DEFAULT_TIMEOUT),
+                onCancel = null  // Handled through LoadingDialogManager
+            )
+            currentLoadingId = config.loadingId
+            this.isCancelable = config.isCancelable
+            viewModel.showLoading(config)
         }
     }
 
@@ -54,54 +59,44 @@ class LoadingDialogFragment : DialogFragment() {
         observeViewModel()
     }
 
-    /**
-     * 观察 ViewModel 的加载状态并更新 UI 或关闭对话框。
-     */
     private fun observeViewModel() {
         launchWithViewLifecycle {
-            viewModel.loadingState.collect { state ->
+            viewModel.dialogState.collect { state ->
                 when (state) {
-                    is LoadingState.Visible -> updateMessage(state.message)
-                    LoadingState.Hidden -> dismissAllowingStateLoss()
+                    is LoadingDialogState.Visible -> {
+                        binding.tvMessage.text = state.message
+                        dialog?.setCanceledOnTouchOutside(state.isCancelable)
+                    }
+
+                    LoadingDialogState.Hidden -> dismissAllowingStateLoss()
                 }
             }
         }
     }
 
-    private fun updateMessage(newMessage: String) {
-        binding.tvMessage.text = newMessage
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        currentLoadingId?.let { LoadingDialogManager.onDialogCanceled(it) }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        LoadingDialogManager.resetAll()
-    }
-
-
-    /**
-     * 用户取消对话框时调用
-     */
-    override fun onCancel(dialog: DialogInterface) {
-        super.onCancel(dialog)
-        // 通知 LoadingDialogManager 对话框被取消
-        LoadingDialogManager.onDialogCanceled()
     }
 
     companion object {
-        val TAG = LoadingDialogFragment::class.java.simpleName
+        const val TAG = "LoadingDialogFragment"
         private const val ARG_MESSAGE = "arg_message"
+        private const val ARG_LOADING_ID = "arg_loading_id"
+        private const val ARG_CANCELABLE = "arg_cancelable"
+        private const val ARG_TIMEOUT = "arg_timeout"
 
-        /**
-         * 创建 `LoadingDialogFragment` 的新实例。
-         * @param message 初始消息，默认为 "加载中..."。
-         * @return 一个新的 `LoadingDialogFragment` 实例。
-         */
-        fun newInstance(message: String = StringUtils.getString(R.string.loading_requesting_network)): LoadingDialogFragment {
-            return LoadingDialogFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_MESSAGE, message)
-                }
+        fun newInstance(config: LoadingConfig) = LoadingDialogFragment().apply {
+            arguments = Bundle().apply {
+                putString(ARG_MESSAGE, config.message)
+                putString(ARG_LOADING_ID, config.loadingId)
+                putBoolean(ARG_CANCELABLE, config.isCancelable)
+                putLong(ARG_TIMEOUT, config.timeoutDuration)
             }
         }
     }

@@ -67,7 +67,7 @@
                         android:drawableStart="@{stateVM.switchType==IOTRainStation.RAIN_OPEN?@drawable/ic_radio_checked:@drawable/ic_radio_uncheck}"
                         android:drawablePadding="@dimen/dimen_size_6"
                         android:gravity="center_vertical"
-                        android:text="雨量计精度(毫米)"
+                        android:text="雨量计精度（毫米）"
                         android:textColor="@{stateVM.switchType==IOTRainStation.RAIN_OPEN?@color/title_text_color:@color/sub_title_text_color}"
                         android:textSize="@dimen/text_size_16"
                         tools:drawableStart="@drawable/ic_radio_checked" />
@@ -120,7 +120,7 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        android:text="翻斗翻转最小间隔(秒)"
+                        android:text="翻斗翻转最小间隔（秒）"
                         tools:textColor="@color/title_text_color" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText

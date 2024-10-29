@@ -97,27 +97,27 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
             ProductType.GNSS_M_2,
             ProductType.U_R_1 //一体化雨量计
             -> {
-                mStates.firstAlarmThresholdTitle.set("一级报警阈值(毫米)")
-                mStates.secondAlarmThresholdTitle.set("二级报警阈值(毫米)")
-                mStates.thirdAlarmThresholdTitle.set("三级报警阈值(毫米)")
-                mStates.fourthAlarmThresholdTitle.set("四级报警阈值(毫米)")
+                mStates.firstAlarmThresholdTitle.set("一级报警阈值（毫米）")
+                mStates.secondAlarmThresholdTitle.set("二级报警阈值（毫米）")
+                mStates.thirdAlarmThresholdTitle.set("三级报警阈值（毫米）")
+                mStates.fourthAlarmThresholdTitle.set("四级报警阈值（毫米）")
 
-                mStates.firstAlarmReportIntervalTitle.set("一级报警间隔(秒)")
-                mStates.secondAlarmReportIntervalTitle.set("二级报警间隔(秒)")
-                mStates.thirdAlarmReportIntervalTitle.set("三级报警间隔(秒)")
-                mStates.fourthAlarmReportIntervalTitle.set("四级报警间隔(秒)")
+                mStates.firstAlarmReportIntervalTitle.set("一级报警间隔（秒）")
+                mStates.secondAlarmReportIntervalTitle.set("二级报警间隔（秒）")
+                mStates.thirdAlarmReportIntervalTitle.set("三级报警间隔（秒）")
+                mStates.fourthAlarmReportIntervalTitle.set("四级报警间隔（秒）")
             }
 
             ProductType.U_I_1 -> {//倾斜仪
-                mStates.firstAlarmThresholdTitle.set("一级报警阈值(度)")
-                mStates.secondAlarmThresholdTitle.set("二级报警阈值(度)")
-                mStates.thirdAlarmThresholdTitle.set("三级报警阈值(度)")
-                mStates.fourthAlarmThresholdTitle.set("四级报警阈值(度)")
+                mStates.firstAlarmThresholdTitle.set("一级报警阈值（度）")
+                mStates.secondAlarmThresholdTitle.set("二级报警阈值（度）")
+                mStates.thirdAlarmThresholdTitle.set("三级报警阈值（度）")
+                mStates.fourthAlarmThresholdTitle.set("四级报警阈值（度）")
 
-                mStates.firstAlarmReportIntervalTitle.set("一级报警间隔(秒)")
-                mStates.secondAlarmReportIntervalTitle.set("二级报警间隔(秒)")
-                mStates.thirdAlarmReportIntervalTitle.set("三级报警间隔(秒)")
-                mStates.fourthAlarmReportIntervalTitle.set("四级报警间隔(秒)")
+                mStates.firstAlarmReportIntervalTitle.set("一级报警间隔（秒）")
+                mStates.secondAlarmReportIntervalTitle.set("二级报警间隔（秒）")
+                mStates.thirdAlarmReportIntervalTitle.set("三级报警间隔（秒）")
+                mStates.fourthAlarmReportIntervalTitle.set("四级报警间隔（秒）")
             }
 
             else -> {}

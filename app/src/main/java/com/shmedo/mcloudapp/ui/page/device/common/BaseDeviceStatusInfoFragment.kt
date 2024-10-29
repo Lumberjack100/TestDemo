@@ -215,7 +215,7 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "雨量(毫米)",
+                            monitorType = "雨量（毫米）",
                             monitorValue = dataList[0]
                         )
                     )
@@ -227,7 +227,7 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "裂缝值(毫米)",
+                            monitorType = "裂缝值（毫米）",
                             monitorValue = dataList[0]
                         )
                     )
@@ -259,7 +259,7 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "X轴(毫米)",
+                            monitorType = "X轴（毫米）",
                             monitorValue = dataList[0]
                         )
                     )
@@ -267,7 +267,7 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "Y轴(毫米)",
+                            monitorType = "Y轴（毫米）",
                             monitorValue = dataList[1]
                         )
                     )
@@ -280,7 +280,7 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "空高值(毫米)",
+                            monitorType = "空高值（毫米）",
                             monitorValue = dataList[0]
                         )
                     )
@@ -348,7 +348,7 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "触发值(单位:Hz)",
+                            monitorType = "触发值(Hz)",
                             monitorValue = dataList[0]
                         )
                     )
@@ -360,7 +360,7 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "液位值(毫米)",
+                            monitorType = "液位值（毫米）",
                             monitorValue = dataList[0]
                         )
                     )
@@ -373,7 +373,7 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "沉降值(毫米)",
+                            monitorType = "沉降值（毫米）",
                             monitorValue = dataList[0]
                         )
                     )
@@ -385,7 +385,7 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "X轴数据(毫米)",
+                            monitorType = "X轴数据（毫米）",
                             monitorValue = dataList[0]
                         )
                     )
@@ -393,7 +393,7 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "Y轴数据(毫米)",
+                            monitorType = "Y轴数据（毫米）",
                             monitorValue = dataList[1]
                         )
                     )
@@ -473,7 +473,7 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "水深(毫米)",
+                            monitorType = "水深（毫米）",
                             monitorValue = dataList[0]
                         )
                     )

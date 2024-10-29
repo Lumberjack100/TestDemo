@@ -36,7 +36,7 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.notNull
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showDialogFragment
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
@@ -48,6 +48,7 @@ import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
+import com.shmedo.mcloudapp.model.DeviceStatusEnum
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.LoraConfigModule
@@ -69,6 +70,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -87,6 +89,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
     private val iotParseManager: IOTParserManager by inject()
 
+    private var deviceStatusCheckJob: Job? = null
     private var abnormalInfoJob: Job? = null
     private var queryMeasureResultTimeoutJob: Job? = null
     private var repeatPollNum = 0 //重复轮询次数
@@ -174,7 +177,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
             mHeadStates.iotPlatformStateText.set("蓝牙已断开")
 
-            mHeadStates.warnErrorText.set("正常")
+            mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
 
         //刷新模块状态
@@ -441,7 +444,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         module.navId,
                         bundle
                     )
-                }else {
+                } else {
                     Toaster.show("正在开发中")
                 }
             }
@@ -475,7 +478,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "method=1")
         commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
+        mHeadStates.measureDataLoadingDialogId =
+            showLoadingWithUUID(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
@@ -487,7 +491,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "method=2")
         commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
+        mHeadStates.measureDataLoadingDialogId =
+            showLoadingWithUUID(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
@@ -508,6 +513,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         } else {
             mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
             mHeadStates.iotPlatformStateText.set("米度平台离线")
+            mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
         //刷新模块状态
         binding.rvModule.models?.forEach {
@@ -535,11 +541,15 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 if (sensorData.isEmpty())
                     return@launchWithViewLifecycle
 
-                val waterSurfaceElevation = sensorData["liquid_surface_alt"]?.let { "$it m" } ?: AppContants.PLACE_HOLDER_VALUE
-                val airDistance = sensorData["ullage"]?.let { "$it m" } ?: AppContants.PLACE_HOLDER_VALUE
-                val installationAngle = sensorData["z"]?.let { "$it °" } ?: AppContants.PLACE_HOLDER_VALUE
+                val waterSurfaceElevation = sensorData["liquid_surface_alt"]?.let { "$it m" }
+                    ?: AppContants.PLACE_HOLDER_VALUE
+                val airDistance =
+                    sensorData["ullage"]?.let { "$it m" } ?: AppContants.PLACE_HOLDER_VALUE
+                val installationAngle =
+                    sensorData["z"]?.let { "$it °" } ?: AppContants.PLACE_HOLDER_VALUE
                 val measurementTime =
-                    sensorData["time"]?.replace(".000", "")?.replace("-", ".") ?: AppContants.PLACE_HOLDER_VALUE
+                    sensorData["time"]?.replace(".000", "")?.replace("-", ".")
+                        ?: AppContants.PLACE_HOLDER_VALUE
 
                 mHeadStates.waterSurfaceElevation.set(waterSurfaceElevation)
                 mHeadStates.airDistance.set(airDistance)
@@ -748,6 +758,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList()
+                        dismissLoadingDialog(mHeadStates.measureDataLoadingDialogId)
                         processSampleResponse(cmdStr, result.data)
                     }
                 }
@@ -792,6 +803,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     "-3" -> "故障"
                     else -> "正常"
                 }
+                mHeadStates.deviceStatusCode.set(stateInfo.deviceStatus)
                 mHeadStates.productLogoResId.set(
                     status.compareAndReturn(
                         "故障",
@@ -828,7 +840,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     resultMap["inside_temp"]?.let { temp -> errorInfoList.add(if (temp == "-1") "内部温度过高" else "内部温度过低") }
                     resultMap["sim_card"]?.let { errorInfoList.add("无SIM卡") }
                 })
-                handleAbnormalInfo(status, errorInfoList)
+                handleAbnormalInfo(errorInfoList)
             } catch (e: Exception) {
                 Timber.e(e)
                 addLogItem(Log.ERROR, e.errorMsg)
@@ -840,7 +852,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
      * 处理设备异常信息轮播展示
      * 每隔3秒切换一次，取出异常信息列表中的每一条异常信息，轮播显示
      */
-    private fun handleAbnormalInfo(status: String, errorInfoList: List<String>) {
+    private fun handleAbnormalInfo(errorInfoList: List<String>) {
         //取消之前的job（如果存在）
         abnormalInfoJob?.cancel()
 
@@ -850,7 +862,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         }
         if (errorInfoList.size == 1) {
             mHeadStates.warnErrorText.set(errorInfoList[0])
-            mHeadStates.isError.set(status == "故障")
             return
         }
         abnormalInfoJob = launchWithViewLifecycle {
@@ -863,7 +874,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 }
             }.collect { errorInfo ->
                 mHeadStates.warnErrorText.set(errorInfo)
-                mHeadStates.isError.set(status == "故障")
             }
         }
     }
@@ -896,10 +906,14 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 ) {
                     stopMeasurement()
 
-                    val waterSurfaceElevation = resultMap["obj_alt"]?.let { "$it m" } ?: AppContants.PLACE_HOLDER_VALUE
-                    val airDistance = resultMap["ld_value"]?.let { "$it m" } ?: AppContants.PLACE_HOLDER_VALUE
-                    val installationAngle = resultMap["z_angle"]?.let { "$it °" } ?: AppContants.PLACE_HOLDER_VALUE
-                    val measurementTime = resultMap["time"]?.replace("-", ".") ?: AppContants.PLACE_HOLDER_VALUE
+                    val waterSurfaceElevation =
+                        resultMap["obj_alt"]?.let { "$it m" } ?: AppContants.PLACE_HOLDER_VALUE
+                    val airDistance =
+                        resultMap["ld_value"]?.let { "$it m" } ?: AppContants.PLACE_HOLDER_VALUE
+                    val installationAngle =
+                        resultMap["z_angle"]?.let { "$it °" } ?: AppContants.PLACE_HOLDER_VALUE
+                    val measurementTime =
+                        resultMap["time"]?.replace("-", ".") ?: AppContants.PLACE_HOLDER_VALUE
 
                     mHeadStates.waterSurfaceElevation.set(waterSurfaceElevation)
                     mHeadStates.airDistance.set(airDistance)
@@ -924,6 +938,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun stopMeasurement() {
+        dismissLoadingDialog(mHeadStates.measureDataLoadingDialogId)
         // 隐藏进度条并停止动画
         mHeadStates.isMeasuring.set(false)
         binding.llRadarWaterGaugeMeasureData.btnMeasureData.stopProgressAnimation()
@@ -952,6 +967,9 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     override fun createObserver() {
         super.createObserver()
         setupHeartbeat()
+        if (communicateWay is NetPlatformConnect) {
+            checkDeviceOnlineStatus()
+        }
     }
 
     /**
@@ -973,6 +991,38 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     }
                 }
         }
+    }
+
+    private fun checkDeviceOnlineStatus() {
+        // 取消现有的job
+        deviceStatusCheckJob?.cancel()
+
+        // 创建新的job，每30秒执行一次
+        deviceStatusCheckJob = launchWithViewLifecycle {
+            while (isActive) {
+                try {
+                    deviceRequestViewModel.getDeviceDetailInfo(deviceInfo.deviceToken) { error: Throwable ->
+                        addLogItem(Log.ERROR, error.errorMsg)
+                    }?.let { deviceDetailInfo ->
+                        deviceInfo = deviceDetailInfo.deviceInfo
+                        // 如果设备在线状态发生变化，更新UI
+                        if (deviceInfo.onlineStatus != mHeadStates.isConnected.get()) {
+                            onNetPlatformReady()
+                        }
+                    }
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
+                delay(30000) // 延迟30秒
+            }
+        }
+    }
+
+    // 在 onDestroy 中取消 job
+    override fun onDestroy() {
+        super.onDestroy()
+        deviceStatusCheckJob?.cancel()
+        deviceStatusCheckJob = null
     }
 
     override fun onResume() {

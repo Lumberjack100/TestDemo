@@ -341,6 +341,7 @@ class NewNetDeviceListFragment : BaseFragment() {
         deviceRequestViewModel.deviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<DeviceInfo>> ->
             if (!listDataResult.responseStatus.isSuccess) {
                 Toaster.show(listDataResult.responseStatus.errorMessage)
+                binding.devicePageRefreshLayout.showError()
                 return@observe
             }
             listDataResult.result?.let {
