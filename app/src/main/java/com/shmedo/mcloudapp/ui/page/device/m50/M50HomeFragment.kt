@@ -257,7 +257,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                             name = "卫星信息",
                             resID = R.drawable.ic_module_satellite_info,
                             iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_m50SatelliteInfoFragment
+                            navId = 0 //R.id.action_global_to_m50SatelliteInfoFragment
                         )
                     )
                 )
