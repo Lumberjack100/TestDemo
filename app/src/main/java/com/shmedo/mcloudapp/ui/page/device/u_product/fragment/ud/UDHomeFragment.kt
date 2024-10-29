@@ -36,7 +36,7 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.notNull
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showDialogFragment
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
@@ -476,7 +476,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "method=1")
         commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
+        mHeadStates.measureDataLoadingDialogId =
+            showLoadingWithUUID(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
@@ -488,7 +489,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "method=2")
         commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
+        mHeadStates.measureDataLoadingDialogId =
+            showLoadingWithUUID(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
@@ -754,6 +756,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList()
+                        dismissLoadingDialog(mHeadStates.measureDataLoadingDialogId)
                         processSampleResponse(cmdStr, result.data)
                     }
                 }
@@ -933,6 +936,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun stopMeasurement() {
+        dismissLoadingDialog(mHeadStates.measureDataLoadingDialogId)
         // 隐藏进度条并停止动画
         mHeadStates.isMeasuring.set(false)
         binding.llRadarWaterGaugeMeasureData.btnMeasureData.stopProgressAnimation()

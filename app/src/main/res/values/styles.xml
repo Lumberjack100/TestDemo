@@ -49,12 +49,12 @@
     <!-- res/values/styles.xml -->
     <style name="TransparentLoadingDialog">
         <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowAnimationStyle">@style/DialogAnimation</item>
+        <item name="android:windowAnimationStyle">@style/LoadingDialogAnimation</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
     </style>
 
-    <style name="DialogAnimation">
+    <style name="LoadingDialogAnimation">
         <item name="android:windowEnterAnimation">@anim/fade_in</item>
         <item name="android:windowExitAnimation">@anim/fade_out</item>
     </style>

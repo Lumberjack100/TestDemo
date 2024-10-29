@@ -20,14 +20,14 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentCapturedPictureViewBinding
+import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.device.image_preview.CustomPreviewAdapter
 import com.shmedo.mcloudapp.ui.viewmodel.state.CapturedPictureViewViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.utils.LoadingDialogManager.dismissLoading
-import com.shmedo.mcloudapp.utils.LoadingDialogManager.showLoading
 import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import kotlin.math.abs
 
@@ -165,12 +165,12 @@ class CapturedPictureViewFragment : BaseFragment() {
             val fileName = "${media.fileName}.jpg"
             val path = media.availablePath
             if (PictureMimeType.isHasHttp(path)) {
-                showLoading("下载中...")
+                showLoadingDialog("下载中...")
             }
             DownloadFileUtils.saveLocalFile(
                 context, path, media.mimeType
             ) { realPath: String? ->
-                dismissLoading()
+                dismissLoadingDialog()
                 if (realPath.isNullOrEmpty()) {
                     val errorMsg = when {
                         PictureMimeType.isHasAudio(media.mimeType) -> getString(R.string.ps_save_audio_error)
