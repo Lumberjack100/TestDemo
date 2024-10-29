@@ -61,7 +61,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:text="雨量分辨率(毫米)" />
+                            android:text="雨量分辨率（毫米）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"

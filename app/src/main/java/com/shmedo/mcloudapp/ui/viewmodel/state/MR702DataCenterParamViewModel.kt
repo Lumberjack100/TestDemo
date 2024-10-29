@@ -23,7 +23,7 @@ class MR702DataCenterParamViewModel : BaseDataCenterParamViewModel() {
     val timingReport = NonNullObservableField(true)//定时报开启标识
     val addReport = NonNullObservableField(false)//加报报开启标识
     val maintainReport = NonNullObservableField(true)//维持报开启标识
-    val maintainReportInterval = NonNullObservableField("")//维持上报间隔(秒)
+    val maintainReportInterval = NonNullObservableField("")//维持上报间隔（秒）
     val reissuingDataValidDays = NonNullObservableField("")//数据补发有效天数
-    val reissuingDataInterval = NonNullObservableField("")//数据补发间隔(分钟)
+    val reissuingDataInterval = NonNullObservableField("")//数据补发间隔（分钟）
 }

@@ -63,7 +63,7 @@
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{homeVM.isEditable }"
-                        android:text="采集频率(秒)" />
+                        android:text="采集频率（秒）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
@@ -117,7 +117,7 @@
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
                         textViewEnabled="@{homeVM.isEditable }"
-                        android:text="延时时间(秒)" />
+                        android:text="延时时间（秒）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"

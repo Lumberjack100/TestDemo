@@ -25,10 +25,10 @@ class UDAlarmParamSettingViewModel : BaseStateViewModel() {
     //四级报警语音编号  [1~255] 默认 1
     val fourthAlarmVoice = NonNullObservableField("1")
 
-    val firstAlarmReportIntervalTitle = NonNullObservableField("一级报警间隔(秒)")
-    val secondAlarmReportIntervalTitle = NonNullObservableField("二级报警间隔(秒)")
-    val thirdAlarmReportIntervalTitle = NonNullObservableField("三级报警间隔(秒)")
-    val fourthAlarmReportIntervalTitle = NonNullObservableField("四级报警间隔(秒)")
+    val firstAlarmReportIntervalTitle = NonNullObservableField("一级报警间隔（秒）")
+    val secondAlarmReportIntervalTitle = NonNullObservableField("二级报警间隔（秒）")
+    val thirdAlarmReportIntervalTitle = NonNullObservableField("三级报警间隔（秒）")
+    val fourthAlarmReportIntervalTitle = NonNullObservableField("四级报警间隔（秒）")
 
     //一级报警上报间隔 默认60,单位s
     val firstAlarmReportInterval = NonNullObservableField("60")

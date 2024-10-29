@@ -94,10 +94,10 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initThresholdTitles() {
-        mStates.firstAlarmThresholdTitle.set("一级报警阈值(毫米)")
-        mStates.secondAlarmThresholdTitle.set("二级报警阈值(毫米)")
-        mStates.thirdAlarmThresholdTitle.set("三级报警阈值(毫米)")
-        mStates.fourthAlarmThresholdTitle.set("四级报警阈值(毫米)")
+        mStates.firstAlarmThresholdTitle.set("一级报警阈值（毫米）")
+        mStates.secondAlarmThresholdTitle.set("二级报警阈值（毫米）")
+        mStates.thirdAlarmThresholdTitle.set("三级报警阈值（毫米）")
+        mStates.fourthAlarmThresholdTitle.set("四级报警阈值（毫米）")
     }
 
     private fun resetDefaultParams() {

@@ -61,6 +61,7 @@ share2 = "0.9.3"
 smoothNavigation = "4.0.0"
 startupRuntime = "1.2.0"
 strictDatabinding = "6.2.0"
+subsamplingScaleImageView = "3.10.0"
 switchbutton = "2.1.0"
 tableView = "v0.8.9.4"
 targetSdk = "34"
@@ -136,6 +137,7 @@ rxhttp = { module = "com.github.liujingxing.rxhttp:rxhttp", version.ref = "rxhtt
 rxhttp-compiler = { module = "com.github.liujingxing.rxhttp:rxhttp-compiler", version.ref = "rxhttp" }
 rxhttp-converter-moshi = { module = "com.github.liujingxing.rxhttp:converter-moshi", version.ref = "rxhttp" }
 share2 = { module = "gdut.bsx:share2", version.ref = "share2" }
+subsampling-scale-image-view = { module = "com.davemorrissey.labs:subsampling-scale-image-view-androidx", version.ref = "subsamplingScaleImageView" }
 switchbutton-library = { module = "com.kyleduo.switchbutton:library", version.ref = "switchbutton" }
 tableview = { module = "com.github.evrencoskun:TableView", version.ref = "tableView" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }

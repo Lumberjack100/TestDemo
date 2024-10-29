@@ -1,8 +1,15 @@
 package com.shmedo.mcloudapp.ui.viewmodel.state
 
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import java.util.concurrent.ConcurrentHashMap
 
 
 /**
@@ -11,50 +18,79 @@ import kotlinx.coroutines.flow.StateFlow
  * 描述： 管理加载对话框状态
  */
 class LoadingDialogViewModel : ViewModel() {
-    private val _loadingState = MutableStateFlow<LoadingState>(LoadingState.Hidden)
-    val loadingState: StateFlow<LoadingState> = _loadingState
+    private val _dialogState = MutableStateFlow<LoadingDialogState>(LoadingDialogState.Hidden)
+    val dialogState = _dialogState.asStateFlow()
 
-    /**
-     * 显示加载对话框，并设置消息。
-     * @param message 要显示的消息。
-     */
-    fun showLoading(message: String) {
-        _loadingState.value = LoadingState.Visible(message)
+    private val timeoutJobs = ConcurrentHashMap<String, Job>()
+    private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+
+    fun showLoading(config: LoadingConfig) {
+        val state = LoadingDialogState.Visible(
+            message = config.message,
+            loadingId = config.loadingId,
+            isCancelable = config.isCancelable,
+            timeoutDuration = config.timeoutDuration,
+            onCancel = config.onCancel
+        )
+        _dialogState.value = state
+        setupTimeout(config.loadingId, config.timeoutDuration)
     }
 
-    /**
-     * 隐藏加载对话框。
-     */
-    fun hideLoading() {
-        _loadingState.value = LoadingState.Hidden
-    }
-
-    /**
-     * 更新加载对话框的消息。
-     * @param message 新的消息。
-     */
-    fun updateMessage(message: String) {
-        val currentState = _loadingState.value
-        if (currentState is LoadingState.Visible) {
-            _loadingState.value = currentState.copy(message = message)
+    private fun setupTimeout(loadingId: String, timeoutDuration: Long) {
+        timeoutJobs[loadingId]?.cancel()
+        if (timeoutDuration > 0) {
+            timeoutJobs[loadingId] = viewModelScope.launch {
+                delay(timeoutDuration)
+                hideLoading(loadingId)
+            }
         }
     }
+
+    private fun hideLoading(loadingId: String = LoadingDialogState.GLOBAL_LOADING) {
+        timeoutJobs[loadingId]?.cancel()
+        timeoutJobs.remove(loadingId)
+
+        val currentState = _dialogState.value
+        if (currentState is LoadingDialogState.Visible && currentState.loadingId == loadingId) {
+            _dialogState.value = LoadingDialogState.Hidden
+        }
+    }
+
+    fun updateMessage(loadingId: String, message: String) {
+        val currentState = _dialogState.value
+        if (currentState is LoadingDialogState.Visible && currentState.loadingId == loadingId) {
+            _dialogState.value = currentState.copy(message = message)
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        timeoutJobs.values.forEach { it.cancel() }
+        timeoutJobs.clear()
+    }
 }
 
+sealed class LoadingDialogState {
+    data class Visible(
+        val message: String,
+        val loadingId: String,
+        val isCancelable: Boolean = true,
+        val timeoutDuration: Long = DEFAULT_TIMEOUT,
+        val onCancel: (() -> Unit)? = null
+    ) : LoadingDialogState()
 
-/**
- * 表示加载对话框的状态。
- */
-sealed class LoadingState {
-    /**
-     * 显示加载对话框，并显示指定的消息。
-     */
-    data class Visible(val message: String) : LoadingState()
+    data object Hidden : LoadingDialogState()
 
-    /**
-     * 隐藏加载对话框。
-     */
-    object Hidden : LoadingState()
+    companion object {
+        const val DEFAULT_TIMEOUT = 300_000L // 300 seconds
+        const val GLOBAL_LOADING = "GLOBAL_LOADING"
+    }
 }
 
-
+data class LoadingConfig(
+    val message: String,
+    val loadingId: String = LoadingDialogState.GLOBAL_LOADING,
+    val isCancelable: Boolean = true,
+    val timeoutDuration: Long = LoadingDialogState.DEFAULT_TIMEOUT,
+    val onCancel: (() -> Unit)? = null
+)

@@ -184,7 +184,7 @@
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="@{stateVM.firstAlarmThresholdTitle}"
-                            tools:text="一级报警阈值(毫米)" />
+                            tools:text="一级报警阈值（毫米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -204,7 +204,7 @@
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="@{stateVM.secondAlarmThresholdTitle}"
-                            tools:text="二级报警阈值(毫米)" />
+                            tools:text="二级报警阈值（毫米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -224,7 +224,7 @@
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="@{stateVM.thirdAlarmThresholdTitle}"
-                            tools:text="三级报警阈值(毫米)" />
+                            tools:text="三级报警阈值（毫米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -244,7 +244,7 @@
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="@{stateVM.fourthAlarmThresholdTitle}"
-                            tools:text="四级报警阈值(毫米)" />
+                            tools:text="四级报警阈值（毫米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -268,7 +268,7 @@
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="@{stateVM.firstAlarmReportIntervalTitle}"
-                            tools:text="一级报警间隔(秒)" />
+                            tools:text="一级报警间隔（秒）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -288,7 +288,7 @@
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="@{stateVM.secondAlarmReportIntervalTitle}"
-                            tools:text="二级报警间隔(秒)" />
+                            tools:text="二级报警间隔（秒）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -308,7 +308,7 @@
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="@{stateVM.thirdAlarmReportIntervalTitle}"
-                            tools:text="三级报警间隔(秒)" />
+                            tools:text="三级报警间隔（秒）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -328,7 +328,7 @@
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:text="@{stateVM.fourthAlarmReportIntervalTitle}"
-                            tools:text="四级报警间隔(秒)" />
+                            tools:text="四级报警间隔（秒）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"

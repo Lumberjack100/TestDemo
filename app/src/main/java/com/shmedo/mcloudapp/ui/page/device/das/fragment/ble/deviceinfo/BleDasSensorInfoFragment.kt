@@ -187,7 +187,7 @@ class BleDasSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                     )
                     groupList.add(
                         DeviceStatusInfoBasicItem(
-                            name = "雨量值(毫米)",
+                            name = "雨量值（毫米）",
                             value = info.rainfallStatus
                         )
                     )

@@ -3,58 +3,65 @@ package com.shmedo.mcloudapp.extensions
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.blankj.utilcode.util.StringUtils
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.ui.viewmodel.state.LoadingDialogState
 import com.shmedo.mcloudapp.utils.LoadingDialogManager
 
-/**
- * 显示加载对话框。
- * @param message 要显示的消息，默认为 "请求网络中..."。
- */
-fun FragmentActivity.showLoadingDialog(message: String = StringUtils.getString(R.string.loading_requesting_network)) {
-    LoadingDialogManager.showLoading(message)
+
+fun FragmentActivity.showLoadingDialog(
+    message: String = getString(R.string.loading),
+    isCancelable: Boolean = true,
+    timeout: Long = LoadingDialogState.DEFAULT_TIMEOUT,
+    onCancel: (() -> Unit)? = null
+): String = LoadingDialogManager.showLoading(
+    message = message,
+    isCancelable = isCancelable,
+    timeout = timeout,
+    onCancel = onCancel
+)
+
+fun FragmentActivity.dismissLoadingDialog(loadingId: String = LoadingDialogState.GLOBAL_LOADING) {
+    LoadingDialogManager.dismissLoading(loadingId)
 }
 
-/**
- * 关闭加载对话框。
- */
-fun FragmentActivity.dismissLoadingDialog() {
-    LoadingDialogManager.dismissLoading()
+fun FragmentActivity.updateLoadingMessage(loadingId: String, message: String) {
+    LoadingDialogManager.updateMessage(loadingId, message)
 }
 
 
-/**
- * 显示加载对话框。
- * @param message 要显示的消息，默认为 "请求网络中..."。
- */
 fun Fragment.showLoadingDialog(
-    message: String = StringUtils.getString(R.string.loading_requesting_network),
+    message: String = getString(R.string.loading),
+    isCancelable: Boolean = true,
+    timeout: Long = LoadingDialogState.DEFAULT_TIMEOUT,
     onCancel: (() -> Unit)? = null
-) {
-    LoadingDialogManager.showLoading(message, onCancel)
-}
+): String = LoadingDialogManager.showLoading(
+    message = message,
+    isCancelable = isCancelable,
+    loadingId = LoadingDialogState.GLOBAL_LOADING,
+    timeout = timeout,
+    onCancel = onCancel
+)
 
-/**
- * 关闭加载对话框。
- */
-fun Fragment.dismissLoadingDialog() {
-    LoadingDialogManager.dismissLoading()
-}
-
-fun Fragment.showLoadingWithId(
-    message: String = StringUtils.getString(R.string.loading_requesting_network),
+fun Fragment.showLoadingWithUUID(
+    message: String = getString(R.string.loading),
+    isCancelable: Boolean = true,
+    timeout: Long = LoadingDialogState.DEFAULT_TIMEOUT,
     onCancel: (() -> Unit)? = null
-): String {
-    return LoadingDialogManager.showLoadingWithId(message, onCancel)
+): String = LoadingDialogManager.showLoading(
+    message = message,
+    isCancelable = isCancelable,
+    timeout = timeout,
+    onCancel = onCancel
+)
+
+fun Fragment.dismissLoadingDialog(loadingId: String = LoadingDialogState.GLOBAL_LOADING) {
+    LoadingDialogManager.dismissLoading(loadingId)
 }
 
-fun Fragment.dismissLoadingWithId(loadingId: String) {
-    LoadingDialogManager.dismissLoadingWithId(loadingId)
+fun Fragment.updateLoadingMessage(loadingId: String, message: String) {
+    LoadingDialogManager.updateMessage(loadingId, message)
 }
 
-fun Fragment.updateMessageWithId(loadingId: String, message: String) {
-    LoadingDialogManager.updateMessageWithId(loadingId, message)
-}
 
 /**
  * 显示对话框。
@@ -77,4 +84,3 @@ inline fun <reified T : DialogFragment> Fragment.showDialogFragment(
 fun Fragment.dismissDialogFragment(tag: String) {
     (childFragmentManager.findFragmentByTag(tag) as? DialogFragment)?.dismissAllowingStateLoss()
 }
-

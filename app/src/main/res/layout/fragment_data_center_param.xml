@@ -458,7 +458,7 @@
                                 <com.google.android.material.textview.MaterialTextView
                                     style="@style/Common_ClickableItem_Title_Style"
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                    android:text="维持上报间隔(秒)" />
+                                    android:text="维持上报间隔（秒）" />
 
                                 <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"
@@ -477,7 +477,7 @@
                                 <com.google.android.material.textview.MaterialTextView
                                     style="@style/Common_ClickableItem_Title_Style"
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                    android:text="数据补发有效时间(日)" />
+                                    android:text="数据补发有效时间（日）" />
 
                                 <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"
@@ -496,7 +496,7 @@
                                 <com.google.android.material.textview.MaterialTextView
                                     style="@style/Common_ClickableItem_Title_Style"
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                    android:text="数据补发间隔(分钟)" />
+                                    android:text="数据补发间隔（分钟）" />
 
                                 <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"

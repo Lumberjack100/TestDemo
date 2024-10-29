@@ -74,22 +74,23 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "设备SN",
                     value = stateInfo.sn,
                 )
-                val deviceStatus = when (stateInfo.deviceStatus) {
+                val statusText = when (stateInfo.deviceStatus) {
                     "-2" -> "告警"
                     "-3" -> "故障"
                     else -> "正常"
                 }
                 textSwitcherItem = DeviceStatusInfoTextSwitcherItem(
                     name = "设备状态",
-                    value = deviceStatus,
-                    textColorRes = when (deviceStatus) {
+                    value = statusText,
+                    deviceStatusCode = stateInfo.deviceStatus,
+                    textColorRes = when (statusText) {
                         "正常" -> ColorUtils.getColor(R.color.online_colorPrimary)
 
                         else -> 0
                     }
                 )
                 groupList.add(textSwitcherItem!!)
-                processAbnormalInfo(deviceStatus, stateInfo.deviceError, stateInfo.deviceWarn)
+                processAbnormalInfo(stateInfo.deviceError, stateInfo.deviceWarn)
 
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
@@ -187,7 +188,6 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     }
 
     private fun processAbnormalInfo(
-        status: String,
         deviceError: Map<String, String>? = null,
         deviceWarn: Map<String, String>? = null
     ) {
@@ -213,7 +213,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 resultMap["inside_temp"]?.let { temp -> errorInfoList.add(if (temp == "-1") "内部温度过高" else "内部温度过低") }
                 resultMap["sim_card"]?.let { errorInfoList.add("无SIM卡") }
             })
-            handleAbnormalInfo(status, errorInfoList)
+            handleAbnormalInfo(errorInfoList)
         } catch (e: Exception) {
             Timber.e(e)
             addLogItem(Log.ERROR, e.errorMsg)
@@ -224,7 +224,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
      * 处理设备异常信息轮播展示
      * 每隔3秒切换一次，取出异常信息列表中的每一条异常信息，轮播显示
      */
-    private fun handleAbnormalInfo(status: String, errorInfoList: List<String>) {
+    private fun handleAbnormalInfo(errorInfoList: List<String>) {
         // 取消之前的job（如果存在）
         abnormalInfoJob?.cancel()
 
@@ -233,10 +233,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
             return
         }
         if (errorInfoList.size == 1) {
-            textSwitcherItem?.refreshValue(
-                value = errorInfoList[0],
-                isErrorInfo = status == "故障"
-            )
+            textSwitcherItem?.refreshValue(value = errorInfoList[0])
             return
         }
         abnormalInfoJob = launchWithViewLifecycle {
@@ -248,10 +245,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     }
                 }
             }.collect { errorInfo ->
-                textSwitcherItem?.refreshValue(
-                    value = errorInfo,
-                    isErrorInfo = status == "故障"
-                )
+                textSwitcherItem?.refreshValue(value = errorInfo)
             }
         }
     }

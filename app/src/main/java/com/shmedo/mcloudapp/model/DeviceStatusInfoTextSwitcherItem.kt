@@ -10,15 +10,14 @@ import androidx.databinding.BaseObservable
 data class DeviceStatusInfoTextSwitcherItem(
     val name: String = "",
     var value: String = "",
+    var deviceStatusCode: String = DeviceStatusEnum.UNKNOWN.code,
     var textColorRes: Int = 0,
-    var isErrorInfo: Boolean = false,
     var isBottomItem: Boolean = false,
 
     ) : BaseObservable() {
 
-    fun refreshValue(value: String, isErrorInfo: Boolean = false) {
+    fun refreshValue(value: String) {
         this.value = value
-        this.isErrorInfo = isErrorInfo
         notifyChange()
     }
 
