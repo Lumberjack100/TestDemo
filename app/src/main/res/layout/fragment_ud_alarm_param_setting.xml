@@ -361,7 +361,7 @@
                         <com.google.android.material.button.MaterialButton
                             style="@style/TestButton_Style"
                             enabledTextColor="@{@color/colorPrimary}"
-                            onClickWithDebouncing="@{()->click.onTestThirdAlarmClick()}"
+                            onClickWithDebouncing="@{()->click.onTestFourthAlarmClick()}"
                             textViewEnabled="@{stateVM.isOpened}"
                             android:layout_width="wrap_content"
                             android:layout_height="@dimen/dimen_size_30"
