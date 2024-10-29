@@ -348,25 +348,27 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
         commandItems.clear()
         //UD 设备报警启用开关打开或者关闭，都需要发送开关指令
-        if (productType == ProductType.U_D_1 || productType == ProductType.U_D_2) {
+        if (productType == ProductType.U_D_1 || productType == ProductType.U_D_2 || productType == ProductType.U_D_3) {
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_SET_ALRAM_BROADCAST_SWITCH,
                 "sw=${if (mStates.isOpened.get()) "1" else "0"}"
             )
             commandItems.add(command)
         }
-        //MD 设备报警启用开关关闭时处理
-        if ((productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) && !mStates.isOpened.get()) {
+
+        //GNSS 设备报警启用开关关闭时处理
+        if (!mStates.isOpened.get() && (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2 || productType == ProductType.GNSS_M_5)) {
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL,
                 "sw=0"
             )
             commandItems.add(command)
         }
+
         //报警启用开关打开时，才发送报警信息设置指令
         if (mStates.isOpened.get()) {
             val monitorPointEntity = AlarmMonitorPointEntity(
-                sw = if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2)
+                sw = if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2 || productType == ProductType.GNSS_M_5)
                     "1"
                 else IOTConstants.NULL_KEY,
                 monitorpoint = mStates.monitorPoint.get(),
@@ -406,22 +408,17 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
 
-        var command =
-            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2)
-                IOTCommandUtil.getCommand(
-                    IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL
-                )
-            else IOTCommandUtil.getCommand(
+        if (productType == ProductType.U_D_1 || productType == ProductType.U_D_2 || productType == ProductType.U_D_3) {
+            val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_GET_ALRAM_BROADCAST_SWITCH
-            )
-        commandItems.add(command)
-
-        if (productType != ProductType.GNSS_M_1 && productType != ProductType.GNSS_M_2) {
-            command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL
             )
             commandItems.add(command)
         }
+
+        var command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL
+        )
+        commandItems.add(command)
 
         command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_GET_ALRAM_BROADCAST_REPORT_INTERVAL
@@ -429,6 +426,59 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
         commandItems.add(command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = "设备未响应"
+        )
     }
 
     override fun setResultData(cmdStr: String) {
@@ -441,7 +491,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -462,7 +512,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询语音参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -483,7 +533,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询报警间隔出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -501,7 +551,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg =
                             if (cmdStr.contains("sw=0")) "关闭出错: ${result.message}" else "打开出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -518,8 +568,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg =
                             if (cmdStr.contains("sw=0")) "关闭出错: ${result.message}" else "设置报警信息出错: ${result.message}"
-                        handleFailureResult(errMsg)
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -535,7 +584,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置报警间隔出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -551,7 +600,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "发送预警测试指令出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 

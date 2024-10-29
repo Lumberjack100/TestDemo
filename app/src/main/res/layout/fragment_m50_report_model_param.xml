@@ -96,8 +96,8 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             android:hint="请输入"
-                            android:inputType="number"
-                            android:maxLength="3"
+                            android:inputType="numberDecimal"
+                            android:maxLength="10"
                             android:text="@={stateVM.memsThreshold}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -139,7 +139,7 @@
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
                                 android:inputType="numberDecimal"
-                                android:maxLength="6"
+                                 android:maxLength="10"
                                 android:text="@={stateVM.firstAlarmThreshold}" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -159,7 +159,7 @@
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
                                 android:inputType="numberDecimal"
-                                android:maxLength="6"
+                                 android:maxLength="10"
                                 android:text="@={stateVM.secondAlarmThreshold}" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -179,7 +179,7 @@
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
                                 android:inputType="numberDecimal"
-                                android:maxLength="6"
+                                 android:maxLength="10"
                                 android:text="@={stateVM.thirdAlarmThreshold}" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -199,7 +199,7 @@
                                 textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
                                 android:inputType="numberDecimal"
-                                android:maxLength="6"
+                                 android:maxLength="10"
                                 android:text="@={stateVM.fourthAlarmThreshold}" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
                     </androidx.appcompat.widget.LinearLayoutCompat>
