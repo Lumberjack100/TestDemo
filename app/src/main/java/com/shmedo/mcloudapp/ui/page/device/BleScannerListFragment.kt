@@ -241,7 +241,7 @@ class BleScannerListFragment : BaseFragment() {
     }
 
     override fun lazyLoadData() {
-        binding.refreshLayout.autoRefresh()
+//        binding.refreshLayout.autoRefresh()
     }
 
     private fun refreshScan() = launchWithViewLifecycle {

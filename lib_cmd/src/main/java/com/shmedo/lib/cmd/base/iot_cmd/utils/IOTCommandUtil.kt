@@ -46,6 +46,7 @@ object IOTCommandUtil {
     ): String {
         return when (reason) {
             "unsupported" -> "设备版本不支持"
+            "cmd_unsupported" -> "设备版本不支持"
             "state not ready" -> "状态未就绪"
             "equimodel_err" -> "设备模式错误"
             else -> {

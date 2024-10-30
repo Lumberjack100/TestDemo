@@ -50,6 +50,7 @@ fun Fragment.showLoadingWithUUID(
 ): String = LoadingDialogManager.showLoading(
     message = message,
     isCancelable = isCancelable,
+    loadingId = null,
     timeout = timeout,
     onCancel = onCancel
 )

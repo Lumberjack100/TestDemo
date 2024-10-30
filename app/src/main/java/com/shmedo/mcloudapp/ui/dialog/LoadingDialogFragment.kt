@@ -41,6 +41,7 @@ class LoadingDialogFragment : DialogFragment() {
             )
             currentLoadingId = config.loadingId
             this.isCancelable = config.isCancelable
+            dialog?.setCanceledOnTouchOutside(false)
             viewModel.showLoading(config)
         }
     }
@@ -65,7 +66,6 @@ class LoadingDialogFragment : DialogFragment() {
                 when (state) {
                     is LoadingDialogState.Visible -> {
                         binding.tvMessage.text = state.message
-                        dialog?.setCanceledOnTouchOutside(state.isCancelable)
                     }
 
                     LoadingDialogState.Hidden -> dismissAllowingStateLoss()
