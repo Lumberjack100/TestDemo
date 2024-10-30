@@ -23,10 +23,11 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentUdCorsParamBinding
+import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -51,6 +52,8 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
 
     private var queryMeasureResultTimeoutJob: Job? = null
     private var repeatPollNum = 0 //重复轮询次数
+    private var measureAltitudeLoadingDialogId = ""
+
 
     override fun initViewModel() {
         super.initViewModel()
@@ -201,7 +204,8 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
         )
         commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.processing))
+        measureAltitudeLoadingDialogId =
+            showLoadingWithUUID(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
@@ -237,6 +241,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
                         isMessageDialog = true
                     )
                 } else {
+                    dismissLoadingDialog(measureAltitudeLoadingDialogId)
                     super.doCmdResponseResultError(
                         cmdStr = cmdStr,
                         errMsg = "更新海拔高度指令下发出错: $errMsg",
@@ -266,6 +271,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        dismissLoadingDialog(measureAltitudeLoadingDialogId)
         super.doCmdResponseResultTimeOut(
             cmdStr = cmdStr,
             errMsg = "设备未响应",
@@ -286,6 +292,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_UD_DIFF_LOCATE -> {
+                dismissLoadingDialog(measureAltitudeLoadingDialogId)
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
                     isDismissLoadingDialog = isDismissLoadingDialog,
@@ -316,8 +323,8 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg =
-                            if (cmdStr.contains("method=0")) "查询参数出错: ${result.message}" else "更新海拔高度出错: ${result.message}"
+                        val errMsg = "出错啦: ${result.message}"
+                        dismissLoadingDialog(measureAltitudeLoadingDialogId)
                         handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
@@ -364,13 +371,21 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
                     }
 
                     "1" -> {//更新海拔高度
-                        clearQueryMeasureResultTimeoutJob()
-                        startQueryMeasureResultJob()
+                        if (mStates.altitudeMeasureMode.get() == "自动") {
+                            clearQueryMeasureResultTimeoutJob()
+                            startQueryMeasureResultJob()
+                        } else {
+                            dismissLoadingDialog(measureAltitudeLoadingDialogId)
+                            cancelNearbyCommunicationTimeoutJob()
+                            Toaster.show("更新海拔高度成功")
+                            mStates.saveInitialState()
+                        }
                     }
 
                     "2" -> {//轮询测得的海拔高度结果
                         //已经有数据
                         if (resultMap.containsKey("alt")) {
+                            dismissLoadingDialog(measureAltitudeLoadingDialogId)
                             cancelNearbyCommunicationTimeoutJob()
                             Toaster.show("更新海拔高度成功")
 
@@ -400,6 +415,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
         queryMeasureResultTimeoutJob?.cancel()
         queryMeasureResultTimeoutJob = launchWithViewLifecycle {
             if (repeatPollNum >= REPEAT_POLL_NUM) {
+                dismissLoadingDialog(measureAltitudeLoadingDialogId)
                 cancelNearbyCommunicationTimeoutJob()
                 showMessageDialog("更新海拔高度失败，请稍后重试")
                 return@launchWithViewLifecycle

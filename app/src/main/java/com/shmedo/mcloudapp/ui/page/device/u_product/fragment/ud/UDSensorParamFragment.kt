@@ -28,10 +28,12 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentUDProductSensorParamBinding
+import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -63,6 +65,8 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
 
     private var queryMeasureResultTimeoutJob: Job? = null
     private var repeatPollNum = 0 //重复轮询次数
+    private var measureInitialValueLoadingDialogId = ""
+
 
     override fun initViewModel() {
         super.initViewModel()
@@ -250,7 +254,8 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
         commandItems.add(command)
 
         if (method == "1") {
-            showLoadingDialog(StringUtils.getString(R.string.processing))
+            measureInitialValueLoadingDialogId =
+                showLoadingWithUUID(StringUtils.getString(R.string.processing))
         } else {
             Timber.d("查询测量结果轮询次数：$repeatPollNum")
         }
@@ -290,6 +295,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.MD_SET_SENSOR_INITIAL -> {
+                dismissLoadingDialog(measureInitialValueLoadingDialogId)
                 if (cmdStr.contains("method=0")) {
                     super.doCmdResponseResultError(
                         cmdStr = cmdStr,
@@ -337,6 +343,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        dismissLoadingDialog(measureInitialValueLoadingDialogId)
         super.doCmdResponseResultTimeOut(
             cmdStr = cmdStr,
             errMsg = errMsg,
@@ -360,6 +367,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SET_SENSOR_INITIAL,
             IOTCommandType.MD_SET_MODULE_GAP,
             IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR -> {
+                dismissLoadingDialog(measureInitialValueLoadingDialogId)
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
                     isDismissLoadingDialog = isDismissLoadingDialog,
@@ -411,6 +419,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
+                        dismissLoadingDialog(measureInitialValueLoadingDialogId)
                         val errMsg =
                             if (cmdStr.contains("method=0")) "查询测量信息出错: ${result.message}" else if (cmdStr.contains(
                                     "type=1"
@@ -483,7 +492,8 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                     }
                 mStates.imageResolution.set("${udCurrentStateInfo.pixx}x${udCurrentStateInfo.pixy}")
 
-                mStates.locationInitialValue.set(udCurrentStateInfo.locationInitialValue.ifEmpty { AppContants.PLACE_HOLDER_VALUE }.replace(",", ", "))
+                mStates.locationInitialValue.set(udCurrentStateInfo.locationInitialValue.ifEmpty { AppContants.PLACE_HOLDER_VALUE }
+                    .replace(",", ", "))
 
                 //添加这行来保存初始状态
                 mStates.saveInitialState()
@@ -504,6 +514,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
             if (method == "0") {//轮询测得的初始值
                 //已经有数据
                 if (resultMap.containsKey("initvalue")) {
+                    dismissLoadingDialog(measureInitialValueLoadingDialogId)
                     cancelNearbyCommunicationTimeoutJob()
                     showMessageDialog("初始值更新成功")
 
@@ -511,7 +522,8 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                     if (type == "1") {
                         mStates.airAltitudeInitialValue.set(initValue)
                     } else {
-                        mStates.locationInitialValue.set(initValue.ifEmpty { AppContants.PLACE_HOLDER_VALUE }.replace(",", " , "))
+                        mStates.locationInitialValue.set(initValue.ifEmpty { AppContants.PLACE_HOLDER_VALUE }
+                            .replace(",", " , "))
                     }
                     return
                 }
@@ -533,6 +545,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
         queryMeasureResultTimeoutJob?.cancel()
         queryMeasureResultTimeoutJob = launchWithViewLifecycle {
             if (repeatPollNum >= REPEAT_POLL_NUM) {
+                dismissLoadingDialog(measureInitialValueLoadingDialogId)
                 cancelNearbyCommunicationTimeoutJob()
                 showMessageDialog("更新海拔高度失败，请稍后重试")
                 return@launchWithViewLifecycle
