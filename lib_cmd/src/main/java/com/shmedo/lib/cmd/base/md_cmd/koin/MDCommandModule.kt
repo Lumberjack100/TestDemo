@@ -1,4 +1,4 @@
-package com.shmedo.lib.cmd.base.md_cmd.di
+package com.shmedo.lib.cmd.base.md_cmd.koin
 
 import com.shmedo.lib.cmd.base.md_cmd.interfaces.MDCommandParser
 import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager

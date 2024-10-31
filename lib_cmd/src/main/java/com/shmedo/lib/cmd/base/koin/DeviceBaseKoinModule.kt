@@ -1,7 +1,7 @@
 package com.shmedo.lib.cmd.base.koin
 
-import com.shmedo.lib.cmd.base.iot_cmd.di.iotCommandModule
-import com.shmedo.lib.cmd.base.md_cmd.di.mdCommandModule
+import com.shmedo.lib.cmd.base.iot_cmd.koin.iotCommandModule
+import com.shmedo.lib.cmd.base.md_cmd.koin.mdCommandModule
 import org.koin.dsl.module
 
 /**

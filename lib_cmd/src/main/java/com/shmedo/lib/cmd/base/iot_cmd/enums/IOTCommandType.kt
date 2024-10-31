@@ -5,7 +5,7 @@ package com.shmedo.lib.cmd.base.iot_cmd.enums
  * 创建时间:  2020/8/31 <br></br>
  * 描述：    米度物联网设备指令
  */
-enum class IOTCommandType(private val value: String) {
+enum class IOTCommandType(val value: String) {
     //<editor-fold desc="设备通用指令">
     /**
      * 获取设备终端时间
@@ -1004,5 +1004,16 @@ enum class IOTCommandType(private val value: String) {
 
     override fun toString(): String {
         return value
+    }
+
+    companion object {
+        /**
+         *  从字符串解析命令类型
+         * @param value 命令字符串
+         * @return 对应的命令类型,如果未找到则返回Unknown
+         */
+        fun fromString(value: String): IOTCommandType {
+            return entries.firstOrNull { it.value == value } ?: UNKNOWN_TYPE
+        }
     }
 }

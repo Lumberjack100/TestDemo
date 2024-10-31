@@ -3,6 +3,7 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.adme
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeVoltageConfigInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 
 /**
@@ -14,8 +15,9 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
  *
  *
  */
+@IOTParser
 class AdmeVoltageConfigInfoParser : IOTCommandParser<AdmeVoltageConfigInfo> {
-    override fun parseInstance(keyValueMap: Map<String, String>): AdmeVoltageConfigInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): AdmeVoltageConfigInfo {
         return AdmeVoltageConfigInfo().apply {
             volt_power_standard =
                 keyValueMap.getOrDefault("volt_power_standard", volt_power_standard)
@@ -30,5 +32,5 @@ class AdmeVoltageConfigInfoParser : IOTCommandParser<AdmeVoltageConfigInfo> {
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.ADME_MD_GET_VOLTAGE
+    override val commandType: IOTCommandType = IOTCommandType.ADME_MD_GET_VOLTAGE
 }

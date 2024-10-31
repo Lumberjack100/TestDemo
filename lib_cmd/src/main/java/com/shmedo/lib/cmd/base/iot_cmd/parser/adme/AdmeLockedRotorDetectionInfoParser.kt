@@ -3,6 +3,7 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.adme
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeLockedRotorDetectionInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**
  * 创建者：gonghe
@@ -13,9 +14,10 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeLockedRotorDetectionInfo
  *
  *
  */
+@IOTParser
 class AdmeLockedRotorDetectionInfoParser: IOTCommandParser<AdmeLockedRotorDetectionInfo> {
 
-    override fun parseInstance(keyValueMap: Map<String, String>): AdmeLockedRotorDetectionInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): AdmeLockedRotorDetectionInfo {
         return AdmeLockedRotorDetectionInfo().apply {
             lowtbtss = keyValueMap.getOrDefault("lowtbtss", lowtbtss)
             numpput = keyValueMap.getOrDefault("numpput", numpput)
@@ -36,5 +38,5 @@ class AdmeLockedRotorDetectionInfoParser: IOTCommandParser<AdmeLockedRotorDetect
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION
+    override val commandType: IOTCommandType = IOTCommandType.ADME_MD_GET_LOCKED_ROTOR_DETECTION
 }

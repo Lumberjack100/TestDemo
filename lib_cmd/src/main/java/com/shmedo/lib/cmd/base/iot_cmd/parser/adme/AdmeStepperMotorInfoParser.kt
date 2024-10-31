@@ -3,6 +3,7 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.adme
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeStepperMotorInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**
  * 创建者：gonghe
@@ -13,8 +14,9 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeStepperMotorInfo
  *
  *
  */
+@IOTParser
 class AdmeStepperMotorInfoParser: IOTCommandParser<AdmeStepperMotorInfo> {
-    override fun parseInstance(keyValueMap: Map<String, String>): AdmeStepperMotorInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): AdmeStepperMotorInfo {
         return AdmeStepperMotorInfo().apply {
             posnegtest = keyValueMap.getOrDefault("posnegtest", posnegtest)
             absprsion = keyValueMap.getOrDefault("absprsion", absprsion)
@@ -22,5 +24,5 @@ class AdmeStepperMotorInfoParser: IOTCommandParser<AdmeStepperMotorInfo> {
             movesm = keyValueMap.getOrDefault("movesm", movesm)
         }
     }
-    override fun commandType(): IOTCommandType = IOTCommandType.ADME_MD_GET_STEPPER_MOTOR
+    override val commandType: IOTCommandType = IOTCommandType.ADME_MD_GET_STEPPER_MOTOR
 }

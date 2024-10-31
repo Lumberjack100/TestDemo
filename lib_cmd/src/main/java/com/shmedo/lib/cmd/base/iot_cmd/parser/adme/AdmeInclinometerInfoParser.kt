@@ -3,6 +3,7 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.adme
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeInclinometerInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 
 /**
@@ -14,8 +15,9 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
  *
  *
  */
+@IOTParser
 class AdmeInclinometerInfoParser: IOTCommandParser<AdmeInclinometerInfo> {
-    override fun parseInstance(keyValueMap: Map<String, String>): AdmeInclinometerInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): AdmeInclinometerInfo {
         return AdmeInclinometerInfo().apply {
             inctype = keyValueMap.getOrDefault("inctype", inctype)
             address = keyValueMap.getOrDefault("address", address)
@@ -31,5 +33,5 @@ class AdmeInclinometerInfoParser: IOTCommandParser<AdmeInclinometerInfo> {
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.ADME_MD_GET_INCLINOMETER
+    override val commandType: IOTCommandType = IOTCommandType.ADME_MD_GET_INCLINOMETER
 }

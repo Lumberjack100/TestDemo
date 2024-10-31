@@ -3,6 +3,7 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.adme
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeCurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 
 /**
@@ -14,8 +15,9 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
  *
  *
  */
+@IOTParser
 class AdmeCurrentStateInfoParser: IOTCommandParser<AdmeCurrentStateInfo> {
-    override fun parseInstance(keyValueMap: Map<String, String>): AdmeCurrentStateInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): AdmeCurrentStateInfo {
         return AdmeCurrentStateInfo().apply {
             sn = keyValueMap.getOrDefault("sn", sn)
             productid = keyValueMap.getOrDefault("productid", productid)
@@ -46,5 +48,5 @@ class AdmeCurrentStateInfoParser: IOTCommandParser<AdmeCurrentStateInfo> {
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.ADME_MD_GET_EQUIPMENT_STATE
+    override val commandType: IOTCommandType = IOTCommandType.ADME_MD_GET_EQUIPMENT_STATE
 }
