@@ -2,46 +2,50 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser
 
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.common.CommonSettingParser
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2023/9/22 <br/>
- * 描述：    解析器管理器
+ * 创建者：gonghe
+ * 创建时间：2024/10/30
+ * 描述： IOT 解析器管理器
+ * 负责管理所有的解析器并提供统一的解析入口
  */
-class IOTParserManager constructor(
-    private val parsers: List<IOTCommandParser<*>>
-) {
-    private val parserMap: Map<IOTCommandType, IOTCommandParser<*>> =
-        parsers.associateBy { it.commandType() }
 
-    fun <T> parse(
+class IOTParserManager(parsers: List<IOTCommandParser<*>>) {
+    private val parserMap: Map<IOTCommandType, IOTCommandParser<*>> =
+        parsers.associateBy { it.commandType }
+    private val commonSettingParser = CommonSettingParser()
+
+    /**
+     * 解析响应数据
+     * @param resultCmdStr 响应字符串
+     * @param cmdType 命令类型
+     * @return 解析结果
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Any> parse(
         resultCmdStr: String,
         cmdType: IOTCommandType = IOTCommandType.COMMON_SETTING_COMMAND
     ): IOTCommandResult<T> {
 
-        //检查响应指令是否包含表示错误的字段
+        // 检查响应指令是否包含错误标志
         if (resultCmdStr.contains(IOTConstants.ERROR_FLAG)) {
             val reason = extractFailureReason(resultCmdStr)
-            return IOTCommandResult.Failure(reason, cmdType)
+            return IOTCommandResult.Failure(IOTCommandUtil.convertErrorReason(reason), cmdType)
         }
 
-        val parser = parserMap[cmdType] ?: return IOTCommandResult.Failure(
-            "未找到命令：$cmdType 的解析器",
-            cmdType
-        )
-        //在调用 parse 进行正式解析前，先对响应指令字符串做个基础检查
-        val validationResult = parser.validCheckBeforeParse(resultCmdStr)
-        if (!validationResult.isValid)
-            return IOTCommandResult.Failure(
-                validationResult.errorMessage ?: "指令字符串格式验证失败", cmdType
-            )
+        // 获取对应的解析器
+        val parser = when {
+            cmdType == IOTCommandType.COMMON_SETTING_COMMAND -> commonSettingParser as IOTCommandParser<T>
+            else -> parserMap[cmdType] as? IOTCommandParser<T>
+                ?: return IOTCommandResult.Failure("未找到指令：$cmdType 的解析器", cmdType)
+        }
 
         return when (val parseResult = parser.parse(resultCmdStr)) {
             is ParseResult.Success -> {
-                @Suppress("UNCHECKED_CAST")
-                IOTCommandResult.Success(parseResult.data as T, cmdType)
+                IOTCommandResult.Success(parseResult.data, cmdType)
             }
 
             is ParseResult.Failure -> IOTCommandResult.Failure(parseResult.errorMsg, cmdType)
@@ -49,15 +53,11 @@ class IOTParserManager constructor(
     }
 
     /**
-     * 从响应指令中提取错误原因
+     * 提取错误原因
      */
-    private fun extractFailureReason(resultCmdStr: String): String {
-        val reasonPair = resultCmdStr.split("&").find { it.startsWith("reason=") }
-        val reason = reasonPair?.substringAfter("reason=", "未知错误") ?: "未知错误"
-        //将 reason 中的"unsupported"转换为可读的中文"设备版本不支持"
-        return IOTCommandUtil.convertErrorReason(
-            reason,
-            IOTCommandUtil.extractCommandType(resultCmdStr)
-        )
-    }
+    private fun extractFailureReason(resultCmdStr: String): String =
+        resultCmdStr.split(IOTConstants.COMMAND_SPLICER)
+            .find { it.startsWith("reason=") }
+            ?.substringAfter("reason=", "Unknown error")
+            ?: "Unknown error"
 }

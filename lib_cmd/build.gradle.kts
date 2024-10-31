@@ -37,6 +37,8 @@ android {
 dependencies {
     implementation(project(":core_commonlib"))
 
+    implementation (libs.classgraph)
+
     //依赖注入框架
     implementation(libs.koin.android)
 

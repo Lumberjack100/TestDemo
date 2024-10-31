@@ -21,6 +21,7 @@ appcompat = "1.7.0"
 amap3dmap = "10.0.600"
 amapSearch = "9.7.0"
 baseRecyclerView = "1.5.8"
+classgraph = "4.8.165"
 compileSdk = "34"
 constraintLayout = "2.1.4"
 crashreport = "4.1.9.2"
@@ -95,6 +96,7 @@ agentweb-core = { module = "io.github.justson:agentweb-core", version.ref = "age
 amap-a3dmap = { module = "com.amap.api:3dmap", version.ref = "amap3dmap" }
 amap-search = { module = "com.amap.api:search", version.ref = "amapSearch" }
 bugly-crashreport = { module = "com.tencent.bugly:crashreport", version.ref = "crashreport" }
+classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classgraph" }
 customactivityoncrash = { module = "cat.ereza:customactivityoncrash", version.ref = "customactivityoncrash" }
 datetime-picker = { module = "com.github.loper7:DateTimePicker", version.ref = "dateTimePicker" }
 dialogx = { module = "com.kongzue.dialogx:DialogX", version.ref = "dialogX" }

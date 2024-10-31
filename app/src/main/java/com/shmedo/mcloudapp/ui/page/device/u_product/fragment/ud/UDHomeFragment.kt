@@ -451,7 +451,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun queryStatusInfo() {
+    private fun queryDeviceStatusInfo() {
         commandItems.clear()
 
         val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "method=0")
@@ -508,8 +508,9 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     private fun onNetPlatformReady() {
         if (deviceInfo.onlineStatus) {
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
             mHeadStates.iotPlatformStateText.set("米度平台在线")
-            queryStatusInfo()
+            queryDeviceStatusInfo()
         } else {
             mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
             mHeadStates.iotPlatformStateText.set("米度平台离线")
@@ -527,7 +528,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     override fun onBleDeviceReady() {
         super.onBleDeviceReady()
-        queryStatusInfo()
+        queryDeviceStatusInfo()
     }
 
     private fun initLastHistorySensorData() {

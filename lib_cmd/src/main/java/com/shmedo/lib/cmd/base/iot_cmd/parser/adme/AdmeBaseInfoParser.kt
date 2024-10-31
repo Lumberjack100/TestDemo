@@ -3,6 +3,7 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.adme
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeBaseInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**
  * 创建者：gonghe
@@ -13,8 +14,9 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeBaseInfo
  *
  *
  */
+@IOTParser
 class AdmeBaseInfoParser: IOTCommandParser<AdmeBaseInfo> {
-    override fun parseInstance(keyValueMap: Map<String, String>): AdmeBaseInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): AdmeBaseInfo {
         return AdmeBaseInfo().apply {
             sn = keyValueMap.getOrDefault("sn", sn)
             productid = keyValueMap.getOrDefault("productid", productid)
@@ -23,5 +25,5 @@ class AdmeBaseInfoParser: IOTCommandParser<AdmeBaseInfo> {
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.ADME_MD_GET_EQUIPMENT_BASIS
+    override val commandType: IOTCommandType = IOTCommandType.ADME_MD_GET_EQUIPMENT_BASIS
 }

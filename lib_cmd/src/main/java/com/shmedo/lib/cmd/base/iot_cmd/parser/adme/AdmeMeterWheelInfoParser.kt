@@ -3,6 +3,7 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.adme
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeMeterWheelInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**
  * 创建者：gonghe
@@ -13,8 +14,9 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeMeterWheelInfo
  *
  *
  */
+@IOTParser
 class AdmeMeterWheelInfoParser: IOTCommandParser<AdmeMeterWheelInfo> {
-    override fun parseInstance(keyValueMap: Map<String, String>): AdmeMeterWheelInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): AdmeMeterWheelInfo {
         return AdmeMeterWheelInfo().apply {
             enclinenum = keyValueMap.getOrDefault("enclinenum", enclinenum)
             outline = keyValueMap.getOrDefault("outline", outline)
@@ -29,5 +31,5 @@ class AdmeMeterWheelInfoParser: IOTCommandParser<AdmeMeterWheelInfo> {
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.ADME_MD_GET_METER_WHEEL
+    override val commandType: IOTCommandType = IOTCommandType.ADME_MD_GET_METER_WHEEL
 }

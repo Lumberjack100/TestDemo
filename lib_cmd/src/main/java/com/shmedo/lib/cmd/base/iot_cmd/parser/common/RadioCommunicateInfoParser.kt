@@ -3,14 +3,16 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.common
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.RadioCommunicateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/4/24
  * 描述： TODO
  */
+@IOTParser
 class RadioCommunicateInfoParser : IOTCommandParser<RadioCommunicateInfo> {
-    override fun parseInstance(keyValueMap: Map<String, String>): RadioCommunicateInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): RadioCommunicateInfo {
         return RadioCommunicateInfo().apply {
             sw = keyValueMap.getOrDefault("sw", sw)
             airbaud = keyValueMap.getOrDefault("airbaud", airbaud)
@@ -21,5 +23,5 @@ class RadioCommunicateInfoParser : IOTCommandParser<RadioCommunicateInfo> {
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.MD_GET_RADIO_CTRL
+    override val commandType: IOTCommandType = IOTCommandType.MD_GET_RADIO_CTRL
 }

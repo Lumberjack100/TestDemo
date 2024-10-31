@@ -3,15 +3,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!-- 普通图片预览 -->
     <com.luck.picture.lib.photoview.PhotoView
         android:id="@+id/preview_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <!-- 大图（长图片）预览 -->
     <com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
         android:id="@+id/big_preview_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible" />
+
+    <!-- 加载中的 ProgressBar -->
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
 </FrameLayout>

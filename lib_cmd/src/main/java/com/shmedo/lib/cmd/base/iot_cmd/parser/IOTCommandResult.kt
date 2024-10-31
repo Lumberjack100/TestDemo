@@ -8,13 +8,26 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
  * 描述：     物联网指令解析后结果
  */
 
+/**
+ * IOT 命令执行结果密封类
+ * @param T 结果数据类型
+ */
 sealed class IOTCommandResult<out T> {
-
+    /**
+     * 命令执行成功
+     * @property data 结果数据
+     * @property commandType 命令类型
+     */
     data class Success<out T>(
         val data: T,
         val commandType: IOTCommandType
     ) : IOTCommandResult<T>()
 
+    /**
+     * 命令执行失败
+     * @property message 错误信息
+     * @property commandType 命令类型,可能为空
+     */
     data class Failure(
         val message: String,
         val commandType: IOTCommandType? = null

@@ -3,14 +3,16 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.common
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.RtkParamInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/4/25
  * 描述： TODO
  */
+@IOTParser
 class RtkParamInfoParser : IOTCommandParser<RtkParamInfo> {
-    override fun parseInstance(keyValueMap: Map<String, String>): RtkParamInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): RtkParamInfo {
         return RtkParamInfo().apply {
             mode = keyValueMap.getOrDefault("mode", mode)
             sw = keyValueMap.getOrDefault("sw", sw)
@@ -37,5 +39,5 @@ class RtkParamInfoParser : IOTCommandParser<RtkParamInfo> {
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.MD_CFG_RTK
+    override val commandType: IOTCommandType = IOTCommandType.MD_CFG_RTK
 }
