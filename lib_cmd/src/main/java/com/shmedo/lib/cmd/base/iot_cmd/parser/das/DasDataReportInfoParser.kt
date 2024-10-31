@@ -3,14 +3,16 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.das
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasDataReportInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/4/28
  * 描述： TODO
  */
+@IOTParser
 class DasDataReportInfoParser: IOTCommandParser<DasDataReportInfo> {
-    override fun parseInstance(keyValueMap: Map<String, String>): DasDataReportInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): DasDataReportInfo {
         return DasDataReportInfo().apply {
             report_intv = keyValueMap.getOrDefault("report_intv", report_intv)
             plus_intv = keyValueMap.getOrDefault("plus_intv", plus_intv)
@@ -18,5 +20,5 @@ class DasDataReportInfoParser: IOTCommandParser<DasDataReportInfo> {
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.MD_GET_DATA_REPORT_TIME
+    override val commandType: IOTCommandType = IOTCommandType.MD_GET_DATA_REPORT_TIME
 }

@@ -1,16 +1,18 @@
 package com.shmedo.lib.cmd.base.iot_cmd.parser.mr
 
-import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRDIPortParam
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
+import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRDIPortParam
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2023/10/23 <br/>
  * 描述：     TODO
  */
+@IOTParser
 class MRDIPortParamParser : IOTCommandParser<MRDIPortParam> {
-    override fun parseInstance(keyValueMap: Map<String, String>): MRDIPortParam {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): MRDIPortParam {
         return MRDIPortParam().apply {
             dstatus1 = keyValueMap.getOrDefault("dstatus1", dstatus1)
             dstatus2 = keyValueMap.getOrDefault("dstatus2", dstatus2)
@@ -23,5 +25,5 @@ class MRDIPortParamParser : IOTCommandParser<MRDIPortParam> {
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.MD_MR_GET_DI_PORT_PARAM
+    override val commandType: IOTCommandType = IOTCommandType.MD_MR_GET_DI_PORT_PARAM
 }

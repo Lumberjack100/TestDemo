@@ -3,14 +3,16 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.common
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.AlarmMonitorPointInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/4/26
  * 描述： TODO
  */
+@IOTParser
 class AlarmMonitorPointInfoParser: IOTCommandParser<AlarmMonitorPointInfo> {
-    override fun parseInstance(keyValueMap: Map<String, String>): AlarmMonitorPointInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): AlarmMonitorPointInfo {
         return AlarmMonitorPointInfo().apply {
             sw = keyValueMap.getOrDefault("sw", sw)
             alarm_send_min_gap = keyValueMap.getOrDefault("alarm_send_min_gap", alarm_send_min_gap)
@@ -25,5 +27,5 @@ class AlarmMonitorPointInfoParser: IOTCommandParser<AlarmMonitorPointInfo> {
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL
+    override val commandType: IOTCommandType = IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL
 }

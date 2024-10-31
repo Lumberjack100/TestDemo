@@ -3,6 +3,7 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.adme
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeAnthropomorphicMovementInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**
  * 创建者：gonghe
@@ -11,15 +12,15 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeAnthropomorphicMovementInf
  *
  * 描述： TODO
  *
- *
  */
+@IOTParser
 class AdmeAnthropomorphicMovementInfoParser: IOTCommandParser<AdmeAnthropomorphicMovementInfo> {
-    override fun parseInstance(keyValueMap: Map<String, String>): AdmeAnthropomorphicMovementInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): AdmeAnthropomorphicMovementInfo {
         return AdmeAnthropomorphicMovementInfo().apply {
             mode = keyValueMap.getOrDefault("mode", mode)
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.ADME_MD_GET_ANTHROPOMORPHIC_MOVEMENT_MODE
+    override val commandType: IOTCommandType = IOTCommandType.ADME_MD_GET_ANTHROPOMORPHIC_MOVEMENT_MODE
 
 }

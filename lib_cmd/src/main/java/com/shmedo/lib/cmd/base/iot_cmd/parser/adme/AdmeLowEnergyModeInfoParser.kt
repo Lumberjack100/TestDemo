@@ -3,6 +3,7 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.adme
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeLowEnergyModeInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**
  * 创建者：gonghe
@@ -13,12 +14,13 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeLowEnergyModeInfo
  *
  *
  */
+@IOTParser
 class AdmeLowEnergyModeInfoParser: IOTCommandParser<AdmeLowEnergyModeInfo> {
-    override fun parseInstance(keyValueMap: Map<String, String>): AdmeLowEnergyModeInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): AdmeLowEnergyModeInfo {
         return AdmeLowEnergyModeInfo().apply {
             mode = keyValueMap.getOrDefault("mode", mode)
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.ADME_MD_GET_LOW_ENERGY_MODE
+    override val commandType: IOTCommandType = IOTCommandType.ADME_MD_GET_LOW_ENERGY_MODE
 }

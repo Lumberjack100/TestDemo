@@ -3,14 +3,16 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.hac
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.hac.HacMeasuringDataInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/5/19
  * 描述： TODO
  */
+@IOTParser
 class HacMeasuringDataInfoParser : IOTCommandParser<HacMeasuringDataInfo> {
-    override fun parseInstance(keyValueMap: Map<String, String>): HacMeasuringDataInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): HacMeasuringDataInfo {
         return HacMeasuringDataInfo().apply {
             equipmodel = keyValueMap.getOrDefault("equipmodel", equipmodel)
             address = keyValueMap.getOrDefault("address", address)
@@ -23,5 +25,5 @@ class HacMeasuringDataInfoParser : IOTCommandParser<HacMeasuringDataInfo> {
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.ADME_HAC_MD_GET_DATA_MEASURE_PARAM
+    override val commandType: IOTCommandType = IOTCommandType.ADME_HAC_MD_GET_DATA_MEASURE_PARAM
 }

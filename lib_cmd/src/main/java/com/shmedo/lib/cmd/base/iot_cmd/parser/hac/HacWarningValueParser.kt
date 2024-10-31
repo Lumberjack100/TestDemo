@@ -3,14 +3,16 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.hac
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.hac.HacWarningValue
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/5/9
  * 描述： TODO
  */
+@IOTParser
 class HacWarningValueParser : IOTCommandParser<HacWarningValue> {
-    override fun parseInstance(keyValueMap: Map<String, String>): HacWarningValue {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): HacWarningValue {
         return HacWarningValue().apply {
             x1min = keyValueMap.getOrDefault("x1min", x1min)
             x1max = keyValueMap.getOrDefault("x1max", x1max)
@@ -27,5 +29,5 @@ class HacWarningValueParser : IOTCommandParser<HacWarningValue> {
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.ADME_HAC_MD_GET_WARN
+    override val commandType: IOTCommandType = IOTCommandType.ADME_HAC_MD_GET_WARN
 }

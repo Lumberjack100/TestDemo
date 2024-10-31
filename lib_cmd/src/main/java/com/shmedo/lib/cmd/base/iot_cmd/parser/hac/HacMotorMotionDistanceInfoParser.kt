@@ -3,14 +3,16 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.hac
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.hac.HacMotorMotionDistanceInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/5/9
  * 描述： TODO
  */
+@IOTParser
 class HacMotorMotionDistanceInfoParser : IOTCommandParser<HacMotorMotionDistanceInfo> {
-    override fun parseInstance(keyValueMap: Map<String, String>): HacMotorMotionDistanceInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): HacMotorMotionDistanceInfo {
         return HacMotorMotionDistanceInfo().apply {
             pulsenumber = keyValueMap.getOrDefault("pulsenumber", pulsenumber)
             realmovedistance = keyValueMap.getOrDefault("realmovedistance", realmovedistance)
@@ -20,6 +22,6 @@ class HacMotorMotionDistanceInfoParser : IOTCommandParser<HacMotorMotionDistance
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.ADME_HAC_MD_GET_HOLE_MEASURE_PULSE
+    override val commandType: IOTCommandType = IOTCommandType.ADME_HAC_MD_GET_HOLE_MEASURE_PULSE
 
 }
