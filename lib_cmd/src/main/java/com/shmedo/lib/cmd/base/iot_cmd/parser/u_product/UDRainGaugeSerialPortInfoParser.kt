@@ -14,7 +14,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 class UDRainGaugeSerialPortInfoParser : IOTCommandParser<UDRainGaugeSerialPortInfo> {
     override fun parseKeyValueMap(keyValueMap: Map<String, String>): UDRainGaugeSerialPortInfo {
         return UDRainGaugeSerialPortInfo().apply {
-            sw = keyValueMap.getOrDefault("switch", sw)
+            sw = keyValueMap.getOrDefault("sw", sw)
             res = keyValueMap.getOrDefault("res", res)
             total_rain = keyValueMap.getOrDefault("total_rain", total_rain)
         }
