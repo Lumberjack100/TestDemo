@@ -278,70 +278,96 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
         groupList.add(DeviceStatusInfoGroupItem("设备配置"))
-        val configModuleTree = ConfigModuleTree(
-            configModules = arrayListOf(
-                ConfigModule(
-                    WorkModeModule(
-                        name = "工作模式",
-                        resID = R.drawable.ic_module_work_mode_new,
-                        navId = R.id.action_global_to_udWorkModelParamFragment
-                    )
-                ),
-                ConfigModule(
-                    CommonModule(
-                        name = "网络配置",
-                        resID = R.drawable.ic_module_network_setting,
-                        navId = R.id.action_global_to_udMobileNetworkParamFragment
-                    )
-                ),
-                ConfigModule(
-                    DataCenterModule(
-                        name = "链路配置",
-                        resID = R.drawable.ic_module_datacenter_new,
-                        navId = R.id.action_global_to_udProductDataCenterHomeFragment
-                    )
-                ),
-                ConfigModule(
-                    CommonModule(
-                        name = "海拔配置",
-                        resID = R.drawable.ic_module_cors,
-                        navId = R.id.action_global_to_udCORSParamFragment
-                    )
-                ),
-                ConfigModule(
-                    SensorConfigModule(
-                        name = "传感配置",
-                        resID = R.drawable.ic_module_sensor_setting_new,
-                        navId = R.id.action_global_to_udProductSensorParamFragment
-                    )
-                ),
+        val configModuleTree = ConfigModuleTree()
+        configModuleTree.configModules.add(
+            ConfigModule(
+                WorkModeModule(
+                    name = "工作模式",
+                    resID = R.drawable.ic_module_work_mode_new,
+                    navId = R.id.action_global_to_udWorkModelParamFragment
+                )
+            )
+        )
+        configModuleTree.configModules.add(
+            ConfigModule(
+                CommonModule(
+                    name = "网络配置",
+                    resID = R.drawable.ic_module_network_setting,
+                    navId = R.id.action_global_to_udMobileNetworkParamFragment
+                )
+            )
+        )
+        configModuleTree.configModules.add(
+            ConfigModule(
+                DataCenterModule(
+                    name = "链路配置",
+                    resID = R.drawable.ic_module_datacenter_new,
+                    navId = R.id.action_global_to_udProductDataCenterHomeFragment
+                )
+            )
+        )
+        configModuleTree.configModules.add(
+            ConfigModule(
+                CommonModule(
+                    name = "海拔配置",
+                    resID = R.drawable.ic_module_cors,
+                    navId = R.id.action_global_to_udCORSParamFragment
+                )
+            )
+        )
+        configModuleTree.configModules.add(
+            ConfigModule(
+                SensorConfigModule(
+                    name = "传感配置",
+                    resID = R.drawable.ic_module_sensor_setting_new,
+                    navId = R.id.action_global_to_udProductSensorParamFragment
+                )
+            )
+        )
+        configModuleTree.configModules.add(
+            ConfigModule(
+                SensorConfigModule(
+                    name = "端口配置",
+                    resID = R.drawable.ic_module_serial_port,
+                    navId = R.id.action_global_to_udSerialPortParamFragment
+                )
+            )
+        )
+        if (productType == ProductType.U_D_2) {
+            configModuleTree.configModules.add(
                 ConfigModule(
                     LoraConfigModule(
                         name = "电台配置",
                         resID = R.drawable.ic_module_lora,
                         navId = R.id.action_global_to_udRadioParamFragment
                     )
-                ),
+                )
+            )
+            configModuleTree.configModules.add(
                 ConfigModule(
                     AlarmConfigModule(
                         resID = R.drawable.ic_module_alarm,
                         navId = R.id.action_global_to_alarmSettingFragment
                     )
-                ),
-                ConfigModule(
-                    TimeCalibrationModule(
-                        name = "时间校准",
-                        resID = R.drawable.ic_module_time_calibration_new,
-                        navId = R.id.action_global_to_time_calibration
-                    )
-                ),
-                ConfigModule(
-                    AdvancedSettingsModule(
-                        name = "系统配置",
-                        resID = R.drawable.ic_module_system_setting,
-                        navId = R.id.action_global_to_advancedSettingFragment
-                    )
-                ),
+                )
+            )
+        }
+        configModuleTree.configModules.add(
+            ConfigModule(
+                TimeCalibrationModule(
+                    name = "时间校准",
+                    resID = R.drawable.ic_module_time_calibration_new,
+                    navId = R.id.action_global_to_time_calibration
+                )
+            )
+        )
+        configModuleTree.configModules.add(
+            ConfigModule(
+                AdvancedSettingsModule(
+                    name = "系统配置",
+                    resID = R.drawable.ic_module_system_setting,
+                    navId = R.id.action_global_to_advancedSettingFragment
+                )
             )
         )
         if (communicateWay is BleConnect) {
@@ -451,7 +477,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun queryStatusInfo() {
+    private fun queryDeviceStatusInfo() {
         commandItems.clear()
 
         val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "method=0")
@@ -508,8 +534,9 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     private fun onNetPlatformReady() {
         if (deviceInfo.onlineStatus) {
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
             mHeadStates.iotPlatformStateText.set("米度平台在线")
-            queryStatusInfo()
+            queryDeviceStatusInfo()
         } else {
             mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
             mHeadStates.iotPlatformStateText.set("米度平台离线")
@@ -527,33 +554,35 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     override fun onBleDeviceReady() {
         super.onBleDeviceReady()
-        queryStatusInfo()
+        queryDeviceStatusInfo()
     }
 
     private fun initLastHistorySensorData() {
         if (NetworkUtils.isConnected()) {
             launchWithViewLifecycle {
-                val sensorData: Map<String, String> =
+                val resultMap: Map<String, String> =
                     deviceRequestViewModel.queryLatestSensorData(
                         deviceInfo.deviceToken,
                         iotSensorTypeList = arrayListOf("904", "206")
                     )
-                if (sensorData.isEmpty())
+                if (resultMap.isEmpty())
                     return@launchWithViewLifecycle
 
-                val waterSurfaceElevation = sensorData["liquid_surface_alt"]?.let { "$it m" }
+                val waterSurfaceElevation = resultMap["liquid_surface_alt"]?.let { "$it m" }
                     ?: AppContants.PLACE_HOLDER_VALUE
                 val airDistance =
-                    sensorData["ullage"]?.let { "$it m" } ?: AppContants.PLACE_HOLDER_VALUE
+                    resultMap["ullage"]?.let { "$it m" } ?: AppContants.PLACE_HOLDER_VALUE
                 val installationAngle =
-                    sensorData["z"]?.let { "$it °" } ?: AppContants.PLACE_HOLDER_VALUE
-                val measurementTime =
-                    sensorData["time"]?.replace(".000", "")?.replace("-", ".")
-                        ?: AppContants.PLACE_HOLDER_VALUE
+                    resultMap["z"]?.let { "$it °" } ?: AppContants.PLACE_HOLDER_VALUE
+                val todayRainfall =
+                    resultMap["today_rain"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+                val measurementTime = resultMap["time"]?.replace(".000", "")?.replace("-", ".")
+                    ?: AppContants.PLACE_HOLDER_VALUE
 
                 mHeadStates.waterSurfaceElevation.set(waterSurfaceElevation)
                 mHeadStates.airDistance.set(airDistance)
                 mHeadStates.installationAngle.set(installationAngle)
+                mHeadStates.todayRainfall.set(todayRainfall)
                 mHeadStates.measurementTime.set(measurementTime)
             }
         }
@@ -912,12 +941,15 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         resultMap["ld_value"]?.let { "$it m" } ?: AppContants.PLACE_HOLDER_VALUE
                     val installationAngle =
                         resultMap["z_angle"]?.let { "$it °" } ?: AppContants.PLACE_HOLDER_VALUE
+                    val todayRainfall =
+                        resultMap["today_rain"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
                     val measurementTime =
                         resultMap["time"]?.replace("-", ".") ?: AppContants.PLACE_HOLDER_VALUE
 
                     mHeadStates.waterSurfaceElevation.set(waterSurfaceElevation)
                     mHeadStates.airDistance.set(airDistance)
                     mHeadStates.installationAngle.set(installationAngle)
+                    mHeadStates.todayRainfall.set(todayRainfall)
                     mHeadStates.measurementTime.set(measurementTime)
                     return
                 }

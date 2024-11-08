@@ -3,14 +3,16 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.common
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.AlarmTriggerValueInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/4/26
  * 描述： TODO
  */
+@IOTParser
 class AlarmTriggerValueInfoParser: IOTCommandParser<AlarmTriggerValueInfo> {
-    override fun parseInstance(keyValueMap: Map<String, String>): AlarmTriggerValueInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): AlarmTriggerValueInfo {
         return AlarmTriggerValueInfo().apply {
             level1 = keyValueMap.getOrDefault("level1", level1)
             level2 = keyValueMap.getOrDefault("level2", level2)
@@ -23,5 +25,5 @@ class AlarmTriggerValueInfoParser: IOTCommandParser<AlarmTriggerValueInfo> {
         }
     }
 
-override fun commandType(): IOTCommandType = IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE
+override val commandType: IOTCommandType = IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE
 }

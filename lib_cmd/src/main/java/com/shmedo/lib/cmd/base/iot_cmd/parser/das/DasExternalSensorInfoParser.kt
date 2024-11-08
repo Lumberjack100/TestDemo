@@ -3,6 +3,7 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.das
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasExternalSensorInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 
 /**
@@ -10,9 +11,10 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
  * 创建时间：2024/2/1
  * 描述： TODO
  */
+@IOTParser
 class DasExternalSensorInfoParser : IOTCommandParser<DasExternalSensorInfo> {
 
-    override fun parseInstance(keyValueMap: Map<String, String>): DasExternalSensorInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): DasExternalSensorInfo {
         return DasExternalSensorInfo().apply {
             index = keyValueMap.getOrDefault("index", index)
             type = keyValueMap.getOrDefault("type", IOTConstants.NULL_KEY)
@@ -46,5 +48,5 @@ class DasExternalSensorInfoParser : IOTCommandParser<DasExternalSensorInfo> {
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.DAS_MD_GET_EXTERNAL_SENSOR
+    override val commandType: IOTCommandType = IOTCommandType.DAS_MD_GET_EXTERNAL_SENSOR
 }

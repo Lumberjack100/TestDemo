@@ -18,7 +18,7 @@ class CommonSettingMDCommandResponseParser: MDCommandParser<String> {
             // 子类实现
             ParseResult.Success(values)
         } catch (ex: Exception) {
-            ParseResult.Failure("解析错误: ${ex.message ?: "Unknown error"}")
+            ParseResult.Failure("解析错误: ${ex.message ?: "未知错误"}")
         }
     }
 

@@ -3,14 +3,16 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.adme
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.adme.AdmeCalibrationProcessingInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/2/26
  * 描述： TODO
  */
+@IOTParser
 class AdmeCalibrationProcessingInfoParser: IOTCommandParser<AdmeCalibrationProcessingInfo> {
-    override fun parseInstance(keyValueMap: Map<String, String>): AdmeCalibrationProcessingInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): AdmeCalibrationProcessingInfo {
         return AdmeCalibrationProcessingInfo().apply {
             rivswitch = keyValueMap.getOrDefault("rivswitch", rivswitch)
             zerodiffer = keyValueMap.getOrDefault("zerodiffer", zerodiffer)
@@ -25,5 +27,5 @@ class AdmeCalibrationProcessingInfoParser: IOTCommandParser<AdmeCalibrationProce
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.ADME_MD_GET_CALIBRATION_PROCESSING
+    override val commandType: IOTCommandType = IOTCommandType.ADME_MD_GET_CALIBRATION_PROCESSING
 }

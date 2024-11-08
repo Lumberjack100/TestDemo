@@ -45,46 +45,41 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/dimen_size_15"
-            android:layout_marginBottom="@dimen/dimen_size_50"
+            android:layout_marginBottom="@dimen/dimen_size_100"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btn_pre_image"
-                style="@style/ColorPrimary.FloatingActionButton"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_pre"
                 onClickWithDebouncing="@{()->click.onViewPreImageClick()}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_centerVertical="true"
-                app:elevation="0dp"
-                app:fabSize="mini"
-                app:rippleColor="@color/ripple_material_light"
-                app:srcCompat="@drawable/ic_pre_image" />
+                android:layout_marginEnd="@dimen/dimen_size_40"
+                android:layout_toStartOf="@+id/iv_download"
+                android:src="@drawable/ic_pre_image"
+                android:tint="@color/picture_preview_opt_button_tint_color" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                style="@style/ColorPrimary.FloatingActionButton"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_download"
                 onClickWithDebouncing="@{()->click.onDownloadImageClick()}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_centerInParent="true"
-                app:elevation="0dp"
-                app:fabSize="mini"
-                app:srcCompat="@drawable/ic_download_media" />
+                android:src="@drawable/ic_download_media"
+                android:tint="@color/picture_preview_opt_button_tint_color" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btn_next_iamge"
-                style="@style/ColorPrimary.FloatingActionButton"
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_next"
                 onClickWithDebouncing="@{()->click.onViewNextImageClick()}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_centerVertical="true"
-                app:elevation="0dp"
-                app:fabSize="mini"
-                app:srcCompat="@drawable/ic_next_image" />
+                android:layout_marginStart="@dimen/dimen_size_40"
+                android:layout_toEndOf="@+id/iv_download"
+                android:src="@drawable/ic_next_image"
+                android:tint="@color/picture_preview_opt_button_tint_color" />
 
         </RelativeLayout>
 

@@ -3,15 +3,17 @@ package com.shmedo.lib.cmd.base.iot_cmd.parser.common
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.interfaces.IOTCommandParser
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.DataCenterInfo
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/1/9
  * 描述： TODO
  */
+@IOTParser
 class DataCenterInfoParser: IOTCommandParser<DataCenterInfo> {
 
-    override fun parseInstance(keyValueMap: Map<String, String>): DataCenterInfo {
+    override fun parseKeyValueMap(keyValueMap: Map<String, String>): DataCenterInfo {
         return DataCenterInfo().apply {
             centerid = keyValueMap.getOrDefault("centerid", centerid.toString())
             protocol = keyValueMap.getOrDefault("protocol", protocol)
@@ -36,5 +38,5 @@ class DataCenterInfoParser: IOTCommandParser<DataCenterInfo> {
         }
     }
 
-    override fun commandType(): IOTCommandType = IOTCommandType.MD_GET_DATA_CENTER
+    override val commandType: IOTCommandType = IOTCommandType.MD_GET_DATA_CENTER
 }
