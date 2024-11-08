@@ -14,7 +14,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 class UD485SerialPortInfoParser : IOTCommandParser<UD485SerialPortInfo> {
     override fun parseKeyValueMap(keyValueMap: Map<String, String>): UD485SerialPortInfo {
         return UD485SerialPortInfo().apply {
-            sw = keyValueMap.getOrDefault("switch", sw)
+            sw = keyValueMap.getOrDefault("sw", sw)
             baud = keyValueMap.getOrDefault("baud", baud)
             addr = keyValueMap.getOrDefault("addr", addr)
         }
