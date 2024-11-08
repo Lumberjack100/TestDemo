@@ -930,6 +930,18 @@ enum class IOTCommandType(val value: String) {
     MD_SET_MODULE_GAP("md_setmodulegap"),
 
     /**
+     * 一体化设备 485 端口参数配置
+     */
+    MD_UD_GET_RS485_PARAM("md_getrs485"),
+    MD_UD_SET_RS485_PARAM("md_setrs485"),
+
+    /**
+     * 一体化设备雨量计参数配置
+     */
+    MD_UD_GET_RAIN_GAUGE_PARAM("md_getrain"),
+    MD_UD_SET_RAIN_GAUGE_PARAM("md_setrain"),
+
+    /**
      * 米度一体式裂缝计零位校准
      */
     MD_GET_LF_ZERO_VALUE("md_getlfzerovalue"),

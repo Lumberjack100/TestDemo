@@ -299,7 +299,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 ),
                 ConfigModule(
                     SensorConfigModule(
-                        name = "串口配置",
+                        name = "端口配置",
                         resID = R.drawable.ic_module_serial_port,
                         navId = R.id.action_global_to_m50SerialPortParamFragment
                     )

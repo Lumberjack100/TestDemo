@@ -60,7 +60,7 @@
                 android:textColor="@color/title_text_color_black_90"
                 android:textSize="@dimen/text_size_18"
                 android:textStyle="bold"
-                tools:text="5.333m" />
+                tools:text="5.333 m" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -90,7 +90,7 @@
                 android:textSize="@dimen/page_content_item_text_size_14"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:text="空高距离：5.38m" />
+                tools:text="空高距离：5.38 m" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_installation_angle"
@@ -105,6 +105,15 @@
                 tools:text="安装角度：89.3°" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:text='@{"今日雨量："+stateVM.todayRainfall}'
+            android:textColor="@color/title_text_color_black_90"
+            android:textSize="@dimen/page_content_item_text_size_14"
+            tools:text="今日雨量：20.5 mm" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"

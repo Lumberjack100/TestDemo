@@ -19,7 +19,7 @@ class MDServerAddressInfoParser: MDCommandParser<ServerAddressInfo> {
             // 子类实现
             ParseResult.Success(parseInstance(values))
         } catch (ex: Exception) {
-            ParseResult.Failure("解析错误: ${ex.message ?: "Unknown error"}")
+            ParseResult.Failure("解析错误: ${ex.message ?: "未知错误"}")
         }
     }
 

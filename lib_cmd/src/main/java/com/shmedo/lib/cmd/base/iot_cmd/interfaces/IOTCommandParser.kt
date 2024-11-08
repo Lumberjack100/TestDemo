@@ -56,7 +56,7 @@ interface IOTCommandParser<T : Any> {
             // 子类实现
             ParseResult.Success(parseKeyValueMap(keyValueMap))
         } catch (ex: Exception) {
-            ParseResult.Failure("解析错误: ${ex.message ?: "Unknown error"}")
+            ParseResult.Failure("解析错误: ${ex.message ?: "未知错误"}")
         }
     }
 

@@ -91,6 +91,12 @@
         tools:layout="@layout/fragment_u_d_product_sensor_param" />
 
     <fragment
+        android:id="@+id/udSerialPortParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDSerialPortParamFragment"
+        android:label="UDSerialPortParamFragment"
+        tools:layout="@layout/fragment_ud_serial_port_param" />
+
+    <fragment
         android:id="@+id/udRadioParamFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDRadioParamFragment"
         android:label="UDRadioParamFragment"
@@ -147,7 +153,6 @@
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
-
 
     <action
         android:id="@+id/action_global_to_capturedPictureViewFragment"
@@ -208,6 +213,14 @@
     <action
         android:id="@+id/action_global_to_udProductSensorParamFragment"
         app:destination="@id/udProductSensorParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_udSerialPortParamFragment"
+        app:destination="@id/udSerialPortParamFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

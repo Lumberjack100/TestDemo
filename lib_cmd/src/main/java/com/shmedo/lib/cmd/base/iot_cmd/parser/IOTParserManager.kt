@@ -58,6 +58,6 @@ class IOTParserManager(parsers: List<IOTCommandParser<*>>) {
     private fun extractFailureReason(resultCmdStr: String): String =
         resultCmdStr.split(IOTConstants.COMMAND_SPLICER)
             .find { it.startsWith("reason=") }
-            ?.substringAfter("reason=", "Unknown error")
-            ?: "Unknown error"
+            ?.substringAfter("reason=", "未知错误")
+            ?: "未知错误"
 }
