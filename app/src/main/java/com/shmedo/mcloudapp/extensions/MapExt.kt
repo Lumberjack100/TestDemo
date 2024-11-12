@@ -1,7 +1,7 @@
 package com.shmedo.mcloudapp.extensions
 
-import com.amap.api.location.AMapLocation
-import com.amap.api.maps.model.LatLng
+import com.baidu.location.BDLocation
+import com.baidu.mapapi.model.LatLng
 import com.shmedo.mcloudapp.utils.map.CustomLatLng
 import com.shmedo.mcloudapp.utils.map.JZLocationConverter
 
@@ -15,7 +15,7 @@ import com.shmedo.mcloudapp.utils.map.JZLocationConverter
 /**
  * 将高德坐标(即GCJ-02火星坐标)转换为WGS-84世界标准地理坐标
  */
-fun AMapLocation.toWgsLatLng(): LatLng {
+fun BDLocation.toWgsLatLng(): LatLng {
     return JZLocationConverter.gcj02ToWgs84(CustomLatLng(latitude, longitude)).toLatLng()
 }
 
@@ -30,11 +30,3 @@ private fun CustomLatLng.toLatLng(): LatLng {
     return LatLng(this.latitude, this.longitude)
 }
 
-fun Int.toGpsSignalLevel(): Int {
-    return when (this) {
-        AMapLocation.GPS_ACCURACY_GOOD -> 4
-        AMapLocation.GPS_ACCURACY_BAD -> 2
-        AMapLocation.GPS_ACCURACY_UNKNOWN -> 1
-        else -> 1
-    }
-}

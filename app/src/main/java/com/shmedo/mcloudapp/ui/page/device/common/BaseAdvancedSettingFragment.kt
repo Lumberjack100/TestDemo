@@ -7,13 +7,7 @@ import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Lifecycle
-import com.amap.api.location.AMapLocation
-import com.amap.api.services.core.AMapException
-import com.amap.api.services.core.LatLonPoint
-import com.amap.api.services.geocoder.GeocodeResult
-import com.amap.api.services.geocoder.GeocodeSearch
-import com.amap.api.services.geocoder.RegeocodeQuery
-import com.amap.api.services.geocoder.RegeocodeResult
+import com.baidu.location.BDLocation
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
@@ -62,17 +56,14 @@ import java.util.Locale
  * 创建时间：2024/5/17
  * 描述： 系统配置页面
  */
-open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
-    GeocodeSearch.OnGeocodeSearchListener {
+open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentAdvancedSettingBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: AdvancedSettingViewModel
     private val locationViewModel: LocationViewModel by activityViewModel()
     private val iotParseManager: IOTParserManager by inject()
 
-
-    private var gcjLatLng: AMapLocation? = null //当前定位经纬度,中国国测局地理坐标（GCJ-02）
-    private var geocoderSearch: GeocodeSearch? = null
+    private var gcjLatLng: BDLocation? = null //当前定位经纬度,中国国测局地理坐标（GCJ-02）
 
     override fun initViewModel() {
         super.initViewModel()
@@ -99,7 +90,6 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
             nav().navigateUp()
         }
         initAdapter()
-        initGeocodeSearch()
     }
 
     private fun initAdapter() {
@@ -128,7 +118,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
     }
 
     private fun initAdapterData() {
-        val moduleList = mutableListOf<AdvancedSettingItem>()
+        val moduleList: MutableList<AdvancedSettingItem> = mutableListOf()
 
         if (isNeedSyncLocation()) {
             moduleList.add(
@@ -204,14 +194,14 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
         super.createObserver()
         //观察定位信息
         launchAndRepeatWithViewLifecycle(minActiveState = Lifecycle.State.STARTED) {
-            locationViewModel.locationState.collectLatest { aMapLocation ->
+            locationViewModel.locationState.collectLatest { bdLocation ->
                 if (gcjLatLng == null || gcjLatLng!!.latitude == 0.0 || gcjLatLng!!.longitude == 0.0) {
-                    gcjLatLng = aMapLocation
+                    gcjLatLng = bdLocation
                     //将高德坐标(即GCJ-02火星坐标)转换为WGS-84世界标准地理坐标
                     val mWgsLatLng = JZLocationConverter.gcj02ToWgs84(
                         CustomLatLng(
-                            aMapLocation.latitude,
-                            aMapLocation.longitude
+                            bdLocation.latitude,
+                            bdLocation.longitude
                         )
                     )
                     mStates.location.set(
@@ -227,8 +217,8 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
                     mStates.latitude.set(mWgsLatLng.latitude.toString())
                     mStates.longitude.set(mWgsLatLng.longitude.toString())
 
-                    val latLonPoint = LatLonPoint(gcjLatLng!!.latitude, gcjLatLng!!.longitude)
-                    searchAddressByLatLng(latLonPoint)
+                    mStates.address.set(bdLocation.addrStr ?: "")
+                    mStates.isRefreshingLocation.set(false)
                 }
             }
         }
@@ -395,9 +385,9 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
         popupView.setTitle("同步安装位置", mStates)
             .setClickListener(object : SyncInstallationLocationPopupView.OnClickListener {
                 override fun onRefreshingLocationClick() {
+                    mStates.isRefreshingLocation.set(true)
                     gcjLatLng = null
                     locationViewModel.requestImmediateLocationUpdate()
-                    mStates.isRefreshingLocation.set(true)
                 }
 
                 override fun onConfirmClick() {
@@ -432,32 +422,6 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
         commandItems.add(command)
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    private fun initGeocodeSearch() {
-        geocoderSearch = GeocodeSearch(activity)
-        geocoderSearch?.setOnGeocodeSearchListener(this)
-    }
-
-    private fun searchAddressByLatLng(latLonPoint: LatLonPoint) {
-        // 第一个参数表示一个Latlng，第二参数表示范围多少米，第三个参数表示是火系坐标系还是GPS原生坐标系
-        val query = RegeocodeQuery(latLonPoint, 50f, GeocodeSearch.AMAP)
-        geocoderSearch?.getFromLocationAsyn(query)
-    }
-
-    override fun onRegeocodeSearched(result: RegeocodeResult?, errorCode: Int) {
-        mStates.isRefreshingLocation.set(false)
-        if (errorCode != AMapException.CODE_AMAP_SUCCESS) {
-//            Toaster.show(MapErrorUtil.getErrorMsg(errorCode));
-            return
-        }
-        result?.regeocodeAddress?.formatAddress?.let {
-            mStates.address.set(it)
-        }
-    }
-
-    override fun onGeocodeSearched(p0: GeocodeResult?, p1: Int) {
-        TODO("Not yet implemented")
     }
 
     //<editor-fold desc="权限申请">
@@ -513,7 +477,5 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment(),
     override fun onDestroy() {
         super.onDestroy()
         locationViewModel.stopLocation()
-        geocoderSearch?.setOnGeocodeSearchListener(null)
-        geocoderSearch = null
     }
 }

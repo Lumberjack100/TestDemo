@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.ui.page.device.m20s.fragment
 
+import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.utils.models
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
@@ -50,7 +51,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
         moduleList.add(
             ConfigModule(
                 TimeCalibrationModule(
-                    resID = R.drawable.ic_module_time_calibration_new
+                    resID = R.drawable.ic_module_time_calibration
                 )
             )
         )
@@ -58,7 +59,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
         moduleList.add(
             ConfigModule(
                 WorkModeModule(
-                    resID = R.drawable.ic_module_work_mode_new,
+                    resID = R.drawable.ic_module_work_mode,
                     navId = R.id.action_m20SHomeFragment_to_m20SWorkModelFragment
                 )
             )
@@ -86,7 +87,8 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
                 CommonModule(
                     name = "卫星通信",
                     desc = "卫星通信终端配置",
-                    resID = R.drawable.ic_module_cors,
+                    resID = R.drawable.ic_module_satellite_info,
+                    iconSize = ConvertUtils.dp2px(34f),
                     navId = 0,
                     isSupport = false
                 )
@@ -96,7 +98,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
         moduleList.add(
             ConfigModule(
                 DataCenterModule(
-                    resID = R.drawable.ic_module_datacenter_new,
+                    resID = R.drawable.ic_module_datacenter,
                     navId = R.id.action_global_to_universalDataCenterHomeFragment
                 )
             )
@@ -108,7 +110,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
             ConfigModule(
                 AdvancedSettingsModule(
                     name = "系统配置",
-                    resID = R.drawable.ic_module_system_setting,
+                    resID = R.drawable.ic_module_setting,
                     navId = R.id.action_global_to_advancedSettingFragment
                 )
             )
@@ -116,7 +118,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
         if (communicateWay is BleConnect) {
             moduleList.add(
                 ConfigModule(
-                    CommandDebugConfigModule(resID = R.drawable.ic_module_cmd_debug_new)
+                    CommandDebugConfigModule(resID = R.drawable.ic_module_cmd_debug)
                 )
             )
         }

@@ -100,17 +100,21 @@
             android:name="notch.config"
             android:value="portrait|landscape" /> <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
 
+
         <service
-            android:name="com.amap.api.location.APSService"
+            android:name="com.baidu.location.f"
+            android:enabled="true"
             android:foregroundServiceType="location"
-            tools:ignore="ForegroundServicePermission" />
+            android:process=":remote" />
 
         <meta-data
-            android:name="com.amap.api.v2.apikey"
+            android:name="com.baidu.lbsapi.API_KEY"
             android:value="${mapApikey}" />
+
         <meta-data
             android:name="BUGLY_APPID"
             android:value="${buglyAppId}" /> <!-- 配置Bugly调试模式（true或者false）测试阶段建议设置成true，发布时设置为false。 -->
+
         <meta-data
             android:name="BUGLY_ENABLE_DEBUG"
             android:value="false" />
