@@ -333,7 +333,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 )
             )
         )
-        if (productType == ProductType.U_D_2) {
+//        if (productType == ProductType.U_D_2) {
             configModuleTree.configModules.add(
                 ConfigModule(
                     LoraConfigModule(
@@ -351,7 +351,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     )
                 )
             )
-        }
+//        }
         configModuleTree.configModules.add(
             ConfigModule(
                 TimeCalibrationModule(
