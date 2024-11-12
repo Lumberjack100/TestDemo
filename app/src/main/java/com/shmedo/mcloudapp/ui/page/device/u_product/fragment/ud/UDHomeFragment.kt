@@ -338,7 +338,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 ConfigModule(
                     LoraConfigModule(
                         name = "电台配置",
-                        resID = R.drawable.ic_module_lora,
+                        resID = R.drawable.ic_module_lora_new,
                         navId = R.id.action_global_to_udRadioParamFragment
                     )
                 )
@@ -346,7 +346,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             configModuleTree.configModules.add(
                 ConfigModule(
                     AlarmConfigModule(
-                        resID = R.drawable.ic_module_alarm,
+                        resID = R.drawable.ic_module_lora_new,
                         navId = R.id.action_global_to_alarmSettingFragment
                     )
                 )

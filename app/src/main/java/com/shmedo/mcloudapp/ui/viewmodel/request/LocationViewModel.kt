@@ -1,7 +1,7 @@
 package com.shmedo.mcloudapp.ui.viewmodel.request
 
 import androidx.lifecycle.viewModelScope
-import com.amap.api.location.AMapLocation
+import com.baidu.location.BDLocation
 import com.shmedo.core.data.repository.LocationRepositoryImp
 import com.shmedo.core.data.repository.LoggerRepositoryImp
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
@@ -19,8 +19,8 @@ class LocationViewModel(
     private val loggerRepositoryImp: LoggerRepositoryImp
 ) : BaseRequestViewModel(loggerRepositoryImp) {
 
-    private val _locationState = MutableSharedFlow<AMapLocation>(replay = 1)
-    val locationState: SharedFlow<AMapLocation> = _locationState
+    private val _locationState = MutableSharedFlow<BDLocation>(replay = 1)
+    val locationState: SharedFlow<BDLocation> = _locationState
 
 
     init {

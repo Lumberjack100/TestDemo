@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
-import com.amap.api.maps.AMap
-import com.amap.api.maps.AMapOptions
-import com.amap.api.maps.CameraUpdateFactory
-import com.amap.api.maps.model.BitmapDescriptorFactory
-import com.amap.api.maps.model.LatLng
-import com.amap.api.maps.model.Marker
-import com.amap.api.maps.model.MarkerOptions
+import com.baidu.mapapi.map.BaiduMap
+import com.baidu.mapapi.map.BitmapDescriptorFactory
+import com.baidu.mapapi.map.LogoPosition
+import com.baidu.mapapi.map.MapStatusUpdateFactory
+import com.baidu.mapapi.map.Marker
+import com.baidu.mapapi.map.MarkerOptions
+import com.baidu.mapapi.model.LatLng
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.hjq.toast.Toaster
@@ -60,7 +60,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
     private val mStates: CommonLocationInfoViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
-    private lateinit var aMap: AMap //地图控制器对象
+    private lateinit var baiduMap: BaiduMap //地图控制器对象
     private var curMaker: Marker? = null
     private var mZoomLevel = 15f //地图的缩放级别一共分为 17 级，从 3 到 19。数字越大，展示的图面信息越精细。
 
@@ -94,22 +94,25 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
             nav().navigateUp()
         }
         toolbarViewModel.toolbarTitleText.set("位置")
-        binding.textureMapView.onCreate(savedInstanceState)
         setUpMap()
     }
 
     private fun setUpMap() {
         //初始化地图控制器对象
-        aMap = binding.textureMapView.map
-        aMap.mapType = AMap.MAP_TYPE_NORMAL //设置白昼地图（即普通地图)，aMap是地图控制器对象。
-        aMap.uiSettings.logoPosition = AMapOptions.LOGO_POSITION_BOTTOM_LEFT //设置logo位置
-        aMap.uiSettings.setLogoBottomMargin(-200) //隐藏高德logo
-        aMap.maxZoomLevel = MAX_ZOOM_LEVEL //设置最大缩放级别
-        aMap.minZoomLevel = MIN_ZOOM_LEVEL //设置最小缩放级别
-        aMap.uiSettings.isZoomControlsEnabled = false //隐藏地图默认的缩放按钮
-        aMap.uiSettings.isScaleControlsEnabled = false //控制比例尺控件是否显示
-        aMap.uiSettings.isMyLocationButtonEnabled = false //显示默认的定位按钮
-//        aMap.isMyLocationEnabled = true //可触发定位并显示当前位置
+        baiduMap = binding.mapView.map
+        baiduMap.mapType = BaiduMap.MAP_TYPE_NORMAL //普通地图（包含3D地图）
+        baiduMap.setMaxAndMinZoomLevel(MAX_ZOOM_LEVEL, MIN_ZOOM_LEVEL)
+        baiduMap.setCompassEnable(false) //设置指南针是否显示
+        binding.mapView.showZoomControls(false) //设置缩放按钮是否显示
+        binding.mapView.showScaleControl(false)//设置比例尺控件是否显示
+        binding.mapView.logoPosition = LogoPosition.logoPostionleftBottom //设置logo位置
+        //地图Logo不允许遮挡，可通过以下方法可以设置地图边界区域，来避免UI遮挡
+        baiduMap.setViewPadding(
+            0,
+            0,
+            0,
+            0
+        )
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -402,7 +405,8 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                 .position(latLng)
                 .draggable(false)
 
-            curMaker = aMap.addMarker(markerOption)
+            //在地图上添加Marker，并显示
+            curMaker = baiduMap.addOverlay(markerOption) as Marker
             //设置指定的可视区域地图
             moveCameraToLocation(latLng)
         } catch (ex: Exception) {
@@ -411,7 +415,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
     }
 
     private fun moveCameraToLocation(latLng: LatLng) {
-        aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, mZoomLevel))
+        baiduMap.setMapStatus(MapStatusUpdateFactory.newLatLngZoom(latLng, mZoomLevel))
     }
 
     private fun startTimer() {
@@ -508,7 +512,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
-        binding.textureMapView.onResume()
+        binding.mapView.onResume()
     }
 
     /**
@@ -516,7 +520,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
      */
     override fun onPause() {
         super.onPause()
-        binding.textureMapView.onPause()
+        binding.mapView.onPause()
     }
 
     /**
@@ -524,12 +528,12 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
      */
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        binding.textureMapView.onSaveInstanceState(outState)
+        binding.mapView.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        binding.textureMapView.onDestroy()
+        binding.mapView.onDestroy()
     }
 
     companion object {

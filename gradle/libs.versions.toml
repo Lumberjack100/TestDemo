@@ -18,8 +18,8 @@ activityKtx = "1.9.1"
 agp = "8.3.2"
 agentweb = "v5.1.1-androidx"
 appcompat = "1.7.0"
-amap3dmap = "10.0.600"
-amapSearch = "9.7.0"
+baidumapsdk_location_all = "9.6.4"
+baidumapsdk_map = "7.6.2"
 baseRecyclerView = "1.5.8"
 classgraph = "4.8.165"
 compileSdk = "34"
@@ -93,8 +93,8 @@ androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "startupRuntime" }
 androidx-test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "testExtJunit" }
 agentweb-core = { module = "io.github.justson:agentweb-core", version.ref = "agentweb" }
-amap-a3dmap = { module = "com.amap.api:3dmap", version.ref = "amap3dmap" }
-amap-search = { module = "com.amap.api:search", version.ref = "amapSearch" }
+baidumapsdk_location_all = { module = "com.baidu.lbsyun:BaiduMapSDK_Location_All", version.ref = "baidumapsdk_location_all" }
+baidumapsdk_map = { module = "com.baidu.lbsyun:BaiduMapSDK_Map", version.ref = "baidumapsdk_map" }
 bugly-crashreport = { module = "com.tencent.bugly:crashreport", version.ref = "crashreport" }
 classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classgraph" }
 customactivityoncrash = { module = "cat.ereza:customactivityoncrash", version.ref = "customactivityoncrash" }

@@ -58,19 +58,18 @@
                         android:background="@null"
                         android:drawablePadding="@dimen/dimen_size_15"
                         android:ellipsize="end"
-                        android:text="@={stateVM.location}"
                         android:gravity="center_vertical|start"
                         android:hint="请输入"
                         android:maxLines="2"
+                        android:text="@={stateVM.location}"
                         android:textColor="@color/title_text_color"
                         android:textColorHint="@color/text_color_CCCCCC"
                         android:textSize="@dimen/text_size_16" />
 
-                     <androidx.appcompat.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_locate"
-                        android:layout_width="21dp"
-                        android:layout_height="21dp"
-                        android:scaleType="centerCrop"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
                         android:src="@drawable/ic_module_location_info" />
 
                 </LinearLayout>
@@ -89,9 +88,9 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical|start"
                     android:minHeight="55dp"
+                    android:text="@{stateVM.address}"
                     android:textColor="@color/title_text_color"
                     android:textSize="@dimen/text_size_16"
-                    android:text="@{stateVM.address}"
                     tools:text="闵行区联航路" />
 
                 <View
