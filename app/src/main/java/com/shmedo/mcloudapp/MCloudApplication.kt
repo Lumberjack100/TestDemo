@@ -1,6 +1,9 @@
 package com.shmedo.mcloudapp
 
 import cat.ereza.customactivityoncrash.config.CaocConfig
+import com.baidu.location.LocationClient
+import com.baidu.mapapi.SDKInitializer
+import com.baidu.mapapi.common.BaiduMapSDKException
 import com.blankj.utilcode.util.DeviceUtils
 import com.drake.brv.PageRefreshLayout
 import com.drake.brv.utils.BRV
@@ -53,6 +56,12 @@ class MCloudApplication : BaseApp() {
         RxHttpManager.initial(this)
         //Android 快速构建 RecyclerView
         initBrv()
+        try {
+            LocationClient.setAgreePrivacy(true)
+            SDKInitializer.setAgreePrivacy(this, true)
+            //在使用SDK各组件之前初始化context信息，传入ApplicationContext
+            SDKInitializer.initialize(this)
+        } catch (e: BaiduMapSDKException) { }
     }
 
     /**

@@ -159,8 +159,8 @@
             android:layout_margin="@dimen/page_content_item_margin_horizontal_12"
             android:layout_weight="1">
 
-            <com.amap.api.maps.TextureMapView
-                android:id="@+id/textureMapView"
+            <com.baidu.mapapi.map.MapView
+                android:id="@+id/mapView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 

@@ -12,17 +12,19 @@ import android.text.style.ClickableSpan
 import android.view.Gravity
 import android.view.View
 import androidx.fragment.app.viewModels
-import com.amap.api.location.AMapLocationClient
+import com.baidu.location.LocationClient
+import com.baidu.mapapi.SDKInitializer
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.StringUtils
+import com.blankj.utilcode.util.Utils
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil.setAgreePrivate
-import com.shmedo.mcloudapp.ui.page.base.fragment.BaseVmDbDialogFragment
-import com.shmedo.mcloudapp.extensions.getAppViewModel
+import com.shmedo.core.model.ContentType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.PrivacyDialogBinding
-import com.shmedo.core.model.ContentType
+import com.shmedo.mcloudapp.extensions.getAppViewModel
+import com.shmedo.mcloudapp.ui.page.base.fragment.BaseVmDbDialogFragment
 import com.shmedo.mcloudapp.ui.page.webview.WebviewActivity
 import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.ui.viewmodel.state.PolicyViewModel
@@ -76,14 +78,16 @@ class PolicyDialog : BaseVmDbDialogFragment() {
     inner class ClickProxy {
         fun agree() {
             //更新同意隐私状态,需要在初始化地图之前完成
-            AMapLocationClient.updatePrivacyAgree(mActivity, true)
+//            SDKInitializer.setAgreePrivacy(Utils.getApp(), true)
+//            LocationClient.setAgreePrivacy(true)
             setAgreePrivate(true)
             mMessenger.updateIsAgreePolicy(true)
             dismiss()
         }
 
         fun disAgree() {
-            AMapLocationClient.updatePrivacyAgree(mActivity, false)
+//            SDKInitializer.setAgreePrivacy(Utils.getApp(), false)
+//            LocationClient.setAgreePrivacy(false)
             setAgreePrivate(false)
             Process.killProcess(Process.myPid())
         }

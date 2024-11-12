@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
-import com.amap.api.location.AMapLocationClient
+import com.baidu.location.LocationClient
+import com.baidu.mapapi.SDKInitializer
 import com.blankj.utilcode.util.NetworkUtils
+import com.blankj.utilcode.util.Utils
 import com.gyf.immersionbar.ktx.immersionBar
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -58,10 +60,6 @@ class SplashActivity : BaseActivity() {
     }
 
     override fun initData() {
-        //更新隐私合规状态,需要在初始化地图之前完成
-        AMapLocationClient.updatePrivacyShow(this, true, true)
-        //更新同意隐私状态,需要在初始化地图之前完成
-        AMapLocationClient.updatePrivacyAgree(this, true)
         logViewModel.insertSystemLogSession()
         if (!isAgreePrivate()) {
             showPrivateDialog()
@@ -105,8 +103,6 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun showPrivateDialog() {
-        //更新隐私合规状态,需要在初始化地图之前完成
-        AMapLocationClient.updatePrivacyShow(this, true, true)
         val privacyTipDialog = PolicyDialog()
         privacyTipDialog.show(supportFragmentManager, "dialog")
     }

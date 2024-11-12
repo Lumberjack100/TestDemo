@@ -65,9 +65,9 @@ dependencies {
     //A logger with a small, extensible API which provides utility on top of Android's normal Log class.
     implementation(libs.timber)
 
-    //高德地图
-    api(libs.amap.a3dmap)
-    api(libs.amap.search)
+    //百度地图
+    api(libs.baidumapsdk.location.all)
+    api(libs.baidumapsdk.map)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
