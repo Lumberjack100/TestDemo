@@ -304,7 +304,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         /**  蓝牙通信模式  start ***/
         if (isBleDisconnected()) {
             Toaster.show("蓝牙已断开，请重新连接")
-            cancelNearbyCommunicationTimeoutJob()
+            cancelNearbyCommunicationTimeoutJob(isDismissLoadingDialog = true)
             finishAction()
             return
         }

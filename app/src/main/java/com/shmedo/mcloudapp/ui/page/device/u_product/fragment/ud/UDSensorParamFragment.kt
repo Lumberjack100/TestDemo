@@ -257,7 +257,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
             measureInitialValueLoadingDialogId =
                 showLoadingWithUUID(StringUtils.getString(R.string.processing))
         } else {
-            Timber.d("查询测量结果轮询次数：$repeatPollNum")
+            Timber.d("查询更新初始值结果轮询次数：$repeatPollNum")
         }
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }

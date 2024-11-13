@@ -213,7 +213,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
      * 轮询测得的海拔高度结果
      */
     private fun pollMeasureResult() {
-        Timber.d("查询测量结果轮询次数：$repeatPollNum")
+        Timber.d("查询测量海拔高度结果轮询次数：$repeatPollNum")
         commandItems.clear()
         val command =
             IOTCommandUtil.getCommand(IOTCommandType.MD_UD_DIFF_LOCATE, "method=2")

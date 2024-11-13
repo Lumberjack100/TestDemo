@@ -30,10 +30,12 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentCommonLocationInfoBinding
+import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.extensions.toGcj02LatLng
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
@@ -69,6 +71,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
 
     private var queryMeasureResultTimeoutJob: Job? = null
     private var repeatPollNum = 0 //重复轮询次数
+    private var measureLoadingDialogId = ""
 
 
     override fun initViewModel() {
@@ -136,17 +139,17 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
      * 测量位置
      */
     private fun measureLocation(method: String) {
-        Timber.d("查询测量结果轮询次数：$repeatPollNum")
         commandItems.clear()
         val command =
             IOTCommandUtil.getCommand(IOTCommandType.MD_GET_INSTALL_LOCATION, "method=$method")
         commandItems.add(command)
 
         if (method == "1") {
-            showLoadingDialog(StringUtils.getString(R.string.processing)) {
-                clearQueryMeasureResultTimeoutJob()
-                cancelNearbyCommunicationTimeoutJob()
-            }
+            measureLoadingDialogId =
+                showLoadingWithUUID(StringUtils.getString(R.string.processing)) {
+                    clearQueryMeasureResultTimeoutJob()
+                    cancelNearbyCommunicationTimeoutJob()
+                }
         }
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -190,6 +193,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_INSTALL_LOCATION -> {
+                dismissLoadingDialog(measureLoadingDialogId)
                 super.doCmdResponseResultError(
                     cmdStr = cmdStr,
                     errMsg = "位置更新指令下发出错: $errMsg",
@@ -220,6 +224,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_INSTALL_LOCATION -> {
+                dismissLoadingDialog(measureLoadingDialogId)
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
                     errMsg = "设备未响应",
@@ -251,6 +256,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_INSTALL_LOCATION -> {
+                dismissLoadingDialog(measureLoadingDialogId)
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
                     isDismissLoadingDialog = isDismissLoadingDialog,
@@ -320,6 +326,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                 when (result) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "位置更新出错: ${result.message}"
+                        dismissLoadingDialog(measureLoadingDialogId)
                         handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
@@ -453,6 +460,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                             && resultMap.containsKey("lat_dir")
                             && resultMap.containsKey("lat")
                         ) {
+                            dismissLoadingDialog(measureLoadingDialogId)
                             cancelNearbyCommunicationTimeoutJob()
                             showMessageDialog("位置更新成功")
 
@@ -496,6 +504,9 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
             }
             delay(AppContants.Communication.DELAY_5000_MILLIS) //延迟 timeMillis 秒
             repeatPollNum++
+            withContext(Dispatchers.Main) {
+                Timber.d("查询位置更新结果轮询次数：$repeatPollNum")
+            }
             measureLocation("0")
         }
     }
