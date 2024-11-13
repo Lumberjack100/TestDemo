@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentLoadingDialogBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
@@ -14,6 +14,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.LoadingConfig
 import com.shmedo.mcloudapp.ui.viewmodel.state.LoadingDialogState
 import com.shmedo.mcloudapp.ui.viewmodel.state.LoadingDialogViewModel
 import com.shmedo.mcloudapp.utils.LoadingDialogManager
+import kotlinx.coroutines.Job
 
 /**
  * 创建者：gonghe
@@ -24,8 +25,10 @@ class LoadingDialogFragment : DialogFragment() {
     private var _binding: FragmentLoadingDialogBinding? = null
     private val binding get() = _binding!!
 
-    val viewModel: LoadingDialogViewModel by viewModels()
+    val viewModel: LoadingDialogViewModel by activityViewModels()
     private var currentLoadingId: String? = null
+    private val messageUpdateJob = Job()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,8 +43,7 @@ class LoadingDialogFragment : DialogFragment() {
                 onCancel = null  // Handled through LoadingDialogManager
             )
             currentLoadingId = config.loadingId
-            this.isCancelable = config.isCancelable
-            dialog?.setCanceledOnTouchOutside(false)
+            isCancelable = config.isCancelable
             viewModel.showLoading(config)
         }
     }
@@ -72,6 +74,11 @@ class LoadingDialogFragment : DialogFragment() {
                 }
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.setCanceledOnTouchOutside(false)
     }
 
     override fun onCancel(dialog: DialogInterface) {
