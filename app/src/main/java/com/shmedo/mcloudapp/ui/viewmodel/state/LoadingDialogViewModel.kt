@@ -1,10 +1,8 @@
 package com.shmedo.mcloudapp.ui.viewmodel.state
 
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,51 +20,67 @@ class LoadingDialogViewModel : ViewModel() {
     val dialogState = _dialogState.asStateFlow()
 
     private val timeoutJobs = ConcurrentHashMap<String, Job>()
-    private val viewModelScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    private val stateUpdateLock = Any()
 
     fun showLoading(config: LoadingConfig) {
-        val state = LoadingDialogState.Visible(
-            message = config.message,
-            loadingId = config.loadingId,
-            isCancelable = config.isCancelable,
-            timeoutDuration = config.timeoutDuration,
-            onCancel = config.onCancel
-        )
-        _dialogState.value = state
-        setupTimeout(config.loadingId, config.timeoutDuration)
+        synchronized(stateUpdateLock) {
+            val state = LoadingDialogState.Visible(
+                message = config.message,
+                loadingId = config.loadingId,
+                isCancelable = config.isCancelable,
+                timeoutDuration = config.timeoutDuration,
+                onCancel = config.onCancel
+            )
+            _dialogState.value = state
+            setupTimeout(config.loadingId, config.timeoutDuration)
+        }
     }
 
     private fun setupTimeout(loadingId: String, timeoutDuration: Long) {
         timeoutJobs[loadingId]?.cancel()
         if (timeoutDuration > 0) {
             timeoutJobs[loadingId] = viewModelScope.launch {
-                delay(timeoutDuration)
-                hideLoading(loadingId)
+                try {
+                    delay(timeoutDuration)
+                    hideLoading(loadingId)
+                } catch (e: Exception) {
+                    // 处理超时任务异常
+                }
             }
         }
     }
 
     private fun hideLoading(loadingId: String = LoadingDialogState.GLOBAL_LOADING) {
-        timeoutJobs[loadingId]?.cancel()
-        timeoutJobs.remove(loadingId)
+        synchronized(stateUpdateLock) {
+            timeoutJobs[loadingId]?.cancel()
+            timeoutJobs.remove(loadingId)
 
-        val currentState = _dialogState.value
-        if (currentState is LoadingDialogState.Visible && currentState.loadingId == loadingId) {
-            _dialogState.value = LoadingDialogState.Hidden
+            val currentState = _dialogState.value
+            if (currentState is LoadingDialogState.Visible && currentState.loadingId == loadingId) {
+                _dialogState.value = LoadingDialogState.Hidden
+            }
         }
     }
 
     fun updateMessage(loadingId: String, message: String) {
-        val currentState = _dialogState.value
-        if (currentState is LoadingDialogState.Visible && currentState.loadingId == loadingId) {
-            _dialogState.value = currentState.copy(message = message)
+        synchronized(stateUpdateLock) {
+            val currentState = _dialogState.value
+            if (currentState is LoadingDialogState.Visible && currentState.loadingId == loadingId) {
+                _dialogState.value = currentState.copy(message = message)
+            }
         }
     }
 
     override fun onCleared() {
         super.onCleared()
-        timeoutJobs.values.forEach { it.cancel() }
-        timeoutJobs.clear()
+        clearTimeoutJobs()
+    }
+
+    fun clearTimeoutJobs() {
+        synchronized(stateUpdateLock) {
+            timeoutJobs.values.forEach { it.cancel() }
+            timeoutJobs.clear()
+        }
     }
 }
 
