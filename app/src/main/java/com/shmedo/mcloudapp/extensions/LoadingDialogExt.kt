@@ -16,16 +16,13 @@ fun FragmentActivity.showLoadingDialog(
 ): String = LoadingDialogManager.showLoading(
     message = message,
     isCancelable = isCancelable,
+    loadingId = LoadingDialogState.GLOBAL_LOADING,
     timeout = timeout,
     onCancel = onCancel
 )
 
 fun FragmentActivity.dismissLoadingDialog(loadingId: String = LoadingDialogState.GLOBAL_LOADING) {
     LoadingDialogManager.dismissLoading(loadingId)
-}
-
-fun FragmentActivity.updateLoadingMessage(loadingId: String, message: String) {
-    LoadingDialogManager.updateMessage(loadingId, message)
 }
 
 
