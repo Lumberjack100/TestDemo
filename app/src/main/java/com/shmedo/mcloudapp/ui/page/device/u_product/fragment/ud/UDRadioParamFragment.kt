@@ -44,7 +44,7 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
     private val mStates: UDRadioParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
-    private val radioChannelNumList: List<String> = (451150..470150 step 1000).map { it.toString() }
+    private val radioChannelNumList: List<String> = (451150000..470150000 step 1000000).map { it.toString() }
     private var radioChannelTextList: List<String> = emptyList()
     private val transmitPowerList: List<String> = (10..22).map { it.toString() }//发射功率
     private val airSpeedList: List<String> = (1..3).map { it.toString() }//空中速率
