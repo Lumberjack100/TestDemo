@@ -549,17 +549,17 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
             try {
                 val sensorStatusList = MoshiUtil.fromJson<List<MRSensorStatus>>(content)
                     ?: return@launchWithViewLifecycle
+
                 val list = sensorStatusList.map { sensorStatus ->
-                    val sensorType =
-                        if (sensorStatus.sensortype == "1") "10066" else sensorStatus.sensortype
+                    val sensorType = sensorStatus.sensortype
                     MRSensorItem(
                         isPlugin = sensorStatus.sta == "0",
                         chl = sensorStatus.chl,
                         addrDesc = "通道-${sensorStatus.chl}",
-                        sensorName = portHomeViewModel.configPort4851SensorNameToSensorModelMap[sensorType]?.sensorName
+                        sensorName = portHomeViewModel.configPort4852SensorTypeToSensorModelMap[sensorType]?.sensorName
                             ?: "未知类型",
                         sensorType = sensorType,
-                        modelToken = portHomeViewModel.configPort4851SensorNameToSensorModelMap[sensorType]?.modelToken
+                        modelToken = portHomeViewModel.configPort4852SensorTypeToSensorModelMap[sensorType]?.modelToken
                             ?: "",
                     )
                 }
