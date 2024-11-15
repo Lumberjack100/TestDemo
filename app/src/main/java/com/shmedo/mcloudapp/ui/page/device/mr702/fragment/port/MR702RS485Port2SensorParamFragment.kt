@@ -7,6 +7,7 @@ import androidx.activity.OnBackPressedCallback
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
+import com.hjq.toast.ToastParams
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
@@ -259,11 +260,11 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
             chl = mStates.channelNumber.get(),
             model = mStates.modelToken.get() + "_" + mStates.channelNumber.get(),
             swtoken = mStates.hydrologicalIdentification.get(),
-            filtercnt =  mStates.filterCoefficient.get(),
+            filtercnt = mStates.filterCoefficient.get(),
             gateval = mStates.triggerValue.get(),
-            uplimit =  mStates.upperLimit.get(),
-            lowlimit =  mStates.lowerLimit.get(),
-            corrvalue =  mStates.correctValue.get(),
+            uplimit = mStates.upperLimit.get(),
+            lowlimit = mStates.lowerLimit.get(),
+            corrvalue = mStates.correctValue.get(),
 
             calctype = if (mStates.modelToken.get() == "10066") calculateList.indexOf(mStates.calculate.get())
                 .toString() else IOTConstants.NULL_KEY,
@@ -336,7 +337,10 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
+                            Toaster.show(ToastParams().apply {
+                                text = "数据保存成功"
+                                duration = 500
+                            })
                             processBack()
                         }
                     }
@@ -391,9 +395,9 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
                 nav().navigateUp()
                 return@launchWithViewLifecycle
             }
-            delay(1000)
             //需要给上一级浏览页面传递最新的事件信息
             mMessenger.requestMR702Rs485PortSensorRefresh(MRRS485Port2)
+            delay(1000)
             nav().navigateUp()
         }
     }
