@@ -603,7 +603,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.QUERY_SAMPLE -> {
-                stopMeasurement()
+                stopMeasurementAnimation()
                 if (cmdStr.contains("method=1")) {
                     super.doCmdResponseResultError(
                         cmdStr = cmdStr,
@@ -656,7 +656,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.QUERY_SAMPLE -> {
-                stopMeasurement()
+                stopMeasurementAnimation()
                 if (!cmdStr.contains("method=0")) {
                     super.doCmdResponseResultTimeOut(
                         cmdStr = cmdStr,
@@ -709,7 +709,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.QUERY_SAMPLE -> {
-                stopMeasurement()
+                stopMeasurementAnimation()
                 if (cmdStr.contains("method=0")) {
                     super.showNearbyCommunicationTimeoutAlert(
                         cmdStr = cmdStr,
@@ -781,7 +781,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "召测出错: ${result.message}"
                         handleFailureResult(errMsg, isShowErrMsg = false)
-                        stopMeasurement()
+                        stopMeasurementAnimation()
                         return
                     }
 
@@ -916,7 +916,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             //{"filename":"20240904111431"}
             //{"obj_alt":28.320,"ld_value":3.514,"z_angle":86.4,"time":"2024-09-04 14:32:32"}
             if (cmdStr.contains("method=1")) {
-                startMeasurement()
+                startMeasurementAnimation()
                 clearQueryMeasureResultTimeoutJob()
                 startQueryMeasureResultJob()
             } else if (cmdStr.contains("method=2")) {
@@ -934,7 +934,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     || resultMap.containsKey("today_rain")
                     || resultMap.containsKey("time")
                 ) {
-                    stopMeasurement()
+                    stopMeasurementAnimation()
 
                     val waterSurfaceElevation =
                         resultMap["obj_alt"]?.let { "$it m" } ?: AppContants.PLACE_HOLDER_VALUE
@@ -958,19 +958,19 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 startQueryMeasureResultJob()
             }
         } catch (e: Exception) {
-            stopMeasurement()
+            stopMeasurementAnimation()
             Timber.e(e)
             addLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
-    private fun startMeasurement() {
+    private fun startMeasurementAnimation() {
         // 显示进度条并开始动画
         mHeadStates.isMeasuring.set(true)
         binding.llRadarWaterGaugeMeasureData.btnMeasureData.startProgressAnimation()
     }
 
-    private fun stopMeasurement() {
+    private fun stopMeasurementAnimation() {
         dismissLoadingDialog(mHeadStates.measureDataLoadingDialogId)
         // 隐藏进度条并停止动画
         mHeadStates.isMeasuring.set(false)
@@ -982,6 +982,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         queryMeasureResultTimeoutJob?.cancel()
         queryMeasureResultTimeoutJob = launchWithViewLifecycle {
             if (repeatPollNum >= REPEAT_POLL_NUM) {
+                stopMeasurementAnimation()
                 return@launchWithViewLifecycle
             }
             delay(AppContants.Communication.DELAY_5000_MILLIS) //延迟 timeMillis 秒
@@ -1064,6 +1065,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     }
 
     companion object {
-        const val REPEAT_POLL_NUM = 12
+        const val REPEAT_POLL_NUM = 10
     }
 }
