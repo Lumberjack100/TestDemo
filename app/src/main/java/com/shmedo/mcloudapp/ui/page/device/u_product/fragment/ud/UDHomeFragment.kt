@@ -334,23 +334,23 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             )
         )
 //        if (productType == ProductType.U_D_2) {
-            configModuleTree.configModules.add(
-                ConfigModule(
-                    LoraConfigModule(
-                        name = "电台配置",
-                        resID = R.drawable.ic_module_lora_new,
-                        navId = R.id.action_global_to_udRadioParamFragment
-                    )
+        configModuleTree.configModules.add(
+            ConfigModule(
+                LoraConfigModule(
+                    name = "电台配置",
+                    resID = R.drawable.ic_module_lora_new,
+                    navId = R.id.action_global_to_udRadioParamFragment
                 )
             )
-            configModuleTree.configModules.add(
-                ConfigModule(
-                    AlarmConfigModule(
-                        resID = R.drawable.ic_module_lora_new,
-                        navId = R.id.action_global_to_alarmSettingFragment
-                    )
+        )
+        configModuleTree.configModules.add(
+            ConfigModule(
+                AlarmConfigModule(
+                    resID = R.drawable.ic_module_lora_new,
+                    navId = R.id.action_global_to_alarmSettingFragment
                 )
             )
+        )
 //        }
         configModuleTree.configModules.add(
             ConfigModule(
@@ -929,9 +929,10 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
                 //已经有数据
                 if (resultMap.containsKey("obj_alt")
-                    && resultMap.containsKey("ld_value")
-                    && resultMap.containsKey("z_angle")
-                    && resultMap.containsKey("time")
+                    || resultMap.containsKey("ld_value")
+                    || resultMap.containsKey("z_angle")
+                    || resultMap.containsKey("today_rain")
+                    || resultMap.containsKey("time")
                 ) {
                     stopMeasurement()
 
