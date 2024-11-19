@@ -7,7 +7,6 @@ import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
@@ -41,7 +40,7 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: M20SRadioSettingViewModel
     private val iotParseManager: IOTParserManager by inject()
 
-    private val radioChannelList by lazy { Utils.getApp().resources.getStringArray(R.array.radio_channel) }
+    private var radioChannelList: List<String> = emptyList()
     private var transmitPowerList: List<String> = emptyList()//发射功率
     private var airSpeedList: List<String> = emptyList()//空中速率
 
@@ -87,6 +86,9 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        radioChannelList =  (45115..47015 step 100).map {
+            (it.toFloat() / 100).toString() + "MHz"
+        }
         transmitPowerList =
             if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_1)
                 (0..22).map { it.toString() }
@@ -142,7 +144,7 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", radioChannelList,
+                    "", radioChannelList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.rtcmChannel.set(text)
@@ -162,7 +164,7 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", radioChannelList,
+                    "", radioChannelList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.receiveChannel.set(text)
@@ -182,7 +184,7 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", radioChannelList,
+                    "", radioChannelList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.sendChannel.set(text)

@@ -6,7 +6,6 @@ import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
@@ -77,9 +76,13 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         radioChannelList = if (productType == ProductType.LB20S)
-            Utils.getApp().resources.getStringArray(R.array.lb20s_radio_channel).toList()
+            (451125..480125 step 1000).map {
+                (it.toFloat() / 1000).toString() + "MHz"
+            }
         else
-            Utils.getApp().resources.getStringArray(R.array.radio_channel).toList()
+            (45015..46915 step 100).map {
+                (it.toFloat() / 100).toString() + "MHz"
+            }
 
         resetParams()
     }

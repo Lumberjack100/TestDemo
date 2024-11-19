@@ -11,7 +11,7 @@ plugins {
 
 val majorVersion = 5
 val minorVersion = 2
-val patchVersion = 7
+val patchVersion = 8
 
 /**
  * 获取Git库HEAD的SHA1码前5位
@@ -136,7 +136,7 @@ android {
             dimension = "version"
             applicationIdSuffix = ".v5"
             versionCode = getReversion()
-            versionName = "5.2.4"
+            versionName = "5.2.6"
             resValue("string", "app_name", "米易通V5")   // 设置默认的app_name
             buildConfigField("String", "APP_NAME", "\"米易通V5\"")
             buildConfigField("String", "PGY_API_KEY", "\"db9ce8a6bd3b8b95c20c66e4205194d9\"")
