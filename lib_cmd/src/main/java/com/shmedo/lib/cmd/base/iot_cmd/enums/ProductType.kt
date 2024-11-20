@@ -169,7 +169,7 @@ enum class ProductType(
         prefix = "",
         oldSuffix = "",
         newSuffix = "UD1",
-        productName = "一体化雷达水位计",
+        productName = "一体化可视雷达水位计",
         productToken = "MD-DR030",
         description = "对应型号 MD-DR030"
     ),
@@ -177,7 +177,7 @@ enum class ProductType(
         prefix = "",
         oldSuffix = "",
         newSuffix = "UD2",
-        productName = "一体化雷达泥位计",
+        productName = "一体化可视雷达泥位计",
         productToken = "MD-NW030",
         description = "对应型号 MD-NW030"
     ),
@@ -185,7 +185,7 @@ enum class ProductType(
         prefix = "",
         oldSuffix = "",
         newSuffix = "UD3",
-        productName = "一体化雷达流量计",
+        productName = "一体化可视雷达流量计",
         productToken = "MD-LL030",
         description = "对应型号 MD-LL030"
     ),
