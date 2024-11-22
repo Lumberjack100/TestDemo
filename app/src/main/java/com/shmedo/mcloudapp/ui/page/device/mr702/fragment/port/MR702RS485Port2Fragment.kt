@@ -320,7 +320,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
         }
         val entity = MRRS485Port2CollectionParamEntity(
             collfreq = mStates.acquisitionFrequency.get(),
-            collcycle = mStates.collectionTimes.get(),
+            collround = mStates.collectionTimes.get(),
             noresp = mStates.noResponseTimes.get(),
             colltype = (collectorTypeList.indexOf(mStates.collectorType.get()) + 1).toString(),
             colladdr = mStates.collectorAddress.get(),
@@ -509,7 +509,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     private fun initCollectionData(collectionParam: MRRS485Port2CollectionParam) {
         try {
             mStates.acquisitionFrequency.set(collectionParam.collfreq)
-            mStates.collectionTimes.set(collectionParam.collcycle)
+            mStates.collectionTimes.set(collectionParam.collround)
             mStates.noResponseTimes.set(collectionParam.noresp)
             collectionParam.colltype.toInt().let {
                 if (it in 1..collectorTypeList.size) {
