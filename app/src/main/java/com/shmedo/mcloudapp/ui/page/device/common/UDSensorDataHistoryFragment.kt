@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.ui.page.device.common
 
-import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
@@ -15,12 +14,7 @@ import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.luck.picture.lib.basic.PictureSelector
 import com.luck.picture.lib.entity.LocalMedia
-import com.luck.picture.lib.interfaces.OnExternalPreviewEventListener
-import com.luck.picture.lib.style.PictureSelectorStyle
-import com.luck.picture.lib.style.SelectMainStyle
-import com.luck.picture.lib.style.TitleBarStyle
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.utils.AppContants
@@ -42,7 +36,6 @@ import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.CapturedPictureViewViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDSensorDataHistoryViewModel
-import com.shmedo.mcloudapp.utils.image.GlideEngine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -63,7 +56,6 @@ class UDSensorDataHistoryFragment : BaseFragment() {
     private val modelFieldJsonPathList: MutableList<String> = arrayListOf()
 
     private val sensorIDList: MutableList<String> = arrayListOf()
-    private val mImageData: ArrayList<LocalMedia> = ArrayList()
     private val periodDateList: MutableList<String> = arrayListOf(
         "一天内",
         "三天内",
@@ -114,6 +106,7 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                     when (itemViewType) {
                         R.layout.item_ud_sensor_data_header -> {
                             val itemBinding = getBinding<ItemUdSensorDataHeaderBinding>()
+
                             if (mStates.modelName.get() == "抓拍图片") {
                                 itemBinding.tvValueName.visibility = View.GONE
                                 itemBinding.tvOptName.visibility = View.VISIBLE
@@ -129,6 +122,7 @@ class UDSensorDataHistoryFragment : BaseFragment() {
 
                         R.layout.item_ud_sensor_data -> {
                             val itemBinding = getBinding<ItemUdSensorDataBinding>()
+
                             itemBinding.tvIndex.text = modelPosition.toString()
                             itemBinding.clValue.visibility = mStates.modelName.get()
                                 .compareAndReturn("抓拍图片", View.GONE, View.VISIBLE)
@@ -165,30 +159,35 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                     ex.printStackTrace()
                 }
             }
-            R.id.tv_opt.onClick {
-                launchWithViewLifecycle {
-                    capturedPictureViewViewModel.mData.clear()
-                    withContext(Dispatchers.IO) {
-                        binding.recyclerview.mutable.map {
-                            if (it is Map<*, *>) {
-                                val filePath = it["filePath"] as String
-                                val shortFileName = it["fileName"] as String
-                                capturedPictureViewViewModel.mData.add(LocalMedia.generateHttpAsLocalMedia(
-                                    filePath
-                                )
-                                    .apply {
-                                        fileName = shortFileName
-                                    })
-                            }
-                        }
-                    }
 
-                    nav().navigate(
-                        R.id.action_global_to_capturedPictureViewFragment,
-                        CapturedPictureViewFragment.newBundleArguments(modelPosition)
-                    )
+            R.id.tv_opt.onClick {
+                processPictureViewClick(modelPosition - 1)
+            }
+        }
+    }
+
+    private fun processPictureViewClick(position: Int) {
+        launchWithViewLifecycle {
+            capturedPictureViewViewModel.mData.clear()
+            withContext(Dispatchers.IO) {
+                binding.recyclerview.mutable.map {
+                    if (it is Map<*, *>) {
+                        val filePath = it["filePath"] as String
+                        val shortFileName = it["fileName"] as String
+                        capturedPictureViewViewModel.mData.add(LocalMedia.generateHttpAsLocalMedia(
+                            filePath
+                        )
+                            .apply {
+                                fileName = shortFileName
+                            })
+                    }
                 }
             }
+
+            nav().navigate(
+                R.id.action_global_to_capturedPictureViewFragment,
+                CapturedPictureViewFragment.newBundleArguments(position)
+            )
         }
     }
 
@@ -201,7 +200,7 @@ class UDSensorDataHistoryFragment : BaseFragment() {
             ProductType.U_D_1, ProductType.U_D_2 -> {
                 modelNameList.addAll(
                     arrayListOf(
-                        "液面高程",
+                        "液位海拔",
                         "空高距离",
                         "安装角度",
                         "抓拍图片"
@@ -451,53 +450,6 @@ class UDSensorDataHistoryFragment : BaseFragment() {
             currentPage = binding.refreshLayout.index,
             pageSize = PAGE_SIZE
         )
-    }
-
-    /**
-     * 打开预览
-     */
-    private fun openPreview(currentPosition: Int) {
-        // 预览图片、视频、音频
-        PictureSelector.create(requireContext()).openPreview()
-            .setImageEngine(GlideEngine.createGlideEngine())
-            .setSelectorUIStyle(getUIStyle())
-            .setExternalPreviewEventListener(ImagePreviewEventListener())
-            .isHidePreviewDownload(false)
-            .startActivityPreview(currentPosition, false, mImageData)
-    }
-
-    private fun getUIStyle(): PictureSelectorStyle {
-        val whiteTitleBarStyle = TitleBarStyle().apply {
-            titleBackgroundColor = ColorUtils.getColor(R.color.white)
-            titleLeftBackResource = R.drawable.ic_arrow_back_black
-            titleTextColor = ColorUtils.getColor(R.color.title_text_color)
-            titleDefaultText = "返回"
-            isDisplayTitleBarLine = false
-        }
-        val mSelectMainStyle = SelectMainStyle().apply {
-            statusBarColor = ColorUtils.getColor(R.color.white)
-            isDarkStatusBarBlack = true
-            previewBackgroundColor = ColorUtils.getColor(R.color.main_bg_gray)
-        }
-
-
-        return PictureSelectorStyle().apply {
-            titleBarStyle = whiteTitleBarStyle
-            selectMainStyle = mSelectMainStyle
-        }
-    }
-
-    /**
-     * 外部预览监听事件
-     */
-    private inner class ImagePreviewEventListener : OnExternalPreviewEventListener {
-        override fun onPreviewDelete(position: Int) {
-
-        }
-
-        override fun onLongPressDownload(context: Context?, media: LocalMedia?): Boolean {
-            return false
-        }
     }
 
     override fun onResume() {

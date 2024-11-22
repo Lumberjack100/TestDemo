@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_size_10"
-                android:text="液面高程："
+                android:text="液位海拔："
                 android:textColor="@color/title_text_color_black_90"
                 android:textSize="@dimen/page_content_item_text_size_14" />
 

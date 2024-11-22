@@ -58,7 +58,7 @@
             android:maxLines="1"
             android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_13"
-            tools:text="液面高程" />
+            tools:text="液位海拔" />
 
         <!-- 值列 -->
         <androidx.constraintlayout.widget.ConstraintLayout
