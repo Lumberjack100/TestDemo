@@ -14,7 +14,7 @@ data class MRRS485Port2CollectionParamEntity(
     val colladdr: String = "",//采集器地址
     val colltype: String = "",//采集器类型
     val noresp: String = "",//超时次数/无应答次数
-    val collcycle: String = "",//采集次数
+    val collround: String = "",//采集次数
     val collfreq: String = "",//采集频率
     val powerontimes: String = "",//延时时间 s
 ) {
