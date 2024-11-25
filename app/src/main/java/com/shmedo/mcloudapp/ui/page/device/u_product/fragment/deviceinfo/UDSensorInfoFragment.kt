@@ -236,10 +236,8 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "电台模块",
                     value = when (stateInfo.radioStatus) {
                         "0" -> "正常"
-                        "-1" -> "未连接"
                         "-2" -> "数据异常"
                         "-3" -> "模块异常"
-                        "-4" -> "未开启"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.radioStatus == "-2" || stateInfo.radioStatus == "-3") ColorUtils.getColor(
