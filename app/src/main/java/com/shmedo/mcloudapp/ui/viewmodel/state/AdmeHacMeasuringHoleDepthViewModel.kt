@@ -4,17 +4,17 @@ import androidx.lifecycle.ViewModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 class AdmeHacMeasuringHoleDepthViewModel : ViewModel() {
-    val isEditable = NonNullObservableField(true)
     val isAutoMeasuringMode = NonNullObservableField(true)
     val decentralizedEnable = NonNullObservableField(true)//进入页面默认自动测孔深，需要打开堵转检测使能
 
     val address = NonNullObservableField("")//MAC 地址
-    val areano = NonNullObservableField("")//区号
+    val projectNum = NonNullObservableField("")//项目编号
+    val areaNum = NonNullObservableField("")//区号
     val downSpeed = NonNullObservableField("")//下放速度(r/min)
     val speed = NonNullObservableField("")//速度(r/min)
     val measureWay = NonNullObservableField("")//测量方式
 
-    val runButtonText = NonNullObservableField("启动")//孔号
+    val runButtonText = NonNullObservableField("启动")//
 
     //自动测孔深
     val realHoleDepth = NonNullObservableField("")// 实测孔深

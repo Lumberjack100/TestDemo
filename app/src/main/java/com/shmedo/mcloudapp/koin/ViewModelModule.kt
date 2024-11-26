@@ -17,6 +17,7 @@
 package com.shmedo.mcloudapp.koin
 
 
+import com.shmedo.mcloudapp.ui.viewmodel.request.AdmeConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.AppUpdateViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
@@ -38,6 +39,8 @@ val viewModelModule = module {
     viewModel { RequestSearchViewModel(get()) }
     viewModel { AppUpdateViewModel(get(), get()) }
     viewModel { LoginRequestViewModel(get()) }
+    viewModel { AdmeConfigViewModel(get(), get()) }
+
 
 //  viewModel { (posterId: Long) -> PosterDetailViewModel(posterId, get()) }
 }

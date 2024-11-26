@@ -16,6 +16,7 @@
 
 package com.shmedo.core.data.koin
 
+import com.shmedo.core.data.repository.AdmeConfigRepositoryImp
 import com.shmedo.core.data.repository.AppUpdateRepositoryImp
 import com.shmedo.core.data.repository.DeviceInteractiveRepositoryImp
 import com.shmedo.core.data.repository.DeviceManageRepositoryImp
@@ -28,5 +29,6 @@ val repositoryModule = module {
     single { AppUpdateRepositoryImp() }
     single { DeviceManageRepositoryImp() }
     single { DeviceInteractiveRepositoryImp() }
+    single { AdmeConfigRepositoryImp() }
     single { LocationRepositoryImp(get()) }
 }

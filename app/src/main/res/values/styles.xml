@@ -1,4 +1,4 @@
-<resources xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.mCloudApp" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>  <!-- actionbar颜色-->
@@ -274,7 +274,6 @@
         <item name="android:textSize">@dimen/page_content_item_text_size_14</item>
     </style>
 
-
     <!--设备运行状态单条基本信息样式-->
     <style name="DeviceCurrentState_Item_Layout_Style">
         <item name="android:layout_width">match_parent</item>
@@ -383,6 +382,18 @@
         <item name="colorSecondary">@color/colorPrimary_10</item>
         <item name="colorOnSecondary">@color/colorPrimary</item>
         <item name="colorOnSurface">@color/colorPrimary_10</item>
+    </style>
+
+    <style name="MaterialAutoCompleteTextView_Style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingEnd">0dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:inputType">text</item>
+        <item name="android:textColor">@color/sub_title_text_color_black_60</item>
+        <item name="android:textSize">@dimen/page_content_item_text_size_14</item>
     </style>
 
 </resources>

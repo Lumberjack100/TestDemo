@@ -11,7 +11,6 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.adme.AdmeStepperMotorEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
@@ -27,15 +26,16 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentAdmeIntelligentControlBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeIntelligentControlViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.databinding.FragmentAdmeIntelligentControlBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeIntelligentControlViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -187,6 +187,9 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
+        /**
+         * 清空设备下降次数
+         */
         fun onClearDeviceDropNumberClick() {
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
@@ -206,6 +209,9 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
             }, "取消")
         }
 
+        /**
+         * 清空设备运行里程
+         */
         fun onClearDeviceMileageClick() {
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
@@ -225,6 +231,9 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
             }, "取消")
         }
 
+        /**
+         * 清空竖向磁开关触发次数
+         */
         fun onClearVerticalMagneticSwitchTriggerClick() {
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
@@ -244,6 +253,9 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
             }, "取消")
         }
 
+        /**
+         * 清空旋转磁开关触发次数
+         */
         fun onClearRotationMagneticSwitchTriggerClick() {
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
@@ -263,6 +275,9 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
             }, "取消")
         }
 
+        /**
+         * 清空刹车片启闭次数
+         */
         fun onClearPadOpenCloseClick() {
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))

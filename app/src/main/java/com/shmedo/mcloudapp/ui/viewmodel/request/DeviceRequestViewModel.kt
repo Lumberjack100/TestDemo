@@ -48,7 +48,7 @@ import timber.log.Timber
  */
 class DeviceRequestViewModel(
     private val deviceManageRepositoryImp: DeviceManageRepositoryImp,
-    private val loggerRepositoryImp: LoggerRepositoryImp
+    loggerRepositoryImp: LoggerRepositoryImp
 ) : BaseRequestViewModel(loggerRepositoryImp) {
 
     private val _deviceStatisticInfoResult = MutableResult<DataResult<DeviceStatisticInfo>>()

@@ -4,8 +4,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.view.View
 import android.view.WindowManager
+import android.widget.AdapterView
 import android.widget.CompoundButton
-import androidx.core.widget.addTextChangedListener
+import androidx.core.widget.doAfterTextChanged
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.RegexUtils
@@ -15,6 +16,7 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.hac.HacMeasuringHoleDepthInfoEntity
@@ -43,27 +45,36 @@ import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.hac.dialog.AdmeHacAutoMeasuringHoleDepthBottomDialog
 import com.shmedo.mcloudapp.ui.page.device.hac.dialog.AdmeHacManualMeasuringHoleDepthBottomDialog
+import com.shmedo.mcloudapp.ui.viewmodel.request.AdmeConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeHacMeasuringHoleDepthViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.utils.IOTRegexContants
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import kotlin.math.abs
 
 class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentAdmeHacMeasuringHoleDepthBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
+    private val admeConfigViewModel: AdmeConfigViewModel by viewModel()
     private lateinit var mStates: AdmeHacMeasuringHoleDepthViewModel
     private val iotParseManager: IOTParserManager by inject()
 
     private val measureWayList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_hole_depth_method) }
     private val motionTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_hole_depth_motor_motion_type) }
 
-    private var safeDistance: String = "" //安全距离补偿
-    private val holeNumList = ArrayList<String>()
+    private val projectNumList = arrayListOf<String>()
+    private val areaNumList = arrayListOf<String>()
+    private val holeNumList = arrayListOf<String>()
     private val holeAreaDepthInfoArrayList = ArrayList<HacHoleAreaDepthInfo>()
+    private var configProjectNum: String = "" //之前配置的项目编号
+    private var configAreaNum: String = "" //之前配置的区域编号
+    private var configHoleNum: String = "" //之前配置的孔编号
+
+    private var safeDistance: String = "" //安全距离补偿
 
     private var autoMeasuringHoleDepthBottomDialog: AdmeHacAutoMeasuringHoleDepthBottomDialog? =
         null
@@ -100,7 +111,10 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         }
         toolbarViewModel.toolbarIvActionVisible.set(false)
         initRefresh()
-        initTextChangedListener()
+        initOtherListener()
+        setProjectNumberAdapter()
+        setAreaNumberAdapter()
+        setHoleNumberAdapter()
     }
 
     private fun initRefresh() {
@@ -115,33 +129,70 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initTextChangedListener() {
+    private fun setProjectNumberAdapter() {
+        binding.projectNum.setSimpleItems(projectNumList.toTypedArray())
+        binding.projectNum.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                mStates.projectNum.set(projectNumList[position])
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+    }
+
+    private fun setAreaNumberAdapter() {
+        binding.areaNum.setSimpleItems(areaNumList.toTypedArray())
+        binding.areaNum.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                mStates.areaNum.set(areaNumList[position])
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+    }
+
+    private fun setHoleNumberAdapter() {
         binding.etHoleNum.setDatas(holeNumList)
-        binding.etHoleNum.addTextChangedListener(afterTextChanged = { text: Editable? ->
+        binding.etHoleNum.doAfterTextChanged { text: Editable? ->
             if (text.isNullOrEmpty()) {
-                return@addTextChangedListener
+                return@doAfterTextChanged
             }
             if (holeNumList.contains(text.toString())) {
                 mStates.runButtonText.set("重测孔深")
             } else {
                 mStates.runButtonText.set("启动")
-                mStates.areano.set("")
+                mStates.areaNum.set("")
             }
-        })
+        }
         binding.etHoleNum.setOnPopupItemClickListener { text ->
             try {
                 holeAreaDepthInfoArrayList.forEach {
                     if (it.holeno == text) {
-                        mStates.areano.set(it.areano)
+                        mStates.areaNum.set(it.areano)
                     }
                 }
             } catch (ex: Exception) {
                 ex.printStackTrace()
             }
         }
-        binding.etMotorSpeed.addTextChangedListener(afterTextChanged = { text: Editable? ->
+    }
+
+    private fun initOtherListener() {
+        binding.etMotorSpeed.doAfterTextChanged { text: Editable? ->
             if (text.isNullOrEmpty()) {
-                return@addTextChangedListener
+                return@doAfterTextChanged
             }
             if (mStates.motionType.get() == motionTypeList[0]) {
                 val speed = text.toString().toInt()
@@ -149,7 +200,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                     showMessageDialog("上拉触发磁开关最大速度为 10！")
                 }
             }
-        })
+        }
     }
 
     override fun initData() {
@@ -177,6 +228,67 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         } else {
             mStates.speed.set(MmkvCacheUtil.getAdmeManualLastMotorDropSpeed())
             mStates.distanceGoal.set(MmkvCacheUtil.getAdmeManualLastMotorDropDistance())
+        }
+    }
+
+    private fun loadAdmeConfigData() {
+        launchWithViewLifecycle {
+            try {
+                //查询所有项目编号
+                admeConfigViewModel.queryAllProjectID()?.let {
+                    projectNumList.clear()
+                    projectNumList.addAll(it)
+                    binding.projectNum.setSimpleItems(projectNumList.toTypedArray())
+                }
+                //根据设备SN查询配置信息
+                admeConfigViewModel.queryConfigByDeviceSN(deviceInfo.deviceToken)
+                    ?.let { configInfo ->
+                        val configMap: Map<String, String> =
+                            if (configInfo.config.isEmpty()) mapOf() else MoshiUtil.fromJson<Map<String, String>>(
+                                configInfo.config
+                            ) ?: mapOf()
+
+                        val realHoleDepth = configMap["realHoleDepth"] ?: ""
+                        val recommendHoleDepth = configMap["recommendHoleDepth"] ?: ""
+                        //val waitTime = configMap["waitTime"] ?: ""
+                        mStates.realHoleDepth.set(realHoleDepth)
+                        mStates.recommendHoleDepth.set(recommendHoleDepth)
+
+                        configProjectNum = configInfo.projectID
+                        configAreaNum = configInfo.areaNumber
+                        configHoleNum = configInfo.holeNumber
+                    }
+                projectNumList.indexOf(configProjectNum).let { index ->
+                    if (index != -1) {
+                        binding.projectNum.setSelection(index)
+                    }
+                    //根据项目号查询所有区域编号
+                    admeConfigViewModel.queryAllAreaID(configProjectNum)?.let {
+                        areaNumList.clear()
+                        areaNumList.addAll(it)
+                        binding.areaNum.setSimpleItems(areaNumList.toTypedArray())
+                        areaNumList.indexOf(configAreaNum).let { index ->
+                            if (index != -1) {
+                                binding.areaNum.setSelection(index)
+                            }
+                            //根据项目号、区域号查询所有孔编号
+                            admeConfigViewModel.queryAllHoleNumber(configProjectNum, configAreaNum)
+                                ?.let {
+                                    holeNumList.clear()
+                                    holeNumList.addAll(it)
+                                    binding.etHoleNum.setDatas(holeNumList)
+                                    holeNumList.indexOf(configHoleNum).let { index ->
+                                        if (index != -1) {
+                                            binding.etHoleNum.setText(configHoleNum)
+                                        }
+                                    }
+                                }
+                        }
+                    }
+                }
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
         }
     }
 
@@ -259,7 +371,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             showMessageDialog("请设置孔号!")
             return
         }
-        if (mStates.areano.get().isEmpty()) {
+        if (mStates.areaNum.get().isEmpty()) {
             showMessageDialog("请设置区号!")
             return
         }
@@ -351,7 +463,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             model = "0",
             address = mStates.address.get(),
             holeno = binding.etHoleNum.text.toString(),
-            areano = mStates.areano.get(),
+            areano = mStates.areaNum.get(),
             lowtbtss = "1",//自动测孔深，默认打开下放堵转检测
             motorspeed = mStates.downSpeed.get(),
             measway = "0",
@@ -379,7 +491,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             model = "0",
             address = mStates.address.get(),
             holeno = binding.etHoleNum.text.toString(),
-            areano = mStates.areano.get(),
+            areano = mStates.areaNum.get(),
             lowtbtss = if (mStates.decentralizedEnable.get()) "1" else "0",
             motorspeed = mStates.speed.get(),
             measway = "1",
@@ -453,7 +565,9 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     }
 
     override fun lazyLoadData() {
-        binding.refreshLayout.autoRefresh()
+//        binding.refreshLayout.autoRefresh()
+        loadAdmeConfigData()
+
     }
 
     private fun queryParamData() {
@@ -477,7 +591,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.ADME_HAC_MD_GET_HOLE_MEASURE_PULSE,
-            -> {
+                -> {
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
                     isDismissLoadingDialog = isDismissLoadingDialog,
