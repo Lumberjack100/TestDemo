@@ -7,6 +7,7 @@ import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.drake.brv.utils.setup
+import com.hjq.toast.ToastParams
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
@@ -20,10 +21,12 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentMr702EquipmentOperationBinding
+import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.DeviceLogUploadModule
@@ -61,6 +64,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
     private val monitoringElementList = arrayListOf<MonitoringElement>()
+    private var takePhotoLoadingDialogId = ""
 
 
     override fun initViewModel() {
@@ -82,11 +86,9 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentMr702EquipmentOperationBinding
         binding.llToolbar.toolbar.title = "设备操作"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         initModuleAdapter()
@@ -126,10 +128,10 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
             return
         }
         when (module.functionModule) {
-            is TimeCalibrationModule -> {
+            is TimeCalibrationModule -> {//时间校准
                 commandItems.clear()
                 val command =
-                    IOTCommandUtil.getCommand(IOTCommandType.QUERY_TERMINAL_TIME)//QUERY_TERMINAL_TIME  MD_MR_GET_SYSTEM_TIME
+                    IOTCommandUtil.getCommand(IOTCommandType.QUERY_TERMINAL_TIME)
                 commandItems.add(command)
 
                 if (communicateWay is BleConnect) {
@@ -139,10 +141,10 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 sendCommandFromCmdList(isStartTimeoutJob = true)
             }
 
-            is TelemetryDataModule -> {
+            is TelemetryDataModule -> {//遥测数据
                 commandItems.clear()
                 val command =
-                    IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE)//QUERY_SAMPLE  MD_MR_TELEMETRY
+                    IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE)
                 commandItems.add(command)
 
                 if (communicateWay is BleConnect) {
@@ -152,26 +154,37 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 sendCommandFromCmdList(isStartTimeoutJob = true)
             }
 
-            is ManualSettingModule -> {
+            is ManualSettingModule -> {//人工置数
                 mStates.isManualSetting.set(false)
                 showManualSettingPopup()
             }
 
-            is DeviceLogUploadModule -> {
+            is DeviceLogUploadModule -> {//数据上传
                 mStates.isDeviceDataUploading.set(false)
                 showDeviceDataUploadPopup()
             }
 
-            is ParameterExportModule -> {
+            is ParameterExportModule -> {//参数导出
                 mStates.isParamExporting.set(false)
                 showParameterExportPopup()
             }
 
-            is ParameterImportModule -> {
+            is ParameterImportModule -> {//参数导入
                 mStates.isParamImporting.set(false)
                 mStates.sn.set(deviceInfo.deviceToken)
                 mStates.deviceId.set(deviceInfo.id.toString())
                 showParameterImportPopup()
+            }
+
+            is ManualPhotoTakingModule -> {//手动拍照
+                commandItems.clear()
+                val command =
+                    IOTCommandUtil.getCommand(IOTCommandType.MD_MR_TAKE_PHOTOS, "action=1&linkid=1")
+                commandItems.add(command)
+
+                takePhotoLoadingDialogId =
+                    showLoadingWithUUID(StringUtils.getString(R.string.processing))
+                sendCommandFromCmdList(isStartTimeoutJob = true)
             }
 
             else -> {
@@ -258,7 +271,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                     commandItems.clear()
                     val command = IOTCommandUtil.getCommand(
                         IOTCommandType.MD_MR_UPLOAD_FILE,
-                        "typre=$type&timeframe=$time"
+                        "type=$type&timeframe=$time"
                     )
                     commandItems.add(command)
                     sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -376,25 +389,57 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    /**
+     * 4G 下发指令响应失败
+     */
     override fun doCmdResponseResultError(
         cmdStr: String,
         errMsg: String,
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
-//        super.doCmdResponseResultError(errorMsg)
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_MR_TAKE_PHOTOS -> {
+                dismissLoadingDialog(takePhotoLoadingDialogId)
+                super.doCmdResponseResultError(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
+            }
+
+            else -> {
+            }
+        }
         mStates.isResponseLoading.set(false)
         mStates.isResponseSuccess.set(false)
         mStates.responseContent.set(errMsg)
     }
 
+    /**
+     * 4G 下发指令响应超时
+     */
     override fun doCmdResponseResultTimeOut(
         cmdStr: String,
         errMsg: String,
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
-//        super.doCmdResponseResultTimeOut(errorMsg)
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_MR_TAKE_PHOTOS -> {
+                dismissLoadingDialog(takePhotoLoadingDialogId)
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
+            }
+
+            else -> {
+            }
+        }
         mStates.isResponseLoading.set(false)
         mStates.isResponseSuccess.set(false)
         mStates.responseContent.set("设备未响应")
@@ -407,13 +452,28 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean,
         errMsg: String
     ) {
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = false,
-            isMessageDialog = isMessageDialog,
-            errMsg = errMsg
-        )
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_MR_TAKE_PHOTOS -> {
+                dismissLoadingDialog(takePhotoLoadingDialogId)
+                super.showNearbyCommunicationTimeoutAlert(
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = true,
+                    isMessageDialog = true,
+                    errMsg = "设备未响应"
+                )
+            }
+
+            else -> {
+                super.showNearbyCommunicationTimeoutAlert(
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = false,
+                    isMessageDialog = isMessageDialog,
+                    errMsg = errMsg
+                )
+            }
+        }
         mStates.isResponseLoading.set(false)
         mStates.isResponseSuccess.set(false)
         mStates.responseContent.set("设备未响应")
@@ -524,7 +584,6 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         handleFailureResult(result.message, isShowErrMsg = false)
-
                         mStates.isResponseLoading.set(false)
                         mStates.isResponseSuccess.set(false)
                         mStates.responseContent.set(result.message)
@@ -564,7 +623,6 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         handleFailureResult(result.message, isShowErrMsg = false)
-
                         mStates.isResponseLoading.set(false)
                         mStates.isResponseSuccess.set(false)
                         mStates.responseContent.set(result.message)
@@ -576,6 +634,27 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                         mStates.isResponseLoading.set(false)
                         mStates.isResponseSuccess.set(true)
                         mStates.responseContent.set("参数导入指令下发成功")
+                    }
+                }
+            }
+
+            IOTCommandType.MD_MR_TAKE_PHOTOS -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        dismissLoadingDialog(takePhotoLoadingDialogId)
+                        val errMsg = "抓拍失败: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            dismissLoadingDialog(takePhotoLoadingDialogId)
+                            Toaster.show(ToastParams().apply {
+                                text = "抓拍成功"
+                                duration = 1000
+                            })
+                        }
                     }
                 }
             }
