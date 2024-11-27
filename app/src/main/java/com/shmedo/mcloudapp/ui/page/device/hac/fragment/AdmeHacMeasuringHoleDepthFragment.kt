@@ -5,7 +5,9 @@ import android.text.Editable
 import android.view.View
 import android.view.WindowManager
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.CompoundButton
+import android.widget.Filter
 import androidx.core.widget.doAfterTextChanged
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
@@ -13,12 +15,14 @@ import com.blankj.utilcode.util.RegexUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.commonlib.utils.AppContants
+import com.shmedo.core.model.AdmeConfigInfo
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.hac.HacMeasuringHoleDepthInfoEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -129,62 +133,104 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun setProjectNumberAdapter() {
-        binding.projectNum.setSimpleItems(projectNumList.toTypedArray())
-        binding.projectNum.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                mStates.projectNum.set(projectNumList[position])
-            }
+    // 扩展函数：设置不过滤的下拉适配器
+    private fun MaterialAutoCompleteTextView.setUnfilteredAdapter(
+        items: List<String>,
+        onItemSelected: (String) -> Unit
+    ) {
+        val adapter = object : ArrayAdapter<String>(
+            context,
+            R.layout.simple_dropdown_item_line,
+            items
+        ) {
+            override fun getFilter(): Filter = object : Filter() {
+                override fun performFiltering(prefix: CharSequence?): FilterResults {
+                    return FilterResults().apply {
+                        values = items
+                        count = items.size
+                    }
+                }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
+                override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
+                    notifyDataSetChanged()
+                }
+            }
+        }
+        setAdapter(adapter)
+        onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+            onItemSelected(items[position])
+        }
+    }
+
+    private fun setProjectNumberAdapter() {
+        binding.projectNum.setUnfilteredAdapter(projectNumList) { projectNum ->
+            if (mStates.projectNum.get() == projectNum) {
+                return@setUnfilteredAdapter
+            }
+            mStates.projectNum.set(projectNum)
+            //清空下级选项
+            mStates.areaNum.set("")
+            mStates.holeNum.set("")
+
+            launchWithViewLifecycle {
+                try {
+                    admeConfigViewModel.queryAllAreaID(projectNum)?.let { areaList ->
+                        areaNumList.clear()
+                        areaNumList.addAll(areaList)
+//                        setAreaNumberAdapter()
+                    }
+                } catch (ex: Exception) {
+                    Timber.e(ex, "Failed to load area IDs")
+                }
             }
         }
     }
 
     private fun setAreaNumberAdapter() {
-        binding.areaNum.setSimpleItems(areaNumList.toTypedArray())
-        binding.areaNum.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                mStates.areaNum.set(areaNumList[position])
+        binding.areaNum.setUnfilteredAdapter(areaNumList) { areaNum ->
+            if (mStates.areaNum.get() == areaNum) {
+                return@setUnfilteredAdapter
             }
+            mStates.areaNum.set(areaNum)
+            mStates.holeNum.set("")
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
+            launchWithViewLifecycle {
+                try {
+                    admeConfigViewModel.queryAllHoleNumber(
+                        mStates.projectNum.get(),
+                        areaNum
+                    )?.let { holeList ->
+                        holeNumList.clear()
+                        holeNumList.addAll(holeList)
+//                        setHoleNumberAdapter()
+                    }
+                } catch (ex: Exception) {
+                    Timber.e(ex, "Failed to load hole numbers")
+                }
             }
         }
     }
 
     private fun setHoleNumberAdapter() {
-        binding.etHoleNum.setDatas(holeNumList)
-        binding.etHoleNum.doAfterTextChanged { text: Editable? ->
-            if (text.isNullOrEmpty()) {
-                return@doAfterTextChanged
+        binding.holeNum.setUnfilteredAdapter(holeNumList) { holeNum ->
+            if (mStates.holeNum.get() == holeNum) {
+                return@setUnfilteredAdapter
             }
-            if (holeNumList.contains(text.toString())) {
-                mStates.runButtonText.set("重测孔深")
-            } else {
-                mStates.runButtonText.set("启动")
-                mStates.areaNum.set("")
-            }
-        }
-        binding.etHoleNum.setOnPopupItemClickListener { text ->
-            try {
-                holeAreaDepthInfoArrayList.forEach {
-                    if (it.holeno == text) {
-                        mStates.areaNum.set(it.areano)
-                    }
+            mStates.holeNum.set(holeNum)
+            launchWithViewLifecycle {
+                try {
+                    //加载孔号配置信息
+                    admeConfigViewModel.queryConfigByHoleNumber(
+                        mStates.projectNum.get(),
+                        mStates.areaNum.get(),
+                        holeNum
+                    )
+                        ?.let { configInfo ->
+                            handleConfigInfo(configInfo)
+                        }
+                } catch (ex: Exception) {
+                    Timber.e(ex, "Failed to load area IDs")
                 }
-            } catch (ex: Exception) {
-                ex.printStackTrace()
             }
         }
     }
@@ -234,61 +280,68 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     private fun loadAdmeConfigData() {
         launchWithViewLifecycle {
             try {
-                //查询所有项目编号
-                admeConfigViewModel.queryAllProjectID()?.let {
+                //1. 加载项目编号列表
+                admeConfigViewModel.queryAllProjectID()?.let { projectIds ->
                     projectNumList.clear()
-                    projectNumList.addAll(it)
-                    binding.projectNum.setSimpleItems(projectNumList.toTypedArray())
+                    projectNumList.addAll(projectIds)
+//                    setProjectNumberAdapter()
                 }
-                //根据设备SN查询配置信息
+
+                //2. 加载设备配置信息
                 admeConfigViewModel.queryConfigByDeviceSN(deviceInfo.deviceToken)
                     ?.let { configInfo ->
-                        val configMap: Map<String, String> =
-                            if (configInfo.config.isEmpty()) mapOf() else MoshiUtil.fromJson<Map<String, String>>(
-                                configInfo.config
-                            ) ?: mapOf()
-
-                        val realHoleDepth = configMap["realHoleDepth"] ?: ""
-                        val recommendHoleDepth = configMap["recommendHoleDepth"] ?: ""
-                        //val waitTime = configMap["waitTime"] ?: ""
-                        mStates.realHoleDepth.set(realHoleDepth)
-                        mStates.recommendHoleDepth.set(recommendHoleDepth)
-
-                        configProjectNum = configInfo.projectID
-                        configAreaNum = configInfo.areaNumber
-                        configHoleNum = configInfo.holeNumber
+                        handleConfigInfo(configInfo)
                     }
-                projectNumList.indexOf(configProjectNum).let { index ->
-                    if (index != -1) {
-                        binding.projectNum.setSelection(index)
-                    }
-                    //根据项目号查询所有区域编号
-                    admeConfigViewModel.queryAllAreaID(configProjectNum)?.let {
+
+                //3. 如果有已配置的项目号，加载对应的区域号列表
+                if (configProjectNum.isNotEmpty() && projectNumList.contains(configProjectNum)) {
+                    mStates.projectNum.set(configProjectNum)
+                    admeConfigViewModel.queryAllAreaID(configProjectNum)?.let { areaList ->
                         areaNumList.clear()
-                        areaNumList.addAll(it)
-                        binding.areaNum.setSimpleItems(areaNumList.toTypedArray())
-                        areaNumList.indexOf(configAreaNum).let { index ->
-                            if (index != -1) {
-                                binding.areaNum.setSelection(index)
-                            }
-                            //根据项目号、区域号查询所有孔编号
-                            admeConfigViewModel.queryAllHoleNumber(configProjectNum, configAreaNum)
-                                ?.let {
-                                    holeNumList.clear()
-                                    holeNumList.addAll(it)
-                                    binding.etHoleNum.setDatas(holeNumList)
-                                    holeNumList.indexOf(configHoleNum).let { index ->
-                                        if (index != -1) {
-                                            binding.etHoleNum.setText(configHoleNum)
-                                        }
-                                    }
-                                }
-                        }
+                        areaNumList.addAll(areaList)
+//                        setAreaNumberAdapter()
                     }
                 }
+
+                //4. 如果有已配置的区域号，加载对应的孔号列表
+                if (configAreaNum.isNotEmpty() && areaNumList.contains(configAreaNum)) {
+                    mStates.areaNum.set(configAreaNum)
+                    admeConfigViewModel.queryAllHoleNumber(configProjectNum, configAreaNum)
+                        ?.let { holeList ->
+                            holeNumList.clear()
+                            holeNumList.addAll(holeList)
+//                            setHoleNumberAdapter()
+
+                            if (holeNumList.contains(configHoleNum)) {
+                                mStates.holeNum.set(configHoleNum)
+                                mStates.runButtonText.set("重测孔深")
+                            }
+                        }
+                }
             } catch (ex: Exception) {
+                Timber.e(ex, "Failed to load config data")
                 ex.printStackTrace()
             }
+        }
+    }
+
+    //处理配置信息
+    private fun handleConfigInfo(configInfo: AdmeConfigInfo) {
+        try {
+            val configMap = if (configInfo.config.isEmpty()) {
+                mapOf()
+            } else {
+                MoshiUtil.fromJson<Map<String, String>>(configInfo.config) ?: mapOf()
+            }
+
+            mStates.realHoleDepth.set(configMap["realHoleDepth"].orEmpty())
+            mStates.recommendHoleDepth.set(configMap["recommendHoleDepth"].orEmpty())
+
+            configProjectNum = configInfo.projectID
+            configAreaNum = configInfo.areaNumber
+            configHoleNum = configInfo.holeNumber
+        } catch (ex: Exception) {
+            Timber.e(ex, "Failed to parse config info")
         }
     }
 
@@ -367,7 +420,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             showMessageDialog("请输入正确的Mac地址!")
             return
         }
-        if (binding.etHoleNum.toString().isEmpty()) {
+        if (binding.holeNum.toString().isEmpty()) {
             showMessageDialog("请设置孔号!")
             return
         }
@@ -462,7 +515,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         val entity = HacMeasuringHoleDepthInfoEntity(
             model = "0",
             address = mStates.address.get(),
-            holeno = binding.etHoleNum.text.toString(),
+            holeno = binding.holeNum.text.toString(),
             areano = mStates.areaNum.get(),
             lowtbtss = "1",//自动测孔深，默认打开下放堵转检测
             motorspeed = mStates.downSpeed.get(),
@@ -490,7 +543,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
         val entity = HacMeasuringHoleDepthInfoEntity(
             model = "0",
             address = mStates.address.get(),
-            holeno = binding.etHoleNum.text.toString(),
+            holeno = binding.holeNum.text.toString(),
             areano = mStates.areaNum.get(),
             lowtbtss = if (mStates.decentralizedEnable.get()) "1" else "0",
             motorspeed = mStates.speed.get(),
@@ -737,12 +790,6 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList()
-                        //电机停止,更新运动状态页面
-//                        if (mStates.isAutoMeasuringMode.get()) {
-//                            mStates.isExitButtonVisible.set(true)
-//                        } else {
-//                            mStates.isExitButtonVisible.set(mStates.isDoManualStopAction.get())
-//                        }
                     }
                 }
             }
@@ -758,15 +805,15 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             mStates.address.set(hacMeasuringHoleDepthInfo.address)
             mStates.decentralizedEnable.set(hacMeasuringHoleDepthInfo.lowtbtss == "1")
 
-            holeNumList.clear()
-            holeAreaDepthInfoArrayList.clear()
-            if (hacMeasuringHoleDepthInfo.holelist.isNotEmpty()) {
-                holeAreaDepthInfoArrayList.addAll(hacMeasuringHoleDepthInfo.holelist)
-                holeAreaDepthInfoArrayList.forEach {
-                    holeNumList.add(it.holeno)
-                }
-            }
-            binding.etHoleNum.setDatas(holeNumList)
+//            holeNumList.clear()
+//            holeAreaDepthInfoArrayList.clear()
+//            if (hacMeasuringHoleDepthInfo.holelist.isNotEmpty()) {
+//                holeAreaDepthInfoArrayList.addAll(hacMeasuringHoleDepthInfo.holelist)
+//                holeAreaDepthInfoArrayList.forEach {
+//                    holeNumList.add(it.holeno)
+//                }
+//            }
+//            binding.holeNum.setDatas(holeNumList)
         } catch (ex: Exception) {
             ex.printStackTrace()
         }

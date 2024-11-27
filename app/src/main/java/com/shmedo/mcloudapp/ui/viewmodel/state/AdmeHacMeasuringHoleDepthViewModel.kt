@@ -10,6 +10,8 @@ class AdmeHacMeasuringHoleDepthViewModel : ViewModel() {
     val address = NonNullObservableField("")//MAC 地址
     val projectNum = NonNullObservableField("")//项目编号
     val areaNum = NonNullObservableField("")//区号
+    val holeNum = NonNullObservableField("")//孔号
+
     val downSpeed = NonNullObservableField("")//下放速度(r/min)
     val speed = NonNullObservableField("")//速度(r/min)
     val measureWay = NonNullObservableField("")//测量方式

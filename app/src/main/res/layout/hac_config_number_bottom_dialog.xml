@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.page.device.hac.dialog.HacConfigNumberViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseDialogClickProxy" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        drawable_radiusLT="@{10}"
+        drawable_radiusRT="@{10}"
+        drawable_solidColor="@{@color/white}"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:background="@color/white">
+
+        <include
+            android:id="@+id/popup_head"
+            layout="@layout/common_bottom_dialog_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:click="@{click}"
+            app:stateVM="@{stateVM}" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_number"
+            drawable_radius="@{4}"
+            drawable_solidColor="@{@color/black_3}"
+            android:layout_width="200dp"
+            android:layout_height="@dimen/dimen_size_45"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginVertical="@dimen/dimen_size_10"
+            android:gravity="center_vertical|start"
+            android:hint="请输入编号"
+            android:maxLength="10"
+            android:maxLines="1"
+            android:paddingStart="@dimen/dimen_size_5"
+            android:text="@={stateVM.number}"
+            android:textColor="@color/sub_title_text_color"
+            android:textSize="@dimen/text_size_15"
+            tools:background="@color/black_3" />
+
+        <com.google.android.material.button.MaterialButton
+            style="@style/SubmitButton_Style2"
+            onClickWithDebouncing="@{()->click.onConfirmClick()}"
+            android:layout_marginHorizontal="@dimen/dimen_size_10"
+            android:layout_marginVertical="@dimen/dimen_size_15"
+            android:text="@string/sure_button_text"
+            tools:backgroundTint="@color/colorPrimary" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>
