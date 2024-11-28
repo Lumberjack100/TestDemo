@@ -70,9 +70,9 @@ class HacConfigNumberBottomDialog(
     }
 
     private fun setupInputListeners() {
-        // Prefix input filter
-        val prefixFilter = InputFilter { source, start, end, dest, dstart, dend ->
-            val pattern = "^[A-Z]*$".toRegex()
+        // Allow both letters and numbers
+        val inputFilter = InputFilter { source, start, end, dest, dstart, dend ->
+            val pattern = "^[A-Z0-9]*$".toRegex()
             val newText = dest.subSequence(0, dstart).toString() +
                     source.subSequence(start, end) +
                     dest.subSequence(dend, dest.length)
@@ -80,7 +80,7 @@ class HacConfigNumberBottomDialog(
         }
 
         binding.etNumber.apply {
-            filters = arrayOf(prefixFilter)
+            filters = arrayOf(inputFilter)
             setOnFocusChangeListener { _, hasFocus ->
                 if (hasFocus) {
                     setSelection(text?.length ?: 0)

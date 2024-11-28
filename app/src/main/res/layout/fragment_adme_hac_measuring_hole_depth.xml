@@ -38,7 +38,7 @@
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_run"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <androidx.core.widget.NestedScrollView
@@ -48,9 +48,9 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/dimen_size_25">
+                    android:paddingBottom="@dimen/dimen_size_50">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
@@ -65,8 +65,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             android:hint="XXXXXXXXXXXX"
                             android:inputType="textCapCharacters"
-                            android:maxLength="12"
-                            android:text="@={stateVM.address}" />
+                            android:text="@={stateVM.address}"
+                            app:lengthFilter="@{12}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -82,8 +82,8 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                            android:layout_width="@dimen/dimen_size_150"
-                            android:layout_height="match_parent">
+                            android:layout_width="@dimen/dimen_size_130"
+                            android:layout_height="44dp">
 
                             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                                 android:id="@+id/project_num"
@@ -94,6 +94,18 @@
                                 android:text="@{stateVM.projectNum}" />
 
                         </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_edit_project_num"
+                            style="@style/TestButton_Style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/dimen_size_30"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:minWidth="0dp"
+                            android:onClick="@{(view)->click.onEditNumberClick(view)}"
+                            android:paddingHorizontal="@dimen/dimen_size_8"
+                            android:text="编辑"
+                            android:textStyle="bold" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -108,8 +120,8 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                            android:layout_width="@dimen/dimen_size_150"
-                            android:layout_height="match_parent">
+                            android:layout_width="@dimen/dimen_size_130"
+                            android:layout_height="44dp">
 
                             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                                 android:id="@+id/area_num"
@@ -121,6 +133,18 @@
                                 tools:text="A001" />
 
                         </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_edit_area_num"
+                            style="@style/TestButton_Style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/dimen_size_30"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:minWidth="0dp"
+                            android:onClick="@{(view)->click.onEditNumberClick(view)}"
+                            android:paddingHorizontal="@dimen/dimen_size_8"
+                            android:text="编辑"
+                            android:textStyle="bold" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -135,8 +159,8 @@
 
                         <com.google.android.material.textfield.TextInputLayout
                             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                            android:layout_width="@dimen/dimen_size_150"
-                            android:layout_height="match_parent">
+                            android:layout_width="@dimen/dimen_size_130"
+                            android:layout_height="44dp">
 
                             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                                 android:id="@+id/hole_num"
@@ -148,6 +172,18 @@
                                 tools:text="A001" />
 
                         </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_edit_hole_num"
+                            style="@style/TestButton_Style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/dimen_size_30"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:minWidth="0dp"
+                            android:onClick="@{(view)->click.onEditNumberClick(view)}"
+                            android:paddingHorizontal="@dimen/dimen_size_8"
+                            android:text="编辑"
+                            android:textStyle="bold" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -294,22 +330,27 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_run"
+                        style="@style/SubmitButton_Style2"
+                        onClickWithDebouncing="@{()->click.onRunClick()}"
+                        android:layout_marginHorizontal="@dimen/dimen_size_20"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:text="@={stateVM.runButtonText}"
+                        tools:text="启动" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_save"
+                        style="@style/ResetButton_Style2"
+                        visible="@{stateVM.isAutoMeasuringMode}"
+                        android:layout_marginHorizontal="@dimen/dimen_size_20"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:enabled="@{stateVM.isDataModified}"
+                        android:onClick="@{()->click.onSaveHoleConfig()}"
+                        android:text="保存孔号信息" />
+
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_run"
-            style="@style/SubmitButton_Style"
-            onClickWithDebouncing="@{()->click.onRunClick()}"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="@dimen/dimen_size_60"
-            android:text="@={stateVM.runButtonText}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/refreshLayout"
-            tools:text="启动" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

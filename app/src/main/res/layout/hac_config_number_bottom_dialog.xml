@@ -31,29 +31,38 @@
             app:click="@{click}"
             app:stateVM="@{stateVM}" />
 
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_size_30"
+            android:text="支持大写字母、数字"
+            android:textColor="@color/title_text_color"
+            android:textSize="@dimen/text_size_14" />
+
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_number"
             drawable_radius="@{4}"
             drawable_solidColor="@{@color/black_3}"
-            android:layout_width="200dp"
+            android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_size_45"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginVertical="@dimen/dimen_size_10"
+            android:layout_marginHorizontal="@dimen/dimen_size_30"
+            android:layout_marginTop="@dimen/dimen_size_10"
             android:gravity="center_vertical|start"
             android:hint="请输入编号"
             android:maxLength="10"
             android:maxLines="1"
-            android:paddingStart="@dimen/dimen_size_5"
+            android:paddingStart="@dimen/dimen_size_12"
             android:text="@={stateVM.number}"
-            android:textColor="@color/sub_title_text_color"
+            android:textColor="@color/sub_title_text_color_black_60"
             android:textSize="@dimen/text_size_15"
             tools:background="@color/black_3" />
 
         <com.google.android.material.button.MaterialButton
             style="@style/SubmitButton_Style2"
             onClickWithDebouncing="@{()->click.onConfirmClick()}"
-            android:layout_marginHorizontal="@dimen/dimen_size_10"
-            android:layout_marginVertical="@dimen/dimen_size_15"
+            android:layout_marginHorizontal="@dimen/dimen_size_30"
+            android:layout_marginTop="@dimen/dimen_size_30"
+            android:layout_marginBottom="@dimen/dimen_size_20"
             android:text="@string/sure_button_text"
             tools:backgroundTint="@color/colorPrimary" />
 

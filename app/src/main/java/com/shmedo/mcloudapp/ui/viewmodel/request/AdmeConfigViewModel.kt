@@ -4,6 +4,7 @@ import com.shmedo.core.data.repository.AdmeConfigRepositoryImp
 import com.shmedo.core.data.repository.LoggerRepositoryImp
 import com.shmedo.core.model.AdmeConfigInfo
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
+import org.json.JSONObject
 
 /**
  * 创建者：gonghe
@@ -60,8 +61,24 @@ class AdmeConfigViewModel(
     /**
      * 管理配置
      */
-    suspend fun manageConfig(jsonParam: String): String? {
-        return admeConfigRepositoryImp.manageConfig(jsonParam)
+    suspend fun manageConfig(
+        deviceToken: String,
+        projectID: String,
+        areaNumber: String,
+        holeNumber: String,
+        configJson: String = "",
+        onCatch: ((Throwable) -> Unit)? = null
+    ): String? {
+        val jsonObject = JSONObject().apply {
+            put("deviceSN", deviceToken)
+            put("projectID", projectID)
+            put("areaNumber", areaNumber)
+            put("holeNumber", holeNumber)
+            put("config", configJson)
+            put("exValues", "")
+        }
+
+        return admeConfigRepositoryImp.manageConfig(jsonObject.toString(), onCatch)
     }
 
     /**
