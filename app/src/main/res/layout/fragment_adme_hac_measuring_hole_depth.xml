@@ -38,7 +38,7 @@
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_run"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <androidx.core.widget.NestedScrollView
@@ -48,9 +48,9 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/dimen_size_25">
+                    android:paddingBottom="@dimen/dimen_size_50">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
@@ -59,16 +59,14 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="测斜仪Mac地址" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:hint="XXXXXXXXXXXX"
                             android:inputType="textCapCharacters"
-                            android:maxLength="12"
-                            android:text="@={stateVM.address}" />
+                            android:text="@={stateVM.address}"
+                            app:lengthFilter="@{12}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -78,24 +76,36 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable}"
-                            android:text="孔号" />
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:text="项目号" />
 
-                        <com.shmedo.mcloudapp.ui.widget.kmpautotextview.KMPAutoComplTextView
-                            android:id="@+id/et_hole_num"
-                            style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:layout_marginStart="150dp"
-                            android:layout_marginEnd="10dp"
-                            android:completionThreshold="1"
-                            android:hint="1-99"
-                            android:inputType="number"
-                            android:maxLength="2"
-                            app:completionHighlightColor="@color/colorPrimary"
-                            app:completionIgnoreCase="true"
-                            app:completionTextColor="@color/title_text_color"
-                            app:completionTextSize="16sp" />
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            android:layout_width="@dimen/dimen_size_130"
+                            android:layout_height="44dp">
 
+                            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                                android:id="@+id/project_num"
+                                style="@style/MaterialAutoCompleteTextView_Style"
+                                android:focusable="false"
+                                android:hint="请选择"
+                                android:inputType="none"
+                                android:text="@{stateVM.projectNum}" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_edit_project_num"
+                            style="@style/TestButton_Style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/dimen_size_30"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:minWidth="0dp"
+                            android:onClick="@{(view)->click.onEditNumberClick(view)}"
+                            android:paddingHorizontal="@dimen/dimen_size_8"
+                            android:text="编辑"
+                            android:textStyle="bold" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -104,33 +114,89 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable}"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:text="区号" />
 
-                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                            style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:hint="数值范围[1-99]"
-                            android:inputType="phone"
-                            android:maxLength="2"
-                            android:text="@={stateVM.areano}" />
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            android:layout_width="@dimen/dimen_size_130"
+                            android:layout_height="44dp">
 
+                            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                                android:id="@+id/area_num"
+                                style="@style/MaterialAutoCompleteTextView_Style"
+                                android:focusable="false"
+                                android:hint="请选择"
+                                android:inputType="none"
+                                android:text="@{stateVM.areaNum}"
+                                tools:text="A001" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_edit_area_num"
+                            style="@style/TestButton_Style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/dimen_size_30"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:minWidth="0dp"
+                            android:onClick="@{(view)->click.onEditNumberClick(view)}"
+                            android:paddingHorizontal="@dimen/dimen_size_8"
+                            android:text="编辑"
+                            android:textStyle="bold" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:text="孔号" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            android:layout_width="@dimen/dimen_size_130"
+                            android:layout_height="44dp">
+
+                            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                                android:id="@+id/hole_num"
+                                style="@style/MaterialAutoCompleteTextView_Style"
+                                android:focusable="false"
+                                android:hint="请选择"
+                                android:inputType="none"
+                                android:text="@{stateVM.holeNum}"
+                                tools:text="A001" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_edit_hole_num"
+                            style="@style/TestButton_Style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/dimen_size_30"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:minWidth="0dp"
+                            android:onClick="@{(view)->click.onEditNumberClick(view)}"
+                            android:paddingHorizontal="@dimen/dimen_size_8"
+                            android:text="编辑"
+                            android:textStyle="bold" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onMeasureModeClick()}"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="测量孔深模式" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.measureWay }"
                             tools:text="手动测孔深" />
@@ -143,13 +209,11 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="下放速度(r/min)" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_down_speed"
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-100]"
                             android:inputType="number"
                             android:text="@={stateVM.downSpeed}"
@@ -164,12 +228,10 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="实测测斜管孔深（米）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@null"
                             android:text="@{stateVM.realHoleDepth }"
                             tools:text="10" />
@@ -182,12 +244,10 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="推荐测斜管孔深（米）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@null"
                             android:text="@{stateVM.recommendHoleDepth }"
                             tools:text="12" />
@@ -201,14 +261,12 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/SwitchButton_Item_Title_Style"
-                            android:text="下放堵转检测"
-                            android:textColor="@{stateVM.isEditable?@color/title_text_color:@color/sub_title_text_color}" />
+                            android:text="下放堵转检测" />
 
                         <com.kyleduo.switchbutton.SwitchButton
                             android:id="@+id/downEnableSBtn"
                             style="@style/SwitchButton_Item_Button_Style"
                             checkedImmediatelyNoEvent="@{stateVM.decentralizedEnable}"
-                            android:enabled="@{stateVM.isEditable}"
                             android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                             app:kswAnimationDuration="100"
                             app:kswBackDrawable="@drawable/sl_switchbutton_back"
@@ -221,17 +279,14 @@
                         onClickWithDebouncing="@{()->click.onMotionTypeClick()}"
                         visible="@{!stateVM.isAutoMeasuringMode}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }"
                         tools:visibility="gone">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="运动方式" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.motionType }"
                             tools:text="上拉" />
@@ -245,13 +300,11 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="电机速度(r/min)" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_motor_speed"
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[1-100]"
                             android:inputType="number"
                             android:text="@={stateVM.speed}"
@@ -267,35 +320,37 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="设定运动距离（米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.distanceGoal}"
                             app:inputTypeFilter='@{"numberDecimal"}'
                             app:lengthFilter="@{12}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_run"
+                        style="@style/SubmitButton_Style2"
+                        onClickWithDebouncing="@{()->click.onRunClick()}"
+                        android:layout_marginHorizontal="@dimen/dimen_size_20"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:text="@={stateVM.runButtonText}"
+                        tools:text="启动" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_save"
+                        style="@style/ResetButton_Style2"
+                        visible="@{stateVM.isAutoMeasuringMode}"
+                        android:layout_marginHorizontal="@dimen/dimen_size_20"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:enabled="@{stateVM.isDataModified}"
+                        android:onClick="@{()->click.onSaveHoleConfig()}"
+                        android:text="保存孔号信息" />
+
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_run"
-            style="@style/SubmitButton_Style"
-            onClickWithDebouncing="@{()->click.onRunClick()}"
-            visible="@{stateVM.isEditable }"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="@dimen/dimen_size_60"
-            android:text="@={stateVM.runButtonText}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/refreshLayout"
-            tools:text="运行" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
