@@ -26,7 +26,6 @@ import com.shmedo.core.model.AdmeConfigInfo
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.hac.HacMeasuringDataEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.model.hac.HacHoleAreaDepthInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.hac.HacMeasuringDataInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.hac.HacMotionState
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
@@ -43,7 +42,6 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showAdmeErrorProtectionDialog
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.hac.dialog.HacConfigNumberBottomDialog
@@ -67,10 +65,9 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
     private val projectNumList = arrayListOf<String>()
     private val areaNumList = arrayListOf<String>()
     private val holeNumList = arrayListOf<String>()
-    private var configProjectNum: String = "" //之前配置的项目编号
-    private var configAreaNum: String = "" //之前配置的区域编号
-    private var configHoleNum: String = "" //之前配置的孔编号
-    private val holeAreaDepthInfoArrayList = ArrayList<HacHoleAreaDepthInfo>()
+    private var lastConfigProjectNum: String = "" //之前配置的项目编号
+    private var lastConfigAreaNum: String = "" //之前配置的区域编号
+    private var lastConfigHoleNum: String = "" //之前配置的孔编号
 
 
     override fun initViewModel() {
@@ -161,10 +158,9 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                     admeConfigViewModel.queryAllAreaID(projectNum)?.let { areaList ->
                         areaNumList.clear()
                         areaNumList.addAll(areaList)
-//                        setAreaNumberAdapter()
                     }
                 } catch (ex: Exception) {
-                    Timber.e(ex, "Failed to load area IDs")
+                    Timber.e(ex, "Failed to load area numbers")
                 }
             }
         }
@@ -186,7 +182,6 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                     )?.let { holeList ->
                         holeNumList.clear()
                         holeNumList.addAll(holeList)
-//                        setHoleNumberAdapter()
                     }
                 } catch (ex: Exception) {
                     Timber.e(ex, "Failed to load hole numbers")
@@ -201,6 +196,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                 return@setUnfilteredAdapter
             }
             mStates.holeNum.set(holeNum)
+
             launchWithViewLifecycle {
                 try {
                     //加载孔号配置信息
@@ -213,7 +209,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                             handleConfigInfo(configInfo)
                         }
                 } catch (ex: Exception) {
-                    Timber.e(ex, "Failed to load area IDs")
+                    Timber.e(ex, "Failed to load hole config info")
                 }
             }
         }
@@ -222,41 +218,37 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
     private fun loadAdmeConfigData() {
         launchWithViewLifecycle {
             try {
-                //1. 加载项目编号列表
-                admeConfigViewModel.queryAllProjectID()?.let { projectIds ->
-                    projectNumList.clear()
-                    projectNumList.addAll(projectIds)
-//                    setProjectNumberAdapter()
-                }
-
-                //2. 加载设备配置信息
+                //1、加载设备配置信息
                 admeConfigViewModel.queryConfigByDeviceSN(deviceInfo.deviceToken)
                     ?.let { configInfo ->
                         handleConfigInfo(configInfo)
                     }
 
-                //3. 如果有已配置的项目号，加载对应的区域号列表
-                if (configProjectNum.isNotEmpty() && projectNumList.contains(configProjectNum)) {
-                    mStates.projectNum.set(configProjectNum)
-                    admeConfigViewModel.queryAllAreaID(configProjectNum)?.let { areaList ->
+                //2、加载项目编号列表
+                admeConfigViewModel.queryAllProjectID()?.let { projectIds ->
+                    projectNumList.clear()
+                    projectNumList.addAll(projectIds)
+                }
+
+                //3、如果有已配置的项目号，加载对应的区域号列表
+                if (lastConfigProjectNum.isNotEmpty() && projectNumList.contains(lastConfigProjectNum)) {
+                    mStates.projectNum.set(lastConfigProjectNum)
+                    admeConfigViewModel.queryAllAreaID(lastConfigProjectNum)?.let { areaList ->
                         areaNumList.clear()
                         areaNumList.addAll(areaList)
-//                        setAreaNumberAdapter()
                     }
                 }
 
-                //4. 如果有已配置的区域号，加载对应的孔号列表
-                if (configAreaNum.isNotEmpty() && areaNumList.contains(configAreaNum)) {
-                    mStates.areaNum.set(configAreaNum)
-                    admeConfigViewModel.queryAllHoleNumber(configProjectNum, configAreaNum)
+                //4、如果有已配置的区域号，加载对应的孔号列表
+                if (lastConfigAreaNum.isNotEmpty() && areaNumList.contains(lastConfigAreaNum)) {
+                    mStates.areaNum.set(lastConfigAreaNum)
+                    admeConfigViewModel.queryAllHoleNumber(lastConfigProjectNum, lastConfigAreaNum)
                         ?.let { holeList ->
                             holeNumList.clear()
                             holeNumList.addAll(holeList)
-//                            setHoleNumberAdapter()
 
-                            if (holeNumList.contains(configHoleNum)) {
-                                mStates.holeNum.set(configHoleNum)
-                                mStates.runButtonText.set("重测孔深")
+                            if (holeNumList.contains(lastConfigHoleNum)) {
+                                mStates.holeNum.set(lastConfigHoleNum)
                             }
                         }
                 }
@@ -273,19 +265,19 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
     //处理配置信息
     private fun handleConfigInfo(configInfo: AdmeConfigInfo) {
         try {
-            configProjectNum = configInfo.projectID
-            configAreaNum = configInfo.areaNumber
-            configHoleNum = configInfo.holeNumber
+            lastConfigProjectNum = configInfo.projectID
+            lastConfigAreaNum = configInfo.areaNumber
+            lastConfigHoleNum = configInfo.holeNumber
 
             val configMap = if (configInfo.config.isEmpty()) {
                 mapOf()
             } else {
                 MoshiUtil.fromJson<Map<String, String>>(configInfo.config) ?: mapOf()
             }
-
             mStates.realHoleDepth.set(configMap["realHoleDepth"].orEmpty())
             mStates.recommendHoleDepth.set(configMap["recommendHoleDepth"].orEmpty())
-//            decentralizationWaitingTime = configMap["decentralizationWaitingTime"].orEmpty()
+            mStates.decentralizationWaitingTime.set(configMap["decentralizationWaitingTime"].orEmpty())
+
             //添加这行来保存初始状态
             mStates.saveInitialState()
 
@@ -397,51 +389,6 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                 }
             }
         }
-
-        /**
-         * 保存孔深测量配置
-         */
-        fun onSaveHoleConfig() {
-            KeyboardUtils.hideSoftInput(binding.root)
-            if (mStates.projectNum.get().isEmpty()) {
-                showMessageDialog("请设置项目号!")
-                return
-            }
-            if (mStates.areaNum.get().isEmpty()) {
-                showMessageDialog("请设置区号!")
-                return
-            }
-            if (mStates.holeNum.get().isEmpty()) {
-                showMessageDialog("请设置孔号!")
-                return
-            }
-            launchWithViewLifecycle {
-                try {
-                    val configMap = mapOf(
-                        "realHoleDepth" to mStates.realHoleDepth.get(),
-                        "recommendHoleDepth" to mStates.recommendHoleDepth.get(),
-                    )
-                    val configJson = MoshiUtil.toJson(configMap)
-                    admeConfigViewModel.manageConfig(
-                        deviceInfo.deviceToken,
-                        mStates.projectNum.get(),
-                        mStates.areaNum.get(),
-                        mStates.holeNum.get(),
-                        configJson
-                    ) { error: Throwable ->
-                        showMessage("保存失败")
-                        Timber.e(error, "Failed to save config")
-                    } ?: return@launchWithViewLifecycle
-
-                    //添加这行来保存初始状态
-                    mStates.saveInitialState()
-                    showMessage("保存成功")
-                } catch (ex: Exception) {
-                    showMessage("保存失败")
-                    Timber.e(ex, "Failed to save config")
-                }
-            }
-        }
     }
 
     /**
@@ -520,6 +467,33 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
         return true
     }
 
+    private fun saveHoleConfig() {
+        launchWithViewLifecycle {
+            try {
+                val configMap = mapOf(
+                    "realHoleDepth" to mStates.realHoleDepth.get(),
+                    "recommendHoleDepth" to mStates.recommendHoleDepth.get(),
+                    "decentralizationWaitingTime" to mStates.decentralizationWaitingTime.get()
+                )
+                val configJson = MoshiUtil.toJson(configMap)
+                admeConfigViewModel.manageConfig(
+                    deviceInfo.deviceToken,
+                    mStates.projectNum.get(),
+                    mStates.areaNum.get(),
+                    mStates.holeNum.get(),
+                    configJson
+                ) { error: Throwable ->
+                    Timber.e(error, "Failed to save hole config")
+                } ?: return@launchWithViewLifecycle
+
+                //添加这行来保存初始状态
+                mStates.saveInitialState()
+            } catch (ex: Exception) {
+                Timber.e(ex, "Failed to save hole config")
+            }
+        }
+    }
+
     private fun initSaveCommand() {
         if (mStates.address.get().isEmpty()) {
             showMessageDialog("请输入Mac地址!")
@@ -549,17 +523,6 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
             showMessageDialog("请输入推荐测斜管孔深!")
             return
         }
-        try {
-            if (mStates.recommendHoleDepth.get().toDouble() > mStates.realHoleDepth.get()
-                    .toDouble()
-            ) {
-                showMessageDialog("推荐测斜管孔深必须小于实测测斜管孔深!")
-                return
-            }
-        } catch (ex: Exception) {
-            showMessageDialog("推荐测斜管孔深必须小于实测测斜管孔深!")
-            return
-        }
         if (mStates.decentralizationWaitingTime.get().isEmpty()) {
             showMessageDialog("请输入下放等待时间!")
             return
@@ -574,6 +537,8 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
             showMessageDialog("下放等待时间数值范围[30,86400]!")
             return
         }
+        //保存孔号配置信息
+        saveHoleConfig()
 
         //数据测量配置参数
         val entity = HacMeasuringDataEntity(
@@ -723,24 +688,6 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                 if (mStates.equipmodel.get() == "1") {
                     return@launchWithViewLifecycle
                 }
-
-//                val tempHoleList = withContext(Dispatchers.IO) {
-//                    MoshiUtil.fromJson<List<HacHoleAreaDepthInfo>>(info.holelist)
-//                }
-//                if (tempHoleList.isNullOrEmpty()) {
-//                    showMessageDialog("还没有测孔信息,请先进行孔深测量")
-//                    mStates.isRunButtonEnable.set(false)
-//                    return@launchWithViewLifecycle
-//                }
-//                holeAreaDepthInfoArrayList.clear()
-//                holeNumList.clear()
-//                tempHoleList.forEach {
-//                    holeAreaDepthInfoArrayList.add(it)
-//                    holeNumList.add(it.holeno)
-//                }
-//                holeNumList.indexOf(MDCommandUtil.formatStringTwo(info.currhole)).let {
-//                    updateHoleDepth(if (it in holeNumList.indices) it else 0)
-//                }
             } catch (e: Exception) {
                 Timber.e(e)
                 addLogItem(Log.ERROR, e.errorMsg)

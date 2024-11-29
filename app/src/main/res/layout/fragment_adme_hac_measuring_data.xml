@@ -315,15 +315,6 @@
                         android:text="@={stateVM.runButtonText}"
                         tools:text="正向测量" />
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_save"
-                        style="@style/ResetButton_Style2"
-                        android:layout_marginHorizontal="@dimen/dimen_size_20"
-                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
-                        android:enabled="@{stateVM.isDataModified}"
-                        android:onClick="@{()->click.onSaveHoleConfig()}"
-                        android:text="保存孔号信息" />
-
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
