@@ -231,7 +231,10 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                 }
 
                 //3、如果有已配置的项目号，加载对应的区域号列表
-                if (lastConfigProjectNum.isNotEmpty() && projectNumList.contains(lastConfigProjectNum)) {
+                if (lastConfigProjectNum.isNotEmpty() && projectNumList.contains(
+                        lastConfigProjectNum
+                    )
+                ) {
                     mStates.projectNum.set(lastConfigProjectNum)
                     admeConfigViewModel.queryAllAreaID(lastConfigProjectNum)?.let { areaList ->
                         areaNumList.clear()
@@ -679,7 +682,8 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
             try {
                 mStates.equipmodel.set(info.equipmodel)
                 mStates.address.set(info.address)
-                mStates.decentralizationWaitingTime.set(info.downwaitetime)
+                mStates.decentralizationWaitingTime.set(
+                    mStates.decentralizationWaitingTime.get().ifEmpty { info.downwaitetime })
                 info.datatype.toIntOrNull()?.let {
                     mStates.dataSettlementMethod.set(if (it in settlementMethodList.indices) settlementMethodList[it] else settlementMethodList[0])
                 }

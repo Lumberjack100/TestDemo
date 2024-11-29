@@ -47,7 +47,7 @@ class AdmeHacHomeFragment : UniversalDeviceHomeFragment() {
                 )
             )
         )
-//        if (communicateWay is BleConnect) {
+        if (communicateWay is BleConnect) {
             moduleList.add(
                 ConfigModule(
                     CommonModule(
@@ -58,7 +58,7 @@ class AdmeHacHomeFragment : UniversalDeviceHomeFragment() {
                     )
                 )
             )
-//        }
+        }
         moduleList.add(
             ConfigModule(
                 DeviceOperationModule(
