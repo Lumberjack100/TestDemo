@@ -328,7 +328,7 @@ class AdmeSportsCalibrationProcessingFragment : BaseIOTDeviceFragment() {
             mStates.accumulatedDifference.set(info.accudiff)
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

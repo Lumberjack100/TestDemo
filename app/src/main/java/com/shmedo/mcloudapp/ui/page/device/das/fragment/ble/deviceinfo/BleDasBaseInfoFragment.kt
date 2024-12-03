@@ -232,7 +232,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
             binding.recyclerview.bindingAdapter.notifyDataSetChanged()
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -248,7 +248,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
             binding.recyclerview.bindingAdapter.notifyDataSetChanged()
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -292,7 +292,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
             binding.recyclerview.bindingAdapter.notifyDataSetChanged()
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -427,7 +427,7 @@ class BleDasBaseInfoFragment : BaseDeviceStatusInfoFragment() {
             binding.recyclerview.bindingAdapter.notifyDataSetChanged()
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

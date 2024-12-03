@@ -137,7 +137,7 @@ class M20BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
                 Timber.e(e)
-                addLogItem(Log.ERROR, e.errorMsg)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

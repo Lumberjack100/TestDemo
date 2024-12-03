@@ -323,7 +323,7 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
             mStates.isOpened.set(info.sw == "1")
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -334,7 +334,7 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
             }
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

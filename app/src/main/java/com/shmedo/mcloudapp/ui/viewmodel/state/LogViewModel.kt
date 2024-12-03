@@ -80,9 +80,6 @@ class LogViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) : ViewM
         loggerRepositoryImp.insertLogItem(info)
     }
 
-    fun insertLogList(list: List<LogItem>) = viewModelScope.launch {
-        loggerRepositoryImp.batchInsertLogItem(list)
-    }
 
     /**
      * 删除会话信息

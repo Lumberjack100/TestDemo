@@ -346,7 +346,7 @@ class AdmeMeterWheelFragment : BaseIOTDeviceFragment() {
             mStates.downFilterCoefficient.set(decimalFormat.format(info.downfilter.toDouble()))
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

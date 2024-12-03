@@ -130,7 +130,7 @@ class M20CommunicationInfoFragment : BaseIOTDeviceFragment() {
             } ?: -113)
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

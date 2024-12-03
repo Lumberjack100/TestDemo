@@ -872,7 +872,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 handleAbnormalInfo(errorInfoList)
             } catch (e: Exception) {
                 Timber.e(e)
-                addLogItem(Log.ERROR, e.errorMsg)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }
@@ -960,7 +960,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         } catch (e: Exception) {
             stopMeasurementAnimation()
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -1036,7 +1036,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             while (isActive) {
                 try {
                     deviceRequestViewModel.getDeviceDetailInfo(deviceInfo.deviceToken) { error: Throwable ->
-                        addLogItem(Log.ERROR, error.errorMsg)
+                        addDeviceLogItem(Log.ERROR, error.errorMsg)
                     }?.let { deviceDetailInfo ->
                         deviceInfo = deviceDetailInfo.deviceInfo
                         // 如果设备在线状态发生变化，更新UI

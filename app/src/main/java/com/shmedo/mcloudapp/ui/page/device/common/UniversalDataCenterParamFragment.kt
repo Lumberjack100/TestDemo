@@ -477,7 +477,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                             initDataCenterParam(result.data)
                         } catch (e: Exception) {
                             Timber.e(e)
-                            addLogItem(Log.ERROR, e.errorMsg)
+                            addDeviceLogItem(Log.ERROR, e.errorMsg)
                         }
                     }
                 }

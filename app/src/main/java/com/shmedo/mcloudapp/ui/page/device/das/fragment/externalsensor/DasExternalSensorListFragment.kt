@@ -547,7 +547,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
         } catch (e: Exception) {
             cancelNearbyCommunicationTimeoutJob()
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

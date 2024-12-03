@@ -1,8 +1,21 @@
 package com.shmedo.mcloudapp.ui.viewmodel.request
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.data.repository.LoggerRepositoryImp
+import com.shmedo.lib.ble.communicate.data.CommandData
 import com.shmedo.lib.ble.communicate.service.MedoBleRepository
+import com.shmedo.lib.ble.communicate.service.base.BleManagerResult
+import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
+import com.shmedo.lib.ble.communicate.service.base.ConnectingResult
+import com.shmedo.lib.ble.communicate.service.base.DisconnectedResult
+import com.shmedo.lib.ble.communicate.service.base.IdleResult
+import com.shmedo.lib.ble.communicate.service.base.LinkLossResult
+import com.shmedo.lib.ble.communicate.service.base.MissingServiceResult
+import com.shmedo.lib.ble.communicate.service.base.ReadyResult
+import com.shmedo.lib.ble.communicate.service.base.SuccessResult
+import com.shmedo.lib.ble.communicate.service.base.UnknownErrorResult
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDConstants
 import com.shmedo.mcloudapp.model.MedoViewState
@@ -37,6 +50,7 @@ class BleViewModel(
 
     init {
         medoBleRepository.data.onEach {
+            logResult(it)
             _state.emit(WorkingState(it))
         }.launchIn(viewModelScope)
     }
@@ -84,4 +98,65 @@ class BleViewModel(
             medoBleRepository.sendData(command)
         }
     }
+
+    private fun logResult(result: BleManagerResult<CommandData>) {
+        when (result) {
+            is IdleResult, is ConnectingResult -> {
+                addLogItem(
+                    CommonMMKVOwner.iotDeviceLogSessionId,
+                    Log.INFO,
+                    "ble device connecting"
+                )
+            }
+
+            is ConnectedResult -> {
+                addLogItem(
+                    CommonMMKVOwner.iotDeviceLogSessionId,
+                    Log.INFO,
+                    "ble device  connected"
+                )
+            }
+
+            is ReadyResult -> {
+                addLogItem(CommonMMKVOwner.iotDeviceLogSessionId, Log.INFO, "ble device ready")
+            }
+
+            is SuccessResult -> {
+                addLogItem(
+                    CommonMMKVOwner.iotDeviceLogSessionId,
+                    Log.INFO,
+                    "ble 响应内容: ${result.data.response}"
+                )
+            }
+
+            is DisconnectedResult -> {
+                addLogItem(
+                    CommonMMKVOwner.iotDeviceLogSessionId,
+                    Log.ERROR,
+                    "ble device disconnected, reason: ${result.reason}"
+                )
+            }
+
+            is LinkLossResult -> {
+                addLogItem(CommonMMKVOwner.iotDeviceLogSessionId, Log.ERROR, "ble device link loss")
+            }
+
+            is MissingServiceResult -> {
+                addLogItem(
+                    CommonMMKVOwner.iotDeviceLogSessionId,
+                    Log.ERROR,
+                    "ble device missing service"
+                )
+            }
+
+            is UnknownErrorResult -> {
+                addLogItem(
+                    CommonMMKVOwner.iotDeviceLogSessionId,
+                    Log.ERROR,
+                    "ble device unknown error"
+                )
+            }
+        }
+    }
+
 }

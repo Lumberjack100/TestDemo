@@ -501,7 +501,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
                 }
             } catch (e: Exception) {
                 Timber.e(e)
-                addLogItem(Log.ERROR, e.errorMsg)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

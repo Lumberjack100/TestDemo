@@ -120,7 +120,7 @@ class DasCommunicationInfoFragment : BaseIOTDeviceFragment() {
             )
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

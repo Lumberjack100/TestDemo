@@ -520,7 +520,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
             mStates.delayDuration.set(collectionParam.powerontimes)
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -540,7 +540,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
             }
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

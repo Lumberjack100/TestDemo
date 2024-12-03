@@ -182,7 +182,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
             } catch (e: Exception) {
                 Timber.e(e)
-                addLogItem(Log.ERROR, e.errorMsg)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }
@@ -216,7 +216,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
             handleAbnormalInfo(errorInfoList)
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
