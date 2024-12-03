@@ -103,6 +103,11 @@ class MR702BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "SIM卡号",
+                    value = stateInfo.iccid,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "IMEI",
                     value = stateInfo.imei,
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(

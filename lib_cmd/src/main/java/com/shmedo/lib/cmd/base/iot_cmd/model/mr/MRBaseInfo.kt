@@ -12,6 +12,7 @@ data class MRBaseInfo(
     var sn: String = "",
     var ver: String = "",//软件版本
     var imei: String = "",//SIM卡号
+    var iccid: String = "",//设备内置物联网卡的ICCID号
     var temp: String = "",//温度 保留一位小数位数
     var hum: String = "",//湿度 保留一位小数位数
     var volt: String = "",//供电电压  保留一位小数位数  供电电压是设备自检出来的电压值
