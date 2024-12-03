@@ -27,18 +27,16 @@ import java.util.UUID
  */
 class BleViewModel(
     private val medoBleRepository: MedoBleRepository,
-    private val loggerRepositoryImp: LoggerRepositoryImp
+    loggerRepositoryImp: LoggerRepositoryImp
 ) :
     BaseRequestViewModel(loggerRepositoryImp) {
-    //    private val _state = MutableStateFlow<MedoViewState>(NoDeviceState)
-//    val state = _state.asStateFlow()
+
     private val _state: MutableSharedFlow<MedoViewState> = MutableSharedFlow()
     val state = _state.asSharedFlow()
 
 
     init {
         medoBleRepository.data.onEach {
-//            _state.value = WorkingState(it)
             _state.emit(WorkingState(it))
         }.launchIn(viewModelScope)
     }

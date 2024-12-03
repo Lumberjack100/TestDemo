@@ -19,13 +19,13 @@ import com.shmedo.core.data.source.local.entity.LogItem
 interface LogItemDao {
 
     @Query("select * from log_info  where session_id = :sessionId and log_level>= :level")
-    suspend fun getLogListBySessionId(sessionId: String, level: Int): List<LogItem>
+    suspend fun getLogItemListBySessionId(sessionId: String, level: Int): List<LogItem>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLog(record: LogItem)
+    suspend fun insert(record: LogItem)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertLogList(list: List<LogItem>)
+    suspend fun batchInsert(list: List<LogItem>)
 
     @Query("DELETE FROM log_info WHERE id = :id")
     suspend fun deleteById(id: String)
@@ -34,5 +34,5 @@ interface LogItemDao {
     suspend fun deleteBySessionId(sessionId: String)
 
     @Query("DELETE FROM log_info WHERE create_date != :excludeDate")
-    suspend fun clearHistoryData(excludeDate: String)
+    suspend fun batchDelete(excludeDate: String)
 }

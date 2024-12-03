@@ -53,7 +53,7 @@ open class BaseRequestViewModel(private val loggerRepositoryImp: LoggerRepositor
 
     protected fun addLogItem(sessionId: String, priority: Int, data: String) =
         viewModelScope.launch {
-            loggerRepositoryImp.insertLog(
+            loggerRepositoryImp.insertLogItem(
                 getLogItem(
                     sessionId = sessionId,
                     priority = priority,

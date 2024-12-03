@@ -22,24 +22,25 @@ import kotlinx.coroutines.launch
  * 描述： TODO
  */
 class LogViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) : ViewModel() {
+
     suspend fun getSessionListByUser(
         userId: String
-    ): List<LogSession> = loggerRepositoryImp.getSessionListByUser(userId)
+    ): List<LogSession> = loggerRepositoryImp.getLogSessionListByCurrentUser(userId)
 
     /**
      * 插入会话信息,并返回 sessionId
      * 如果当前用户下当天内 name 相同的会话不存在,则插入，否则不插入，并
      */
     fun insertSystemLogSession() = viewModelScope.launch {
-        val sessionList = loggerRepositoryImp.getSessionByUserAndName(
+        val sessionList = loggerRepositoryImp.getLogSessionListByName(
             MmkvCacheUtil.getAccount(),
             "系统日志",
             TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd"))
         )
         if (sessionList.isEmpty()) {
             val newSession = getSystemLogSession()
-            loggerRepositoryImp.insertSession(newSession)
-            loggerRepositoryImp.insertLog(
+            loggerRepositoryImp.insertLogSession(newSession)
+            loggerRepositoryImp.insertLogItem(
                 getLogItem(
                     sessionId = CommonMMKVOwner.appLogSessionId,
                     priority = Log.INFO,
@@ -57,14 +58,14 @@ class LogViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) : ViewM
      */
     fun insertIOTDeviceLogSession(mKey: String, mName: String) =
         viewModelScope.launch {
-            val sessionList = loggerRepositoryImp.getSessionByUserAndName(
+            val sessionList = loggerRepositoryImp.getLogSessionListByName(
                 MmkvCacheUtil.getAccount(),
                 mName,
                 TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd"))
             )
             if (sessionList.isEmpty()) {
                 val newSession = getIOTDeviceLogSession(mKey, mName)
-                loggerRepositoryImp.insertSession(newSession)
+                loggerRepositoryImp.insertLogSession(newSession)
             } else {
                 CommonMMKVOwner.iotDeviceLogSessionId = sessionList[0].id
             }
@@ -73,14 +74,22 @@ class LogViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) : ViewM
 
     suspend fun getLogListBySessionId(
         sessionId: String, level: Int = Log.DEBUG
-    ): List<LogItem> = loggerRepositoryImp.getLogListBySessionId(sessionId, level)
+    ): List<LogItem> = loggerRepositoryImp.getLogItemListBySessionId(sessionId, level)
 
     fun insertLog(info: LogItem) = viewModelScope.launch {
-        loggerRepositoryImp.insertLog(info)
+        loggerRepositoryImp.insertLogItem(info)
     }
 
     fun insertLogList(list: List<LogItem>) = viewModelScope.launch {
-        loggerRepositoryImp.insertLogList(list)
+        loggerRepositoryImp.batchInsertLogItem(list)
+    }
+
+    /**
+     * 删除会话信息
+     */
+    fun deleteLogSessionById(id: String) = viewModelScope.launch {
+        loggerRepositoryImp.deleteLogSessionById(id)
+        loggerRepositoryImp.batchDeleteLogItemBySessionId(id)
     }
 
     /**
