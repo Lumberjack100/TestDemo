@@ -23,10 +23,6 @@ import kotlinx.coroutines.launch
  */
 class LogViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) : ViewModel() {
 
-    suspend fun getSessionListByUser(
-        userId: String
-    ): List<LogSession> = loggerRepositoryImp.getLogSessionListByCurrentUser(userId)
-
     /**
      * 插入会话信息,并返回 sessionId
      * 如果当前用户下当天内 name 相同的会话不存在,则插入，否则不插入，并
@@ -71,16 +67,20 @@ class LogViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) : ViewM
             }
         }
 
+    suspend fun getLogSessionList(
+        userId: String
+    ): List<LogSession> = loggerRepositoryImp.getLogSessionList(userId)
 
-    suspend fun getLogListBySessionId(
+
+    suspend fun getLogItemListBySessionId(
         sessionId: String,
         level: Int = Log.DEBUG
     ): List<LogItem> = loggerRepositoryImp.getLogItemListBySessionId(sessionId, level)
 
-    fun insertLog(info: LogItem) = viewModelScope.launch {
+
+    fun insertLogItem(info: LogItem) = viewModelScope.launch {
         loggerRepositoryImp.insertLogItem(info)
     }
-
 
     /**
      * 删除会话信息

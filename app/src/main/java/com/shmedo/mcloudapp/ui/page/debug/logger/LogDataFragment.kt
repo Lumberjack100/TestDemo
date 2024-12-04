@@ -101,7 +101,7 @@ class LogDataFragment : BaseFragment() {
 
     private fun loadLogList() {
         launchWithViewLifecycle {
-            logViewModel.getLogListBySessionId(
+            logViewModel.getLogItemListBySessionId(
                 sessionInfo.id,
                 logLevel
             ).let { logList ->

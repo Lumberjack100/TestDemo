@@ -31,8 +31,8 @@ interface LogItemDao {
     suspend fun deleteById(id: String)
 
     @Query("DELETE FROM log_info WHERE session_id = :sessionId")
-    suspend fun deleteBySessionId(sessionId: String)
+    suspend fun batchDeleteBySessionId(sessionId: String)
 
     @Query("DELETE FROM log_info WHERE create_date != :excludeDate")
-    suspend fun batchDelete(excludeDate: String)
+    suspend fun clearHistoryData(excludeDate: String)
 }

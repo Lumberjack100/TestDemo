@@ -22,6 +22,6 @@ val databaseModule = module {
             .build()
     }
 
-    single { get<AppDatabase>().sessionInfoDao() }
-    single { get<AppDatabase>().logInfoDao() }
+    single { get<AppDatabase>().logSessionDao() }
+    single { get<AppDatabase>().logItemDao() }
 }

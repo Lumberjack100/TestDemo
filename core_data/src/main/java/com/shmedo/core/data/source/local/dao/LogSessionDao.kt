@@ -45,5 +45,5 @@ interface LogSessionDao {
     suspend fun deleteById(id: String)
 
     @Query("DELETE FROM sessions WHERE create_date != :excludeDate")
-    suspend fun batchDelete(excludeDate: String)
+    suspend fun clearHistoryData(excludeDate: String)
 }
