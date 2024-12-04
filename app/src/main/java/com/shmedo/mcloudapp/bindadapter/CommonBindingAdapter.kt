@@ -46,8 +46,8 @@ object CommonBindingAdapter {
     private val mColors = SparseIntArray()
 
     init {
-        mColors.put(LogLevel.fromPriority(Log.DEBUG), -0xff6322)
         mColors.put(LogLevel.fromPriority(Log.VERBOSE), -0x474faa)
+        mColors.put(LogLevel.fromPriority(Log.DEBUG), -0xff6322)
         mColors.put(LogLevel.fromPriority(Log.INFO), Color.BLACK)
         mColors.put(LogLevel.fromPriority(Log.WARN), -0x2886da)
         mColors.put(LogLevel.fromPriority(Log.ERROR), Color.RED)
@@ -197,8 +197,8 @@ object CommonBindingAdapter {
     fun setLogTextTag(textView: TextView, level: Int) {
         textView.setTextColor(mColors[LogLevel.fromPriority(level)])
         when (level) {
-            Log.DEBUG -> textView.text = "D"
             Log.VERBOSE -> textView.text = "V"
+            Log.DEBUG -> textView.text = "D"
             Log.INFO -> textView.text = "I"
             Log.WARN -> textView.text = "W"
             Log.ERROR -> textView.text = "E"

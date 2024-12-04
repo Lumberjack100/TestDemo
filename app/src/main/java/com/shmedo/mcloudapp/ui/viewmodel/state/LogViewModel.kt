@@ -73,7 +73,8 @@ class LogViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) : ViewM
 
 
     suspend fun getLogListBySessionId(
-        sessionId: String, level: Int = Log.DEBUG
+        sessionId: String,
+        level: Int = Log.DEBUG
     ): List<LogItem> = loggerRepositoryImp.getLogItemListBySessionId(sessionId, level)
 
     fun insertLog(info: LogItem) = viewModelScope.launch {

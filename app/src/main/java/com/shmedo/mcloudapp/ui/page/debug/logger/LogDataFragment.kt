@@ -149,9 +149,7 @@ class LogDataFragment : BaseFragment() {
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
-                    R.id.action_share -> {
-                        //分享
-//                        shareLog()
+                    R.id.action_share -> {//分享
                         shareLogToFile()
                         true
                     }
