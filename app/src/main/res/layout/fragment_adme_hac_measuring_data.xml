@@ -38,7 +38,7 @@
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_run"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <androidx.core.widget.NestedScrollView
@@ -48,9 +48,9 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/dimen_size_25">
+                    android:paddingBottom="@dimen/dimen_size_50">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
@@ -73,40 +73,119 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_Layout_Style"
-                        onClickWithDebouncing="@{()->click.onHoleChooseClick()}"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:text="孔号" />
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:text="项目号" />
 
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Value_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
-                            android:text="@{stateVM.holeno }"
-                            tools:text="1" />
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            android:layout_width="@dimen/dimen_size_130"
+                            android:layout_height="44dp">
+
+                            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                                android:id="@+id/project_num"
+                                style="@style/MaterialAutoCompleteTextView_Style"
+                                android:focusable="false"
+                                android:hint="请选择"
+                                android:inputType="none"
+                                android:text="@{stateVM.projectNum}" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_edit_project_num"
+                            style="@style/TestButton_Style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/dimen_size_30"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:minWidth="0dp"
+                            android:onClick="@{(view)->click.onEditNumberClick(view)}"
+                            android:paddingHorizontal="@dimen/dimen_size_8"
+                            android:text="编辑"
+                            android:textStyle="bold" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
                             android:text="区号" />
 
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            android:layout_width="@dimen/dimen_size_130"
+                            android:layout_height="44dp">
+
+                            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                                android:id="@+id/area_num"
+                                style="@style/MaterialAutoCompleteTextView_Style"
+                                android:focusable="false"
+                                android:hint="请选择"
+                                android:inputType="none"
+                                android:text="@{stateVM.areaNum}"
+                                tools:text="A001" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_edit_area_num"
+                            style="@style/TestButton_Style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/dimen_size_30"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:minWidth="0dp"
+                            android:onClick="@{(view)->click.onEditNumberClick(view)}"
+                            android:paddingHorizontal="@dimen/dimen_size_8"
+                            android:text="编辑"
+                            android:textStyle="bold" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Value_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@null"
-                            android:text="@{stateVM.areano }"
-                            tools:text="1" />
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:text="孔号" />
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                            android:layout_width="@dimen/dimen_size_130"
+                            android:layout_height="44dp">
+
+                            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                                android:id="@+id/hole_num"
+                                style="@style/MaterialAutoCompleteTextView_Style"
+                                android:focusable="false"
+                                android:hint="请选择"
+                                android:inputType="none"
+                                android:text="@{stateVM.holeNum}"
+                                tools:text="A001" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_edit_hole_num"
+                            style="@style/TestButton_Style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/dimen_size_30"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:minWidth="0dp"
+                            android:onClick="@{(view)->click.onEditNumberClick(view)}"
+                            android:paddingHorizontal="@dimen/dimen_size_8"
+                            android:text="编辑"
+                            android:textStyle="bold" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -157,8 +236,8 @@
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isEditable }"
                             android:hint="数值范围[30-86400]"
-                            android:text="@={stateVM.decentralizationWaitingTime}"
                             android:inputType="number"
+                            android:text="@={stateVM.decentralizationWaitingTime}"
                             app:lengthFilter="@{5}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -224,26 +303,20 @@
                             app:kswAnimationDuration="100"
                             app:kswBackDrawable="@drawable/sl_switchbutton_back"
                             app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
-
                     </RelativeLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_run"
+                        style="@style/SubmitButton_Style2"
+                        onClickWithDebouncing="@{()->click.onRunClick()}"
+                        android:layout_marginHorizontal="@dimen/dimen_size_20"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:enabled="@{stateVM.isRunButtonEnable }"
+                        android:text="@={stateVM.runButtonText}"
+                        tools:text="正向测量" />
+
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_run"
-            style="@style/SubmitButton_Style"
-            onClickWithDebouncing="@{()->click.onRunClick()}"
-            visible="@{stateVM.isEditable }"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="@dimen/dimen_size_60"
-            android:enabled="@{stateVM.isRunButtonEnable }"
-            android:text="@={stateVM.runButtonText}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/refreshLayout"
-            tools:text="正向测量" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

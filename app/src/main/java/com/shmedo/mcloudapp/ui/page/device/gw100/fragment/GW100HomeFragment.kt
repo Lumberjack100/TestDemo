@@ -188,7 +188,7 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
                 mHeadStates.firmwareVersion.set(commonCurrentStateInfoList[0].firmwareVersion)
             } catch (e: Exception) {
                 Timber.e(e)
-                addLogItem(Log.ERROR, e.errorMsg)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

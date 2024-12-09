@@ -379,7 +379,7 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
             mStates.polyC.set(sensorParam.polycvalue)
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

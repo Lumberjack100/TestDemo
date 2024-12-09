@@ -381,7 +381,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
             mStates.delayDuration.set(collectionParam.powerontimes)
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -410,7 +410,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
             } catch (e: Exception) {
                 Timber.e(e)
                 withContext(Dispatchers.Main) {
-                    addLogItem(Log.ERROR, e.errorMsg)
+                    addDeviceLogItem(Log.ERROR, e.errorMsg)
                 }
             }
         }

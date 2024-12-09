@@ -764,7 +764,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
 
             } catch (e: Exception) {
                 Timber.e(e)
-                addLogItem(Log.ERROR, e.errorMsg)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }
@@ -828,7 +828,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             }
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -870,7 +870,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             while (isActive) {
                 try {
                     deviceRequestViewModel.getDeviceDetailInfo(deviceInfo.deviceToken) { error: Throwable ->
-                        addLogItem(Log.ERROR, error.errorMsg)
+                        addDeviceLogItem(Log.ERROR, error.errorMsg)
                     }?.let { deviceDetailInfo ->
                         deviceInfo = deviceDetailInfo.deviceInfo
                         // 如果设备在线状态发生变化，更新UI

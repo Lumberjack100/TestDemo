@@ -84,4 +84,10 @@
         <attr name="paddingVertical" format="dimension" />
     </declare-styleable>
 
+    <declare-styleable name="CustomMaterialAutoComplete">
+        <attr name="ignoreCase" format="boolean" />
+        <attr name="maxSuggestions" format="integer" />
+        <attr name="minCharacters" format="integer" />
+    </declare-styleable>
+
 </resources>

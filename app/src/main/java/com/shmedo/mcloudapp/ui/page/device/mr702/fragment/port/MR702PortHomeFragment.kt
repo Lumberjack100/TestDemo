@@ -224,7 +224,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                 }
             } catch (e: Exception) {
                 Timber.e(e)
-                addLogItem(Log.ERROR, e.errorMsg)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }
@@ -290,8 +290,8 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         }
     }
 
-    fun addLogItem(priority: Int, data: String) {
-        logViewModel.insertLog(
+    fun addDeviceLogItem(priority: Int, data: String) {
+        logViewModel.insertLogItem(
             getLogItem(
                 sessionId = CommonMMKVOwner.iotDeviceLogSessionId,
                 priority = priority,
@@ -299,6 +299,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             )
         )
     }
+
 
     override fun onResume() {
         super.onResume()

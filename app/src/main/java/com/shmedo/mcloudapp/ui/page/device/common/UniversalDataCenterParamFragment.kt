@@ -11,6 +11,7 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
+import com.hjq.toast.ToastParams
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
@@ -477,7 +478,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                             initDataCenterParam(result.data)
                         } catch (e: Exception) {
                             Timber.e(e)
-                            addLogItem(Log.ERROR, e.errorMsg)
+                            addDeviceLogItem(Log.ERROR, e.errorMsg)
                         }
                     }
                 }
@@ -493,8 +494,11 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
-                            handleBackByCheckDataModified()
+                            Toaster.show(ToastParams().apply {
+                                text = "数据保存成功"
+                                duration = 1000
+                            })
+                            processNavigateUp()
                         }
                     }
                 }
@@ -590,12 +594,12 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 
     override fun processNavigateUp(toastMsg: String, isShowToast: Boolean) {
         launchWithViewLifecycle {
-            delay(AppContants.Communication.DELAY_15000_MILLIS)
             //巡护事件需要给上一级浏览页面传递最新的事件信息
             setFragmentResult(
                 AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY,
                 bundleOf(AppContants.Extras.REFRESH_DATA_CENTER_STATUS to statusItem.centerid)
             )
+            delay(1500)
             nav().navigateUp()
         }
     }

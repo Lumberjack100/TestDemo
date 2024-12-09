@@ -150,7 +150,7 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
             )
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -335,7 +335,7 @@ class MR702RunningStatusInfoFragment : BaseIOTDeviceFragment() {
             binding.rvRunningData.models = list
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

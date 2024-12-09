@@ -343,7 +343,7 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
             mStates.rs485ExternalDeviceAddr.set(info.rs485_addr)
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

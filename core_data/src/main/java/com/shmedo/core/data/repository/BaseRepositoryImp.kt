@@ -15,7 +15,7 @@ import rxhttp.wrapper.param.toAwaitResponse
 open class BaseRepositoryImp {
 
     /**
-     * 通用post请求,出现异常会 onCatch 回调
+     * 通用 POST 请求,出现异常会 onCatch 回调
      */
     protected suspend inline fun <reified T> commonPostResponseString(
         baseUrl: String = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
@@ -34,7 +34,7 @@ open class BaseRepositoryImp {
         }
 
     /**
-     * 通用post请求,出现异常会抛出
+     * 通用 POST 请求,出现异常会抛出
      */
     protected suspend inline fun <reified T> commonPostResponseStringCallAwait(
         baseUrl: String = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
@@ -49,5 +49,23 @@ open class BaseRepositoryImp {
                 .addAll(jsonParam)
                 .toAwaitResponse<T>()
                 .await()
+        }
+
+
+    /**
+     * 通用 GET 请求,出现异常会 onCatch 回调
+     */
+    protected suspend inline fun <reified T> commonGetResponseString(
+        baseUrl: String = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
+        shortMethodUrl: String,
+        headers: Map<String, String> = mapOf(),
+        noinline onCatch: ((Throwable) -> Unit)? = null
+    ): T? =
+        withContext(Dispatchers.IO) {
+            RxHttp.get(shortMethodUrl)
+                .setDomainIfAbsent(baseUrl)
+                .addAllHeader(headers)
+                .toAwaitResponse<T>()
+                .tryAwait(onCatch)
         }
 }

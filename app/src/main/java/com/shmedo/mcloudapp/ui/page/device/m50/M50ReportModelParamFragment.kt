@@ -336,7 +336,7 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
             mStates.fourthAlarmThreshold.set(info.gateDevVal4.formatDoubleValue("", 1))
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

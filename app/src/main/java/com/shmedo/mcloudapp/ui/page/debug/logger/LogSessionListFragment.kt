@@ -10,8 +10,8 @@ import com.drake.brv.listener.OnHoverAttachListener
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
-import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.data.source.local.entity.LogSession
 import com.shmedo.mcloudapp.BR
@@ -26,7 +26,9 @@ import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import kotlinx.coroutines.delay
 import org.koin.androidx.viewmodel.ext.android.getViewModel
+import timber.log.Timber
 
 class LogSessionListFragment : BaseFragment() {
     private lateinit var binding: FragmentLogSessionListBinding
@@ -73,7 +75,7 @@ class LogSessionListFragment : BaseFragment() {
             addType<LogSession>(R.layout.item_log_session_item)
             R.id.item.onClick {
                 when (itemViewType) {
-                    R.layout.item_log_session_group -> Toaster.show("悬停条目")
+                    R.layout.item_log_session_group -> Timber.d("悬停条目")
                     else -> {
                         val item = getModel<LogSession>()
                         val bundle = LogDataFragment.newBundleArguments(item)
@@ -83,6 +85,32 @@ class LogSessionListFragment : BaseFragment() {
                         )
                     }
                 }
+            }
+            R.id.item.onLongClick {
+                when (itemViewType) {
+                    R.layout.item_log_session_group -> Timber.d("悬停条目")
+                    else -> {
+                        val item = getModel<LogSession>()
+                        val dataList = arrayListOf("删除")
+                        val builder = XPopup.Builder(context)
+                            .hasShadowBg(true)
+                            .atView(itemView)
+                        builder.asAttachList(dataList.toTypedArray(), null)
+                        { _, text ->
+                            when (text) {
+                                "删除" -> {
+                                    launchWithViewLifecycle {
+                                        logViewModel.deleteLogSessionById(item.id)
+                                        delay(500)
+                                        loadLogSessionList() // Refresh the list after deletion
+                                    }
+                                }
+                            }
+                        }
+                            .show()
+                    }
+                }
+                true
             }
 
             // 可选项, 粘性监听器
@@ -102,10 +130,9 @@ class LogSessionListFragment : BaseFragment() {
         loadLogSessionList()
     }
 
-
     private fun loadLogSessionList() {
         launchWithViewLifecycle {
-            logViewModel.getSessionListByUser(MmkvCacheUtil.getAccount())
+            logViewModel.getLogSessionList(MmkvCacheUtil.getAccount())
                 .let { logSessionList ->
                     if (logSessionList.isEmpty()) {
                         binding.refreshLayout.showEmpty()

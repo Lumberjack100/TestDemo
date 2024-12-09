@@ -217,7 +217,7 @@ class MR702IOPortFragment : BaseIOTDeviceFragment() {
                 binding.rv.models = tempList
             } catch (e: Exception) {
                 Timber.e(e)
-                addLogItem(Log.ERROR, e.errorMsg)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }
@@ -237,7 +237,7 @@ class MR702IOPortFragment : BaseIOTDeviceFragment() {
                 binding.rv.bindingAdapter.addModels(tempList)
             } catch (e: Exception) {
                 Timber.e(e)
-                addLogItem(Log.ERROR, e.errorMsg)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

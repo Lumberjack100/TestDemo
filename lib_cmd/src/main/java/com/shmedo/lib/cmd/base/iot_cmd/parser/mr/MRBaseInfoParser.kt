@@ -16,6 +16,7 @@ class MRBaseInfoParser {
             sn = keyValueMap.getOrDefault("sn", sn)
             ver = keyValueMap.getOrDefault("ver", ver)
             imei = keyValueMap.getOrDefault("imei", imei)
+            iccid = keyValueMap.getOrDefault("iccid", iccid)
             temp = keyValueMap.getOrDefault("temp", temp)
             hum = keyValueMap.getOrDefault("hum", hum)
             volt = keyValueMap.getOrDefault("volt", volt)

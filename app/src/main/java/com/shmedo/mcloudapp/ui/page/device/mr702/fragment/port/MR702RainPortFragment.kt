@@ -223,7 +223,7 @@ class MR702RainPortFragment : BaseIOTDeviceFragment() {
             mStates.debounceCoefficient.set(rainGaugeParam.rainelim)
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

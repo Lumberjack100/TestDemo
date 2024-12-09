@@ -9,7 +9,6 @@ import com.hjq.toast.ToastParams
 import com.hjq.toast.Toaster
 import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.commonlib.utils.AppContants
-import com.shmedo.core.data.extensions.getLogItem
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
 import com.shmedo.lib.ble.communicate.service.base.ConnectingResult
@@ -46,13 +45,13 @@ import com.shmedo.mcloudapp.model.WorkingState
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.NetIOTCommandViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
+import org.koin.androidx.viewmodel.ext.android.getActivityViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import timber.log.Timber
 import java.util.LinkedList
@@ -66,7 +65,6 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     protected lateinit var mMessenger: PageMessenger
     protected lateinit var netIotCommandViewModel: NetIOTCommandViewModel
     protected lateinit var bleViewModel: BleViewModel
-    private lateinit var logViewModel: LogViewModel
 
     protected var refreshLayout: PageRefreshLayout? = null
 
@@ -90,8 +88,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     override fun initViewModel() {
         mMessenger = getAppViewModel()
         netIotCommandViewModel = getViewModel()
-        bleViewModel = getViewModel()
-        logViewModel = getViewModel()
+        bleViewModel = getActivityViewModel()
     }
 
     @CallSuper
@@ -128,7 +125,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         netIotCommandViewModel.cmdDispatchFlow.collect {
             when (it) {
                 is DispatchFailed -> {
-                    addLogItem(Log.ERROR, "DispatchFailed: ${it.errorMsg}")
+                    addDeviceLogItem(Log.ERROR, "4G DispatchFailed: ${it.errorMsg}")
                     doNetDispatchFailed(cmdStr = it.cmdStr, errorMsg = it.errorMsg)
                 }
 
@@ -137,17 +134,17 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
                 }
 
                 is CmdResponseResultError -> {
-                    addLogItem(Log.ERROR, "Response Error: ${it.errorMsg}")
+                    addDeviceLogItem(Log.ERROR, "4G Response Error: ${it.errorMsg}")
                     doCmdResponseResultError(cmdStr = it.cmdStr, errMsg = it.errorMsg)
                 }
 
                 is CmdResponseResultTimeOut -> {
-                    addLogItem(Log.ERROR, "Response TimeOut")
+                    addDeviceLogItem(Log.ERROR, "4G Response TimeOut")
                     doCmdResponseResultTimeOut(cmdStr = it.cmdStr, errMsg = it.errorMsg)
                 }
 
                 is CmdResponseResultSuccess -> {
-                    addLogItem(Log.INFO, it.cmdResult.responseContent)
+                    addDeviceLogItem(Log.INFO, "4G 响应内容: ${it.cmdResult.responseContent}")
                     setResultData(it.cmdResult.responseContent)
                 }
 
@@ -206,47 +203,37 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
                 NoDeviceState -> {}
                 is WorkingState -> when (state.result) {
                     is IdleResult, is ConnectingResult -> {
-                        addLogItem(Log.INFO, "device ${bleDevice?.address} connecting")
                         showLoadingDialog(StringUtils.getString(R.string.ble_state_connecting))
                     }
 
                     is ConnectedResult -> {
-                        addLogItem(Log.INFO, "device ${bleDevice?.address} connected")
                     }
 
                     is ReadyResult -> {
-                        addLogItem(Log.INFO, "device ready")
                         onConnectionStateChanged(true)
                         onBleDeviceReady()
                     }
 
                     is SuccessResult -> {
-                        addLogItem(Log.INFO, state.result.data.response)
                         setResultData(state.result.data.response)
                     }
 
                     is DisconnectedResult -> {
-                        addLogItem(
-                            Log.ERROR, "device disconnected, reason: ${state.result.reason}"
-                        )
                         dismissLoadingDialog()
                         onConnectionStateChanged(false)
                     }
 
                     is LinkLossResult -> {
-                        addLogItem(Log.ERROR, "device link loss")
                         dismissLoadingDialog()
                         onConnectionStateChanged(false)
                     }
 
                     is MissingServiceResult -> {
-                        addLogItem(Log.ERROR, "device missing service")
                         dismissLoadingDialog()
                         onConnectionStateChanged(false)
                     }
 
                     is UnknownErrorResult -> {
-                        addLogItem(Log.ERROR, "device unknown error")
                         dismissLoadingDialog()
                         onConnectionStateChanged(false)
                     }
@@ -267,6 +254,8 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     abstract fun setResultData(cmdStr: String)
 
     protected fun sendBleCommand(command: String, delaySendMillis: Long = 0) {//默认不延迟发送
+        addDeviceLogItem(Log.DEBUG, "ble 发送指令: $command")
+
         //发送物联网指令
         if (command.startsWith(IOTConstants.COMMAND_HEADER)) {
             bleViewModel.sendIOTCommand(command, deviceInfo.apikey, delaySendMillis)
@@ -293,10 +282,10 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         }
         val command = commandItems.first
         commandItems.removeFirst()
-        addLogItem(Log.INFO, "发送指令: $command")
 
         //4G远程下发指令模式
         if (communicateWay is NetPlatformConnect) {
+            addDeviceLogItem(Log.DEBUG, "4G 发送指令: $command")
             netIotCommandViewModel.batchDispatchRawCmd(command, listOf(deviceInfo.deviceToken))
             return
         }
@@ -308,6 +297,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             finishAction()
             return
         }
+        addDeviceLogItem(Log.DEBUG, "ble 发送指令: $command")
         //发送物联网指令
         if (command.startsWith(IOTConstants.COMMAND_HEADER)) bleViewModel.sendIOTCommand(
             command,
@@ -362,7 +352,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         errMsg: String = ""
     ) {
         Timber.i("${javaClass.simpleName} 设备未响应")
-        addLogItem(Log.ERROR, "设备未响应")
+        addDeviceLogItem(Log.ERROR, "设备未响应")
 
         refreshLayout?.finish(false)
         timeoutJob?.cancel()
@@ -429,11 +419,9 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    fun addLogItem(priority: Int, data: String) {
-        logViewModel.insertLog(
-            getLogItem(
-                sessionId = CommonMMKVOwner.iotDeviceLogSessionId, priority = priority, data = data
-            )
+    fun addDeviceLogItem(priority: Int, data: String) {
+        bleViewModel.addLogItem(
+            sessionId = CommonMMKVOwner.iotDeviceLogSessionId, priority = priority, data = data
         )
     }
 

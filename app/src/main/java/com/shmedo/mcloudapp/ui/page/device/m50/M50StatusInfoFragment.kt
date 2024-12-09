@@ -192,7 +192,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
             } catch (e: Exception) {
                 Timber.e(e)
-                addLogItem(Log.ERROR, e.errorMsg)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

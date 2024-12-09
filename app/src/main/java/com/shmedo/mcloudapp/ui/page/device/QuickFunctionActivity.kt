@@ -10,19 +10,16 @@ import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.ActivityDeviceHomeBinding
+import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
-
 import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
 import com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
-import org.koin.androidx.viewmodel.ext.android.getViewModel
 
 /**
  * 创建者：gonghe
@@ -32,7 +29,6 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 class QuickFunctionActivity : BaseActivity() {
     private lateinit var binding: ActivityDeviceHomeBinding
     private lateinit var mStates: EmptyViewModel
-    private lateinit var logViewModel: LogViewModel
 
     private var productType = ProductType.UnKnown
     private var communicateWay: CommunicateWay = NetPlatformConnect
@@ -41,7 +37,6 @@ class QuickFunctionActivity : BaseActivity() {
 
     override fun initViewModel() {
         mStates = getActivityScopeViewModel()
-        logViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {

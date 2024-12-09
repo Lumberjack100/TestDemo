@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.ui.page.device.common
 import android.content.ClipData
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.activity.OnBackPressedCallback
@@ -116,7 +115,8 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        isIotCmd = productType != ProductType.COLLECTOR_R_1 && productType != ProductType.DAS && productType != ProductType.BHY
+        isIotCmd =
+            productType != ProductType.COLLECTOR_R_1 && productType != ProductType.DAS && productType != ProductType.BHY
         //开启命令调试模式
         CommonMMKVOwner.isCommandDebugMode = true
     }
@@ -161,68 +161,6 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override suspend fun collectBleData() {
-        bleViewModel.state.collect { state ->
-            Timber.v("${javaClass.simpleName} MedoBle: $state")
-            when (state) {
-                NoDeviceState -> {}
-                is WorkingState -> when (state.result) {
-                    is IdleResult,
-                    is ConnectingResult -> {
-                        printLog(
-                            "正在连接蓝牙(${bleDevice?.address})...",
-                            ColorUtils.getColor(R.color.title_text_color)
-                        )
-                    }
-
-                    is ConnectedResult -> {
-                        printLog(
-                            "蓝牙连接成功",
-                            ColorUtils.getColor(R.color.online_colorPrimary)
-                        )
-                    }
-
-                    is ReadyResult -> {
-                        addLogItem(Log.INFO, "device ready")
-                    }
-
-                    is SuccessResult -> {
-                        addLogItem(Log.INFO, state.result.data.response)
-                        setResultData(state.result.data.response)
-                    }
-
-                    is DisconnectedResult -> {
-                        printLog(
-                            "蓝牙连接断开, reason: ${state.result.reason}",
-                            ColorUtils.getColor(R.color.error_FF4400)
-                        )
-                    }
-
-                    is LinkLossResult -> {
-                        printLog(
-                            "蓝牙连接断开, reason: device link loss",
-                            ColorUtils.getColor(R.color.error_FF4400)
-                        )
-                    }
-
-                    is MissingServiceResult -> {
-                        printLog(
-                            "蓝牙连接失败, reason: device missing service",
-                            ColorUtils.getColor(R.color.error_FF4400)
-                        )
-                    }
-
-                    is UnknownErrorResult -> {
-                        printLog(
-                            "蓝牙连接失败, reason: device unknown error",
-                            ColorUtils.getColor(R.color.error_FF4400)
-                        )
-                    }
-                }
-            }
-        }
-    }
-
     private suspend fun collectTcpData() {
         tcpViewModel.data.collect { state ->
             Timber.v("${javaClass.simpleName} Tcp State: $state")
@@ -252,6 +190,70 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
                 is TcpConnectError -> {
                     mStates.tcpConnected.set(false)
                     printLog("TCP 连接异常", ColorUtils.getColor(R.color.error_FF4400))
+                }
+            }
+        }
+    }
+
+    override suspend fun collectBleData() {
+        bleViewModel.state.collect { state ->
+            Timber.v("${javaClass.simpleName} MedoBle: $state")
+            when (state) {
+                NoDeviceState -> {}
+                is WorkingState -> when (state.result) {
+                    is IdleResult,
+                    is ConnectingResult -> {
+                        printLog(
+                            "正在连接蓝牙(${bleDevice?.address})...",
+                            ColorUtils.getColor(R.color.title_text_color)
+                        )
+                    }
+
+                    is ConnectedResult -> {
+                        printLog(
+                            "蓝牙连接成功",
+                            ColorUtils.getColor(R.color.online_colorPrimary)
+                        )
+                    }
+
+                    is ReadyResult -> {
+                        printLog(
+                            "蓝牙已就绪",
+                            ColorUtils.getColor(R.color.title_text_color)
+                        )
+                    }
+
+                    is SuccessResult -> {
+                        handleBleResponseContentFromDevice(state.result.data.response)
+                    }
+
+                    is DisconnectedResult -> {
+                        printLog(
+                            "蓝牙连接断开, reason: ${state.result.reason}",
+                            ColorUtils.getColor(R.color.error_FF4400)
+                        )
+                    }
+
+                    is LinkLossResult -> {
+                        printLog(
+                            "蓝牙连接断开, reason: device link loss",
+                            ColorUtils.getColor(R.color.error_FF4400)
+                        )
+                    }
+
+                    is MissingServiceResult -> {
+                        printLog(
+                            "蓝牙连接失败, reason: device missing service",
+                            ColorUtils.getColor(R.color.error_FF4400)
+                        )
+                    }
+
+                    is UnknownErrorResult -> {
+                        printLog(
+                            "蓝牙连接失败, reason: device unknown error",
+                            ColorUtils.getColor(R.color.error_FF4400)
+                        )
+                    }
                 }
             }
         }
@@ -293,15 +295,15 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
         sendBleCommand(msg)
     }
 
-    /**
-     * 处理设备相应的消息，通过 TCP 转发给远程调试客户端
-     */
     override fun setResultData(cmdStr: String) {
         printLog(cmdStr, ColorUtils.getColor(R.color.send_data_color))
-        handleResponseMsgFromDevice(cmdStr)
+        handleBleResponseContentFromDevice(cmdStr)
     }
 
-    private fun handleResponseMsgFromDevice(msg: String) {
+    /**
+     * 处理设备响应内容，通过 TCP 转发给远程调试客户端
+     */
+    private fun handleBleResponseContentFromDevice(cmdStr: String) {
         if (!tcpViewModel.isConnected()) {
             printLog(
                 "TCP 连接已断开",
@@ -309,7 +311,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
             )
             return
         }
-        tcpViewModel.sendMsgToServer(msg)
+        tcpViewModel.sendMsgToServer(cmdStr)
     }
 
     private fun showMoreMenu() {

@@ -185,7 +185,7 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
                 checkDeviceIsNormal(info)
             } catch (e: Exception) {
                 Timber.e(e)
-                addLogItem(Log.ERROR, e.errorMsg)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }
@@ -214,7 +214,7 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
                     }
             } catch (e: Exception) {
                 Timber.e(e)
-                addLogItem(Log.ERROR, e.errorMsg)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

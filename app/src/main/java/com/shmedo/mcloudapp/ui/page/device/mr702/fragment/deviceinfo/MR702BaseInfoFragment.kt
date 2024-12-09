@@ -103,6 +103,11 @@ class MR702BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "SIM卡号",
+                    value = stateInfo.iccid,
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "IMEI",
                     value = stateInfo.imei,
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromDouble(
@@ -147,7 +152,7 @@ class MR702BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 )
 
                 deviceRequestViewModel.getDeviceDetailInfo(deviceInfo.deviceToken) { error: Throwable ->
-                    addLogItem(Log.ERROR, error.errorMsg)
+                    addDeviceLogItem(Log.ERROR, error.errorMsg)
                 }?.let { deviceDetailInfo ->
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                         groupList,
@@ -159,7 +164,7 @@ class MR702BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
                 Timber.e(e)
-                addLogItem(Log.ERROR, e.errorMsg)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

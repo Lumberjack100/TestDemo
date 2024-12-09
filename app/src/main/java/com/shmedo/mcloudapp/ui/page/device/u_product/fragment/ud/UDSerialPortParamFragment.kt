@@ -392,7 +392,7 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
 
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -406,7 +406,7 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
             mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

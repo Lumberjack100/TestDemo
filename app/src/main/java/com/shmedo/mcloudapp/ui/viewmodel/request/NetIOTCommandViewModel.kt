@@ -31,7 +31,7 @@ import timber.log.Timber
  */
 class NetIOTCommandViewModel(
     private val deviceInteractiveRepositoryImp: DeviceInteractiveRepositoryImp,
-    private val loggerRepositoryImp: LoggerRepositoryImp
+    loggerRepositoryImp: LoggerRepositoryImp
 ) :
     BaseRequestViewModel(loggerRepositoryImp) {
     private val _cmdDispatchFlow: MutableSharedFlow<CmdDispatch> = MutableSharedFlow()

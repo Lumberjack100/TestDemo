@@ -136,7 +136,7 @@ class LocationRepositoryImp(private val loggerRepositoryImp: LoggerRepositoryImp
     private fun logAndRecord(message: String, level: Int = Log.INFO) {
         Timber.i(message)
         managerScope.launch {
-            loggerRepositoryImp.insertLog(
+            loggerRepositoryImp.insertLogItem(
                 getLogItem(
                     sessionId = CommonMMKVOwner.appLogSessionId,
                     priority = level,

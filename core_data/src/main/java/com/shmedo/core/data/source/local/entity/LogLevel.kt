@@ -14,14 +14,14 @@ import android.util.Log
 object LogLevel {
 
     /**
-     * Level used just for debugging purposes. It has the lowest importance level.
-     */
-    private const val DEBUG = 0
-
-    /**
      * Log entries with minor importance.
      */
-    private const val VERBOSE = 1
+    private const val VERBOSE = 0
+
+    /**
+     * Level used just for debugging purposes.
+     */
+    private const val DEBUG = 1
 
     /**
      * Default logging level for important entries.

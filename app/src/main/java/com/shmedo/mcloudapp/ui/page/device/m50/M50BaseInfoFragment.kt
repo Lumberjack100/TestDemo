@@ -151,7 +151,7 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
                 Timber.e(e)
-                addLogItem(Log.ERROR, e.errorMsg)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }

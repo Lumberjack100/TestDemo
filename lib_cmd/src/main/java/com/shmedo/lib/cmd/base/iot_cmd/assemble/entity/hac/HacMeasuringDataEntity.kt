@@ -16,8 +16,9 @@ data class HacMeasuringDataEntity(
     val downwaitetime: String = IOTConstants.NULL_KEY, // 下放等待时间
     var datatype: String = IOTConstants.NULL_KEY, //数据解算方式（0:顶部固定法，1底部固定法）
     var onewaytest: String = IOTConstants.NULL_KEY, //单向测量 0 :关闭 1:开启
-    val holeno: String =IOTConstants.NULL_KEY, //孔号
+    val projectno: String = IOTConstants.NULL_KEY,//项目编号
     val areano: String = IOTConstants.NULL_KEY,//区号
+    val holeno: String =IOTConstants.NULL_KEY, //孔号
     val holedepth: String = IOTConstants.NULL_KEY,//测斜管孔深
     val checkreverse: String = IOTConstants.NULL_KEY,//反转自检
 ) {

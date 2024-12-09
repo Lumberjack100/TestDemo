@@ -13,8 +13,9 @@ import com.squareup.moshi.JsonClass
 data class HacMeasuringHoleDepthInfoEntity(
     val model: String = "", //电机工作标识  0: 重新开始测量 1：继续测量
     val address: String = "", //MAC 地址
-    val holeno: String = "", //孔号
+    val projectno: String = IOTConstants.NULL_KEY,//项目编号
     val areano: String = IOTConstants.NULL_KEY,//区号
+    val holeno: String = IOTConstants.NULL_KEY, //孔号
     val lowtbtss: String = IOTConstants.NULL_KEY, // 下放堵转检测（0:关闭，1:开启）
     val motorspeed: String = IOTConstants.NULL_KEY, // 电机速度
     val measway: String = IOTConstants.NULL_KEY, // 测量模式（0:自动测量，1:手动测量）

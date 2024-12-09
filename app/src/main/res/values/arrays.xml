@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string-array name="log_levels">
-        <item>DEBUG</item>
         <item>VERBOSE</item>
+        <item>DEBUG</item>
         <item>INFO</item>
         <item>WARNING</item>
         <item>ERROR</item>

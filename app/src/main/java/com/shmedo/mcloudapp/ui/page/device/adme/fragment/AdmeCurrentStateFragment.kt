@@ -472,7 +472,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
                 Timber.e(e)
-                addLogItem(Log.ERROR, e.errorMsg)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }
@@ -492,7 +492,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
             )
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -524,7 +524,7 @@ class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
 
         } catch (e: Exception) {
             Timber.e(e)
-            addLogItem(Log.ERROR, e.errorMsg)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 

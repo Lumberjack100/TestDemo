@@ -34,6 +34,11 @@ enum class BaseURL(@JvmField var baseUrl: String) {
     AMS_CONFIG_ADDRESS("http://ams4.shmedo.com:22000/api/v1/"),
 
     /**
+     * ADME配置接口服务地址
+     */
+    ADME_CONFIG_ADDRESS("http://172.168.5.210:30100/adme/config/api/v1/"),
+
+    /**
      * 蒲公英服务地址
      */
     PGYER_SERVICE_ADDRESS("https://www.pgyer.com/apiv2/app/"),

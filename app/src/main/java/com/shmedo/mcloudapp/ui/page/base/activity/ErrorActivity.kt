@@ -58,7 +58,7 @@ class ErrorActivity : BaseActivity() {
             }
         }
         CustomActivityOnCrash.getStackTraceFromIntent(intent)?.let {
-            logViewModel.insertLog(
+            logViewModel.insertLogItem(
                 getLogItem(
                     sessionId = CommonMMKVOwner.appLogSessionId,
                     priority = Log.ERROR,

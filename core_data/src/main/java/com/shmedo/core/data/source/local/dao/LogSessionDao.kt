@@ -19,27 +19,27 @@ import com.shmedo.core.data.source.local.entity.LogSession
 @Dao
 interface LogSessionDao {
     @Query("select * from sessions  where create_by = :account")
-    fun getSessionListByUserLiveData(account: String): LiveData<List<LogSession>?>
+    fun getLogSessionListByUserLiveData(account: String): LiveData<List<LogSession>?>
 
     @Query("select * from sessions  where create_by = :account")
-    suspend fun getSessionListByUser(account: String): List<LogSession>
+    suspend fun getLogSessionList(account: String): List<LogSession>
 
     //查询当前用户下当天内 name 相同的会话
     @Query("select * from sessions  where create_by = :account and name = :name and create_date = :createDate")
-    suspend fun getSessionByUserAndName(
+    suspend fun getLogSessionListByName(
         account: String,
         name: String,
         createDate: String
     ):  List<LogSession>
 
     @Query("select * from sessions  where id = :id")
-    suspend fun getSessionById(id: String): LogSession?
+    suspend fun getLogSessionById(id: String): LogSession?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSession(record: LogSession)
+    suspend fun insert(record: LogSession)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSessionList(list: List<LogSession>)
+    suspend fun batchInsert(list: List<LogSession>)
 
     @Query("DELETE FROM sessions WHERE id = :id")
     suspend fun deleteById(id: String)
