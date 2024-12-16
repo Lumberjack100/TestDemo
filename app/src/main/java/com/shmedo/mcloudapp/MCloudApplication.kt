@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp
 
 import cat.ereza.customactivityoncrash.config.CaocConfig
 import com.baidu.location.LocationClient
+import com.baidu.mapapi.CoordType
 import com.baidu.mapapi.SDKInitializer
 import com.baidu.mapapi.common.BaiduMapSDKException
 import com.blankj.utilcode.util.DeviceUtils
@@ -61,6 +62,7 @@ class MCloudApplication : BaseApp() {
             SDKInitializer.setAgreePrivacy(this, true)
             //在使用SDK各组件之前初始化context信息，传入ApplicationContext
             SDKInitializer.initialize(this)
+            SDKInitializer.setCoordType(CoordType.GCJ02);
         } catch (e: BaiduMapSDKException) { }
     }
 

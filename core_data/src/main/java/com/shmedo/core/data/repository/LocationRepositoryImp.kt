@@ -59,6 +59,7 @@ class LocationRepositoryImp(private val loggerRepositoryImp: LoggerRepositoryImp
             scanSpan = interval
             //可选，设置是否使用卫星定位，默认false ； 使用高精度和仅用设备两种定位模式的，参数必须设置为true
             openGps = true
+            coorType = "gcj02" //可选，设置坐标类型
             //可选，设置是否返回逆地理地址信息。默认是true
             setIsNeedAddress(true)
             //可选，设置是否需要最新版本的地址信息。默认为 true
