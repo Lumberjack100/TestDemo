@@ -659,10 +659,10 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             setManualMeasuringHoleDepth()
 
         //保存参数指令
-        command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SAVE_CONFIG_PARAM
-        )
-        commandItems.add(command)
+//        command = IOTCommandUtil.getCommand(
+//            IOTCommandType.MD_SAVE_CONFIG_PARAM
+//        )
+//        commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(
