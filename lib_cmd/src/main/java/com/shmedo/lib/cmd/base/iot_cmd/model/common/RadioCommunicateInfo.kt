@@ -12,4 +12,6 @@ data class RadioCommunicateInfo(
     var txchl: String = "",//发送频率 [0~19] 载波频率以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 自组网网关：接收默认6，发送默认13 M20S：接收默认13，发送默认6
     var outpwr: String = "",//发射功率 [0~22] 默认22
     var bcchl: String = "",//广播频率 [1~19] 默认1 载波频率以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道（仅M20S有效，默认为0）
+    var net_sta: String = "", //电台入网状态 0 未入网 1 已入网
+    var gateway_sn: String = "", //级网关sn
 )

@@ -12,11 +12,14 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class UDAlarmReportModeEntity(
     val rept_mode: String = IOTConstants.NULL_KEY, //上报模式 0：自动  1：手动
+    @Deprecated("use warning_mode instead")
     val warning_switch: String = IOTConstants.NULL_KEY, //四级报警启用 0：不启用；1：启用
     val ld_reptgap: String = IOTConstants.NULL_KEY, //雷达数据上报频率 分钟
     val angle_threshol: String = IOTConstants.NULL_KEY, //角度偏移阈值
     val pixx: String = IOTConstants.NULL_KEY, //图片水平分辨率
     val pixy: String = IOTConstants.NULL_KEY, //图片垂直分辨率
+    val warning_mode: String = IOTConstants.NULL_KEY, //报警模式 0：加报模式  1：四级报警模式
+    val add_rept_threshold: String = IOTConstants.NULL_KEY, //加报阈值  单位：毫米
 ) {
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)

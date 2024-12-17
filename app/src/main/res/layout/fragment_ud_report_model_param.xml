@@ -76,37 +76,34 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-                        <RelativeLayout
-                            style="@style/SwitchButton_Item_Layout_Style"
-                            android:background="@drawable/layer_common_click_item_with_divider">
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_ClickableItem_Layout_Style"
+                            android:background="@drawable/layer_common_click_item_with_divider"
+                            android:onClick="@{()->click.onAlarmModelChooseClick()}">
 
                             <com.google.android.material.textview.MaterialTextView
-                                style="@style/SwitchButton_Item_Title_Style"
-                                android:text="四级报警启用" />
+                                style="@style/Common_ClickableItem_Title_Style"
+                                android:text="报警模式" />
 
-                            <com.kyleduo.switchbutton.SwitchButton
-                                style="@style/SwitchButton_Item_Button_Style"
-                                android:checked="@={stateVM.alarmEnable}"
-                                app:kswAnimationDuration="100"
-                                app:kswBackDrawable="@drawable/sl_switchbutton_back"
-                                app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
-
-                        </RelativeLayout>
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Value_Style"
+                                android:drawableEnd="@drawable/ic_arrow_down"
+                                android:text="@{stateVM.alarmModel}"
+                                tools:text="四级报警" />
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
+                            visible='@{stateVM.alarmModel == "四级报警"}'
                             style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.alarmEnable}"
                                 android:text="@{stateVM.firstAlarmThresholdTitle}"
                                 tools:text="一级报警阈值（毫米）" />
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                                textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
                                 android:inputType="number"
                                 android:maxLength="10"
@@ -114,19 +111,17 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
+                            visible='@{stateVM.alarmModel == "四级报警"}'
                             style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.alarmEnable}"
                                 android:text="@{stateVM.secondAlarmThresholdTitle}"
                                 tools:text="二级报警阈值（毫米）" />
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                                textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
                                 android:inputType="number"
                                 android:maxLength="10"
@@ -134,19 +129,17 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
+                            visible='@{stateVM.alarmModel == "四级报警"}'
                             style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/layer_common_click_item_with_divider">
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.alarmEnable}"
                                 android:text="@{stateVM.thirdAlarmThresholdTitle}"
                                 tools:text="三级报警阈值（毫米）" />
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                                textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
                                 android:inputType="number"
                                 android:maxLength="10"
@@ -154,23 +147,38 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
                         <androidx.appcompat.widget.LinearLayoutCompat
+                            visible='@{stateVM.alarmModel == "四级报警"}'
                             style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.alarmEnable}"
                                 android:text="@{stateVM.fourthAlarmThresholdTitle}"
                                 tools:text="四级报警阈值（毫米）" />
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                                textViewEnabled="@{stateVM.alarmEnable }"
                                 android:hint="请输入"
                                 android:inputType="number"
                                 android:maxLength="10"
                                 android:text="@={stateVM.fourthAlarmThreshold}" />
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            visible='@{stateVM.alarmModel != "四级报警"}'
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                android:text="@{stateVM.fourthAlarmThresholdTitle}"
+                                tools:text="加报阈值（毫米）" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                android:hint="请输入"
+                                android:inputType="number"
+                                android:maxLength="10"
+                                android:text="@={stateVM.addReportThreshold}" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

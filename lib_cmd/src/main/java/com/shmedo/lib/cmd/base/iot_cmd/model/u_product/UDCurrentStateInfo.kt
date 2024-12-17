@@ -38,12 +38,17 @@ data class UDCurrentStateInfo(
     val totalRunTime: String = IOTConstants.NULL_KEY, //累计运行时间  单位：秒 "56202"
     @Json(name = "rept_mode")
     val reportMode: String = IOTConstants.NULL_KEY, //上报模式 0：自动  1：手动
+    @Json(name = "warning_mode")
+    val warningMode: String = IOTConstants.NULL_KEY, //报警模式 0：加报模式  1：四级报警模式
     @Json(name = "rept_sta")
     val reportStatus: String = IOTConstants.NULL_KEY, //上报状态 1：一级报警   2：二级报警  3：三级报警  4：四级报警 5：正常
+    @Json(name = "add_rept_threshold")
+    val addReportThreshold: String = IOTConstants.NULL_KEY, //加报阈值  单位：毫米
     @Json(name = "rept_freq")
     val reportFrequency: String = IOTConstants.NULL_KEY, //上报频率  单位：分钟/次 "120"
     @Json(name = "cap_freq")
     val captureFrequency: String = IOTConstants.NULL_KEY, //抓拍频率 单位：分钟/次 "120"
+    @Deprecated("use warning_mode instead")
     @Json(name = "warning_switch")
     val levelFourWarningEnabled: String = IOTConstants.NULL_KEY, //四级预警启用 0：启用  1：不启用
     @Json(name = "mobile_net")
