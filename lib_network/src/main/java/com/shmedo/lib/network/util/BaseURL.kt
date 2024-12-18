@@ -36,7 +36,7 @@ enum class BaseURL(@JvmField var baseUrl: String) {
     /**
      * ADME配置接口服务地址
      */
-    ADME_CONFIG_ADDRESS("http://172.168.5.210:30100/adme/config/api/v1/"),
+    ADME_CONFIG_ADDRESS("http://101.230.179.106:30100/adme/config/api/v1/"),
 
     /**
      * 蒲公英服务地址

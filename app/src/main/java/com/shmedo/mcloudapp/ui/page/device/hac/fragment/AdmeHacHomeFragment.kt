@@ -7,6 +7,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.hac.HacMotionState
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
@@ -94,7 +95,12 @@ class AdmeHacHomeFragment : UniversalDeviceHomeFragment() {
         binding.rvModule.models = moduleList
     }
 
-    override fun onNetPlatformReady() {}
+    override fun onNetPlatformReady() {
+        //米度平台在线
+        if (deviceInfo.onlineStatus) {
+            getMotorMotionData()
+        }
+    }
 
     override fun onBleDeviceReady() {
         super.onBleDeviceReady()
@@ -116,7 +122,6 @@ class AdmeHacHomeFragment : UniversalDeviceHomeFragment() {
             sendCommandFromCmdList(isStartTimeoutJob = false)
         }
     }
-
 
     override fun processOtherItemClick(configModule: DeviceFunctionModule) {
         when (configModule) {
@@ -144,6 +149,89 @@ class AdmeHacHomeFragment : UniversalDeviceHomeFragment() {
                         bundle
                     )
                 }
+            }
+        }
+    }
+
+
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE -> {
+                dismissLoadingDialog()
+            }
+            else -> {
+                super.doCmdResponseResultError(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog
+                )
+            }
+        }
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE -> {
+                dismissLoadingDialog()
+            }
+
+            else -> {
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog
+                )
+            }
+        }
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE -> {
+                super.showNearbyCommunicationTimeoutAlert(
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = false,
+                    isMessageDialog = isMessageDialog,
+                    errMsg = errMsg
+                )
+            }
+
+            else -> {
+                super.showNearbyCommunicationTimeoutAlert(
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog,
+                    errMsg = errMsg
+                )
             }
         }
     }

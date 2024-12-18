@@ -51,7 +51,8 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
     private val mStates: UDReportModelParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
-    private val modelList = arrayListOf("自动", "手动")
+    private val reportModelList = arrayListOf("自动", "手动")
+    private val alarmModelList = arrayListOf("加报", "四级报警")
     private val reportFrequencyList =
         arrayListOf("15分钟/次", "30分钟/次", "1小时/次", "2小时/次")//上报频率
     private val reportFrequencyMinList =
@@ -108,7 +109,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         when (productType) {
             ProductType.U_D_1,
             ProductType.U_D_2
-            -> {
+                -> {
                 mStates.firstAlarmThresholdTitle.set("一级报警阈值（毫米）")
                 mStates.secondAlarmThresholdTitle.set("二级报警阈值（毫米）")
                 mStates.thirdAlarmThresholdTitle.set("三级报警阈值（毫米）")
@@ -120,12 +121,13 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun resetDefaultParams() {
-        mStates.reportModel.set("自动")
-        mStates.alarmEnable.set(true)//是否开启报警
+        mStates.reportModel.set(reportModelList[0])
+        mStates.alarmModel.set(alarmModelList[1])
         mStates.firstAlarmThreshold.set("20")//一级报警阈值
         mStates.secondAlarmThreshold.set("50")//二级报警阈值
         mStates.thirdAlarmThreshold.set("100")//三级报警阈值
         mStates.fourthAlarmThreshold.set("200")//四级报警阈值
+        mStates.addReportThreshold.set("")//加报阈值
         mStates.reportFrequency.set(reportFrequencyList[0])
     }
 
@@ -134,14 +136,14 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
          * 选择上报模式
          */
         fun onModelChooseClick() {
-            val selectedIndex = modelList.indexOf(mStates.reportModel.get())
+            val selectedIndex = reportModelList.indexOf(mStates.reportModel.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", modelList.toTypedArray(),
+                    "", reportModelList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.reportModel.set(text)
@@ -149,6 +151,27 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
                 )
                 .show()
         }
+
+        /**
+         * 选择报警模式
+         */
+        fun onAlarmModelChooseClick() {
+            val selectedIndex = alarmModelList.indexOf(mStates.alarmModel.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "", alarmModelList.toTypedArray(),
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.alarmModel.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
 
         /**
          * 选择上报频率
@@ -190,12 +213,24 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
     private fun initSaveCommand() {
         commandItems.clear()
 
-        if (mStates.reportModel.get() == "自动") {
-            //四级预警未启用
-            if (!mStates.alarmEnable.get()) {
+        //自动上报
+        if (mStates.reportModel.get() == reportModelList[0]) {
+            //加报模式
+            if (mStates.alarmModel.get() == alarmModelList[0]) {
+                if (mStates.addReportThreshold.get().isEmpty()) {
+                    showMessageDialog("请输入加报阈值!")
+                    return
+                }
+                try {
+                    val value = mStates.firstAlarmThreshold.get().toDouble()
+                } catch (ex: Exception) {
+                    showMessageDialog("请输入正确的加报阈值!")
+                    return
+                }
                 val reportModeEntity = UDAlarmReportModeEntity(
                     rept_mode = "0",
-                    warning_switch = "0",
+                    warning_mode = "0",
+                    add_rept_threshold = mStates.addReportThreshold.get()
                 )
                 val command = IOTCommandUtil.getCommand(
                     IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR,
@@ -208,7 +243,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
                 return
             }
 
-            //四级预警开启
+            //四级报警模式
             if (mStates.firstAlarmThreshold.get().isEmpty()) {
                 showMessageDialog("请输入一级报警阈值!")
                 return
@@ -255,7 +290,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
 
             val reportModeEntity = UDAlarmReportModeEntity(
                 rept_mode = "0",
-                warning_switch = "1",
+                warning_mode = "1",
             )
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR,
@@ -310,7 +345,6 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
-
 
     /**
      * 4G 下发指令响应失败
@@ -455,8 +489,9 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
                     MoshiUtil.fromJson<UDCurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
 
-                mStates.reportModel.set(if (udCurrentStateInfo.reportMode == "0") "自动" else "手动")
-                mStates.alarmEnable.set(udCurrentStateInfo.levelFourWarningEnabled == "1")
+                mStates.reportModel.set(if (udCurrentStateInfo.reportMode == "0") reportModelList[0] else reportModelList[1])
+                mStates.alarmModel.set(if (udCurrentStateInfo.warningMode == "0") alarmModelList[0] else alarmModelList[1])
+                mStates.addReportThreshold.set(udCurrentStateInfo.addReportThreshold)
                 reportFrequencyMinList.indexOf(udCurrentStateInfo.reportFrequency)
                     .let { index ->
                         if (index in reportFrequencyList.indices) {

@@ -197,7 +197,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
             locationViewModel.locationState.collectLatest { bdLocation ->
                 if (gcjLatLng == null || gcjLatLng!!.latitude == 0.0 || gcjLatLng!!.longitude == 0.0) {
                     gcjLatLng = bdLocation
-                    //将高德坐标(即GCJ-02火星坐标)转换为WGS-84世界标准地理坐标
+                    //将GCJ-02火星坐标转换为WGS-84世界标准地理坐标
                     val mWgsLatLng = JZLocationConverter.gcj02ToWgs84(
                         CustomLatLng(
                             bdLocation.latitude,

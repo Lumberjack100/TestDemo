@@ -44,7 +44,8 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
     private val mStates: UDRadioParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
-    private val radioChannelNumList: List<String> = (451150000..470150000 step 1000000).map { it.toString() }
+    private val radioChannelNumList: List<String> =
+        (451150000..470150000 step 1000000).map { it.toString() }
     private var radioChannelTextList: List<String> = emptyList()
     private val transmitPowerList: List<String> = (10..22).map { it.toString() }//发射功率
     private val airSpeedList: List<String> = (1..3).map { it.toString() }//空中速率
@@ -373,6 +374,14 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
                 }
             mStates.transmitPower.set(info.outpwr)
             mStates.airSpeed.set(info.airbaud)
+            mStates.radioNetStatus.set(
+                when (info.net_sta) {
+                    "0" -> "未入网"
+                    "1" -> "已入网"
+                    else -> "--"
+                }
+            )
+            mStates.parentGatewaySN.set(info.gateway_sn)
 
             //添加这行来保存初始状态
             mStates.saveInitialState()

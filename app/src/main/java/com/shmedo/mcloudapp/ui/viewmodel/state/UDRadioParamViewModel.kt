@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.ui.viewmodel.state
 
-import androidx.lifecycle.ViewModel
 import androidx.databinding.Observable
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseStateViewModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
@@ -12,6 +11,9 @@ class UDRadioParamViewModel : BaseStateViewModel() {
     val sendChannel = NonNullObservableField("")//广播发射频点
     val transmitPower = NonNullObservableField("")//发射功率
     val airSpeed = NonNullObservableField("")//空中速率
+
+    val radioNetStatus = NonNullObservableField("")//电台入网状态
+    val parentGatewaySN = NonNullObservableField("")//上级网关 SN
 
     init {
         // 在所有字段初始化后调用 registerField()

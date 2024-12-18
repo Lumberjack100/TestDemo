@@ -35,6 +35,7 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAdmeHacMeasuringHoleDepthBinding
+import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.getAdmeErrorMsg
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.isViewLifecycleActive
@@ -459,6 +460,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                 showMessageDialog("请设置孔号!")
                 return
             }
+            showLoadingDialog(StringUtils.getString(R.string.processing))
             launchWithViewLifecycle {
                 try {
                     val configMap = mapOf(
@@ -467,23 +469,27 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
                         "decentralizationWaitingTime" to decentralizationWaitingTime
                     )
                     val configJson = MoshiUtil.toJson(configMap)
-                    admeConfigViewModel.manageConfig(
+                    val result = admeConfigViewModel.manageConfig(
                         deviceInfo.deviceToken,
                         mStates.projectNum.get(),
                         mStates.areaNum.get(),
                         mStates.holeNum.get(),
                         configJson
-                    ) { error: Throwable ->
+                    )
+
+                    dismissLoadingDialog()
+                    if (result == null) {
                         showMessage("保存失败")
-                        Timber.e(error, "Failed to save hole config")
-                    } ?: return@launchWithViewLifecycle
+                        return@launchWithViewLifecycle
+                    }
 
                     //添加这行来保存初始状态
                     mStates.saveInitialState()
                     showMessage("保存成功")
                 } catch (ex: Exception) {
-                    showMessage("保存失败")
                     Timber.e(ex, "Failed to save hole config")
+                    dismissLoadingDialog()
+                    showMessage("保存失败")
                 }
             }
         }
@@ -653,10 +659,10 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
             setManualMeasuringHoleDepth()
 
         //保存参数指令
-        command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SAVE_CONFIG_PARAM
-        )
-        commandItems.add(command)
+//        command = IOTCommandUtil.getCommand(
+//            IOTCommandType.MD_SAVE_CONFIG_PARAM
+//        )
+//        commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(

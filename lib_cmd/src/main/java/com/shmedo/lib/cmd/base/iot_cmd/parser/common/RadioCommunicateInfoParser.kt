@@ -20,6 +20,8 @@ class RadioCommunicateInfoParser : IOTCommandParser<RadioCommunicateInfo> {
             txchl = keyValueMap.getOrDefault("txchl", txchl)
             outpwr = keyValueMap.getOrDefault("outpwr", outpwr)
             bcchl = keyValueMap.getOrDefault("bcchl", bcchl)
+            net_sta = keyValueMap.getOrDefault("net_sta", net_sta)
+            gateway_sn = keyValueMap.getOrDefault("gateway_sn", gateway_sn)
         }
     }
 

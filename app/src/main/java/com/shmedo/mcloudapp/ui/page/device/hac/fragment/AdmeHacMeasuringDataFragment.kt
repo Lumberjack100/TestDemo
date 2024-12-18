@@ -485,9 +485,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                     mStates.areaNum.get(),
                     mStates.holeNum.get(),
                     configJson
-                ) { error: Throwable ->
-                    Timber.e(error, "Failed to save hole config")
-                } ?: return@launchWithViewLifecycle
+                ) ?: return@launchWithViewLifecycle
 
                 //添加这行来保存初始状态
                 mStates.saveInitialState()
