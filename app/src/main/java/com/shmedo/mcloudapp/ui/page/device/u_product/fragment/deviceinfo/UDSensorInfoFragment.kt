@@ -73,7 +73,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = when (stateInfo.batteryStatus) {
                         "0" -> "放电中"
                         "1" -> "充电中"
-                        "2" -> "已充满"
+                        "2" -> "空闲"
                         "-1" -> "异常"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
