@@ -145,6 +145,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = if (stateInfo.reportMode == "0") "自动" else "手动",
                 )
                 val reportStatus = when (stateInfo.reportStatus) {
+                    "0" -> "加报"
                     "1" -> "一级报警"
                     "2" -> "二级报警"
                     "3" -> "三级报警"
