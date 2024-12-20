@@ -19,6 +19,7 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoTextSwitcherItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
+import com.shmedo.mcloudapp.utils.UDDeviceStatusProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -192,28 +193,8 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         deviceError: Map<String, String>? = null,
         deviceWarn: Map<String, String>? = null
     ) {
-        val errorInfoList = mutableListOf<String>()
         try {
-            deviceError.notNull(notNullAction = { resultMap ->
-                resultMap["ld"]?.let { errorInfoList.add("雷达故障") }
-                resultMap["cam"]?.let { errorInfoList.add("摄像头故障") }
-                resultMap["qj"]?.let { errorInfoList.add("加速度计故障") }
-                resultMap["4G"]?.let { errorInfoList.add("4G故障") }
-                resultMap["bt"]?.let { errorInfoList.add("蓝牙故障") }
-                resultMap["radio"]?.let { errorInfoList.add("电台故障") }
-                resultMap["flash"]?.let { errorInfoList.add("存储故障") }
-                resultMap["ath"]?.let { errorInfoList.add("温湿度故障") }
-            })
-            deviceWarn.notNull(notNullAction = { resultMap ->
-                resultMap["loc_offset"]?.let { errorInfoList.add("位置偏移") }
-                resultMap["angle_offset"]?.let { errorInfoList.add("角度偏移") }
-                resultMap["extern_volt"]?.let { volt -> errorInfoList.add(if (volt == "-1") "外部电压过高" else "外部电压过低") }
-                resultMap["bat_cap"]?.let { errorInfoList.add("电池电量过低") }
-                resultMap["bat_temp"]?.let { errorInfoList.add("电池温度过高") }
-                resultMap["bat_health"]?.let { errorInfoList.add("电池容量过低") }
-                resultMap["inside_temp"]?.let { temp -> errorInfoList.add(if (temp == "-1") "内部温度过高" else "内部温度过低") }
-                resultMap["sim_card"]?.let { errorInfoList.add("无SIM卡") }
-            })
+            val errorInfoList = UDDeviceStatusProcessor.processAbnormalInfo(deviceError, deviceWarn)
             handleAbnormalInfo(errorInfoList)
         } catch (e: Exception) {
             Timber.e(e)

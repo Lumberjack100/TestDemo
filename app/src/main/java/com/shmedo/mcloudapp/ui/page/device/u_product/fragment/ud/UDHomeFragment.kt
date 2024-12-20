@@ -33,7 +33,6 @@ import com.shmedo.mcloudapp.databinding.ItemSubConfigModuleBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.extensions.notNull
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
@@ -65,6 +64,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDHomeViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
+import com.shmedo.mcloudapp.utils.UDDeviceStatusProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -848,32 +848,24 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     mHeadStates.warnErrorText.set("正常")
                     return@launchWithViewLifecycle
                 }
-                val errorInfoList = mutableListOf<String>()
-                stateInfo.deviceError.notNull(notNullAction = { resultMap ->
-                    resultMap["ld"]?.let { errorInfoList.add("雷达故障") }
-                    resultMap["cam"]?.let { errorInfoList.add("摄像头故障") }
-                    resultMap["qj"]?.let { errorInfoList.add("加速度计故障") }
-                    resultMap["4G"]?.let { errorInfoList.add("4G故障") }
-                    resultMap["bt"]?.let { errorInfoList.add("蓝牙故障") }
-                    resultMap["radio"]?.let { errorInfoList.add("电台故障") }
-                    resultMap["flash"]?.let { errorInfoList.add("存储故障") }
-                    resultMap["ath"]?.let { errorInfoList.add("温湿度故障") }
-                })
-                stateInfo.deviceWarn.notNull(notNullAction = { resultMap ->
-                    resultMap["loc_offset"]?.let { errorInfoList.add("位置偏移") }
-                    resultMap["angle_offset"]?.let { errorInfoList.add("角度偏移") }
-                    resultMap["extern_volt"]?.let { volt -> errorInfoList.add(if (volt == "-1") "外部电压过高" else "外部电压过低") }
-                    resultMap["bat_cap"]?.let { errorInfoList.add("电池电量过低") }
-                    resultMap["bat_temp"]?.let { errorInfoList.add("电池温度过高") }
-                    resultMap["bat_health"]?.let { errorInfoList.add("电池容量过低") }
-                    resultMap["inside_temp"]?.let { temp -> errorInfoList.add(if (temp == "-1") "内部温度过高" else "内部温度过低") }
-                    resultMap["sim_card"]?.let { errorInfoList.add("无SIM卡") }
-                })
-                handleAbnormalInfo(errorInfoList)
+                processAbnormalInfo(stateInfo.deviceError, stateInfo.deviceWarn)
             } catch (e: Exception) {
                 Timber.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
+        }
+    }
+
+    private fun processAbnormalInfo(
+        deviceError: Map<String, String>? = null,
+        deviceWarn: Map<String, String>? = null
+    ) {
+        try {
+            val errorInfoList = UDDeviceStatusProcessor.processAbnormalInfo(deviceError, deviceWarn)
+            handleAbnormalInfo(errorInfoList)
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
@@ -1007,7 +999,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 设置心跳检查
+     * 设置心���检查
      */
     private fun setupHeartbeat() {
         launchWithViewLifecycle {
