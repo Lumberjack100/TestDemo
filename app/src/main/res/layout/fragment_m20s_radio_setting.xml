@@ -89,7 +89,7 @@
                             textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.rtcmChannel}"
-                            tools:text="410.00MHz" />
+                            tools:text="451.15MHz" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -109,7 +109,7 @@
                             textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.receiveChannel}"
-                            tools:text="410.00MHz" />
+                            tools:text="451.15MHz" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -129,7 +129,7 @@
                             textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.sendChannel}"
-                            tools:text="5" />
+                            tools:text="451.15MHz" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -149,7 +149,7 @@
                             textViewEnabled="@{stateVM.isOpened||!stateVM.isSupportSwitch }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.transmitPower}"
-                            tools:text="5" />
+                            tools:text="22" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat

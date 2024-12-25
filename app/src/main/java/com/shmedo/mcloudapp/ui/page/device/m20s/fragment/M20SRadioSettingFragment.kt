@@ -86,17 +86,18 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        radioChannelList =  (45115..47015 step 100).map {
-            (it.toFloat() / 100).toString() + "MHz"
-        }
+        radioChannelList =
+            if (productType == ProductType.GNSS_M_5) (45015..46915 step 100).map { (it.toFloat() / 100).toString() + "MHz" }
+            else (45115..47015 step 100).map { (it.toFloat() / 100).toString() + "MHz" }
+
         transmitPowerList =
-            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_1)
+            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_5)
                 (0..22).map { it.toString() }
             else
                 (10..22).map { it.toString() }
 
         airSpeedList =
-            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_1)
+            if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_5)
                 (0..2).map { it.toString() }
             else
                 (1..3).map { it.toString() }
@@ -108,7 +109,7 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
 
     private fun resetDefaultParams() {
         when (productType) {
-            ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {//M20S 载波频率以 450.15Mhz 为起始，间隔 1Mhz，进行信道划分，共划分 20 个信道
+            ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {//M20S 载波频率以 451.15Mhz 为起始，间隔 1Mhz，进行信道划分，共划分 20 个信道
                 mStates.rtcmChannel.set(radioChannelList[0])//RTCM数据频点以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 默认0
                 mStates.receiveChannel.set(radioChannelList[13])//接收默认 13 即 463.15MHz
                 mStates.sendChannel.set(radioChannelList[6])//发送默认 6 即 456.15MHz
@@ -122,7 +123,7 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
                 mStates.receiveChannel.set(radioChannelList[0])//接收
                 mStates.sendChannel.set(radioChannelList[0])//发送
                 mStates.transmitPower.set(transmitPowerList.last())//发射功率   22
-                mStates.airSpeed.set(airSpeedList[0])//空中速率  1
+                mStates.airSpeed.set(airSpeedList[0])//空中速率  0
             }
 
             else -> {
