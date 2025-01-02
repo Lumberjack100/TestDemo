@@ -387,7 +387,7 @@ class BleDasExternalVibratingSensorFragment : BaseFragment() {
                     mStates.sensorTypeName.set(IOTSensorType.GENERAL_STRING_INSTRUMENT.description)
 
                     mStates.isExtension1Support.set(true)
-                    mStates.extension1Title.set("触发值（毫米）")
+                    mStates.extension1Title.set("触发值")
                     decimalFormat.applyPattern("0")
                     sensorInfo.threshold.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
