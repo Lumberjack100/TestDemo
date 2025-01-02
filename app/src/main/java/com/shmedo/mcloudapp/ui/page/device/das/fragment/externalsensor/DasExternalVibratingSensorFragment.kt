@@ -53,7 +53,8 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
         IOTSensorType.GUDAN_STRESS.description,
         MCU_PREFIX + IOTSensorType.VIBRATING_SENSOR.description,
         MCU_PREFIX + IOTSensorType.WEIR.description,
-        MCU_PREFIX + IOTSensorType.WATER_LEVEL_GAUGE.description
+        MCU_PREFIX + IOTSensorType.WATER_LEVEL_GAUGE.description,
+        IOTSensorType.GENERAL_STRING_INSTRUMENT.description
     )
     private val allChannelList: List<String> = mutableListOf(
         "1",
@@ -498,8 +499,14 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                 IOTSensorType.GENERAL_STRING_INSTRUMENT//通用弦式仪
                     -> {
                     mStates.sensorTypeName.set(IOTSensorType.GENERAL_STRING_INSTRUMENT.description)
+
+                    mStates.isExtension1Support.set(true)
+                    mStates.extension1Title.set("触发值（毫米）")
+                    decimalFormat.applyPattern("0")
+                    sensorInfo.threshold.toDoubleOrNull()?.let {
+                        mStates.extension1Value.set(decimalFormat.format(it))
+                    }
                     
-                    mStates.isExtension1Support.set(false)
                     mStates.isExtension2Support.set(false)
                     mStates.isExtension3Support.set(false)
                     mStates.isExtension4Support.set(false)
@@ -1099,6 +1106,11 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                 sensorInfo.corrval = mStates.extension1Value.get().ifEmpty { "0" }
                 sensorInfo.ropelen = mStates.extension2Value.get()
                 sensorInfo.tubealti = mStates.extension3Value.get()
+            }
+
+            IOTSensorType.GENERAL_STRING_INSTRUMENT //通用弦式仪
+                -> {
+                sensorInfo.threshold = mStates.extension1Value.get()
             }
 
             else -> {}

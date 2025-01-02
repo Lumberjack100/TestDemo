@@ -43,7 +43,8 @@ class BleDasExternalVibratingSensorFragment : BaseFragment() {
         IOTSensorType.KANG_PERCOLATE.description,
         IOTSensorType.GUDAN_PERCOLATE.description,
         IOTSensorType.JUNXING_ZLJ_300T.description,
-        IOTSensorType.GUDAN_STRESS.description
+        IOTSensorType.GUDAN_STRESS.description,
+        IOTSensorType.GENERAL_STRING_INSTRUMENT.description
     )
 
     //所有通道
@@ -385,7 +386,13 @@ class BleDasExternalVibratingSensorFragment : BaseFragment() {
                     -> {
                     mStates.sensorTypeName.set(IOTSensorType.GENERAL_STRING_INSTRUMENT.description)
 
-                    mStates.isExtension1Support.set(false)
+                    mStates.isExtension1Support.set(true)
+                    mStates.extension1Title.set("触发值（毫米）")
+                    decimalFormat.applyPattern("0")
+                    sensorInfo.threshold.toDoubleOrNull()?.let {
+                        mStates.extension1Value.set(decimalFormat.format(it))
+                    }
+
                     mStates.isExtension2Support.set(false)
                     mStates.isExtension3Support.set(false)
                     mStates.isExtension4Support.set(false)
@@ -852,6 +859,11 @@ class BleDasExternalVibratingSensorFragment : BaseFragment() {
                 sensorInfo.referval_f = mStates.extension5Value.get().ifEmpty { "0" }
                 sensorInfo.temp_t0 = mStates.extension6Value.get().ifEmpty { "0" }
                 sensorInfo.elastic_mod = mStates.extension7Value.get()
+            }
+
+            IOTSensorType.GENERAL_STRING_INSTRUMENT //通用弦式仪
+                -> {
+                sensorInfo.threshold = mStates.extension1Value.get()
             }
 
             else -> {}

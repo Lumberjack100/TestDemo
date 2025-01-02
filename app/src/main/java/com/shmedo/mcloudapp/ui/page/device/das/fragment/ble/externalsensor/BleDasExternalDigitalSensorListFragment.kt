@@ -166,9 +166,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
             .forEach { sensorAddress ->
                 val sensorInfo = mStates.sensorModelMap[sensorAddress]!!
                 triggerBuilder.append(
-                    MDCommandUtil.formatStringFour(
-                        sensorInfo.threshold.toIntOrNull()?.toString() ?: "0"
-                    )
+                    MDCommandUtil.formatStringFour(sensorInfo.threshold)
                 )
             }
 
@@ -275,11 +273,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
         mStates.sensorModelMap.keys.sortedBy { addr -> addr.toInt() }
             .forEach { sensorAddress ->
                 val sensorInfo = mStates.sensorModelMap[sensorAddress]!!
-                triggerBuilder.append(
-                    MDCommandUtil.formatStringFive(
-                        sensorInfo.spacing.toIntOrNull()?.toString() ?: "0"
-                    )
-                )
+                triggerBuilder.append(MDCommandUtil.formatStringFive(sensorInfo.spacing))
             }
 
         val command = MDCommandUtil.getCommand(
