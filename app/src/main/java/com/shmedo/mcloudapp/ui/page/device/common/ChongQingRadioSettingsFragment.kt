@@ -9,6 +9,7 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.RadioCommunicateEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
@@ -320,7 +321,10 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        sendCommandFromCmdList(
+            isStartTimeoutJob = true,
+            timeoutMillis = AppContants.Communication.DELAY_25000_MILLIS
+        )
     }
 
     override fun lazyLoadData() {
@@ -391,7 +395,7 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_SET_RADIO_CTRL -> {//
+            IOTCommandType.MD_SET_RADIO_CTRL -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置电台参数出错: ${result.message}"
@@ -400,9 +404,11 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
-                        }
+                        android.os.Handler(android.os.Looper.getMainLooper()).postDelayed({
+                            sendCommandFromCmdList {
+                                Toaster.show("数据保存成功")
+                            }
+                        }, AppContants.Communication.DELAY_10000_MILLIS)
                     }
                 }
             }

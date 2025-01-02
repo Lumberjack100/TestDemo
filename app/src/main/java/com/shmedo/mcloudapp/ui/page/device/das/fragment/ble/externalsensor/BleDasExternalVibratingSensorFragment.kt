@@ -7,22 +7,22 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.core.commonlib.utils.AppContants.Extras.Companion.SENSOR_CHANNEL
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
-import com.shmedo.mcloudapp.databinding.FragmentDasExternalVibratingSensorBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseDasExternalVibratingSensorClickProxy
-import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalSensorListViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalVibratingSensorViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.databinding.FragmentDasExternalVibratingSensorBinding
+import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showMessageDialog
+import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalSensorListViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalVibratingSensorViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import timber.log.Timber
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
@@ -33,7 +33,7 @@ import java.util.Locale
  * 创建时间：2024/4/17
  * 描述： 振弦传感器
  */
-class BleDasExternalVibratingSensorFragment: BaseFragment() {
+class BleDasExternalVibratingSensorFragment : BaseFragment() {
     private lateinit var binding: FragmentDasExternalVibratingSensorBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: DasExternalVibratingSensorViewModel
@@ -43,8 +43,10 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
         IOTSensorType.KANG_PERCOLATE.description,
         IOTSensorType.GUDAN_PERCOLATE.description,
         IOTSensorType.JUNXING_ZLJ_300T.description,
-        IOTSensorType.GUDAN_STRESS.description
+        IOTSensorType.GUDAN_STRESS.description,
+        IOTSensorType.GENERAL_STRING_INSTRUMENT.description
     )
+
     //所有通道
     private val allChannelList: List<String> = mutableListOf(
         "1",
@@ -137,7 +139,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
         try {
             when (mStates.sensorType.get()) {
                 IOTSensorType.KANG_PERCOLATE //基康渗压计(BGK-4500)
-                -> {
+                    -> {
                     mStates.sensorTypeName.set(IOTSensorType.KANG_PERCOLATE.description)
 
                     mStates.isExtension1Support.set(true)
@@ -158,22 +160,26 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                     mStates.isExtension3Support.set(true)
                     mStates.extension3Title.set("多项式系数A")
                     mStates.extension3Value.set(
-                        sensorInfo.poly_a.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.poly_a.toDoubleOrNull()?.toString() ?: ""
+                    )
 
                     mStates.isExtension4Support.set(true)
                     mStates.extension4Title.set("多项式系数B")
                     mStates.extension4Value.set(
-                        sensorInfo.poly_b.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.poly_b.toDoubleOrNull()?.toString() ?: ""
+                    )
 
                     mStates.isExtension5Support.set(true)
                     mStates.extension5Title.set("多项式系数C")
                     mStates.extension5Value.set(
-                        sensorInfo.poly_c.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.poly_c.toDoubleOrNull()?.toString() ?: ""
+                    )
 
                     mStates.isExtension6Support.set(true)
                     mStates.extension6Title.set("温度系数K")
                     mStates.extension6Value.set(
-                        sensorInfo.temp_k.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.temp_k.toDoubleOrNull()?.toString() ?: ""
+                    )
 
                     //初始温度，精确到小数点后两位
                     mStates.isExtension7Support.set(true)
@@ -204,7 +210,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                 }
 
                 IOTSensorType.GUDAN_PERCOLATE //葛南渗压计(VWP-03)
-                -> {
+                    -> {
                     mStates.sensorTypeName.set(IOTSensorType.GUDAN_PERCOLATE.description)
 
                     mStates.isExtension1Support.set(true)
@@ -225,17 +231,20 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                     mStates.isExtension3Support.set(true)
                     mStates.extension3Title.set("灵敏度K")
                     mStates.extension3Value.set(
-                        sensorInfo.sens_k.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.sens_k.toDoubleOrNull()?.toString() ?: ""
+                    )
 
                     mStates.isExtension4Support.set(true)
                     mStates.extension4Title.set("温修系数B")
                     mStates.extension4Value.set(
-                        sensorInfo.temp_b.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.temp_b.toDoubleOrNull()?.toString() ?: ""
+                    )
 
                     mStates.isExtension5Support.set(true)
                     mStates.extension5Title.set("基准值F0")
                     mStates.extension5Value.set(
-                        sensorInfo.referval_f.toDoubleOrNull()?.toString() ?: "0")
+                        sensorInfo.referval_f.toDoubleOrNull()?.toString() ?: "0"
+                    )
 
                     //初始温度，精确到小数点后两位
                     mStates.isExtension6Support.set(true)
@@ -267,7 +276,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                 }
 
                 IOTSensorType.JUNXING_ZLJ_300T //轴力计(ZLJ-300T)
-                -> {
+                    -> {
                     mStates.sensorTypeName.set(IOTSensorType.JUNXING_ZLJ_300T.description)
 
                     mStates.isExtension1Support.set(true)
@@ -288,17 +297,20 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                     mStates.isExtension3Support.set(true)
                     mStates.extension3Title.set("灵敏度K")
                     mStates.extension3Value.set(
-                        sensorInfo.sens_k.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.sens_k.toDoubleOrNull()?.toString() ?: ""
+                    )
 
                     mStates.isExtension4Support.set(true)
                     mStates.extension4Title.set("温修系数B")
                     mStates.extension4Value.set(
-                        sensorInfo.temp_b.toDoubleOrNull()?.toString() ?: "0")
+                        sensorInfo.temp_b.toDoubleOrNull()?.toString() ?: "0"
+                    )
 
                     mStates.isExtension5Support.set(true)
                     mStates.extension5Title.set("基准值F0")
                     mStates.extension5Value.set(
-                        sensorInfo.referval_f.toDoubleOrNull()?.toString() ?: "0")
+                        sensorInfo.referval_f.toDoubleOrNull()?.toString() ?: "0"
+                    )
 
                     //初始温度，精确到小数点后两位
                     mStates.isExtension6Support.set(true)
@@ -316,7 +328,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                 }
 
                 IOTSensorType.GUDAN_STRESS //应力计
-                -> {
+                    -> {
                     mStates.sensorTypeName.set(IOTSensorType.GUDAN_STRESS.description)
 
                     mStates.isExtension1Support.set(true)
@@ -337,17 +349,20 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                     mStates.isExtension3Support.set(true)
                     mStates.extension3Title.set("灵敏度K")
                     mStates.extension3Value.set(
-                        sensorInfo.sens_k.toDoubleOrNull()?.toString() ?: "")
+                        sensorInfo.sens_k.toDoubleOrNull()?.toString() ?: ""
+                    )
 
                     mStates.isExtension4Support.set(true)
                     mStates.extension4Title.set("温修系数B")
                     mStates.extension4Value.set(
-                        sensorInfo.temp_b.toDoubleOrNull()?.toString() ?: "0")
+                        sensorInfo.temp_b.toDoubleOrNull()?.toString() ?: "0"
+                    )
 
                     mStates.isExtension5Support.set(true)
                     mStates.extension5Title.set("基准值F0")
                     mStates.extension5Value.set(
-                        sensorInfo.referval_f.toDoubleOrNull()?.toString() ?: "0")
+                        sensorInfo.referval_f.toDoubleOrNull()?.toString() ?: "0"
+                    )
 
                     //初始温度，精确到小数点后两位
                     mStates.isExtension6Support.set(true)
@@ -362,6 +377,28 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                     mStates.extension7Title.set("膨胀系数")
                     mStates.extension7Value.set(sensorInfo.elastic_mod)
 
+                    mStates.isExtension8Support.set(false)
+                    mStates.isExtension9Support.set(false)
+                    mStates.isExtension10Support.set(false)
+                }
+
+                IOTSensorType.GENERAL_STRING_INSTRUMENT//通用弦式仪
+                    -> {
+                    mStates.sensorTypeName.set(IOTSensorType.GENERAL_STRING_INSTRUMENT.description)
+
+                    mStates.isExtension1Support.set(true)
+                    mStates.extension1Title.set("触发值")
+                    decimalFormat.applyPattern("0")
+                    sensorInfo.threshold.toDoubleOrNull()?.let {
+                        mStates.extension1Value.set(decimalFormat.format(it))
+                    }
+
+                    mStates.isExtension2Support.set(false)
+                    mStates.isExtension3Support.set(false)
+                    mStates.isExtension4Support.set(false)
+                    mStates.isExtension5Support.set(false)
+                    mStates.isExtension6Support.set(false)
+                    mStates.isExtension7Support.set(false)
                     mStates.isExtension8Support.set(false)
                     mStates.isExtension9Support.set(false)
                     mStates.isExtension10Support.set(false)
@@ -427,7 +464,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
     private fun checkValueIsValidAndUpdateSensor() {
         when (mStates.sensorType.get()) {
             IOTSensorType.KANG_PERCOLATE //基康渗压计(BGK-4500)
-            -> {
+                -> {
                 if (mStates.extension1Value.get().isEmpty()) {
                     showMessageDialog("请输入触发值")
                     return
@@ -529,7 +566,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
             }
 
             IOTSensorType.GUDAN_PERCOLATE //葛南渗压计(VWP-03)
-            -> {
+                -> {
                 if (mStates.extension1Value.get().isEmpty()) {
                     showMessageDialog("请输入触发值")
                     return
@@ -620,7 +657,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
             }
 
             IOTSensorType.JUNXING_ZLJ_300T //轴力计(ZLJ-300T)
-            -> {
+                -> {
                 if (mStates.extension1Value.get().isEmpty()) {
                     showMessageDialog("请输入触发值")
                     return
@@ -689,7 +726,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
             }
 
             IOTSensorType.GUDAN_STRESS //应力计
-            -> {
+                -> {
                 if (mStates.extension1Value.get().isEmpty()) {
                     showMessageDialog("请输入触发值")
                     return
@@ -779,7 +816,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
         sensorInfo.addr = (mStates.channel.get().toInt() - 1).toString()
         when (mStates.sensorType.get()) {
             IOTSensorType.KANG_PERCOLATE //基康渗压计(BGK-4500)
-            -> {
+                -> {
                 sensorInfo.threshold = mStates.extension1Value.get()
                 sensorInfo.corrval = mStates.extension2Value.get().ifEmpty { "0" }
                 sensorInfo.poly_a = mStates.extension3Value.get()
@@ -792,7 +829,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
             }
 
             IOTSensorType.GUDAN_PERCOLATE //葛南渗压计(VWP-03)
-            -> {
+                -> {
                 sensorInfo.threshold = mStates.extension1Value.get()
                 sensorInfo.corrval = mStates.extension2Value.get().ifEmpty { "0" }
                 sensorInfo.sens_k = mStates.extension3Value.get()
@@ -804,7 +841,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
             }
 
             IOTSensorType.JUNXING_ZLJ_300T //轴力计(ZLJ-300T)
-            -> {
+                -> {
                 sensorInfo.threshold = mStates.extension1Value.get()
                 sensorInfo.corrval = mStates.extension2Value.get().ifEmpty { "0" }
                 sensorInfo.sens_k = mStates.extension3Value.get()
@@ -814,7 +851,7 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
             }
 
             IOTSensorType.GUDAN_STRESS //应力计
-            -> {
+                -> {
                 sensorInfo.threshold = mStates.extension1Value.get()
                 sensorInfo.corrval = mStates.extension2Value.get().ifEmpty { "0" }
                 sensorInfo.sens_k = mStates.extension3Value.get()
@@ -822,6 +859,11 @@ class BleDasExternalVibratingSensorFragment: BaseFragment() {
                 sensorInfo.referval_f = mStates.extension5Value.get().ifEmpty { "0" }
                 sensorInfo.temp_t0 = mStates.extension6Value.get().ifEmpty { "0" }
                 sensorInfo.elastic_mod = mStates.extension7Value.get()
+            }
+
+            IOTSensorType.GENERAL_STRING_INSTRUMENT //通用弦式仪
+                -> {
+                sensorInfo.threshold = mStates.extension1Value.get()
             }
 
             else -> {}

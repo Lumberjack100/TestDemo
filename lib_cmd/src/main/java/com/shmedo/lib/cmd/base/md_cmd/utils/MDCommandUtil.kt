@@ -62,27 +62,39 @@ object MDCommandUtil {
 
     /**
      * 格式化输出4位整数（04d: 0代表前面补充0, 4代表长度为4, d代表参数为正数型）
+     * 支持处理科学计数法表示的数字字符串
      *
-     * @param str 参数字符串
+     * @param str 参数字符串，支持普通数字和科学计数法(如: "1000" 或 "1.000000e+03")
      * @return 格式化后的字符串
      */
     fun formatStringFour(str: String?): String {
         if (str.isNullOrEmpty()) {
             return ""
         }
-        return String.format(Locale.getDefault(), "%04d", str.toInt())
+        return try {
+            val number = str.toDouble().toInt()
+            String.format(Locale.getDefault(), "%04d", number)
+        } catch (e: NumberFormatException) {
+            ""
+        }
     }
 
     /**
      * 格式化输出5位整数（05d: 0代表前面补充0, 5代表长度为5, d代表参数为正数型）
+     * 支持处理科学计数法表示的数字字符串
      *
-     * @param str 参数字符串
+     * @param str 参数字符串，支持普通数字和科学计数法(如: "1000" 或 "1.000000e+03")
      * @return 格式化后的字符串
      */
     fun formatStringFive(str: String?): String {
         if (str.isNullOrEmpty()) {
             return ""
         }
-        return String.format(Locale.getDefault(), "%05d", str.toInt())
+        return try {
+            val number = str.toDouble().toInt()
+            String.format(Locale.getDefault(), "%05d", number)
+        } catch (e: NumberFormatException) {
+            ""
+        }
     }
 }

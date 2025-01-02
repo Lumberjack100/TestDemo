@@ -88,7 +88,7 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
             addType<GapItem>(R.layout.item_device_status_info_gap)
             onCreate {
                 when (itemViewType) {
-                    R.layout.item_das_sensor_status -> {
+                    R.layout.item_das_sensor_status -> {//扩展传感器状态信息
                         val itemBinding = getBinding<ItemDasSensorStatusBinding>()
                         itemBinding.rvSubSensorData.setup { subRv ->
                             subRv.addItemDecoration(
@@ -136,7 +136,7 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
                         }
                     }
 
-                    R.layout.item_das_sensor_status -> {
+                    R.layout.item_das_sensor_status -> {//扩展传感器状态信息
                         getModel<DasSensorStatusInfo>().let { info ->
                             //type 可能是 01，以 0 开头的数字，需要移除首个 0
                             val typeCode =
@@ -190,21 +190,13 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
     ): MutableList<DasSensorSubMonitorStatusItem> {
         val subMonitorStatusList: MutableList<DasSensorSubMonitorStatusItem> = arrayListOf()
         when (sensorType) {
-            IOTSensorType.VIBRATING_SENSOR //振弦传感器
+            IOTSensorType.VIBRATING_SENSOR //振弦传感器，DAS 蓝牙模式下查看振弦式传感器的数据
             -> {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "温度(℃)",
+                            monitorType = "实时值",
                             monitorValue = dataList[0]
-                        )
-                    )
-                }
-                if (dataList.size >= 2) {
-                    subMonitorStatusList.add(
-                        DasSensorSubMonitorStatusItem(
-                            monitorType = "模数",
-                            monitorValue = dataList[1]
                         )
                     )
                 }
@@ -648,7 +640,7 @@ abstract class BaseDeviceStatusInfoFragment : BaseIOTDeviceFragment() {
             else -> {
                 subMonitorStatusList.add(
                     DasSensorSubMonitorStatusItem(
-                        monitorType = "数值",
+                        monitorType = "实时值",
                         monitorValue = dataList.joinToString(",")
                     )
                 )

@@ -94,9 +94,7 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
             .forEach { sensorAddress ->
                 val sensorInfo = mStates.sensorModelMap[sensorAddress]!!
                 triggerBuilder.append(
-                    MDCommandUtil.formatStringFour(
-                        sensorInfo.threshold.toIntOrNull()?.toString() ?: "0"
-                    )
+                    MDCommandUtil.formatStringFour(sensorInfo.threshold)
                 )
             }
 
