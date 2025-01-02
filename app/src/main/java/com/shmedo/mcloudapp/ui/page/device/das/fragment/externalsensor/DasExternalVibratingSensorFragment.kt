@@ -495,6 +495,22 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     mStates.isExtension10Support.set(false)
                 }
 
+                IOTSensorType.GENERAL_STRING_INSTRUMENT//通用弦式仪
+                    -> {
+                    mStates.sensorTypeName.set(IOTSensorType.GENERAL_STRING_INSTRUMENT.description)
+                    
+                    mStates.isExtension1Support.set(false)
+                    mStates.isExtension2Support.set(false)
+                    mStates.isExtension3Support.set(false)
+                    mStates.isExtension4Support.set(false)
+                    mStates.isExtension5Support.set(false)
+                    mStates.isExtension6Support.set(false)
+                    mStates.isExtension7Support.set(false)
+                    mStates.isExtension8Support.set(false)
+                    mStates.isExtension9Support.set(false)
+                    mStates.isExtension10Support.set(false)
+                }
+
                 else -> {}
             }
         } catch (e: Exception) {
@@ -1115,11 +1131,11 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
             putString(AppContants.Extras.SENSOR_CHANNEL, sensorChannel)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }
