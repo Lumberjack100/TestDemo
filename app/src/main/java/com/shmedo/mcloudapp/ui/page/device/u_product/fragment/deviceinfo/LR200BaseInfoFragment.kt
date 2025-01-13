@@ -3,15 +3,15 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo
 import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
 import com.drake.brv.utils.models
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoFragment
-import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import timber.log.Timber
 
@@ -47,15 +47,13 @@ class LR200BaseInfoFragment : BaseDeviceStatusInfoFragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "设备ICCID",
-                    value = stateInfo.cCID,
-
-                    )
+                    value = stateInfo.iCCID,
+                )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "硬件版本",
                     value = stateInfo.hw_version,
-
-                    )
+                )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "固件版本",
