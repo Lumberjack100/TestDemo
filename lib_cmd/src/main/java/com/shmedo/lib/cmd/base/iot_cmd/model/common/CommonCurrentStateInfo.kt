@@ -70,6 +70,8 @@ data class CommonCurrentStateInfo(
     var iMSI: String = IOTConstants.NULL_KEY, //
     @Json(name = "CCID")
     var cCID: String = IOTConstants.NULL_KEY, //设备内置物联网卡的ICCID号
+    @Json(name = "ICCID")
+    var iCCID: String = IOTConstants.NULL_KEY, //设备内置物联网卡的ICCID号
     var work_current: String = IOTConstants.NULL_KEY, //设备工作电流，单位A
     var volt_percent: String = IOTConstants.NULL_KEY,//电池电量，单位%
 
