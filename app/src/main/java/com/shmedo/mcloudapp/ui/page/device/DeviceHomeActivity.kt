@@ -197,13 +197,13 @@ class DeviceHomeActivity : BaseActivity() {
             bleDevice: DiscoveredBluetoothDevice? = null,
             communicateWay: CommunicateWay = NetPlatformConnect
         ) {
-            //根据设备 SN 用新的产品规则判断所属产品类型
+            //根据设备 SN 后缀用新的产品规则来判断所属产品类型
             var type: ProductType = ProductType.valueByNewSuffix(deviceInfo.deviceToken)
             if (type == ProductType.UnKnown) {
                 //根据设备产品标识判断所属产品类型
                 type = ProductType.valueByPrefix(deviceInfo.productToken.uppercase())
                 if (type == ProductType.UnKnown) {
-                    ///根据设备 SN 用旧的产品规则判断所属产品类型
+                    ///根据设备 SN 后缀用旧的产品规则判断所属产品类型
                     type = ProductType.valueByOldSuffix(deviceInfo.deviceToken)
                     if (type == ProductType.UnKnown) {
                         type = ProductType.TEST_DEVICE

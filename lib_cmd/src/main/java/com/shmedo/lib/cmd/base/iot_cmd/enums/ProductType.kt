@@ -223,6 +223,7 @@ enum class ProductType(
     ADME_HAC(
         prefix = "ADME_HAC10",
         oldSuffix = "T",
+        newSuffix = "",
         productName = "半自动化测斜机器人",
         productToken = "",
         description = ""
@@ -230,6 +231,7 @@ enum class ProductType(
     ADME(
         prefix = "ADME",
         oldSuffix = "T",
+        newSuffix = "",
         productName = "自动化测斜机器人",
         productToken = "",
         description = ""
@@ -237,6 +239,7 @@ enum class ProductType(
     BHY(
         prefix = "BHY",
         oldSuffix = "H",
+        newSuffix = "",
         productName = "崩滑仪",
         productToken = "",
         description = ""
@@ -244,6 +247,7 @@ enum class ProductType(
     DAS(
         prefix = "DAS",
         oldSuffix = "L",
+        newSuffix = "",
         productName = "智能采集器",
         productToken = "",
         description = ""
@@ -251,6 +255,7 @@ enum class ProductType(
     LR200(
         prefix = "LR200",
         oldSuffix = "Z",
+        newSuffix = "Z",
         productName = "米度一体式裂缝计",
         productToken = "",
         description = ""
@@ -258,6 +263,7 @@ enum class ProductType(
     M20(
         prefix = "M20",
         oldSuffix = "V",
+        newSuffix = "",
         productName = "M20-GNSS",
         productToken = "",
         description = ""
@@ -265,6 +271,7 @@ enum class ProductType(
     MR702(
         prefix = "MR702",
         oldSuffix = "A",
+        newSuffix = "",
         productName = "水利遥测终端机",
         productToken = "",
         description = ""
@@ -272,6 +279,7 @@ enum class ProductType(
     RN20(
         prefix = "RN20",
         oldSuffix = "Y",
+        newSuffix = "",
         productName = "轴力计",
         productToken = "",
         description = ""
@@ -279,6 +287,7 @@ enum class ProductType(
     LB20S(
         prefix = "MD-LB20S",
         oldSuffix = "S",
+        newSuffix = "",
         productName = "无线预警广播",
         productToken = "",
         description = ""
@@ -287,6 +296,7 @@ enum class ProductType(
     INCLINOMETER_DEBUG_BOX(
         prefix = "INCLINOMETER",
         oldSuffix = "#",
+        newSuffix = "",
         productName = "蓝牙测斜仪调试盒子",
         productToken = "",
         description = ""
@@ -294,6 +304,7 @@ enum class ProductType(
     TEST_DEVICE(
         prefix = "TEST",
         oldSuffix = "",
+        newSuffix = "",
         productName = "测试设备",
         productToken = "",
         description = ""
@@ -301,6 +312,7 @@ enum class ProductType(
     UnKnown(
         prefix = "UnKnown",
         oldSuffix = "",
+        newSuffix = "",
         productName = "未知类型",
         productToken = "",
         description = ""
