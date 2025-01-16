@@ -140,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:visibility="gone"
-                app:visible="@{stateVM.isRefreshingLocation()}"
+                app:visible="@{stateVM.refreshingLocation}"
                 tools:visibility="visible" />
         </FrameLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
