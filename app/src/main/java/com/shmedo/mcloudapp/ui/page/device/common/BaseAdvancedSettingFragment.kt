@@ -188,6 +188,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         return productType == ProductType.M20
                 || productType == ProductType.GNSS_M_1
                 || productType == ProductType.GNSS_M_2
+                || productType == ProductType.COLLECTOR_R_3
     }
 
     override fun createObserver() {

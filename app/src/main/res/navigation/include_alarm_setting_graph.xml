@@ -17,18 +17,9 @@
         android:label="AlarmParamSettingFragment"
         tools:layout="@layout/fragment_alarm_param_setting" />
 
-
     <action
         android:id="@+id/action_global_to_alarmParamSettingFragment"
         app:destination="@id/alarmParamSettingFragment"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <action
-        android:id="@+id/action_global_to_udAlarmParamSettingFragment"
-        app:destination="@id/udAlarmParamSettingFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

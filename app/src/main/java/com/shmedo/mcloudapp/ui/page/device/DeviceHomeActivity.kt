@@ -137,7 +137,7 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
-            ProductType.M20 -> {
+            ProductType.COLLECTOR_R_3, ProductType.M20 -> {
                 navController.setGraph(
                     R.navigation.m20_graph,
                     bundle2
