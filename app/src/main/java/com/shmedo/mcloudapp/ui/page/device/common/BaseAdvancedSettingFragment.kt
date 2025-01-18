@@ -188,6 +188,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         return productType == ProductType.M20
                 || productType == ProductType.GNSS_M_1
                 || productType == ProductType.GNSS_M_2
+                || productType == ProductType.COLLECTOR_R_3
     }
 
     override fun createObserver() {
@@ -218,7 +219,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
                     mStates.longitude.set(mWgsLatLng.longitude.toString())
 
                     mStates.address.set(bdLocation.addrStr ?: "")
-                    mStates.isRefreshingLocation.set(false)
+                    mStates.refreshingLocation.set(false)
                 }
             }
         }
@@ -385,7 +386,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         popupView.setTitle("同步安装位置", mStates)
             .setClickListener(object : SyncInstallationLocationPopupView.OnClickListener {
                 override fun onRefreshingLocationClick() {
-                    mStates.isRefreshingLocation.set(true)
+                    mStates.refreshingLocation.set(true)
                     gcjLatLng = null
                     locationViewModel.requestImmediateLocationUpdate()
                 }
@@ -405,7 +406,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
 
         gcjLatLng = null
         locationViewModel.requestImmediateLocationUpdate()
-        mStates.isRefreshingLocation.set(true)
+        mStates.refreshingLocation.set(true)
     }
 
     private fun setInstallationLocation() {

@@ -140,7 +140,7 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                 )
             }
 
-            ProductType.M20, ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {//M20
+            ProductType.M20, ProductType.GNSS_M_1, ProductType.GNSS_M_2, ProductType.COLLECTOR_R_3 -> {//M20
                 fragmentList.add(
                     M20BaseInfoFragment.newInstance().apply {
                         arguments = bundle

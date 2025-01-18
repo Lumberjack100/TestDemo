@@ -9,7 +9,7 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
  * 描述： TODO
  */
 class AdvancedSettingViewModel: ViewModel()  {
-    val isRefreshingLocation = NonNullObservableField(false)
+    val refreshingLocation = NonNullObservableField(false)
     val latitude = NonNullObservableField("")
     val longitude = NonNullObservableField("")
     val location = NonNullObservableField("")

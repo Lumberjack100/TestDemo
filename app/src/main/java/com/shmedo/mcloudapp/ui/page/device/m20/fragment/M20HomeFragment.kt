@@ -8,6 +8,9 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
@@ -21,9 +24,6 @@ import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDeviceHomeFragment
-import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.extensions.showMessage
 
 /**
  * 创建者:   gonghe <br></br>
@@ -72,7 +72,8 @@ class M20HomeFragment : UniversalDeviceHomeFragment() {
             is SetupWizard -> {
                 showMessage("确定进行水平初始化吗？", "温馨提示", "确定", {
                     commandItems.clear()
-                    val command = IOTCommandUtil.getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL)
+                    val command =
+                        IOTCommandUtil.getCommand(IOTCommandType.M20_MD_LEVEL_INITIAL, "type=1")
                     commandItems.add(command)
                     showLoadingDialog(StringUtils.getString(R.string.processing))
                     sendCommandFromCmdList(isStartTimeoutJob = true)

@@ -46,6 +46,14 @@ enum class ProductType(
         productToken = "",
         description = "对应MR-702"
     ),
+    COLLECTOR_R_3(
+        prefix = "",
+        oldSuffix = "",
+        newSuffix = "CR3",
+        productName = "遥测终端倾斜仪",
+        productToken = "MR501",
+        description = "对应MR501,暂时对应M20"
+    ),
 
     //GNSS产品线 E(分体机)
     GNSS_E_1(

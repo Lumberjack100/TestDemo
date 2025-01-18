@@ -121,7 +121,7 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment() {
                     )
 
                     mStates.address.set(bdLocation.addrStr ?: "")
-                    mStates.isRefreshingLocation.set(false)
+                    mStates.refreshingLocation.set(false)
                 }
             }
         }
@@ -188,7 +188,7 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment() {
         popupView.setTitle("同步安装位置", mStates)
             .setClickListener(object : SyncInstallationLocationPopupView.OnClickListener {
                 override fun onRefreshingLocationClick() {
-                    mStates.isRefreshingLocation.set(true)
+                    mStates.refreshingLocation.set(true)
                     gcjLatLng = null
                     locationViewModel.requestImmediateLocationUpdate()
                 }
@@ -217,7 +217,7 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment() {
 
         gcjLatLng = null
         locationViewModel.requestImmediateLocationUpdate()
-        mStates.isRefreshingLocation.set(true)
+        mStates.refreshingLocation.set(true)
     }
 
     override fun setResultData(cmdStr: String) {
