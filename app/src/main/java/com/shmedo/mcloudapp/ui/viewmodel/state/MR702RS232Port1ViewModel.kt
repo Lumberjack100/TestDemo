@@ -9,6 +9,7 @@ class MR702RS232Port1ViewModel : ViewModel() {
     val cameraModel = NonNullObservableField("")
     val cameraResolution = NonNullObservableField("")
     val photoInterval = NonNullObservableField("")
+    val workModel = NonNullObservableField("")
 
     val baudRate = NonNullObservableField("")
     val dataBit = NonNullObservableField("")//数据位

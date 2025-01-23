@@ -840,6 +840,11 @@ enum class IOTCommandType(val value: String) {
      */
     MD_MR_TAKE_PHOTOS("md_mrtakephotos"),
 
+    /**
+     * 远程消警
+     */
+    MD_MR_RS485_CLEAR_ALARM("md_clearalarm"),
+
     // </editor-fold>
 
     /**

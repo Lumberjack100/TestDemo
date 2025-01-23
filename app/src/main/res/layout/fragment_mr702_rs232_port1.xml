@@ -135,6 +135,25 @@
                         app:lengthFilter="@{6}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_ClickableItem_Layout_Style"
+                    onClickWithDebouncing="@{()->click.onChooseWorkModelClick()}"
+                    android:background="@drawable/layer_common_click_item_with_divider"
+                    android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Title_Style"
+                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        android:text="工作模式" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Value_Style"
+                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        android:drawableEnd="@drawable/ic_arrow_down"
+                        android:text="@{stateVM.workModel}"
+                        tools:text="2" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
                 <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_GroupItem_Title_Style"
                     android:text="串口参数" />

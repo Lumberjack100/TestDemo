@@ -60,9 +60,10 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
     private val dataTypeList =
         arrayListOf("CMD", "NMEA", "DIFF_IN", "DIFF_OUT", "RAW_OUT", "RES_OUT")
     private val dataProtocolList = arrayListOf("MQTT", "TCP-C", "SL651")
+
     private val allPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
-    private val tcpPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_tcp_register_platform) }
     private val mqttPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_mqtt_register_platform) }
+    private val tcpPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_tcp_register_platform) }
     private val sl651PlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_sl651_register_platform) }
     private val szy206PlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_szy206_register_platform) }
 
@@ -133,7 +134,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.dataProtocol.set("MQTT")//默认选择
         platformList.clear()
         platformList.addAll(mqttPlatformList.asList())
-        mStates.platformType.set("米度物联平台")//默认选择米度物联平台
+        mStates.platformType.set(allPlatformList[2])//默认选择米度物联平台
 
         mStates.isMqttItemVisible.set(true)
         mStates.productId.set("")//
@@ -334,9 +335,9 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             plattype = allPlatformList.indexOf(mStates.platformType.get()).toString()
         )
         if (mStates.dataProtocol.get() == "MQTT") {
-            //当设备 ID、产品 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
-            if (mStates.isRegisterVisible.get() && mStates.deviceId.get()
-                    .isEmpty() && mStates.deviceKey.get().isEmpty()
+            //当产品 ID、设备 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
+            if (mStates.isRegisterVisible.get() && mStates.productId.get()
+                    .isEmpty() && mStates.deviceId.get().isEmpty()
             ) {
                 if (mStates.registerCode.get().isEmpty()) {
                     showMessageDialog("请输入设备注册码!")
@@ -371,6 +372,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                 if (mStates.isRegisterVisible.get()) mStates.registerAddress.get() else ""
             entity.httpport =
                 if (mStates.isRegisterVisible.get()) mStates.registerPort.get() else ""
+
         } else if (mStates.dataProtocol.get() == "SL651") {//SL651
             entity.type_code = StationCode.valueByDescription(mStates.stationType.get()).code
             entity.co_address = mStates.centerStationAddr.get()
@@ -594,7 +596,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 
     override fun processNavigateUp(toastMsg: String, isShowToast: Boolean) {
         launchWithViewLifecycle {
-            //巡护事件需要给上一级浏览页面传递最新的事件信息
+            //需要给上一级页面传递最新的信息
             setFragmentResult(
                 AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY,
                 bundleOf(AppContants.Extras.REFRESH_DATA_CENTER_STATUS to statusItem.centerid)

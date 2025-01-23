@@ -43,6 +43,9 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
 
     private val cameraModelList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_camera_model) }
     private val cameraResolutionList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port2_camera_resolution) }
+
+    //工作模式
+    private val workModelList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_work_model) }
     private val dataBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_data_bit) }
     private val checkBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_check_bit) }
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
@@ -89,6 +92,7 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
         mStates.cameraModel.set(cameraModelList[0])
         mStates.cameraResolution.set(cameraResolutionList[0])
         mStates.photoInterval.set("65535")
+        mStates.workModel.set(workModelList[0])
         mStates.baudRate.set("115200")
         mStates.dataBit.set(dataBitList[3])
         mStates.checkBit.set(checkBitList[0])
@@ -142,6 +146,26 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
                     null, selectedIndex,
                     { position, text ->
                         mStates.cameraResolution.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        /**
+         * 选择工作模式
+         */
+        fun onChooseWorkModelClick() {
+            val selectedIndex = workModelList.indexOf(mStates.workModel.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "请选择工作模式", workModelList,
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.workModel.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -239,6 +263,7 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
             type = cameraModelList.indexOf(mStates.cameraModel.get()).toString(),
             resolut = (cameraResolutionList.indexOf(mStates.cameraResolution.get()) + 1).toString(),
             interval = mStates.photoInterval.get(),
+            workmode = workModelList.indexOf(mStates.workModel.get()).toString(),
             baud = mStates.baudRate.get(),
             databit = mStates.dataBit.get(),
             parity = checkBitList.indexOf(mStates.checkBit.get()).toString(),
@@ -326,6 +351,11 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
                 }
             }
             mStates.photoInterval.set(sensorParam.interval)
+            sensorParam.workmode.toInt().let {
+                if (it in workModelList.indices) {
+                    mStates.workModel.set(workModelList[it])
+                }
+            }
             mStates.baudRate.set(sensorParam.baud)
             mStates.dataBit.set(sensorParam.databit)
             sensorParam.parity.toInt().let {

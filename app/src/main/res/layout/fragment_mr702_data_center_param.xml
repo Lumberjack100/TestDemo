@@ -6,12 +6,12 @@
     <data>
 
         <variable
-            name="stateVM"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702DataCenterParamViewModel" />
-
-        <variable
             name="toolbarVM"
             type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702DataCenterParamViewModel" />
 
         <variable
             name="click"
@@ -197,6 +197,26 @@
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.platformType}"
                             tools:text="成都理工平台" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        visible='@{stateVM.dataProtocol.equals("MQTTS")}'
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:text="测站编码" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:inputType="number"
+                            android:maxLength="10"
+                            android:text="@={stateVM.telemetryStationAddr}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -592,6 +612,7 @@
                             </androidx.appcompat.widget.LinearLayoutCompat>
                         </androidx.appcompat.widget.LinearLayoutCompat>
                     </androidx.appcompat.widget.LinearLayoutCompat>
+
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_confirm"
                         style="@style/SubmitButton_Style2"
