@@ -736,7 +736,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                     name = "库容计算",
                     desc = "采用线性插值法计算公式计算",
                     resID = R.drawable.ic_sample,
-                    navId = R.id.action_global_to_udCORSParamFragment
+                    navId = R.id.action_global_to_mR702ReservoirCapacityFragment
                 )
             ),
             ConfigModule(Remote485SilenceModule()),

@@ -83,6 +83,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS485Port3SensorParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS485Port3SensorStatusParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRainGaugeParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRReportMethodParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRReservoirCapacityParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRScreenParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRWiredNetParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRWirelessNetParser
@@ -177,6 +178,7 @@ object IOTParserRegistry {
         MRRainGaugeParamParser(),
         MRDOPortParamParser(),
         MRDIPortParamParser(),
+        MRReservoirCapacityParser(),
         TerminalIdInfoParser(),
         LoraCommunicateInfoParser(),
         RadioCommunicateInfoParser(),
