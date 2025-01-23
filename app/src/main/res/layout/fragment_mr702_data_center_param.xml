@@ -214,7 +214,7 @@
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            android:inputType="number"
+                            android:inputType="phone"
                             android:maxLength="10"
                             android:text="@={stateVM.telemetryStationAddr}" />
 
@@ -438,8 +438,8 @@
                                 enabledTextColor="@{@color/sub_title_text_color_black_60}"
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.telemetryStationAddr}"
-                                app:inputTypeFilter='@{"character"}'
-                                app:lengthFilter="@{10}" />
+                                android:inputType="phone"
+                                android:maxLength="10" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
 

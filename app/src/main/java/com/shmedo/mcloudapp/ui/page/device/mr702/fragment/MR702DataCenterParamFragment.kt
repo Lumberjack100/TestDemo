@@ -539,7 +539,8 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                 "1", "5" -> {//MQTT, MQTTS
                     mStates.isMqttItemVisible.set(true)
                     mStates.isSL651ItemVisible.set(false)
-                    dataProtocolList[0]
+                    if (data.datatype == "1") dataProtocolList[0] else
+                        dataProtocolList[4]
                 }
 
                 "2" -> {//TCP-C
