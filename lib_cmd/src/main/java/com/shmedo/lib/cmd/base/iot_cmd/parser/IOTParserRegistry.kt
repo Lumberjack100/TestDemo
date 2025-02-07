@@ -79,6 +79,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS485Port2CollectionParamPars
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS485Port2SensorParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS485Port2SensorStatusParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS485Port2SerialPortParamParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS485Port3CameraParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS485Port3SensorParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS485Port3SensorStatusParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRainGaugeParamParser
@@ -173,6 +174,7 @@ object IOTParserRegistry {
         MRRS485Port2SensorParamParser(),
         MRRS485Port3SensorStatusParser(),
         MRRS485Port3SensorParamParser(),
+        MRRS485Port3CameraParamParser(),
         MRRS232Port1ParamParser(),
         MRRS232Port2ParamParser(),
         MRRainGaugeParamParser(),

@@ -790,10 +790,16 @@ enum class IOTCommandType(val value: String) {
     MD_MR_GET_RS485_PORT3_SENSOR_STATUS("md_mrgetrs485p3status"),
 
     /**
-     * RS485-端口3 传感器参数获取
+     * RS485-端口3 太阳能控制器/声光报警器/LED 屏参数获取
      */
     MD_MR_GET_RS485_PORT3_SENSOR_PARAM("md_mrgetrs485p3param"),
     MD_MR_SET_RS485_PORT3_SENSOR_PARAM("md_mrsetrs485p3param"),
+
+    /**
+     * RS485-端口3 摄像头参数获取
+     */
+    MD_MR_GET_RS485_PORT3_CAMERA_PARAM("md_getrs485cam"),
+    MD_MR_SET_RS485_PORT3_CAMERA_PARAM("md_setrs485cam"),
 
     /**
      * RS232-1-摄像头 参数获取

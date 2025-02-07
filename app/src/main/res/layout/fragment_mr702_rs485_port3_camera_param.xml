@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port3CameraParamViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port3CameraParamFragment.ClickProxy" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray">
+
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:vm="@{toolbarVM}" />
+
+        <com.drake.brv.PageRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/dimen_size_25">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_GroupItem_Title_Style"
+                        android:text="串口参数" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="设备类型" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:drawableEnd="@null"
+                            android:text="@{stateVM.sensorName}"
+                            tools:text="太阳能控制器" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="状态" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:drawableEnd="@null"
+                            android:text="@{stateVM.status}"
+                            tools:text="已接入" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <RelativeLayout
+                        style="@style/SwitchButton_Item_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/SwitchButton_Item_Title_Style"
+                            android:text="开关"
+                            android:textColor="@{stateVM.isEditable?@color/title_text_color:@color/sub_title_text_color}" />
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            android:id="@+id/sensorSB"
+                            style="@style/SwitchButton_Item_Button_Style"
+                            checkedImmediatelyNoEvent="@{stateVM.isOpened}"
+                            android:enabled="@{stateVM.isEditable}"
+                            android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
+                            app:kswAnimationDuration="100"
+                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
+
+                    </RelativeLayout>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            android:text="设置地址"
+                            tools:textColor="@color/title_text_color" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:text="@={stateVM.address}"
+                            app:lengthFilter="@{20}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            android:text="波特率(Bps)"
+                            tools:textColor="@color/title_text_color" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:text="@={stateVM.baudRate}"
+                            app:lengthFilter="@{6}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onDataBitChooseClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            android:text="数据位" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            android:drawableEnd="@drawable/ic_arrow_down"
+                            android:text="@{stateVM.dataBit}"
+                            tools:text="5" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onCheckBitChooseClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            android:text="校验位" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            android:drawableEnd="@drawable/ic_arrow_down"
+                            android:text="@{stateVM.checkBit}"
+                            tools:text="NONE" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onStopBitChooseClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            android:text="停止位" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            android:drawableEnd="@drawable/ic_arrow_down"
+                            android:text="@{stateVM.stopBit}"
+                            tools:text="2" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_GroupItem_Title_Style"
+                        android:text="设备参数" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onChooseCameraModelClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            android:text="摄像头型号" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            android:drawableEnd="@drawable/ic_arrow_down"
+                            android:text="@{stateVM.cameraModel}"
+                            tools:text="MIDU890" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onChooseCameraResolutionClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            android:text="分辨率" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            android:drawableEnd="@drawable/ic_arrow_down"
+                            android:text="@{stateVM.cameraResolution}"
+                            tools:text="默认（640*480" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            android:text="拍照间隔（分钟）"
+                            tools:textColor="@color/title_text_color" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:text="@={stateVM.photoInterval}"
+                            app:lengthFilter="@{6}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onChooseWorkModelClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            android:text="工作模式" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            android:drawableEnd="@drawable/ic_arrow_down"
+                            android:text="@{stateVM.workModel}"
+                            tools:text="2" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.core.widget.NestedScrollView>
+        </com.drake.brv.PageRefreshLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/btn_confirm"
+            style="@style/SubmitButton_Style"
+            onClickWithDebouncing="@{()->click.onSubmitClick()}"
+            visible="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="15dp"
+            android:text="保存"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/refreshLayout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
