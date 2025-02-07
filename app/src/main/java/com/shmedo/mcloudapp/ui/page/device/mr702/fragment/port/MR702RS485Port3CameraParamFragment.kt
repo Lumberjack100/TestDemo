@@ -133,7 +133,6 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
 
         mStates.cameraModel.set(cameraModelList[0])
         mStates.cameraResolution.set(cameraResolutionList[0])
-        mStates.photoInterval.set("65535")
         mStates.workModel.set(workModelList[0])
     }
 
@@ -308,10 +307,6 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
             showMessageDialog("请输入波特率")
             return
         }
-        if (mStates.photoInterval.get().isEmpty()) {
-            showMessageDialog("请输入拍照间隔")
-            return
-        }
         val entity = MRRS485Port3CameraParamEntity(
             index = cameraIndex.toString(),
             switch = "1",
@@ -323,7 +318,6 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
             type = cameraModelList.indexOf(mStates.cameraModel.get()).toString(),
             resolut = (cameraResolutionList.indexOf(mStates.cameraResolution.get()) + 1).toString(),
             quality = "5",
-            interval = mStates.photoInterval.get(),
             workmode = workModelList.indexOf(mStates.workModel.get()).toString(),
         )
         val command = IOTCommandUtil.getCommand(
@@ -425,7 +419,6 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
                     mStates.cameraResolution.set(cameraResolutionList[index])
                 }
             }
-            mStates.photoInterval.set(sensorParam.interval)
             sensorParam.workmode.toInt().let {
                 if (it in workModelList.indices) {
                     mStates.workModel.set(workModelList[it])
