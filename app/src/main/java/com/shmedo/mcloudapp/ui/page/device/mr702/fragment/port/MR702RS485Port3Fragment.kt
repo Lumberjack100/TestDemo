@@ -147,6 +147,9 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        if (isRestrictHiddenMode() && isHidden) {
+            return
+        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_MR_GET_RS485_PORT3_SENSOR_STATUS -> {
                 val result = iotParseManager.parse<MRRS485Port3SensorStatus>(
@@ -203,6 +206,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
             addr = sensorStatus.solarid,
             addrDesc = "地址-${sensorStatus.solarid}",
             sensorName = "太阳能控制器",
+            isShowDel = false
         )
         binding.rv.mutable.add(item)
         binding.rv.bindingAdapter.notifyItemInserted(binding.rv.bindingAdapter.modelCount)
@@ -212,6 +216,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
             addr = sensorStatus.ysid,
             addrDesc = "地址-${sensorStatus.ysid}",
             sensorName = "声光报警器",
+            isShowDel = false
         )
         binding.rv.mutable.add(item)
         binding.rv.bindingAdapter.notifyItemInserted(binding.rv.bindingAdapter.modelCount)
@@ -221,6 +226,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
             addr = sensorStatus.ledid,
             addrDesc = "地址-${sensorStatus.ledid}",
             sensorName = "LED屏",
+            isShowDel = false
         )
         binding.rv.mutable.add(item)
         binding.rv.bindingAdapter.notifyItemInserted(binding.rv.bindingAdapter.modelCount)
@@ -228,11 +234,12 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
 
     private fun initCameraData(cameraParam: MRRS485Port3CameraParam) {
         val item = MRSensorItem(
-            isPlugin = cameraParam.status == "1",
+            isPlugin = cameraParam.status == "1" && cameraParam.switch == "1",
             chl = cameraParam.index,
             addr = cameraParam.addr,
             addrDesc = "序号-${cameraParam.index.toInt() + 1}",
             sensorName = "串口摄像头",
+            isShowDel = false
         )
         binding.rv.mutable.add(item)
         binding.rv.bindingAdapter.notifyItemInserted(binding.rv.bindingAdapter.modelCount)

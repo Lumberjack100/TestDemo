@@ -227,6 +227,10 @@
         <item>P5</item>
     </string-array>
 
+    <string-array name="mr_rs485_port3_camera_model">
+        <item>SXH485-H200</item>
+    </string-array>
+
     <string-array name="mr_rs232_port1_camera_model">
         <item>SXH232-H200</item>
         <item>PTC052</item>

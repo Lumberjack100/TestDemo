@@ -64,6 +64,7 @@
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.AppCompatImageView
+            visible="@{m.isShowDel}"
             android:id="@+id/item_del"
             android:layout_width="20dp"
             android:layout_height="20dp"

@@ -62,7 +62,7 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
     private val dataBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_data_bit) }
     private val checkBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_check_bit) }
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
-    private val cameraModelList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_camera_model) }
+    private val cameraModelList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs485_port3_camera_model) }
     private val cameraResolutionList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port2_camera_resolution) }
     private val workModelList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_work_model) }
 
@@ -390,36 +390,36 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initParamData(sensorParam: MRRS485Port3CameraParam) {
+    private fun initParamData(cameraParam: MRRS485Port3CameraParam) {
         try {
-            mStates.status.set(if (sensorParam.status == "1") "已接入" else "未接入")
-            mStates.isOpened.set(sensorParam.switch == "1")
-            mStates.address.set(sensorParam.addr)
-            mStates.baudRate.set(sensorParam.baud)
-            mStates.dataBit.set(sensorParam.databit)
-            sensorParam.parity.toInt().let {
+            mStates.status.set(if (cameraParam.status == "1" && cameraParam.switch == "1") "已接入" else "未接入")
+            mStates.isOpened.set(cameraParam.switch == "1")
+            mStates.address.set(cameraParam.addr)
+            mStates.baudRate.set(cameraParam.baud)
+            mStates.dataBit.set(cameraParam.databit)
+            cameraParam.parity.toInt().let {
                 if (it in checkBitList.indices) {
                     mStates.checkBit.set(checkBitList[it])
                 }
             }
-            sensorParam.stopbit.toInt().let {
+            cameraParam.stopbit.toInt().let {
                 if (it in stopBitList.indices) {
                     mStates.stopBit.set(stopBitList[it])
                 }
             }
 
-            sensorParam.type.toInt().let {
+            cameraParam.type.toInt().let {
                 if (it in cameraModelList.indices) {
                     mStates.cameraModel.set(cameraModelList[it])
                 }
             }
-            sensorParam.resolut.toInt().let {
+            cameraParam.resolut.toInt().let {
                 val index = it - 1
                 if (index in cameraResolutionList.indices) {
                     mStates.cameraResolution.set(cameraResolutionList[index])
                 }
             }
-            sensorParam.workmode.toInt().let {
+            cameraParam.workmode.toInt().let {
                 if (it in workModelList.indices) {
                     mStates.workModel.set(workModelList[it])
                 }
