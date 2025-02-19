@@ -55,7 +55,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
     private val transferProtocolList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_transfer_protocol) }
 
     private val dataProtocolList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_data_protocol) }
-    private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
+    private val allPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
 
 
     override fun initViewModel() {
@@ -115,11 +115,21 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.centerStatus.set(statusItem.status)
         mStates.isCenterOpened.set(statusItem.status != "0")
 
+        mStates.centerServerAddress.set("")//
+        mStates.centerServerPort.set("")//
         mStates.communicateWay.set(communicateWayList[0])//默认选择4G
         mStates.ipLeve.set(ipLevelList[0])//默认选择IPV4
         mStates.transferProtocol.set(transferProtocolList[0])//默认选择TCP
-        mStates.dataProtocol.set(dataProtocolList[1])//默认选择TCP-C
-        mStates.platformType.set(platformList[2])//默认选择米度物联平台
+        mStates.dataProtocol.set("MQTT")//默认选择
+        mStates.platformType.set(allPlatformList[2])//默认选择米度物联平台
+
+        mStates.isMqttItemVisible.set(true)
+        mStates.productId.set("")//
+        mStates.deviceId.set("")//
+        mStates.deviceKey.set("")//
+        mStates.registerCode.set("")//
+        mStates.registerAddress.set("")//
+        mStates.registerPort.set("")//
 
         mStates.stationType.set(StationCode.RESERVOIR.description)//默认选择水库(湖泊)
         mStates.timingReport.set(true)
@@ -252,7 +262,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                     { position, text ->
                         mStates.dataProtocol.set(text)
                         when (position) {
-                            0 -> {//MQTT
+                            0, 4 -> {//MQTT/MQTTS
                                 mStates.isMqttItemVisible.set(true)
                                 mStates.isSL651ItemVisible.set(false)
                             }
@@ -276,14 +286,14 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
          * 平台类型
          */
         fun onPlatformTypeChooseClick() {
-            val selectedIndex = platformList.indexOf(mStates.platformType.get())
+            val selectedIndex = allPlatformList.indexOf(mStates.platformType.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "请选择平台类型", platformList,
+                    "请选择平台类型", allPlatformList,
                     null, selectedIndex,
                     { position, text ->
                         mStates.platformType.set(text)
@@ -374,34 +384,25 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             level = (ipLevelList.indexOf(mStates.ipLeve.get()) + 1).toString(),
             type = (transferProtocolList.indexOf(mStates.transferProtocol.get()) + 1).toString(),
             datatype = (dataProtocolList.indexOf(mStates.dataProtocol.get()) + 1).toString(),
-            plattype = platformList.indexOf(mStates.platformType.get()).toString()
+            plattype = allPlatformList.indexOf(mStates.platformType.get()).toString()
         )
-        if (mStates.dataProtocol.get() == dataProtocolList[0]) {//MQTT
-            //当设备 ID、产品 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
-            if (mStates.productId.get().isEmpty()) {
-                showMessageDialog("请输入产品 ID!")
-                return
+        if (mStates.dataProtocol.get() == "MQTT" || mStates.dataProtocol.get() == "MQTTS") {//MQTT
+            //当产品 ID、设备 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
+            if (mStates.productId.get().isEmpty() && mStates.deviceId.get().isEmpty()) {
+                if (mStates.registerCode.get().isEmpty()) {
+                    showMessageDialog("请输入设备注册码!")
+                    return
+                }
+                if (mStates.registerAddress.get().isEmpty()) {
+                    showMessageDialog("请输入设备注册地址!")
+                    return
+                }
+                if (mStates.registerPort.get().isEmpty()) {
+                    showMessageDialog("请输入设备注册端口号!")
+                    return
+                }
             }
-            if (mStates.deviceId.get().isEmpty()) {
-                showMessageDialog("请输入设备 ID!")
-                return
-            }
-            if (mStates.deviceKey.get().isEmpty()) {
-                showMessageDialog("请输入设备 Key!")
-                return
-            }
-            if (mStates.registerCode.get().isEmpty()) {
-                showMessageDialog("请输入设备注册码!")
-                return
-            }
-            if (mStates.registerAddress.get().isEmpty()) {
-                showMessageDialog("请输入设备注册地址!")
-                return
-            }
-            if (mStates.registerPort.get().isEmpty()) {
-                showMessageDialog("请输入设备注册端口号!")
-                return
-            }
+
             if (mStates.registerPort.get().isNotEmpty()) {
                 try {
                     val port: Int = mStates.registerPort.get().toInt()
@@ -420,13 +421,17 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             entity.regcode = mStates.registerCode.get()
             entity.httpaddr = mStates.registerAddress.get()
             entity.httpport = mStates.registerPort.get()
-        } else if (mStates.dataProtocol.get() == dataProtocolList[2] || mStates.dataProtocol.get() == dataProtocolList[3]) {//SL651
+
+            if (mStates.dataProtocol.get() == "MQTTS")
+                entity.taddress = mStates.telemetryStationAddr.get()
+
+        } else if (mStates.dataProtocol.get() == "SL651" || mStates.dataProtocol.get() == "SZY206") {//SL651/SZY206
             entity.type_code =
-                if (mStates.dataProtocol.get() == dataProtocolList[2]) StationCode.valueByDescription(
+                if (mStates.dataProtocol.get() == "SL651") StationCode.valueByDescription(
                     mStates.stationType.get()
                 ).code else IOTConstants.NULL_KEY
             entity.co_address =
-                if (mStates.dataProtocol.get() == dataProtocolList[2]) mStates.centerStationAddr.get() else IOTConstants.NULL_KEY
+                if (mStates.dataProtocol.get() == "SL651") mStates.centerStationAddr.get() else IOTConstants.NULL_KEY
             entity.password = mStates.password.get()
             entity.taddress = mStates.telemetryStationAddr.get()
             entity.hour_report = if (mStates.hourlyReport.get()) "1" else "0"
@@ -531,10 +536,11 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         }
         mStates.dataProtocol.set(
             when (data.datatype) {
-                "1" -> {//MQTT
+                "1", "5" -> {//MQTT, MQTTS
                     mStates.isMqttItemVisible.set(true)
                     mStates.isSL651ItemVisible.set(false)
-                    dataProtocolList[0]
+                    if (data.datatype == "1") dataProtocolList[0] else
+                        dataProtocolList[4]
                 }
 
                 "2" -> {//TCP-C
@@ -557,8 +563,8 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             }
         )
         data.plattype.toIntOrNull()?.let {
-            if (it in platformList.indices) {
-                mStates.platformType.set(platformList[it])
+            if (it in allPlatformList.indices) {
+                mStates.platformType.set(allPlatformList[it])
             }
         }
 
@@ -598,12 +604,13 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                 nav().navigateUp()
                 return@launchWithViewLifecycle
             }
-            delay(1000)
-            //巡护事件需要给上一级浏览页面传递最新的事件信息
+
+            //需要给上一级页面传递最新的信息
             setFragmentResult(
                 AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY,
                 bundleOf(MR702DataCenterHomeFragment.REFRESH_DATA to true)
             )
+            delay(1500)
             nav().navigateUp()
         }
     }

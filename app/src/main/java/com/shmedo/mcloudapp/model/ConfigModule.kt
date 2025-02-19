@@ -334,6 +334,18 @@ class ManualPhotoTakingModule(
     iconResId = resID,
     navId = navId,
 )
+
+class Remote485SilenceModule(
+    name: String = "远程消警",
+    desc: String = "只对485报警器有效",
+    resID: Int = R.drawable.ic_sample,
+    navId: Int = 0,
+) : DeviceFunctionModule(
+    name = name,
+    desc = desc,
+    iconResId = resID,
+    navId = navId,
+)
 // </editor-fold>
 
 class OneClickSilenceModule(

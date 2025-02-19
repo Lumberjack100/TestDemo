@@ -20,6 +20,7 @@ class DataCenterParamViewModel : BaseDataCenterParamViewModel() {
     val centerStationAddr = NonNullObservableField("")//中心站地址
     val password = NonNullObservableField("")//密码
     val telemetryStationAddr = NonNullObservableField("")//测站编码(遥测站地址)
+
     val isAdvancedItemVisible = NonNullObservableField(false)//高级设置是否可见
     val hourlyReport = NonNullObservableField(false)//小时报开启标识
     val timingReport = NonNullObservableField(false)//定时报开启标识

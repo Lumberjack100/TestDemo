@@ -27,7 +27,9 @@ import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
+import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.BleConnect
+import com.shmedo.mcloudapp.model.CommonModule
 import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.DeviceLogUploadModule
 import com.shmedo.mcloudapp.model.ManualPhotoTakingModule
@@ -35,6 +37,7 @@ import com.shmedo.mcloudapp.model.ManualSettingModule
 import com.shmedo.mcloudapp.model.MonitoringElement
 import com.shmedo.mcloudapp.model.ParameterExportModule
 import com.shmedo.mcloudapp.model.ParameterImportModule
+import com.shmedo.mcloudapp.model.Remote485SilenceModule
 import com.shmedo.mcloudapp.model.TelemetryDataModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
@@ -187,8 +190,38 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 sendCommandFromCmdList(isStartTimeoutJob = true)
             }
 
-            else -> {
+            is Remote485SilenceModule -> {//远程485静音
+                showMessage(
+                    "是否执行远程消警？",
+                    "温馨提示",
+                    "确定",
+                    {
+                        commandItems.clear()
+                        val command =
+                            IOTCommandUtil.getCommand(IOTCommandType.MD_MR_RS485_CLEAR_ALARM)
+                        commandItems.add(command)
 
+                        takePhotoLoadingDialogId =
+                            showLoadingWithUUID(StringUtils.getString(R.string.processing))
+                        sendCommandFromCmdList(isStartTimeoutJob = true)
+                    },
+                    "取消"
+                )
+            }
+
+            else -> {
+                if (module.functionModule.navId != 0) {
+                    val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                        productType,
+                        communicateWay,
+                        deviceInfo,
+                        bleDevice
+                    )
+                    nav().navigate(
+                        module.functionModule.navId,
+                        bundle
+                    )
+                }
             }
         }
     }
@@ -399,7 +432,8 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_TAKE_PHOTOS -> {
+            IOTCommandType.MD_MR_TAKE_PHOTOS,
+            IOTCommandType.MD_MR_RS485_CLEAR_ALARM -> {
                 dismissLoadingDialog(takePhotoLoadingDialogId)
                 super.doCmdResponseResultError(
                     cmdStr = cmdStr,
@@ -427,7 +461,8 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_TAKE_PHOTOS -> {
+            IOTCommandType.MD_MR_TAKE_PHOTOS,
+            IOTCommandType.MD_MR_RS485_CLEAR_ALARM -> {
                 dismissLoadingDialog(takePhotoLoadingDialogId)
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
@@ -453,7 +488,8 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
         errMsg: String
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_TAKE_PHOTOS -> {
+            IOTCommandType.MD_MR_TAKE_PHOTOS,
+            IOTCommandType.MD_MR_RS485_CLEAR_ALARM -> {
                 dismissLoadingDialog(takePhotoLoadingDialogId)
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
@@ -659,6 +695,27 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            IOTCommandType.MD_MR_RS485_CLEAR_ALARM -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        dismissLoadingDialog(takePhotoLoadingDialogId)
+                        val errMsg = "消警失败: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            dismissLoadingDialog(takePhotoLoadingDialogId)
+                            Toaster.show(ToastParams().apply {
+                                text = "消警成功"
+                                duration = 1000
+                            })
+                        }
+                    }
+                }
+            }
+
             else -> {
                 cancelNearbyCommunicationTimeoutJob()
             }
@@ -674,6 +731,15 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
             ConfigModule(ParameterExportModule()),
             ConfigModule(ParameterImportModule()),
             ConfigModule(ManualPhotoTakingModule()),
+            ConfigModule(
+                CommonModule(
+                    name = "库容计算",
+                    desc = "采用线性插值法计算公式计算",
+                    resID = R.drawable.ic_sample,
+                    navId = R.id.action_global_to_mR702ReservoirCapacityFragment
+                )
+            ),
+            ConfigModule(Remote485SilenceModule()),
         )
 
     override fun onResume() {

@@ -22,6 +22,7 @@
         <item>广西水文平台</item>
         <item>湖北水文平台</item>
         <item>湖北生态流量平台</item>
+        <item>贵州加密平台</item>
     </string-array>
 
     <string-array name="data_center_tcp_register_platform">
@@ -34,6 +35,7 @@
         <item>米度物联平台</item>
         <item>地大平台2</item>
         <item>重庆地灾平台</item>
+        <item>贵州加密平台</item>
     </string-array>
 
     <string-array name="data_center_sl651_register_platform">
@@ -175,6 +177,7 @@
         <item>TCP-C</item>
         <item>SL651</item>
         <item>SZY206</item>
+        <item>MQTTS</item>
     </string-array>
 
     <!-- 数据类型-->
@@ -224,6 +227,10 @@
         <item>P5</item>
     </string-array>
 
+    <string-array name="mr_rs485_port3_camera_model">
+        <item>SXH485-H200</item>
+    </string-array>
+
     <string-array name="mr_rs232_port1_camera_model">
         <item>SXH232-H200</item>
         <item>PTC052</item>
@@ -233,6 +240,11 @@
         <item>640*480</item>
         <item>1280*720</item>
         <item>1920*1080</item>
+    </string-array>
+
+    <string-array name="mr_rs232_port1_work_model">
+        <item>正常模式</item>
+        <item>应急模式</item>
     </string-array>
 
     <string-array name="mr_data_bit">

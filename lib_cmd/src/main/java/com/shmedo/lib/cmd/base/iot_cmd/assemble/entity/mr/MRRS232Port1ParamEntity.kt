@@ -15,6 +15,7 @@ data class MRRS232Port1ParamEntity(
     val type: String = IOTConstants.NULL_KEY,//摄像头类型   1: 类型1  2: 类型2 3: 类型3
     val resolut: String = IOTConstants.NULL_KEY,//分辨率  1 分辨率1  2 分辨率2 3 分辨率3
     val interval: String = IOTConstants.NULL_KEY,//拍照间隔  s  数字
+    val workmode: String = IOTConstants.NULL_KEY,//摄像头上报周期模式  0: 正常模式   1: 应急模式
     val baud: String = IOTConstants.NULL_KEY,//波特率  bps 数字
     val databit: String = IOTConstants.NULL_KEY,//数据位   数字(5 6 7 8)
     val parity : String = IOTConstants.NULL_KEY,//校验位 1  NONE  2 ODD  3 EVEN  4 MARK 5 SPACE
