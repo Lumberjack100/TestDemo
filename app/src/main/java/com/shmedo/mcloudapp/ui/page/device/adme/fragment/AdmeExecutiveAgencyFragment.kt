@@ -35,15 +35,15 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
+import com.shmedo.mcloudapp.model.AdmeTimeItem
 import com.shmedo.mcloudapp.ui.adapter.AdmeTimeAdapter
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeExecutiveAgencyViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 import java.util.Date
 import java.util.Locale
 
@@ -58,15 +58,13 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
     private val dataResponseTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_data_response_type) }
     private val measIntervalPerRoundList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_interval_per_rounds) }
 
-    private val mData: MutableList<com.shmedo.mcloudapp.model.AdmeTimeItem> = ArrayList()
+    private val mData: MutableList<AdmeTimeItem> = ArrayList()
     private val mAdapter: AdmeTimeAdapter by lazy {
         AdmeTimeAdapter(
             requireContext(),
             mData
         )
     }
-
-    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
 
     override fun initViewModel() {
@@ -549,8 +547,8 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         }
         val entity = AdmeExecutiveAgencyInfoEntity(
             meastype = mStates.measureMethod.get().toString(),
-            datatype = if (mStates.dataSettlementMethod.get() == settlementMethodList[0]) "0" else "1",
-            datareply = if (mStates.dataResponse.get() == dataResponseTypeList[0]) "0" else "1",
+            datatype = settlementMethodList.indexOf(mStates.dataSettlementMethod.get()).toString(), //数据解算方式
+            datareply = dataResponseTypeList.indexOf(mStates.dataResponse.get()).toString(), //数据应答方式
             roundwaitetime = mStates.waitingIntervalPerRound.get(),
             roundmeasinval = mStates.measurementIntervalPerRound.get(),
             invalday = mStates.intervalDays.get(),
@@ -678,10 +676,24 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         mStates.wrapInfo.set(info)
         mStates.wrapInfo.notifyChange()
         try {
-            mStates.measureMethodText.set(if (info.meastype == "0") measureMethodList[0] else measureMethodList[1])
-            mStates.measureMethod.set(info.meastype.toInt())
-            mStates.dataSettlementMethod.set(if (info.datatype == "0") settlementMethodList[0] else settlementMethodList[1])
-            mStates.dataResponse.set(if (info.datareply == "0") dataResponseTypeList[0] else dataResponseTypeList[1])
+            info.meastype.toIntOrNull()?.let {
+                mStates.measureMethod.set(it)
+                if (it in measureMethodList.indices) {
+                    mStates.measureMethodText.set(measureMethodList[it])
+                }
+            }
+
+            info.datatype.toIntOrNull()?.let {
+                if (it in settlementMethodList.indices) {
+                    mStates.dataSettlementMethod.set(settlementMethodList[it])
+                }
+            }
+            info.datareply.toIntOrNull()?.let {
+                if (it in dataResponseTypeList.indices) {
+                    mStates.dataResponse.set(dataResponseTypeList[it])
+                }
+            }
+
             mStates.waitingIntervalPerRound.set(info.roundwaitetime)
             mStates.measurementIntervalPerRound.set(info.roundmeasinval)
             mStates.modifiedDate.set(info.updatedate.toLongOrNull()
@@ -694,12 +706,13 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             )
             mStates.intervalDays.set(info.invalday)
             mStates.startTimePerRound.set(info.roundmeasstart)
+
             mAdapter.data.clear()
             info.roundmeasstart.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
                 .forEach { time ->
                     if (time.isNotEmpty()) {
                         mAdapter.data.add(
-                            com.shmedo.mcloudapp.model.AdmeTimeItem(
+                           AdmeTimeItem(
                                 String.format(
                                     Locale.getDefault(),
                                     "%02d:00:00",
@@ -710,14 +723,18 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
                     }
                 }
             mAdapter.notifyDataSetChanged()
+
             mStates.dataReadingInterval.set(info.datainval)
             mStates.inclinometerCompensationTime.set(info.clin_compen)
             mStates.measurementCompensationTime.set(info.compensatetime)
 
-            decimalFormat.applyPattern("#.##")
-            mStates.inclinometerTubeHoleDepth.set(info.interdeep.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
+            mStates.inclinometerTubeHoleDepth.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.interdeep,
+                    "",
+                    2
+                )
+            )
 
             mStates.motorDriveAddress.set(info.driveaddress)
             mStates.decentralizationSpeed.set(info.downspeed)
@@ -725,36 +742,49 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             mStates.pullUpSpeed.set(info.upspeed)
             mStates.pullUpZeroSpeed.set(info.pzspeed)
 
-            decimalFormat.applyPattern("#.##")
-            mStates.measuringDistance.set(info.measpacing.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-
+            mStates.measuringDistance.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.measpacing,
+                    "",
+                    2
+                )
+            )
             mStates.measurementIntervalTime.set(info.meaintertime)
-            decimalFormat.applyPattern("#.##")
-            mStates.measuringReferenceDepth.set(info.meabaseth.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-
-            decimalFormat.applyPattern("#.###")
-            mStates.intervalCompensation.set(info.interval_compensation.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-
-            decimalFormat.applyPattern("#.###")
-            mStates.bottomSafetyDistance.set(info.bottom_safe_distance.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-
-            decimalFormat.applyPattern("#.#")
-            mStates.intervalFitting.set(info.interval_fitting.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-
-            decimalFormat.applyPattern("#.###")
-            mStates.pointOffset.set(info.point_offset.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
+            mStates.measuringReferenceDepth.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.meabaseth,
+                    "",
+                    2
+                )
+            )
+            mStates.intervalCompensation.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.interval_compensation,
+                    "",
+                    3
+                )
+            )
+            mStates.bottomSafetyDistance.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.bottom_safe_distance,
+                    "",
+                    3
+                )
+            )
+            mStates.intervalFitting.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.interval_fitting,
+                    "",
+                    1
+                )
+            )
+            mStates.pointOffset.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.point_offset,
+                    "",
+                    3
+                )
+            )
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)

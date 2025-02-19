@@ -42,6 +42,7 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
+import com.shmedo.mcloudapp.model.AdmeTimeItem
 import com.shmedo.mcloudapp.ui.adapter.AdmeTimeAdapter
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeBasicParamConfigViewModel
@@ -64,7 +65,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
     private val settlementMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_settlement_method) }
     private val measIntervalPerRoundList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_interval_per_rounds) }
 
-    private val mData: MutableList<com.shmedo.mcloudapp.model.AdmeTimeItem> = ArrayList()
+    private val mData: MutableList<AdmeTimeItem> = ArrayList()
     private val mAdapter: AdmeTimeAdapter by lazy {
         AdmeTimeAdapter(
             requireContext(),
@@ -159,13 +160,16 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        resetDefaultParams()
+    }
+
+    private fun resetDefaultParams() {
         mStates.measureMethod.set(0)
         mStates.measureMethodText.set(measureMethodList[0])
         mStates.dataSettlementMethod.set(settlementMethodList[1])
         mStates.measurementIntervalPerRound.set(measIntervalPerRoundList[0])
         mStates.decentralizationWaitingTime.set("180")//下放等待时间
     }
-
     private fun setEditable(editable: Boolean) {
         toolbarViewModel.toolbarIvActionVisible.set(!editable)
         toolbarViewModel.toolbarTvActionVisible.set(editable)
@@ -428,7 +432,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
             interdeep = mStates.inclinometerTubeHoleDepth.get(),
             downspeed = mStates.decentralizationSpeed.get(),
             downwaitetime = mStates.decentralizationWaitingTime.get(),
-            datatype = if (mStates.dataSettlementMethod.get() == settlementMethodList[0]) "0" else "1",
+            datatype = settlementMethodList.indexOf(mStates.dataSettlementMethod.get()).toString(),
         )
         commandItems.clear()
         var command = IOTCommandUtil.getCommand(
@@ -439,7 +443,7 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
 
         val executiveAgencyInfoEntity = AdmeExecutiveAgencyInfoEntity(
             meastype = mStates.measureMethod.get().toString(),
-            datatype = if (mStates.dataSettlementMethod.get() == settlementMethodList[0]) "0" else "1",
+            datatype = settlementMethodList.indexOf(mStates.dataSettlementMethod.get()).toString(),
             datareply = mStates.executiveAgencyInfoWrapper.get().datareply,
             roundwaitetime = mStates.waitingIntervalPerRound.get(),
             roundmeasinval = mStates.measurementIntervalPerRound.get(),
@@ -698,25 +702,37 @@ class AdmeBasicParamConfigFragment : BaseIOTDeviceFragment() {
     private fun initExecutiveAgencyInfo(info: AdmeExecutiveAgencyInfo) {
         mStates.executiveAgencyInfoWrapper.set(info)
         try {
-            mStates.measureMethodText.set(if (info.meastype == "0") measureMethodList[0] else measureMethodList[1])
-            mStates.measureMethod.set(info.meastype.toInt())
-            mStates.dataSettlementMethod.set(if (info.datatype == "0") settlementMethodList[0] else settlementMethodList[1])
+            info.meastype.toIntOrNull()?.let {
+                mStates.measureMethod.set(it)
+                if (it in measureMethodList.indices) {
+                    mStates.measureMethodText.set(measureMethodList[it])
+                }
+            }
+            info.datatype.toIntOrNull()?.let {
+                if (it in settlementMethodList.indices) {
+                    mStates.dataSettlementMethod.set(settlementMethodList[it])
+                }
+            }
             mStates.waitingIntervalPerRound.set(info.roundwaitetime)
             mStates.measurementIntervalPerRound.set(info.roundmeasinval)
-            mStates.modifiedDate.set(
-                TimeUtils.date2String(
-                    Date(info.updatedate.toLong() * 1000),
-                    "yyyy-MM-dd"
-                )
+            mStates.modifiedDate.set(info.updatedate.toLongOrNull()
+                ?.let {
+                    TimeUtils.date2String(
+                        Date(it * 1000),
+                        "yyyy-MM-dd"
+                    )
+                } ?: ""
             )
+
             mStates.intervalDays.set(info.invalday)
             mStates.startTimePerRound.set(info.roundmeasstart)
+
             mAdapter.data.clear()
             info.roundmeasstart.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }
                 .forEach { time ->
                     if (time.isNotEmpty()) {
                         mAdapter.data.add(
-                            com.shmedo.mcloudapp.model.AdmeTimeItem(
+                            AdmeTimeItem(
                                 String.format(
                                     Locale.getDefault(),
                                     "%02d:00:00",
