@@ -374,7 +374,7 @@
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.telemetryStationAddr}"
                                 app:inputTypeFilter='@{"character"}'
-                                app:lengthFilter="@{10}" />
+                                app:lengthFilter="@{20}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
