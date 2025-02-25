@@ -140,6 +140,9 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                 },
                 MR702IOPortFragment.newInstance().apply {
                     arguments = bundle
+                },
+                MR702PlusePortFragment.newInstance().apply {
+                    arguments = bundle
                 }
             )
         binding.viewpager.adapter = PageAdapter(this, mFragments)

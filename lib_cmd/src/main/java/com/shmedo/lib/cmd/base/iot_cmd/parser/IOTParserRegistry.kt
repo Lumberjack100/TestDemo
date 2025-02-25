@@ -91,6 +91,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRWirelessNetParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.UD485SerialPortInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.UDCORSParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.u_product.UDRainGaugeSerialPortInfoParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRPulsePortParamParser
 
 /**
  * 创建者：gonghe
@@ -178,6 +179,7 @@ object IOTParserRegistry {
         MRRS232Port1ParamParser(),
         MRRS232Port2ParamParser(),
         MRRainGaugeParamParser(),
+        MRPulsePortParamParser(),
         MRDOPortParamParser(),
         MRDIPortParamParser(),
         MRReservoirCapacityParser(),

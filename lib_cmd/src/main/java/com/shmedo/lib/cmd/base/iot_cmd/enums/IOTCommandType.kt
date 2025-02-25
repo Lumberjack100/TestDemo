@@ -820,6 +820,16 @@ enum class IOTCommandType(val value: String) {
     MD_MR_SET_RAIN_GAUGE_PORT_PARAM("md_mrsetraingauge"),
 
     /**
+     * 获取脉冲端口参数
+     */
+    MD_MR_GET_PULSE_PORT_PARAM("md_mrgetdrygauge"),
+    
+    /**
+     * 设置脉冲端口参数
+     */
+    MD_MR_SET_PULSE_PORT_PARAM("md_mrsetdrygauge"),
+
+    /**
      * DO 参数获取
      */
     MD_MR_GET_DO_PORT_PARAM("md_mrgetdostatus"),
