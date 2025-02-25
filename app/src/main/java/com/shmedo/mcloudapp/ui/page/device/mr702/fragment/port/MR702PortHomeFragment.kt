@@ -66,7 +66,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private val activeSize: Float = 15f
     private val normalSize: Float = 15f
     private val tabNames =
-        arrayOf("RS485-1", "RS485-2", "RS485-3", "RS232-1", "RS232-2", "雨量", "开关量")
+        arrayOf("RS485-1", "RS485-2", "RS485-3", "RS232-1", "RS232-2", "雨量", "开关量", "脉冲")
 
 
     override fun initViewModel() {
@@ -211,9 +211,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                 }
                 mStates.configPortSensorModelListMap["485port1"]?.let { modelList ->
                     modelList.onEachIndexed { index, sensorModel ->
-                        mStates.configPort4851SensorNameToSensorModelMap[sensorModel.sensorName] =
-                            sensorModel
-                        mStates.modelTokenToSensorModelMap[sensorModel.modelToken] = sensorModel
+                        mStates.sensorIdToSensorModelMap[sensorModel.sensorId] = sensorModel
                     }
                 }
                 mStates.configPortSensorModelListMap["485port2"]?.let { modelList ->

@@ -1,5 +1,6 @@
 package com.shmedo.lib.cmd.base.iot_cmd.model.mr
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
@@ -11,6 +12,8 @@ import com.squareup.moshi.JsonClass
 data class MRRS485Port1SensorParam(
     var c_model: String = "",//创建新指令    --创建新指令发1。修改指令发0
     var num: String = "",//物模型变量	--创建新指令时可以传任意值。修改指令根据传指定变量
+    @Json(name = "sensorlist")
+    var sensorId: String = "",//传感器编号
     var model: String = "",//物模型
     var baud: String = "",//波特率  bps 数字
     var databit: String = "",//数据位   数字(5 6 7 8)

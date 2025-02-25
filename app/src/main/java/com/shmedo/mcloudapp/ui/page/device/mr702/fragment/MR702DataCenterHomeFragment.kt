@@ -121,6 +121,9 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        if (isRestrictHiddenMode() && isHidden) {
+            return
+        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_MR_GET_DATA_CENTER_STATUS -> {
                 val result = iotParseManager.parse<MRDataCenterStatus>(

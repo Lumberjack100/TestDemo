@@ -102,6 +102,14 @@
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
+            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1TwoSensorAddParamFragment"
+            app:destination="@id/mR702RS485Port1TwoSensorAddParamFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
             android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1SensorParamFragment"
             app:destination="@id/mR702RS485Port1SensorParamFragment"
             app:enterAnim="@anim/activity_open_enter"
@@ -110,16 +118,16 @@
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
-            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1SensorAddParamNewFragment"
-            app:destination="@id/mR702RS485Port1SensorAddParamNewFragment"
+            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1SingleSensorParamFragment"
+            app:destination="@id/mR702RS485Port1SingleSensorParamFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
-            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1SensorParamNewFragment"
-            app:destination="@id/mR702RS485Port1SensorParamNewFragment"
+            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1TwoSensorParamFragment"
+            app:destination="@id/mR702RS485Port1TwoSensorParamFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
@@ -157,22 +165,28 @@
         tools:layout="@layout/fragment_mr702_rs485_port1_sensor_add_param" />
 
     <fragment
+        android:id="@+id/mR702RS485Port1TwoSensorAddParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1TwoSensorAddParamFragment"
+        android:label="MR702RS485Port1TwoSensorAddParamFragment"
+        tools:layout="@layout/fragment_mr702_rs485_port1_two_sensor_add_param" />
+
+    <fragment
         android:id="@+id/mR702RS485Port1SensorParamFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SensorParamFragment"
         android:label="MR702RS485Port1SensorParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port1_sensor_param" />
 
     <fragment
-        android:id="@+id/mR702RS485Port1SensorAddParamNewFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SensorAddParamNewFragment"
-        android:label="MR702RS485Port1SensorAddParamFragment"
-        tools:layout="@layout/fragment_mr702_rs485_port1_sensor_add_param_new" />
+        android:id="@+id/mR702RS485Port1SingleSensorParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SingleSensorParamFragment"
+        android:label="MR702RS485Port1SingleSensorParamFragment"
+        tools:layout="@layout/fragment_mr702_rs485_port1_single_sensor_param" />
 
     <fragment
-        android:id="@+id/mR702RS485Port1SensorParamNewFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SensorParamNewFragment"
-        android:label="MR702RS485Port1SensorParamNewFragment"
-        tools:layout="@layout/fragment_mr702_rs485_port1_sensor_param_new" />
+        android:id="@+id/mR702RS485Port1TwoSensorParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1TwoSensorParamFragment"
+        android:label="MR702RS485Port1TwoSensorParamFragment"
+        tools:layout="@layout/fragment_mr702_rs485_port1_two_sensor_param" />
 
     <fragment
         android:id="@+id/mR702RS485Port2SensorParamFragment"

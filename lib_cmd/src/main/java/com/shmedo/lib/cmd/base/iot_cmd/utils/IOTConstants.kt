@@ -37,6 +37,7 @@ object IOTConstants {
         const val CORS_NO_RESPONSE = "PSRDIFF_ERROR_CORS"
         const val GNSS_ERROR = "PSRDIFF_ERROR_GNSS"
         const val GNSS_SIGNAL_UNAVAILABLE = "PSRDIFF_ERROR_GPGGA"
+        const val SWTOKEN = "swtoken"
     }
 
     /**
@@ -50,6 +51,7 @@ object IOTConstants {
         ErrorReasons.CORS_NETWORK_ERROR to "网络错误",
         ErrorReasons.CORS_NO_RESPONSE to "CORS 服务无响应",
         ErrorReasons.GNSS_ERROR to "GNSS 模块异常",
-        ErrorReasons.GNSS_SIGNAL_UNAVAILABLE to "GNSS 信号不可用"
+        ErrorReasons.GNSS_SIGNAL_UNAVAILABLE to "GNSS 信号不可用",
+        ErrorReasons.SWTOKEN to "水文标识错误"
     )
 }

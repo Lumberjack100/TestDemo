@@ -385,18 +385,18 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
     fun loadExternalConfig() {
         viewModelScope.launch(Dispatchers.Default) {
             try {
-                val originalConfigJson = ResourceUtils.readAssets2String("app_config.json")
-                val originalConfigInfo =
-                    MoshiUtil.fromJson<AppConfigInfo>(originalConfigJson) ?: AppConfigInfo()
+                val sourceConfigJson = ResourceUtils.readAssets2String("app_config.json")
+                val sourceConfigInfo =
+                    MoshiUtil.fromJson<AppConfigInfo>(sourceConfigJson) ?: AppConfigInfo()
                 if (MmkvCacheUtil.getAppConfigInfo() == null) {
-                    MmkvCacheUtil.setAppConfigInfo(originalConfigJson)
+                    MmkvCacheUtil.setAppConfigInfo(sourceConfigJson)
                 } else {
-                    val cacheAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
-                    val originalDate = TimeUtils.string2Date(originalConfigInfo.lastTime)
-                    val cacheDate = TimeUtils.string2Date(cacheAppConfigInfo.lastTime)
+                    val cacheConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
+                    val sourceConfigDate = TimeUtils.string2Date(sourceConfigInfo.lastTime)
+                    val cacheConfigDate = TimeUtils.string2Date(cacheConfigInfo.lastTime)
                     //资源配置文件较新，则更新本地缓存配置
-                    if (cacheDate.before(originalDate)) {
-                        MmkvCacheUtil.setAppConfigInfo(originalConfigJson)
+                    if (cacheConfigDate.before(sourceConfigDate)) {
+                        MmkvCacheUtil.setAppConfigInfo(sourceConfigJson)
                     }
                 }
 
@@ -421,9 +421,9 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
                     )
                     return@launch
                 }
-
                 //远程配置文件较新，则更新本地配置
                 MmkvCacheUtil.setAppConfigInfo(remoteAppConfigInfo)
+
             } catch (e: Exception) {
                 Timber.e(e)
                 val msg =
