@@ -24,7 +24,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorAddParamBinding
+import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SingleSensorAddParamBinding
 import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
@@ -37,15 +37,15 @@ import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port1SensorAddParamViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port1SingleSensorAddParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 
-class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentMr702Rs485Port1SensorAddParamBinding
+class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentMr702Rs485Port1SingleSensorAddParamBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: MR702RS485Port1SensorAddParamViewModel
+    private lateinit var mStates: MR702RS485Port1SingleSensorAddParamViewModel
     private lateinit var portHomeViewModel: MR702PortHomeViewModel
     private val iotParseManager: IOTParserManager by inject()
 
@@ -70,7 +70,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_mr702_rs485_port1_sensor_add_param,
+            R.layout.fragment_mr702_rs485_port1_single_sensor_add_param,
             BR.stateVM,
             mStates
         )
@@ -79,7 +79,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentMr702Rs485Port1SensorAddParamBinding
+        binding = getBinding() as FragmentMr702Rs485Port1SingleSensorAddParamBinding
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)
         }
@@ -485,7 +485,7 @@ class MR702RS485Port1SensorAddParamFragment : BaseIOTDeviceFragment() {
     }
 
     companion object {
-        fun newInstance() = MR702RS485Port1SensorAddParamFragment()
+        fun newInstance() = MR702RS485Port1SingleSensorAddParamFragment()
         private const val SENSOR_MODEL_ITEM = "sensor_model_item"
 
         fun newBundleArguments(

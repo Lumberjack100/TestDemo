@@ -52,7 +52,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-
+@Deprecated("This class is deprecated", ReplaceWith("MR702RS485Port1SingleSensorAddParamFragment"))
 class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentMr702Rs485Port1SensorParamBinding

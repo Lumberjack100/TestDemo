@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.shmedo.mcloudapp.model.SensorModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
-class MR702RS485Port1SensorAddParamViewModel : ViewModel() {
+class MR702RS485Port1SingleSensorAddParamViewModel : ViewModel() {
     var curSensorModel: SensorModel = SensorModel()
 
     val isCustomSensor = NonNullObservableField(false)//是否自定义传感器

@@ -11,11 +11,11 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port1SensorAddParamViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port1SingleSensorAddParamViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SensorAddParamFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SingleSensorAddParamFragment.ClickProxy" />
 
     </data>
 

@@ -1,0 +1,685 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702AlarmParamSettingViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702AlarmParamSettingFragment.ClickProxy" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray">
+
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:vm="@{toolbarVM}" />
+
+        <com.drake.brv.PageRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:paddingBottom="@dimen/dimen_size_25">
+
+                    <!-- 雨量报警参数 -->
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_GroupItem_Title_Style"
+                        android:text="雨量报警参数" />
+
+                    <RelativeLayout
+                        style="@style/SwitchButton_Item_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/SwitchButton_Item_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="功能启用" />
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            android:id="@+id/switch_rain_level_enabled"
+                            style="@style/SwitchButton_Item_Button_Style"
+                            android:checked="@={stateVM.rainfallFunctionEnabled}"
+                            android:enabled="@{stateVM.isEditable}"
+                            app:kswAnimationDuration="100"
+                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        style="@style/SwitchButton_Item_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/SwitchButton_Item_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:text="继电器K接口" />
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            android:id="@+id/switch_rainfall_relay_k"
+                            style="@style/SwitchButton_Item_Button_Style"
+                            android:checked="@={stateVM.rainfallRelayK}"
+                            android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            app:kswAnimationDuration="100"
+                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        style="@style/SwitchButton_Item_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/SwitchButton_Item_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:text="RS485-3接口" />
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            style="@style/SwitchButton_Item_Button_Style"
+                            android:checked="true"
+                            android:enabled="false"
+                            app:kswAnimationDuration="100"
+                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
+
+                    </RelativeLayout>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:text="报警持续时间（分钟）" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:text="@={stateVM.rainfallHoldTime}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:text="报警间隔时间（分钟）" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:text="@={stateVM.rainfallGapTime}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:text="消警间隔时间（分钟）" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:text="@={stateVM.rainfallClearGapTime}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:text="播报次数" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:hint="数值范围[1-255]"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:text="@={stateVM.rainfallBroadcastTimes}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- 雨量报警阈值 -->
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:gravity="center_vertical"
+                        android:paddingStart="16dp"
+                        android:text="报警阈值"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_17"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:text="一级报警阈值（毫米）" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:maxLength="5"
+                            android:text="@={stateVM.rainfallWarnLevel1}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:text="二级报警阈值（毫米）" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:maxLength="5"
+                            android:text="@={stateVM.rainfallWarnLevel2}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:text="三级报警阈值（毫米）" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:maxLength="5"
+                            android:text="@={stateVM.rainfallWarnLevel3}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:text="四级报警阈值（毫米）" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:maxLength="5"
+                            android:text="@={stateVM.rainfallWarnLevel4}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- 雨量语音设置 -->
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:gravity="center_vertical"
+                        android:paddingStart="16dp"
+                        android:text="语音设置"
+                        android:textColor="@color/title_text_color"
+                        android:textSize="@dimen/text_size_17"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:text="一级报警语音编号" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:hint="数值范围[1-255]"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:text="@={stateVM.rainfallVoiceIndex1}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:text="二级报警语音编号" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:hint="数值范围[1-255]"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:text="@={stateVM.rainfallVoiceIndex2}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:text="三级报警语音编号" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:hint="数值范围[1-255]"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:text="@={stateVM.rainfallVoiceIndex3}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:text="四级报警语音编号" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
+                            android:hint="数值范围[1-255]"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:text="@={stateVM.rainfallVoiceIndex4}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- 水位报警参数 -->
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_GroupItem_Title_Style"
+                        android:text="水位报警参数" />
+
+                    <RelativeLayout
+                        style="@style/SwitchButton_Item_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/SwitchButton_Item_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="功能启用" />
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            android:id="@+id/switch_water_level_enabled"
+                            style="@style/SwitchButton_Item_Button_Style"
+                            android:checked="@={stateVM.waterLevelFunctionEnabled}"
+                            android:enabled="@{stateVM.isEditable}"
+                            app:kswAnimationDuration="100"
+                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        style="@style/SwitchButton_Item_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/SwitchButton_Item_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:text="继电器K接口" />
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            android:id="@+id/switch_water_level_relay_k"
+                            style="@style/SwitchButton_Item_Button_Style"
+                            android:checked="@={stateVM.waterLevelRelayK}"
+                            android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.waterLevelFunctionEnabled}"
+                            app:kswAnimationDuration="100"
+                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        style="@style/SwitchButton_Item_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/SwitchButton_Item_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:text="RS485-3接口" />
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            style="@style/SwitchButton_Item_Button_Style"
+                            android:checked="true"
+                            android:enabled="false"
+                            app:kswAnimationDuration="100"
+                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
+                    </RelativeLayout>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:text="报警持续时间（分钟）" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:text="@={stateVM.waterLevelHoldTime}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:text="报警间隔时间（分钟）" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:text="@={stateVM.waterLevelGapTime}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:text="消警间隔时间（分钟）" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:text="@={stateVM.waterLevelClearGapTime}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:text="播报次数" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:hint="数值范围[1-255]"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:text="@={stateVM.waterfallBroadcastTimes}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- 水位报警阈值 -->
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_GroupItem_Title_Style"
+                        android:text="报警阈值" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:text="一级报警阈值（毫米）" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:maxLength="5"
+                            android:text="@={stateVM.waterLevelWarnLevel1}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:text="二级报警阈值（毫米）" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:maxLength="5"
+                            android:text="@={stateVM.waterLevelWarnLevel2}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:text="三级报警阈值（毫米）" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:maxLength="5"
+                            android:text="@={stateVM.waterLevelWarnLevel3}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:text="四级报警阈值（毫米）" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:hint="请输入"
+                            android:inputType="number"
+                            android:maxLength="5"
+                            android:text="@={stateVM.waterLevelWarnLevel4}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <!-- 水位语音设置 -->
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_GroupItem_Title_Style"
+                        android:text="语音设置" />
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:text="一级报警语音编号" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:hint="数值范围[1-255]"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:text="@={stateVM.waterLevelVoiceIndex1}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:text="二级报警语音编号" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:hint="数值范围[1-255]"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:text="@={stateVM.waterLevelVoiceIndex2}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:text="三级报警语音编号" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:hint="数值范围[1-255]"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:text="@={stateVM.waterLevelVoiceIndex3}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:text="四级报警语音编号" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            android:hint="数值范围[1-255]"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:text="@={stateVM.waterLevelVoiceIndex4}" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.core.widget.NestedScrollView>
+        </com.drake.brv.PageRefreshLayout>
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_confirm"
+            style="@style/SubmitButton_Style2"
+            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+            visible="@{stateVM.isEditable}"
+            android:layout_marginHorizontal="@dimen/page_content_item_margin_horizontal_12"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="40dp"
+            android:text="@string/button_save_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/refreshLayout" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

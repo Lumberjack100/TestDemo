@@ -820,13 +820,9 @@ enum class IOTCommandType(val value: String) {
     MD_MR_SET_RAIN_GAUGE_PORT_PARAM("md_mrsetraingauge"),
 
     /**
-     * 获取脉冲端口参数
+     * 获取、设置脉冲端口参数
      */
     MD_MR_GET_PULSE_PORT_PARAM("md_mrgetdrygauge"),
-    
-    /**
-     * 设置脉冲端口参数
-     */
     MD_MR_SET_PULSE_PORT_PARAM("md_mrsetdrygauge"),
 
     /**
@@ -866,6 +862,12 @@ enum class IOTCommandType(val value: String) {
      */
     MD_MR_GET_RESERVOIR_CAPACITY("md_getkurongparam"),
     MD_MR_SET_RESERVOIR_CAPACITY("md_setkurongparam"),
+
+    /**
+     * 获取、设置报警参数
+     */
+    MD_MR_GET_ALARM_MODULE("md_getalarmmodule"),
+    MD_MR_SET_ALARM_MODULE("md_setalarmmodule"),
 
     // </editor-fold>
 

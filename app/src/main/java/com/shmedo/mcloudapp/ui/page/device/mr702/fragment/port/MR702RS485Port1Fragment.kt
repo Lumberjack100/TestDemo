@@ -179,7 +179,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
         selectionPopupView.setData("请选择传感器", sensorList, true)
             .setSelectListener(object : MR702SensorSelectionPopupView.OnSelectListener {
                 override fun onSelect(sensorModel: SensorModel) {
-                    val bundle = MR702RS485Port1SensorAddParamFragment.newBundleArguments(
+                    val bundle = MR702RS485Port1SingleSensorAddParamFragment.newBundleArguments(
                         MRSensorItem(
                             sensorId = sensorModel.sensorId,
                             sensorType = sensorModel.sensorType,
@@ -193,7 +193,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                     )
                     nav().navigate(
                         if (sensorModel.modelFieldList.size > 1) R.id.action_mR702PortHomeFragment_to_mR702RS485Port1TwoSensorAddParamFragment
-                        else R.id.action_mR702PortHomeFragment_to_mR702RS485Port1SensorAddParamFragment,
+                        else R.id.action_mR702PortHomeFragment_to_mR702RS485Port1SingleSensorAddParamFragment,
                         bundle
                     )
                 }
