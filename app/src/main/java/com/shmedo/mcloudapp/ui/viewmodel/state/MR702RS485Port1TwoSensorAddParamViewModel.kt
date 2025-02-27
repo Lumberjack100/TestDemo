@@ -16,7 +16,6 @@ class MR702RS485Port1TwoSensorAddParamViewModel : ViewModel() {
     val dataBit = NonNullObservableField("8")
     val checkBit = NonNullObservableField("")
     val stopBit = NonNullObservableField("")
-    val hydrologicalIdentification = NonNullObservableField("")//水文标识
     val calculate = NonNullObservableField("")//是否计算
     val calculateFormula = NonNullObservableField("")//计算公式
     val sensitivityK = NonNullObservableField("")//灵敏度K
@@ -28,6 +27,7 @@ class MR702RS485Port1TwoSensorAddParamViewModel : ViewModel() {
 
     val modelFieldName = NonNullObservableField("")//采集项名称
     val modelFieldUnit = NonNullObservableField("")//采集项单位
+    val hydrologicalIdentification = NonNullObservableField("")//水文标识
     val collectionInstructions = NonNullObservableField("")//采集指令
     val ratio = NonNullObservableField("")//倍率
     val dataFormat = NonNullObservableField("")//数据类型
@@ -39,6 +39,7 @@ class MR702RS485Port1TwoSensorAddParamViewModel : ViewModel() {
 
     val modelFieldName2 = NonNullObservableField("")//采集项名称
     val modelFieldUnit2 = NonNullObservableField("")//采集项单位
+    val hydrologicalIdentification2 = NonNullObservableField("")//水文标识
     val collectionInstructions2 = NonNullObservableField("")//采集指令
     val ratio2 = NonNullObservableField("")//倍率
     val dataFormat2 = NonNullObservableField("")//数据类型

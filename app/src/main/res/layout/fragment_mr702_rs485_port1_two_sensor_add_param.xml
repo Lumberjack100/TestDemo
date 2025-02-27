@@ -176,21 +176,6 @@
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_Layout_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_Title_Style"
-                        android:text="水文标识" />
-
-                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                        style="@style/Common_EditItem_EditText_Style"
-                        android:hint="请输入"
-                        android:text="@={stateVM.hydrologicalIdentification}"
-                        app:lengthFilter="@{6}" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
                     onClickWithDebouncing="@{()->click.onIsCalculateChooseClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider">
@@ -367,6 +352,23 @@
                         app:lengthFilter="@{10}"
                         tools:text="mm" />
 
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_Layout_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Title_Style"
+                        android:text="水文标识"
+                        tools:textColor="@color/title_text_color" />
+
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:hint="请输入"
+                        android:inputType="number"
+                        android:text="@={stateVM.hydrologicalIdentification}"
+                        app:lengthFilter="@{6}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -553,6 +555,23 @@
                         app:lengthFilter="@{10}"
                         tools:text="mm" />
 
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_Layout_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Title_Style"
+                        android:text="水文标识"
+                        tools:textColor="@color/title_text_color" />
+
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:hint="请输入"
+                        android:inputType="number"
+                        android:text="@={stateVM.hydrologicalIdentification2}"
+                        app:lengthFilter="@{6}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat

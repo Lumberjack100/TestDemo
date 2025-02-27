@@ -514,7 +514,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
-                            android:text="一级报警阈值（毫米）" />
+                            android:text="一级报警阈值（米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -533,7 +533,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
-                            android:text="二级报警阈值（毫米）" />
+                            android:text="二级报警阈值（米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -552,7 +552,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
-                            android:text="三级报警阈值（毫米）" />
+                            android:text="三级报警阈值（米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -571,7 +571,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.waterLevelFunctionEnabled}"
-                            android:text="四级报警阈值（毫米）" />
+                            android:text="四级报警阈值（米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
