@@ -117,7 +117,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
         }
         binding.llToolbar.toolbar.title = sensorItem.sensorName
 
-        portHomeViewModel.sensorIdToSensorModelMap[sensorItem.modelToken]?.let {
+        portHomeViewModel.sensorIdToSensorModelMap[sensorItem.sensorId]?.let {
             mStates.curSensorModel = it
         }
 
@@ -158,7 +158,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
         mStates.modelFieldName.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[0].fieldName
-            else ""
+            else "采集项1"
         )
         //采集项单位
         mStates.modelFieldUnit.set(
@@ -381,6 +381,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
             model = mStates.modelToken.get() + "_" + mStates.address.get(),
             c_model = "0",
             num = "0",
+            sensorlist = sensorItem.sensorId,
             baud = mStates.baudRate.get(),
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
@@ -406,42 +407,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
             corrvalue = mStates.correctValue.get(),
             ngateval = mStates.ngateval.get(),
         )
-        var command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_RS485_PORT1_SENSOR_PARAM,
-            entity.toCommandString()
-        )
-        commandItems.add(command)
-
-        entity = MRRS485Port1SensorParamEntity(
-            model = mStates.modelToken.get() + "_" + mStates.address.get(),
-            c_model = "0",
-            num = "1",
-            baud = mStates.baudRate.get(),
-            databit = mStates.dataBit.get(),
-            parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
-            stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
-            swtoken = mStates.hydrologicalIdentification.get(),
-            calctype = (calculateList.indexOf(mStates.calculate.get())).toString(),
-            kvalue = mStates.sensitivityK.get(),
-            bvalue = mStates.temperatureCorrectionCoefficientB.get(),
-            r0value = mStates.initialFrequencyF0.get(),
-            t0value = mStates.initialTemperatureT0.get(),
-            l0value = mStates.initialWaterLevel.get(),
-            lvalue = mStates.weirHeight.get(),
-
-            sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
-            mgbk = mStates.modelFieldName.get().stringToGBK16UByteString(),//采集项名称GBK编码
-            egbk = mStates.modelFieldUnit.get().stringToGBK16UByteString(),//采集项单位GBK编码
-            cmd = mStates.collectionInstructions.get(),
-            ratio = mStates.ratio.get(),
-            dataformat = (dataFormatList.indexOf(mStates.dataFormat.get())).toString(),
-            gateval = mStates.triggerValue.get(),
-            uplimit = mStates.upperLimit.get(),
-            lowlimit = mStates.lowerLimit.get(),
-            corrvalue = mStates.correctValue.get(),
-            ngateval = mStates.ngateval.get(),
-        )
-        command = IOTCommandUtil.getCommand(
+        val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RS485_PORT1_SENSOR_PARAM,
             entity.toCommandString()
         )
@@ -624,7 +590,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
     }
 
     private fun checkModelFieldList() =
-        mStates.curSensorModel.modelFieldList.isNotEmpty() && mStates.curSensorModel.modelFieldList.size > 1
+        mStates.curSensorModel.modelFieldList.isNotEmpty()
 
     override fun onResume() {
         super.onResume()

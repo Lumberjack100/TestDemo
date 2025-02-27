@@ -5,9 +5,9 @@ import com.shmedo.mcloudapp.model.SensorModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 class MR702RS485Port1TwoSensorAddParamViewModel : ViewModel() {
-    var curSensorModel: SensorModel = SensorModel()
-
     val isCustomSensor = NonNullObservableField(false)//是否自定义传感器
+
+    var curSensorModel: SensorModel = SensorModel()
 
     val modelName = NonNullObservableField("")//物模型/传感器名称
     val modelToken = NonNullObservableField("")//物模型编码
@@ -23,7 +23,7 @@ class MR702RS485Port1TwoSensorAddParamViewModel : ViewModel() {
     val initialFrequencyF0 = NonNullObservableField("")//初始频率 F0
     val initialTemperatureT0 = NonNullObservableField("")//初始温度 T0
     val initialWaterLevel = NonNullObservableField("")//初始水位
-    val weirHeight = NonNullObservableField("")//初始测量值
+    val initialMeasureValue = NonNullObservableField("")//初始测量值
 
     val modelFieldName = NonNullObservableField("")//采集项名称
     val modelFieldUnit = NonNullObservableField("")//采集项单位

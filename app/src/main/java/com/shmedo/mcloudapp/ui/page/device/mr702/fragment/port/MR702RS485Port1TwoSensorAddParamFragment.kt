@@ -121,7 +121,7 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
         mStates.initialFrequencyF0.set("0")
         mStates.initialTemperatureT0.set("0")
         mStates.initialWaterLevel.set("0")
-        mStates.weirHeight.set("0")
+        mStates.initialMeasureValue.set("0")
 
         resetDefaultModelField1()
         resetDefaultModelField2()
@@ -132,7 +132,7 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
         mStates.modelFieldName.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[0].fieldName
-            else ""
+            else "采集项1"
         )
         //采集项单位
         mStates.modelFieldUnit.set(
@@ -201,7 +201,7 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
         mStates.modelFieldName2.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[1].fieldName
-            else ""
+            else "采集项2"
         )
         //采集项单位
         mStates.modelFieldUnit2.set(
@@ -429,6 +429,7 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
             model = mStates.modelToken.get() + "_" + mStates.address.get(),
             c_model = "1",
             num = "0",
+            sensorlist = sensorItem.sensorId,
             baud = mStates.baudRate.get(),
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
@@ -439,7 +440,7 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
             r0value = mStates.initialFrequencyF0.get(),
             t0value = mStates.initialTemperatureT0.get(),
             l0value = mStates.initialWaterLevel.get(),
-            lvalue = mStates.weirHeight.get(),
+            lvalue = mStates.initialMeasureValue.get(),
 
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
             mgbk = mStates.modelFieldName.get().stringToGBK16UByteString(),//采集项名称GBK编码
@@ -464,6 +465,7 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
             model = mStates.modelToken.get() + "_" + mStates.address.get(),
             c_model = "1",
             num = "1",
+            sensorlist = sensorItem.sensorId,
             baud = mStates.baudRate.get(),
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
@@ -474,7 +476,7 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
             r0value = mStates.initialFrequencyF0.get(),
             t0value = mStates.initialTemperatureT0.get(),
             l0value = mStates.initialWaterLevel.get(),
-            lvalue = mStates.weirHeight.get(),
+            lvalue = mStates.initialMeasureValue.get(),
 
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
             mgbk = mStates.modelFieldName2.get().stringToGBK16UByteString(),//采集项名称GBK编码

@@ -119,7 +119,7 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
         }
         binding.llToolbar.toolbar.title = sensorItem.sensorName
 
-        portHomeViewModel.sensorIdToSensorModelMap[sensorItem.modelToken]?.let {
+        portHomeViewModel.sensorIdToSensorModelMap[sensorItem.sensorId]?.let {
             mStates.curSensorModel = it
         }
 
@@ -137,20 +137,15 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
         mStates.dataBit.set(dataBitList[3])//默认数据位 8
         mStates.checkBit.set(checkBitList[0])//默认校验位 无
         mStates.stopBit.set(stopBitList[0])//默认停止位 1
-        //水文识别
-        mStates.hydrologicalIdentification.set(
-            if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[0].hydrologicalIdentification
-            else ""
-        )
+
         mStates.calculate.set(calculateList[0])//是否计算
         mStates.calculateFormula.set(calculateFormulaList[0])//计算公式
-        mStates.sensitivityK.set("0")
+        mStates.sensitivityK.set("1")
         mStates.temperatureCorrectionCoefficientB.set("0")
         mStates.initialFrequencyF0.set("0")
         mStates.initialTemperatureT0.set("0")
         mStates.initialWaterLevel.set("0")
-        mStates.weirHeight.set("0")
+        mStates.initialMeasureValue.set("0")
 
         resetDefaultModelField1()
         resetDefaultModelField2()
@@ -161,12 +156,18 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
         mStates.modelFieldName.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[0].fieldName
-            else ""
+            else "采集项1"
         )
         //采集项单位
         mStates.modelFieldUnit.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[0].engUnit
+            else ""
+        )
+        //水文识别
+        mStates.hydrologicalIdentification.set(
+            if (checkModelFieldList())
+                mStates.curSensorModel.modelFieldList[0].hydrologicalIdentification
             else ""
         )
         //采集指令
@@ -224,12 +225,18 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
         mStates.modelFieldName2.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[1].fieldName
-            else ""
+            else "采集项2"
         )
         //采集项单位
         mStates.modelFieldUnit2.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[1].engUnit
+            else ""
+        )
+        //水文标识
+        mStates.hydrologicalIdentification2.set(
+            if (checkModelFieldList())
+                mStates.curSensorModel.modelFieldList[1].hydrologicalIdentification
             else ""
         )
         //采集指令
@@ -442,10 +449,7 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
             showMessageDialog("请输入波特率")
             return
         }
-        if (mStates.hydrologicalIdentification.get().isEmpty()) {
-            showMessageDialog("请输入水文标识")
-            return
-        }
+
         if (!checkModelField())
             return
 
@@ -456,22 +460,23 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
             model = mStates.modelToken.get() + "_" + mStates.address.get(),
             c_model = "0",
             num = "0",
+            sensorlist = sensorItem.sensorId,
             baud = mStates.baudRate.get(),
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
-            swtoken = mStates.hydrologicalIdentification.get(),
             calctype = (calculateList.indexOf(mStates.calculate.get())).toString(),
             kvalue = mStates.sensitivityK.get(),
             bvalue = mStates.temperatureCorrectionCoefficientB.get(),
             r0value = mStates.initialFrequencyF0.get(),
             t0value = mStates.initialTemperatureT0.get(),
             l0value = mStates.initialWaterLevel.get(),
-            lvalue = mStates.weirHeight.get(),
+            lvalue = mStates.initialMeasureValue.get(),
 
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
             mgbk = mStates.modelFieldName.get().stringToGBK16UByteString(),//采集项名称GBK编码
             egbk = mStates.modelFieldUnit.get().stringToGBK16UByteString(),//采集项单位GBK编码
+            swtoken = mStates.hydrologicalIdentification.get(),
             cmd =  mStates.collectionInstructions.get(),
             ratio =  mStates.ratio.get(),
             dataformat =  (dataFormatList.indexOf(mStates.dataFormat.get())).toString(),
@@ -490,23 +495,24 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
         entity = MRRS485Port1SensorParamEntity(
             model = mStates.modelToken.get() + "_" + mStates.address.get(),
             c_model = "0",
+            sensorlist = sensorItem.sensorId,
             num = "1",
             baud = mStates.baudRate.get(),
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
-            swtoken = mStates.hydrologicalIdentification.get(),
             calctype = (calculateList.indexOf(mStates.calculate.get())).toString(),
             kvalue = mStates.sensitivityK.get(),
             bvalue = mStates.temperatureCorrectionCoefficientB.get(),
             r0value = mStates.initialFrequencyF0.get(),
             t0value = mStates.initialTemperatureT0.get(),
             l0value = mStates.initialWaterLevel.get(),
-            lvalue = mStates.weirHeight.get(),
+            lvalue = mStates.initialMeasureValue.get(),
 
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
             mgbk = mStates.modelFieldName2.get().stringToGBK16UByteString(),//采集项名称GBK编码
             egbk = mStates.modelFieldUnit2.get().stringToGBK16UByteString(),//采集项单位GBK编码
+            swtoken = mStates.hydrologicalIdentification2.get(),
             cmd =  mStates.collectionInstructions2.get(),
             ratio =  mStates.ratio2.get(),
             dataformat =  (dataFormatList.indexOf(mStates.dataFormat2.get())).toString(),
@@ -533,6 +539,10 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
         }
         if (mStates.modelFieldUnit.get().isEmpty()) {
             showMessageDialog("请输入采集项单位")
+            return false
+        }
+        if (mStates.hydrologicalIdentification.get().isEmpty()) {
+            showMessageDialog("请输入水文标识")
             return false
         }
         if (mStates.collectionInstructions.get().isEmpty()) {
@@ -574,6 +584,10 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
         }
         if (mStates.modelFieldUnit2.get().isEmpty()) {
             showMessageDialog("请输入采集项单位")
+            return false
+        }
+        if (mStates.hydrologicalIdentification2.get().isEmpty()) {
+            showMessageDialog("请输入水文标识")
             return false
         }
         if (mStates.collectionInstructions2.get().isEmpty()) {
@@ -701,16 +715,16 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
                             mStates.stopBit.set(stopBitList[value])
                         }
                     }
-                    mStates.hydrologicalIdentification.set(sensorParam.swtoken)
                     mStates.calculate.set(if (sensorParam.calctype == "1") calculateList[1] else calculateList[0])
                     mStates.sensitivityK.set(sensorParam.kvalue)
                     mStates.temperatureCorrectionCoefficientB.set(sensorParam.bvalue)
                     mStates.initialFrequencyF0.set(sensorParam.r0value)
                     mStates.initialTemperatureT0.set(sensorParam.t0value)
                     mStates.initialWaterLevel.set(sensorParam.l0value)
-                    mStates.weirHeight.set(sensorParam.lvalue)
+                    mStates.initialMeasureValue.set(sensorParam.lvalue)
 
                     if (sensorParam.num == "0") {
+                        mStates.hydrologicalIdentification.set(sensorParam.swtoken)
                         mStates.collectionInstructions.set(sensorParam.cmd)
                         mStates.ratio.set(sensorParam.ratio)
                         sensorParam.dataformat.toInt().let { value ->
@@ -724,6 +738,7 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
                         mStates.correctValue.set(sensorParam.corrvalue)
                         mStates.ngateval.set(sensorParam.ngateval)
                     } else {
+                        mStates.hydrologicalIdentification2.set(sensorParam.swtoken)
                         mStates.collectionInstructions2.set(sensorParam.cmd)
                         mStates.ratio2.set(sensorParam.ratio)
                         sensorParam.dataformat.toInt().let { value ->

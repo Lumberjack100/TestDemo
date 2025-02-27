@@ -134,7 +134,7 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
         mStates.modelFieldName.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[modelFieldIndex].fieldName
-            else ""
+            else "采集项1"
         )
         //采集项单位
         mStates.modelFieldUnit.set(
@@ -354,6 +354,7 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
             model = mStates.modelToken.get() + "_" + mStates.address.get(),
             c_model = "1",
             num = modelFieldIndex.toString(),
+            sensorlist = sensorItem.sensorId,
             baud = mStates.baudRate.get(),
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),

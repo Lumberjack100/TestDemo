@@ -130,7 +130,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                         portHomeViewModel.sensorIdToSensorModelMap[item.sensorId]?.modelFieldList?.size?.let { fieldSize ->
                             nav().navigate(
                                 if (fieldSize > 1) R.id.action_mR702PortHomeFragment_to_mR702RS485Port1TwoSensorParamFragment
-                                else R.id.action_mR702PortHomeFragment_to_mR702RS485Port1SensorParamFragment,
+                                else R.id.action_mR702PortHomeFragment_to_mR702RS485Port1SingleSensorParamFragment,
                                 bundle
                             )
                         }
@@ -473,6 +473,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                     isPlugin = sensorStatusMap[sensorParam.model] == "0",
                     addr = address,
                     addrDesc = "地址-$address",
+                    sensorId = sensorParam.sensorId,
                     sensorName = portHomeViewModel.sensorIdToSensorModelMap[sensorParam.sensorId]?.sensorName
                         ?: "自定义传感器",
                     modelToken = modelToken,
