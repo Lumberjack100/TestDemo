@@ -120,7 +120,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                 when (itemViewType) {
                     R.layout.item_mr702_port_sensor -> {
                         val item = getModel<MRSensorItem>()
-                        val bundle = MR702RS485Port1SensorParamFragment.newBundleArguments(
+                        val bundle = MR702RS485Port1SingleSensorAddParamFragment.newBundleArguments(
                             item,
                             productType,
                             communicateWay,
