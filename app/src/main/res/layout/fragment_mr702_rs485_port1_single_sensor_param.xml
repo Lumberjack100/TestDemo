@@ -323,7 +323,7 @@
                             android:hint="请输入"
                             android:inputType="numberDecimal|numberSigned"
                             android:maxLength="5"
-                            android:text="@={stateVM.weirHeight}" />
+                            android:text="@={stateVM.initialMeasureValue}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

@@ -35,5 +35,5 @@ data class MRRS485Port1SensorParam(
     var r0value: String = "",//初始频率 F0
     var t0value: String = "",//初始温度 T0
     var l0value: String = "",//初始水位
-    var lvalue: String = ""//堰角高度
+    var lvalue: String = ""//初始测量值
 )

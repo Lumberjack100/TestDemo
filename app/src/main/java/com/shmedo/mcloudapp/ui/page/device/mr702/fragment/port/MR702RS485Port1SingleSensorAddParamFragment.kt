@@ -124,7 +124,7 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
         mStates.initialFrequencyF0.set("0")
         mStates.initialTemperatureT0.set("0")
         mStates.initialWaterLevel.set("0")
-        mStates.weirHeight.set("0")
+        mStates.initialMeasureValue.set("0")
 
         resetDefaultModelField1()
     }
@@ -365,7 +365,7 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
             r0value = mStates.initialFrequencyF0.get(),
             t0value = mStates.initialTemperatureT0.get(),
             l0value = mStates.initialWaterLevel.get(),
-            lvalue = mStates.weirHeight.get(),
+            lvalue = mStates.initialMeasureValue.get(),
 
             swtoken = mStates.hydrologicalIdentification.get(),
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码

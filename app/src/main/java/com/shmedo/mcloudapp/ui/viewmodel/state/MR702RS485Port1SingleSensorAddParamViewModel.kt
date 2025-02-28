@@ -23,7 +23,7 @@ class MR702RS485Port1SingleSensorAddParamViewModel : ViewModel() {
     val initialFrequencyF0 = NonNullObservableField("")//初始频率 F0
     val initialTemperatureT0 = NonNullObservableField("")//初始温度 T0
     val initialWaterLevel = NonNullObservableField("")//初始水位
-    val weirHeight = NonNullObservableField("")//初始测量值
+    val initialMeasureValue = NonNullObservableField("")//初始测量值
 
     val modelFieldName = NonNullObservableField("")//采集项名称
     val modelFieldUnit = NonNullObservableField("")//采集项单位

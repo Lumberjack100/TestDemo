@@ -148,7 +148,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
         mStates.initialFrequencyF0.set("0")
         mStates.initialTemperatureT0.set("0")
         mStates.initialWaterLevel.set("0")
-        mStates.weirHeight.set("0")
+        mStates.initialMeasureValue.set("0")
 
         resetDefaultModelField1()
     }
@@ -393,7 +393,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
             r0value = mStates.initialFrequencyF0.get(),
             t0value = mStates.initialTemperatureT0.get(),
             l0value = mStates.initialWaterLevel.get(),
-            lvalue = mStates.weirHeight.get(),
+            lvalue = mStates.initialMeasureValue.get(),
 
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
             mgbk = mStates.modelFieldName.get().stringToGBK16UByteString(),//采集项名称GBK编码
@@ -552,7 +552,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
                     mStates.initialFrequencyF0.set(sensorParam.r0value)
                     mStates.initialTemperatureT0.set(sensorParam.t0value)
                     mStates.initialWaterLevel.set(sensorParam.l0value)
-                    mStates.weirHeight.set(sensorParam.lvalue)
+                    mStates.initialMeasureValue.set(sensorParam.lvalue)
 
                     mStates.hydrologicalIdentification.set(sensorParam.swtoken)
                     mStates.collectionInstructions.set(sensorParam.cmd)
