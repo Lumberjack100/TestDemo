@@ -52,6 +52,6 @@ object IOTConstants {
         ErrorReasons.CORS_NO_RESPONSE to "CORS 服务无响应",
         ErrorReasons.GNSS_ERROR to "GNSS 模块异常",
         ErrorReasons.GNSS_SIGNAL_UNAVAILABLE to "GNSS 信号不可用",
-        ErrorReasons.SWTOKEN to "水文标识错误"
+        ErrorReasons.SWTOKEN to "水文标识不能重复"
     )
 }

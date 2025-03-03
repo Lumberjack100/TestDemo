@@ -268,7 +268,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
     }
 
     private fun queryCollectorAndSensorList() {
-        binding.rv.models = arrayListOf()
+        initEmptySensor()
         commandItems.clear()
 
         var command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_RS485_PORT1_COLL)
@@ -280,7 +280,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
     }
 
     private fun refreshSensorList() {
-        binding.rv.models = arrayListOf()
+        initEmptySensor()
         commandItems.clear()
 
         commandItems.add(
@@ -432,6 +432,12 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
             try {
                 val sensorStatusList = MoshiUtil.fromJson<List<MRSensorStatus>>(content)
                     ?: return@launchWithViewLifecycle
+                if (sensorStatusList.isEmpty()) {
+                    withContext(Dispatchers.Main) {
+                        binding.refreshLayout.finish()
+                    }
+                    return@launchWithViewLifecycle
+                }
 
                 commandItems.clear()
                 sensorStatusMap.clear()
@@ -449,6 +455,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                 Timber.e(e)
                 withContext(Dispatchers.Main) {
                     addDeviceLogItem(Log.ERROR, e.errorMsg)
+                    binding.refreshLayout.finish()
                 }
             }
         }

@@ -11,6 +11,7 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.extensions.gbkHexToString
 import com.shmedo.core.commonlib.extensions.stringToGBK16UByteString
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRRS485Port1SensorParamEntity
@@ -477,13 +478,13 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
             mgbk = mStates.modelFieldName.get().stringToGBK16UByteString(),//采集项名称GBK编码
             egbk = mStates.modelFieldUnit.get().stringToGBK16UByteString(),//采集项单位GBK编码
             swtoken = mStates.hydrologicalIdentification.get(),
-            cmd =  mStates.collectionInstructions.get(),
-            ratio =  mStates.ratio.get(),
-            dataformat =  (dataFormatList.indexOf(mStates.dataFormat.get())).toString(),
-            gateval =  mStates.triggerValue.get(),
-            uplimit =  mStates.upperLimit.get(),
-            lowlimit =  mStates.lowerLimit.get(),
-            corrvalue =  mStates.correctValue.get(),
+            cmd = mStates.collectionInstructions.get(),
+            ratio = mStates.ratio.get(),
+            dataformat = (dataFormatList.indexOf(mStates.dataFormat.get())).toString(),
+            gateval = mStates.triggerValue.get(),
+            uplimit = mStates.upperLimit.get(),
+            lowlimit = mStates.lowerLimit.get(),
+            corrvalue = mStates.correctValue.get(),
             ngateval = mStates.ngateval.get(),
         )
         var command = IOTCommandUtil.getCommand(
@@ -513,15 +514,15 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
             mgbk = mStates.modelFieldName2.get().stringToGBK16UByteString(),//采集项名称GBK编码
             egbk = mStates.modelFieldUnit2.get().stringToGBK16UByteString(),//采集项单位GBK编码
             swtoken = mStates.hydrologicalIdentification2.get(),
-            cmd =  mStates.collectionInstructions2.get(),
-            ratio =  mStates.ratio2.get(),
-            dataformat =  (dataFormatList.indexOf(mStates.dataFormat2.get())).toString(),
-            gateval =  mStates.triggerValue2.get(),
-            uplimit =  mStates.upperLimit2.get(),
-            lowlimit =  mStates.lowerLimit2.get(),
-            corrvalue =  mStates.correctValue2.get(),
+            cmd = mStates.collectionInstructions2.get(),
+            ratio = mStates.ratio2.get(),
+            dataformat = (dataFormatList.indexOf(mStates.dataFormat2.get())).toString(),
+            gateval = mStates.triggerValue2.get(),
+            uplimit = mStates.upperLimit2.get(),
+            lowlimit = mStates.lowerLimit2.get(),
+            corrvalue = mStates.correctValue2.get(),
             ngateval = mStates.ngateval2.get(),
-           )
+        )
         command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_MR_SET_RS485_PORT1_SENSOR_PARAM,
             entity.toCommandString()
@@ -737,7 +738,19 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
                         mStates.lowerLimit.set(sensorParam.lowlimit)
                         mStates.correctValue.set(sensorParam.corrvalue)
                         mStates.ngateval.set(sensorParam.ngateval)
+
+                        if (sensorItem.sensorId == "1") {
+                            mStates.modelName.set(sensorParam.sgbk.gbkHexToString())
+                            mStates.modelFieldName.set(sensorParam.mgbk.gbkHexToString())
+                            mStates.modelFieldUnit.set(sensorParam.egbk.gbkHexToString())
+                        }
                     } else {
+                        if (sensorItem.sensorId == "1") {
+                            mStates.modelName.set(sensorParam.sgbk.gbkHexToString())
+                            mStates.modelFieldName2.set(sensorParam.mgbk.gbkHexToString())
+                            mStates.modelFieldUnit2.set(sensorParam.egbk.gbkHexToString())
+                        }
+
                         mStates.hydrologicalIdentification2.set(sensorParam.swtoken)
                         mStates.collectionInstructions2.set(sensorParam.cmd)
                         mStates.ratio2.set(sensorParam.ratio)

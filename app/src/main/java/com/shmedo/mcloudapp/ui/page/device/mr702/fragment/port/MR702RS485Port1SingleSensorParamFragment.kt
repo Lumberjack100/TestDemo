@@ -12,6 +12,7 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.extensions.gbkHexToString
 import com.shmedo.core.commonlib.extensions.stringToGBK16UByteString
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRRS485Port1SensorParamEntity
@@ -567,6 +568,12 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
                     mStates.lowerLimit.set(sensorParam.lowlimit)
                     mStates.correctValue.set(sensorParam.corrvalue)
                     mStates.ngateval.set(sensorParam.ngateval)
+
+                    if (sensorItem.sensorId == "1") {
+                        mStates.modelName.set(sensorParam.sgbk.gbkHexToString())
+                        mStates.modelFieldName.set(sensorParam.mgbk.gbkHexToString())
+                        mStates.modelFieldUnit.set(sensorParam.egbk.gbkHexToString())
+                    }
                 }
             } catch (e: Exception) {
                 Timber.e(e)

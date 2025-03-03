@@ -15,6 +15,9 @@ data class MRRS485Port1SensorParam(
     @Json(name = "sensorlist")
     var sensorId: String = "",//传感器编号
     var model: String = "",//物模型
+    var sgbk: String = "",//传感器名称GBK编码
+    var mgbk: String = "",//采集项名称GBK编码
+    var egbk: String = "",//采集项单位GBK编码
     var baud: String = "",//波特率  bps 数字
     var databit: String = "",//数据位   数字(5 6 7 8)
     var parity: String = "",//校验位 0:NONE  1:ODD  2:EVEN  3:MARK 4:SPACE

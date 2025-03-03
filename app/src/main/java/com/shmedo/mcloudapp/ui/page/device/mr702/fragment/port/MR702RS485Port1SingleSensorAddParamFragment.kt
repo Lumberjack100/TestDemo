@@ -100,7 +100,7 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
         portHomeViewModel.sensorIdToSensorModelMap[sensorItem.sensorId]?.let {
             mStates.curSensorModel = it
         }
-        mStates.isCustomSensor.set(mStates.curSensorModel.modelFieldList.isEmpty())//是否自定义传感器
+        mStates.isCustomSensor.set(mStates.curSensorModel.sensorId == "0")//是否自定义传感器
 
         mStates.modelName.set(mStates.curSensorModel.modelName)//物模型名称
         mStates.modelToken.set(mStates.curSensorModel.modelToken)//物模型编号
@@ -468,13 +468,12 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
                 return@launchWithViewLifecycle
             }
 
-            delay(500)
+            delay(1500)
             //需要给上一级浏览页面传递最新的事件信息
             mMessenger.requestMR702Rs485PortSensorRefresh(MRRS485Port1)
             nav().navigateUp()
         }
     }
-
 
 
     private fun checkModelFieldList() =
