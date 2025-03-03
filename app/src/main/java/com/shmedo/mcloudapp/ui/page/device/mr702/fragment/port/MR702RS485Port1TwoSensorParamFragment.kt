@@ -739,13 +739,13 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
                         mStates.correctValue.set(sensorParam.corrvalue)
                         mStates.ngateval.set(sensorParam.ngateval)
 
-                        if (sensorItem.sensorId == "1") {
+                        if (sensorItem.sensorId == "0") {
                             mStates.modelName.set(sensorParam.sgbk.gbkHexToString())
                             mStates.modelFieldName.set(sensorParam.mgbk.gbkHexToString())
                             mStates.modelFieldUnit.set(sensorParam.egbk.gbkHexToString())
                         }
                     } else {
-                        if (sensorItem.sensorId == "1") {
+                        if (sensorItem.sensorId == "0") {
                             mStates.modelName.set(sensorParam.sgbk.gbkHexToString())
                             mStates.modelFieldName2.set(sensorParam.mgbk.gbkHexToString())
                             mStates.modelFieldUnit2.set(sensorParam.egbk.gbkHexToString())
