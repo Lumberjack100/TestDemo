@@ -126,8 +126,8 @@
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         android:hint="请输入"
-                        android:text="@={stateVM.dumpMinTime}"
                         android:inputType="number"
+                        android:text="@={stateVM.dumpMinTime}"
                         app:lengthFilter="@{6}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -155,19 +155,20 @@
                     android:paddingStart="@dimen/dimen_size_30"
                     android:paddingEnd="@dimen/dimen_size_16">
 
-                    <Button
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/radio_break_alarm_open"
                         onClickWithDebouncing="@{(view)->click.onBreakAlarmCheckedChanged(view)}"
                         android:layout_width="0dp"
                         android:layout_height="38dp"
                         android:layout_weight="1"
                         android:background="@{stateVM.isBreakAlarmOpen?@drawable/bg_blue_stroke_corner_19dp:@drawable/bg_gray_stroke_corner_19dp}"
+                        android:gravity="center"
                         android:text="常开"
                         android:textColor='@{stateVM.isBreakAlarmOpen?@color/colorPrimary:@color/sub_title_text_color}'
                         tools:background="@drawable/bg_blue_stroke_corner_19dp"
                         tools:textColor="@color/colorPrimary" />
 
-                    <Button
+                    <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/radio_break_alarm_close"
                         onClickWithDebouncing="@{(view)->click.onBreakAlarmCheckedChanged(view)}"
                         android:layout_width="0dp"
@@ -175,6 +176,7 @@
                         android:layout_marginStart="@dimen/dimen_size_15"
                         android:layout_weight="1"
                         android:background="@{!stateVM.isBreakAlarmOpen?@drawable/bg_blue_stroke_corner_19dp:@drawable/bg_gray_stroke_corner_19dp}"
+                        android:gravity="center"
                         android:text="常闭"
                         android:textColor='@{!stateVM.isBreakAlarmOpen?@color/colorPrimary:@color/sub_title_text_color}'
                         tools:background="@drawable/bg_gray_stroke_corner_19dp"
