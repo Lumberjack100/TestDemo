@@ -23,6 +23,11 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.cmd.base.md_cmd.enums.MDLowEnergyModel
+import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
+import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
+import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
@@ -49,6 +54,7 @@ import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import timber.log.Timber
 import java.util.Locale
 
 /**
@@ -62,6 +68,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var mStates: AdvancedSettingViewModel
     private val locationViewModel: LocationViewModel by activityViewModel()
     private val iotParseManager: IOTParserManager by inject()
+    private val mdParseManager: MDParserManager by inject()
 
     private var gcjLatLng: BDLocation? = null //当前定位经纬度,中国国测局地理坐标（GCJ-02）
 
@@ -170,6 +177,14 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
                     AdvancedSettingItem.Type.REMOTE_DEBUG,
                 )
             )
+            if (productType == ProductType.U_I_1) {
+                moduleList.add(
+                    AdvancedSettingItem(
+                        "一键仓储",
+                        AdvancedSettingItem.Type.STANDBY,
+                    )
+                )
+            }
         }
 
         binding.recyclerview.models = moduleList
@@ -273,6 +288,12 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
                 nav().navigate(R.id.action_global_to_remoteDebugFragment, bundle)
             }
 
+            AdvancedSettingItem.Type.STANDBY -> {
+                showMessage("确定进入仓储模式吗？", "温馨提示", "确定", {
+                    setStandByMode()
+                }, "取消")
+            }
+
             else -> {}
         }
     }
@@ -361,7 +382,27 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                cancelNearbyCommunicationTimeoutJob()
+                when (MDCommandUtil.extractCommandType(cmdStr)) {
+                    MDCommandType.LOW_ENERGY -> {//
+                        when (val result = mdParseManager.parse<String>(cmdStr)) {
+                            is MDCommandResult.Failure -> {
+                                val errMsg = "设置仓储模式出错!"
+                                handleFailureResult(errMsg)
+                                return
+                            }
+
+                            else -> {
+                                sendCommandFromCmdList {
+                                    Toaster.show("设置仓储模式成功")
+                                }
+                            }
+                        }
+                    }
+
+                    else -> {
+                        cancelNearbyCommunicationTimeoutJob()
+                    }
+                }
             }
         }
     }
@@ -422,6 +463,19 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
             )
         commandItems.add(command)
         showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 打开/关闭设备低功耗模式
+     */
+    private fun setStandByMode() {
+        commandItems.clear()
+        val command = MDCommandUtil.getCommand(
+            MDCommandType.LOW_ENERGY, MDLowEnergyModel.STANDBY.toString()
+        )
+        commandItems.add(command)
+        Timber.d("打开设备低功耗模式指令===%s", command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 

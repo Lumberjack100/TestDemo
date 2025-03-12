@@ -28,6 +28,9 @@ data class AdvancedSettingItem(
 
         //远程调试
         data object REMOTE_DEBUG : Type()
+
+        //待机
+        data object STANDBY : Type()
     }
 }
 

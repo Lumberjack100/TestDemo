@@ -207,12 +207,12 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             if (isChecked) {
                 mStates.isActivated.set(true)
                 //开启/关闭设备低功耗模式
-                setLowEnergyModel(true)
+                setLowEnergyMode(true)
                 return
             }
             showMessage(StringUtils.getString(R.string.disactive_device_warn), "温馨提示", "确定", {
                 mStates.isActivated.set(false)
-                setLowEnergyModel(false)
+                setLowEnergyMode(false)
             }, "取消", {
                 (button as SwitchButton).setCheckedImmediatelyNoEvent(true)
             })
@@ -401,7 +401,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     /**
      * 打开/关闭设备低功耗模式
      */
-    private fun setLowEnergyModel(isActivate: Boolean) {
+    private fun setLowEnergyMode(isActivate: Boolean) {
         commandItems.clear()
         val command = MDCommandUtil.getCommand(
             MDCommandType.LOW_ENERGY,
