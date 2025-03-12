@@ -386,5 +386,10 @@
         <item>429.00MHz</item>
     </string-array>
 
+    <!-- 脉冲接口功能模式 -->
+    <string-array name="pulse_mode_value">
+        <item>计数</item>
+        <item>消警</item>
+    </string-array>
 
 </resources>

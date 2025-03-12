@@ -94,8 +94,16 @@
         tools:layout="@layout/fragment_mr702_port_home">
 
         <action
-            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1SensorAddParamFragment"
-            app:destination="@id/mR702RS485Port1SensorAddParamFragment"
+            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1SingleSensorAddParamFragment"
+            app:destination="@id/mR702RS485Port1SingleSensorAddParamFragment"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
+            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1TwoSensorAddParamFragment"
+            app:destination="@id/mR702RS485Port1TwoSensorAddParamFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
@@ -110,16 +118,16 @@
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
-            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1SensorAddParamNewFragment"
-            app:destination="@id/mR702RS485Port1SensorAddParamNewFragment"
+            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1SingleSensorParamFragment"
+            app:destination="@id/mR702RS485Port1SingleSensorParamFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
-            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1SensorParamNewFragment"
-            app:destination="@id/mR702RS485Port1SensorParamNewFragment"
+            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1TwoSensorParamFragment"
+            app:destination="@id/mR702RS485Port1TwoSensorParamFragment"
             app:enterAnim="@anim/activity_open_enter"
             app:exitAnim="@anim/activity_open_exit"
             app:popEnterAnim="@anim/activity_close_enter"
@@ -151,10 +159,16 @@
     </fragment>
 
     <fragment
-        android:id="@+id/mR702RS485Port1SensorAddParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SensorAddParamFragment"
-        android:label="MR702RS485Port1SensorAddParamFragment"
-        tools:layout="@layout/fragment_mr702_rs485_port1_sensor_add_param" />
+        android:id="@+id/mR702RS485Port1SingleSensorAddParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SingleSensorAddParamFragment"
+        android:label="MR702RS485Port1SingleSensorAddParamFragment"
+        tools:layout="@layout/fragment_mr702_rs485_port1_single_sensor_add_param" />
+
+    <fragment
+        android:id="@+id/mR702RS485Port1TwoSensorAddParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1TwoSensorAddParamFragment"
+        android:label="MR702RS485Port1TwoSensorAddParamFragment"
+        tools:layout="@layout/fragment_mr702_rs485_port1_two_sensor_add_param" />
 
     <fragment
         android:id="@+id/mR702RS485Port1SensorParamFragment"
@@ -163,16 +177,16 @@
         tools:layout="@layout/fragment_mr702_rs485_port1_sensor_param" />
 
     <fragment
-        android:id="@+id/mR702RS485Port1SensorAddParamNewFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SensorAddParamNewFragment"
-        android:label="MR702RS485Port1SensorAddParamFragment"
-        tools:layout="@layout/fragment_mr702_rs485_port1_sensor_add_param_new" />
+        android:id="@+id/mR702RS485Port1SingleSensorParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SingleSensorParamFragment"
+        android:label="MR702RS485Port1SingleSensorParamFragment"
+        tools:layout="@layout/fragment_mr702_rs485_port1_single_sensor_param" />
 
     <fragment
-        android:id="@+id/mR702RS485Port1SensorParamNewFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SensorParamNewFragment"
-        android:label="MR702RS485Port1SensorParamNewFragment"
-        tools:layout="@layout/fragment_mr702_rs485_port1_sensor_param_new" />
+        android:id="@+id/mR702RS485Port1TwoSensorParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1TwoSensorParamFragment"
+        android:label="MR702RS485Port1TwoSensorParamFragment"
+        tools:layout="@layout/fragment_mr702_rs485_port1_two_sensor_param" />
 
     <fragment
         android:id="@+id/mR702RS485Port2SensorParamFragment"
@@ -199,6 +213,12 @@
         tools:layout="@layout/fragment_mr702_terminal_parameter" />
 
     <fragment
+        android:id="@+id/mR702AlarmParamSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702AlarmParamSettingFragment"
+        android:label="MR702AlarmParamSettingFragment"
+        tools:layout="@layout/fragment_mr702_alarm_param_setting" />
+
+    <fragment
         android:id="@+id/mR702NetworkCommunicationFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702NetworkCommunicationFragment"
         android:label="MR702NetworkCommunicationFragment"
@@ -221,6 +241,14 @@
         android:name="com.shmedo.mcloudapp.ui.page.device.common.BaseAdvancedSettingFragment"
         android:label="BaseAdvancedSettingFragment"
         tools:layout="@layout/fragment_advanced_setting" />
+
+    <action
+        android:id="@+id/action_global_to_alarmSettingFragment"
+        app:destination="@id/mR702AlarmParamSettingFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
 
     <action
         android:id="@+id/action_global_to_mR702EquipmentOperationFragment"

@@ -1,6 +1,7 @@
 package com.shmedo.core.commonlib.extensions
 
 import java.nio.charset.Charset
+import java.util.Locale
 
 /**
  * 创建者：gonghe
@@ -39,6 +40,20 @@ fun String.hexStringToByteArray(): ByteArray {
         data[i / 2] = ((this[i].digitToInt(16) shl 4) + this[i + 1].digitToInt(16)).toByte()
     }
     return data
+}
+
+/**
+ * 将十进制数字字符串转换为十六进制数字字符串
+ */
+fun String.decimalStringToHexString(): String {
+    return this.toIntOrNull()?.toString(16)?.uppercase(Locale.ROOT) ?: ""
+}
+
+/**
+ * 将十六进制数字字符串转换为十进制数字字符串
+ */
+fun String.hexStringToDecimalString(): String {
+    return this.toInt(16).toString()
 }
 
 

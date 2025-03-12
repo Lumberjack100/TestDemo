@@ -65,11 +65,13 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.hac.HacWarningValueParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.lr200.LR200ZeroValueParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.m20.M20BaseInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.m50.M50SerialPortParamParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRAlarmModuleParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDIPortParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDOPortParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDataCenterParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDataCenterStatusParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDeviceInfoParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRPulsePortParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS232Port1ParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS232Port2ParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRRS485Port1CollectionParamParser
@@ -178,9 +180,11 @@ object IOTParserRegistry {
         MRRS232Port1ParamParser(),
         MRRS232Port2ParamParser(),
         MRRainGaugeParamParser(),
+        MRPulsePortParamParser(),
         MRDOPortParamParser(),
         MRDIPortParamParser(),
         MRReservoirCapacityParser(),
+        MRAlarmModuleParamParser(),
         TerminalIdInfoParser(),
         LoraCommunicateInfoParser(),
         RadioCommunicateInfoParser(),

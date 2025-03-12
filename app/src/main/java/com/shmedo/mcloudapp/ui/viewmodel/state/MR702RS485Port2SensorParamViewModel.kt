@@ -14,7 +14,7 @@ class MR702RS485Port2SensorParamViewModel : ViewModel() {
     val modelName = NonNullObservableField("")
     val modelToken = NonNullObservableField("")
     val channelNumber = NonNullObservableField("")
-    val hydrologicalIdentification = NonNullObservableField("")//水文识别
+    val hydrologicalIdentification = NonNullObservableField("")//水文标识
 
     val filterCoefficient = NonNullObservableField("")//滤波系数
     val triggerValue = NonNullObservableField("")//触发值

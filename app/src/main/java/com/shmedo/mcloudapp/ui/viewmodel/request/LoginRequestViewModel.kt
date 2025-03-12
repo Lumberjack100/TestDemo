@@ -385,45 +385,26 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
     fun loadExternalConfig() {
         viewModelScope.launch(Dispatchers.Default) {
             try {
-                val originalConfigJson = ResourceUtils.readAssets2String("app_config.json")
-                val originalConfigInfo =
-                    MoshiUtil.fromJson<AppConfigInfo>(originalConfigJson) ?: AppConfigInfo()
+                val sourceConfigJson = ResourceUtils.readAssets2String("app_config.json")
+                val sourceConfigInfo =
+                    MoshiUtil.fromJson<AppConfigInfo>(sourceConfigJson) ?: AppConfigInfo()
                 if (MmkvCacheUtil.getAppConfigInfo() == null) {
-                    MmkvCacheUtil.setAppConfigInfo(originalConfigJson)
+                    MmkvCacheUtil.setAppConfigInfo(sourceConfigJson)
                 } else {
-                    val cacheAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
-                    val originalDate = TimeUtils.string2Date(originalConfigInfo.lastTime)
-                    val cacheDate = TimeUtils.string2Date(cacheAppConfigInfo.lastTime)
+                    val cacheConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
+                    val sourceConfigDate = TimeUtils.string2Date(sourceConfigInfo.lastTime)
+                    val cacheConfigDate = TimeUtils.string2Date(cacheConfigInfo.lastTime)
                     //资源配置文件较新，则更新本地缓存配置
-                    if (cacheDate.before(originalDate)) {
-                        MmkvCacheUtil.setAppConfigInfo(originalConfigJson)
+                    if (cacheConfigDate.before(sourceConfigDate)) {
+                        Timber.d("loadExternalConfig: 资源配置文件较新，则更新本地缓存配置")
+                        MmkvCacheUtil.setAppConfigInfo(sourceConfigJson)
                     }
                 }
 
-                //与远程配置文件比较
-                val amsToken: String = appConfigLogin() ?: return@launch
-                MmkvCacheUtil.setAmsToken(amsToken)
 
-                val remoteAppConfigInfo: AppConfigInfo = queryConfigInfoItem() ?: return@launch
-                val cacheAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
+                // 处理远程配置文件与本地缓存的比较和更新
+                processRemoteConfigUpdate()
 
-                val remoteDate = TimeUtils.string2Date(remoteAppConfigInfo.lastTime)
-                val localDate = TimeUtils.string2Date(cacheAppConfigInfo.lastTime)
-                //本地配置文件较新，则更新远程配置
-                if (remoteAppConfigInfo.configPara.isEmpty()
-                    || remoteAppConfigInfo.configPara == "{}"
-                    || remoteDate.before(localDate)
-                ) {
-                    //更新远程配置
-                    updateConfigInfoItem(
-                        remoteAppConfigInfo.id,
-                        cacheAppConfigInfo.configPara.replace("\\", "")
-                    )
-                    return@launch
-                }
-
-                //远程配置文件较新，则更新本地配置
-                MmkvCacheUtil.setAppConfigInfo(remoteAppConfigInfo)
             } catch (e: Exception) {
                 Timber.e(e)
                 val msg =
@@ -435,6 +416,41 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
                 )
             }
         }
+    }
+
+    /**
+     * 处理远程配置文件与本地缓存的比较和更新
+     */
+    private suspend fun processRemoteConfigUpdate() {
+        //与远程配置文件比较
+        val amsToken: String = appConfigLogin() ?: return
+        MmkvCacheUtil.setAmsToken(amsToken)
+
+        //远程配置信息
+        val remoteAppConfigInfo: AppConfigInfo = queryConfigInfoItem() ?: return
+        val cacheAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
+
+        val remoteDate = TimeUtils.string2Date(remoteAppConfigInfo.lastTime)
+        val localDate = TimeUtils.string2Date(cacheAppConfigInfo.lastTime)
+
+        // 本地缓存配置较新，则更新远程配置
+        if (remoteAppConfigInfo.configPara.isEmpty()
+            || remoteAppConfigInfo.configPara == "{}"
+            || remoteDate.before(localDate)
+        ) {
+            Timber.d("processRemoteConfigUpdate: 本地缓存配置较新，则更新远程配置")
+
+            // 更新远程配置
+            updateConfigInfoItem(
+                remoteAppConfigInfo.id,
+                cacheAppConfigInfo.configPara.replace("\\", "")
+            )
+            return
+        }
+
+        Timber.d("processRemoteConfigUpdate: 远程配置文件较新，则更新本地缓存配置")
+        // 远程配置文件较新，则更新本地配置
+        MmkvCacheUtil.setAppConfigInfo(remoteAppConfigInfo)
     }
 
     private suspend fun appConfigLogin(): String? {

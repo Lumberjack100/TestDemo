@@ -52,7 +52,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-
+@Deprecated("This class is deprecated", ReplaceWith("MR702RS485Port1SingleSensorAddParamFragment"))
 class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentMr702Rs485Port1SensorParamBinding
@@ -133,9 +133,9 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
         arguments?.let {
             sensorItem = it.getParcelable(SENSOR_MODEL_ITEM)!!
         }
-        binding.llToolbar.toolbar.title = "RS485-1-${sensorItem.sensorName}"
+        binding.llToolbar.toolbar.title = sensorItem.sensorName
 
-        portHomeViewModel.modelTokenToSensorModelMap[sensorItem.modelToken]?.let {
+        portHomeViewModel.sensorIdToSensorModelMap[sensorItem.modelToken]?.let {
             mStates.curSensorModel = it
         }
         if (mStates.curSensorModel.modelFieldList.isNotEmpty()) {
@@ -158,7 +158,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
         mStates.checkBit.set(checkBitList[0])//默认校验位 无
         mStates.stopBit.set(stopBitList[0])//默认停止位 1
 
-        mStates.hydrologicalIdentification.set("")//水文识别
+        mStates.hydrologicalIdentification.set("")//水文标识
         mStates.collectionInstructions.set("")//采集指令
         mStates.ratio.set("1")//默认倍率 1
         mStates.dataFormat.set(dataFormatList[0])

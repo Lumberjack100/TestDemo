@@ -14,6 +14,7 @@ data class MRSensorItem(
     val chl: String = "",//通道号
     val addr: String = "",//地址
     val addrDesc: String = "",//地址 or 通道号说明
+    val sensorId: String = "",
     val sensorType: String = "",//传感器类型
     val sensorName: String = "",//传感器名称
     val modelToken: String = "",//物模型

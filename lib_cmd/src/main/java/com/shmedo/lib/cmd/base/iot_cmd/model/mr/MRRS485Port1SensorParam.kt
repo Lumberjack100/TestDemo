@@ -1,5 +1,6 @@
 package com.shmedo.lib.cmd.base.iot_cmd.model.mr
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
@@ -11,7 +12,12 @@ import com.squareup.moshi.JsonClass
 data class MRRS485Port1SensorParam(
     var c_model: String = "",//创建新指令    --创建新指令发1。修改指令发0
     var num: String = "",//物模型变量	--创建新指令时可以传任意值。修改指令根据传指定变量
+    @Json(name = "sensorlist")
+    var sensorId: String = "",//传感器编号
     var model: String = "",//物模型
+    var sgbk: String = "",//传感器名称GBK编码
+    var mgbk: String = "",//采集项名称GBK编码
+    var egbk: String = "",//采集项单位GBK编码
     var baud: String = "",//波特率  bps 数字
     var databit: String = "",//数据位   数字(5 6 7 8)
     var parity: String = "",//校验位 0:NONE  1:ODD  2:EVEN  3:MARK 4:SPACE
@@ -20,17 +26,20 @@ data class MRRS485Port1SensorParam(
     var cmd: String = "",//传感器采集指令
     var ratio: String = "",//倍率
     var dataformat: String = "",//数据类型
-    var calctype: String = "",//解算方式 --目前只支持 0:加权平均   /振弦传感器是否进行计算   0:不计算  1:计算
+    var baseflag: String =  "",//站点类型   0：参考点 1：测点
+    var calctype: String = "",//计算方式   0：不计算 1：线性方程计算 2：传感器联合计算
     var gateval: String = "",//触发值
     var uplimit: String = "",//上限值
     var lowlimit: String = "",//下限值
     var corrvalue: String = "",//修正值
     var ngateval: String = "",//阈值次数
     var show: String = "",//展示指令信息（终端），1：展示，0：不展示
-    var kvalue: String = "",//灵敏度K
-    var bvalue: String = "",//温度修正系数 b
-    var r0value: String = "",//初始频率 F0
-    var t0value: String = "",//初始温度 T0
-    var l0value: String = "",//初始水位
-    var lvalue: String = ""//堰角高度
+
+    var kvalue: String = "",//灵敏度K         计算方式为"线性方程计算"时，启用此参数
+    var bvalue: String = "",//温度修正系数 b   计算方式为"线性方程计算"时，启用此参数
+    var r0value: String = "",//初始频率 F0    计算方式为"线性方程计算"时，启用此参数
+    var t0value: String = "",//初始温度 T0    计算方式为"线性方程计算"时，启用此参数
+    var l0value: String = "",//初始水位       计算方式为"线性方程计算"时，启用此参数
+    var lvalue: String = "",//初始测量值      计算方式为"线性方程计算"时，启用此参数
+    var initvalue: String = ""//初始测量值  计算方式为"传感器联合计算"时，启用此参数
 )

@@ -14,11 +14,13 @@ data class MRRS485Port1SensorParamEntity(
     val model: String = "",//物模型
     val c_model: String = "",//创建新指令    --创建新指令发1。修改指令发0
     val num: String = "",//物模型变量	--创建新指令时可以传任意值。修改指令根据传指定变量
+    var sensorlist: String = "-1",//传感器编号
     val swtoken: String = IOTConstants.NULL_KEY,//水文标识
     val cmd: String = IOTConstants.NULL_KEY,//传感器采集指令
     val ratio: String = IOTConstants.NULL_KEY,//倍率
     val dataformat: String = IOTConstants.NULL_KEY,//数据类型
-    val calctype: String = IOTConstants.NULL_KEY,//解算方式   --目前只支持 0:加权平均
+    val baseflag: String = IOTConstants.NULL_KEY,//站点类型   无  0：参考点 1：测点
+    val calctype: String = IOTConstants.NULL_KEY,//计算方式   0：不计算 1：线性方程计算 2：传感器联合计算
     val gateval: String = IOTConstants.NULL_KEY,//触发值
     val uplimit: String = IOTConstants.NULL_KEY,//上限值
     val lowlimit: String = IOTConstants.NULL_KEY,//下限值
@@ -32,12 +34,13 @@ data class MRRS485Port1SensorParamEntity(
     val egbk: String = IOTConstants.NULL_KEY,//采集项单位GBK编码
     val sgbk: String = IOTConstants.NULL_KEY,//传感器名称GBK编码
 
-    val kvalue: String = IOTConstants.NULL_KEY,//灵敏度K
-    val bvalue: String = IOTConstants.NULL_KEY,//温度修正系数 b
-    val r0value: String = IOTConstants.NULL_KEY,//初始频率 F0
-    val t0value: String = IOTConstants.NULL_KEY,//初始温度 T0
-    val l0value: String = IOTConstants.NULL_KEY,//初始水位
-    val lvalue: String = IOTConstants.NULL_KEY//堰角高度
+    val kvalue: String = IOTConstants.NULL_KEY,//灵敏度K         计算方式为"线性方程计算"时，启用此参数
+    val bvalue: String = IOTConstants.NULL_KEY,//温度修正系数 b   计算方式为"线性方程计算"时，启用此参数
+    val r0value: String = IOTConstants.NULL_KEY,//初始频率 F0    计算方式为"线性方程计算"时，启用此参数
+    val t0value: String = IOTConstants.NULL_KEY,//初始温度 T0    计算方式为"线性方程计算"时，启用此参数
+    val l0value: String = IOTConstants.NULL_KEY,//初始水位       计算方式为"线性方程计算"时，启用此参数
+    val lvalue: String = IOTConstants.NULL_KEY,//初始测量值      计算方式为"线性方程计算"时，启用此参数
+    val initvalue: String = IOTConstants.NULL_KEY//初始测量值  计算方式为"传感器联合计算"时，启用此参数
 ) {
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)

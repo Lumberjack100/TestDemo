@@ -21,7 +21,7 @@ class MR702RS485Port1SensorParamViewModel : ViewModel() {
 
     val modelFieldName = NonNullObservableField("")//采集项名称
     val modelFieldUnit = NonNullObservableField("")//采集项单位
-    val hydrologicalIdentification = NonNullObservableField("")//水文识别
+    val hydrologicalIdentification = NonNullObservableField("")//水文标识
     val collectionInstructions= NonNullObservableField("")//采集指令
     val ratio = NonNullObservableField("9600")// 倍率
     val dataFormat = NonNullObservableField("")//数据类型

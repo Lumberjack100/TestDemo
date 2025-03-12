@@ -30,6 +30,7 @@ import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.AdmeExecutiveAgencyViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -388,8 +389,8 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         }
         val entity = AdmeExecutiveAgencyInfoEntity(
             meastype =  IOTConstants.NULL_KEY,
-            datatype = if (mStates.dataSettlementMethod.get() == settlementMethodList[0]) "0" else "1",
-            datareply = if (mStates.dataResponse.get() == dataResponseTypeList[0]) "0" else "1",
+            datatype = settlementMethodList.indexOf(mStates.dataSettlementMethod.get()).toString(),
+            datareply = dataResponseTypeList.indexOf(mStates.dataResponse.get()).toString(),
             roundwaitetime =  IOTConstants.NULL_KEY,
             roundmeasinval = IOTConstants.NULL_KEY,
             invalday = IOTConstants.NULL_KEY,
@@ -510,8 +511,16 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         mStates.wrapInfo.notifyChange()
 
         try {
-            mStates.dataSettlementMethod.set(if (info.datatype == "0") settlementMethodList[0] else settlementMethodList[1])
-            mStates.dataResponse.set(if (info.datareply == "0") dataResponseTypeList[0] else dataResponseTypeList[1])
+            info.datatype.toIntOrNull()?.let {
+                if (it in settlementMethodList.indices) {
+                    mStates.dataSettlementMethod.set(settlementMethodList[it])
+                }
+            }
+            info.datareply.toIntOrNull()?.let {
+                if (it in dataResponseTypeList.indices) {
+                    mStates.dataResponse.set(dataResponseTypeList[it])
+                }
+            }
             mStates.dataReadingInterval.set(info.datainval)
             mStates.inclinometerCompensationTime.set(info.clin_compen)
             mStates.measurementCompensationTime.set(info.compensatetime)
@@ -521,31 +530,43 @@ class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
             mStates.pullUpSpeed.set(info.upspeed)
             mStates.pullUpZeroSpeed.set(info.pzspeed)
 
-            decimalFormat.applyPattern("#.##")
-            mStates.measuringDistance.set(info.measpacing.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
+            mStates.measuringDistance.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.measpacing,
+                    "",
+                    2
+                )
+            )
             mStates.measurementIntervalTime.set(info.meaintertime)
 
-            decimalFormat.applyPattern("#.###")
-            mStates.intervalCompensation.set(info.interval_compensation.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-
-            decimalFormat.applyPattern("#.###")
-            mStates.bottomSafetyDistance.set(info.bottom_safe_distance.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-
-            decimalFormat.applyPattern("#.#")
-            mStates.intervalFitting.set(info.interval_fitting.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
-
-            decimalFormat.applyPattern("#.###")
-            mStates.pointOffset.set(info.point_offset.toDoubleOrNull()?.let {
-                decimalFormat.format(it)
-            } ?: "")
+            mStates.intervalCompensation.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.interval_compensation,
+                    "",
+                    3
+                )
+            )
+            mStates.bottomSafetyDistance.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.bottom_safe_distance,
+                    "",
+                    3
+                )
+            )
+            mStates.intervalFitting.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.interval_fitting,
+                    "",
+                    1
+                )
+            )
+            mStates.pointOffset.set(
+                DeviceStatusInfoProcessor.formatDoubleValue(
+                    info.point_offset,
+                    "",
+                    3
+                )
+            )
         } catch (e: Exception) {
             Timber.e(e)
         }

@@ -89,7 +89,7 @@
                             android:hint="数值范围[1,10000]"
                             android:text="@={stateVM.downPulsesPerUnitTime}"
                             android:inputType="number"
-                            app:lengthFilter="@{5}" />
+                            android:maxLength="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -127,7 +127,7 @@
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
                             android:text="@={stateVM.downSlowStartIntervalEndValue}"
                             android:inputType="number"
-                            app:lengthFilter="@{6}" />
+                            android:maxLength="6" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -146,7 +146,7 @@
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
                             android:text="@={stateVM.downSlowStopIntervalStartValue}"
                             android:inputType="number"
-                            app:lengthFilter="@{6}" />
+                            android:maxLength="6" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -331,7 +331,7 @@
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.pullUpEnable}"
                             android:text="@={stateVM.pullUpSlowStartIntervalEndValue}"
                             android:inputType="number"
-                            app:lengthFilter="@{5}" />
+                            android:maxLength="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -350,7 +350,7 @@
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.pullUpEnable}"
                             android:text="@={stateVM.pullUpSlowStopIntervalStartValue}"
                             android:inputType="number"
-                            app:lengthFilter="@{5}" />
+                            android:maxLength="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
