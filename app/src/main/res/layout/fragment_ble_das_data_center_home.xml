@@ -101,7 +101,7 @@
                             android:hint="请输入"
                             android:inputType="number"
                             android:text="@={stateVM.reportingInterval}"
-                            app:lengthFilter="@{4}" />
+                            android:maxLength="4" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -120,7 +120,7 @@
                             android:hint="请输入"
                             android:inputType="number"
                             android:text="@={stateVM.bdCardNumber}"
-                            app:lengthFilter="@{6}" />
+                            android:maxLength="6" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

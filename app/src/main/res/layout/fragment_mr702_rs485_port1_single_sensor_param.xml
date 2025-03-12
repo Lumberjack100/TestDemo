@@ -190,9 +190,10 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            android:hint="请输入"
+                            android:hint="请输入16进制数字"
                             android:text="@={stateVM.hydrologicalIdentification}"
-                            app:lengthFilter="@{6}" />
+                            app:inputTypeFilter='@{"0123456789ABCDEF"}'
+                            app:lengthFilter="@{4}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -202,7 +203,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            android:text="是否计算" />
+                            android:text="计算方式" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
@@ -213,18 +214,18 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
-                        onClickWithDebouncing="@{()->click.onCalculateFormulaChooseClick()}"
+                        onClickWithDebouncing="@{()->click.onSiteTypeChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            android:text="计算公式" />
+                            android:text="站点类型" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             android:drawableEnd="@drawable/ic_arrow_down"
-                            android:text="@{stateVM.calculateFormula}"
-                            tools:text="直线式" />
+                            android:text="@{stateVM.siteType}"
+                            tools:text="测点" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat

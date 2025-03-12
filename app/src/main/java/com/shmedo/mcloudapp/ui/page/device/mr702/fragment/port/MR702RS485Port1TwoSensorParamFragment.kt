@@ -11,7 +11,9 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.extensions.decimalStringToHexString
 import com.shmedo.core.commonlib.extensions.gbkHexToString
+import com.shmedo.core.commonlib.extensions.hexStringToDecimalString
 import com.shmedo.core.commonlib.extensions.stringToGBK16UByteString
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRRS485Port1SensorParamEntity
@@ -58,8 +60,8 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
     private val checkBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_check_bit) }
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
     private val dataFormatList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_data_format) }
-    private val calculateList = mutableListOf("不计算", "计算")
-    private val calculateFormulaList = mutableListOf("直线式")
+    private val siteTypeList = mutableListOf("参考点", "测点")
+    private val calculateList = mutableListOf("不计算", "线性方程计算", "传感器联合计算")
 
 
     override fun initViewModel() {
@@ -139,8 +141,8 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
         mStates.checkBit.set(checkBitList[0])//默认校验位 无
         mStates.stopBit.set(stopBitList[0])//默认停止位 1
 
-        mStates.calculate.set(calculateList[0])//是否计算
-        mStates.calculateFormula.set(calculateFormulaList[0])//计算公式
+        mStates.siteType.set(siteTypeList[1])//站点类型
+        mStates.calculate.set(calculateList[0])//计算方式
         mStates.sensitivityK.set("1")
         mStates.temperatureCorrectionCoefficientB.set("0")
         mStates.initialFrequencyF0.set("0")
@@ -168,7 +170,7 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
         //水文识别
         mStates.hydrologicalIdentification.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[0].hydrologicalIdentification
+                mStates.curSensorModel.modelFieldList[0].hydrologicalIdentification.decimalStringToHexString()
             else ""
         )
         //采集指令
@@ -237,7 +239,7 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
         //水文标识
         mStates.hydrologicalIdentification2.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[1].hydrologicalIdentification
+                mStates.curSensorModel.modelFieldList[1].hydrologicalIdentification.decimalStringToHexString()
             else ""
         )
         //采集指令
@@ -358,7 +360,27 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
         }
 
         /**
-         * 是否计算
+         * 站点类型
+         */
+        fun onSiteTypeChooseClick() {
+            val selectedIndex = siteTypeList.indexOf(mStates.siteType.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "请选择站点类型", siteTypeList.toTypedArray(),
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.siteType.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        /**
+         * 计算方式
          */
         fun onIsCalculateChooseClick() {
             val selectedIndex = calculateList.indexOf(mStates.calculate.get())
@@ -368,30 +390,10 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", calculateList.toTypedArray(),
+                    "请选择计算方式", calculateList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.calculate.set(text)
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
-        }
-
-        /**
-         * 计算公式
-         */
-        fun onCalculateFormulaChooseClick() {
-            val selectedIndex = calculateFormulaList.indexOf(mStates.calculateFormula.get())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "请选择计算公式", calculateFormulaList.toTypedArray(),
-                    null, selectedIndex,
-                    { position, text ->
-                        mStates.calculateFormula.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -466,7 +468,8 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
-            calctype = (calculateList.indexOf(mStates.calculate.get())).toString(),
+            baseflag = siteTypeList.indexOf(mStates.siteType.get()).toString(),
+            calctype = calculateList.indexOf(mStates.calculate.get()).toString(),
             kvalue = mStates.sensitivityK.get(),
             bvalue = mStates.temperatureCorrectionCoefficientB.get(),
             r0value = mStates.initialFrequencyF0.get(),
@@ -477,7 +480,7 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
             mgbk = mStates.modelFieldName.get().stringToGBK16UByteString(),//采集项名称GBK编码
             egbk = mStates.modelFieldUnit.get().stringToGBK16UByteString(),//采集项单位GBK编码
-            swtoken = mStates.hydrologicalIdentification.get(),
+            swtoken = mStates.hydrologicalIdentification.get().hexStringToDecimalString(),
             cmd = mStates.collectionInstructions.get(),
             ratio = mStates.ratio.get(),
             dataformat = (dataFormatList.indexOf(mStates.dataFormat.get())).toString(),
@@ -502,7 +505,8 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
-            calctype = (calculateList.indexOf(mStates.calculate.get())).toString(),
+            baseflag = siteTypeList.indexOf(mStates.siteType.get()).toString(),
+            calctype = calculateList.indexOf(mStates.calculate.get()).toString(),
             kvalue = mStates.sensitivityK.get(),
             bvalue = mStates.temperatureCorrectionCoefficientB.get(),
             r0value = mStates.initialFrequencyF0.get(),
@@ -716,7 +720,16 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
                             mStates.stopBit.set(stopBitList[value])
                         }
                     }
-                    mStates.calculate.set(if (sensorParam.calctype == "1") calculateList[1] else calculateList[0])
+                    sensorParam.baseflag.toInt().let { value ->
+                        if (value in siteTypeList.indices) {
+                            mStates.siteType.set(siteTypeList[value])
+                        }
+                    }
+                    sensorParam.calctype.toInt().let { value ->
+                        if (value in calculateList.indices) {
+                            mStates.calculate.set(calculateList[value])
+                        }
+                    }
                     mStates.sensitivityK.set(sensorParam.kvalue)
                     mStates.temperatureCorrectionCoefficientB.set(sensorParam.bvalue)
                     mStates.initialFrequencyF0.set(sensorParam.r0value)
@@ -725,7 +738,7 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
                     mStates.initialMeasureValue.set(sensorParam.lvalue)
 
                     if (sensorParam.num == "0") {
-                        mStates.hydrologicalIdentification.set(sensorParam.swtoken)
+                        mStates.hydrologicalIdentification.set(sensorParam.swtoken.decimalStringToHexString())
                         mStates.collectionInstructions.set(sensorParam.cmd)
                         mStates.ratio.set(sensorParam.ratio)
                         sensorParam.dataformat.toInt().let { value ->
@@ -751,7 +764,7 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
                             mStates.modelFieldUnit2.set(sensorParam.egbk.gbkHexToString())
                         }
 
-                        mStates.hydrologicalIdentification2.set(sensorParam.swtoken)
+                        mStates.hydrologicalIdentification2.set(sensorParam.swtoken.decimalStringToHexString())
                         mStates.collectionInstructions2.set(sensorParam.cmd)
                         mStates.ratio2.set(sensorParam.ratio)
                         sensorParam.dataformat.toInt().let { value ->

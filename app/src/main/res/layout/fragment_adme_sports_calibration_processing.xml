@@ -126,7 +126,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.tryNumber}"
                             android:inputType="number"
-                            app:lengthFilter="@{5}" />
+                            android:maxLength="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -206,7 +206,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.kTryNumber}"
                             android:inputType="number"
-                            app:lengthFilter="@{5}" />
+                            android:maxLength="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

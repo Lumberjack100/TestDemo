@@ -188,7 +188,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.collectionInterval}"
                             android:inputType="number"
-                            app:lengthFilter="@{5}" />
+                            android:maxLength="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -206,7 +206,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.solvingInterval}"
                             android:inputType="number"
-                            app:lengthFilter="@{5}" />
+                            android:maxLength="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -224,7 +224,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.sleepTime}"
                             android:inputType="number"
-                            app:lengthFilter="@{5}" />
+                            android:maxLength="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

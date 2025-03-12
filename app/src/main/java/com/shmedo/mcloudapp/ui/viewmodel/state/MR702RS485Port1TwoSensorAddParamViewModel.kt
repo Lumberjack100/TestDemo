@@ -16,8 +16,8 @@ class MR702RS485Port1TwoSensorAddParamViewModel : ViewModel() {
     val dataBit = NonNullObservableField("8")
     val checkBit = NonNullObservableField("")
     val stopBit = NonNullObservableField("")
-    val calculate = NonNullObservableField("")//是否计算
-    val calculateFormula = NonNullObservableField("")//计算公式
+    val siteType = NonNullObservableField("")//站点类型
+    val calculate = NonNullObservableField("")//计算方式
     val sensitivityK = NonNullObservableField("")//灵敏度K
     val temperatureCorrectionCoefficientB = NonNullObservableField("")//温度修正系数 b
     val initialFrequencyF0 = NonNullObservableField("")//初始频率 F0

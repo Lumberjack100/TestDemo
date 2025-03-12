@@ -177,34 +177,34 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
+                    onClickWithDebouncing="@{()->click.onSiteTypeChooseClick()}"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Title_Style"
+                        android:text="站点类型" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Value_Style"
+                        android:drawableEnd="@drawable/ic_arrow_down"
+                        android:text="@{stateVM.siteType}"
+                        tools:text="测点" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_ClickableItem_Layout_Style"
                     onClickWithDebouncing="@{()->click.onIsCalculateChooseClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        android:text="是否计算" />
+                        android:text="计算方式" />
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.calculate}"
                         tools:text="是" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_Layout_Style"
-                    onClickWithDebouncing="@{()->click.onCalculateFormulaChooseClick()}"
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_Title_Style"
-                        android:text="计算公式" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_Value_Style"
-                        android:drawableEnd="@drawable/ic_arrow_down"
-                        android:text="@{stateVM.calculateFormula}"
-                        tools:text="直线式" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -365,10 +365,10 @@
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        android:hint="请输入"
-                        android:inputType="number"
-                        android:text="@={stateVM.hydrologicalIdentification}"
-                        app:lengthFilter="@{6}" />
+                        android:hint="请输入16进制数字"
+                        app:inputTypeFilter='@{"0123456789ABCDEF"}'
+                        app:lengthFilter="@{4}"
+                        android:text="@={stateVM.hydrologicalIdentification}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat

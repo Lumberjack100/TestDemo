@@ -2,7 +2,6 @@ package com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr
 
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
-import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 /**
@@ -20,7 +19,8 @@ data class MRRS485Port1SensorParamEntity(
     val cmd: String = IOTConstants.NULL_KEY,//传感器采集指令
     val ratio: String = IOTConstants.NULL_KEY,//倍率
     val dataformat: String = IOTConstants.NULL_KEY,//数据类型
-    val calctype: String = IOTConstants.NULL_KEY,//解算方式   0：不计算 1：计算
+    val baseflag: String = IOTConstants.NULL_KEY,//站点类型   0：参考点 1：测点
+    val calctype: String = IOTConstants.NULL_KEY,//计算方式   0：不计算 1：线性方程计算 2：传感器联合计算
     val gateval: String = IOTConstants.NULL_KEY,//触发值
     val uplimit: String = IOTConstants.NULL_KEY,//上限值
     val lowlimit: String = IOTConstants.NULL_KEY,//下限值

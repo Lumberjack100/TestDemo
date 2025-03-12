@@ -10,6 +10,8 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.extensions.decimalStringToHexString
+import com.shmedo.core.commonlib.extensions.hexStringToDecimalString
 import com.shmedo.core.commonlib.extensions.stringToGBK16UByteString
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
@@ -54,8 +56,8 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
     private val checkBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_check_bit) }
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
     private val dataFormatList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_data_format) }
-    private val calculateList = mutableListOf("不计算", "计算")
-    private val calculateFormulaList = mutableListOf("直线式")
+    private val siteTypeList = mutableListOf("参考点", "测点")
+    private val calculateList = mutableListOf("不计算", "线性方程计算", "传感器联合计算")
 
 
     private var modelFieldIndex: Int = 0
@@ -117,8 +119,8 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
         mStates.checkBit.set(checkBitList[0])//默认校验位 无
         mStates.stopBit.set(stopBitList[0])//默认停止位 1
 
-        mStates.calculate.set(calculateList[0])//是否计算
-        mStates.calculateFormula.set(calculateFormulaList[0])//计算公式
+        mStates.siteType.set(siteTypeList[1])//测点
+        mStates.calculate.set(calculateList[0])//不计算
         mStates.sensitivityK.set("1")
         mStates.temperatureCorrectionCoefficientB.set("0")
         mStates.initialFrequencyF0.set("0")
@@ -144,9 +146,10 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
         )
         //水文标识
         mStates.hydrologicalIdentification.set(
-            if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].hydrologicalIdentification
-            else ""
+            if (checkModelFieldList()) {
+                //结果转换为16进制
+                mStates.curSensorModel.modelFieldList[modelFieldIndex].hydrologicalIdentification.decimalStringToHexString()
+            } else ""
         )
         //采集指令
         mStates.collectionInstructions.set(
@@ -261,7 +264,27 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
         }
 
         /**
-         * 是否计算
+         * 站点类型
+         */
+        fun onSiteTypeChooseClick() {
+            val selectedIndex = siteTypeList.indexOf(mStates.siteType.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "请选择站点类型", siteTypeList.toTypedArray(),
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.siteType.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        /**
+         * 计算方式
          */
         fun onIsCalculateChooseClick() {
             val selectedIndex = calculateList.indexOf(mStates.calculate.get())
@@ -271,30 +294,10 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", calculateList.toTypedArray(),
+                    "请选择计算方式", calculateList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.calculate.set(text)
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
-        }
-
-        /**
-         * 计算公式
-         */
-        fun onCalculateFormulaChooseClick() {
-            val selectedIndex = calculateFormulaList.indexOf(mStates.calculateFormula.get())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "请选择计算公式", calculateFormulaList.toTypedArray(),
-                    null, selectedIndex,
-                    { position, text ->
-                        mStates.calculateFormula.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -359,6 +362,7 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
+            baseflag = siteTypeList.indexOf(mStates.siteType.get()).toString(),
             calctype = calculateList.indexOf(mStates.calculate.get()).toString(),
             kvalue = mStates.sensitivityK.get(),
             bvalue = mStates.temperatureCorrectionCoefficientB.get(),
@@ -367,7 +371,7 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
             l0value = mStates.initialWaterLevel.get(),
             lvalue = mStates.initialMeasureValue.get(),
 
-            swtoken = mStates.hydrologicalIdentification.get(),
+            swtoken = mStates.hydrologicalIdentification.get().hexStringToDecimalString(),
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
             mgbk = mStates.modelFieldName.get().stringToGBK16UByteString(),//采集项名称GBK编码
             egbk = mStates.modelFieldUnit.get().stringToGBK16UByteString(),//采集项单位GBK编码

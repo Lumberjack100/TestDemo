@@ -132,7 +132,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.waitingIntervalPerRound}"
                             android:inputType="number"
-                            app:lengthFilter="@{5}" />
+                            android:maxLength="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -191,7 +191,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.intervalDays}"
                             android:inputType="number"
-                            app:lengthFilter="@{6}" />
+                            android:maxLength="6" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -239,7 +239,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.dataReadingInterval}"
                             android:inputType="number"
-                            app:lengthFilter="@{5}" />
+                            android:maxLength="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -258,7 +258,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.inclinometerCompensationTime}"
                             android:inputType="number"
-                            app:lengthFilter="@{5}" />
+                            android:maxLength="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -277,7 +277,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.measurementCompensationTime}"
                             android:inputType="number"
-                            app:lengthFilter="@{5}" />
+                            android:maxLength="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -317,7 +317,7 @@
                             android:hint="数值范围[0-99]"
                             android:text="@={stateVM.motorDriveAddress}"
                             android:inputType="number"
-                            app:lengthFilter="@{5}" />
+                                android:maxLength="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -337,7 +337,7 @@
                             android:hint="数值范围[1-180]"
                             android:text="@={stateVM.decentralizationSpeed}"
                             android:inputType="number"
-                            app:lengthFilter="@{5}" />
+                            android:maxLength="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -357,7 +357,7 @@
                             android:hint="数值范围[30-86400]"
                             android:text="@={stateVM.decentralizationWaitingTime}"
                             android:inputType="number"
-                            app:lengthFilter="@{5}" />
+                            android:maxLength="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -377,7 +377,7 @@
                             android:hint="数值范围[1-180]"
                             android:text="@={stateVM.pullUpSpeed}"
                             android:inputType="number"
-                            app:lengthFilter="@{5}" />
+                            android:maxLength="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -397,7 +397,7 @@
                             android:hint="数值范围[1-10]"
                             android:text="@={stateVM.pullUpZeroSpeed}"
                             android:inputType="number"
-                            app:lengthFilter="@{2}" />
+                            android:maxLength="2" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -416,7 +416,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.measuringDistance}"
                             android:inputType="number"
-                            app:lengthFilter="@{5}" />
+                            android:maxLength="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -435,7 +435,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.measurementIntervalTime}"
                             android:inputType="number"
-                            app:lengthFilter="@{5}" />
+                            android:maxLength="5" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

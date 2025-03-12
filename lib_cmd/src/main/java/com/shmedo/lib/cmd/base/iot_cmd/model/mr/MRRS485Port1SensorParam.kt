@@ -26,7 +26,8 @@ data class MRRS485Port1SensorParam(
     var cmd: String = "",//传感器采集指令
     var ratio: String = "",//倍率
     var dataformat: String = "",//数据类型
-    var calctype: String = "",//解算方式 --目前只支持 0:加权平均   /振弦传感器是否进行计算   0:不计算  1:计算
+    val baseflag: String =  "",//站点类型   0：参考点 1：测点
+    var calctype: String = "",//计算方式   0：不计算 1：线性方程计算 2：传感器联合计算
     var gateval: String = "",//触发值
     var uplimit: String = "",//上限值
     var lowlimit: String = "",//下限值

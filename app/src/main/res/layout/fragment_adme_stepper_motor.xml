@@ -85,7 +85,7 @@
                             android:hint="数值范围[1,600]"
                             android:text="@={stateVM.movementSpeed}"
                             android:inputType="number"
-                            app:lengthFilter="@{10}" />
+                            android:maxLength="10" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -103,7 +103,7 @@
                             textViewEnabled="@{stateVM.isEditable }"
                             android:text="@={stateVM.motorTorque}"
                             android:inputType="number"
-                            app:lengthFilter="@{10}" />
+                            android:maxLength="10" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
