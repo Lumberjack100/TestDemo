@@ -176,22 +176,6 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
-                        onClickWithDebouncing="@{()->click.onIsCalculateChooseClick()}"
-                        android:background="@drawable/layer_common_click_item_with_divider">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            android:text="计算方式" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
-                            android:text="@{stateVM.calculate}"
-                            tools:text="是" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onSiteTypeChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
@@ -207,7 +191,24 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onIsCalculateChooseClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="计算方式" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:drawableEnd="@drawable/ic_arrow_down"
+                            android:text="@{stateVM.calculate}"
+                            tools:text="是" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
+                        visible='@{stateVM.calculate=="线性方程计算"}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
@@ -225,6 +226,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
+                        visible='@{stateVM.calculate=="线性方程计算"}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
@@ -242,6 +244,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
+                        visible='@{stateVM.calculate=="线性方程计算"}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
@@ -258,6 +261,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
+                        visible='@{stateVM.calculate=="线性方程计算"}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
@@ -274,6 +278,7 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
+                        visible='@{stateVM.calculate=="线性方程计算"}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
@@ -284,13 +289,14 @@
                             style="@style/Common_EditItem_EditText_Style"
                             android:hint="请输入"
                             android:inputType="numberDecimal|numberSigned"
-                            android:maxLength="5"
+                            android:maxLength="17"
                             android:text="@={stateVM.initialWaterLevel}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
+                        visible='@{stateVM.calculate=="线性方程计算"}'
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
@@ -301,8 +307,26 @@
                             style="@style/Common_EditItem_EditText_Style"
                             android:hint="请输入"
                             android:inputType="numberDecimal|numberSigned"
-                            android:maxLength="5"
+                            android:maxLength="17"
                             android:text="@={stateVM.initialMeasureValue}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        visible='@{stateVM.calculate=="传感器联合计算"}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="初始测量值（毫米）" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            android:hint="请输入"
+                            android:inputType="numberDecimal|numberSigned"
+                            android:maxLength="17"
+                            android:text="@={stateVM.initialValue}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

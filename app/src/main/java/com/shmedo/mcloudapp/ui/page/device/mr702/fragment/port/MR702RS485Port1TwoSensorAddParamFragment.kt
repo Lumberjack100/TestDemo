@@ -23,6 +23,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
@@ -39,7 +40,7 @@ import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port1TwoSensorAddParamViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port1TwoSensorParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
@@ -47,7 +48,7 @@ import org.koin.android.ext.android.inject
 class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port1TwoSensorAddParamBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: MR702RS485Port1TwoSensorAddParamViewModel
+    private lateinit var mStates: MR702RS485Port1TwoSensorParamViewModel
     private lateinit var portHomeViewModel: MR702PortHomeViewModel
     private val iotParseManager: IOTParserManager by inject()
 
@@ -56,7 +57,7 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
     private val checkBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_check_bit) }
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
     private val dataFormatList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_data_format) }
-    private val siteTypeList = mutableListOf("参考点", "测点")
+    private val siteTypeList = mutableListOf("无", "参考点", "测点")
     private val calculateList = mutableListOf("不计算", "线性方程计算", "传感器联合计算")
 
 
@@ -116,8 +117,8 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
         mStates.checkBit.set(checkBitList[0])//默认校验位 无
         mStates.stopBit.set(stopBitList[0])//默认停止位 1
 
-        mStates.siteType.set(siteTypeList[1])//站点类型
-        mStates.calculate.set(calculateList[0])//计算方式
+        mStates.siteType.set(siteTypeList[0])//站点类型 默认无
+        mStates.calculate.set(calculateList[0])//计算方式 默认不计算
         mStates.sensitivityK.set("1")
         mStates.temperatureCorrectionCoefficientB.set("0")
         mStates.initialFrequencyF0.set("0")
@@ -145,7 +146,7 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
         //水文标识
         mStates.hydrologicalIdentification.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[0].hydrologicalIdentification.decimalStringToHexString()
+                mStates.curSensorModel.modelFieldList[0].hydrologicalIdentification
             else ""
         )
         //采集指令
@@ -437,15 +438,22 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
-            baseflag = siteTypeList.indexOf(mStates.siteType.get()).toString(),
+            baseflag = if (siteTypeList.indexOf(mStates.siteType.get()) == 0) IOTConstants.NULL_KEY else siteTypeList.indexOf(
+                mStates.siteType.get()
+            ).toString(),
             calctype = calculateList.indexOf(mStates.calculate.get()).toString(),
-            kvalue = mStates.sensitivityK.get(),
-            bvalue = mStates.temperatureCorrectionCoefficientB.get(),
-            r0value = mStates.initialFrequencyF0.get(),
-            t0value = mStates.initialTemperatureT0.get(),
-            l0value = mStates.initialWaterLevel.get(),
-            lvalue = mStates.initialMeasureValue.get(),
-
+            kvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.sensitivityK.get() else
+                IOTConstants.NULL_KEY,
+            bvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.temperatureCorrectionCoefficientB.get() else
+                IOTConstants.NULL_KEY,
+            r0value = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialFrequencyF0.get() else
+                IOTConstants.NULL_KEY,
+            t0value = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialTemperatureT0.get() else
+                IOTConstants.NULL_KEY,
+            l0value = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialWaterLevel.get() else
+                IOTConstants.NULL_KEY,
+            lvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialMeasureValue.get() else
+                IOTConstants.NULL_KEY,
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
             mgbk = mStates.modelFieldName.get().stringToGBK16UByteString(),//采集项名称GBK编码
             egbk = mStates.modelFieldUnit.get().stringToGBK16UByteString(),//采集项单位GBK编码
@@ -474,14 +482,22 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
-            baseflag = siteTypeList.indexOf(mStates.siteType.get()).toString(),
+            baseflag = if (siteTypeList.indexOf(mStates.siteType.get()) == 0) IOTConstants.NULL_KEY else siteTypeList.indexOf(
+                mStates.siteType.get()
+            ).toString(),
             calctype = calculateList.indexOf(mStates.calculate.get()).toString(),
-            kvalue = mStates.sensitivityK.get(),
-            bvalue = mStates.temperatureCorrectionCoefficientB.get(),
-            r0value = mStates.initialFrequencyF0.get(),
-            t0value = mStates.initialTemperatureT0.get(),
-            l0value = mStates.initialWaterLevel.get(),
-            lvalue = mStates.initialMeasureValue.get(),
+            kvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.sensitivityK.get() else
+                IOTConstants.NULL_KEY,
+            bvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.temperatureCorrectionCoefficientB.get() else
+                IOTConstants.NULL_KEY,
+            r0value = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialFrequencyF0.get() else
+                IOTConstants.NULL_KEY,
+            t0value = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialTemperatureT0.get() else
+                IOTConstants.NULL_KEY,
+            l0value = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialWaterLevel.get() else
+                IOTConstants.NULL_KEY,
+            lvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialMeasureValue.get() else
+                IOTConstants.NULL_KEY,
 
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
             mgbk = mStates.modelFieldName2.get().stringToGBK16UByteString(),//采集项名称GBK编码

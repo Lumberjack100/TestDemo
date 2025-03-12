@@ -11,7 +11,7 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port1SingleSensorAddParamViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port1SingleSensorParamViewModel" />
 
         <variable
             name="click"
@@ -209,6 +209,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_Layout_Style"
+                    visible='@{stateVM.calculate=="线性方程计算"}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
@@ -226,6 +227,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_Layout_Style"
+                    visible='@{stateVM.calculate=="线性方程计算"}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
@@ -243,6 +245,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_Layout_Style"
+                    visible='@{stateVM.calculate=="线性方程计算"}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
@@ -259,6 +262,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_Layout_Style"
+                    visible='@{stateVM.calculate=="线性方程计算"}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
@@ -275,6 +279,7 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_Layout_Style"
+                    visible='@{stateVM.calculate=="线性方程计算"}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
@@ -285,13 +290,14 @@
                         style="@style/Common_EditItem_EditText_Style"
                         android:hint="请输入"
                         android:inputType="numberDecimal|numberSigned"
-                        android:maxLength="5"
+                        android:maxLength="17"
                         android:text="@={stateVM.initialWaterLevel}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_Layout_Style"
+                    visible='@{stateVM.calculate=="线性方程计算"}'
                     android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
@@ -302,8 +308,26 @@
                         style="@style/Common_EditItem_EditText_Style"
                         android:hint="请输入"
                         android:inputType="numberDecimal|numberSigned"
-                        android:maxLength="5"
+                        android:maxLength="17"
                         android:text="@={stateVM.initialMeasureValue}" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_Layout_Style"
+                    visible='@{stateVM.calculate=="传感器联合计算"}'
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Title_Style"
+                        android:text="初始测量值（毫米）" />
+
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        android:hint="请输入"
+                        android:inputType="numberDecimal|numberSigned"
+                        android:maxLength="17"
+                        android:text="@={stateVM.initialValue}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -366,9 +390,9 @@
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         android:hint="请输入16进制数字"
+                        android:text="@={stateVM.hydrologicalIdentification}"
                         app:inputTypeFilter='@{"0123456789ABCDEF"}'
-                        app:lengthFilter="@{4}"
-                        android:text="@={stateVM.hydrologicalIdentification}" />
+                        app:lengthFilter="@{4}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat

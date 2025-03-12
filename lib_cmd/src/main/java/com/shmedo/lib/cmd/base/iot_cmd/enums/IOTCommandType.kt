@@ -858,6 +858,12 @@ enum class IOTCommandType(val value: String) {
     MD_MR_RS485_CLEAR_ALARM("md_clearalarm"),
 
     /**
+     * 雨量清零
+     */
+    MD_MR_RS485_CLEAR_RAIN_GAUGE("md_mrclrraingauge"),
+
+
+    /**
      * 库容计算 参数获取
      */
     MD_MR_GET_RESERVOIR_CAPACITY("md_getkurongparam"),

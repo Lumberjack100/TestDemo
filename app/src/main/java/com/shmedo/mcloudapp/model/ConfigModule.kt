@@ -275,7 +275,7 @@ class NetworkCommunicationModule(
     navId = navId,
 )
 
-class ManualSettingModule(
+class MR702ManualSettingModule(
     name: String = "人工置数",
     desc: String = "人工录入历史采集数据",
     resID: Int = R.drawable.ic_manual_setting,
@@ -299,7 +299,7 @@ class DeviceLogUploadModule(
     navId = navId,
 )
 
-class ParameterExportModule(
+class MR702ParameterExportModule(
     name: String = "参数导出",
     desc: String = "当前配置参数，导出并上传",
     resID: Int = R.drawable.ic_parameter_export,
@@ -311,7 +311,7 @@ class ParameterExportModule(
     navId = navId,
 )
 
-class ParameterImportModule(
+class MR702ParameterImportModule(
     name: String = "参数导入",
     desc: String = "从平台获取参数配置导入",
     resID: Int = R.drawable.ic_parameter_import,
@@ -323,7 +323,7 @@ class ParameterImportModule(
     navId = navId,
 )
 
-class ManualPhotoTakingModule(
+class MR702ManualPhotoTakingModule(
     name: String = "手动拍照",
     desc: String = "确认摄像机已接入",
     resID: Int = R.drawable.ic_manual_photo_taking,
@@ -335,9 +335,21 @@ class ManualPhotoTakingModule(
     navId = navId,
 )
 
-class Remote485SilenceModule(
+class MR702Remote485SilenceModule(
     name: String = "远程消警",
     desc: String = "只对485报警器有效",
+    resID: Int = R.drawable.ic_sample,
+    navId: Int = 0,
+) : DeviceFunctionModule(
+    name = name,
+    desc = desc,
+    iconResId = resID,
+    navId = navId,
+)
+
+class MR702RainSetZeroModule(
+    name: String = "雨量置零",
+    desc: String = "清除当前所有雨量统计",
     resID: Int = R.drawable.ic_sample,
     navId: Int = 0,
 ) : DeviceFunctionModule(
@@ -360,18 +372,3 @@ class OneClickSilenceModule(
     navId = navId,
 )
 
-//<editor-fold desc="MR702 功能模块">
-
-class DataStorageModule(
-    name: String = "数据存储",
-    desc: String = "数据存储设置",
-    resID: Int = R.drawable.ic_manual_photo_taking,
-    navId: Int = 0,
-) : DeviceFunctionModule(
-    name = name,
-    desc = desc,
-    iconResId = resID,
-    navId = navId,
-)
-
-// </editor-fold>

@@ -25,6 +25,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRRS485Port1SensorParamWrapper
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -60,7 +61,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
     private val checkBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_check_bit) }
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
     private val dataFormatList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_data_format) }
-    private val siteTypeList = mutableListOf("参考点", "测点")
+    private val siteTypeList = mutableListOf("无", "参考点", "测点")
     private val calculateList = mutableListOf("不计算", "线性方程计算", "传感器联合计算")
 
 
@@ -93,12 +94,6 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
         toolbarViewModel.toolbarTvActionText.set("取消")
         toolbarViewModel.toolbarIvActionVisible.set(true)
         initRefresh()
-    }
-
-    private fun setEditable(editable: Boolean) {
-        toolbarViewModel.toolbarIvActionVisible.set(!editable)
-        toolbarViewModel.toolbarTvActionVisible.set(editable)
-        mStates.isEditable.set(editable)
     }
 
     private fun initRefresh() {
@@ -141,11 +136,11 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
         //水文标识
         mStates.hydrologicalIdentification.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[0].hydrologicalIdentification.decimalStringToHexString()
+                mStates.curSensorModel.modelFieldList[0].hydrologicalIdentification
             else ""
         )
-        mStates.siteType.set(siteTypeList[1])//站点类型
-        mStates.calculate.set(calculateList[0])//计算方式
+        mStates.siteType.set(siteTypeList[0])//站点类型 默认无
+        mStates.calculate.set(calculateList[0])//计算方式 默认不计算
         mStates.sensitivityK.set("0")
         mStates.temperatureCorrectionCoefficientB.set("0")
         mStates.initialFrequencyF0.set("0")
@@ -220,13 +215,6 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
     }
 
     inner class ClickProxy : BaseClickProxy() {
-        override fun onToolbarIvClick() {
-            setEditable(true)
-        }
-
-        override fun onToolbarTvClick() {
-            setEditable(false)
-        }
 
         /**
          * 选择数据位
@@ -380,7 +368,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
         if (!checkModelField())
             return
 
-        var entity = MRRS485Port1SensorParamEntity(
+        val entity = MRRS485Port1SensorParamEntity(
             model = mStates.modelToken.get() + "_" + mStates.address.get(),
             c_model = "0",
             num = "0",
@@ -390,14 +378,24 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
             swtoken = mStates.hydrologicalIdentification.get().hexStringToDecimalString(),
-            baseflag = siteTypeList.indexOf(mStates.siteType.get()).toString(),
+            baseflag = if (siteTypeList.indexOf(mStates.siteType.get()) == 0) IOTConstants.NULL_KEY else siteTypeList.indexOf(
+                mStates.siteType.get()
+            ).toString(),
             calctype = calculateList.indexOf(mStates.calculate.get()).toString(),
-            kvalue = mStates.sensitivityK.get(),
-            bvalue = mStates.temperatureCorrectionCoefficientB.get(),
-            r0value = mStates.initialFrequencyF0.get(),
-            t0value = mStates.initialTemperatureT0.get(),
-            l0value = mStates.initialWaterLevel.get(),
-            lvalue = mStates.initialMeasureValue.get(),
+            kvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.sensitivityK.get() else
+                IOTConstants.NULL_KEY,
+            bvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.temperatureCorrectionCoefficientB.get() else
+                IOTConstants.NULL_KEY,
+            r0value = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialFrequencyF0.get() else
+                IOTConstants.NULL_KEY,
+            t0value = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialTemperatureT0.get() else
+                IOTConstants.NULL_KEY,
+            l0value = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialWaterLevel.get() else
+                IOTConstants.NULL_KEY,
+            lvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialMeasureValue.get() else
+                IOTConstants.NULL_KEY,
+            initvalue = if (calculateList.indexOf(mStates.calculate.get()) == 2) mStates.initialValue.get() else
+                IOTConstants.NULL_KEY,
 
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
             mgbk = mStates.modelFieldName.get().stringToGBK16UByteString(),//采集项名称GBK编码
@@ -540,37 +538,38 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
                     mStates.modelToken.set(strs[0])
                     mStates.baudRate.set(sensorParam.baud)
                     mStates.dataBit.set(sensorParam.databit)
-                    sensorParam.parity.toInt().let { value ->
+                    sensorParam.parity.toIntOrNull()?.let { value ->
                         if (value in checkBitList.indices) {
                             mStates.checkBit.set(checkBitList[value])
                         }
                     }
-                    sensorParam.stopbit.toInt().let { value ->
+                    sensorParam.stopbit.toIntOrNull()?.let { value ->
                         if (value in stopBitList.indices) {
                             mStates.stopBit.set(stopBitList[value])
                         }
                     }
-                    sensorParam.baseflag.toInt().let { value ->
+                    sensorParam.baseflag.toIntOrNull()?.let { value ->
                         if (value in siteTypeList.indices) {
                             mStates.siteType.set(siteTypeList[value])
                         }
                     }
-                    sensorParam.calctype.toInt().let { value ->
+                    sensorParam.calctype.toIntOrNull()?.let { value ->
                         if (value in calculateList.indices) {
                             mStates.calculate.set(calculateList[value])
                         }
                     }
-                    mStates.sensitivityK.set(sensorParam.kvalue)
-                    mStates.temperatureCorrectionCoefficientB.set(sensorParam.bvalue)
-                    mStates.initialFrequencyF0.set(sensorParam.r0value)
-                    mStates.initialTemperatureT0.set(sensorParam.t0value)
-                    mStates.initialWaterLevel.set(sensorParam.l0value)
-                    mStates.initialMeasureValue.set(sensorParam.lvalue)
+                    mStates.sensitivityK.set(sensorParam.kvalue.replace("-nan", "0").replace("nan", "0"))
+                    mStates.temperatureCorrectionCoefficientB.set(sensorParam.bvalue.replace("-nan", "0").replace("nan", "0"))
+                    mStates.initialFrequencyF0.set(sensorParam.r0value.replace("-nan", "0").replace("nan", "0"))
+                    mStates.initialTemperatureT0.set(sensorParam.t0value.replace("-nan", "0").replace("nan", "0"))
+                    mStates.initialWaterLevel.set(sensorParam.l0value.replace("-nan", "0").replace("nan", "0"))
+                    mStates.initialMeasureValue.set(sensorParam.lvalue.replace("-nan", "0").replace("nan", "0"))
+                    mStates.initialValue.set(sensorParam.initvalue.replace("-nan", "0").replace("nan", "0"))
 
                     mStates.hydrologicalIdentification.set(sensorParam.swtoken.decimalStringToHexString())
                     mStates.collectionInstructions.set(sensorParam.cmd)
                     mStates.ratio.set(sensorParam.ratio)
-                    sensorParam.dataformat.toInt().let { value ->
+                    sensorParam.dataformat.toIntOrNull()?.let { value ->
                         if (value in dataFormatList.indices) {
                             mStates.dataFormat.set(dataFormatList[value])
                         }

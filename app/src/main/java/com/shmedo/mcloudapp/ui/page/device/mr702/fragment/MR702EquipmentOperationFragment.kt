@@ -32,12 +32,13 @@ import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommonModule
 import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.DeviceLogUploadModule
-import com.shmedo.mcloudapp.model.ManualPhotoTakingModule
-import com.shmedo.mcloudapp.model.ManualSettingModule
+import com.shmedo.mcloudapp.model.MR702ManualPhotoTakingModule
+import com.shmedo.mcloudapp.model.MR702ManualSettingModule
+import com.shmedo.mcloudapp.model.MR702ParameterExportModule
+import com.shmedo.mcloudapp.model.MR702ParameterImportModule
+import com.shmedo.mcloudapp.model.MR702RainSetZeroModule
+import com.shmedo.mcloudapp.model.MR702Remote485SilenceModule
 import com.shmedo.mcloudapp.model.MonitoringElement
-import com.shmedo.mcloudapp.model.ParameterExportModule
-import com.shmedo.mcloudapp.model.ParameterImportModule
-import com.shmedo.mcloudapp.model.Remote485SilenceModule
 import com.shmedo.mcloudapp.model.TelemetryDataModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
@@ -157,7 +158,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 sendCommandFromCmdList(isStartTimeoutJob = true)
             }
 
-            is ManualSettingModule -> {//人工置数
+            is MR702ManualSettingModule -> {//人工置数
                 mStates.isManualSetting.set(false)
                 showManualSettingPopup()
             }
@@ -167,19 +168,19 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 showDeviceDataUploadPopup()
             }
 
-            is ParameterExportModule -> {//参数导出
+            is MR702ParameterExportModule -> {//参数导出
                 mStates.isParamExporting.set(false)
                 showParameterExportPopup()
             }
 
-            is ParameterImportModule -> {//参数导入
+            is MR702ParameterImportModule -> {//参数导入
                 mStates.isParamImporting.set(false)
                 mStates.sn.set(deviceInfo.deviceToken)
                 mStates.deviceId.set(deviceInfo.id.toString())
                 showParameterImportPopup()
             }
 
-            is ManualPhotoTakingModule -> {//手动拍照
+            is MR702ManualPhotoTakingModule -> {//手动拍照
                 commandItems.clear()
                 val command =
                     IOTCommandUtil.getCommand(IOTCommandType.MD_MR_TAKE_PHOTOS, "action=1&linkid=1")
@@ -190,7 +191,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 sendCommandFromCmdList(isStartTimeoutJob = true)
             }
 
-            is Remote485SilenceModule -> {//远程485静音
+            is MR702Remote485SilenceModule -> {//远程485静音
                 showMessage(
                     "是否执行远程消警？",
                     "温馨提示",
@@ -199,6 +200,25 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                         commandItems.clear()
                         val command =
                             IOTCommandUtil.getCommand(IOTCommandType.MD_MR_RS485_CLEAR_ALARM)
+                        commandItems.add(command)
+
+                        takePhotoLoadingDialogId =
+                            showLoadingWithUUID(StringUtils.getString(R.string.processing))
+                        sendCommandFromCmdList(isStartTimeoutJob = true)
+                    },
+                    "取消"
+                )
+            }
+
+            is MR702RainSetZeroModule -> {//雨量置零
+                showMessage(
+                    "是否执行雨量置零？",
+                    "温馨提示",
+                    "确定",
+                    {
+                        commandItems.clear()
+                        val command =
+                            IOTCommandUtil.getCommand(IOTCommandType.MD_MR_RS485_CLEAR_RAIN_GAUGE)
                         commandItems.add(command)
 
                         takePhotoLoadingDialogId =
@@ -433,7 +453,8 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_MR_TAKE_PHOTOS,
-            IOTCommandType.MD_MR_RS485_CLEAR_ALARM -> {
+            IOTCommandType.MD_MR_RS485_CLEAR_ALARM,
+            IOTCommandType.MD_MR_RS485_CLEAR_RAIN_GAUGE -> {
                 dismissLoadingDialog(takePhotoLoadingDialogId)
                 super.doCmdResponseResultError(
                     cmdStr = cmdStr,
@@ -462,7 +483,8 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_MR_TAKE_PHOTOS,
-            IOTCommandType.MD_MR_RS485_CLEAR_ALARM -> {
+            IOTCommandType.MD_MR_RS485_CLEAR_ALARM,
+            IOTCommandType.MD_MR_RS485_CLEAR_RAIN_GAUGE -> {
                 dismissLoadingDialog(takePhotoLoadingDialogId)
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
@@ -489,7 +511,8 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_MR_TAKE_PHOTOS,
-            IOTCommandType.MD_MR_RS485_CLEAR_ALARM -> {
+            IOTCommandType.MD_MR_RS485_CLEAR_ALARM,
+            IOTCommandType.MD_MR_RS485_CLEAR_RAIN_GAUGE -> {
                 dismissLoadingDialog(takePhotoLoadingDialogId)
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
@@ -716,6 +739,27 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            IOTCommandType.MD_MR_RS485_CLEAR_RAIN_GAUGE -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        dismissLoadingDialog(takePhotoLoadingDialogId)
+                        val errMsg = "雨量置零失败: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            dismissLoadingDialog(takePhotoLoadingDialogId)
+                            Toaster.show(ToastParams().apply {
+                                text = "雨量置零成功"
+                                duration = 1000
+                            })
+                        }
+                    }
+                }
+            }
+
             else -> {
                 cancelNearbyCommunicationTimeoutJob()
             }
@@ -726,11 +770,11 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
         arrayListOf<ConfigModule>(
             ConfigModule(TimeCalibrationModule()),
             ConfigModule(TelemetryDataModule()),
-            ConfigModule(ManualSettingModule()),
+            ConfigModule(MR702ManualSettingModule()),
             ConfigModule(DeviceLogUploadModule()),
-            ConfigModule(ParameterExportModule()),
-            ConfigModule(ParameterImportModule()),
-            ConfigModule(ManualPhotoTakingModule()),
+            ConfigModule(MR702ParameterExportModule()),
+            ConfigModule(MR702ParameterImportModule()),
+            ConfigModule(MR702ManualPhotoTakingModule()),
             ConfigModule(
                 CommonModule(
                     name = "库容计算",
@@ -739,7 +783,8 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                     navId = R.id.action_global_to_mR702ReservoirCapacityFragment
                 )
             ),
-            ConfigModule(Remote485SilenceModule()),
+            ConfigModule(MR702Remote485SilenceModule()),
+            ConfigModule(MR702RainSetZeroModule()),
         )
 
     override fun onResume() {
