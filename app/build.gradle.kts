@@ -13,6 +13,10 @@ val majorVersion = 5
 val minorVersion = 2
 val patchVersion = 17
 
+val testMajorVersion = 5
+val testMinorVersion = 2
+val testPatchVersion = 35
+
 /**
  * 获取Git库HEAD的SHA1码前5位
  */
@@ -136,7 +140,7 @@ android {
             dimension = "version"
             applicationIdSuffix = ".v5"
             versionCode = getReversion()
-            versionName = "5.2.34"
+            versionName = "$testMajorVersion.$testMinorVersion.$testPatchVersion"
             resValue("string", "app_name", "米易通V5")   // 设置默认的app_name
             buildConfigField("String", "APP_NAME", "\"米易通V5\"")
             buildConfigField("String", "PGY_API_KEY", "\"db9ce8a6bd3b8b95c20c66e4205194d9\"")
