@@ -371,7 +371,7 @@
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         android:enabled="@{stateVM.isCustomSensor}"
-                        android:hint="请输入"
+                        android:hint='@{stateVM.isCustomSensor?"请输入":""}'
                         android:text="@={stateVM.modelFieldUnit}"
                         app:lengthFilter="@{10}"
                         tools:text="mm" />

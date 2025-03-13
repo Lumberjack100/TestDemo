@@ -351,7 +351,6 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             android:enabled="@{false}"
-                            android:hint="请输入"
                             android:text="@={stateVM.modelFieldName}"
                             android:textColor="@color/colorPrimary"
                             app:lengthFilter="@{10}"
@@ -370,7 +369,6 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             android:enabled="@{false}"
-                            android:hint="请输入"
                             android:text="@={stateVM.modelFieldUnit}"
                             app:lengthFilter="@{10}"
                             tools:text="mm" />
@@ -553,7 +551,6 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             android:enabled="@{false}"
-                            android:hint="请输入"
                             android:text="@={stateVM.modelFieldName2}"
                             android:textColor="@color/colorPrimary"
                             app:lengthFilter="@{10}"
@@ -572,7 +569,6 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             android:enabled="@{false}"
-                            android:hint="请输入"
                             android:text="@={stateVM.modelFieldUnit2}"
                             app:lengthFilter="@{10}"
                             tools:text="mm" />
