@@ -15,7 +15,7 @@ val patchVersion = 17
 
 val testMajorVersion = 5
 val testMinorVersion = 2
-val testPatchVersion = 35
+val testPatchVersion = 36
 
 /**
  * 获取Git库HEAD的SHA1码前5位
