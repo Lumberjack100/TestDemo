@@ -56,7 +56,7 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
     private val checkBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_check_bit) }
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
     private val dataFormatList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_data_format) }
-    private val siteTypeList = mutableListOf("无", "参考点", "测点")
+    private val siteTypeList = mutableListOf("无", "测点", "参考点")
     private val calculateList = mutableListOf("不计算", "线性方程计算", "传感器联合计算")
 
 
@@ -121,7 +121,7 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
 
         mStates.siteType.set(siteTypeList[0])//站点类型 默认无
         mStates.calculate.set(calculateList[0])//计算方式 默认不计算
-        mStates.sensitivityK.set("1")
+        mStates.sensitivityK.set("1")//
         mStates.temperatureCorrectionCoefficientB.set("0")
         mStates.initialFrequencyF0.set("0")
         mStates.initialTemperatureT0.set("0")
@@ -361,9 +361,9 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
-            baseflag = if (siteTypeList.indexOf(mStates.siteType.get()) == 0) IOTConstants.NULL_KEY else siteTypeList.indexOf(
+            baseflag = if (siteTypeList.indexOf(mStates.siteType.get()) == 0) IOTConstants.NULL_KEY else (siteTypeList.indexOf(
                 mStates.siteType.get()
-            ).toString(),
+            ) - 1).toString(),
             calctype = calculateList.indexOf(mStates.calculate.get()).toString(),
             kvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.sensitivityK.get() else
                 IOTConstants.NULL_KEY,

@@ -14,8 +14,8 @@ data class MRRS485Port1SensorParamEntity(
     val model: String = "",//物模型
     val c_model: String = "",//创建新指令    --创建新指令发1。修改指令发0
     val num: String = "",//物模型变量	--创建新指令时可以传任意值。修改指令根据传指定变量
-    var sensorlist: String = "-1",//传感器编号
     val swtoken: String = IOTConstants.NULL_KEY,//水文标识
+    var sensorlist: String = "-1",//传感器编号
     val cmd: String = IOTConstants.NULL_KEY,//传感器采集指令
     val ratio: String = IOTConstants.NULL_KEY,//倍率
     val dataformat: String = IOTConstants.NULL_KEY,//数据类型
