@@ -570,9 +570,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.reissuingDataValidDays.set(data.valid_day)
         mStates.reissuingDataInterval.set(data.reissue_time)
 
-        if (communicateWay is NetPlatformConnect && mStates.platformType.get()
-                .contains("米度物联平台")
-        ) {
+        if (communicateWay is NetPlatformConnect && statusItem.centerid == 3) {
             mStates.isEditable.set(false)
             showMessageDialog("4G模式下，米度物联平台链路不允许修改，以免设备离线")
         }
