@@ -215,8 +215,8 @@
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
                             android:hint="请输入"
-                            android:inputType="number"
-                            android:maxLength="5"
+                            android:inputType="numberDecimal|numberSigned"
+                            android:maxLength="17"
                             android:text="@={stateVM.rainfallWarnLevel1}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -234,8 +234,8 @@
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
                             android:hint="请输入"
-                            android:inputType="number"
-                            android:maxLength="5"
+                            android:inputType="numberDecimal|numberSigned"
+                            android:maxLength="17"
                             android:text="@={stateVM.rainfallWarnLevel2}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -253,8 +253,8 @@
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
                             android:hint="请输入"
-                            android:inputType="number"
-                            android:maxLength="5"
+                            android:inputType="numberDecimal|numberSigned"
+                            android:maxLength="17"
                             android:text="@={stateVM.rainfallWarnLevel3}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -272,8 +272,8 @@
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.rainfallFunctionEnabled}"
                             android:hint="请输入"
-                            android:inputType="number"
-                            android:maxLength="5"
+                            android:inputType="numberDecimal|numberSigned"
+                            android:maxLength="17"
                             android:text="@={stateVM.rainfallWarnLevel4}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
