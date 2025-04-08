@@ -61,10 +61,10 @@
         tools:layout="@layout/fragment_m50_report_model_param" />
 
     <fragment
-        android:id="@+id/m50MobileNetworkParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDMobileNetworkParamFragment"
-        android:label="UDMobileNetworkParamFragment"
-        tools:layout="@layout/fragment_ud_mobile_network_param" />
+        android:id="@+id/m50NetworkConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50NetworkConfigFragment"
+        android:label="M50NetworkConfigFragment"
+        tools:layout="@layout/fragment_m50_network_config" />
 
     <fragment
         android:id="@+id/m20SRadioSettingFragment"
@@ -155,8 +155,8 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_m50MobileNetworkParamFragment"
-        app:destination="@id/m50MobileNetworkParamFragment"
+        android:id="@+id/action_global_to_m50NetworkConfigFragment"
+        app:destination="@id/m50NetworkConfigFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

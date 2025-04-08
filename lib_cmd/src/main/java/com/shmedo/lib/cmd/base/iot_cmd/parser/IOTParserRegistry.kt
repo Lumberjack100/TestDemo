@@ -64,6 +64,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.hac.HacMotorMotionDistanceInfoPars
 import com.shmedo.lib.cmd.base.iot_cmd.parser.hac.HacWarningValueParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.lr200.LR200ZeroValueParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.m20.M20BaseInfoParser
+import com.shmedo.lib.cmd.base.iot_cmd.parser.m50.M50NetworkConfigParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.m50.M50SerialPortParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRAlarmModuleParamParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.mr.MRDIPortParamParser
@@ -157,6 +158,7 @@ object IOTParserRegistry {
         DasInternalSensorStatusParser(),
         M20BaseInfoParser(),
         M50SerialPortParamParser(),
+        M50NetworkConfigParser(),
         GNSSSateliteInfoParser(),
         DeviceCurrentStateParser(),
         DeviceCurrentStateParser2(),
