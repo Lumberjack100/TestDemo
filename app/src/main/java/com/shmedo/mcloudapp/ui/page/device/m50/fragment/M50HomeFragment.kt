@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m50
+package com.shmedo.mcloudapp.ui.page.device.m50.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -371,7 +371,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             }
             nav().navigate(
                 R.id.action_global_to_udLocationInfoFragment,
-                BaseIOTDeviceFragment.newBundleArguments(
+                newBundleArguments(
                     productType,
                     communicateWay,
                     deviceInfo,
@@ -391,7 +391,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         fun onGoToSensorDataHistoryClick() {
             nav().navigate(
                 R.id.action_global_to_udMonitorDataHistoryFragment,
-                UDSensorDataHistoryFragment.newBundleArguments(productType, deviceInfo)
+                UDSensorDataHistoryFragment.Companion.newBundleArguments(productType, deviceInfo)
             )
         }
     }
@@ -405,7 +405,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             is DataCenterModule -> {
                 nav().navigate(
                     module.navId,
-                    UniversalDataCenterHomeFragment.newBundleArguments(
+                    UniversalDataCenterHomeFragment.Companion.newBundleArguments(
                         centerNum = 4,
                         productType,
                         communicateWay,
@@ -416,7 +416,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             }
 
             is CommandDebugConfigModule -> {//指令下发
-                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+                val bundle = BleCustomCommandLogPrintFragment.Companion.newBundleArguments(
                     true,
                     productType,
                     communicateWay,
@@ -428,7 +428,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
 
             else -> {
                 if (module.navId != 0) {
-                    val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                    val bundle = newBundleArguments(
                         productType,
                         communicateWay,
                         deviceInfo,
@@ -697,8 +697,8 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            showDialogFragment(FindDeviceBeepDialog.TAG) {
-                                FindDeviceBeepDialog.newInstance(ProductType.GNSS_M_5)
+                            showDialogFragment(FindDeviceBeepDialog.Companion.TAG) {
+                                FindDeviceBeepDialog.Companion.newInstance(ProductType.GNSS_M_5)
                             }
                         }
                     }
@@ -763,7 +763,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 handleAbnormalInfo(errorInfoList)
 
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
@@ -812,13 +812,13 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 && resultMap.containsKey("z_value")
             ) {
                 val resultantDisplacement =
-                    resultMap["sum_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+                    resultMap["sum_value"]?.let { "$it mm" } ?: AppContants.Companion.PLACE_HOLDER_VALUE
                 val xDisplacement =
-                    resultMap["x_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+                    resultMap["x_value"]?.let { "$it mm" } ?: AppContants.Companion.PLACE_HOLDER_VALUE
                 val yDisplacement =
-                    resultMap["y_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+                    resultMap["y_value"]?.let { "$it mm" } ?: AppContants.Companion.PLACE_HOLDER_VALUE
                 val zDisplacement =
-                    resultMap["z_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+                    resultMap["z_value"]?.let { "$it mm" } ?: AppContants.Companion.PLACE_HOLDER_VALUE
 
                 mHeadStates.resultantDisplacement.set(resultantDisplacement)
                 mHeadStates.xDisplacement.set(xDisplacement)
@@ -827,7 +827,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 return
             }
         } catch (e: Exception) {
-            Timber.e(e)
+            Timber.Forest.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
@@ -852,9 +852,9 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                         TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
                     //仅当设备连接并且需要发送心跳时，才发送心跳包
                     if (mHeadStates.isConnected.get()) {
-                        Timber.d("发送心跳包指令 startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
+                        Timber.Forest.d("发送心跳包指令 startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
                         val command = IOTCommandUtil.getCommand(IOTCommandType.HEART_BEAT)
-                        Timber.d("发送心跳包指令: $command")
+                        Timber.Forest.d("发送心跳包指令: $command")
                         sendBleCommand(command)
                     }
                 }
@@ -879,7 +879,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                         }
                     }
                 } catch (e: Exception) {
-                    Timber.e(e)
+                    Timber.Forest.e(e)
                 }
                 delay(30000) // 延迟30秒
             }

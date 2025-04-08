@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m50
+package com.shmedo.mcloudapp.ui.page.device.m50.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -73,7 +73,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "CMCC" -> "中国移动"
                         "CU" -> "中国联通"
                         "CT" -> "中国电信"
-                        else -> AppContants.PLACE_HOLDER_VALUE
+                        else -> AppContants.Companion.PLACE_HOLDER_VALUE
                     }
                 )
                 stateInfo.csq.notNullKey {
@@ -163,7 +163,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }

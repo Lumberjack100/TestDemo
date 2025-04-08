@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m50
+package com.shmedo.mcloudapp.ui.page.device.m50.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -69,6 +69,7 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             "告警" -> ColorUtils.getColor(
                                 R.color.warn_FF9D00
                             )
+
                             else -> ColorUtils.getColor(R.color.error_FF4400)
                         }
                     )
@@ -150,7 +151,7 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }

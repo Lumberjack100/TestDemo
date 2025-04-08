@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m50
+package com.shmedo.mcloudapp.ui.page.device.m50.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -342,7 +342,7 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
 
             mStates.rs485ExternalDeviceAddr.set(info.rs485_addr)
         } catch (e: Exception) {
-            Timber.e(e)
+            Timber.Forest.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }

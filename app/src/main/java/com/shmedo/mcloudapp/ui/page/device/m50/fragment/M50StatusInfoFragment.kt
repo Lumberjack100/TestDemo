@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m50
+package com.shmedo.mcloudapp.ui.page.device.m50.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -50,7 +50,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "外接电压",
-                    value = if (externalVoltage == 0.0) "0" else stateInfo.externalVoltage.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                    value = if (externalVoltage == 0.0) "0" else stateInfo.externalVoltage.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
                     unit = "V",
                     textColorRes = if ((externalVoltage >= 9 && externalVoltage < 28) || externalVoltage == -1000.0) 0 else ColorUtils.getColor(
                         R.color.warn_FF9D00
@@ -59,7 +59,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "光伏板电压",
-                    value = stateInfo.solarVoltage.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                    value = stateInfo.solarVoltage.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
                     unit = "V",
                     isBottomItem = true
                 )
@@ -73,8 +73,8 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         name = "电池${index + 1}电压",
                         value = batteryInfo.batteryStatus.compareAndReturn(
                             "-3",
-                            AppContants.PLACE_HOLDER_VALUE,
-                            batteryInfo.batteryVoltage.ifEmpty { AppContants.PLACE_HOLDER_VALUE }),
+                            AppContants.Companion.PLACE_HOLDER_VALUE,
+                            batteryInfo.batteryVoltage.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE }),
                         unit = "V",
                     )
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -82,22 +82,22 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         name = "电池${index + 1}电量",
                         value = batteryInfo.batteryStatus.compareAndReturn(
                             "-3",
-                            AppContants.PLACE_HOLDER_VALUE,
-                            batteryInfo.batteryCapacity.ifEmpty { AppContants.PLACE_HOLDER_VALUE }),
+                            AppContants.Companion.PLACE_HOLDER_VALUE,
+                            batteryInfo.batteryCapacity.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE }),
                         unit = "%",
                     )
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                         groupList,
                         name = "电池${index + 1}状态",
-                        value = if (batteryInfo.batteryStatus == "1") "充电中" else if (batteryInfo.batteryStatus == "0") "放电中" else AppContants.PLACE_HOLDER_VALUE,
+                        value = if (batteryInfo.batteryStatus == "1") "充电中" else if (batteryInfo.batteryStatus == "0") "放电中" else AppContants.Companion.PLACE_HOLDER_VALUE,
                     )
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                         groupList,
                         name = "电池${index + 1}温度",
                         value = batteryInfo.batteryStatus.compareAndReturn(
                             "-3",
-                            AppContants.PLACE_HOLDER_VALUE,
-                            batteryInfo.batteryTemp.ifEmpty { AppContants.PLACE_HOLDER_VALUE }),
+                            AppContants.Companion.PLACE_HOLDER_VALUE,
+                            batteryInfo.batteryTemp.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE }),
                         unit = "℃",
                     )
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -105,8 +105,8 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         name = "电池${index + 1}健康度",
                         value = batteryInfo.batteryStatus.compareAndReturn(
                             "-3",
-                            AppContants.PLACE_HOLDER_VALUE,
-                            batteryInfo.batteryHealth.ifEmpty { AppContants.PLACE_HOLDER_VALUE }),
+                            AppContants.Companion.PLACE_HOLDER_VALUE,
+                            batteryInfo.batteryHealth.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE }),
                         unit = "%",
                         isBottomItem = true
                     )
@@ -117,13 +117,13 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "内部温度",
-                    value = stateInfo.internalTemp.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                    value = stateInfo.internalTemp.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
                     unit = "℃",
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "内部湿度",
-                    value = stateInfo.internalHumidity.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                    value = stateInfo.internalHumidity.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
                     unit = "%",
                     isBottomItem = true
                 )
@@ -191,7 +191,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 binding.recyclerview.models = groupList
 
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
