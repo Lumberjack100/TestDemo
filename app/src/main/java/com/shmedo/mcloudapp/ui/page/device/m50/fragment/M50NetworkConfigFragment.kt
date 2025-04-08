@@ -160,7 +160,6 @@ class M50NetworkConfigFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-
     /**
      * 4G 下发指令响应失败
      */

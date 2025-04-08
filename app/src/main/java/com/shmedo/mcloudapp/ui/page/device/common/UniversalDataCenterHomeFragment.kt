@@ -94,7 +94,6 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
         mStates.isSupportedReportInterval.set(
             productType == ProductType.GNSS_M_1
                     || productType == ProductType.GNSS_M_2
-                    || productType == ProductType.GNSS_M_5
                     || productType == ProductType.U_I_1
                     || productType == ProductType.U_R_1
         )

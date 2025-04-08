@@ -14,4 +14,5 @@ data class RadioCommunicateInfo(
     var bcchl: String = "",//广播频率 [1~19] 默认1 载波频率以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道（仅M20S有效，默认为0）
     var net_sta: String = "", //电台入网状态 0 未入网 1 已入网
     var gateway_sn: String = "", //级网关sn
+    var localaddr: String = "",//本机地址 [1100~1140] 默认 1100
 )

@@ -67,10 +67,10 @@
         tools:layout="@layout/fragment_m50_network_config" />
 
     <fragment
-        android:id="@+id/m20SRadioSettingFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m20s.fragment.M20SRadioSettingFragment"
-        android:label="M20SRadioSettingFragment"
-        tools:layout="@layout/fragment_m20s_radio_setting" />
+        android:id="@+id/m50RadioSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50RadioSettingFragment"
+        android:label="M50RadioSettingFragment"
+        tools:layout="@layout/fragment_m50_radio_setting" />
 
     <fragment
         android:id="@+id/m50SerialPortParamFragment"
@@ -172,7 +172,7 @@
 
     <action
         android:id="@+id/action_global_to_m50RadioSettingFragment"
-        app:destination="@id/m20SRadioSettingFragment"
+        app:destination="@id/m50RadioSettingFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
