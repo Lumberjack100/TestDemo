@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m50
+package com.shmedo.mcloudapp.ui.page.device.m50.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -364,7 +364,7 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
             mStates.thirdAlarmThreshold.set(info.gateDevVal3.formatDoubleValue("", 1))
             mStates.fourthAlarmThreshold.set(info.gateDevVal4.formatDoubleValue("", 1))
         } catch (e: Exception) {
-            Timber.e(e)
+            Timber.Forest.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }

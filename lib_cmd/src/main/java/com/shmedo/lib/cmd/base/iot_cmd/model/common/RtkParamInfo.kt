@@ -27,5 +27,6 @@ data class RtkParamInfo(
     var rtkMode: String = "", //解算模式源 1:静态解算  2:动态结算  默认1
     var obs: String = "", //观测数据上报频率 取值为[0-60]
     var alarmSwitch: String = "", //报警开关 0:关闭  1:打开
-    var reportMode: String = "", //上报模式  0:常在线  1:低功耗
+    var reportMode: String = "", //上报模式  0:常在线  1:低功耗 2:自适应
+    var networkMode: String = "", //网络模式 0:4G传输 1:电台传输 2:自动
 )
