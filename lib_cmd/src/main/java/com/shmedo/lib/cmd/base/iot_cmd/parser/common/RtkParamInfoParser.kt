@@ -36,6 +36,7 @@ class RtkParamInfoParser : IOTCommandParser<RtkParamInfo> {
             obs = keyValueMap.getOrDefault("obs", obs)
             alarmSwitch = keyValueMap.getOrDefault("alarmSwitch", alarmSwitch)
             reportMode = keyValueMap.getOrDefault("reportMode", reportMode)
+            networkMode = keyValueMap.getOrDefault("networkMode", networkMode)
         }
     }
 

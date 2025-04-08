@@ -6,6 +6,7 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 class M50ReportModelParamViewModel : ViewModel() {
     val reportModel = NonNullObservableField("")//上报模式
     val workModel = NonNullObservableField("")//工作模式
+    val networkModel = NonNullObservableField("")//网络模式
     val memsThreshold = NonNullObservableField("")//MEMS 触发阈值
     val alarmEnable = NonNullObservableField(true)//四级报警启用
     val firstAlarmThresholdTitle = NonNullObservableField("一级报警阈值（毫米）")

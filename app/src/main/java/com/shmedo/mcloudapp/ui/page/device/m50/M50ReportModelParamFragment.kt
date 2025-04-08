@@ -45,8 +45,9 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: M50ReportModelParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
-    private val workModelList = arrayListOf("基站", "测站")
-    private val reportModelList = arrayListOf("常在线", "低功耗")
+    private val workModelList = arrayListOf("基站", "测站", "PPP-B2b", "CORS接入")
+    private val reportModelList = arrayListOf("常在线", "低功耗", "自适应")
+    private val networkModelList = arrayListOf("4G传输", "电台传输", "自动")
 
 
     override fun initViewModel() {
@@ -102,7 +103,8 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
 
     private fun resetDefaultParams() {
         mStates.workModel.set(workModelList[1])//默认测站
-        mStates.reportModel.set(reportModelList[0])//默认常在线
+        mStates.reportModel.set(reportModelList[2])//默认自适应
+        mStates.networkModel.set(networkModelList[2])//默认自动
         mStates.memsThreshold.set("5")//MEMS阈值
         mStates.alarmEnable.set(false)//是否开启报警
         mStates.firstAlarmThreshold.set("20")//一级报警阈值
@@ -153,6 +155,26 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
         }
 
         /**
+         * 选择网络模式
+         */
+        fun onNetworkModelChooseClick() {
+            val selectedIndex = networkModelList.indexOf(mStates.networkModel.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "", networkModelList.toTypedArray(),
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.networkModel.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        /**
          * 恢复默认配置
          */
         fun onResetClick() {
@@ -188,6 +210,7 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
             val entity = RtkParamEntity(
                 mode = (workModelList.indexOf(mStates.workModel.get()) + 1).toString(),
                 reportMode = reportModelList.indexOf(mStates.reportModel.get()).toString(),
+                networkMode = networkModelList.indexOf(mStates.networkModel.get()).toString(),
                 gateAngleVal1 = mStates.memsThreshold.get(),
                 alarmSwitch = "0"
             )
@@ -249,6 +272,7 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
         val entity = RtkParamEntity(
             mode = (workModelList.indexOf(mStates.workModel.get()) + 1).toString(),
             reportMode = reportModelList.indexOf(mStates.reportModel.get()).toString(),
+            networkMode = networkModelList.indexOf(mStates.networkModel.get()).toString(),
             gateAngleVal1 = mStates.memsThreshold.get(),
             alarmSwitch = "1",
             gateDevVal1 = mStates.firstAlarmThreshold.get(),
@@ -326,6 +350,11 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
             info.reportMode.toIntOrNull()?.let {
                 if (it in reportModelList.indices) {
                     mStates.reportModel.set(reportModelList[it])
+                }
+            }
+            info.networkMode.toIntOrNull()?.let {
+                if (it in networkModelList.indices) {
+                    mStates.networkModel.set(networkModelList[it])
                 }
             }
             mStates.memsThreshold.set(info.gateAngleVal1.formatDoubleValue("", 1))
