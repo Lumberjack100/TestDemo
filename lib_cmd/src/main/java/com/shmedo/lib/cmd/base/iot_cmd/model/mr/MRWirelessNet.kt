@@ -7,6 +7,7 @@ package com.shmedo.lib.cmd.base.iot_cmd.model.mr
  */
 data class MRWirelessNet(
     var switch: String = "1",//是否开启4G 0:关闭 1:开启
+    var networkType: String = "1", // 0:eSIM 1:外置SIM 2:自动
     var apn: String = "",
     var username: String = "",
     var password: String = ""

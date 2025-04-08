@@ -11,10 +11,10 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.m50.M50NetworkConfigEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRWirelessNetEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.model.m50.M50NetworkConfigParam
+import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRWirelessNet
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -131,7 +131,7 @@ class M50NetworkConfigFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
 
         val networkConfigEntity =
-            M50NetworkConfigEntity(
+            MRWirelessNetEntity(
                 switch = "1",
                 networkType = networkTypeList.indexOf(mStates.networkType.get()).toString(),
                 apn = mStates.apnName.get().ifEmpty { IOTConstants.NULL_KEY },
@@ -218,7 +218,7 @@ class M50NetworkConfigFragment : BaseIOTDeviceFragment() {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_MR_GET_DATA_NETWORK -> {
                 val result =
-                    iotParseManager.parse<M50NetworkConfigParam>(
+                    iotParseManager.parse<MRWirelessNet>(
                         cmdStr,
                         IOTCommandType.MD_MR_GET_DATA_NETWORK
                     )
@@ -256,7 +256,7 @@ class M50NetworkConfigFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initNetworkData(networkConfig: M50NetworkConfigParam) {
+    private fun initNetworkData(networkConfig: MRWirelessNet) {
         try {
             // 设置网络类型
             networkConfig.networkType.toIntOrNull()?.let {
