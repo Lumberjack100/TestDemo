@@ -299,6 +299,13 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 ),
                 ConfigModule(
                     SensorConfigModule(
+                        name = "传感配置",
+                        resID = R.drawable.ic_module_sensor_setting_new,
+                        navId = R.id.action_global_to_m50SensorConfigFragment
+                    )
+                ),
+                ConfigModule(
+                    SensorConfigModule(
                         name = "端口配置",
                         resID = R.drawable.ic_module_serial_port,
                         navId = R.id.action_global_to_m50SerialPortParamFragment
@@ -306,9 +313,9 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 ),
                 ConfigModule(
                     SensorConfigModule(
-                        name = "数据存储",
-                        resID = R.drawable.ic_module_data_storage,
-                        navId = 0
+                        name = "CORS接入",
+                        resID = R.drawable.ic_module_cors,
+                        navId = R.id.action_global_to_udCORSParamFragment
                     )
                 ),
                 ConfigModule(
@@ -451,7 +458,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         var command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
         commandItems.add(command)
 
-        command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "method=0")
+        command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=0")
         commandItems.add(command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -462,7 +469,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
      */
     private fun takePhoto() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "method=1")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=1")
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
@@ -516,7 +523,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 dismissLoadingDialog()
             }
 
-            IOTCommandType.QUERY_SAMPLE -> {
+            IOTCommandType.SAMPLE -> {
                 if (cmdStr.contains("method=1")) {
                     super.doCmdResponseResultError(
                         cmdStr = cmdStr,
@@ -561,7 +568,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 dismissLoadingDialog()
             }
 
-            IOTCommandType.QUERY_SAMPLE -> {
+            IOTCommandType.SAMPLE -> {
                 if (cmdStr.contains("method=1")) {
                     super.doCmdResponseResultTimeOut(
                         cmdStr = cmdStr,
@@ -613,7 +620,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-            IOTCommandType.QUERY_SAMPLE -> {
+            IOTCommandType.SAMPLE -> {
                 if (cmdStr.contains("method=1")) {
                     super.showNearbyCommunicationTimeoutAlert(
                         cmdStr = cmdStr,
@@ -668,10 +675,10 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.QUERY_SAMPLE -> {//召测
+            IOTCommandType.SAMPLE -> {//召测
                 val result = iotParseManager.parse<String>(
                     cmdStr,
-                    IOTCommandType.QUERY_SAMPLE
+                    IOTCommandType.SAMPLE
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -812,13 +819,17 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 && resultMap.containsKey("z_value")
             ) {
                 val resultantDisplacement =
-                    resultMap["sum_value"]?.let { "$it mm" } ?: AppContants.Companion.PLACE_HOLDER_VALUE
+                    resultMap["sum_value"]?.let { "$it mm" }
+                        ?: AppContants.Companion.PLACE_HOLDER_VALUE
                 val xDisplacement =
-                    resultMap["x_value"]?.let { "$it mm" } ?: AppContants.Companion.PLACE_HOLDER_VALUE
+                    resultMap["x_value"]?.let { "$it mm" }
+                        ?: AppContants.Companion.PLACE_HOLDER_VALUE
                 val yDisplacement =
-                    resultMap["y_value"]?.let { "$it mm" } ?: AppContants.Companion.PLACE_HOLDER_VALUE
+                    resultMap["y_value"]?.let { "$it mm" }
+                        ?: AppContants.Companion.PLACE_HOLDER_VALUE
                 val zDisplacement =
-                    resultMap["z_value"]?.let { "$it mm" } ?: AppContants.Companion.PLACE_HOLDER_VALUE
+                    resultMap["z_value"]?.let { "$it mm" }
+                        ?: AppContants.Companion.PLACE_HOLDER_VALUE
 
                 mHeadStates.resultantDisplacement.set(resultantDisplacement)
                 mHeadStates.xDisplacement.set(xDisplacement)

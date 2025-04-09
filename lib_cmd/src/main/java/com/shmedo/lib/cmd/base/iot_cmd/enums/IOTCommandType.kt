@@ -49,14 +49,9 @@ enum class IOTCommandType(val value: String) {
     MD_RESTORE_CONFIG("md_restoreconfig"),
 
     /**
-     * 获取接入传感器类型
-     */
-    QUERY_SENSOR_TYPE("getsensorID"),
-
-    /**
      * 传感器遥测
      */
-    QUERY_SAMPLE("sample"),
+    SAMPLE("sample"),
 
     /**
      * 获取工作模式
@@ -96,12 +91,12 @@ enum class IOTCommandType(val value: String) {
     /**
      * 获取日志输出等级和输出方式
      */
-    GET_LOG_OUTPUT_MODE_LEVEL("md_getlogoutput"),
+    MD_GET_LOG_OUTPUT_MODE_LEVEL("md_getlogoutput"),
 
     /**
      * 日志输出等级和输出方式
      */
-    SET_LOG_OUTPUT_MODE_LEVEL("md_setlogoutput"),
+    MD_SET_LOG_OUTPUT_MODE_LEVEL("md_setlogoutput"),
 
     /**
      * 固件升级

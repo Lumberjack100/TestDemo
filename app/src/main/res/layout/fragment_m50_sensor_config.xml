@@ -11,11 +11,11 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.UDSensorParamViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.M50SensorConfigViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDSensorParamFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50SensorConfigFragment.ClickProxy" />
 
     </data>
 
@@ -55,151 +55,6 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/shape_common_click_item_top_corner_4">
-
-                        <View
-                            android:layout_width="3dp"
-                            android:layout_height="14dp"
-                            android:background="@color/black" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_GroupItem_Title_Style2"
-                            android:layout_marginStart="@dimen/dimen_size_8"
-                            android:text="雷达配置" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable}"
-                            android:text="测量间隔（分钟）" />
-
-                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                            style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:hint="请输入"
-                            android:inputType="number"
-                            android:maxLength="4"
-                            android:text="@={stateVM.measureInterval}" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable}"
-                            android:text="安装角度偏移阈值（度）" />
-
-                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                            style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:hint="请输入"
-                            android:inputType="numberDecimal"
-                            android:maxLength="15"
-                            android:text="@={stateVM.installAngleOffsetThreshold}" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:text="空高测量初始值（米）" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@null"
-                            android:text="@{stateVM.airAltitudeInitialValue}"
-                            tools:text="1" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/shape_common_click_item_bottom_corner_4"
-                        android:paddingStart="0dp"
-                        android:paddingEnd="0dp">
-
-                        <com.google.android.material.button.MaterialButton
-                            style="@style/TestButton_Style"
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/dimen_size_30"
-                            android:onClick="@{()->click.onUpdateAirAltitudeInitialValueClick()}"
-                            android:text="更新雷达测量初始值"
-                            android:textStyle="bold" />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_Layout_Style"
-                        android:layout_marginTop="@dimen/page_content_item_margin_top_12"
-                        android:background="@drawable/shape_common_click_item_top_corner_4">
-
-                        <View
-                            android:layout_width="3dp"
-                            android:layout_height="14dp"
-                            android:background="@color/black" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_GroupItem_Title_Style2"
-                            android:layout_marginStart="@dimen/dimen_size_8"
-                            android:text="相机配置" />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_Layout_Style"
-                        onClickWithDebouncing="@{()->click.onCaptureFrequencyClick()}"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:text="抓拍频率" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
-                            android:text="@{stateVM.captureFrequency}"
-                            tools:text="2小时/次" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_ClickableItem_Layout_Style"
-                        onClickWithDebouncing="@{()->click.onImageResolutionClick()}"
-                        android:background="@drawable/shape_common_click_item_bottom_corner_4"
-                        android:enabled="@{stateVM.isEditable }">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:text="图片分辨率" />
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
-                            android:text="@{stateVM.imageResolution}"
-                            tools:text="1600 x 1200" />
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_Layout_Style"
                         android:layout_marginTop="@dimen/page_content_item_margin_top_12"
                         android:background="@drawable/shape_common_click_item_top_corner_4">
 
@@ -218,20 +73,58 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:enabled="@{stateVM.isEditable}">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
-                            android:text="位置初始值" />
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="经度（度）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable }"
+                            textViewEnabled="@{stateVM.isEditable}"
                             android:drawableEnd="@null"
-                            android:text="@{stateVM.locationInitialValue}"
-                            tools:text="1" />
+                            android:text="@{stateVM.longitude}"
+                            tools:text="114.058503" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="纬度（度）" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:drawableEnd="@null"
+                            android:text="@{stateVM.latitude}"
+                            tools:text="22.544604" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="高度（米）" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:drawableEnd="@null"
+                            android:text="@{stateVM.altitude}"
+                            tools:text="10.5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -250,22 +143,103 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_reset"
-                        style="@style/ResetButton_Style2"
-                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
-                        android:onClick="@{()->click.onResetClick()}"
-                        android:text="@string/button_reset_text" />
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="14dp"
+                            android:background="@color/black" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_GroupItem_Title_Style2"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:text="倾角配置" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="X轴倾角值（度）" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:drawableEnd="@null"
+                            android:text="@{stateVM.xAxisTilt}"
+                            tools:text="1.5" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="Y轴倾角值（度）" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:drawableEnd="@null"
+                            android:text="@{stateVM.yAxisTilt}"
+                            tools:text="2.3" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:text="Z轴倾角值（度）" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable}"
+                            android:drawableEnd="@null"
+                            android:text="@{stateVM.zAxisTilt}"
+                            tools:text="0.8" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/TestButton_Style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/dimen_size_30"
+                            android:onClick="@{()->click.onUpdateTiltInitialValueClick()}"
+                            android:text="更新倾角初始值"
+                            android:textStyle="bold" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_confirm"
                         style="@style/SubmitButton_Style2"
                         onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-                        android:layout_marginTop="@dimen/summit_button_margin_top_20"
-                        android:enabled="@{stateVM.isDataModified}"
-                        android:text="@string/button_save_text" />
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:text="@string/sure_button_text" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-</layout>
+</layout> 

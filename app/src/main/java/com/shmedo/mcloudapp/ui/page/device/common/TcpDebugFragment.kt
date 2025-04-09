@@ -372,7 +372,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
             commandItems.add(command)
         } else {
             val command = IOTCommandUtil.getCommand(
-                IOTCommandType.SET_LOG_OUTPUT_MODE_LEVEL,
+                IOTCommandType.MD_SET_LOG_OUTPUT_MODE_LEVEL,
                 "level=off&type=bt"
             )
             printLog(command)
@@ -399,7 +399,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
             commandItems.add(command)
         } else {
             val command = IOTCommandUtil.getCommand(
-                IOTCommandType.SET_LOG_OUTPUT_MODE_LEVEL,
+                IOTCommandType.MD_SET_LOG_OUTPUT_MODE_LEVEL,
                 "level=debug&type=bt"
             )
             printLog(command)
@@ -426,7 +426,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
             commandItems.add(command)
         } else {
             val command = IOTCommandUtil.getCommand(
-                IOTCommandType.SET_LOG_OUTPUT_MODE_LEVEL,
+                IOTCommandType.MD_SET_LOG_OUTPUT_MODE_LEVEL,
                 "level=info&type=bt"
             )
             printLog(command)

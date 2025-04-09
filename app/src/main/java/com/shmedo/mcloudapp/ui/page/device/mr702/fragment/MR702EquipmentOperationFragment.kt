@@ -148,7 +148,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
             is TelemetryDataModule -> {//遥测数据
                 commandItems.clear()
                 val command =
-                    IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE)
+                    IOTCommandUtil.getCommand(IOTCommandType.SAMPLE)
                 commandItems.add(command)
 
                 if (communicateWay is BleConnect) {
@@ -414,7 +414,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 mStates.isResponseSuccess.set(false)
             }
 
-            IOTCommandType.QUERY_SAMPLE -> {
+            IOTCommandType.SAMPLE -> {
                 mStates.isResponseLoading.set(true)
                 mStates.isResponseSuccess.set(false)
                 showTelemetryDataPopup()
@@ -584,10 +584,10 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.QUERY_SAMPLE -> {
+            IOTCommandType.SAMPLE -> {
                 val result = iotParseManager.parse<String>(
                     cmdStr,
-                    IOTCommandType.QUERY_SAMPLE
+                    IOTCommandType.SAMPLE
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
