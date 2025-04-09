@@ -158,7 +158,7 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
                 clean_rain = "1"
             )
             cmdRainGauge = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_UD_SET_RAIN_GAUGE_PARAM,
+                IOTCommandType.UD_MD_SET_RAIN_GAUGE_PARAM,
                 rainGaugeSerialPortEntity.toCommandString()
             )
             commandItems.add(cmdRainGauge)
@@ -199,7 +199,7 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
             addr = mStates.rs485Address.get()
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_UD_SET_RS485_PARAM,
+            IOTCommandType.UD_MD_SET_RS485_PARAM,
             uD485SerialPortEntity.toCommandString()
         )
         commandItems.add(command)
@@ -209,7 +209,7 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
             res = mStates.rainGaugeResolution.get()
         )
         cmdRainGauge = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_UD_SET_RAIN_GAUGE_PARAM,
+            IOTCommandType.UD_MD_SET_RAIN_GAUGE_PARAM,
             rainGaugeSerialPortEntity.toCommandString()
         )
         commandItems.add(cmdRainGauge)
@@ -226,12 +226,12 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
 
         var command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_UD_GET_RS485_PARAM
+            IOTCommandType.UD_MD_GET_RS485_PARAM
         )
         commandItems.add(command)
 
         command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_UD_GET_RAIN_GAUGE_PARAM
+            IOTCommandType.UD_MD_GET_RAIN_GAUGE_PARAM
         )
         commandItems.add(command)
 
@@ -294,10 +294,10 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_UD_GET_RS485_PARAM -> {
+            IOTCommandType.UD_MD_GET_RS485_PARAM -> {
                 val result = iotParseManager.parse<UD485SerialPortInfo>(
                     cmdStr,
-                    IOTCommandType.MD_UD_GET_RS485_PARAM
+                    IOTCommandType.UD_MD_GET_RS485_PARAM
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -315,10 +315,10 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_UD_GET_RAIN_GAUGE_PARAM -> {
+            IOTCommandType.UD_MD_GET_RAIN_GAUGE_PARAM -> {
                 val result = iotParseManager.parse<UDRainGaugeSerialPortInfo>(
                     cmdStr,
-                    IOTCommandType.MD_UD_GET_RAIN_GAUGE_PARAM
+                    IOTCommandType.UD_MD_GET_RAIN_GAUGE_PARAM
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -336,7 +336,7 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_UD_SET_RS485_PARAM -> {//
+            IOTCommandType.UD_MD_SET_RS485_PARAM -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置485端口参数出错: ${result.message}"
@@ -352,7 +352,7 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_UD_SET_RAIN_GAUGE_PARAM -> {//
+            IOTCommandType.UD_MD_SET_RAIN_GAUGE_PARAM -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置雨量计端口参数出错: ${result.message}"

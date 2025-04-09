@@ -137,7 +137,7 @@ class LB20SHomeFragment : UniversalDeviceHomeFragment() {
                 showMessage("是否立即关闭语音播报？", "温馨提示", "确定", {
                     commandItems.clear()
                     val command =
-                        IOTCommandUtil.getCommand(IOTCommandType.MD_SET_VOICE_BROADCAST_VOLUME_OFF)
+                        IOTCommandUtil.getCommand(IOTCommandType.SET_VOICE_BROADCAST_VOLUME_OFF)
                     commandItems.add(command)
 
                     showLoadingDialog(StringUtils.getString(R.string.processing))
@@ -175,7 +175,7 @@ class LB20SHomeFragment : UniversalDeviceHomeFragment() {
 
     override fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {
         when (commandType) {
-            IOTCommandType.MD_SET_VOICE_BROADCAST_VOLUME_OFF -> {
+            IOTCommandType.SET_VOICE_BROADCAST_VOLUME_OFF -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "关闭语音播报失败:" + result.message

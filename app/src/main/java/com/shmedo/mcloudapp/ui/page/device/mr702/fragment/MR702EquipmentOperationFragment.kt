@@ -183,7 +183,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
             is MR702ManualPhotoTakingModule -> {//手动拍照
                 commandItems.clear()
                 val command =
-                    IOTCommandUtil.getCommand(IOTCommandType.MD_MR_TAKE_PHOTOS, "action=1&linkid=1")
+                    IOTCommandUtil.getCommand(IOTCommandType.MR_MD_TAKE_PHOTOS, "action=1&linkid=1")
                 commandItems.add(command)
 
                 takePhotoLoadingDialogId =
@@ -199,7 +199,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                     {
                         commandItems.clear()
                         val command =
-                            IOTCommandUtil.getCommand(IOTCommandType.MD_MR_RS485_CLEAR_ALARM)
+                            IOTCommandUtil.getCommand(IOTCommandType.MR_MD_RS485_CLEAR_ALARM)
                         commandItems.add(command)
 
                         takePhotoLoadingDialogId =
@@ -218,7 +218,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                     {
                         commandItems.clear()
                         val command =
-                            IOTCommandUtil.getCommand(IOTCommandType.MD_MR_RS485_CLEAR_RAIN_GAUGE)
+                            IOTCommandUtil.getCommand(IOTCommandType.MR_MD_RS485_CLEAR_RAIN_GAUGE)
                         commandItems.add(command)
 
                         takePhotoLoadingDialogId =
@@ -297,7 +297,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 override fun onConfirmClick(otime: Long, type: Int, data: String, unit: String) {
                     commandItems.clear()
                     val command = IOTCommandUtil.getCommand(
-                        IOTCommandType.MD_MR_ARTIFICIAL,
+                        IOTCommandType.MR_MD_ARTIFICIAL,
                         "type=$type&data=$data&unit=$unit&otime=$otime"
                     )
                     commandItems.add(command)
@@ -323,7 +323,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 override fun onConfirmClick(type: Int, time: String) {
                     commandItems.clear()
                     val command = IOTCommandUtil.getCommand(
-                        IOTCommandType.MD_MR_UPLOAD_FILE,
+                        IOTCommandType.MR_MD_FILE_UPLOAD,
                         "type=$type&timeframe=$time"
                     )
                     commandItems.add(command)
@@ -420,13 +420,13 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 showTelemetryDataPopup()
             }
 
-            IOTCommandType.MD_MR_ARTIFICIAL -> {
+            IOTCommandType.MR_MD_ARTIFICIAL -> {
                 mStates.isManualSetting.set(true)
                 mStates.isResponseLoading.set(true)
                 mStates.isResponseSuccess.set(false)
             }
 
-            IOTCommandType.MD_MR_UPLOAD_FILE -> {
+            IOTCommandType.MR_MD_FILE_UPLOAD -> {
                 mStates.isDeviceDataUploading.set(true)
                 mStates.isResponseLoading.set(true)
                 mStates.isResponseSuccess.set(false)
@@ -452,9 +452,9 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_TAKE_PHOTOS,
-            IOTCommandType.MD_MR_RS485_CLEAR_ALARM,
-            IOTCommandType.MD_MR_RS485_CLEAR_RAIN_GAUGE -> {
+            IOTCommandType.MR_MD_TAKE_PHOTOS,
+            IOTCommandType.MR_MD_RS485_CLEAR_ALARM,
+            IOTCommandType.MR_MD_RS485_CLEAR_RAIN_GAUGE -> {
                 dismissLoadingDialog(takePhotoLoadingDialogId)
                 super.doCmdResponseResultError(
                     cmdStr = cmdStr,
@@ -482,9 +482,9 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_TAKE_PHOTOS,
-            IOTCommandType.MD_MR_RS485_CLEAR_ALARM,
-            IOTCommandType.MD_MR_RS485_CLEAR_RAIN_GAUGE -> {
+            IOTCommandType.MR_MD_TAKE_PHOTOS,
+            IOTCommandType.MR_MD_RS485_CLEAR_ALARM,
+            IOTCommandType.MR_MD_RS485_CLEAR_RAIN_GAUGE -> {
                 dismissLoadingDialog(takePhotoLoadingDialogId)
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
@@ -510,9 +510,9 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
         errMsg: String
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_TAKE_PHOTOS,
-            IOTCommandType.MD_MR_RS485_CLEAR_ALARM,
-            IOTCommandType.MD_MR_RS485_CLEAR_RAIN_GAUGE -> {
+            IOTCommandType.MR_MD_TAKE_PHOTOS,
+            IOTCommandType.MR_MD_RS485_CLEAR_ALARM,
+            IOTCommandType.MR_MD_RS485_CLEAR_RAIN_GAUGE -> {
                 dismissLoadingDialog(takePhotoLoadingDialogId)
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
@@ -620,7 +620,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_ARTIFICIAL -> {
+            IOTCommandType.MR_MD_ARTIFICIAL -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         handleFailureResult(result.message, isShowErrMsg = false)
@@ -639,7 +639,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_UPLOAD_FILE -> {
+            IOTCommandType.MR_MD_FILE_UPLOAD -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         handleFailureResult(result.message, isShowErrMsg = false)
@@ -697,7 +697,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_TAKE_PHOTOS -> {
+            IOTCommandType.MR_MD_TAKE_PHOTOS -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         dismissLoadingDialog(takePhotoLoadingDialogId)
@@ -718,7 +718,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_RS485_CLEAR_ALARM -> {
+            IOTCommandType.MR_MD_RS485_CLEAR_ALARM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         dismissLoadingDialog(takePhotoLoadingDialogId)
@@ -739,7 +739,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_RS485_CLEAR_RAIN_GAUGE -> {
+            IOTCommandType.MR_MD_RS485_CLEAR_RAIN_GAUGE -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         dismissLoadingDialog(takePhotoLoadingDialogId)

@@ -46,5 +46,5 @@ class MRDataCenterParser : IOTCommandParser<MRDataCenterParam> {
         }
     }
 
-    override val commandType: IOTCommandType = IOTCommandType.MD_MR_GET_DATA_CENTER
+    override val commandType: IOTCommandType = IOTCommandType.MR_MD_GET_DATA_CENTER
 }

@@ -121,7 +121,7 @@ class M50CORSConfigFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
 
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_UD_DIFF_LOCATE, "method=0"
+            IOTCommandType.MD_DIFF_LOCATE, "method=0"
         )
         commandItems.add(command)
 
@@ -132,10 +132,10 @@ class M50CORSConfigFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_UD_DIFF_LOCATE -> {
+            IOTCommandType.MD_DIFF_LOCATE -> {
                 val result = iotParseManager.parse<Map<String, String>>(
                     cmdStr,
-                    IOTCommandType.MD_UD_DIFF_LOCATE
+                    IOTCommandType.MD_DIFF_LOCATE
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {

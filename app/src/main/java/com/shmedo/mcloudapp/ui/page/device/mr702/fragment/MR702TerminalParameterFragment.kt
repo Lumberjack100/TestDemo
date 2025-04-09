@@ -208,7 +208,7 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
                 interval = mStates.interval.get()
             )
             val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_MR_SET_REPORT_METHOD,
+                IOTCommandType.MR_MD_SET_REPORT_METHOD,
                 entity.toCommandString()
             )
             commandItems.add(command)
@@ -232,7 +232,7 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
                 bproport = mStates.lightness.get().toString()
             )
             val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_MR_SET_SCREEN_PARAM,
+                IOTCommandType.MR_MD_SET_SCREEN_PARAM,
                 entity.toCommandString()
             )
             commandItems.add(command)
@@ -254,10 +254,10 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
     private fun queryData() {
         commandItems.clear()
 
-        var command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_REPORT_METHOD)
+        var command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_REPORT_METHOD)
         commandItems.add(command)
 
-        command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_SCREEN_PARAM)
+        command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_SCREEN_PARAM)
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.loading))
@@ -266,10 +266,10 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_REPORT_METHOD -> {
+            IOTCommandType.MR_MD_GET_REPORT_METHOD -> {
                 val result = iotParseManager.parse<MRReportMethod>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_REPORT_METHOD
+                    IOTCommandType.MR_MD_GET_REPORT_METHOD
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -285,10 +285,10 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
                 }
             }
 
-            IOTCommandType.MD_MR_GET_SCREEN_PARAM -> {
+            IOTCommandType.MR_MD_GET_SCREEN_PARAM -> {
                 val result = iotParseManager.parse<MRScreenParam>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_SCREEN_PARAM
+                    IOTCommandType.MR_MD_GET_SCREEN_PARAM
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -304,7 +304,7 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
                 }
             }
 
-            IOTCommandType.MD_MR_SET_REPORT_METHOD -> {
+            IOTCommandType.MR_MD_SET_REPORT_METHOD -> {
                 setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
@@ -321,7 +321,7 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
                 }
             }
 
-            IOTCommandType.MD_MR_SET_SCREEN_PARAM -> {
+            IOTCommandType.MR_MD_SET_SCREEN_PARAM -> {
                 setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {

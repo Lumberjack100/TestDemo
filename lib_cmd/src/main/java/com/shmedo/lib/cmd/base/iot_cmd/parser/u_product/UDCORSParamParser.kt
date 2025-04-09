@@ -15,5 +15,5 @@ class UDCORSParamParser : IOTCommandParser<Map<String, String>> {
         return keyValueMap
     }
 
-    override val commandType: IOTCommandType = IOTCommandType.MD_UD_DIFF_LOCATE
+    override val commandType: IOTCommandType = IOTCommandType.MD_DIFF_LOCATE
 }

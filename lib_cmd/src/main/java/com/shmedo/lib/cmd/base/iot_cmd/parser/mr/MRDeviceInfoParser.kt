@@ -69,5 +69,5 @@ class MRDeviceInfoParser : IOTCommandParser<MRDeviceInfo> {
         }
     }
 
-    override val commandType: IOTCommandType = IOTCommandType.MD_MR_GET_DEVICE_BASE_INFO
+    override val commandType: IOTCommandType = IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO
 }

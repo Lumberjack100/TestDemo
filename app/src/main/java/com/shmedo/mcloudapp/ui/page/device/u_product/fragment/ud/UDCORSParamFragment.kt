@@ -157,7 +157,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
 
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_UD_DIFF_LOCATE, "method=0"
+            IOTCommandType.MD_DIFF_LOCATE, "method=0"
         )
         commandItems.add(command)
 
@@ -199,7 +199,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
             alt = if (mStates.altitudeMeasureMode.get() == "手动") mStates.altitude.get() else IOTConstants.NULL_KEY
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_UD_DIFF_LOCATE,
+            IOTCommandType.MD_DIFF_LOCATE,
             "method=1&${entity.toCommandString()}"
         )
         commandItems.add(command)
@@ -216,7 +216,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
         Timber.d("查询测量海拔高度结果轮询次数：$repeatPollNum")
         commandItems.clear()
         val command =
-            IOTCommandUtil.getCommand(IOTCommandType.MD_UD_DIFF_LOCATE, "method=2")
+            IOTCommandUtil.getCommand(IOTCommandType.MD_DIFF_LOCATE, "method=2")
         commandItems.add(command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -232,7 +232,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_UD_DIFF_LOCATE -> {
+            IOTCommandType.MD_DIFF_LOCATE -> {
                 if (cmdStr.contains("method=0")) {
                     super.doCmdResponseResultError(
                         cmdStr = cmdStr,
@@ -291,7 +291,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
         errMsg: String
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_UD_DIFF_LOCATE -> {
+            IOTCommandType.MD_DIFF_LOCATE -> {
                 dismissLoadingDialog(measureAltitudeLoadingDialogId)
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
@@ -316,10 +316,10 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_UD_DIFF_LOCATE -> {
+            IOTCommandType.MD_DIFF_LOCATE -> {
                 val result = iotParseManager.parse<Map<String, String>>(
                     cmdStr,
-                    IOTCommandType.MD_UD_DIFF_LOCATE
+                    IOTCommandType.MD_DIFF_LOCATE
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {

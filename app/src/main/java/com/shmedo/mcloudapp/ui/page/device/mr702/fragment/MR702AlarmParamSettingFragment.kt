@@ -180,7 +180,7 @@ class MR702AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         )
         // 构建雨量报警参数指令
         val rainfallCommand = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_ALARM_MODULE,
+            IOTCommandType.MR_MD_SET_ALARM_MODULE,
             entity.toCommandString()
         )
         commandItems.add(rainfallCommand)
@@ -217,7 +217,7 @@ class MR702AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         )
         // 构建水位报警参数指令
         val waterLevelCommand = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_ALARM_MODULE,
+            IOTCommandType.MR_MD_SET_ALARM_MODULE,
             entity.toCommandString()
         )
         commandItems.add(waterLevelCommand)
@@ -496,14 +496,14 @@ class MR702AlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
         // 查询雨量报警参数
         val rainfallCommand = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_GET_ALARM_MODULE,
+            IOTCommandType.MR_MD_GET_ALARM_MODULE,
             "index=0"
         )
         commandItems.add(rainfallCommand)
 
         // 查询水位报警参数
         val waterLevelCommand = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_GET_ALARM_MODULE,
+            IOTCommandType.MR_MD_GET_ALARM_MODULE,
             "index=1"
         )
         commandItems.add(waterLevelCommand)
@@ -513,10 +513,10 @@ class MR702AlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_ALARM_MODULE -> {
+            IOTCommandType.MR_MD_GET_ALARM_MODULE -> {
                 val result = iotParseManager.parse<MRAlarmModuleParam>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_ALARM_MODULE
+                    IOTCommandType.MR_MD_GET_ALARM_MODULE
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -534,7 +534,7 @@ class MR702AlarmParamSettingFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_SET_ALARM_MODULE -> {
+            IOTCommandType.MR_MD_SET_ALARM_MODULE -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "报警参数保存出错：${result.message}"

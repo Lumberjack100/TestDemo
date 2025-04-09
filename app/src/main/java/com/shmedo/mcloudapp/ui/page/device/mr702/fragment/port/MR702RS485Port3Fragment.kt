@@ -123,23 +123,23 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
     private fun queryInfo() {
         commandItems.clear()
 
-        var command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_RS485_PORT3_SENSOR_STATUS)
+        var command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_RS485_PORT3_MODULE_STATUS)
         commandItems.add(command)
 
         command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_GET_RS485_PORT3_CAMERA_PARAM,
+            IOTCommandType.MR_MD_GET_RS485_PORT3_CAMERA_PARAM,
             "index=0"
         )
         commandItems.add(command)
 
         command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_GET_RS485_PORT3_CAMERA_PARAM,
+            IOTCommandType.MR_MD_GET_RS485_PORT3_CAMERA_PARAM,
             "index=1"
         )
         commandItems.add(command)
 
         command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_GET_RS485_PORT3_CAMERA_PARAM,
+            IOTCommandType.MR_MD_GET_RS485_PORT3_CAMERA_PARAM,
             "index=2"
         )
         commandItems.add(command)
@@ -151,10 +151,10 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
             return
         }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_RS485_PORT3_SENSOR_STATUS -> {
+            IOTCommandType.MR_MD_GET_RS485_PORT3_MODULE_STATUS -> {
                 val result = iotParseManager.parse<MRRS485Port3SensorStatus>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_RS485_PORT3_SENSOR_STATUS
+                    IOTCommandType.MR_MD_GET_RS485_PORT3_MODULE_STATUS
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -172,10 +172,10 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_GET_RS485_PORT3_CAMERA_PARAM -> {
+            IOTCommandType.MR_MD_GET_RS485_PORT3_CAMERA_PARAM -> {
                 val result = iotParseManager.parse<MRRS485Port3CameraParam>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_RS485_PORT3_CAMERA_PARAM
+                    IOTCommandType.MR_MD_GET_RS485_PORT3_CAMERA_PARAM
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {

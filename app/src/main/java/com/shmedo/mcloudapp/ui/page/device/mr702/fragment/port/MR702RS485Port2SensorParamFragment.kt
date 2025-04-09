@@ -279,7 +279,7 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
 //            polycvalue = if (mStates.modelToken.get() == "10066") mStates.polyC.get() else IOTConstants.NULL_KEY
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_RS485_PORT2_SENSOR_PARAM,
+            IOTCommandType.MR_MD_SET_RS485_PORT2_SENSOR_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -296,7 +296,7 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_GET_RS485_PORT2_SENSOR_PARAM,
+            IOTCommandType.MR_MD_GET_RS485_PORT2_SENSOR_PARAM,
             "chl=${sensorItem.chl}"
         )
         commandItems.add(command)
@@ -305,10 +305,10 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_RS485_PORT2_SENSOR_PARAM -> {
+            IOTCommandType.MR_MD_GET_RS485_PORT2_SENSOR_PARAM -> {
                 val result = iotParseManager.parse<MRRS485Port2SensorParam>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_RS485_PORT2_SENSOR_PARAM
+                    IOTCommandType.MR_MD_GET_RS485_PORT2_SENSOR_PARAM
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -326,7 +326,7 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_SET_RS485_PORT2_SENSOR_PARAM -> {
+            IOTCommandType.MR_MD_SET_RS485_PORT2_SENSOR_PARAM -> {
                 setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {

@@ -21,5 +21,5 @@ class MRReportMethodParser: IOTCommandParser<MRReportMethod> {
             }
         }
 
-        override val commandType: IOTCommandType = IOTCommandType.MD_MR_GET_REPORT_METHOD
+        override val commandType: IOTCommandType = IOTCommandType.MR_MD_GET_REPORT_METHOD
 }

@@ -81,12 +81,12 @@ enum class IOTCommandType(val value: String) {
     /**
      * 获取数据链路参数
      */
-    MD_GET_DATA_CENTER("md_getdatacenter"),
+    MD_GET_DATA_CENTER_PARAM("md_getdatacenter"),
 
     /**
      * 设置数据链路参数
      */
-    MD_SET_DATA_CENTER("md_setdatacenter"),
+    MD_SET_DATA_CENTER_PARAM("md_setdatacenter"),
 
     /**
      * 获取日志输出等级和输出方式
@@ -310,7 +310,7 @@ enum class IOTCommandType(val value: String) {
     /**
      * Vms终端遥测
      */
-    VMS_TERMINAL_QUERY_SAMPLE("md_sampleterminal"),
+    VMS_TERMINAL_SAMPLE("md_sampleterminal"),
     // </editor-fold>
 
     //<editor-fold desc="RN20 指令">
@@ -514,7 +514,7 @@ enum class IOTCommandType(val value: String) {
     /**
      * 力矩电机断电重启
      */
-    TORQUE_MOTOR_REBOOT("md_torquemotorreboot"),
+    ADME_MD_TORQUE_MOTOR_REBOOT("md_torquemotorreboot"),
 
     /**
      * 获取ADME的刹车片控制方式
@@ -704,178 +704,177 @@ enum class IOTCommandType(val value: String) {
     /**
      * 基本信息
      */
-    MD_MR_GET_DEVICE_BASE_INFO("md_mrgetdevicebase"),
+    MR_MD_GET_DEVICE_BASE_INFO("md_mrgetdevicebase"),
 
     /**
      * 4G网络配置
      */
-    MD_MR_GET_DATA_NETWORK("md_mrgetdatanetwork"),
-    MD_MR_SET_DATA_NETWORK("md_mrsetdatanetwork"),
+    MR_MD_GET_DATA_NETWORK("md_mrgetdatanetwork"),
+    MR_MD_SET_DATA_NETWORK("md_mrsetdatanetwork"),
 
     /**
      *  有线网络配置
      */
-    MD_MR_GET_WIRED_NETWORK("md_mrgetwirednetwork"),
-    MD_MR_SET_WIRED_NETWORK("md_mrsetwirednetwork"),
+    MR_MD_GET_WIRELESS_NETWORK("md_mrgetwirednetwork"),
+    MR_MD_SET_WIRELESS_NETWORK("md_mrsetwirednetwork"),
 
     /**
      *  终端参数-上报方式
      */
-    MD_MR_GET_REPORT_METHOD("md_mrgetreporttype"),
-    MD_MR_SET_REPORT_METHOD("md_mrsetreporttype"),
+    MR_MD_GET_REPORT_METHOD("md_mrgetreporttype"),
+    MR_MD_SET_REPORT_METHOD("md_mrsetreporttype"),
 
     /**
      *  终端参数-本机屏幕
      */
-    MD_MR_GET_SCREEN_PARAM("md_mrgetscreen"),
-    MD_MR_SET_SCREEN_PARAM("md_mrsetscreen"),
+    MR_MD_GET_SCREEN_PARAM("md_mrgetscreen"),
+    MR_MD_SET_SCREEN_PARAM("md_mrsetscreen"),
 
     /**
      * 获取数据链路状态
      */
-    MD_MR_GET_DATA_CENTER_STATUS("md_mrgetcenterstatus"),
-    MD_MR_GET_DATA_CENTER("md_mrgetdatacenter"),
-    MD_MR_SET_DATA_CENTER("md_mrsetdatacenter"),
+    MR_MD_GET_DATA_CENTER_STATUS("md_mrgetcenterstatus"),
+    MR_MD_GET_DATA_CENTER("md_mrgetdatacenter"),
+    MR_MD_SET_DATA_CENTER("md_mrsetdatacenter"),
 
     /**
      * RS485-端口1 获取采集控制参数配置
      */
-    MD_MR_GET_RS485_PORT1_COLL("md_get485port1_coll"),
-    MD_MR_SET_RS485_PORT1_COLL("md_set485port1_coll"),
+    MR_MD_GET_RS485_PORT1_COLL("md_get485port1_coll"),
+    MR_MD_SET_RS485_PORT1_COLL("md_set485port1_coll"),
 
     /**
      * 传感器状态获取
      */
-    MD_MR_GET_RS485_PORT1_SENSOR("md_get485port1_sensor"),
-    MD_MR_DEL_RS485_PORT1_SENSOR("md_del485port1_param"),
+    MR_MD_GET_RS485_PORT1_SENSOR("md_get485port1_sensor"),
+    MR_MD_DEL_RS485_PORT1_SENSOR("md_del485port1_param"),
 
     /**
      * RS485-端口1 传感器参数获取
      */
-    MD_MR_GET_RS485_PORT1_SENSOR_PARAM("md_get485port1_param"),
-    MD_MR_SET_RS485_PORT1_SENSOR_PARAM("md_set485port1_param"),
+    MR_MD_GET_RS485_PORT1_SENSOR_PARAM("md_get485port1_param"),
+    MR_MD_SET_RS485_PORT1_SENSOR_PARAM("md_set485port1_param"),
 
     /**
      * RS485-端口2 获取采集控制参数配置
      */
-    MD_MR_GET_RS485_PORT2_COLL("md_get485port2_coll"),
-    MD_MR_SET_RS485_PORT2_COLL("md_set485port2_coll"),
+    MR_MD_GET_RS485_PORT2_COLL("md_get485port2_coll"),
+    MR_MD_SET_RS485_PORT2_COLL("md_set485port2_coll"),
 
     /**
      * RS485-端口2 获取串口参数配置
      */
-    MD_MR_GET_RS485_PORT2_UART("md_get485port2_uart"),
-    MD_MR_SET_RS485_PORT2_UART("md_set485port2_uart"),
+    MR_MD_GET_RS485_PORT2_UART("md_get485port2_uart"),
+    MR_MD_SET_RS485_PORT2_UART("md_set485port2_uart"),
 
     /**
      * 传感器状态获取
      */
-    MD_MR_GET_RS485_PORT2_SENSOR("md_get485port2_sensor"),
-    MD_MR_DEL_RS485_PORT2_SENSOR("md_del485port2_param"),
+    MR_MD_GET_RS485_PORT2_SENSOR("md_get485port2_sensor"),
+    MR_MD_DEL_RS485_PORT2_SENSOR("md_del485port2_param"),
 
     /**
      * RS485-端口2 传感器参数获取
      */
-    MD_MR_GET_RS485_PORT2_SENSOR_PARAM("md_get485port2_param"),
-    MD_MR_SET_RS485_PORT2_SENSOR_PARAM("md_set485port2_param"),
+    MR_MD_GET_RS485_PORT2_SENSOR_PARAM("md_get485port2_param"),
+    MR_MD_SET_RS485_PORT2_SENSOR_PARAM("md_set485port2_param"),
 
     /**
      * RS485-3-模块状态
      */
-    MD_MR_GET_RS485_PORT3_SENSOR_STATUS("md_mrgetrs485p3status"),
+    MR_MD_GET_RS485_PORT3_MODULE_STATUS("md_mrgetrs485p3status"),
 
     /**
      * RS485-端口3 太阳能控制器/声光报警器/LED 屏参数获取
      */
-    MD_MR_GET_RS485_PORT3_SENSOR_PARAM("md_mrgetrs485p3param"),
-    MD_MR_SET_RS485_PORT3_SENSOR_PARAM("md_mrsetrs485p3param"),
+    MR_MD_GET_RS485_PORT3_SENSOR_PARAM("md_mrgetrs485p3param"),
+    MR_MD_SET_RS485_PORT3_SENSOR_PARAM("md_mrsetrs485p3param"),
 
     /**
      * RS485-端口3 摄像头参数获取
      */
-    MD_MR_GET_RS485_PORT3_CAMERA_PARAM("md_getrs485cam"),
-    MD_MR_SET_RS485_PORT3_CAMERA_PARAM("md_setrs485cam"),
+    MR_MD_GET_RS485_PORT3_CAMERA_PARAM("md_getrs485cam"),
+    MR_MD_SET_RS485_PORT3_CAMERA_PARAM("md_setrs485cam"),
 
     /**
      * RS232-1-摄像头 参数获取
      */
-    MD_MR_GET_RS232_PORT1_PARAM("md_mrgetrs232p1param"),
-    MD_MR_SET_RS232_PORT1_PARAM("md_mrsetrs232p1param"),
+    MR_MD_GET_RS232_PORT1_PARAM("md_mrgetrs232p1param"),
+    MR_MD_SET_RS232_PORT1_PARAM("md_mrsetrs232p1param"),
 
     /**
      * RS232-2-北斗数据终端 参数获取
      */
-    MD_MR_GET_RS232_PORT2_PARAM("md_mrgetrs232p2param"),
-    MD_MR_SET_RS232_PORT2_PARAM("md_mrsetrs232p2param"),
+    MR_MD_GET_RS232_PORT2_PARAM("md_mrgetrs232p2param"),
+    MR_MD_SET_RS232_PORT2_PARAM("md_mrsetrs232p2param"),
 
     /**
      * 雨量计 参数获取
      */
-    MD_MR_GET_RAIN_GAUGE_PORT_PARAM("md_mrgetraingauge"),
-    MD_MR_SET_RAIN_GAUGE_PORT_PARAM("md_mrsetraingauge"),
+    MR_MD_GET_RAIN_GAUGE_PORT_PARAM("md_mrgetraingauge"),
+    MR_MD_SET_RAIN_GAUGE_PORT_PARAM("md_mrsetraingauge"),
 
     /**
      * 获取、设置脉冲端口参数
      */
-    MD_MR_GET_PULSE_PORT_PARAM("md_mrgetdrygauge"),
-    MD_MR_SET_PULSE_PORT_PARAM("md_mrsetdrygauge"),
+    MR_MD_GET_PULSE_PORT_PARAM("md_mrgetdrygauge"),
+    MR_MD_SET_PULSE_PORT_PARAM("md_mrsetdrygauge"),
 
     /**
      * DO 参数获取
      */
-    MD_MR_GET_DO_PORT_PARAM("md_mrgetdostatus"),
-    MD_MR_SET_DO_PORT_PARAM("md_mrsetdostatus"),
+    MR_MD_GET_DO_PORT_PARAM("md_mrgetdostatus"),
+    MR_MD_SET_DO_PORT_PARAM("md_mrsetdostatus"),
 
     /**
      * DI 参数获取
      */
-    MD_MR_GET_DI_PORT_PARAM("md_mrgetdistatus"),
+    MR_MD_GET_DI_PORT_PARAM("md_mrgetdistatus"),
 
 
     /**
      * 人工置数
      */
-    MD_MR_ARTIFICIAL("md_mrartificial"),
+    MR_MD_ARTIFICIAL("md_mrartificial"),
 
     /**
      * 文件上传
      */
-    MD_MR_UPLOAD_FILE("md_mruploadfile"),
+    MR_MD_FILE_UPLOAD("md_mruploadfile"),
 
     /**
      * 手动拍照
      */
-    MD_MR_TAKE_PHOTOS("md_mrtakephotos"),
+    MR_MD_TAKE_PHOTOS("md_mrtakephotos"),
 
     /**
      * 远程消警
      */
-    MD_MR_RS485_CLEAR_ALARM("md_clearalarm"),
+    MR_MD_RS485_CLEAR_ALARM("md_clearalarm"),
 
     /**
      * 雨量清零
      */
-    MD_MR_RS485_CLEAR_RAIN_GAUGE("md_mrclrraingauge"),
-
+    MR_MD_RS485_CLEAR_RAIN_GAUGE("md_mrclrraingauge"),
 
     /**
      * 库容计算 参数获取
      */
-    MD_MR_GET_RESERVOIR_CAPACITY("md_getkurongparam"),
-    MD_MR_SET_RESERVOIR_CAPACITY("md_setkurongparam"),
+    MR_MD_GET_RESERVOIR_CAPACITY("md_getkurongparam"),
+    MR_MD_SET_RESERVOIR_CAPACITY("md_setkurongparam"),
 
     /**
      * 获取、设置报警参数
      */
-    MD_MR_GET_ALARM_MODULE("md_getalarmmodule"),
-    MD_MR_SET_ALARM_MODULE("md_setalarmmodule"),
+    MR_MD_GET_ALARM_MODULE("md_getalarmmodule"),
+    MR_MD_SET_ALARM_MODULE("md_setalarmmodule"),
 
     // </editor-fold>
 
     /**
      * 语音播报
      */
-    MD_BROADCAST("broadcast"),
+    BROADCAST("broadcast"),
 
     /**
      * 获取终端ID
@@ -947,7 +946,7 @@ enum class IOTCommandType(val value: String) {
     /**
      * 米度一体式泥位计差分定位模式
      */
-    MD_UD_DIFF_LOCATE("md_updatealt"),
+    MD_DIFF_LOCATE("md_updatealt"),
 
     /**
      * 米度一体式泥位计海拔高度测量方式 0:自动(差分)  1:手动
@@ -957,19 +956,19 @@ enum class IOTCommandType(val value: String) {
     /**
      * 米度一体式泥位计
      */
-    MD_SET_MODULE_GAP("md_setmodulegap"),
+    UD_MD_SET_MODULE_GAP("md_setmodulegap"),
 
     /**
      * 一体化设备 485 端口参数配置
      */
-    MD_UD_GET_RS485_PARAM("md_getrs485"),
-    MD_UD_SET_RS485_PARAM("md_setrs485"),
+    UD_MD_GET_RS485_PARAM("md_getrs485"),
+    UD_MD_SET_RS485_PARAM("md_setrs485"),
 
     /**
      * 一体化设备雨量计参数配置
      */
-    MD_UD_GET_RAIN_GAUGE_PARAM("md_getrain"),
-    MD_UD_SET_RAIN_GAUGE_PARAM("md_setrain"),
+    UD_MD_GET_RAIN_GAUGE_PARAM("md_getrain"),
+    UD_MD_SET_RAIN_GAUGE_PARAM("md_setrain"),
 
     /**
      * 米度一体式裂缝计零位校准
@@ -990,13 +989,13 @@ enum class IOTCommandType(val value: String) {
     /**
      * 关闭语音播报
      */
-    MD_SET_VOICE_BROADCAST_VOLUME_OFF("volumeoff"),
+    SET_VOICE_BROADCAST_VOLUME_OFF("volumeoff"),
 
     /**
      * 设置语音播报音量
      */
-    MD_SET_VOICE_BROADCAST_VOLUME("volume"),
-    MD_SET_VOICE_BROADCAST_VOLUME_RESPONSE("volumelevel"),
+    SET_VOICE_BROADCAST_VOLUME("volume"),
+    SET_VOICE_BROADCAST_VOLUME_LEVEL("volumelevel"),
 
     /**
      * 查询/设置安装位置

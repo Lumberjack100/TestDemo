@@ -24,5 +24,5 @@ class MRRS485Port3SensorStatusParser : IOTCommandParser<MRRS485Port3SensorStatus
         }
     }
 
-    override val commandType: IOTCommandType = IOTCommandType.MD_MR_GET_RS485_PORT3_SENSOR_STATUS
+    override val commandType: IOTCommandType = IOTCommandType.MR_MD_GET_RS485_PORT3_MODULE_STATUS
 }

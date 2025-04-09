@@ -346,7 +346,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             switch = "0"
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_DATA_CENTER,
+            IOTCommandType.MR_MD_SET_DATA_CENTER,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -443,7 +443,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             entity.reissue_time = mStates.reissuingDataInterval.get()
         }
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_DATA_CENTER,
+            IOTCommandType.MR_MD_SET_DATA_CENTER,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -459,17 +459,17 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
 
         val entity = CenterNumberEntity(statusItem.centerid.toString())
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_DATA_CENTER, entity)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DATA_CENTER, entity)
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_DATA_CENTER -> {
+            IOTCommandType.MR_MD_GET_DATA_CENTER -> {
                 val result = iotParseManager.parse<MRDataCenterParam>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_DATA_CENTER
+                    IOTCommandType.MR_MD_GET_DATA_CENTER
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -487,7 +487,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_SET_DATA_CENTER -> {
+            IOTCommandType.MR_MD_SET_DATA_CENTER -> {
                 setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {

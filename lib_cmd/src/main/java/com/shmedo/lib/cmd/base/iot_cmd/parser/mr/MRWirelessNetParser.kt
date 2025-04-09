@@ -22,6 +22,6 @@ class MRWirelessNetParser : IOTCommandParser<MRWirelessNet> {
         }
     }
 
-    override val commandType: IOTCommandType = IOTCommandType.MD_MR_GET_DATA_NETWORK
+    override val commandType: IOTCommandType = IOTCommandType.MR_MD_GET_DATA_NETWORK
 
 }

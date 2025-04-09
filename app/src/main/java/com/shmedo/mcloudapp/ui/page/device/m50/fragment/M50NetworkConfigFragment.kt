@@ -140,7 +140,7 @@ class M50NetworkConfigFragment : BaseIOTDeviceFragment() {
             )
         val command =
             IOTCommandUtil.getCommand(
-                IOTCommandType.MD_MR_SET_DATA_NETWORK,
+                IOTCommandType.MR_MD_SET_DATA_NETWORK,
                 networkConfigEntity.toCommandString()
             )
         commandItems.add(command)
@@ -155,7 +155,7 @@ class M50NetworkConfigFragment : BaseIOTDeviceFragment() {
 
     private fun queryData() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_DATA_NETWORK)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DATA_NETWORK)
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -215,11 +215,11 @@ class M50NetworkConfigFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_DATA_NETWORK -> {
+            IOTCommandType.MR_MD_GET_DATA_NETWORK -> {
                 val result =
                     iotParseManager.parse<MRWirelessNet>(
                         cmdStr,
-                        IOTCommandType.MD_MR_GET_DATA_NETWORK
+                        IOTCommandType.MR_MD_GET_DATA_NETWORK
                     )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -235,7 +235,7 @@ class M50NetworkConfigFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_SET_DATA_NETWORK -> {
+            IOTCommandType.MR_MD_SET_DATA_NETWORK -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错: ${result.message}"

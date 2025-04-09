@@ -468,7 +468,7 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
             ngateval = mStates.ngateval.get(),
         )
         var command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_RS485_PORT1_SENSOR_PARAM,
+            IOTCommandType.MR_MD_SET_RS485_PORT1_SENSOR_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -513,7 +513,7 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
             ngateval = mStates.ngateval2.get(),
         )
         command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_RS485_PORT1_SENSOR_PARAM,
+            IOTCommandType.MR_MD_SET_RS485_PORT1_SENSOR_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -615,7 +615,7 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_SET_RS485_PORT1_SENSOR_PARAM -> {
+            IOTCommandType.MR_MD_SET_RS485_PORT1_SENSOR_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错：${result.message}"

@@ -221,7 +221,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
             cam_module = captureFrequencyMinList[captureFrequencyList.indexOf(mStates.captureFrequency.get())],
         )
         var command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_MODULE_GAP,
+            IOTCommandType.UD_MD_SET_MODULE_GAP,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -313,7 +313,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_SET_MODULE_GAP,
+            IOTCommandType.UD_MD_SET_MODULE_GAP,
             IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR -> {
                 super.doCmdResponseResultError(
                     cmdStr = cmdStr,
@@ -365,7 +365,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_DEVICE_STATUS,
             IOTCommandType.MD_SET_SENSOR_INITIAL,
-            IOTCommandType.MD_SET_MODULE_GAP,
+            IOTCommandType.UD_MD_SET_MODULE_GAP,
             IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR -> {
                 dismissLoadingDialog(measureInitialValueLoadingDialogId)
                 super.showNearbyCommunicationTimeoutAlert(
@@ -435,7 +435,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_SET_MODULE_GAP -> {//设置测量间隔
+            IOTCommandType.UD_MD_SET_MODULE_GAP -> {//设置测量间隔
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错: ${result.message}"

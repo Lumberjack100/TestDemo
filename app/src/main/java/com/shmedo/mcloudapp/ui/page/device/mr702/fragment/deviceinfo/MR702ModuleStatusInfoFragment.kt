@@ -78,7 +78,7 @@ class MR702ModuleStatusInfoFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
 
         val entity = MRDeviceInfoEntity(pages = 4, label = 1)
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_DEVICE_BASE_INFO, entity)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO, entity)
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -89,10 +89,10 @@ class MR702ModuleStatusInfoFragment : BaseIOTDeviceFragment() {
             return
         }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_DEVICE_BASE_INFO -> {
+            IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO -> {
                 val result = iotParseManager.parse<MRDeviceInfo>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_DEVICE_BASE_INFO
+                    IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {

@@ -302,7 +302,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         var command = IOTCommandUtil.getCommand(IOTCommandType.GET_WORK_MODE)
         commandItems.add(command)
 
-        command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_DATA_CENTER_STATUS)
+        command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DATA_CENTER_STATUS)
         commandItems.add(command)
 //        showLoadingDialog(StringUtils.getString(R.string.loading))
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -342,10 +342,10 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_GET_DATA_CENTER_STATUS -> {
+            IOTCommandType.MR_MD_GET_DATA_CENTER_STATUS -> {
                 val result = iotParseManager.parse<MRDataCenterStatus>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_DATA_CENTER_STATUS
+                    IOTCommandType.MR_MD_GET_DATA_CENTER_STATUS
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {

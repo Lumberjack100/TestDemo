@@ -289,7 +289,7 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
             switch = "0"
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_RS485_PORT3_CAMERA_PARAM,
+            IOTCommandType.MR_MD_SET_RS485_PORT3_CAMERA_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -321,7 +321,7 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
             workmode = workModelList.indexOf(mStates.workModel.get()).toString(),
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_RS485_PORT3_CAMERA_PARAM,
+            IOTCommandType.MR_MD_SET_RS485_PORT3_CAMERA_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -336,7 +336,7 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_GET_RS485_PORT3_CAMERA_PARAM,
+            IOTCommandType.MR_MD_GET_RS485_PORT3_CAMERA_PARAM,
             "index=$cameraIndex"
         )
         commandItems.add(command)
@@ -345,10 +345,10 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_RS485_PORT3_CAMERA_PARAM -> {
+            IOTCommandType.MR_MD_GET_RS485_PORT3_CAMERA_PARAM -> {
                 val result = iotParseManager.parse<MRRS485Port3CameraParam>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_RS485_PORT3_CAMERA_PARAM
+                    IOTCommandType.MR_MD_GET_RS485_PORT3_CAMERA_PARAM
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -366,7 +366,7 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_SET_RS485_PORT3_CAMERA_PARAM -> {
+            IOTCommandType.MR_MD_SET_RS485_PORT3_CAMERA_PARAM -> {
                 setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {

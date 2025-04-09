@@ -133,7 +133,7 @@ class MR702PlusePortFragment : BaseIOTDeviceFragment() {
             switch = "0"
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_PULSE_PORT_PARAM,
+            IOTCommandType.MR_MD_SET_PULSE_PORT_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -174,7 +174,7 @@ class MR702PlusePortFragment : BaseIOTDeviceFragment() {
             dryelim = mStates.debounceCoefficient.get()
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_PULSE_PORT_PARAM,
+            IOTCommandType.MR_MD_SET_PULSE_PORT_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -189,17 +189,17 @@ class MR702PlusePortFragment : BaseIOTDeviceFragment() {
     private fun queryInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_PULSE_PORT_PARAM)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_PULSE_PORT_PARAM)
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_PULSE_PORT_PARAM -> {
+            IOTCommandType.MR_MD_GET_PULSE_PORT_PARAM -> {
                 val result = iotParseManager.parse<MRPulsePortParam>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_PULSE_PORT_PARAM
+                    IOTCommandType.MR_MD_GET_PULSE_PORT_PARAM
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -217,7 +217,7 @@ class MR702PlusePortFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_SET_PULSE_PORT_PARAM -> {
+            IOTCommandType.MR_MD_SET_PULSE_PORT_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错: ${result.message}"

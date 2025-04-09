@@ -159,7 +159,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
             }
             showMessage("确定重启力矩电机吗？", "温馨提示", "确定", {
                 commandItems.clear()
-                val command = IOTCommandUtil.getCommand(IOTCommandType.TORQUE_MOTOR_REBOOT)
+                val command = IOTCommandUtil.getCommand(IOTCommandType.ADME_MD_TORQUE_MOTOR_REBOOT)
                 commandItems.add(command)
                 showLoadingDialog(StringUtils.getString(R.string.processing))
                 sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -687,7 +687,7 @@ class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.TORQUE_MOTOR_REBOOT -> {//
+            IOTCommandType.ADME_MD_TORQUE_MOTOR_REBOOT -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "重启失败: ${result.message}"

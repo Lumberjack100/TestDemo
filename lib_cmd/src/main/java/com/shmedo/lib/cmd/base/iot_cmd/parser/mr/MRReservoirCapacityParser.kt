@@ -22,5 +22,5 @@ class MRReservoirCapacityParser : IOTCommandParser<MRReservoirCapacity> {
         }
     }
 
-    override val commandType: IOTCommandType = IOTCommandType.MD_MR_GET_RESERVOIR_CAPACITY
+    override val commandType: IOTCommandType = IOTCommandType.MR_MD_GET_RESERVOIR_CAPACITY
 }

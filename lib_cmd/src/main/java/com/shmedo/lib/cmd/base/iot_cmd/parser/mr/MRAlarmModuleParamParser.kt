@@ -32,5 +32,5 @@ class MRAlarmModuleParamParser : IOTCommandParser<MRAlarmModuleParam> {
         }
     }
 
-    override val commandType: IOTCommandType = IOTCommandType.MD_MR_GET_ALARM_MODULE
+    override val commandType: IOTCommandType = IOTCommandType.MR_MD_GET_ALARM_MODULE
 }

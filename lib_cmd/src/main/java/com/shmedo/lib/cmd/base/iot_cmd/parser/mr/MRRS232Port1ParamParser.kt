@@ -27,5 +27,5 @@ class MRRS232Port1ParamParser: IOTCommandParser<MRRS232Port1Param> {
             }
         }
 
-        override val commandType: IOTCommandType = IOTCommandType.MD_MR_GET_RS232_PORT1_PARAM
+        override val commandType: IOTCommandType = IOTCommandType.MR_MD_GET_RS232_PORT1_PARAM
 }
