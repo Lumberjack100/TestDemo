@@ -56,13 +56,13 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 val groupList = mutableListOf<Any>()
 
                 groupList.add(DeviceStatusInfoGroupItem("供电信息"))
-                val externalVoltage = stateInfo.externalVoltage.toDoubleOrNull() ?: -1000.0
+                val externalVoltage = stateInfo.externalVoltage.toDoubleOrNull() ?: Double.MAX_VALUE
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "外部电压",
                     value = if (externalVoltage == 0.0) "0" else stateInfo.externalVoltage.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                     unit = "V",
-                    textColorRes = if ((externalVoltage >= 9 && externalVoltage < 28) || externalVoltage == -1000.0) 0 else ColorUtils.getColor(
+                    textColorRes = if ((externalVoltage >= 9 && externalVoltage < 28) || externalVoltage == Double.MAX_VALUE) 0 else ColorUtils.getColor(
                         R.color.warn_FF9D00
                     ),
                 )
@@ -82,7 +82,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     ) else 0,
                 )
 
-                val batteryVoltage = stateInfo.batteryVoltage.toDoubleOrNull() ?: -1000.0
+                val batteryVoltage = stateInfo.batteryVoltage.toDoubleOrNull() ?: Double.MAX_VALUE
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "电池电压",
@@ -90,34 +90,34 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     unit = "V",
                 )
 
-                val batteryCapacity = stateInfo.batteryCapacity.toDoubleOrNull() ?: -1000.0
+                val batteryCapacity = stateInfo.batteryCapacity.toDoubleOrNull() ?: Double.MAX_VALUE
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "电池电量",
                     value = stateInfo.batteryCapacity.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                     unit = "%",
-                    textColorRes = if (batteryCapacity > 25 || batteryCapacity == -1000.0) 0 else ColorUtils.getColor(
+                    textColorRes = if (batteryCapacity > 25) 0 else ColorUtils.getColor(
                         R.color.warn_FF9D00
                     ),
                 )
 
-                val batteryTemp = stateInfo.batteryTemp.toDoubleOrNull() ?: -1000.0
+                val batteryTemp = stateInfo.batteryTemp.toDoubleOrNull() ?: Double.MAX_VALUE
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "电池温度",
                     value = stateInfo.batteryTemp.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
-                    textColorRes = if (batteryTemp < 80) 0 else ColorUtils.getColor(
+                    textColorRes = if ((batteryTemp > -20 && batteryTemp < 80) || batteryTemp == Double.MAX_VALUE) 0 else ColorUtils.getColor(
                         R.color.warn_FF9D00
                     ),
                     unit = "℃",
                 )
 
-                val batteryHealth = stateInfo.batteryHealth.toDoubleOrNull() ?: -1000.0
+                val batteryHealth = stateInfo.batteryHealth.toDoubleOrNull() ?: Double.MAX_VALUE
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "最大容量",
                     value = stateInfo.batteryHealth.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
-                    textColorRes = if (batteryHealth > 70 || batteryHealth == -1000.0) 0 else ColorUtils.getColor(
+                    textColorRes = if (batteryHealth > 70) 0 else ColorUtils.getColor(
                         R.color.warn_FF9D00
                     ),
                     unit = "%",
@@ -126,12 +126,12 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
                 groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
                 groupList.add(DeviceStatusInfoGroupItem("环境信息"))
-                val internalTemp = stateInfo.internalTemp.toDoubleOrNull() ?: -1000.0
+                val internalTemp = stateInfo.internalTemp.toDoubleOrNull() ?: Double.MAX_VALUE
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "内部温度",
                     value = stateInfo.internalTemp.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
-                    textColorRes = if ((internalTemp > -20 && internalTemp < 70) || internalTemp == -1000.0) 0 else ColorUtils.getColor(
+                    textColorRes = if ((internalTemp > -20 && internalTemp < 70) || internalTemp == Double.MAX_VALUE) 0 else ColorUtils.getColor(
                         R.color.warn_FF9D00
                     ),
                     unit = "℃",

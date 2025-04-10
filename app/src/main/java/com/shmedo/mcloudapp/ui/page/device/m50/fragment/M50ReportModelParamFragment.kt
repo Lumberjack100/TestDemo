@@ -131,6 +131,10 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
                     null, selectedIndex,
                     { position, text ->
                         mStates.workModel.set(text)
+                        // 当"工作模式"配置项选择为"CORS接入"时，网络模式自动设置为"4G传输"
+                        if (text == "CORS接入") {
+                            mStates.networkModel.set("4G传输")
+                        }
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -160,6 +164,12 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
          * 选择网络模式
          */
         fun onNetworkModelChooseClick() {
+            // 当"工作模式"配置项选择为"CORS接入"时，网络模式只能为"4G传输"
+            if (mStates.workModel.get() == "CORS接入") {
+                Toaster.show("CORS接入模式下，网络模式只能选择4G传输")
+                return
+            }
+            
             val selectedIndex = networkModelList.indexOf(mStates.networkModel.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
@@ -204,6 +214,12 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
             val value = mStates.memsThreshold.get().toDouble()
         } catch (ex: Exception) {
             showMessageDialog("请输入正确的MEMS 触发阈值!")
+            return
+        }
+        
+        // 检查CORS接入模式下网络模式是否为4G传输
+        if (mStates.workModel.get() == "CORS接入" && mStates.networkModel.get() != "4G传输") {
+            showMessageDialog("CORS接入模式下，网络模式只能选择4G传输!")
             return
         }
 
@@ -410,7 +426,12 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
             }
             info.networkMode.toIntOrNull()?.let {
                 if (it in networkModelList.indices) {
-                    mStates.networkModel.set(networkModelList[it])
+                    // 如果工作模式为CORS接入，则强制设置网络模式为4G传输
+                    if (mStates.workModel.get() == "CORS接入") {
+                        mStates.networkModel.set("4G传输")
+                    } else {
+                        mStates.networkModel.set(networkModelList[it])
+                    }
                 }
             }
             mStates.memsThreshold.set(info.gateAngleVal1.formatDoubleValue("", 1))
