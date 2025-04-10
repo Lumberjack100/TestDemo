@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.ui.page.device.m50.fragment
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
@@ -44,7 +43,7 @@ import timber.log.Timber
 class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentM50SerialPortParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: M50SerialPortParamViewModel by activityViewModels()
+    private val mStates: M50SerialPortParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val rs232ExternalDeviceList =
@@ -53,7 +52,7 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
         arrayListOf("15分钟/次", "30分钟/次", "1小时/次", "2小时/次")
     private val captureFrequencyMinList =
         arrayListOf("15", "30", "60", "120")//抓拍频率
-    private val imageResolutionList = arrayListOf("1024x768", "1280x960", "1600x1200", "1920x1080")
+    private val imageResolutionList = arrayListOf("1024x768", "1600x1200", "1920x1080")
     private val rs485ExternalDeviceList = arrayListOf("无", "压电式雨量计")
     private val rs485BaudRateList = arrayListOf("2400", "4800", "9600", "14400", "19200")
 
@@ -73,12 +72,12 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentM50SerialPortParamBinding
-        binding.llToolbar.toolbar.title = "串口配置"
+        binding.llToolbar.toolbar.title = "端口配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         initRefresh()
     }
@@ -98,14 +97,16 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         resetDefaultParams()
+        // 保存初始状态
+        mStates.saveInitialState()
     }
 
     private fun resetDefaultParams() {
         mStates.isExternalPower.set(false)
-        mStates.rs232ExternalDevice.set(rs232ExternalDeviceList[0])//默认为 无
-        mStates.captureFrequency.set(captureFrequencyList[captureFrequencyList.lastIndex])//默认为 2小时/次
-        mStates.imageResolution.set(imageResolutionList[2])//默认为 1600x1200
-        mStates.rs485ExternalDevice.set(rs485ExternalDeviceList[0])//默认为 无
+        mStates.rs232ExternalDevice.set(rs232ExternalDeviceList.first())//默认为 无
+        mStates.captureFrequency.set(captureFrequencyList.last())//默认为 2小时/次
+        mStates.imageResolution.set(imageResolutionList[1])//默认为 1600x1200
+        mStates.rs485ExternalDevice.set(rs485ExternalDeviceList.first())//默认为 无
         mStates.rs485BaudRate.set(rs485BaudRateList[2])//默认为 9600
         mStates.rs485ExternalDeviceAddr.set("2")//默认为 2
     }
@@ -179,7 +180,7 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使���一次的弹窗，推荐设置这个
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
                     "", rs485ExternalDeviceList.toTypedArray(),
@@ -242,12 +243,8 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
             cam_module = if (mStates.rs232ExternalDevice.get() == "无") IOTConstants.NULL_KEY else captureFrequencyMinList[captureFrequencyList.indexOf(
                 mStates.captureFrequency.get()
             )],
-            pixx = if (mStates.rs232ExternalDevice.get() == "无") IOTConstants.NULL_KEY else imageResolutionList.indexOf(
-                mStates.imageResolution.get()
-            ).toString(),
-            pixy = if (mStates.rs232ExternalDevice.get() == "无") IOTConstants.NULL_KEY else imageResolutionList.indexOf(
-                mStates.imageResolution.get()
-            ).toString(),
+            pixx = if (mStates.rs232ExternalDevice.get() == "无") IOTConstants.NULL_KEY else mStates.imageResolution.get().split("x")[0],
+            pixy = if (mStates.rs232ExternalDevice.get() == "无") IOTConstants.NULL_KEY else mStates.imageResolution.get().split("x")[1],
             rs485_mode = rs485ExternalDeviceList.indexOf(mStates.rs485ExternalDevice.get())
                 .toString(),
             rs485_baud = rs485BaudRateList.indexOf(mStates.rs485BaudRate.get()).toString(),
@@ -269,9 +266,62 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
 
     private fun queryData() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.M50_MD_SET_SERIAL_PORT,"method=0")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.M50_MD_SET_SERIAL_PORT, "method=0")
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = "设备未响应"
+        )
     }
 
     override fun setResultData(cmdStr: String) {
@@ -299,6 +349,7 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
                             initParamData(result.data as M50SerialPortParam)
                         } else {
                             Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -341,10 +392,21 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
             }
 
             mStates.rs485ExternalDeviceAddr.set(info.rs485_addr)
+
+            // 保存初始状态
+            mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.Forest.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
+    }
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
     }
 
     override fun onResume() {

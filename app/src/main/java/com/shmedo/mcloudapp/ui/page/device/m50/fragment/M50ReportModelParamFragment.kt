@@ -217,7 +217,7 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
                 alarmSwitch = "0"
             )
             val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_CFG_RTK,
+                IOTCommandType.GM_MD_CFG_RTK,
                 entity.toCommandString()
             )
             commandItems.add(command)
@@ -283,7 +283,7 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
             gateDevVal4 = mStates.fourthAlarmThreshold.get()
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_CFG_RTK,
+            IOTCommandType.GM_MD_CFG_RTK,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -299,7 +299,7 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_CFG_RTK,
+            IOTCommandType.GM_MD_CFG_RTK,
             "method=0"
         )
         commandItems.add(command)
@@ -361,11 +361,11 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_CFG_RTK -> {
+            IOTCommandType.GM_MD_CFG_RTK -> {
                 val result = if (cmdStr.contains("method=0"))
                     iotParseManager.parse<RtkParamInfo>(
                         cmdStr,
-                        IOTCommandType.MD_CFG_RTK
+                        IOTCommandType.GM_MD_CFG_RTK
                     )
                 else iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
                 when (result) {

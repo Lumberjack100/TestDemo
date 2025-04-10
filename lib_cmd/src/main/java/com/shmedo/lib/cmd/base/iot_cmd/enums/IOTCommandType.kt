@@ -22,7 +22,6 @@ enum class IOTCommandType(val value: String) {
      */
     QUERY_DEVICE_STATUS("getstatus"),
 
-
     /**
      * 获取设备自检信息
      */
@@ -87,6 +86,17 @@ enum class IOTCommandType(val value: String) {
      * 设置数据链路参数
      */
     MD_SET_DATA_CENTER_PARAM("md_setdatacenter"),
+
+    /**
+     * 查询/设置安装位置
+     */
+    MD_GET_INSTALL_LOCATION("md_getloc"),
+    MD_SET_INSTALL_LOCATION("md_setloc"),
+
+    /**
+     * 设备查找指令
+     */
+    MD_SEARCH_DEVICE("md_searchdev"),
 
     /**
      * 获取日志输出等级和输出方式
@@ -892,7 +902,7 @@ enum class IOTCommandType(val value: String) {
     MD_DEL_TERMINAL_ID("md_delcqterminalid"),
 
     /**
-     *  Lora通讯参数设置
+     * Lora通讯参数设置
      */
     MD_GET_LORA_CTRL("md_getcqloractrl"),
     MD_SET_LORA_CTRL("md_setcqloractrl"),
@@ -908,7 +918,6 @@ enum class IOTCommandType(val value: String) {
      */
     MD_GET_ALRAM_BROADCAST_SWITCH("md_getcqbroadcastswitch"),
     MD_SET_ALRAM_BROADCAST_SWITCH("md_setcqbroadcastswitch"),
-
 
     /**
      * 预警广播参数配置
@@ -949,11 +958,6 @@ enum class IOTCommandType(val value: String) {
     MD_DIFF_LOCATE("md_updatealt"),
 
     /**
-     * 米度一体式泥位计海拔高度测量方式 0:自动(差分)  1:手动
-     */
-    MD_SET_MUD_LEVEL_METER_ALTITUDE_MEASURE_MODE("md_setloc"),
-
-    /**
      * 米度一体式泥位计
      */
     UD_MD_SET_MODULE_GAP("md_setmodulegap"),
@@ -979,12 +983,7 @@ enum class IOTCommandType(val value: String) {
     /**
      * 米度一体式裂缝计初始化
      */
-    MD_SET_LF_INITIAL_VALUE("md_setlfinitial"),
-
-    /**
-     * GNSS-RTK模式配置
-     */
-    MD_CFG_RTK("md_cfgrtkparam"),
+    LF_MD_SET_INITIAL_VALUE("md_setlfinitial"),
 
     /**
      * 关闭语音播报
@@ -998,10 +997,9 @@ enum class IOTCommandType(val value: String) {
     SET_VOICE_BROADCAST_VOLUME_LEVEL("volumelevel"),
 
     /**
-     * 查询/设置安装位置
+     * GNSS-RTK模式配置
      */
-    MD_GET_INSTALL_LOCATION("md_getloc"),
-    MD_SET_INSTALL_LOCATION("md_setloc"),
+    GM_MD_CFG_RTK("md_cfgrtkparam"),
 
     /**
      * M50 串口参数
@@ -1009,14 +1007,19 @@ enum class IOTCommandType(val value: String) {
     M50_MD_SET_SERIAL_PORT("md_gm_setportparam"),
 
     /**
-     * 获取设备卫星状态
+     * 获取 M50 的 CORS 服务参数
      */
-    MD_GET_SATELITE_INFO("md_getskyinfo"),
+    M50_MD_GET_CORS("md_getcors"),
 
     /**
-     * 设备查找指令
+     * 设置 M50 的 CORS 服务参数
      */
-    MD_SEARCH_DEVICE("md_searchdev"),
+    M50_MD_SET_CORS("md_setcors"),
+
+    /**
+     * 获取设备卫星状态
+     */
+    M50_MD_GET_SATELITE_INFO("md_getskyinfo"),
 
     /**
      * 指令透传

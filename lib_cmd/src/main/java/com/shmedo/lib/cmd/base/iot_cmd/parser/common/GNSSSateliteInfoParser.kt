@@ -15,5 +15,5 @@ class GNSSSateliteInfoParser: IOTCommandParser<String> {
         return keyValueMap["sateliteinfo"]!!
     }
 
-    override val commandType: IOTCommandType = IOTCommandType.MD_GET_SATELITE_INFO
+    override val commandType: IOTCommandType = IOTCommandType.M50_MD_GET_SATELITE_INFO
 }

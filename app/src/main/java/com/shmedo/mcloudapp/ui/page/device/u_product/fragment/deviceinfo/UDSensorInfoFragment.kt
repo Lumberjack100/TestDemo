@@ -131,7 +131,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList,
                     name = "内部温度",
                     value = stateInfo.internalTemp.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
-                    textColorRes = if ((internalTemp > -20 && internalTemp < 70) || batteryHealth == -1000.0) 0 else ColorUtils.getColor(
+                    textColorRes = if ((internalTemp > -20 && internalTemp < 70) || internalTemp == -1000.0) 0 else ColorUtils.getColor(
                         R.color.warn_FF9D00
                     ),
                     unit = "℃",
@@ -141,7 +141,10 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "内部湿度",
                     value = stateInfo.internalHumidity.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                     unit = "%",
+                    isBottomItem = true
                 )
+
+                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
                 groupList.add(
                     DeviceStatusInfoGroupItem(
                         "模块信息", bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)
@@ -242,8 +245,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     },
                     textColorRes = if (stateInfo.radioStatus == "-2" || stateInfo.radioStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
-                    ) else 0,
-                    isBottomItem = true
+                    ) else 0
                 )
 
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(

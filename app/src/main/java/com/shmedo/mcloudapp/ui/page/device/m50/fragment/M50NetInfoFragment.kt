@@ -118,6 +118,14 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = stateInfo.bt_connected.compareAndReturn("1", "已连接", "未连接"),
                     textColorRes = if (stateInfo.bt_connected == "1") ColorUtils.getColor(
                         R.color.online_colorPrimary
+                    ) else 0
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "CORS",
+                    value = stateInfo.corsEnableStatus.compareAndReturn("1", "已启用", "未启用"),
+                    textColorRes = if (stateInfo.corsEnableStatus == "1") ColorUtils.getColor(
+                        R.color.online_colorPrimary
                     ) else 0,
                     isBottomItem = true
                 )

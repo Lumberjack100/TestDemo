@@ -34,9 +34,11 @@ data class M50CurrentStateInfo(
     @Json(name = "total_run_time")
     val totalRunTime: String = IOTConstants.NULL_KEY, //累计运行时间  单位：秒 56202
     @Json(name = "work_mode")
-    val workMode: String = IOTConstants.NULL_KEY, //工作模式(1:基站  2:测站)
+    val workMode: String = IOTConstants.NULL_KEY, //工作模式(1：基站 2：测站 3：PPP-B2b 4：CORS接入)
     @Json(name = "rept_mode")
-    val reportMode: String = IOTConstants.NULL_KEY, //上报模式(0:常在线  1:低功耗)
+    val reportMode: String = IOTConstants.NULL_KEY, //上报模式(0：常在线 1：低功耗 2：自适应)
+    @Json(name = "net_mode")
+    val netMode: String = IOTConstants.NULL_KEY, //网络模式(0：4G传输 1：电台传输 2：自动)
     @Json(name = "cap_freq")
     val captureFrequency: String = IOTConstants.NULL_KEY, //抓拍频率(单位：分钟/次)  120
     @Json(name = "emmc_free")
@@ -55,6 +57,8 @@ data class M50CurrentStateInfo(
     @Json(name = "radio_use")
     val radioEnableStatus: String = IOTConstants.NULL_KEY, //电台(0：未启用  1：启用)
     val bt_connected: String = IOTConstants.NULL_KEY, //蓝牙(0：未连接 1：已连接)
+    @Json(name = "cors_use")
+    val corsEnableStatus: String = IOTConstants.NULL_KEY, //CORS(0：未启用  1：启用)
     val dataCenterStatus: String = IOTConstants.NULL_KEY, //数据链路连接状态  "0,0,0,0"
     @Json(name = "dataCenterPlatform")
     val dataCenterPlatformType: String = IOTConstants.NULL_KEY, //数据链路连接平台类型 "2,7,0,0"
@@ -71,6 +75,8 @@ data class M50CurrentStateInfo(
     var scl: String = IOTConstants.NULL_KEY, //倾角加速度状态 OK/FAIL
     @Json(name = "4g")
     var _4g: String = IOTConstants.NULL_KEY, //状态  OK/FAIL  OK，状态正常；FAIL，状态异常
+    @Json(name = "sim_status")
+    var simStatus: String = IOTConstants.NULL_KEY, //SIM 卡状态 OK/FAIL
     var bt: String = IOTConstants.NULL_KEY, //蓝牙状态 OK/FAIL
     var lora: String = IOTConstants.NULL_KEY, // 状态 OK/FAIL
     var sd: String = IOTConstants.NULL_KEY, //emmc状态  OK/FAIL

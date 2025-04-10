@@ -39,5 +39,5 @@ class RtkParamInfoParser : IOTCommandParser<RtkParamInfo> {
         }
     }
 
-    override val commandType: IOTCommandType = IOTCommandType.MD_CFG_RTK
+    override val commandType: IOTCommandType = IOTCommandType.GM_MD_CFG_RTK
 }
