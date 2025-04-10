@@ -153,10 +153,9 @@
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_confirm"
                         style="@style/SubmitButton_Style2"
-                        onClickWithDebouncing="@{()->click.onMeasureHeightClick()}"
+                        onClickWithDebouncing="@{()->click.onConnectClick()}"
                         android:layout_marginTop="@dimen/summit_button_margin_top_20"
-                        android:enabled="@{stateVM.isDataModified}"
-                        android:text="更新海拔高度" />
+                        android:text="确认连接" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>

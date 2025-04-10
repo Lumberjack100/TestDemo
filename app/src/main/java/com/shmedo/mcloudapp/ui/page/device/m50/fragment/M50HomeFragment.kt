@@ -315,7 +315,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                     SensorConfigModule(
                         name = "CORS接入",
                         resID = R.drawable.ic_module_cors,
-                        navId = R.id.action_global_to_udCORSParamFragment
+                        navId = R.id.action_global_to_m50CORSConfigFragment
                     )
                 ),
                 ConfigModule(

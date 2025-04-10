@@ -79,16 +79,16 @@
         tools:layout="@layout/fragment_m50_sensor_config" />
 
     <fragment
-        android:id="@+id/m50CORSConfigFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50CORSConfigFragment"
-        android:label="M50CORSConfigFragment"
-        tools:layout="@layout/fragment_m50_cors_config" />
-
-    <fragment
         android:id="@+id/m50SerialPortParamFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50SerialPortParamFragment"
         android:label="M50SerialPortParamFragment"
         tools:layout="@layout/fragment_m50_serial_port_param" />
+
+    <fragment
+        android:id="@+id/m50CORSConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50CORSConfigFragment"
+        android:label="M50CORSConfigFragment"
+        tools:layout="@layout/fragment_m50_cors_config" />
 
     <fragment
         android:id="@+id/udAlarmParamSettingFragment"
@@ -199,16 +199,16 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_m50CORSConfigFragment"
-        app:destination="@id/m50CORSConfigFragment"
+        android:id="@+id/action_global_to_m50SerialPortParamFragment"
+        app:destination="@id/m50SerialPortParamFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_m50SerialPortParamFragment"
-        app:destination="@id/m50SerialPortParamFragment"
+        android:id="@+id/action_global_to_m50CORSConfigFragment"
+        app:destination="@id/m50CORSConfigFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

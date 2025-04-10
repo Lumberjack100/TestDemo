@@ -54,6 +54,10 @@ data class M50CurrentStateInfo(
     val imei: String = IOTConstants.NULL_KEY,   //865019074780812
     val ccid: String = IOTConstants.NULL_KEY, //898608162623D0102610
     val location: String = IOTConstants.NULL_KEY, //10925.709961E,3111.139160N,33.0862
+    @Json(name = "loc_init_value")
+    val locationInitialValue: String = IOTConstants.NULL_KEY, //GNSS 位置初始值  10925.709961,3111.139160,33.0862
+    @Json(name = "angle_init_value")
+    val angleInitialValue: String = IOTConstants.NULL_KEY, // 倾角初始值  5.55,17.55,89.55
     @Json(name = "radio_use")
     val radioEnableStatus: String = IOTConstants.NULL_KEY, //电台(0：未启用  1：启用)
     val bt_connected: String = IOTConstants.NULL_KEY, //蓝牙(0：未连接 1：已连接)

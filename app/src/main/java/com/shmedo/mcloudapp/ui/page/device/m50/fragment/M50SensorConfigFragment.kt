@@ -8,9 +8,11 @@ import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.u_product.UDInitialValueEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -28,8 +30,10 @@ import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.M50SensorConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -67,10 +71,10 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentM50SensorConfigBinding
         toolbarViewModel.toolbarTitleText.set("传感配置")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            handleBackByCheckDataModified()
+            nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
-            handleBackByCheckDataModified()
+            nav().navigateUp()
         }
         initRefresh()
     }
@@ -99,9 +103,9 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
         mStates.latitude.set("")
         mStates.altitude.set("")
 
-        mStates.xAxisTilt.set("")
-        mStates.yAxisTilt.set("")
-        mStates.zAxisTilt.set("")
+        mStates.xAxis.set("")
+        mStates.yAxis.set("")
+        mStates.zAxis.set("")
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -128,16 +132,8 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
         }
 
         override fun onSubmitButtonClick() {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return
-            }
-            initSaveCommand()
+            processNavigateUp()
         }
-    }
-
-    private fun initSaveCommand() {
-        processNavigateUp()
     }
 
     private fun measureInitialValue(method: String, type: String) {
@@ -167,9 +163,7 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
 
     private fun queryData() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_GET_DEVICE_STATUS, "method=4"
-        )
+        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -184,7 +178,7 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_DEVICE_STATUS -> {
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
                 super.doCmdResponseResultError(
                     cmdStr = cmdStr,
                     errMsg = "查询参数出错: $errMsg",
@@ -252,7 +246,7 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
         errMsg: String
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_DEVICE_STATUS,
+            IOTCommandType.QUERY_DEVICE_STATUS,
             IOTCommandType.MD_SET_SENSOR_INITIAL -> {
                 dismissLoadingDialog(measureInitialValueLoadingDialogId)
                 super.showNearbyCommunicationTimeoutAlert(
@@ -278,10 +272,10 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_DEVICE_STATUS -> {
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
                 val result = iotParseManager.parse<String>(
                     cmdStr,
-                    IOTCommandType.MD_GET_DEVICE_STATUS
+                    IOTCommandType.QUERY_DEVICE_STATUS
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -294,7 +288,7 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        initParamData(result.data)
+                        initM50StatusInfo(result.data)
                     }
                 }
             }
@@ -328,25 +322,32 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initParamData(content: String) {
+    private fun initM50StatusInfo(content: String) {
         launchWithViewLifecycle {
             try {
-//                val m50CurrentStateInfo = withContext(Dispatchers.IO) {
-//                    MoshiUtil.fromJson<M50CurrentStateInfo>(content)
-//                } ?: return@launchWithViewLifecycle
-//
-//                // 设置GNSS配置参数
-//                mStates.longitude.set(m50CurrentStateInfo.longitude)
-//                mStates.latitude.set(m50CurrentStateInfo.latitude)
-//                mStates.altitude.set(m50CurrentStateInfo.altitude)
-//
-//                // 设置倾角配置参数
-//                mStates.xAxisTilt.set(m50CurrentStateInfo.xAxisTilt)
-//                mStates.yAxisTilt.set(m50CurrentStateInfo.yAxisTilt)
-//                mStates.zAxisTilt.set(m50CurrentStateInfo.zAxisTilt)
+                val stateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<M50CurrentStateInfo>(content)
+                } ?: return@launchWithViewLifecycle
 
-                //添加这行来保存初始状态
-                mStates.saveInitialState()
+                //109.709961,31.139160,33.0862
+                stateInfo.locationInitialValue.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                    .let {
+                        if (it.size == 3) {
+                            mStates.longitude.set("E ${it[0]}")
+                            mStates.latitude.set("N ${it[1]}")
+                            mStates.altitude.set(it[2])
+                        }
+                    }
+
+                stateInfo.angleInitialValue.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                    .let {
+                        if (it.size == 3) {
+                            // 设置倾角配置参数
+                            mStates.xAxis.set(it[0])
+                            mStates.yAxis.set(it[1])
+                            mStates.zAxis.set(it[2])
+                        }
+                    }
             } catch (e: Exception) {
                 Timber.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
@@ -362,10 +363,10 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
             val type = resultMap["type"] ?: ""
             resultMap["method"]?.let { code ->
                 when (code) {
-                    "0" -> {
-                        // 处理GNSS位置初始值
+                    "0" -> {//轮询测得的初始值
                         if (type == "1") {
                             if (resultMap.containsKey("lng") && resultMap.containsKey("lat") && resultMap.containsKey("alt")) {
+                                // 处理GNSS位置初始值
                                 dismissLoadingDialog(measureInitialValueLoadingDialogId)
                                 cancelNearbyCommunicationTimeoutJob()
                                 showMessageDialog("初始值更新成功")
@@ -374,8 +375,8 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
                                 val latitude = resultMap["lat"] ?: ""
                                 val altitude = resultMap["alt"] ?: ""
 
-                                mStates.longitude.set("E $longitude°")
-                                mStates.latitude.set("N $latitude°")
+                                mStates.longitude.set("E $longitude")
+                                mStates.latitude.set("N $latitude")
                                 mStates.altitude.set(altitude)
                                 return
                             }
@@ -392,9 +393,9 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
                                 val yAxis = resultMap["yAxis"] ?: ""
                                 val zAxis = resultMap["zAxis"] ?: ""
 
-                                mStates.xAxisTilt.set(xAxis)
-                                mStates.yAxisTilt.set(yAxis)
-                                mStates.zAxisTilt.set(zAxis)
+                                mStates.xAxis.set(xAxis)
+                                mStates.yAxis.set(yAxis)
+                                mStates.zAxis.set(zAxis)
                                 return
                             }
 

@@ -13,9 +13,9 @@ class M50SensorConfigViewModel : BaseStateViewModel() {
     val altitude = NonNullObservableField("") // 高度
 
     // 倾角配置
-    val xAxisTilt = NonNullObservableField("") // X轴倾角值
-    val yAxisTilt = NonNullObservableField("") // Y轴倾角值
-    val zAxisTilt = NonNullObservableField("") // Z轴倾角值
+    val xAxis = NonNullObservableField("") // X轴倾角值
+    val yAxis = NonNullObservableField("") // Y轴倾角值
+    val zAxis = NonNullObservableField("") // Z轴倾角值
 
     init {
         // 在所有字段初始化后调用 registerField()
@@ -29,9 +29,9 @@ class M50SensorConfigViewModel : BaseStateViewModel() {
             "longitude" to longitude.get(),
             "latitude" to latitude.get(),
             "altitude" to altitude.get(),
-            "xAxisTilt" to xAxisTilt.get(),
-            "yAxisTilt" to yAxisTilt.get(),
-            "zAxisTilt" to zAxisTilt.get()
+            "xAxis" to xAxis.get(),
+            "yAxis" to yAxis.get(),
+            "zAxis" to zAxis.get()
         )
         isDataModified.value = false
         isInitializing = false
@@ -42,9 +42,9 @@ class M50SensorConfigViewModel : BaseStateViewModel() {
             longitude,
             latitude,
             altitude,
-            xAxisTilt,
-            yAxisTilt,
-            zAxisTilt
+            xAxis,
+            yAxis,
+            zAxis
         ).forEach { field ->
             field.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
                 override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
@@ -61,9 +61,9 @@ class M50SensorConfigViewModel : BaseStateViewModel() {
                 "longitude" -> longitude.get() != value
                 "latitude" -> latitude.get() != value
                 "altitude" -> altitude.get() != value
-                "xAxisTilt" -> xAxisTilt.get() != value
-                "yAxisTilt" -> yAxisTilt.get() != value
-                "zAxisTilt" -> zAxisTilt.get() != value
+                "xAxis" -> xAxis.get() != value
+                "yAxis" -> yAxis.get() != value
+                "zAxis" -> zAxis.get() != value
                 else -> false
             }
         }

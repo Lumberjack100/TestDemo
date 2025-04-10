@@ -55,7 +55,6 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
-                        android:layout_marginTop="@dimen/page_content_item_margin_top_12"
                         android:background="@drawable/shape_common_click_item_top_corner_4">
 
                         <View
@@ -174,7 +173,7 @@
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:drawableEnd="@null"
-                            android:text="@{stateVM.xAxisTilt}"
+                            android:text="@{stateVM.XAxis}"
                             tools:text="1.5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -193,7 +192,7 @@
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:drawableEnd="@null"
-                            android:text="@{stateVM.yAxisTilt}"
+                            android:text="@{stateVM.YAxis}"
                             tools:text="2.3" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -212,7 +211,7 @@
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable}"
                             android:drawableEnd="@null"
-                            android:text="@{stateVM.zAxisTilt}"
+                            android:text="@{stateVM.ZAxis}"
                             tools:text="0.8" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -237,7 +236,7 @@
                         style="@style/SubmitButton_Style2"
                         onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
                         android:layout_marginTop="@dimen/reset_button_margin_top_50"
-                        android:text="@string/sure_button_text" />
+                        android:text="@string/button_save_text"  />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
