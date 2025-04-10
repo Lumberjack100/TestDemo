@@ -5,6 +5,8 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseStateViewModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 class M50ReportModelParamViewModel : BaseStateViewModel() {
+    val isRadioEnable = NonNullObservableField(true)//电台是否启用
+
     val reportModel = NonNullObservableField("")//上报模式
     val workModel = NonNullObservableField("")//工作模式
     val networkModel = NonNullObservableField("")//网络模式
