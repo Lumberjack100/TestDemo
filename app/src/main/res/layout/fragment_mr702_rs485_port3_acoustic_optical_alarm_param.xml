@@ -314,7 +314,7 @@
                     <!-- 水位报警持续时间 -->
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_GroupItem_Title_Style"
-                        android:text="报警持续时间" />
+                        android:text="水位报警持续时间" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
