@@ -45,7 +45,6 @@ import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DataCenterParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -599,7 +598,6 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                 AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY,
                 bundleOf(AppContants.Extras.REFRESH_DATA_CENTER_STATUS to statusItem.centerid)
             )
-            delay(1500)
             nav().navigateUp()
         }
     }

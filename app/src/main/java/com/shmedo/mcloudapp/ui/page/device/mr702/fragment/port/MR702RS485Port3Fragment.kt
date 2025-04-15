@@ -89,6 +89,18 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
                         R.id.action_mR702PortHomeFragment_to_mR702RS485Port3CameraParamFragment,
                         bundle
                     )
+                } else if (item.sensorName == "声光报警器") {
+                    val bundle =
+                        MR702RS485Port3AcousticOpticalAlarmParamFragment.newBundleArguments(
+                            productType,
+                            communicateWay,
+                            deviceInfo,
+                            bleDevice
+                        )
+                    nav().navigate(
+                        R.id.action_mR702PortHomeFragment_to_mR702RS485Port3AcousticOpticalAlarmParamFragmen,
+                        bundle
+                    )
                 } else {
                     val bundle = MR702RS485Port3SensorParamFragment.newBundleArguments(
                         modelPosition + 1,

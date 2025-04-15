@@ -39,7 +39,6 @@ import com.shmedo.mcloudapp.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702DataCenterParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 
 class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
@@ -409,7 +408,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             type = (transferProtocolList.indexOf(mStates.transferProtocol.get()) + 1).toString(),
             datatype = (dataProtocolList.indexOf(mStates.dataProtocol.get()) + 1).toString(),
             plattype = allPlatformList.indexOf(mStates.platformType.get()).toString(),
-            packtype = if (mStates.platformType.get() == "广东水利平台") {
+            packtype = if (mStates.platformType.get().contains("广东水利")) {
                 when (mStates.guangdongWaterPlatformStationType.get()) {
                     "山洪灾害监测站" -> "0"
                     "河道水情监测站" -> "1"
@@ -656,7 +655,6 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                 AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY,
                 bundleOf(MR702DataCenterHomeFragment.REFRESH_DATA to true)
             )
-            delay(1500)
             nav().navigateUp()
         }
     }

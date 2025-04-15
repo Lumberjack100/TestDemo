@@ -202,7 +202,7 @@
 
                     <!-- 广东水利平台特有配置参数 测站类型(下拉选择框) -->
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        visible="@{stateVM.platformType.equals('广东水利平台')}"
+                        visible='@{stateVM.platformType.equals("广东水利平台")}'
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onGuangdongWaterPlatformStationTypeChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"

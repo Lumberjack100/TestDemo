@@ -15,10 +15,15 @@ class MRAlarmModuleParamParser : IOTCommandParser<MRAlarmModuleParam> {
             index = keyValueMap.getOrDefault("index", index)
             switch = keyValueMap.getOrDefault("switch", switch)
             relay = keyValueMap.getOrDefault("relay", relay)
-            holdtime = keyValueMap.getOrDefault("holdtime", holdtime)
-            gaptime = keyValueMap.getOrDefault("gaptime", gaptime)
-            cleargaptime = keyValueMap.getOrDefault("cleargaptime", cleargaptime)
             warnlevel = keyValueMap.getOrDefault("warnlevel", warnlevel)
+            holdtime1 = keyValueMap.getOrDefault("holdtime1", holdtime1)
+            holdtime2 = keyValueMap.getOrDefault("holdtime2", holdtime2)
+            holdtime3 = keyValueMap.getOrDefault("holdtime3", holdtime3)
+            holdtime4 = keyValueMap.getOrDefault("holdtime4", holdtime4)
+            gaptime1 = keyValueMap.getOrDefault("gaptime1", gaptime1)
+            gaptime2 = keyValueMap.getOrDefault("gaptime2", gaptime2)
+            gaptime3 = keyValueMap.getOrDefault("gaptime3", gaptime3)
+            gaptime4 = keyValueMap.getOrDefault("gaptime4", gaptime4)
             voiceindex1 = keyValueMap.getOrDefault("voiceindex1", voiceindex1)
             voiceindex2 = keyValueMap.getOrDefault("voiceindex2", voiceindex2)
             voiceindex3 = keyValueMap.getOrDefault("voiceindex3", voiceindex3)
@@ -29,6 +34,7 @@ class MRAlarmModuleParamParser : IOTCommandParser<MRAlarmModuleParam> {
             respindex3 = keyValueMap.getOrDefault("respindex3", respindex3)
             respindex4 = keyValueMap.getOrDefault("respindex4", respindex4)
             respindex5 = keyValueMap.getOrDefault("respindex5", respindex5)
+            cleargaptime = keyValueMap.getOrDefault("cleargaptime", cleargaptime)
         }
     }
 

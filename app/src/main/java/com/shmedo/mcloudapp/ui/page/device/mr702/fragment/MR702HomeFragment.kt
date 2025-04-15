@@ -31,7 +31,6 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
-import com.shmedo.mcloudapp.model.AlarmConfigModule
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.ConfigModule
@@ -505,15 +504,15 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         moduleList.add(
             ConfigModule(MR702TerminalParameterModule(navId = R.id.action_mR702HomeFragment_to_mR702TerminalParameterFragment))
         )
-        moduleList.add(
-            ConfigModule(
-                AlarmConfigModule(
-                    name = "报警设置",
-                    desc = "水位或雨量阈值触发",
-                    navId = R.id.action_global_to_alarmSettingFragment
-                )
-            )
-        )
+//        moduleList.add(
+//            ConfigModule(
+//                AlarmConfigModule(
+//                    name = "报警设置",
+//                    desc = "水位或雨量阈值触发",
+//                    navId = R.id.action_global_to_alarmSettingFragment
+//                )
+//            )
+//        )
         moduleList.add(
             ConfigModule(DeviceOperationModule(navId = R.id.action_global_to_mR702EquipmentOperationFragment))
         )

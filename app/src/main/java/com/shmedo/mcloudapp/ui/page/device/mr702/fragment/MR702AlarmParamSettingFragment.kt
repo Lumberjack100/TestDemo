@@ -148,49 +148,12 @@ class MR702AlarmParamSettingFragment : BaseIOTDeviceFragment() {
             return
         }
         commandItems.clear()
-        var entity = MRAlarmModuleParamEntity(
-            index = "0",
-            switch = if (mStates.rainfallFunctionEnabled.get()) "1" else "0",
-            relay = if (mStates.rainfallRelayK.get()) "1" else "0",
-            holdtime = mStates.rainfallHoldTime.get(),
-            gaptime = mStates.rainfallGapTime.get(),
-            cleargaptime = mStates.rainfallClearGapTime.get(),
-            warnlevel = mStates.getRainfallWarnLevelString(),
-            voiceindex1 = mStates.generateVoiceCommand(
-                mStates.rainfallBroadcastTimes.get(),
-                mStates.rainfallVoiceIndex1.get()
-            ),
-            voiceindex2 = mStates.generateVoiceCommand(
-                mStates.rainfallBroadcastTimes.get(),
-                mStates.rainfallVoiceIndex2.get()
-            ),
-            voiceindex3 = mStates.generateVoiceCommand(
-                mStates.rainfallBroadcastTimes.get(),
-                mStates.rainfallVoiceIndex3.get()
-            ),
-            voiceindex4 = mStates.generateVoiceCommand(
-                mStates.rainfallBroadcastTimes.get(),
-                mStates.rainfallVoiceIndex4.get()
-            ),
-            respindex1 = mStates.defaultRespCommand,
-            respindex2 = mStates.defaultRespCommand,
-            respindex3 = mStates.defaultRespCommand,
-            respindex4 = mStates.defaultRespCommand,
-            respindex5 = mStates.defaultRespCommand
-        )
-        // 构建雨量报警参数指令
-        val rainfallCommand = IOTCommandUtil.getCommand(
-            IOTCommandType.MR_MD_SET_ALARM_MODULE,
-            entity.toCommandString()
-        )
-        commandItems.add(rainfallCommand)
 
-        entity = MRAlarmModuleParamEntity(
+
+        val entity = MRAlarmModuleParamEntity(
             index = "1",
             switch = if (mStates.waterLevelFunctionEnabled.get()) "1" else "0",
             relay = if (mStates.waterLevelRelayK.get()) "1" else "0",
-            holdtime = mStates.waterLevelHoldTime.get(),
-            gaptime = mStates.waterLevelGapTime.get(),
             cleargaptime = mStates.waterLevelClearGapTime.get(),
             warnlevel = mStates.getWaterLevelWarnLevelString(),
             voiceindex1 = mStates.generateVoiceCommand(
@@ -239,7 +202,7 @@ class MR702AlarmParamSettingFragment : BaseIOTDeviceFragment() {
             showMessageDialog("请输入雨量消警间隔时间")
             return false
         }
-        if(mStates.rainfallBroadcastTimes.get().isEmpty()) {
+        if (mStates.rainfallBroadcastTimes.get().isEmpty()) {
             showMessageDialog("请输入雨量广播次数")
             return false
         }
@@ -370,7 +333,7 @@ class MR702AlarmParamSettingFragment : BaseIOTDeviceFragment() {
             showMessageDialog("请输入水位消警间隔时间")
             return false
         }
-        if(mStates.waterfallBroadcastTimes.get().isEmpty()) {
+        if (mStates.waterfallBroadcastTimes.get().isEmpty()) {
             showMessageDialog("请输入水位广播次数")
             return false
         }
@@ -568,8 +531,8 @@ class MR702AlarmParamSettingFragment : BaseIOTDeviceFragment() {
                     // 雨量报警参数
                     mStates.rainfallFunctionEnabled.set(alarmModuleParam.switch == "1")
                     mStates.rainfallRelayK.set(alarmModuleParam.relay == "1")
-                    mStates.rainfallHoldTime.set(alarmModuleParam.holdtime)
-                    mStates.rainfallGapTime.set(alarmModuleParam.gaptime)
+//                    mStates.rainfallHoldTime.set(alarmModuleParam.holdtime)
+//                    mStates.rainfallGapTime.set(alarmModuleParam.gaptime)
                     mStates.rainfallClearGapTime.set(alarmModuleParam.cleargaptime)
                     mStates.rainfallBroadcastTimes.set(mStates.getBroadcastTimes(alarmModuleParam.voiceindex1))
                     mStates.setRainfallWarnLevels(alarmModuleParam.warnlevel)
@@ -582,8 +545,8 @@ class MR702AlarmParamSettingFragment : BaseIOTDeviceFragment() {
                     // 水位报警参数
                     mStates.waterLevelFunctionEnabled.set(alarmModuleParam.switch == "1")
                     mStates.waterLevelRelayK.set(alarmModuleParam.relay == "1")
-                    mStates.waterLevelHoldTime.set(alarmModuleParam.holdtime)
-                    mStates.waterLevelGapTime.set(alarmModuleParam.gaptime)
+//                    mStates.waterLevelHoldTime.set(alarmModuleParam.holdtime)
+//                    mStates.waterLevelGapTime.set(alarmModuleParam.gaptime)
                     mStates.waterLevelClearGapTime.set(alarmModuleParam.cleargaptime)
                     mStates.waterfallBroadcastTimes.set(mStates.getBroadcastTimes(alarmModuleParam.voiceindex1))
                     mStates.setWaterLevelWarnLevels(alarmModuleParam.warnlevel)
