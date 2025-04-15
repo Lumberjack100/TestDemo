@@ -25,6 +25,7 @@ class MRDataCenterParser : IOTCommandParser<MRDataCenterParam> {
             addr = keyValueMap.getOrDefault("addr", addr)
             port = keyValueMap.getOrDefault("port", port)
             plattype = keyValueMap.getOrDefault("plattype", plattype)
+            packtype = keyValueMap.getOrDefault("packtype", packtype)
             datatype = keyValueMap.getOrDefault("datatype", datatype)
             projid = keyValueMap.getOrDefault("projid", projid)
             deviceid = keyValueMap.getOrDefault("deviceid", deviceid)

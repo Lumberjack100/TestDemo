@@ -32,6 +32,7 @@ import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommonModule
 import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.DeviceLogUploadModule
+import com.shmedo.mcloudapp.model.MR702CleanClearAlarmModule
 import com.shmedo.mcloudapp.model.MR702ManualPhotoTakingModule
 import com.shmedo.mcloudapp.model.MR702ManualSettingModule
 import com.shmedo.mcloudapp.model.MR702ParameterExportModule
@@ -207,6 +208,23 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList(isStartTimeoutJob = true)
                     },
                     "取消"
+                )
+            }
+
+            is MR702CleanClearAlarmModule -> {//清除消警
+                showMessage(
+                    "是否执行清除消警？",
+                    "温馨提示",
+                    "确定",
+                    {
+                        commandItems.clear()
+                        val command =
+                            IOTCommandUtil.getCommand(IOTCommandType.MR_MD_CLEAN_CLEAR_ALARM)
+                        commandItems.add(command)
+
+                        takePhotoLoadingDialogId =
+                            showLoadingWithUUID(StringUtils.getString(R.string.processing))
+                    }
                 )
             }
 
@@ -454,6 +472,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MR_MD_TAKE_PHOTOS,
             IOTCommandType.MR_MD_RS485_CLEAR_ALARM,
+            IOTCommandType.MR_MD_CLEAN_CLEAR_ALARM,
             IOTCommandType.MR_MD_RS485_CLEAR_RAIN_GAUGE -> {
                 dismissLoadingDialog(takePhotoLoadingDialogId)
                 super.doCmdResponseResultError(
@@ -484,6 +503,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MR_MD_TAKE_PHOTOS,
             IOTCommandType.MR_MD_RS485_CLEAR_ALARM,
+            IOTCommandType.MR_MD_CLEAN_CLEAR_ALARM,
             IOTCommandType.MR_MD_RS485_CLEAR_RAIN_GAUGE -> {
                 dismissLoadingDialog(takePhotoLoadingDialogId)
                 super.doCmdResponseResultTimeOut(
@@ -512,6 +532,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MR_MD_TAKE_PHOTOS,
             IOTCommandType.MR_MD_RS485_CLEAR_ALARM,
+            IOTCommandType.MR_MD_CLEAN_CLEAR_ALARM,
             IOTCommandType.MR_MD_RS485_CLEAR_RAIN_GAUGE -> {
                 dismissLoadingDialog(takePhotoLoadingDialogId)
                 super.showNearbyCommunicationTimeoutAlert(
@@ -739,6 +760,28 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            IOTCommandType.MR_MD_CLEAN_CLEAR_ALARM -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        dismissLoadingDialog(takePhotoLoadingDialogId)
+                        val errMsg = "清除消警失败: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            dismissLoadingDialog(takePhotoLoadingDialogId)
+                            Toaster.show(ToastParams().apply {
+                                text = "清除消警成功"
+                                duration = 1000
+                            })
+                        }
+                    }
+                }
+            }
+                        
+
             IOTCommandType.MR_MD_RS485_CLEAR_RAIN_GAUGE -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
@@ -784,6 +827,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                 )
             ),
             ConfigModule(MR702Remote485SilenceModule()),
+            ConfigModule(MR702CleanClearAlarmModule()),
             ConfigModule(MR702RainSetZeroModule()),
         )
 

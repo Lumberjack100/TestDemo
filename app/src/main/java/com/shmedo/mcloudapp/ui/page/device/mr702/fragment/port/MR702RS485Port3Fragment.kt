@@ -12,6 +12,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRRS485Port3CameraParam
+import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRRS485Port3SensorParam
 import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRRS485Port3SensorStatus
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
@@ -127,6 +128,18 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
         commandItems.add(command)
 
         command = IOTCommandUtil.getCommand(
+            IOTCommandType.MR_MD_GET_RS485_PORT3_SENSOR_PARAM,
+            "device=2"
+        )
+        commandItems.add(command)
+
+        command = IOTCommandUtil.getCommand(
+            IOTCommandType.MR_MD_GET_RS485_PORT3_SENSOR_PARAM,
+            "device=3"
+        )
+        commandItems.add(command)
+
+        command = IOTCommandUtil.getCommand(
             IOTCommandType.MR_MD_GET_RS485_PORT3_CAMERA_PARAM,
             "index=0"
         )
@@ -167,7 +180,28 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {
                             binding.refreshLayout.finish()
                         }
-                        initSensorData(result.data)
+                        initSolarSensorData(result.data)
+                    }
+                }
+            }
+
+            IOTCommandType.MR_MD_GET_RS485_PORT3_SENSOR_PARAM -> {
+                val result = iotParseManager.parse<MRRS485Port3SensorParam>(
+                    cmdStr,
+                    IOTCommandType.MR_MD_GET_RS485_PORT3_SENSOR_PARAM
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询参数出错: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initAudibleAndLedData(result.data)
                     }
                 }
             }
@@ -199,7 +233,10 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initSensorData(sensorStatus: MRRS485Port3SensorStatus) {
+    /**
+     * 处理太阳能控制器接入状态
+     */
+    private fun initSolarSensorData(sensorStatus: MRRS485Port3SensorStatus) {
         binding.rv.models = arrayListOf()
         var item = MRSensorItem(
             isPlugin = sensorStatus.solarstatus == "1",
@@ -210,26 +247,20 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
         )
         binding.rv.mutable.add(item)
         binding.rv.bindingAdapter.notifyItemInserted(binding.rv.bindingAdapter.modelCount)
+    }
 
-        item = MRSensorItem(
-            isPlugin = sensorStatus.ysstatus == "1",
-            addr = sensorStatus.ysid,
-            addrDesc = "地址-${sensorStatus.ysid}",
-            sensorName = "声光报警器",
-            isShowDel = false
-        )
-        binding.rv.mutable.add(item)
-        binding.rv.bindingAdapter.notifyItemInserted(binding.rv.bindingAdapter.modelCount)
-
-        item = MRSensorItem(
-            isPlugin = sensorStatus.ledstatus == "1",
-            addr = sensorStatus.ledid,
-            addrDesc = "地址-${sensorStatus.ledid}",
-            sensorName = "LED屏",
-            isShowDel = false
-        )
-        binding.rv.mutable.add(item)
-        binding.rv.bindingAdapter.notifyItemInserted(binding.rv.bindingAdapter.modelCount)
+    private fun initAudibleAndLedData(sensorParam: MRRS485Port3SensorParam) {
+        if (sensorParam.device != "1") {
+            val item = MRSensorItem(
+                isPlugin = sensorParam.switch == "1",
+                addr = sensorParam.addr,
+                addrDesc = "地址-${sensorParam.addr}",
+                sensorName = if (sensorParam.device == "2") "声光报警器" else "LED屏",
+                isShowDel = false
+            )
+            binding.rv.mutable.add(item)
+            binding.rv.bindingAdapter.notifyItemInserted(binding.rv.bindingAdapter.modelCount)
+        }
     }
 
     private fun initCameraData(cameraParam: MRRS485Port3CameraParam) {

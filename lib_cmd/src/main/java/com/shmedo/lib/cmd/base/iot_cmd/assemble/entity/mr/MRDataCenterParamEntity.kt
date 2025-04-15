@@ -45,6 +45,11 @@ data class MRDataCenterParamEntity(
     var maintain_report: String = IOTConstants.NULL_KEY,//维持报开关  0:关闭 1:开启
     var valid_day: String = IOTConstants.NULL_KEY, //补发数据有效天数 1-180
     var reissue_time: String = IOTConstants.NULL_KEY, //数据补发间隔 (min)
+
+    /**
+     * 广东水利平台特有配置参数
+     */
+    var packtype: String = IOTConstants.NULL_KEY, //测站类型
 ){
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)

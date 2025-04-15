@@ -37,6 +37,7 @@ data class MRRS485Port1SensorParam(
 
     var kvalue: String = "",//灵敏度K         计算方式为"线性方程计算"时，启用此参数
     var bvalue: String = "",//温度修正系数 b   计算方式为"线性方程计算"时，启用此参数
+    var powvalue: String = "",//指数   计算方式为"线性方程计算"时，启用此参数
     var r0value: String = "",//初始频率 F0    计算方式为"线性方程计算"时，启用此参数
     var t0value: String = "",//初始温度 T0    计算方式为"线性方程计算"时，启用此参数
     var l0value: String = "",//初始水位       计算方式为"线性方程计算"时，启用此参数

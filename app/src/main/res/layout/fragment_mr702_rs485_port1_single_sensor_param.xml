@@ -271,6 +271,24 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
+                            android:text="指数" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            android:hint="请输入"
+                            android:inputType="numberDecimal|numberSigned"
+                            android:maxLength="10"
+                            android:text="@={stateVM.powValue}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        visible='@{stateVM.calculate=="线性方程计算"}'
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
                             android:text="初始频率F0值" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText

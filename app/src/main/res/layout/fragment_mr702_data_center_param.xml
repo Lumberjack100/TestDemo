@@ -200,6 +200,30 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
+                    <!-- 广东水利平台特有配置参数 测站类型(下拉选择框) -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        visible="@{stateVM.platformType.equals('广东水利平台')}"
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        onClickWithDebouncing="@{()->click.onGuangdongWaterPlatformStationTypeChooseClick()}"
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:text="测站类型" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:drawableEnd="@drawable/ic_arrow_down"
+                            android:text="@{stateVM.guangdongWaterPlatformStationType}"
+                            tools:text="山洪灾害监测站" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
                         visible='@{stateVM.dataProtocol.equals("MQTTS")}'
@@ -214,9 +238,9 @@
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:text="@={stateVM.telemetryStationAddr}"
                             app:inputTypeFilter='@{"character"}'
-                            app:lengthFilter="@{20}"
-                            android:text="@={stateVM.telemetryStationAddr}" />
+                            app:lengthFilter="@{20}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

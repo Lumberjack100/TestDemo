@@ -143,6 +143,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
         mStates.calculate.set(calculateList[0])//计算方式 默认不计算
         mStates.sensitivityK.set("0")
         mStates.temperatureCorrectionCoefficientB.set("0")
+        mStates.powValue.set("0")
         mStates.initialFrequencyF0.set("0")
         mStates.initialTemperatureT0.set("0")
         mStates.initialWaterLevel.set("0")
@@ -386,6 +387,8 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
                 IOTConstants.NULL_KEY,
             bvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.temperatureCorrectionCoefficientB.get() else
                 IOTConstants.NULL_KEY,
+            powvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.powValue.get() else
+                IOTConstants.NULL_KEY,
             r0value = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialFrequencyF0.get() else
                 IOTConstants.NULL_KEY,
             t0value = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialTemperatureT0.get() else
@@ -561,6 +564,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
                     }
                     mStates.sensitivityK.set(sensorParam.kvalue.replace("-nan", "0").replace("nan", "0"))
                     mStates.temperatureCorrectionCoefficientB.set(sensorParam.bvalue.replace("-nan", "0").replace("nan", "0"))
+                    mStates.powValue.set(sensorParam.powvalue.replace("-nan", "0").replace("nan", "0"))
                     mStates.initialFrequencyF0.set(sensorParam.r0value.replace("-nan", "0").replace("nan", "0"))
                     mStates.initialTemperatureT0.set(sensorParam.t0value.replace("-nan", "0").replace("nan", "0"))
                     mStates.initialWaterLevel.set(sensorParam.l0value.replace("-nan", "0").replace("nan", "0"))

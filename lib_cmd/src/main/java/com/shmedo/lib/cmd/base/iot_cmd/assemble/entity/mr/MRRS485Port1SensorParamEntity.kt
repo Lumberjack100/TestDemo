@@ -36,6 +36,7 @@ data class MRRS485Port1SensorParamEntity(
 
     val kvalue: String = IOTConstants.NULL_KEY,//灵敏度K         计算方式为"线性方程计算"时，启用此参数
     val bvalue: String = IOTConstants.NULL_KEY,//温度修正系数 b   计算方式为"线性方程计算"时，启用此参数
+    val powvalue: String = IOTConstants.NULL_KEY,//指数   计算方式为"线性方程计算"时，启用此参数
     val r0value: String = IOTConstants.NULL_KEY,//初始频率 F0    计算方式为"线性方程计算"时，启用此参数
     val t0value: String = IOTConstants.NULL_KEY,//初始温度 T0    计算方式为"线性方程计算"时，启用此参数
     val l0value: String = IOTConstants.NULL_KEY,//初始水位       计算方式为"线性方程计算"时，启用此参数

@@ -56,7 +56,11 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
 
     private val dataProtocolList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_data_protocol) }
     private val allPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
-
+    private val guangdongWaterPlatformStationTypeList by lazy {
+        Utils.getApp().resources.getStringArray(
+            R.array.guangdong_water_platform_station_type
+        )
+    }
 
     override fun initViewModel() {
         super.initViewModel()
@@ -122,6 +126,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.transferProtocol.set(transferProtocolList[0])//默认选择TCP
         mStates.dataProtocol.set("MQTT")//默认选择
         mStates.platformType.set(allPlatformList[2])//默认选择米度物联平台
+        mStates.guangdongWaterPlatformStationType.set(guangdongWaterPlatformStationTypeList[0])//默认选择山洪灾害监测站
 
         mStates.isMqttItemVisible.set(true)
         mStates.productId.set("")//
@@ -302,6 +307,25 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
+        /** 广东水利平台测站类型 */
+        fun onGuangdongWaterPlatformStationTypeChooseClick() {
+            val selectedIndex =
+                guangdongWaterPlatformStationTypeList.indexOf(mStates.guangdongWaterPlatformStationType.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "请选择测站类型", guangdongWaterPlatformStationTypeList,
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.guangdongWaterPlatformStationType.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
         /**
          * 测站分类
          */
@@ -384,7 +408,18 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             level = (ipLevelList.indexOf(mStates.ipLeve.get()) + 1).toString(),
             type = (transferProtocolList.indexOf(mStates.transferProtocol.get()) + 1).toString(),
             datatype = (dataProtocolList.indexOf(mStates.dataProtocol.get()) + 1).toString(),
-            plattype = allPlatformList.indexOf(mStates.platformType.get()).toString()
+            plattype = allPlatformList.indexOf(mStates.platformType.get()).toString(),
+            packtype = if (mStates.platformType.get() == "广东水利平台") {
+                when (mStates.guangdongWaterPlatformStationType.get()) {
+                    "山洪灾害监测站" -> "0"
+                    "河道水情监测站" -> "1"
+                    "沉降监测站" -> "3"
+                    "水质监测站" -> "4"
+                    "雨量监测站" -> "5"
+                    "流量监测站" -> "6"
+                    else -> IOTConstants.NULL_KEY
+                }
+            } else IOTConstants.NULL_KEY
         )
         if (mStates.dataProtocol.get() == "MQTT" || mStates.dataProtocol.get() == "MQTTS") {//MQTT
             //当产品 ID、设备 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
@@ -566,6 +601,17 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             if (it in allPlatformList.indices) {
                 mStates.platformType.set(allPlatformList[it])
             }
+        }
+
+        // Handle packtype for Guangdong Water Platform station types
+        // The mapping is: 0=山洪灾害监测站, 1=河道水情监测站, 3=沉降监测站, 4=水质监测站, 5=雨量监测站, 6=流量监测站
+        when (data.packtype) {
+            "0" -> mStates.guangdongWaterPlatformStationType.set("山洪灾害监测站")
+            "1" -> mStates.guangdongWaterPlatformStationType.set("河道水情监测站")
+            "3" -> mStates.guangdongWaterPlatformStationType.set("沉降监测站")
+            "4" -> mStates.guangdongWaterPlatformStationType.set("水质监测站")
+            "5" -> mStates.guangdongWaterPlatformStationType.set("雨量监测站")
+            "6" -> mStates.guangdongWaterPlatformStationType.set("流量监测站")
         }
 
         //MQTT 协议参数

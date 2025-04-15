@@ -123,6 +123,7 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
         mStates.calculate.set(calculateList[0])//计算方式 默认不计算
         mStates.sensitivityK.set("1")//
         mStates.temperatureCorrectionCoefficientB.set("0")
+        mStates.powValue.set("0")
         mStates.initialFrequencyF0.set("0")
         mStates.initialTemperatureT0.set("0")
         mStates.initialWaterLevel.set("0")
@@ -368,6 +369,8 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
             kvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.sensitivityK.get() else
                 IOTConstants.NULL_KEY,
             bvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.temperatureCorrectionCoefficientB.get() else
+                IOTConstants.NULL_KEY,
+            powvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.powValue.get() else
                 IOTConstants.NULL_KEY,
             r0value = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialFrequencyF0.get() else
                 IOTConstants.NULL_KEY,
