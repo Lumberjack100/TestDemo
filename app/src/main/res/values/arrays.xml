@@ -49,6 +49,16 @@
         <item>湖北生态流量平台</item>
     </string-array>
 
+    <!-- 广东水利平台测站类型-->
+    <string-array name="guangdong_water_platform_station_type">
+        <item>山洪灾害监测站</item>
+        <item>河道水情监测站</item>
+        <item>沉降监测站</item>
+        <item>水质监测站</item>
+        <item>雨量监测站</item>
+        <item>流量监测站</item>
+    </string-array>
+
     <string-array name="baud_rates">
         <item>2400</item>
         <item>9600</item>
@@ -204,6 +214,9 @@
         <item>双浮点型BADCFEHG</item>
         <item>双浮点型EFGHABCD</item>
         <item>AB整数,CD小数</item>
+        <item>双精度浮点型GHEFCDAB</item>
+        <item>双精度浮点型HGFEDCBA</item>
+        <item>无符号六字节ABCDEF</item>
     </string-array>
 
     <!-- 解算方式-->
@@ -240,6 +253,17 @@
         <item>640*480</item>
         <item>1280*720</item>
         <item>1920*1080</item>
+    </string-array>
+
+    <string-array name="mr_rs232_port1_quality">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
     </string-array>
 
     <string-array name="mr_rs232_port1_work_model">

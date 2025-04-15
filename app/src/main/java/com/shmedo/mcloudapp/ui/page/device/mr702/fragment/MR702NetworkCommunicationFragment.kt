@@ -169,7 +169,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
             switch = "0"
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_DATA_NETWORK,
+            IOTCommandType.MR_MD_SET_DATA_NETWORK,
             wirelessNetEntity.toCommandString()
         )
         commandItems.add(command)
@@ -183,7 +183,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
             switch = "0"
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_WIRED_NETWORK,
+            IOTCommandType.MR_MD_SET_WIRELESS_NETWORK,
             wiredNetEntity.toCommandString()
         )
         commandItems.add(command)
@@ -214,7 +214,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                 password = mStates.pwd.get().ifEmpty { IOTConstants.NULL_KEY }
             )
             val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_MR_SET_DATA_NETWORK,
+                IOTCommandType.MR_MD_SET_DATA_NETWORK,
                 wirelessNetEntity.toCommandString()
             )
             commandItems.add(command)
@@ -254,7 +254,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
 //                dnss = mStates.alternateDNS.get()
             )
             val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_MR_SET_WIRED_NETWORK,
+                IOTCommandType.MR_MD_SET_WIRELESS_NETWORK,
                 wiredNetEntity.toCommandString()
             )
             commandItems.add(command)
@@ -270,10 +270,10 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
 
-        var command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_DATA_NETWORK)
+        var command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DATA_NETWORK)
         commandItems.add(command)
 
-        command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_WIRED_NETWORK)
+        command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_WIRELESS_NETWORK)
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.loading))
@@ -282,10 +282,10 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_DATA_NETWORK -> {
+            IOTCommandType.MR_MD_GET_DATA_NETWORK -> {
                 val result = iotParseManager.parse<MRWirelessNet>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_DATA_NETWORK
+                    IOTCommandType.MR_MD_GET_DATA_NETWORK
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -301,10 +301,10 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_GET_WIRED_NETWORK -> {
+            IOTCommandType.MR_MD_GET_WIRELESS_NETWORK -> {
                 val result = iotParseManager.parse<MRWiredNet>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_WIRED_NETWORK
+                    IOTCommandType.MR_MD_GET_WIRELESS_NETWORK
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -320,7 +320,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_SET_DATA_NETWORK -> {
+            IOTCommandType.MR_MD_SET_DATA_NETWORK -> {
                 setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
@@ -337,7 +337,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_SET_WIRED_NETWORK -> {
+            IOTCommandType.MR_MD_SET_WIRELESS_NETWORK -> {
                 setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {

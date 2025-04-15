@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m50
+package com.shmedo.mcloudapp.ui.page.device.m50.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -69,7 +69,7 @@ class M50SatelliteInfoFragment : BaseIOTDeviceFragment() {
     private fun queryInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_SATELITE_INFO)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.M50_MD_GET_SATELITE_INFO)
         commandItems.add(command)
         showLoadingDialog(StringUtils.getString(R.string.loading))
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -81,10 +81,10 @@ class M50SatelliteInfoFragment : BaseIOTDeviceFragment() {
             return
         }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_SATELITE_INFO -> {
+            IOTCommandType.M50_MD_GET_SATELITE_INFO -> {
                 val result = iotParseManager.parse<String>(
                     cmdStr,
-                    IOTCommandType.MD_GET_SATELITE_INFO
+                    IOTCommandType.M50_MD_GET_SATELITE_INFO
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -116,7 +116,7 @@ class M50SatelliteInfoFragment : BaseIOTDeviceFragment() {
 
 
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }

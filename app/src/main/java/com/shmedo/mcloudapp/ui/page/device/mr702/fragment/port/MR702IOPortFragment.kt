@@ -106,7 +106,7 @@ class MR702IOPortFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
         val entity = MRDOPortParamEntity(item.ktype, if (item.isOpen) "1" else "0")
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_DO_PORT_PARAM,
+            IOTCommandType.MR_MD_SET_DO_PORT_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -121,20 +121,20 @@ class MR702IOPortFragment : BaseIOTDeviceFragment() {
     private fun queryInfo() {
         commandItems.clear()
 
-        var command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_DO_PORT_PARAM)
+        var command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DO_PORT_PARAM)
         commandItems.add(command)
 
-        command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_DI_PORT_PARAM)
+        command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DI_PORT_PARAM)
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_DO_PORT_PARAM -> {
+            IOTCommandType.MR_MD_GET_DO_PORT_PARAM -> {
                 val result = iotParseManager.parse<MRDOPortParam>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_DO_PORT_PARAM
+                    IOTCommandType.MR_MD_GET_DO_PORT_PARAM
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -152,10 +152,10 @@ class MR702IOPortFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_GET_DI_PORT_PARAM -> {
+            IOTCommandType.MR_MD_GET_DI_PORT_PARAM -> {
                 val result = iotParseManager.parse<MRDIPortParam>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_DI_PORT_PARAM
+                    IOTCommandType.MR_MD_GET_DI_PORT_PARAM
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -173,7 +173,7 @@ class MR702IOPortFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_SET_DO_PORT_PARAM -> {
+            IOTCommandType.MR_MD_SET_DO_PORT_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置出错: ${result.message}"

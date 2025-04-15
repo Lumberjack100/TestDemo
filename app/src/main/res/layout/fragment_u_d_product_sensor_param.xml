@@ -211,7 +211,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_GroupItem_Title_Style2"
                             android:layout_marginStart="@dimen/dimen_size_8"
-                            android:text="GNSS 配置" />
+                            android:text="GNSS配置" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

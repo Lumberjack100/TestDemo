@@ -150,6 +150,14 @@
             app:popExitAnim="@anim/activity_close_exit" />
 
         <action
+            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port3AcousticOpticalAlarmParamFragmen"
+            app:destination="@id/mR702RS485Port3AcousticOpticalAlarmParamFragmen"
+            app:enterAnim="@anim/activity_open_enter"
+            app:exitAnim="@anim/activity_open_exit"
+            app:popEnterAnim="@anim/activity_close_enter"
+            app:popExitAnim="@anim/activity_close_exit" />
+
+        <action
             android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port3CameraParamFragment"
             app:destination="@id/mR702RS485Port3CameraParamFragment"
             app:enterAnim="@anim/activity_open_enter"
@@ -199,6 +207,12 @@
         android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port3SensorParamFragment"
         android:label="MR702RS485Port3SensorParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port3_sensor_param" />
+
+    <fragment
+        android:id="@+id/mR702RS485Port3AcousticOpticalAlarmParamFragmen"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port3AcousticOpticalAlarmParamFragment"
+        android:label="MR702RS485Port3AcousticOpticalAlarmParamFragment"
+        tools:layout="@layout/fragment_mr702_rs485_port3_acoustic_optical_alarm_param" />
 
     <fragment
         android:id="@+id/mR702RS485Port3CameraParamFragment"

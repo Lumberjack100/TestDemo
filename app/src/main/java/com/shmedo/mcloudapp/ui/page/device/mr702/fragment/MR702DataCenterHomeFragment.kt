@@ -114,7 +114,7 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
     private fun queryStatusInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_DATA_CENTER_STATUS)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DATA_CENTER_STATUS)
         commandItems.add(command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -125,10 +125,10 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
             return
         }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_DATA_CENTER_STATUS -> {
+            IOTCommandType.MR_MD_GET_DATA_CENTER_STATUS -> {
                 val result = iotParseManager.parse<MRDataCenterStatus>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_DATA_CENTER_STATUS
+                    IOTCommandType.MR_MD_GET_DATA_CENTER_STATUS
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {

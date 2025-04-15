@@ -31,5 +31,5 @@ class MRRS485Port3CameraParamParser: IOTCommandParser<MRRS485Port3CameraParam> {
         }
     }
 
-    override val commandType: IOTCommandType = IOTCommandType.MD_MR_GET_RS485_PORT3_CAMERA_PARAM
+    override val commandType: IOTCommandType = IOTCommandType.MR_MD_GET_RS485_PORT3_CAMERA_PARAM
 } 

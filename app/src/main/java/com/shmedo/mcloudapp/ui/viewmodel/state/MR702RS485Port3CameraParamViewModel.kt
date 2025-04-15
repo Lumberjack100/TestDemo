@@ -21,6 +21,6 @@ class MR702RS485Port3CameraParamViewModel : ViewModel() {
     //设备参数
     val cameraModel = NonNullObservableField("")
     val cameraResolution = NonNullObservableField("")
-//    val photoInterval = NonNullObservableField("")
+    val quality = NonNullObservableField("")
     val workModel = NonNullObservableField("")
 }

@@ -21,5 +21,5 @@ class MRRS485Port1CollectionParamParser : IOTCommandParser<MRRS485Port1Collectio
             powerontimes = keyValueMap.getOrDefault("powerontimes", powerontimes)
         }
     }
-    override val commandType: IOTCommandType = IOTCommandType.MD_MR_GET_RS485_PORT1_COLL
+    override val commandType: IOTCommandType = IOTCommandType.MR_MD_GET_RS485_PORT1_COLL
 }

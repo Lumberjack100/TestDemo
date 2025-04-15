@@ -31,7 +31,6 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
-import com.shmedo.mcloudapp.model.AlarmConfigModule
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.ConfigModule
@@ -302,7 +301,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         var command = IOTCommandUtil.getCommand(IOTCommandType.GET_WORK_MODE)
         commandItems.add(command)
 
-        command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_DATA_CENTER_STATUS)
+        command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DATA_CENTER_STATUS)
         commandItems.add(command)
 //        showLoadingDialog(StringUtils.getString(R.string.loading))
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -342,10 +341,10 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_GET_DATA_CENTER_STATUS -> {
+            IOTCommandType.MR_MD_GET_DATA_CENTER_STATUS -> {
                 val result = iotParseManager.parse<MRDataCenterStatus>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_DATA_CENTER_STATUS
+                    IOTCommandType.MR_MD_GET_DATA_CENTER_STATUS
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -505,15 +504,15 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         moduleList.add(
             ConfigModule(MR702TerminalParameterModule(navId = R.id.action_mR702HomeFragment_to_mR702TerminalParameterFragment))
         )
-        moduleList.add(
-            ConfigModule(
-                AlarmConfigModule(
-                    name = "报警设置",
-                    desc = "水位或雨量阈值触发",
-                    navId = R.id.action_global_to_alarmSettingFragment
-                )
-            )
-        )
+//        moduleList.add(
+//            ConfigModule(
+//                AlarmConfigModule(
+//                    name = "报警设置",
+//                    desc = "水位或雨量阈值触发",
+//                    navId = R.id.action_global_to_alarmSettingFragment
+//                )
+//            )
+//        )
         moduleList.add(
             ConfigModule(DeviceOperationModule(navId = R.id.action_global_to_mR702EquipmentOperationFragment))
         )

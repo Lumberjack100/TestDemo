@@ -17,6 +17,7 @@ data class RadioCommunicateEntity(
     val txchl: String = IOTConstants.NULL_KEY,//报警发送频点 [0~19] 载波频率以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道 自组网网关：接收默认6，发送默认13 M20S：接收默认13，发送默认6
     val outpwr: String = IOTConstants.NULL_KEY,//发射功率 [0~22] 默认22
     val bcchl: String = IOTConstants.NULL_KEY,//RTCM数据频点 [1~19] 默认1 载波频率以450.15Mhz为起始，间隔1Mhz，进行信道划分，共划分20个信道（仅M20S有效，默认为0）
+    val localaddr: String = IOTConstants.NULL_KEY,//本机地址 [1100~1140] 默认 1100
 ) {
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)

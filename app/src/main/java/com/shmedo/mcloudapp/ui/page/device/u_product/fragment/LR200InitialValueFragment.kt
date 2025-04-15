@@ -26,7 +26,6 @@ import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 /**
  * @author：gonghe
@@ -110,13 +109,13 @@ class LR200InitialValueFragment : BaseIOTDeviceFragment() {
         if (mStates.isAutoInit.get()) {
             //先发送遥测指令
             val command = IOTCommandUtil.getCommand(
-                IOTCommandType.QUERY_SAMPLE
+                IOTCommandType.SAMPLE
             )
             commandItems.add(command)
         } else {
             //发送初始化指令
             val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_LF_INITIAL_VALUE,
+                IOTCommandType.LF_MD_SET_INITIAL_VALUE,
                 "datastreams=${mStates.initValue.get()}"
             )
             commandItems.add(command)
@@ -127,10 +126,10 @@ class LR200InitialValueFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_SAMPLE -> {//
+            IOTCommandType.SAMPLE -> {//
                 val result = iotParseManager.parse<String>(
                     cmdStr,
-                    IOTCommandType.QUERY_SAMPLE
+                    IOTCommandType.SAMPLE
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -146,7 +145,7 @@ class LR200InitialValueFragment : BaseIOTDeviceFragment() {
                             MoshiUtil.fromJson<Map<String, Any>>(result.data)?.get("203_1")
                         //发送初始化指令
                         val command = IOTCommandUtil.getCommand(
-                            IOTCommandType.MD_SET_LF_INITIAL_VALUE,
+                            IOTCommandType.LF_MD_SET_INITIAL_VALUE,
                             "datastreams=$zeroValueMeasured"
                         )
                         commandItems.add(command)
@@ -156,7 +155,7 @@ class LR200InitialValueFragment : BaseIOTDeviceFragment() {
             }
 
 
-            IOTCommandType.MD_SET_LF_INITIAL_VALUE -> {//设置
+            IOTCommandType.LF_MD_SET_INITIAL_VALUE -> {//设置
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "初始化出错: ${result.message}"

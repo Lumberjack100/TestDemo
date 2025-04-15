@@ -14,5 +14,5 @@ class MRRS485Port1SensorStatusParser: IOTCommandParser<String> {
     override fun parseKeyValueMap(keyValueMap: Map<String, String>): String {
         return keyValueMap["status"]!!
     }
-    override val commandType: IOTCommandType = IOTCommandType.MD_MR_GET_RS485_PORT1_SENSOR
+    override val commandType: IOTCommandType = IOTCommandType.MR_MD_GET_RS485_PORT1_SENSOR
 }

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m50
+package com.shmedo.mcloudapp.ui.page.device.m50.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -6,6 +6,7 @@ import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
@@ -69,6 +70,7 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             "告警" -> ColorUtils.getColor(
                                 R.color.warn_FF9D00
                             )
+
                             else -> ColorUtils.getColor(R.color.error_FF4400)
                         }
                     )
@@ -116,19 +118,33 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "工作模式",
-                    value = if (stateInfo.workMode == "1") "基站" else "测站",
+                    value = when (stateInfo.workMode) {
+                        "1" -> "基站"
+                        "2" -> "测站"
+                        "3" -> "PPP-B2b"
+                        "4" -> "CORS接入"
+                        else -> AppContants.PLACE_HOLDER_VALUE
+                    },
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "上报模式",
-                    value = if (stateInfo.reportMode == "0") "常在线" else "低功耗",
+                    value = when (stateInfo.reportMode) {
+                        "0" -> "常在线"
+                        "1" -> "低功耗"
+                        "2" -> "自适应"
+                        else -> AppContants.PLACE_HOLDER_VALUE
+                    },
                 )
-               val frequency = stateInfo.captureFrequency.toIntOrNull()?.let { it / 60 } ?: 0
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
-                    name = "抓拍频率",
-                    value = if (frequency <= 0) stateInfo.captureFrequency else frequency.toString(),
-                    unit = if (frequency <= 0) "分钟/次" else "小时/次",
+                    name = "网络模式",
+                    value = when (stateInfo.netMode) {
+                        "0" -> "4G传输"
+                        "1" -> "电台传输"
+                        "2" -> "自动"
+                        else -> AppContants.PLACE_HOLDER_VALUE
+                    },
                     isBottomItem = true
                 )
 
@@ -150,7 +166,7 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }

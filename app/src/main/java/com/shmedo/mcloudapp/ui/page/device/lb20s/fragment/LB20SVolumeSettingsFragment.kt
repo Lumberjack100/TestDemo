@@ -120,7 +120,7 @@ class LB20SVolumeSettingsFragment : BaseIOTDeviceFragment() {
     private fun initSaveCommand() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_VOICE_BROADCAST_VOLUME,
+            IOTCommandType.SET_VOICE_BROADCAST_VOLUME,
             "level=${volumeLevelList.indexOf(mStates.volumeLevel.get())}"
         )
         commandItems.add(command)
@@ -131,7 +131,7 @@ class LB20SVolumeSettingsFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_SET_VOICE_BROADCAST_VOLUME_RESPONSE -> {//
+            IOTCommandType.SET_VOICE_BROADCAST_VOLUME_LEVEL -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错: ${result.message}"

@@ -22,6 +22,7 @@ class RadioCommunicateInfoParser : IOTCommandParser<RadioCommunicateInfo> {
             bcchl = keyValueMap.getOrDefault("bcchl", bcchl)
             net_sta = keyValueMap.getOrDefault("net_sta", net_sta)
             gateway_sn = keyValueMap.getOrDefault("gateway_sn", gateway_sn)
+            localaddr = keyValueMap.getOrDefault("localaddr", localaddr)
         }
     }
 

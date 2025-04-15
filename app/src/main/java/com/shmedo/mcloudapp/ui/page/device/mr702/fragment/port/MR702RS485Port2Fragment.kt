@@ -285,7 +285,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
         commandItems.clear()
 
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_DEL_RS485_PORT2_SENSOR,
+            IOTCommandType.MR_MD_DEL_RS485_PORT2_SENSOR,
             "chl=$chl"
         )
         commandItems.add(command)
@@ -327,7 +327,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
             powerontimes = mStates.delayDuration.get()
         )
         var command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_RS485_PORT2_COLL,
+            IOTCommandType.MR_MD_SET_RS485_PORT2_COLL,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -343,7 +343,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
         )
         command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_RS485_PORT2_UART,
+            IOTCommandType.MR_MD_SET_RS485_PORT2_UART,
             entity2.toCommandString()
         )
         commandItems.add(command)
@@ -359,13 +359,13 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     private fun queryInfo() {
         commandItems.clear()
 
-        var command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_RS485_PORT2_COLL)
+        var command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_RS485_PORT2_COLL)
         commandItems.add(command)
 
-        command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_RS485_PORT2_UART)
+        command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_RS485_PORT2_UART)
         commandItems.add(command)
 
-        command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_RS485_PORT2_SENSOR, "index=0")
+        command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_RS485_PORT2_SENSOR, "index=0")
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -375,7 +375,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
 
         commandItems.add(
             IOTCommandUtil.getCommand(
-                IOTCommandType.MD_MR_GET_RS485_PORT2_SENSOR,
+                IOTCommandType.MR_MD_GET_RS485_PORT2_SENSOR,
                 "index=0"
             )
         )
@@ -385,10 +385,10 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_RS485_PORT2_COLL -> {
+            IOTCommandType.MR_MD_GET_RS485_PORT2_COLL -> {
                 val result = iotParseManager.parse<MRRS485Port2CollectionParam>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_RS485_PORT2_COLL
+                    IOTCommandType.MR_MD_GET_RS485_PORT2_COLL
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -404,10 +404,10 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_GET_RS485_PORT2_UART -> {
+            IOTCommandType.MR_MD_GET_RS485_PORT2_UART -> {
                 val result = iotParseManager.parse<MRSerialPortParam>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_RS485_PORT2_UART
+                    IOTCommandType.MR_MD_GET_RS485_PORT2_UART
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -423,10 +423,10 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_GET_RS485_PORT2_SENSOR -> {
+            IOTCommandType.MR_MD_GET_RS485_PORT2_SENSOR -> {
                 val result = iotParseManager.parse<String>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_RS485_PORT2_SENSOR
+                    IOTCommandType.MR_MD_GET_RS485_PORT2_SENSOR
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -449,7 +449,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_DEL_RS485_PORT2_SENSOR -> {
+            IOTCommandType.MR_MD_DEL_RS485_PORT2_SENSOR -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "移除传感器出错: ${result.message}"
@@ -468,7 +468,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_SET_RS485_PORT2_COLL -> {
+            IOTCommandType.MR_MD_SET_RS485_PORT2_COLL -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置采集参数出错: ${result.message}"
@@ -484,7 +484,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_SET_RS485_PORT2_UART -> {
+            IOTCommandType.MR_MD_SET_RS485_PORT2_UART -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置采集器参数出错: ${result.message}"

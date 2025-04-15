@@ -21,5 +21,5 @@ class MRRainGaugeParamParser: IOTCommandParser<MRRainGaugeParam> {
             }
         }
 
-        override val commandType: IOTCommandType = IOTCommandType.MD_MR_GET_RAIN_GAUGE_PORT_PARAM
+        override val commandType: IOTCommandType = IOTCommandType.MR_MD_GET_RAIN_GAUGE_PORT_PARAM
 }

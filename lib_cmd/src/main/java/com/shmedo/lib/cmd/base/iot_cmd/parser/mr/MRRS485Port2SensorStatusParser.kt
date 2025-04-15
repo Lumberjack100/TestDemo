@@ -15,5 +15,5 @@ class MRRS485Port2SensorStatusParser : IOTCommandParser<String> {
         return keyValueMap["status"]!!
     }
 
-    override val commandType: IOTCommandType = IOTCommandType.MD_MR_GET_RS485_PORT2_SENSOR
+    override val commandType: IOTCommandType = IOTCommandType.MR_MD_GET_RS485_PORT2_SENSOR
 }

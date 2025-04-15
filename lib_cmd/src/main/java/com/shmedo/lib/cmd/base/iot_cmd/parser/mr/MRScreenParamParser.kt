@@ -22,5 +22,5 @@ class MRScreenParamParser: IOTCommandParser<MRScreenParam> {
                 }
             }
 
-            override val commandType: IOTCommandType = IOTCommandType.MD_MR_GET_SCREEN_PARAM
+            override val commandType: IOTCommandType = IOTCommandType.MR_MD_GET_SCREEN_PARAM
 }

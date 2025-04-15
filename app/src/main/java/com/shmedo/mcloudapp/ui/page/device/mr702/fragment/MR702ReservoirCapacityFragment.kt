@@ -250,7 +250,7 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
             yparam = if (!mStates.isOpened.get()) "" else yParams.toString()
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_RESERVOIR_CAPACITY,
+            IOTCommandType.MR_MD_SET_RESERVOIR_CAPACITY,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -266,7 +266,7 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_RESERVOIR_CAPACITY)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_RESERVOIR_CAPACITY)
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.loading))
@@ -275,10 +275,10 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_RESERVOIR_CAPACITY -> {
+            IOTCommandType.MR_MD_GET_RESERVOIR_CAPACITY -> {
                 val result = iotParseManager.parse<MRReservoirCapacity>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_RESERVOIR_CAPACITY
+                    IOTCommandType.MR_MD_GET_RESERVOIR_CAPACITY
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -294,7 +294,7 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_SET_RESERVOIR_CAPACITY -> {
+            IOTCommandType.MR_MD_SET_RESERVOIR_CAPACITY -> {
                 setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {

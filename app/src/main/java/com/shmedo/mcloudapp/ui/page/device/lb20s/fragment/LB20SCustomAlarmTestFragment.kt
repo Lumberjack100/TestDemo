@@ -125,7 +125,7 @@ class LB20SCustomAlarmTestFragment : BaseIOTDeviceFragment() {
             b_content = mStates.broadcastContent.get()
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_BROADCAST,
+            IOTCommandType.BROADCAST,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -136,7 +136,7 @@ class LB20SCustomAlarmTestFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_BROADCAST -> {//
+            IOTCommandType.BROADCAST -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "播报出错: ${result.message}"

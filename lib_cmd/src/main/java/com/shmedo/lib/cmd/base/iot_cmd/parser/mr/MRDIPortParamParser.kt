@@ -25,5 +25,5 @@ class MRDIPortParamParser : IOTCommandParser<MRDIPortParam> {
         }
     }
 
-    override val commandType: IOTCommandType = IOTCommandType.MD_MR_GET_DI_PORT_PARAM
+    override val commandType: IOTCommandType = IOTCommandType.MR_MD_GET_DI_PORT_PARAM
 }

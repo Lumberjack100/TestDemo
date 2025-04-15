@@ -490,7 +490,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
      */
     private fun queryMeasureData() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "method=0")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=0")
         commandItems.add(command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -501,7 +501,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
      */
     private fun measureData() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "method=1")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=1")
         commandItems.add(command)
 
         mHeadStates.measureDataLoadingDialogId =
@@ -514,7 +514,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
      */
     private fun takePhoto() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "method=2")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=2")
         commandItems.add(command)
 
         mHeadStates.measureDataLoadingDialogId =
@@ -602,7 +602,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 dismissLoadingDialog()
             }
 
-            IOTCommandType.QUERY_SAMPLE -> {
+            IOTCommandType.SAMPLE -> {
                 stopMeasurementAnimation()
                 if (cmdStr.contains("method=1")) {
                     super.doCmdResponseResultError(
@@ -655,7 +655,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 dismissLoadingDialog()
             }
 
-            IOTCommandType.QUERY_SAMPLE -> {
+            IOTCommandType.SAMPLE -> {
                 stopMeasurementAnimation()
                 if (!cmdStr.contains("method=0")) {
                     super.doCmdResponseResultTimeOut(
@@ -708,7 +708,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-            IOTCommandType.QUERY_SAMPLE -> {
+            IOTCommandType.SAMPLE -> {
                 stopMeasurementAnimation()
                 if (cmdStr.contains("method=0")) {
                     super.showNearbyCommunicationTimeoutAlert(
@@ -772,10 +772,10 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.QUERY_SAMPLE -> {//召测
+            IOTCommandType.SAMPLE -> {//召测
                 val result = iotParseManager.parse<String>(
                     cmdStr,
-                    IOTCommandType.QUERY_SAMPLE
+                    IOTCommandType.SAMPLE
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {

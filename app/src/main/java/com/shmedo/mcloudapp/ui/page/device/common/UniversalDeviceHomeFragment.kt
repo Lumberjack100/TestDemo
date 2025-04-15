@@ -214,7 +214,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
             is TelemetryDataModule -> {//召测
                 commandItems.clear()
                 val command =
-                    IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE)
+                    IOTCommandUtil.getCommand(IOTCommandType.SAMPLE)
                 commandItems.add(command)
 
                 if (communicateWay is BleConnect) {
@@ -325,7 +325,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
                 mCommandResponseStates.isResponseSuccess.set(false)
             }
 
-            IOTCommandType.QUERY_SAMPLE -> {
+            IOTCommandType.SAMPLE -> {
                 mCommandResponseStates.isResponseLoading.set(true)
                 mCommandResponseStates.isResponseSuccess.set(false)
                 showTelemetryDataPopup()
@@ -344,7 +344,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME,
             IOTCommandType.SET_TERMINAL_TIME,
-            IOTCommandType.QUERY_SAMPLE -> {
+            IOTCommandType.SAMPLE -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
                 mCommandResponseStates.responseContent.set(errMsg)
@@ -370,7 +370,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME,
             IOTCommandType.SET_TERMINAL_TIME,
-            IOTCommandType.QUERY_SAMPLE -> {
+            IOTCommandType.SAMPLE -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
                 mCommandResponseStates.responseContent.set("设备未响应")
@@ -404,7 +404,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME,
             IOTCommandType.SET_TERMINAL_TIME,
-            IOTCommandType.QUERY_SAMPLE -> {
+            IOTCommandType.SAMPLE -> {
                 mCommandResponseStates.isResponseLoading.set(false)
                 mCommandResponseStates.isResponseSuccess.set(false)
                 mCommandResponseStates.responseContent.set("设备未响应")
@@ -466,10 +466,10 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.QUERY_SAMPLE -> {//召测
+            IOTCommandType.SAMPLE -> {//召测
                 val result = iotParseManager.parse<String>(
                     cmdStr,
-                    IOTCommandType.QUERY_SAMPLE
+                    IOTCommandType.SAMPLE
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {

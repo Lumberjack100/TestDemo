@@ -270,7 +270,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
             switch = "0"
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_RS485_PORT3_SENSOR_PARAM,
+            IOTCommandType.MR_MD_SET_RS485_PORT3_SENSOR_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -391,7 +391,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
             }
         }
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_RS485_PORT3_SENSOR_PARAM,
+            IOTCommandType.MR_MD_SET_RS485_PORT3_SENSOR_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -406,7 +406,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_GET_RS485_PORT3_SENSOR_PARAM,
+            IOTCommandType.MR_MD_GET_RS485_PORT3_SENSOR_PARAM,
             "device=$sensorType"
         )
         commandItems.add(command)
@@ -415,10 +415,10 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_RS485_PORT3_SENSOR_PARAM -> {
+            IOTCommandType.MR_MD_GET_RS485_PORT3_SENSOR_PARAM -> {
                 val result = iotParseManager.parse<MRRS485Port3SensorParam>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_RS485_PORT3_SENSOR_PARAM
+                    IOTCommandType.MR_MD_GET_RS485_PORT3_SENSOR_PARAM
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -436,7 +436,7 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_SET_RS485_PORT3_SENSOR_PARAM -> {
+            IOTCommandType.MR_MD_SET_RS485_PORT3_SENSOR_PARAM -> {
                 setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
@@ -462,7 +462,12 @@ class MR702RS485Port3SensorParamFragment : BaseIOTDeviceFragment() {
 
     private fun initParamData(sensorParam: MRRS485Port3SensorParam) {
         try {
-            mStates.status.set(if (sensorParam.status == "1") "已接入" else "未接入")
+            mStates.status.set(
+                when (sensorParam.device.toInt()) {
+                    1 -> if (sensorParam.status == "1") "已接入" else "未接入"
+                    else -> if (sensorParam.switch == "1") "已接入" else "未接入"
+                }
+            )
             mStates.isOpened.set(sensorParam.switch == "1")
             mStates.address.set(sensorParam.addr)
             mStates.baudRate.set(sensorParam.baud)

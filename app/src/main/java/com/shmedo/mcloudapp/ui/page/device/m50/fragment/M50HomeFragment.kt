@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m50
+package com.shmedo.mcloudapp.ui.page.device.m50.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -279,7 +279,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                     CommonModule(
                         name = "网络配置",
                         resID = R.drawable.ic_module_network_setting,
-                        navId = R.id.action_global_to_m50MobileNetworkParamFragment
+                        navId = R.id.action_global_to_m50NetworkConfigFragment
                     )
                 ),
                 ConfigModule(
@@ -299,6 +299,13 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 ),
                 ConfigModule(
                     SensorConfigModule(
+                        name = "传感配置",
+                        resID = R.drawable.ic_module_sensor_setting_new,
+                        navId = R.id.action_global_to_m50SensorConfigFragment
+                    )
+                ),
+                ConfigModule(
+                    SensorConfigModule(
                         name = "端口配置",
                         resID = R.drawable.ic_module_serial_port,
                         navId = R.id.action_global_to_m50SerialPortParamFragment
@@ -306,9 +313,9 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 ),
                 ConfigModule(
                     SensorConfigModule(
-                        name = "数据存储",
-                        resID = R.drawable.ic_module_data_storage,
-                        navId = 0
+                        name = "CORS接入",
+                        resID = R.drawable.ic_module_cors,
+                        navId = R.id.action_global_to_m50CORSConfigFragment
                     )
                 ),
                 ConfigModule(
@@ -371,7 +378,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             }
             nav().navigate(
                 R.id.action_global_to_udLocationInfoFragment,
-                BaseIOTDeviceFragment.newBundleArguments(
+                newBundleArguments(
                     productType,
                     communicateWay,
                     deviceInfo,
@@ -391,7 +398,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         fun onGoToSensorDataHistoryClick() {
             nav().navigate(
                 R.id.action_global_to_udMonitorDataHistoryFragment,
-                UDSensorDataHistoryFragment.newBundleArguments(productType, deviceInfo)
+                UDSensorDataHistoryFragment.Companion.newBundleArguments(productType, deviceInfo)
             )
         }
     }
@@ -405,7 +412,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             is DataCenterModule -> {
                 nav().navigate(
                     module.navId,
-                    UniversalDataCenterHomeFragment.newBundleArguments(
+                    UniversalDataCenterHomeFragment.Companion.newBundleArguments(
                         centerNum = 4,
                         productType,
                         communicateWay,
@@ -416,7 +423,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             }
 
             is CommandDebugConfigModule -> {//指令下发
-                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+                val bundle = BleCustomCommandLogPrintFragment.Companion.newBundleArguments(
                     true,
                     productType,
                     communicateWay,
@@ -428,7 +435,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
 
             else -> {
                 if (module.navId != 0) {
-                    val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                    val bundle = newBundleArguments(
                         productType,
                         communicateWay,
                         deviceInfo,
@@ -451,7 +458,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         var command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
         commandItems.add(command)
 
-        command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "method=0")
+        command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=0")
         commandItems.add(command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
@@ -462,7 +469,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
      */
     private fun takePhoto() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_SAMPLE, "method=1")
+        val command = IOTCommandUtil.getCommand(IOTCommandType.SAMPLE, "method=1")
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
@@ -516,7 +523,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 dismissLoadingDialog()
             }
 
-            IOTCommandType.QUERY_SAMPLE -> {
+            IOTCommandType.SAMPLE -> {
                 if (cmdStr.contains("method=1")) {
                     super.doCmdResponseResultError(
                         cmdStr = cmdStr,
@@ -561,7 +568,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 dismissLoadingDialog()
             }
 
-            IOTCommandType.QUERY_SAMPLE -> {
+            IOTCommandType.SAMPLE -> {
                 if (cmdStr.contains("method=1")) {
                     super.doCmdResponseResultTimeOut(
                         cmdStr = cmdStr,
@@ -613,7 +620,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-            IOTCommandType.QUERY_SAMPLE -> {
+            IOTCommandType.SAMPLE -> {
                 if (cmdStr.contains("method=1")) {
                     super.showNearbyCommunicationTimeoutAlert(
                         cmdStr = cmdStr,
@@ -668,10 +675,10 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.QUERY_SAMPLE -> {//召测
+            IOTCommandType.SAMPLE -> {//召测
                 val result = iotParseManager.parse<String>(
                     cmdStr,
-                    IOTCommandType.QUERY_SAMPLE
+                    IOTCommandType.SAMPLE
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -697,8 +704,8 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            showDialogFragment(FindDeviceBeepDialog.TAG) {
-                                FindDeviceBeepDialog.newInstance(ProductType.GNSS_M_5)
+                            showDialogFragment(FindDeviceBeepDialog.Companion.TAG) {
+                                FindDeviceBeepDialog.Companion.newInstance(ProductType.GNSS_M_5)
                             }
                         }
                     }
@@ -763,7 +770,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 handleAbnormalInfo(errorInfoList)
 
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
@@ -812,13 +819,17 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 && resultMap.containsKey("z_value")
             ) {
                 val resultantDisplacement =
-                    resultMap["sum_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+                    resultMap["sum_value"]?.let { "$it mm" }
+                        ?: AppContants.Companion.PLACE_HOLDER_VALUE
                 val xDisplacement =
-                    resultMap["x_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+                    resultMap["x_value"]?.let { "$it mm" }
+                        ?: AppContants.Companion.PLACE_HOLDER_VALUE
                 val yDisplacement =
-                    resultMap["y_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+                    resultMap["y_value"]?.let { "$it mm" }
+                        ?: AppContants.Companion.PLACE_HOLDER_VALUE
                 val zDisplacement =
-                    resultMap["z_value"]?.let { "$it mm" } ?: AppContants.PLACE_HOLDER_VALUE
+                    resultMap["z_value"]?.let { "$it mm" }
+                        ?: AppContants.Companion.PLACE_HOLDER_VALUE
 
                 mHeadStates.resultantDisplacement.set(resultantDisplacement)
                 mHeadStates.xDisplacement.set(xDisplacement)
@@ -827,7 +838,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 return
             }
         } catch (e: Exception) {
-            Timber.e(e)
+            Timber.Forest.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
@@ -852,9 +863,9 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                         TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
                     //仅当设备连接并且需要发送心跳时，才发送心跳包
                     if (mHeadStates.isConnected.get()) {
-                        Timber.d("发送心跳包指令 startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
+                        Timber.Forest.d("发送心跳包指令 startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
                         val command = IOTCommandUtil.getCommand(IOTCommandType.HEART_BEAT)
-                        Timber.d("发送心跳包指令: $command")
+                        Timber.Forest.d("发送心跳包指令: $command")
                         sendBleCommand(command)
                     }
                 }
@@ -879,7 +890,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                         }
                     }
                 } catch (e: Exception) {
-                    Timber.e(e)
+                    Timber.Forest.e(e)
                 }
                 delay(30000) // 延迟30秒
             }

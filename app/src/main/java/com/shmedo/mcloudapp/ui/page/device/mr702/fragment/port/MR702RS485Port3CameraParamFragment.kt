@@ -64,6 +64,7 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
     private val cameraModelList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs485_port3_camera_model) }
     private val cameraResolutionList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port2_camera_resolution) }
+    private val qualityList by lazy {Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_quality)}
     private val workModelList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_work_model) }
 
 
@@ -133,6 +134,7 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
 
         mStates.cameraModel.set(cameraModelList[0])
         mStates.cameraResolution.set(cameraResolutionList[0])
+        mStates.quality.set(qualityList[0])
         mStates.workModel.set(workModelList[0])
     }
 
@@ -254,6 +256,26 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
         }
 
         /**
+         * 选择压缩比
+         */
+        fun onChooseQualityClick() {
+            val selectedIndex = qualityList.indexOf(mStates.quality.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "请选择压缩比", qualityList,
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.quality.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        /**
          * 选择工作模式
          */
         fun onChooseWorkModelClick() {
@@ -289,7 +311,7 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
             switch = "0"
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_RS485_PORT3_CAMERA_PARAM,
+            IOTCommandType.MR_MD_SET_RS485_PORT3_CAMERA_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -317,11 +339,11 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
             stopbit = stopBitList.indexOf(mStates.stopBit.get()).toString(),
             type = cameraModelList.indexOf(mStates.cameraModel.get()).toString(),
             resolut = (cameraResolutionList.indexOf(mStates.cameraResolution.get()) + 1).toString(),
-            quality = "5",
+            quality = mStates.quality.get(),
             workmode = workModelList.indexOf(mStates.workModel.get()).toString(),
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_RS485_PORT3_CAMERA_PARAM,
+            IOTCommandType.MR_MD_SET_RS485_PORT3_CAMERA_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -336,7 +358,7 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
     private fun queryData() {
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_GET_RS485_PORT3_CAMERA_PARAM,
+            IOTCommandType.MR_MD_GET_RS485_PORT3_CAMERA_PARAM,
             "index=$cameraIndex"
         )
         commandItems.add(command)
@@ -345,10 +367,10 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_RS485_PORT3_CAMERA_PARAM -> {
+            IOTCommandType.MR_MD_GET_RS485_PORT3_CAMERA_PARAM -> {
                 val result = iotParseManager.parse<MRRS485Port3CameraParam>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_RS485_PORT3_CAMERA_PARAM
+                    IOTCommandType.MR_MD_GET_RS485_PORT3_CAMERA_PARAM
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -366,7 +388,7 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_SET_RS485_PORT3_CAMERA_PARAM -> {
+            IOTCommandType.MR_MD_SET_RS485_PORT3_CAMERA_PARAM -> {
                 setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
@@ -417,6 +439,12 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
                 val index = it - 1
                 if (index in cameraResolutionList.indices) {
                     mStates.cameraResolution.set(cameraResolutionList[index])
+                }
+            }
+            cameraParam.quality.toInt().let {
+                val index = it - 1
+                if (index in qualityList.indices) {
+                    mStates.quality.set(qualityList[index])
                 }
             }
             cameraParam.workmode.toInt().let {

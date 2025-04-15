@@ -27,7 +27,6 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.LR200ZeroValueCalibrationPopupView
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 
 /**
  * @author：gonghe
@@ -85,7 +84,7 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
             commandItems.clear()
             //先发送遥测指令
             var command = IOTCommandUtil.getCommand(
-                IOTCommandType.QUERY_SAMPLE
+                IOTCommandType.SAMPLE
             )
             commandItems.add(command)
 
@@ -150,10 +149,10 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_SAMPLE -> {//
+            IOTCommandType.SAMPLE -> {//
                 val result = iotParseManager.parse<String>(
                     cmdStr,
-                    IOTCommandType.QUERY_SAMPLE
+                    IOTCommandType.SAMPLE
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {

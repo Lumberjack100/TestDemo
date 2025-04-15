@@ -34,6 +34,7 @@ data class RtkParamEntity(
     val rtkMode: String = IOTConstants.NULL_KEY, //解算模式源 1:静态解算  2:动态结算  默认1
     val obs: String = IOTConstants.NULL_KEY, //观测数据上报频率 取值为[0-60]
     val reportMode: String = IOTConstants.NULL_KEY, //上报模式 0:低功耗  1:正常
+    val networkMode: String = IOTConstants.NULL_KEY, //网络模式 0:4G传输 1:电台传输 2:自动
 ) {
     fun toCommandString(): String {
         val jsonMap = MoshiUtil.toJsonMap(this)

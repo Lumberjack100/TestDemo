@@ -38,5 +38,5 @@ class DataCenterInfoParser: IOTCommandParser<DataCenterInfo> {
         }
     }
 
-    override val commandType: IOTCommandType = IOTCommandType.MD_GET_DATA_CENTER
+    override val commandType: IOTCommandType = IOTCommandType.MD_GET_DATA_CENTER_PARAM
 }

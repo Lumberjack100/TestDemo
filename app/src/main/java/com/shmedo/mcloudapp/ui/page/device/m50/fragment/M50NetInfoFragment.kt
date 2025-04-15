@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m50
+package com.shmedo.mcloudapp.ui.page.device.m50.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -73,7 +73,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "CMCC" -> "中国移动"
                         "CU" -> "中国联通"
                         "CT" -> "中国电信"
-                        else -> AppContants.PLACE_HOLDER_VALUE
+                        else -> AppContants.Companion.PLACE_HOLDER_VALUE
                     }
                 )
                 stateInfo.csq.notNullKey {
@@ -117,6 +117,14 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "蓝牙",
                     value = stateInfo.bt_connected.compareAndReturn("1", "已连接", "未连接"),
                     textColorRes = if (stateInfo.bt_connected == "1") ColorUtils.getColor(
+                        R.color.online_colorPrimary
+                    ) else 0
+                )
+                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                    groupList,
+                    name = "CORS",
+                    value = stateInfo.corsEnableStatus.compareAndReturn("1", "已启用", "未启用"),
+                    textColorRes = if (stateInfo.corsEnableStatus == "1") ColorUtils.getColor(
                         R.color.online_colorPrimary
                     ) else 0,
                     isBottomItem = true
@@ -163,7 +171,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }

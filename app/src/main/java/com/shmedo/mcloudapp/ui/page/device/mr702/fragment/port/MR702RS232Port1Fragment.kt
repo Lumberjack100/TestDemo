@@ -237,7 +237,7 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
             switch = "0"
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_RS232_PORT1_PARAM,
+            IOTCommandType.MR_MD_SET_RS232_PORT1_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -270,7 +270,7 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
             stopbit = stopBitList.indexOf(mStates.stopBit.get()).toString(),
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_MR_SET_RS232_PORT1_PARAM,
+            IOTCommandType.MR_MD_SET_RS232_PORT1_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -285,17 +285,17 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
     private fun queryInfo() {
         commandItems.clear()
 
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_MR_GET_RS232_PORT1_PARAM)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_RS232_PORT1_PARAM)
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_MR_GET_RS232_PORT1_PARAM -> {
+            IOTCommandType.MR_MD_GET_RS232_PORT1_PARAM -> {
                 val result = iotParseManager.parse<MRRS232Port1Param>(
                     cmdStr,
-                    IOTCommandType.MD_MR_GET_RS232_PORT1_PARAM
+                    IOTCommandType.MR_MD_GET_RS232_PORT1_PARAM
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -313,7 +313,7 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_MR_SET_RS232_PORT1_PARAM -> {
+            IOTCommandType.MR_MD_SET_RS232_PORT1_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错: ${result.message}"

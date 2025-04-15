@@ -21,5 +21,5 @@ class MRPulsePortParamParser: IOTCommandParser<MRPulsePortParam> {
         }
     }
 
-    override val commandType: IOTCommandType = IOTCommandType.MD_MR_GET_PULSE_PORT_PARAM
+    override val commandType: IOTCommandType = IOTCommandType.MR_MD_GET_PULSE_PORT_PARAM
 } 

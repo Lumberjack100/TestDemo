@@ -20,5 +20,5 @@ class UD485SerialPortInfoParser : IOTCommandParser<UD485SerialPortInfo> {
         }
     }
 
-    override val commandType: IOTCommandType = IOTCommandType.MD_UD_GET_RS485_PARAM
+    override val commandType: IOTCommandType = IOTCommandType.UD_MD_GET_RS485_PARAM
 }

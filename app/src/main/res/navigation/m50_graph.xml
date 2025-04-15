@@ -14,7 +14,7 @@
 
     <fragment
         android:id="@+id/m50HomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.M50HomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50HomeFragment"
         android:label="M50HomeFragment"
         tools:layout="@layout/fragment_m50_home" />
 
@@ -32,51 +32,63 @@
 
     <fragment
         android:id="@+id/m50BaseInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.M50BaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50BaseInfoFragment"
         android:label="M50BaseInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
         android:id="@+id/m50NetInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.M50NetInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50NetInfoFragment"
         android:label="M50NetInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
         android:id="@+id/m50StatusInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.M50StatusInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50StatusInfoFragment"
         android:label="M50StatusInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
         android:id="@+id/m50SatelliteInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.M50SatelliteInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50SatelliteInfoFragment"
         android:label="M50SatelliteInfoFragment"
         tools:layout="@layout/fragment_m50_satellite_info" />
 
     <fragment
         android:id="@+id/m50WorkModelParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.M50ReportModelParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50ReportModelParamFragment"
         android:label="M50ReportModelParamFragment"
         tools:layout="@layout/fragment_m50_report_model_param" />
 
     <fragment
-        android:id="@+id/m50MobileNetworkParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDMobileNetworkParamFragment"
-        android:label="UDMobileNetworkParamFragment"
-        tools:layout="@layout/fragment_ud_mobile_network_param" />
+        android:id="@+id/m50NetworkConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50NetworkConfigFragment"
+        android:label="M50NetworkConfigFragment"
+        tools:layout="@layout/fragment_m50_network_config" />
 
     <fragment
-        android:id="@+id/m20SRadioSettingFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m20s.fragment.M20SRadioSettingFragment"
-        android:label="M20SRadioSettingFragment"
-        tools:layout="@layout/fragment_m20s_radio_setting" />
+        android:id="@+id/m50RadioSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50RadioSettingFragment"
+        android:label="M50RadioSettingFragment"
+        tools:layout="@layout/fragment_m50_radio_setting" />
+
+    <fragment
+        android:id="@+id/m50SensorConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50SensorConfigFragment"
+        android:label="M50SensorConfigFragment"
+        tools:layout="@layout/fragment_m50_sensor_config" />
 
     <fragment
         android:id="@+id/m50SerialPortParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.M50SerialPortParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50SerialPortParamFragment"
         android:label="M50SerialPortParamFragment"
         tools:layout="@layout/fragment_m50_serial_port_param" />
+
+    <fragment
+        android:id="@+id/m50CORSConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50CORSConfigFragment"
+        android:label="M50CORSConfigFragment"
+        tools:layout="@layout/fragment_m50_cors_config" />
 
     <fragment
         android:id="@+id/udAlarmParamSettingFragment"
@@ -155,8 +167,8 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_m50MobileNetworkParamFragment"
-        app:destination="@id/m50MobileNetworkParamFragment"
+        android:id="@+id/action_global_to_m50NetworkConfigFragment"
+        app:destination="@id/m50NetworkConfigFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -172,7 +184,15 @@
 
     <action
         android:id="@+id/action_global_to_m50RadioSettingFragment"
-        app:destination="@id/m20SRadioSettingFragment"
+        app:destination="@id/m50RadioSettingFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_m50SensorConfigFragment"
+        app:destination="@id/m50SensorConfigFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -181,6 +201,14 @@
     <action
         android:id="@+id/action_global_to_m50SerialPortParamFragment"
         app:destination="@id/m50SerialPortParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_m50CORSConfigFragment"
+        app:destination="@id/m50CORSConfigFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

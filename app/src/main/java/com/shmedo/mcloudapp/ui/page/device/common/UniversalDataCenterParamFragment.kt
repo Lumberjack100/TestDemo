@@ -45,7 +45,6 @@ import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DataCenterParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -296,7 +295,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             port = "",
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_DATA_CENTER,
+            IOTCommandType.MD_SET_DATA_CENTER_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -384,7 +383,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             entity.reissue_time = mStates.reissuingDataInterval.get()
         }
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_SET_DATA_CENTER,
+            IOTCommandType.MD_SET_DATA_CENTER_PARAM,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -400,7 +399,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         commandItems.clear()
 
         val entity = CenterNumberEntity(statusItem.centerid.toString())
-        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER, entity)
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_PARAM, entity)
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -460,10 +459,10 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_DATA_CENTER -> {
+            IOTCommandType.MD_GET_DATA_CENTER_PARAM -> {
                 val result = iotParseManager.parse<DataCenterInfo>(
                     cmdStr,
-                    IOTCommandType.MD_GET_DATA_CENTER
+                    IOTCommandType.MD_GET_DATA_CENTER_PARAM
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
@@ -486,7 +485,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_SET_DATA_CENTER -> {
+            IOTCommandType.MD_SET_DATA_CENTER_PARAM -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "设置链路参数出错: ${result.message}"
@@ -599,7 +598,6 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                 AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY,
                 bundleOf(AppContants.Extras.REFRESH_DATA_CENTER_STATUS to statusItem.centerid)
             )
-            delay(1500)
             nav().navigateUp()
         }
     }

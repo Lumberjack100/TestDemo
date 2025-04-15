@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m50
+package com.shmedo.mcloudapp.ui.page.device.m50.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +14,7 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.RtkParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.RadioCommunicateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.RtkParamInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
@@ -45,8 +46,9 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: M50ReportModelParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
-    private val workModelList = arrayListOf("基站", "测站")
-    private val reportModelList = arrayListOf("常在线", "低功耗")
+    private val workModelList = arrayListOf("基站", "测站", "PPP-B2b", "CORS接入")
+    private val reportModelList = arrayListOf("常在线", "低功耗", "自适应")
+    private val networkModelList = arrayListOf("4G传输", "电台传输", "自动")
 
 
     override fun initViewModel() {
@@ -67,10 +69,10 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentM50ReportModelParamBinding
         binding.llToolbar.toolbar.title = "工作模式"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         initRefresh()
     }
@@ -91,6 +93,8 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
         super.initData()
         initThresholdTitles()
         resetDefaultParams()
+        // 保存初始状态
+        mStates.saveInitialState()
     }
 
     private fun initThresholdTitles() {
@@ -102,7 +106,8 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
 
     private fun resetDefaultParams() {
         mStates.workModel.set(workModelList[1])//默认测站
-        mStates.reportModel.set(reportModelList[0])//默认常在线
+        mStates.reportModel.set(reportModelList[2])//默认自适应
+        mStates.networkModel.set(networkModelList[2])//默认自动
         mStates.memsThreshold.set("5")//MEMS阈值
         mStates.alarmEnable.set(false)//是否开启报警
         mStates.firstAlarmThreshold.set("20")//一级报警阈值
@@ -127,6 +132,10 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
                     null, selectedIndex,
                     { position, text ->
                         mStates.workModel.set(text)
+                        // 当"工作模式"配置项选择为"CORS接入"时，网络模式自动设置为"4G传输"
+                        if (text == "CORS接入") {
+                            mStates.networkModel.set("4G传输")
+                        }
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -147,6 +156,62 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
                     null, selectedIndex,
                     { position, text ->
                         mStates.reportModel.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        /**
+         * 选择网络模式
+         */
+        fun onNetworkModelChooseClick() {
+            // 当"工作模式"配置项选择为"CORS接入"时，网络模式只能为"4G传输"
+            if (mStates.workModel.get() == "CORS接入") {
+                Toaster.show("CORS接入模式下，网络模式只能选择4G传输")
+                return
+            }
+
+            // 当电台未启用时，不能选择电台传输
+            if (!mStates.isRadioEnable.get()) {
+                // 如果当前已经选择了电台传输，自动切换为4G传输
+                if (mStates.networkModel.get() == "电台传输") {
+                    mStates.networkModel.set("4G传输")
+                    Toaster.show("电台未启用，网络模式已自动切换为4G传输")
+                    return
+                }
+                
+                // 显示仅包含4G传输和自动的网络模式选项
+                val availableNetworkModelList = arrayListOf("4G传输", "自动")
+                val selectedIndex = availableNetworkModelList.indexOf(mStates.networkModel.get())
+                
+                XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+                XPopup.Builder(context)
+                    .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                    .isDestroyOnDismiss(true)
+                    .enableDrag(false)
+                    .asBottomList(
+                        "", availableNetworkModelList.toTypedArray(),
+                        null, selectedIndex,
+                        { position, text ->
+                            mStates.networkModel.set(text)
+                        }, 0, R.layout.custom_xpopup_adapter_text_center
+                    )
+                    .show()
+                
+                return
+            }
+
+            val selectedIndex = networkModelList.indexOf(mStates.networkModel.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "", networkModelList.toTypedArray(),
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.networkModel.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -183,16 +248,29 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
             return
         }
 
+        // 检查CORS接入模式下网络模式是否为4G传输
+        if (mStates.workModel.get() == "CORS接入" && mStates.networkModel.get() != "4G传输") {
+            showMessageDialog("CORS接入模式下，网络模式只能选择4G传输!")
+            return
+        }
+        
+        // 检查电台未启用时网络模式是否为电台传输
+        if (!mStates.isRadioEnable.get() && mStates.networkModel.get() == "电台传输") {
+            showMessageDialog("电台未启用，网络模式不能选择电台传输!")
+            return
+        }
+
         //四级预警未启用
         if (!mStates.alarmEnable.get()) {
             val entity = RtkParamEntity(
                 mode = (workModelList.indexOf(mStates.workModel.get()) + 1).toString(),
                 reportMode = reportModelList.indexOf(mStates.reportModel.get()).toString(),
+                networkMode = networkModelList.indexOf(mStates.networkModel.get()).toString(),
                 gateAngleVal1 = mStates.memsThreshold.get(),
                 alarmSwitch = "0"
             )
             val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_CFG_RTK,
+                IOTCommandType.GM_MD_CFG_RTK,
                 entity.toCommandString()
             )
             commandItems.add(command)
@@ -249,6 +327,7 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
         val entity = RtkParamEntity(
             mode = (workModelList.indexOf(mStates.workModel.get()) + 1).toString(),
             reportMode = reportModelList.indexOf(mStates.reportModel.get()).toString(),
+            networkMode = networkModelList.indexOf(mStates.networkModel.get()).toString(),
             gateAngleVal1 = mStates.memsThreshold.get(),
             alarmSwitch = "1",
             gateDevVal1 = mStates.firstAlarmThreshold.get(),
@@ -257,7 +336,7 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
             gateDevVal4 = mStates.fourthAlarmThreshold.get()
         )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_CFG_RTK,
+            IOTCommandType.GM_MD_CFG_RTK,
             entity.toCommandString()
         )
         commandItems.add(command)
@@ -272,21 +351,102 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
 
     private fun queryData() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MD_CFG_RTK,
+
+        //查询电台参数
+        var command = IOTCommandUtil.getCommand(
+            IOTCommandType.MD_GET_RADIO_CTRL
+        )
+        commandItems.add(command)
+
+        command = IOTCommandUtil.getCommand(
+            IOTCommandType.GM_MD_CFG_RTK,
             "method=0"
         )
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = "设备未响应"
+        )
+    }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_CFG_RTK -> {
+            IOTCommandType.MD_GET_RADIO_CTRL -> {
+                val result = iotParseManager.parse<RadioCommunicateInfo>(
+                    cmdStr,
+                    IOTCommandType.MD_GET_RADIO_CTRL
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询电台参数出错: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initRadioData(result.data)
+                    }
+                }
+            }
+
+            IOTCommandType.GM_MD_CFG_RTK -> {
                 val result = if (cmdStr.contains("method=0"))
                     iotParseManager.parse<RtkParamInfo>(
                         cmdStr,
-                        IOTCommandType.MD_CFG_RTK
+                        IOTCommandType.GM_MD_CFG_RTK
                     )
                 else iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
                 when (result) {
@@ -305,6 +465,7 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
                             initParamData(result.data as RtkParamInfo)
                         } else {
                             Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -313,6 +474,15 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
             else -> {
                 cancelNearbyCommunicationTimeoutJob()
             }
+        }
+    }
+
+    private fun initRadioData(data: RadioCommunicateInfo) {
+        mStates.isRadioEnable.set(data.sw == "1")
+        
+        // 当电台未启用时，如果当前网络模式为"电台传输"，则自动切换为"4G传输"
+        if (data.sw != "1" && mStates.networkModel.get() == "电台传输") {
+            mStates.networkModel.set("4G传输")
         }
     }
 
@@ -328,16 +498,42 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
                     mStates.reportModel.set(reportModelList[it])
                 }
             }
+            info.networkMode.toIntOrNull()?.let {
+                if (it in networkModelList.indices) {
+                    // 如果工作模式为CORS接入，则强制设置网络模式为4G传输
+                    if (mStates.workModel.get() == "CORS接入") {
+                        mStates.networkModel.set("4G传输")
+                    } 
+                    // 如果电台未启用且网络模式为电台传输，则强制设置为4G传输
+                    else if (!mStates.isRadioEnable.get() && networkModelList[it] == "电台传输") {
+                        mStates.networkModel.set("4G传输")
+                    }
+                    else {
+                        mStates.networkModel.set(networkModelList[it])
+                    }
+                }
+            }
             mStates.memsThreshold.set(info.gateAngleVal1.formatDoubleValue("", 1))
             mStates.alarmEnable.set(info.alarmSwitch == "1")
             mStates.firstAlarmThreshold.set(info.gateDevVal1.formatDoubleValue("", 1))
             mStates.secondAlarmThreshold.set(info.gateDevVal2.formatDoubleValue("", 1))
             mStates.thirdAlarmThreshold.set(info.gateDevVal3.formatDoubleValue("", 1))
             mStates.fourthAlarmThreshold.set(info.gateDevVal4.formatDoubleValue("", 1))
+
+            // 保存初始状态
+            mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
+    }
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
     }
 
     override fun onResume() {

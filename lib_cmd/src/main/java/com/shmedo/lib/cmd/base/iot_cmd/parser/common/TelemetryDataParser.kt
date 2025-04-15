@@ -15,5 +15,5 @@ class TelemetryDataParser : IOTCommandParser<String> {
         return keyValueMap["datastreams"] ?: ""
     }
 
-    override val commandType: IOTCommandType = IOTCommandType.QUERY_SAMPLE
+    override val commandType: IOTCommandType = IOTCommandType.SAMPLE
 }
