@@ -64,13 +64,12 @@
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/SwitchButton_Item_Title_Style"
                         android:text="开关"
-                        android:textColor="@{homeVM.isEditable?@color/title_text_color:@color/sub_title_text_color}" />
+                       />
 
                     <com.kyleduo.switchbutton.SwitchButton
                         android:id="@+id/sensorSB"
                         style="@style/SwitchButton_Item_Button_Style"
                         checkedImmediatelyNoEvent="@{stateVM.isOpened}"
-                        android:enabled="@{homeVM.isEditable}"
                         android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                         app:kswAnimationDuration="100"
                         app:kswBackDrawable="@drawable/sl_switchbutton_back"
@@ -82,16 +81,16 @@
                     style="@style/Common_ClickableItem_Layout_Style"
                     onClickWithDebouncing="@{()->click.onChooseCameraModelClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider"
-                    android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}">
+                    android:enabled="@{stateVM.isOpened}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="摄像头型号" />
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.cameraModel}"
                         tools:text="MIDU890" />
@@ -101,16 +100,16 @@
                     style="@style/Common_ClickableItem_Layout_Style"
                     onClickWithDebouncing="@{()->click.onChooseCameraResolutionClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider"
-                    android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}">
+                    android:enabled="@{stateVM.isOpened}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="分辨率" />
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.cameraResolution}"
                         tools:text="默认（640*480" />
@@ -122,13 +121,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="拍照间隔（分钟）"
                         tools:textColor="@color/title_text_color" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:text="@={stateVM.photoInterval}"
                         android:inputType="number"
@@ -139,16 +138,16 @@
                     style="@style/Common_ClickableItem_Layout_Style"
                     onClickWithDebouncing="@{()->click.onChooseWorkModelClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider"
-                    android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}">
+                    android:enabled="@{stateVM.isOpened}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="工作模式" />
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.workModel}"
                         tools:text="2" />
@@ -164,13 +163,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="波特率(Bps)"
                         tools:textColor="@color/title_text_color" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:text="@={stateVM.baudRate}"
                         android:inputType="number"
@@ -181,16 +180,16 @@
                     style="@style/Common_ClickableItem_Layout_Style"
                     onClickWithDebouncing="@{()->click.onDataBitChooseClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider"
-                    android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}">
+                    android:enabled="@{stateVM.isOpened}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="数据位" />
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.dataBit}"
                         tools:text="5" />
@@ -200,16 +199,16 @@
                     style="@style/Common_ClickableItem_Layout_Style"
                     onClickWithDebouncing="@{()->click.onCheckBitChooseClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider"
-                    android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}">
+                    android:enabled="@{stateVM.isOpened}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="校验位" />
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.checkBit}"
                         tools:text="NONE" />
@@ -219,16 +218,16 @@
                     style="@style/Common_ClickableItem_Layout_Style"
                     onClickWithDebouncing="@{()->click.onStopBitChooseClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider"
-                    android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}">
+                    android:enabled="@{stateVM.isOpened}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="停止位" />
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.stopBit}"
                         tools:text="2" />
@@ -238,7 +237,7 @@
                     android:id="@+id/btn_confirm"
                     style="@style/SubmitButton_Style"
                     onClickWithDebouncing="@{()->click.onSubmitClick()}"
-                    visible="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                    visible="@{stateVM.isOpened}"
                     android:layout_marginBottom="15dp"
                     android:text="保存" />
 

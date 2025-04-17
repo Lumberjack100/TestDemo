@@ -6,7 +6,6 @@ import com.shmedo.mcloudapp.utils.CRC16
 import timber.log.Timber
 
 class MR702RS485Port3AcousticOpticalAlarmParamViewModel : ViewModel() {
-    val isEditable = NonNullObservableField(false)
 
     //通用参数
     val status = NonNullObservableField("已接入")

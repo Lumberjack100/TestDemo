@@ -95,9 +95,7 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
                 processBack(true)
             }
         })
-        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
-        toolbarViewModel.toolbarTvActionText.set("取消")
-        toolbarViewModel.toolbarIvActionVisible.set(true)
+
         initRefresh()
     }
 
@@ -138,21 +136,8 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
         mStates.workModel.set(workModelList[0])
     }
 
-    private fun setEditable(editable: Boolean) {
-        toolbarViewModel.toolbarIvActionVisible.set(!editable)
-        toolbarViewModel.toolbarTvActionVisible.set(editable)
-        mStates.isEditable.set(editable)
-    }
 
     inner class ClickProxy : BaseClickProxy() {
-        override fun onToolbarIvClick() {
-            setEditable(true)
-        }
-
-        override fun onToolbarTvClick() {
-            setEditable(false)
-        }
-
         override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
@@ -389,7 +374,6 @@ class MR702RS485Port3CameraParamFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.MR_MD_SET_RS485_PORT3_CAMERA_PARAM -> {
-                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错: ${result.message}"

@@ -90,9 +90,6 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
                 processBack(true)
             }
         })
-        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
-        toolbarViewModel.toolbarTvActionText.set("取消")
-        toolbarViewModel.toolbarIvActionVisible.set(true)
         initRefresh()
     }
 

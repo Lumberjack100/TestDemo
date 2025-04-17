@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 class MR702ReservoirCapacityViewModel : ViewModel() {
-    val isEditable = NonNullObservableField(false)
     val isOpened = NonNullObservableField(true)
 
     val pointCount = NonNullObservableField("0")//坐标点数量

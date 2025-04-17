@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 class MR702RS485Port3CameraParamViewModel : ViewModel() {
-    val isEditable = NonNullObservableField(false)
 
     //通用参数
     val status = NonNullObservableField("已接入")

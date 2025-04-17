@@ -8,7 +8,7 @@ class MR702RS485Port2SensorParamViewModel : ViewModel() {
     val sensorParamWrapper= NonNullObservableField(MRRS485Port2SensorParam())
 
     val isAdd = NonNullObservableField(false)
-    val isEditable = NonNullObservableField(false)
+    val isEditable = NonNullObservableField(true)
 
     val sensorType = NonNullObservableField("")
     val modelName = NonNullObservableField("")

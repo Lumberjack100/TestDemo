@@ -63,9 +63,6 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
                 nav().navigateUp()
             }
         })
-        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
-        toolbarViewModel.toolbarTvActionText.set("取消")
-        toolbarViewModel.toolbarIvActionVisible.set(true)
 
         initOtherListener()
     }
@@ -87,21 +84,7 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun setEditable(editable: Boolean) {
-        toolbarViewModel.toolbarIvActionVisible.set(!editable)
-        toolbarViewModel.toolbarTvActionVisible.set(editable)
-        mStates.isEditable.set(editable)
-    }
-
     inner class ClickProxy : BaseClickProxy() {
-
-        override fun onToolbarIvClick() {
-            setEditable(true)
-        }
-
-        override fun onToolbarTvClick() {
-            setEditable(false)
-        }
 
         fun onSubmitClick() {
             if (isBleDisconnected()) {
@@ -295,7 +278,6 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.MR_MD_SET_RESERVOIR_CAPACITY -> {
-                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错: ${result.message}"
