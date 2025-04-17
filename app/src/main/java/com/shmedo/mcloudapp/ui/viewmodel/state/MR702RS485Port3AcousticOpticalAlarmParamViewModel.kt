@@ -51,42 +51,24 @@ class MR702RS485Port3AcousticOpticalAlarmParamViewModel : ViewModel() {
     fun setWaterLevelWarnLevels(warnLevelString: String) {
         val levels = warnLevelString.split(",")
         if (levels.size >= 4) {
-            waterLevelTriggerValue1.set(levels[0].toIntOrNull()?.div(100)?.toString() ?: "0")
-            waterLevelTriggerValue2.set(levels[1].toIntOrNull()?.div(100)?.toString() ?: "0")
-            waterLevelTriggerValue3.set(levels[2].toIntOrNull()?.div(100)?.toString() ?: "0")
-            waterLevelTriggerValue4.set(levels[3].toIntOrNull()?.div(100)?.toString() ?: "0")
+            waterLevelTriggerValue1.set(levels[0].toDoubleOrNull()?.div(100)?.toString() ?: "0")
+            waterLevelTriggerValue2.set(levels[1].toDoubleOrNull()?.div(100)?.toString() ?: "0")
+            waterLevelTriggerValue3.set(levels[2].toDoubleOrNull()?.div(100)?.toString() ?: "0")
+            waterLevelTriggerValue4.set(levels[3].toDoubleOrNull()?.div(100)?.toString() ?: "0")
         }
     }
 
     // 辅助方法 - 转换报警阈值列表
     fun getWaterLevelWarnLevelString(): String {
         return "${
-            waterLevelTriggerValue1.get().toIntOrNull()?.times(100)?.toString() ?: "0"
+            waterLevelTriggerValue1.get().toDoubleOrNull()?.times(100)?.toString() ?: "0"
         },${
-            waterLevelTriggerValue2.get().toIntOrNull()?.times(100)?.toString() ?: "0"
+            waterLevelTriggerValue2.get().toDoubleOrNull()?.times(100)?.toString() ?: "0"
         },${
-            waterLevelTriggerValue3.get().toIntOrNull()?.times(100)?.toString() ?: "0"
-        },${waterLevelTriggerValue4.get().toIntOrNull()?.times(100)?.toString() ?: "0"}"
+            waterLevelTriggerValue3.get().toDoubleOrNull()?.times(100)?.toString() ?: "0"
+        },${waterLevelTriggerValue4.get().toDoubleOrNull()?.times(100)?.toString() ?: "0"}"
     }
 
-    /**
-     * 解析语音指令获取播报次数
-     */
-    fun getBroadcastTimes(voiceIndexString: String): String {
-        if (voiceIndexString.isNotEmpty() && voiceIndexString.contains(",")) {
-            val parts = voiceIndexString.split(",")
-            if (parts.size >= 2 && parts[1].length >= 22) {
-                // 从 A6030900090001040300A103390E 指令中提取 A1(语音编号) 03(播报次数) 部分
-                val voiceCmd = parts[1]
-                val broadcastTimesHex = voiceCmd.substring(22, 24)
-                //转换为10进制
-                val number = broadcastTimesHex.toIntOrNull(16) ?: 0
-
-                return number.toString()
-            }
-        }
-        return ""
-    }
 
     /**
      * 解析语音指令获取编号
