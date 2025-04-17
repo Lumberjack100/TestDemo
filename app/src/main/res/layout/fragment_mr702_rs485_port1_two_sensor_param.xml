@@ -474,7 +474,7 @@
                             android:hint="请输入"
                             android:text="@={stateVM.triggerValue}"
                             app:inputTypeFilter='@{"numberDecimal"}'
-                            app:lengthFilter="@{10}" />
+                            app:lengthFilter="@{20}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -492,7 +492,7 @@
                             android:hint="请输入"
                             android:text="@={stateVM.upperLimit}"
                             app:inputTypeFilter='@{"numberDecimal"}'
-                            app:lengthFilter="@{10}" />
+                            app:lengthFilter="@{20}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -510,7 +510,7 @@
                             android:hint="请输入"
                             android:text="@={stateVM.lowerLimit}"
                             app:inputTypeFilter='@{"numberDecimal"}'
-                            app:lengthFilter="@{10}" />
+                            app:lengthFilter="@{20}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -528,7 +528,7 @@
                             android:hint="请输入"
                             android:text="@={stateVM.correctValue}"
                             app:inputTypeFilter='@{"numberDecimal"}'
-                            app:lengthFilter="@{10}" />
+                            app:lengthFilter="@{20}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -674,7 +674,7 @@
                             android:hint="请输入"
                             android:text="@={stateVM.triggerValue2}"
                             app:inputTypeFilter='@{"numberDecimal"}'
-                            app:lengthFilter="@{10}" />
+                            app:lengthFilter="@{20}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -692,7 +692,7 @@
                             android:hint="请输入"
                             android:text="@={stateVM.upperLimit2}"
                             app:inputTypeFilter='@{"numberDecimal"}'
-                            app:lengthFilter="@{10}" />
+                            app:lengthFilter="@{20}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -710,7 +710,7 @@
                             android:hint="请输入"
                             android:text="@={stateVM.lowerLimit2}"
                             app:inputTypeFilter='@{"numberDecimal"}'
-                            app:lengthFilter="@{10}" />
+                            app:lengthFilter="@{20}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -728,7 +728,7 @@
                             android:hint="请输入"
                             android:text="@={stateVM.correctValue2}"
                             app:inputTypeFilter='@{"numberDecimal"}'
-                            app:lengthFilter="@{10}" />
+                            app:lengthFilter="@{20}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

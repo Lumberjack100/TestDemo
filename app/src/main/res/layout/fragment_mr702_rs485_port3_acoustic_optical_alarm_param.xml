@@ -250,8 +250,8 @@
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
-                            android:inputType="number"
-                            android:maxLength="5"
+                            android:inputType="numberDecimal|numberSigned"
+                            android:maxLength="20"
                             android:text="@={stateVM.waterLevelTriggerValue1}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -269,8 +269,8 @@
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
-                            android:inputType="number"
-                            android:maxLength="5"
+                            android:inputType="numberDecimal|numberSigned"
+                            android:maxLength="20"
                             android:text="@={stateVM.waterLevelTriggerValue2}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -288,8 +288,8 @@
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
-                            android:inputType="number"
-                            android:maxLength="5"
+                            android:inputType="numberDecimal|numberSigned"
+                            android:maxLength="20"
                             android:text="@={stateVM.waterLevelTriggerValue3}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -307,14 +307,14 @@
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
-                            android:inputType="number"
-                            android:maxLength="5"
+                            android:inputType="numberDecimal|numberSigned"
+                            android:maxLength="20"
                             android:text="@={stateVM.waterLevelTriggerValue4}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
                     <!-- 水位报警持续时间 -->
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_GroupItem_Title_Style"
-                        android:text="报警持续时间" />
+                        android:text="水位报警持续时间" />
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"

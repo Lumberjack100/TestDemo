@@ -224,6 +224,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
 
                         takePhotoLoadingDialogId =
                             showLoadingWithUUID(StringUtils.getString(R.string.processing))
+                        sendCommandFromCmdList(isStartTimeoutJob = true)
                     }
                 )
             }
