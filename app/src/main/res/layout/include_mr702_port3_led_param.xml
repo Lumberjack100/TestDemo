@@ -22,17 +22,17 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             style="@style/Common_ClickableItem_Layout_Style"
             android:background="@drawable/layer_common_click_item_with_divider"
-            android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+            android:enabled="@{stateVM.isOpened}"
             onClickWithDebouncing="@{()->click.onLedTypeChooseClick()}">
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
-                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                textViewEnabled="@{stateVM.isOpened}"
                 android:text="屏幕规格" />
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Value_Style"
-                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                textViewEnabled="@{stateVM.isOpened}"
                 android:drawableEnd="@drawable/ic_arrow_down"
                 android:text="@{stateVM.ledType}"
                 tools:text="P10" />
@@ -44,13 +44,13 @@
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
-                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                textViewEnabled="@{stateVM.isOpened}"
                 android:text="显示时长（分钟）"
                 tools:textColor="@color/title_text_color" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
-                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                textViewEnabled="@{stateVM.isOpened}"
                 android:hint="请输入"
                 android:text="@={stateVM.duration}"
                 android:inputType="number"
@@ -64,13 +64,13 @@
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
-                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                textViewEnabled="@{stateVM.isOpened}"
                 android:text="更新间隔（秒）"
                 tools:textColor="@color/title_text_color" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
-                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                textViewEnabled="@{stateVM.isOpened}"
                 android:hint="请输入"
                 android:text="@={stateVM.interval}"
                 android:inputType="number"
@@ -84,13 +84,13 @@
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
-                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                textViewEnabled="@{stateVM.isOpened}"
                 android:text="熄屏时长（分钟）"
                 tools:textColor="@color/title_text_color" />
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
-                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                textViewEnabled="@{stateVM.isOpened}"
                 android:hint="请输入"
                 android:text="@={stateVM.screenTime}"
                 android:inputType="number"

@@ -62,12 +62,12 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:text="采集频率（秒）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:text="@={stateVM.acquisitionFrequency}"
                         android:inputType="number"
                         app:lengthFilter="@{5}" />
@@ -80,12 +80,12 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:text="采集次数(N)" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:text="@={stateVM.collectionTimes}"
                         android:inputType="number"
                         app:lengthFilter="@{5}" />
@@ -98,12 +98,12 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:text="无应答次数" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:text="@={stateVM.noResponseTimes}"
                         android:inputType="number"
                         app:lengthFilter="@{5}" />
@@ -116,12 +116,12 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:text="延时时间（秒）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:text="@={stateVM.delayDuration}"
                         android:inputType="number"
                         app:lengthFilter="@{5}" />
@@ -144,17 +144,17 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider"
-                    android:enabled="@{homeVM.isEditable }"
+                    
                     onClickWithDebouncing="@{()->click.onCollectorTypeChooseClick()}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:text="采集器类型" />
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.collectorType}"
                         tools:text="MCU-16通道" />
@@ -166,13 +166,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:text="采集器地址"
                         tools:textColor="@color/title_text_color" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:hint="请输入"
                         android:text="@={stateVM.collectorAddress}"
                         android:inputType="number"
@@ -186,13 +186,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:text="波特率(Bps)"
                         tools:textColor="@color/title_text_color" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:hint="请输入"
                         android:text="@={stateVM.baudRate}"
                         android:inputType="number"
@@ -202,17 +202,17 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider"
-                    android:enabled="@{homeVM.isEditable }"
+                    
                     onClickWithDebouncing="@{()->click.onDataBitChooseClick()}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:text="数据位" />
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.dataBit}"
                         tools:text="5" />
@@ -221,17 +221,17 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider"
-                    android:enabled="@{homeVM.isEditable }"
+                    
                     onClickWithDebouncing="@{()->click.onCheckBitChooseClick()}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:text="校验位" />
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.checkBit}"
                         tools:text="NONE" />
@@ -240,17 +240,17 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider"
-                    android:enabled="@{homeVM.isEditable }"
+                    
                     onClickWithDebouncing="@{()->click.onStopBitChooseClick()}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:text="停止位" />
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                       
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.stopBit}"
                         tools:text="2" />
@@ -286,7 +286,6 @@
                     android:id="@+id/btn_confirm"
                     style="@style/SubmitButton_Style"
                     onClickWithDebouncing="@{()->click.onSubmitClick()}"
-                    visible="@{homeVM.isEditable }"
                     android:layout_marginBottom="15dp"
                     android:text="保存" />
 

@@ -77,9 +77,6 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                 nav().navigateUp()
             }
         })
-        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
-        toolbarViewModel.toolbarTvActionText.set("取消")
-        toolbarViewModel.toolbarIvActionVisible.set(true)
     }
 
     override fun initData() {
@@ -88,20 +85,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
         mStates.isWirelessDisabled.set(communicateWay is NetPlatformConnect)
     }
 
-    private fun setEditable(editable: Boolean) {
-        toolbarViewModel.toolbarIvActionVisible.set(!editable)
-        toolbarViewModel.toolbarTvActionVisible.set(editable)
-        mStates.isEditable.set(editable)
-    }
-
     inner class ClickProxy : BaseClickProxy() {
-        override fun onToolbarIvClick() {
-            setEditable(true)
-        }
-
-        override fun onToolbarTvClick() {
-            setEditable(false)
-        }
 
         override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
             if (isBleDisconnected()) {
@@ -321,7 +305,6 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.MR_MD_SET_DATA_NETWORK -> {
-                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "无线配置出错: ${result.message}"
@@ -338,7 +321,6 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.MR_MD_SET_WIRELESS_NETWORK -> {
-                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "以太网配置出错: ${result.message}"

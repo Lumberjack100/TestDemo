@@ -108,11 +108,7 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
         mStates.isAdd.set(isAdd)
         if (isAdd) {
             binding.refreshLayout.setEnableRefresh(false)
-            mStates.isEditable.set(true)
         }
-        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
-        toolbarViewModel.toolbarTvActionText.set("取消")
-        toolbarViewModel.toolbarIvActionVisible.set(!isAdd)
 
         mStates.sensorType.set(sensorItem.sensorType)
         mStates.modelName.set(sensorItem.sensorName)
@@ -147,20 +143,7 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
         mStates.correctValue.set("0")//修正值 0
     }
 
-    private fun setEditable(editable: Boolean) {
-        toolbarViewModel.toolbarIvActionVisible.set(!editable)
-        toolbarViewModel.toolbarTvActionVisible.set(editable)
-        mStates.isEditable.set(editable)
-    }
-
     inner class ClickProxy : BaseClickProxy() {
-        override fun onToolbarIvClick() {
-            setEditable(true)
-        }
-
-        override fun onToolbarTvClick() {
-            setEditable(false)
-        }
 
         /**
          * 是否计算
@@ -327,7 +310,6 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
             }
 
             IOTCommandType.MR_MD_SET_RS485_PORT2_SENSOR_PARAM -> {
-                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "数据保存出错: ${result.message}"

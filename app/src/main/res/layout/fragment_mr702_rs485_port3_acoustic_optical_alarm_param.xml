@@ -78,14 +78,12 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/SwitchButton_Item_Title_Style"
-                            android:text="开关"
-                            android:textColor="@{stateVM.isEditable?@color/title_text_color:@color/sub_title_text_color}" />
+                            android:text="开关" />
 
                         <com.kyleduo.switchbutton.SwitchButton
                             android:id="@+id/sensorSB"
                             style="@style/SwitchButton_Item_Button_Style"
                             checkedImmediatelyNoEvent="@{stateVM.isOpened}"
-                            android:enabled="@{stateVM.isEditable}"
                             android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                             app:kswAnimationDuration="100"
                             app:kswBackDrawable="@drawable/sl_switchbutton_back"
@@ -99,13 +97,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            textViewEnabled="@{stateVM.isOpened}"
                             android:text="设置地址"
                             tools:textColor="@color/title_text_color" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            textViewEnabled="@{stateVM.isOpened}"
                             android:hint="请输入"
                             android:inputType="number"
                             android:text="@={stateVM.address}"
@@ -119,13 +117,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            textViewEnabled="@{stateVM.isOpened}"
                             android:text="波特率(Bps)"
                             tools:textColor="@color/title_text_color" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            textViewEnabled="@{stateVM.isOpened}"
                             android:hint="请输入"
                             android:inputType="number"
                             android:text="@={stateVM.baudRate}"
@@ -136,16 +134,16 @@
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onDataBitChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}">
+                        android:enabled="@{stateVM.isOpened}">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            textViewEnabled="@{stateVM.isOpened}"
                             android:text="数据位" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            textViewEnabled="@{stateVM.isOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.dataBit}"
                             tools:text="5" />
@@ -155,16 +153,16 @@
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onCheckBitChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}">
+                        android:enabled="@{stateVM.isOpened}">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            textViewEnabled="@{stateVM.isOpened}"
                             android:text="校验位" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            textViewEnabled="@{stateVM.isOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.checkBit}"
                             tools:text="NONE" />
@@ -174,16 +172,16 @@
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onStopBitChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}">
+                        android:enabled="@{stateVM.isOpened}">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            textViewEnabled="@{stateVM.isOpened}"
                             android:text="停止位" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                            textViewEnabled="@{stateVM.isOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.stopBit}"
                             tools:text="2" />
@@ -199,14 +197,14 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/SwitchButton_Item_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable&amp;&amp; stateVM.isOpened}"
+                            textViewEnabled="@{ stateVM.isOpened}"
                             android:text="功能启用" />
 
                         <com.kyleduo.switchbutton.SwitchButton
                             android:id="@+id/switch_water_level_enabled"
                             style="@style/SwitchButton_Item_Button_Style"
                             android:checked="@={stateVM.waterLevelFunctionEnabled}"
-                            android:enabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened}"
+                            android:enabled="@{ stateVM.isOpened}"
                             app:kswAnimationDuration="100"
                             app:kswBackDrawable="@drawable/sl_switchbutton_back"
                             app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
@@ -219,14 +217,14 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/SwitchButton_Item_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:text="继电器K接口" />
 
                         <com.kyleduo.switchbutton.SwitchButton
                             android:id="@+id/switch_water_level_relay_k"
                             style="@style/SwitchButton_Item_Button_Style"
                             android:checked="@={stateVM.waterLevelRelayK}"
-                            android:enabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp;stateVM.waterLevelFunctionEnabled}"
+                            android:enabled="@{ stateVM.isOpened &amp;&amp;stateVM.waterLevelFunctionEnabled}"
                             app:kswAnimationDuration="100"
                             app:kswBackDrawable="@drawable/sl_switchbutton_back"
                             app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
@@ -242,13 +240,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:text="一级报警阈值（米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="numberDecimal|numberSigned"
                             android:maxLength="20"
@@ -261,13 +259,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:text="二级报警阈值（米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="numberDecimal|numberSigned"
                             android:maxLength="20"
@@ -280,13 +278,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:text="三级报警阈值（米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="numberDecimal|numberSigned"
                             android:maxLength="20"
@@ -299,13 +297,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:text="四级报警阈值（米）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="numberDecimal|numberSigned"
                             android:maxLength="20"
@@ -322,13 +320,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable  &amp;&amp; stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:text="一级报警持续时间（分钟）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable  &amp;&amp; stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
                             android:maxLength="3"
@@ -341,13 +339,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable  &amp;&amp; stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:text="二级报警持续时间（分钟）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable  &amp;&amp; stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
                             android:maxLength="3"
@@ -360,13 +358,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable  &amp;&amp; stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:text="三级报警持续时间（分钟）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable  &amp;&amp; stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
                             android:maxLength="3"
@@ -379,13 +377,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable  &amp;&amp; stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:text="四级报警持续时间（分钟）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable  &amp;&amp; stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
                             android:maxLength="3"
@@ -402,13 +400,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable  &amp;&amp; stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:text="一级报警间隔时间（分钟）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable  &amp;&amp; stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
                             android:maxLength="3"
@@ -421,13 +419,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable  &amp;&amp; stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:text="二级报警间隔时间（分钟）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable  &amp;&amp; stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
                             android:maxLength="3"
@@ -440,13 +438,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable  &amp;&amp; stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:text="三级报警间隔时间（分钟）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable  &amp;&amp; stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
                             android:maxLength="3"
@@ -459,13 +457,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable  &amp;&amp; stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:text="四级报警间隔时间（分钟）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable  &amp;&amp; stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
                             android:maxLength="3"
@@ -483,13 +481,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:text="一级报警语音编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="数值范围[1-255]"
                             android:inputType="number"
                             android:maxLength="3"
@@ -502,13 +500,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:text="二级报警语音编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="数值范围[1-255]"
                             android:inputType="number"
                             android:maxLength="3"
@@ -521,13 +519,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:text="三级报警语音编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="数值范围[1-255]"
                             android:inputType="number"
                             android:maxLength="3"
@@ -540,13 +538,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable  &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:text="四级报警语音编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp; stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
+                            textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="数值范围[1-255]"
                             android:inputType="number"
                             android:maxLength="3"
@@ -561,7 +559,7 @@
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_Style"
             onClickWithDebouncing="@{()->click.onSubmitClick()}"
-            visible="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+            visible="@{stateVM.isOpened}"
             android:layout_marginTop="0dp"
             android:layout_marginBottom="15dp"
             android:text="保存"

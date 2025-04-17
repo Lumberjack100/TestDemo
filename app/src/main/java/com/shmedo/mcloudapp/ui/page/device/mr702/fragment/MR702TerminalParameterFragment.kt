@@ -1,19 +1,15 @@
 package com.shmedo.mcloudapp.ui.page.device.mr702.fragment
 
-import android.graphics.Typeface
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
-import com.google.android.material.tabs.TabLayout
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRReportMethodEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRScreenParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
@@ -25,14 +21,15 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentMr702TerminalParameterBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.MR702TerminalParameterViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.databinding.FragmentMr702TerminalParameterBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.MR702TerminalParameterViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 
 /**
@@ -40,17 +37,11 @@ import org.koin.android.ext.android.inject
  * 创建时间:  2020/8/27 <br></br>
  * 描述：   终端参数页面
  */
-class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabSelectedListener {
+class MR702TerminalParameterFragment : BaseIOTDeviceFragment(){
     private lateinit var binding: FragmentMr702TerminalParameterBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: MR702TerminalParameterViewModel
     private val iotParseManager: IOTParserManager by inject()
-
-    private val activeColor: Int = ColorUtils.getColor(R.color.colorPrimary)
-    private val normalColor: Int = ColorUtils.getColor(R.color.text_color_666666)
-    private val activeSize: Float = 17f
-    private val normalSize: Float = 15f
-    private val tabs = arrayOf("上报方式", "本机屏幕")
 
     private val reportMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_report_method) }
     private val reportStartTimeList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_report_start_time) }
@@ -81,69 +72,15 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
                 nav().navigateUp()
             }
         })
-        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
-        toolbarViewModel.toolbarTvActionText.set("取消")
-        toolbarViewModel.toolbarIvActionVisible.set(true)
     }
 
     override fun initData() {
         super.initData()
-//        initTabLayout()
         mStates.reportMethod.set(reportMethodList[0])
         mStates.startTime.set(reportStartTimeList[0])
     }
 
-    private fun initTabLayout() {
-//        val tabLayout = binding.tabs
-//        var textView = TextView(requireContext())
-//        textView.text = tabs[0]
-//        textView.textSize = activeSize
-//        textView.typeface = Typeface.DEFAULT_BOLD
-//        textView.gravity = Gravity.CENTER
-//        textView.setTextColor(activeColor)
-//        tabLayout.addTab(tabLayout.newTab().setCustomView(textView))
-//
-//        textView = TextView(requireContext())
-//        textView.text = tabs[1]
-//        textView.textSize = normalSize
-//        textView.typeface = Typeface.DEFAULT
-//        textView.gravity = Gravity.CENTER
-//        textView.setTextColor(normalColor)
-//        tabLayout.addTab(tabLayout.newTab().setCustomView(textView))
-//
-//        tabLayout.addOnTabSelectedListener(this)
-    }
-
-    override fun onTabSelected(tab: TabLayout.Tab) {
-        mStates.isReportMethodVisible.set(tab.position == 0)
-        val textView = tab.customView as TextView?
-        textView?.apply {
-            textSize = activeSize
-            typeface = Typeface.DEFAULT_BOLD
-            setTextColor(activeColor)
-        }
-    }
-
-    override fun onTabUnselected(tab: TabLayout.Tab) {
-        val textView = tab.customView as TextView?
-        textView?.apply {
-            textSize = normalSize
-            typeface = Typeface.DEFAULT
-            setTextColor(normalColor)
-        }
-    }
-
-    override fun onTabReselected(tab: TabLayout.Tab) {}
-
     inner class ClickProxy : BaseClickProxy() {
-        override fun onToolbarIvClick() {
-            setEditable(true)
-        }
-
-        override fun onToolbarTvClick() {
-            setEditable(false)
-        }
-
         /**
          * 上报方式
          */
@@ -241,12 +178,6 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    private fun setEditable(editable: Boolean) {
-        toolbarViewModel.toolbarIvActionVisible.set(!editable)
-        toolbarViewModel.toolbarTvActionVisible.set(editable)
-        mStates.isEditable.set(editable)
-    }
-
     override fun lazyLoadData() {
         queryData()
     }
@@ -305,7 +236,6 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
             }
 
             IOTCommandType.MR_MD_SET_REPORT_METHOD -> {
-                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "上报方式设置出错: ${result.message}"
@@ -322,7 +252,6 @@ class MR702TerminalParameterFragment : BaseIOTDeviceFragment(), TabLayout.OnTabS
             }
 
             IOTCommandType.MR_MD_SET_SCREEN_PARAM -> {
-                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "屏幕参数设置出错: ${result.message}"

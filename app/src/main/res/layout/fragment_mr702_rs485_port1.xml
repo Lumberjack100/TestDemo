@@ -61,12 +61,12 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                        
                         android:text="采集频率（毫秒）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                        
                         android:text="@={stateVM.acquisitionFrequency}"
                         android:inputType="number"
                         app:lengthFilter="@{5}" />
@@ -79,12 +79,12 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                        
                         android:text="采集周期（分钟）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                        
                         android:text="@={stateVM.collectionDuration}"
                         android:inputType="number"
                         app:lengthFilter="@{5}" />
@@ -97,12 +97,12 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                        
                         android:text="采集次数(N)" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                        
                         android:text="@={stateVM.collectionTimes}"
                         android:inputType="number"
                         app:lengthFilter="@{5}" />
@@ -115,12 +115,12 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                        
                         android:text="无应答次数" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                        
                         android:text="@={stateVM.noResponseTimes}"
                         android:inputType="number"
                         app:lengthFilter="@{5}" />
@@ -133,12 +133,12 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                        
                         android:text="延时时间（秒）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        textViewEnabled="@{homeVM.isEditable }"
+                        
                         android:text="@={stateVM.delayDuration}"
                         android:inputType="number"
                         app:lengthFilter="@{5}" />
@@ -175,7 +175,6 @@
                     android:id="@+id/btn_confirm"
                     style="@style/SubmitButton_Style"
                     onClickWithDebouncing="@{()->click.onSubmitClick()}"
-                    visible="@{homeVM.isEditable }"
                     android:layout_marginBottom="15dp"
                     android:text="保存" />
 

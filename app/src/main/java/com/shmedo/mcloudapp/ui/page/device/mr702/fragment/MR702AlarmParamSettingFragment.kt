@@ -31,7 +31,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-
+@Deprecated("This class is deprecated", ReplaceWith("MR702RS485Port3AcousticOpticalAlarmParamFragment"))
 class MR702AlarmParamSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702AlarmParamSettingBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()

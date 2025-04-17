@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 class MR702NetworkCommunicationViewModel : ViewModel() {
-    val isEditable = NonNullObservableField(false)
     val isWirelessDisabled = NonNullObservableField(false)//4G模式下不允许操作
 
     val isWirelessOpened = NonNullObservableField(true)

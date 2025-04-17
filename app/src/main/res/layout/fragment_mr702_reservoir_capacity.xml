@@ -54,14 +54,12 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/SwitchButton_Item_Title_Style"
-                        android:text="功能开关"
-                        textViewEnabled="@{stateVM.isEditable}" />
+                        android:text="功能开关" />
 
                     <com.kyleduo.switchbutton.SwitchButton
                         android:id="@+id/mobileCommunicationSB"
                         style="@style/SwitchButton_Item_Button_Style"
                         android:checked="@={stateVM.isOpened}"
-                        android:enabled="@{stateVM.isEditable}"
                         app:kswAnimationDuration="100"
                         app:kswBackDrawable="@drawable/sl_switchbutton_back"
                         app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
@@ -74,7 +72,7 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="坐标点数量"
                         tools:textColor="@color/title_text_color" />
 
@@ -82,7 +80,7 @@
                         android:id="@+id/et_point_count"
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="[3,50]"
                         android:inputType="number"
                         android:maxLength="2"
@@ -96,13 +94,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x1坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -116,13 +114,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y1坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -136,13 +134,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x2坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -156,13 +154,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y2坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -176,13 +174,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x3坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -196,13 +194,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y3坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -217,13 +215,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x4坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -237,13 +235,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y4坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -258,13 +256,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x5坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -278,13 +276,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y5坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -299,13 +297,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x6坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -319,13 +317,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y6坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -340,13 +338,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x7坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -360,13 +358,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y7坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -381,13 +379,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x8坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -401,13 +399,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y8坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -422,13 +420,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x9坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -442,13 +440,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y9坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -463,13 +461,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x10坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -483,13 +481,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y10坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -504,13 +502,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x11坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -524,13 +522,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y11坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -545,13 +543,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x12坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -565,13 +563,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y12坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -586,13 +584,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x13坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -606,13 +604,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y13坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -627,13 +625,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x14坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -647,13 +645,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y14坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -668,13 +666,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x15坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -688,13 +686,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y15坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -709,13 +707,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x16坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -729,13 +727,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y16坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -750,13 +748,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x17坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -770,13 +768,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y17坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -791,13 +789,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x18坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -811,13 +809,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y18坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -832,13 +830,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x19坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -852,13 +850,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y19坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -873,13 +871,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x20坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -893,13 +891,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y20坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -914,13 +912,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x21坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -934,13 +932,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y21坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -955,13 +953,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x22坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -975,13 +973,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y22坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -996,13 +994,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x23坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1016,13 +1014,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y23坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1037,13 +1035,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x24坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1057,13 +1055,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y24坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1078,13 +1076,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x25坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1098,13 +1096,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y25坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1119,13 +1117,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x26坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1139,13 +1137,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y26坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1160,13 +1158,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x27坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1180,13 +1178,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y27坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1201,13 +1199,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x28坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1221,13 +1219,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y28坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1242,13 +1240,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x29坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1262,13 +1260,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y29坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1283,13 +1281,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x30坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1303,13 +1301,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y30坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1324,13 +1322,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x31坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1344,13 +1342,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y31坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1365,13 +1363,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x32坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1385,13 +1383,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y32坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1406,13 +1404,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x33坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1426,13 +1424,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y33坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1447,13 +1445,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x34坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1467,13 +1465,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y34坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1488,13 +1486,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x35坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1508,13 +1506,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y35坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1529,13 +1527,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x36坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1549,13 +1547,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y36坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1570,13 +1568,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x37坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1590,13 +1588,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y37坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1611,13 +1609,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x38坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1631,13 +1629,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y38坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1652,13 +1650,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x39坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1672,13 +1670,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y39坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1693,13 +1691,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x40坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1713,13 +1711,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y40坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1734,13 +1732,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x41坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1754,13 +1752,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y41坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1775,13 +1773,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x42坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1795,13 +1793,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y42坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1816,13 +1814,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x43坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1836,13 +1834,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y43坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1857,13 +1855,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x44坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1877,13 +1875,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y44坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1898,13 +1896,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x45坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1918,13 +1916,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y45坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1939,13 +1937,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x46坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1959,13 +1957,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y46坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -1980,13 +1978,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x47坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -2000,13 +1998,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y47坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -2021,13 +2019,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x48坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -2041,13 +2039,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y48坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -2062,13 +2060,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x49坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -2082,13 +2080,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y49坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -2103,13 +2101,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="x50坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -2123,13 +2121,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="y50坐标值（米）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                        textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:inputType="numberDecimal"
                         android:maxLength="5"
@@ -2144,7 +2142,6 @@
             android:id="@+id/btn_confirm"
             style="@style/SubmitButton_Style"
             onClickWithDebouncing="@{()->click.onSubmitClick()}"
-            visible="@{stateVM.isEditable}"
             android:layout_marginTop="0dp"
             android:layout_marginBottom="30dp"
             android:text="保存"

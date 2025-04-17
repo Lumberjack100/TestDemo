@@ -66,14 +66,14 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            textViewEnabled="@{stateVM.isCenterOpened}"
                             android:text="链路地址" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_data_server_address"
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            textViewEnabled="@{stateVM.isCenterOpened}"
                             android:text="@={stateVM.centerServerAddress}"
                             app:lengthFilter="@{100}" />
 
@@ -85,14 +85,14 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            textViewEnabled="@{stateVM.isCenterOpened}"
                             android:text="链路端口" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_data_server_port"
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            textViewEnabled="@{stateVM.isCenterOpened}"
                             android:inputType="number"
                             android:text="@={stateVM.centerServerPort}"
                             app:lengthFilter="@{5}" />
@@ -103,17 +103,17 @@
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onCommunicateWayChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
+                        android:enabled="@{stateVM.isCenterOpened}">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            textViewEnabled="@{stateVM.isCenterOpened}"
                             android:text="通信方式" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            textViewEnabled="@{stateVM.isCenterOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.communicateWay}"
                             tools:text="无线" />
@@ -123,17 +123,17 @@
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onIPTypeChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
+                        android:enabled="@{stateVM.isCenterOpened}">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            textViewEnabled="@{stateVM.isCenterOpened}"
                             android:text="网络协议" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            textViewEnabled="@{stateVM.isCenterOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.ipLeve}"
                             tools:text="IPV6" />
@@ -143,17 +143,17 @@
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onTransferProtocolChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
+                        android:enabled="@{stateVM.isCenterOpened}">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            textViewEnabled="@{stateVM.isCenterOpened}"
                             android:text="传输协议" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            textViewEnabled="@{stateVM.isCenterOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.transferProtocol}"
                             tools:text="TCP" />
@@ -163,17 +163,17 @@
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onDataProtocolChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
+                        android:enabled="@{stateVM.isCenterOpened}">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            textViewEnabled="@{stateVM.isCenterOpened}"
                             android:text="数据协议" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            textViewEnabled="@{stateVM.isCenterOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.dataProtocol}"
                             tools:text="MQTT" />
@@ -183,17 +183,17 @@
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onPlatformTypeChooseClick()}"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
+                        android:enabled="@{stateVM.isCenterOpened}">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            textViewEnabled="@{stateVM.isCenterOpened}"
                             android:text="平台类型" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            textViewEnabled="@{stateVM.isCenterOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.platformType}"
                             tools:text="成都理工平台" />
@@ -202,21 +202,21 @@
 
                     <!-- 广东水利平台特有配置参数 测站类型(下拉选择框) -->
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        visible='@{stateVM.platformType.equals("广东水利平台")}'
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onGuangdongWaterPlatformStationTypeChooseClick()}"
+                        visible='@{stateVM.platformType.equals("广东水利平台")}'
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
+                        android:enabled="@{stateVM.isCenterOpened}">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            textViewEnabled="@{stateVM.isCenterOpened}"
                             android:text="测站类型" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            textViewEnabled="@{stateVM.isCenterOpened}"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.guangdongWaterPlatformStationType}"
                             tools:text="山洪灾害监测站" />
@@ -231,13 +231,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            textViewEnabled="@{stateVM.isCenterOpened}"
                             android:text="测站编码" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            textViewEnabled="@{stateVM.isCenterOpened}"
                             android:text="@={stateVM.telemetryStationAddr}"
                             app:inputTypeFilter='@{"character"}'
                             app:lengthFilter="@{20}" />
@@ -257,13 +257,13 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="产品ID" />
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="@={stateVM.productId}"
                                 app:lengthFilter="@{100}" />
 
@@ -275,13 +275,13 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="设备ID" />
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="@={stateVM.deviceId}"
                                 app:lengthFilter="@{100}" />
 
@@ -293,13 +293,13 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="设备Key" />
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="@={stateVM.deviceKey}"
                                 app:lengthFilter="@{100}" />
 
@@ -311,13 +311,13 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="设备注册码" />
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="@={stateVM.registerCode}"
                                 app:lengthFilter="@{100}" />
 
@@ -329,13 +329,13 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="设备注册地址" />
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="@={stateVM.registerAddress}"
                                 app:lengthFilter="@{100}" />
 
@@ -347,13 +347,13 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="设备注册端口" />
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:inputType="number"
                                 android:text="@={stateVM.registerPort}"
                                 app:lengthFilter="@{5}" />
@@ -366,13 +366,13 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="心跳间隔（秒）" />
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:inputType="number"
                                 android:text="@={stateVM.maintainReportInterval}"
                                 app:lengthFilter="@{4}" />
@@ -393,17 +393,17 @@
                             onClickWithDebouncing="@{()->click.onStationClassificationChooseClick()}"
                             visible='@{stateVM.dataProtocol.contains("SL651")}'
                             android:background="@drawable/layer_common_click_item_with_divider"
-                            android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
+                            android:enabled="@{stateVM.isCenterOpened}">
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="测站分类" />
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Value_Style"
                                 enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:drawableEnd="@drawable/ic_arrow_down"
                                 android:text="@{stateVM.stationType}"
                                 tools:text="降水" />
@@ -416,13 +416,13 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="中心站地址" />
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:inputType="number"
                                 android:text="@={stateVM.centerStationAddr}"
                                 app:lengthFilter="@{3}" />
@@ -435,13 +435,13 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="密码" />
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:inputType="number"
                                 android:text="@={stateVM.password}"
                                 app:lengthFilter="@{5}" />
@@ -454,13 +454,13 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="测站编码" />
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
                                 enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:text="@={stateVM.telemetryStationAddr}"
                                 app:inputTypeFilter='@{"character"}'
                                 app:lengthFilter="@{20}" />
@@ -472,7 +472,7 @@
                             onClickWithDebouncing="@{()->click.onToggleAdvancedClick()}"
                             android:layout_marginTop="@dimen/page_content_item_margin_top_12"
                             android:background="@drawable/shape_common_click_item_top_corner_4"
-                            android:enabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}">
+                            android:enabled="@{stateVM.isCenterOpened}">
 
                             <View
                                 android:layout_width="3dp"
@@ -481,7 +481,7 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:layout_marginStart="@dimen/dimen_size_8"
                                 android:text="高级设置" />
 
@@ -505,7 +505,7 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Title_Style"
-                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                textViewEnabled="@{stateVM.isCenterOpened}"
                                 android:layout_marginStart="@dimen/page_content_item_padding_horizontal_16"
                                 android:layout_marginTop="@dimen/page_content_item_margin_top_12"
                                 android:text="报文选择" />
@@ -584,13 +584,13 @@
 
                                 <com.google.android.material.textview.MaterialTextView
                                     style="@style/Common_ClickableItem_Title_Style"
-                                    textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                    textViewEnabled="@{stateVM.isCenterOpened}"
                                     android:text="维持上报间隔（秒）" />
 
                                 <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"
                                     enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                                    textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                    textViewEnabled="@{stateVM.isCenterOpened}"
                                     android:inputType="number"
                                     android:text="@={stateVM.maintainReportInterval}"
                                     app:lengthFilter="@{3}" />
@@ -603,13 +603,13 @@
 
                                 <com.google.android.material.textview.MaterialTextView
                                     style="@style/Common_ClickableItem_Title_Style"
-                                    textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                    textViewEnabled="@{stateVM.isCenterOpened}"
                                     android:text="数据补发有效时间（日）" />
 
                                 <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"
                                     enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                                    textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                    textViewEnabled="@{stateVM.isCenterOpened}"
                                     android:inputType="number"
                                     android:text="@={stateVM.reissuingDataValidDays}"
                                     app:lengthFilter="@{3}" />
@@ -622,13 +622,13 @@
 
                                 <com.google.android.material.textview.MaterialTextView
                                     style="@style/Common_ClickableItem_Title_Style"
-                                    textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                    textViewEnabled="@{stateVM.isCenterOpened}"
                                     android:text="数据补发间隔（分钟）" />
 
                                 <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"
                                     enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                                    textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                    textViewEnabled="@{stateVM.isCenterOpened}"
                                     android:inputType="number"
                                     android:text="@={stateVM.reissuingDataInterval}"
                                     app:lengthFilter="@{4}" />
@@ -641,7 +641,7 @@
                         android:id="@+id/btn_confirm"
                         style="@style/SubmitButton_Style2"
                         onClickWithDebouncing="@{()->click.onSubmitClick()}"
-                        visible="@{stateVM.isEditable &amp;&amp; stateVM.isCenterOpened}"
+                        visible="@{ stateVM.isCenterOpened}"
                         android:layout_marginTop="@dimen/reset_button_margin_top_50"
                         android:text="@string/button_save_text" />
                 </androidx.appcompat.widget.LinearLayoutCompat>

@@ -62,14 +62,12 @@
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/SwitchButton_Item_Title_Style"
                         android:text="雨量计"
-                        android:textColor="@{homeVM.isEditable?@color/title_text_color:@color/sub_title_text_color}"
                         android:textStyle="bold" />
 
                     <com.kyleduo.switchbutton.SwitchButton
                         android:id="@+id/sensorSB"
                         style="@style/SwitchButton_Item_Button_Style"
                         checkedImmediatelyNoEvent="@{stateVM.isOpened}"
-                        android:enabled="@{homeVM.isEditable}"
                         android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
                         app:kswAnimationDuration="100"
                         app:kswBackDrawable="@drawable/sl_switchbutton_back"
@@ -89,17 +87,17 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
                     android:background="@drawable/layer_common_click_item_with_divider"
-                    android:enabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                    android:enabled="@{stateVM.isOpened}"
                     onClickWithDebouncing="@{()->click.onChooseResolutionClick()}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="分辨率" />
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.rainResolution}"
                         tools:text="0.2" />
@@ -111,13 +109,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:text="消抖系数（秒/次）"
                         tools:textColor="@color/title_text_color" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        textViewEnabled="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                        textViewEnabled="@{stateVM.isOpened}"
                         android:hint="请输入"
                         android:text="@={stateVM.debounceCoefficient}"
                         android:inputType="number"
@@ -128,7 +126,7 @@
                     android:id="@+id/btn_confirm"
                     style="@style/SubmitButton_Style"
                     onClickWithDebouncing="@{()->click.onSubmitClick()}"
-                    visible="@{homeVM.isEditable &amp;&amp;stateVM.isOpened}"
+                    visible="@{stateVM.isOpened}"
                     android:layout_marginTop="150dp"
                     android:layout_marginBottom="15dp"
                     android:text="保存" />
