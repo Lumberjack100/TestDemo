@@ -2,13 +2,13 @@ package com.shmedo.core.data.repository
 
 import android.annotation.SuppressLint
 import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
-import com.shmedo.core.model.AppConfigInfo
 import com.shmedo.core.model.BasicCompanyInfo
 import com.shmedo.core.model.BasicUserInfo
 import com.shmedo.core.model.CompanyInfo
 import com.shmedo.core.model.DeviceBackupInfo
 import com.shmedo.core.model.DeviceDebugAddress
 import com.shmedo.core.model.DeviceDetailInfo
+import com.shmedo.core.model.MR702PortSensorConfig
 import com.shmedo.core.model.UserPermissionInfo
 import com.shmedo.core.model.UserWrapperInfo
 import com.shmedo.lib.network.response.PageList
@@ -29,12 +29,12 @@ class NetDataRepository private constructor() {
     /**
      * 获取App应用信息
      */
-    suspend fun appConfigLogin(
+    suspend fun appRemoteConfigLogin(
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
     ): String? =
-        RxHttp.postJson("/Login")
-            .setDomainIfAbsent(BaseURL.AMS_CONFIG_ADDRESS.baseUrl)
+        RxHttp.postJson("/auth/SignIn")
+            .setDomainIfAbsent(BaseURL.MIYITONG_REMOTE_CONFIG_ADDRESS.baseUrl)
             .addAll(jsonParam)
             .toAwaitResponse<String>()
             .tryAwait(onCatch)
@@ -42,29 +42,16 @@ class NetDataRepository private constructor() {
     /**
      * 获取配置信息
      */
-    suspend fun queryConfigInfoItem(
-        onCatch: ((Throwable) -> Unit)? = null
-    ): AppConfigInfo? =
-        RxHttp.postJson("/QueryConfigInfoItem")
-            .setDomainIfAbsent(BaseURL.AMS_CONFIG_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getAmsToken())
-            .toAwaitResponse<AppConfigInfo>()
-            .tryAwait(onCatch)
-
-    /**
-     * 更新配置信息
-     */
-    suspend fun updateConfigInfoItem(
+    suspend fun queryMR702SensorConfigList(
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
-    ): String? =
-        RxHttp.postJson("/UpdateConfigInfoItem")
-            .setDomainIfAbsent(BaseURL.AMS_CONFIG_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getAmsToken())
+    ): MR702PortSensorConfig? =
+        RxHttp.postJson("/config/QueryMR702SensorConfigList")
+            .setDomainIfAbsent(BaseURL.MIYITONG_REMOTE_CONFIG_ADDRESS.baseUrl)
+            .addHeader("Authorization", MmkvCacheUtil.getRemoteConfigToken())
             .addAll(jsonParam)
-            .toAwaitResponse<String>()
+            .toAwaitResponse<MR702PortSensorConfig>()
             .tryAwait(onCatch)
-
 
     /**
      * 查询设备远程调试连接地址信息
@@ -74,7 +61,7 @@ class NetDataRepository private constructor() {
         onCatch: ((Throwable) -> Unit)? = null
     ): DeviceDebugAddress? =
         RxHttp.postJson("/DeviceLogin")
-            .setDomainIfAbsent(BaseURL.AMS_CONFIG_ADDRESS.baseUrl)
+            .setDomainIfAbsent(BaseURL.MIYITONG_REMOTE_CONFIG_ADDRESS.baseUrl)
             .addAll(jsonParam)
             .toAwaitResponse<DeviceDebugAddress>()
             .tryAwait(onCatch)

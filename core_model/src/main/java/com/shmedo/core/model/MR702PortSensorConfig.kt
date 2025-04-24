@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.model
+package com.shmedo.core.model
 
 import android.os.Parcelable
 import com.squareup.moshi.Json

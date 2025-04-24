@@ -1,7 +1,7 @@
 package com.shmedo.mcloudapp.ui.viewmodel.state
 
 import androidx.lifecycle.ViewModel
-import com.shmedo.mcloudapp.model.SensorModel
+import com.shmedo.core.model.SensorModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 open class MR702PortHomeViewModel : ViewModel() {

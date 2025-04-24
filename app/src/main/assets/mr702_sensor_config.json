@@ -1,0 +1,513 @@
+[
+  {
+    "port": "485-1",
+    "sensorID": "0",
+    "sensorName": "自定义传感器",
+    "modelToken": "",
+    "modelName": "",
+    "modelFieldList": [
+      {
+        "fieldName": "",
+        "engUnit": "",
+        "hydrologicalIdentification": "",
+        "collectionInstructions": "",
+        "ratio": "",
+        "dataFormat": "浮点型ABCD",
+        "triggerValue": "10000",
+        "upperLimit": "10000",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "1",
+    "sensorName": "MD-VWP数字渗压计",
+    "modelToken": "214",
+    "modelName": "水位",
+    "modelFieldList": [
+      {
+        "fieldName": "水深",
+        "engUnit": "m",
+        "hydrologicalIdentification": "3B",
+        "collectionInstructions": "03000A0002",
+        "ratio": "0.001",
+        "dataFormat": "浮点型ABCD",
+        "triggerValue": "0",
+        "upperLimit": "10000",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3"
+      },
+      {
+        "fieldName": "温度",
+        "engUnit": "℃",
+        "hydrologicalIdentification": "3B",
+        "collectionInstructions": "03000C0002",
+        "ratio": "1",
+        "dataFormat": "浮点型ABCD",
+        "triggerValue": "0",
+        "upperLimit": "10000",
+        "lowerLimit": "-10000",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "2",
+    "sensorName": "单通道渗压采集器",
+    "modelToken": "10066",
+    "modelName": "振弦",
+    "modelFieldList": [
+      {
+        "fieldName": "模数",
+        "engUnit": "F",
+        "hydrologicalIdentification": "3B",
+        "collectionInstructions": "03000A0002",
+        "ratio": "1",
+        "dataFormat": "浮点型ABCD",
+        "triggerValue": "0",
+        "upperLimit": "10000",
+        "lowerLimit": "3000",
+        "correctValue": "0",
+        "ngateval": "3"
+      },
+      {
+        "fieldName": "温度",
+        "engUnit": "℃",
+        "hydrologicalIdentification": "3B",
+        "collectionInstructions": "03000C0002",
+        "ratio": "1",
+        "dataFormat": "浮点型ABCD",
+        "triggerValue": "0",
+        "upperLimit": "50",
+        "lowerLimit": "-300",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "3",
+    "sensorName": "单通道渗流采集器",
+    "modelToken": "228",
+    "modelName": "量水堰",
+    "modelFieldList": [
+      {
+        "fieldName": "堰上水头",
+        "engUnit": "m",
+        "hydrologicalIdentification": "3B",
+        "collectionInstructions": "03000A0002",
+        "ratio": "1",
+        "dataFormat": "浮点型ABCD",
+        "triggerValue": "0",
+        "upperLimit": "10000",
+        "lowerLimit": "3000",
+        "correctValue": "0",
+        "ngateval": "3"
+      },
+      {
+        "fieldName": "温度",
+        "engUnit": "℃",
+        "hydrologicalIdentification": "3B",
+        "collectionInstructions": "03000C0002",
+        "ratio": "1",
+        "dataFormat": "浮点型ABCD",
+        "triggerValue": "0",
+        "upperLimit": "50",
+        "lowerLimit": "-300",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "4",
+    "sensorName": "MD-SSY数字渗压计",
+    "modelToken": "227",
+    "modelName": "水位高程",
+    "modelFieldList": [
+      {
+        "fieldName": "水深",
+        "engUnit": "m",
+        "hydrologicalIdentification": "3B",
+        "collectionInstructions": "03000A0002",
+        "ratio": "0.001",
+        "dataFormat": "浮点型ABCD",
+        "triggerValue": "70",
+        "upperLimit": "70",
+        "lowerLimit": "-1",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "5",
+    "sensorName": "MD-LD-1雷达水位计",
+    "modelToken": "227",
+    "modelName": "水位高程",
+    "modelFieldList": [
+      {
+        "fieldName": "空高",
+        "engUnit": "m",
+        "hydrologicalIdentification": "3B",
+        "collectionInstructions": "0300010002",
+        "ratio": "0.01",
+        "dataFormat": "无符号四字节ABCD",
+        "triggerValue": "35",
+        "upperLimit": "35",
+        "lowerLimit": "0.2",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "6",
+    "sensorName": "MD-LD-2雷达水位计",
+    "modelToken": "227",
+    "modelName": "水位高程",
+    "modelFieldList": [
+      {
+        "fieldName": "空高",
+        "engUnit": "m",
+        "hydrologicalIdentification": "3B",
+        "collectionInstructions": "0300010002",
+        "ratio": "0.001",
+        "dataFormat": "浮点型ABCD",
+        "triggerValue": "35",
+        "upperLimit": "35",
+        "lowerLimit": "0.2",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "7",
+    "sensorName": "HC-CBS超声波流量计",
+    "modelToken": "220",
+    "modelName": "流量",
+    "modelFieldList": [
+      {
+        "fieldName": "瞬时流量",
+        "engUnit": "m3/h",
+        "hydrologicalIdentification": "39",
+        "collectionInstructions": "0300000002",
+        "ratio": "0.00028",
+        "dataFormat": "浮点型CDAB",
+        "triggerValue": "10000",
+        "upperLimit": "10000",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "8",
+    "sensorName": "亿立能气泡水位计",
+    "modelToken": "227",
+    "modelName": "水位高程",
+    "modelFieldList": [
+      {
+        "fieldName": "水深",
+        "engUnit": "m",
+        "hydrologicalIdentification": "3B",
+        "collectionInstructions": "0303F80002",
+        "ratio": "0.001",
+        "dataFormat": "无符号四字节ABCD",
+        "triggerValue": "40",
+        "upperLimit": "40",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "9",
+    "sensorName": "亿立能雷达水位计",
+    "modelToken": "227",
+    "modelName": "水位高程",
+    "modelFieldList": [
+      {
+        "fieldName": "空高",
+        "engUnit": "m",
+        "hydrologicalIdentification": "3B",
+        "collectionInstructions": "0300010001",
+        "ratio": "0.001",
+        "dataFormat": "无符号双字节AB",
+        "triggerValue": "30",
+        "upperLimit": "30",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "10",
+    "sensorName": "MPM4700水位计",
+    "modelToken": "227",
+    "modelName": "水位高程",
+    "modelFieldList": [
+      {
+        "fieldName": "水深",
+        "engUnit": "m",
+        "hydrologicalIdentification": "3B",
+        "collectionInstructions": "0300240002",
+        "ratio": "1",
+        "dataFormat": "浮点型CDAB",
+        "triggerValue": "40",
+        "upperLimit": "40",
+        "lowerLimit": "-1",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "11",
+    "sensorName": "MRL雷达水位计",
+    "modelToken": "227",
+    "modelName": "水位高程",
+    "modelFieldList": [
+      {
+        "fieldName": "空高",
+        "engUnit": "m",
+        "hydrologicalIdentification": "3B",
+        "collectionInstructions": "0300020002",
+        "ratio": "0.001",
+        "dataFormat": "无符号四字节ABCD",
+        "triggerValue": "30",
+        "upperLimit": "30",
+        "lowerLimit": "0.5",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "12",
+    "sensorName": "HZ-RLS雷达水位计",
+    "modelToken": "227",
+    "modelName": "水位高程",
+    "modelFieldList": [
+      {
+        "fieldName": "空高",
+        "engUnit": "m",
+        "hydrologicalIdentification": "3B",
+        "collectionInstructions": "0300060001",
+        "ratio": "0.001",
+        "dataFormat": "无符号双字节AB",
+        "triggerValue": "80",
+        "upperLimit": "80",
+        "lowerLimit": "0.3",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "13",
+    "sensorName": "雷达流量计",
+    "modelToken": "220",
+    "modelName": "瞬时流量",
+    "modelFieldList": [
+      {
+        "fieldName": "瞬时流量",
+        "engUnit": "m3/s",
+        "hydrologicalIdentification": "27",
+        "collectionInstructions": "0300010002",
+        "ratio": "0.0001",
+        "dataFormat": "有符号四字节ABCD",
+        "triggerValue": "1000000",
+        "upperLimit": "1000000",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "14",
+    "sensorName": "静力水准",
+    "modelToken": "221",
+    "modelName": "沉降仪",
+    "modelFieldList": [
+      {
+        "fieldName": "沉降变化量",
+        "engUnit": "mm",
+        "hydrologicalIdentification": "FF01",
+        "collectionInstructions": "0300040002",
+        "ratio": "1",
+        "dataFormat": "AB整数,CD小数",
+        "triggerValue": "300",
+        "upperLimit": "300",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "15",
+    "sensorName": "水温传感器",
+    "modelToken": "230",
+    "modelName": "水温",
+    "modelFieldList": [
+      {
+        "fieldName": "水温",
+        "engUnit": "℃",
+        "hydrologicalIdentification": "03",
+        "collectionInstructions": "0300030002",
+        "ratio": "1",
+        "dataFormat": "浮点型DCBA",
+        "triggerValue": "50",
+        "upperLimit": "50",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "16",
+    "sensorName": "溶解氧传感器",
+    "modelToken": "231",
+    "modelName": "水质溶解氧",
+    "modelFieldList": [
+      {
+        "fieldName": "溶解氧",
+        "engUnit": "mg/L",
+        "hydrologicalIdentification": "47",
+        "collectionInstructions": "0300320002",
+        "ratio": "1",
+        "dataFormat": "浮点型DCBA",
+        "triggerValue": "20",
+        "upperLimit": "20",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "17",
+    "sensorName": "浊度传感器",
+    "modelToken": "10003",
+    "modelName": "浊度",
+    "modelFieldList": [
+      {
+        "fieldName": "浊度",
+        "engUnit": "NTU",
+        "hydrologicalIdentification": "49",
+        "collectionInstructions": "0300360002",
+        "ratio": "1",
+        "dataFormat": "浮点型DCBA",
+        "triggerValue": "300",
+        "upperLimit": "300",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "18",
+    "sensorName": "电导率传感器",
+    "modelToken": "232",
+    "modelName": "水质电导率",
+    "modelFieldList": [
+      {
+        "fieldName": "电导率",
+        "engUnit": "μS/cm",
+        "hydrologicalIdentification": "48",
+        "collectionInstructions": "0300380002",
+        "ratio": "1000",
+        "dataFormat": "浮点型DCBA",
+        "triggerValue": "100000",
+        "upperLimit": "100000",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-1",
+    "sensorID": "19",
+    "sensorName": "PH值传感器",
+    "modelToken": "10006",
+    "modelName": "PH值",
+    "modelFieldList": [
+      {
+        "fieldName": "PH值",
+        "engUnit": "",
+        "hydrologicalIdentification": "46",
+        "collectionInstructions": "03004A0002",
+        "ratio": "1",
+        "dataFormat": "浮点型DCBA",
+        "triggerValue": "14",
+        "upperLimit": "14",
+        "lowerLimit": "0",
+        "correctValue": "0",
+        "ngateval": "3"
+      }
+    ]
+  },
+  {
+    "port": "485-2",
+    "modelToken": "10066",
+    "modelName": "振弦式传感器",
+    "sensorName": "振弦式传感器",
+    "sensorID": "1",
+    "modelFieldList": []
+  },
+  {
+    "port": "485-2",
+    "modelToken": "213",
+    "modelName": "测斜仪",
+    "sensorName": "测斜仪",
+    "sensorID": "2",
+    "modelFieldList": []
+  },
+  {
+    "port": "485-2",
+    "modelToken": "60006",
+    "modelName": "量水堰计",
+    "sensorName": "量水堰计",
+    "sensorID": "3",
+    "modelFieldList": []
+  },
+  {
+    "port": "485-2",
+    "modelToken": "214",
+    "modelName": "水位计",
+    "sensorName": "水位计",
+    "sensorID": "4",
+    "modelFieldList": []
+  }
+]

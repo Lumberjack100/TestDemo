@@ -92,7 +92,7 @@ class MainFragment : BaseFragment() {
     override fun lazyLoadData() {
         requestPermission()
         //加载外部配置
-        loginRequestViewModel.loadExternalConfig()
+        loginRequestViewModel.loadMR702SensorConfig()
         launchWithViewLifecycle {
             delay(1500)
             appUpdateViewModel.requestCheckAppVersion(false)

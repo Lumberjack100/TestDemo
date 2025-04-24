@@ -540,7 +540,7 @@ class DeviceRequestViewModel(
             handleError(
                 MutableResult<DataResult<Unit>>(),
                 error,
-                "${BaseURL.AMS_CONFIG_ADDRESS.baseUrl}/Login"
+                "${BaseURL.MIYITONG_REMOTE_CONFIG_ADDRESS.baseUrl}/Login"
             )
             onCatch?.invoke(error)
         }
