@@ -31,8 +31,8 @@ import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.model.AppConfigContent
 import com.shmedo.mcloudapp.model.CommunicateWay
+import com.shmedo.mcloudapp.model.MR702PortSensorConfig
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.adapter.PageAdapter
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
@@ -201,21 +201,15 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             try {
                 val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
                 val jsonStr = localAppConfigInfo.configPara.replace("\\", "")
-                //Timber.d("configPara = $jsonStr")
-                val appConfigContent: AppConfigContent =
+                Timber.d("configPara = $jsonStr")
+                val portSensorConfig: MR702PortSensorConfig =
                     MoshiUtil.fromJson(jsonStr) ?: return@launchWithViewLifecycle
 
-                appConfigContent.mr702.forEach { mPort ->
-                    mStates.configPortSensorModelListMap[mPort.portName] =
-                        mPort.sensorModelList.toMutableList()
-                }
-                mStates.configPortSensorModelListMap["485port1"]?.let { modelList ->
-                    modelList.onEachIndexed { index, sensorModel ->
-                        mStates.configPort4851SensorIDToSensorModelMap[sensorModel.sensorID] = sensorModel
-                    }
-                }
-                mStates.configPortSensorModelListMap["485port2"]?.let { modelList ->
-                    modelList.onEachIndexed { index, sensorModel ->
+                portSensorConfig.sensorModelList.forEach { sensorModel ->
+                    if(sensorModel.port == "485-1") {
+                        mStates.configPort4851SensorIDToSensorModelMap[sensorModel.sensorID] =
+                            sensorModel
+                    } else if(sensorModel.port == "485-2") {
                         mStates.configPort4852SensorIDToSensorModelMap[sensorModel.sensorID] =
                             sensorModel
                     }

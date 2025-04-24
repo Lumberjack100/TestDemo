@@ -13,14 +13,14 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class MR702PortSensorConfig(
-    var portName: String = "",
-    @Json(name = "sensors")
+    @Json(name = "sensorList")
     var sensorModelList: List<SensorModel> = listOf(),
 ) : Parcelable
 
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class SensorModel(
+    var port: String = "",
     var sensorID: String = "",
     var sensorType: String = "",
     var sensorName: String = "",

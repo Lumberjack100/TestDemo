@@ -5,12 +5,8 @@ import com.shmedo.mcloudapp.model.SensorModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 open class MR702PortHomeViewModel : ViewModel() {
-
     val interfaceName = NonNullObservableField("")
     val interfaceDesc = NonNullObservableField("最多支持32支传感器接入")
-
-    val configPortSensorModelListMap =
-        mutableMapOf<String, MutableList<SensorModel>>() // key: 串口名称，value: 传感器 model列表
 
     val configPort4851SensorIDToSensorModelMap = mutableMapOf<String, SensorModel>()// key: sensorId，value: 传感器 model
 
