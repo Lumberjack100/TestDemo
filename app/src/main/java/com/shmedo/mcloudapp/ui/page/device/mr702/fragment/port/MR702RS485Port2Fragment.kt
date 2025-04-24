@@ -166,7 +166,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                 override fun onSelect(sensorModel: SensorModel) {
                     val bundle = MR702RS485Port2SensorParamFragment.newBundleArguments(
                         MRSensorItem(
-                            sensorType = sensorModel.sensorType,
+                            sensorID = sensorModel.sensorID,
                             sensorName = sensorModel.sensorName,
                             modelToken = sensorModel.modelToken,
                         ),
@@ -556,10 +556,10 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                         isPlugin = sensorStatus.sta == "0",
                         chl = sensorStatus.chl,
                         addrDesc = "通道-${sensorStatus.chl}",
-                        sensorName = portHomeViewModel.configPort4852SensorTypeToSensorModelMap[sensorType]?.sensorName
+                        sensorID = sensorType,
+                        sensorName = portHomeViewModel.configPort4852SensorIDToSensorModelMap[sensorType]?.sensorName
                             ?: "未知类型",
-                        sensorType = sensorType,
-                        modelToken = portHomeViewModel.configPort4852SensorTypeToSensorModelMap[sensorType]?.modelToken
+                        modelToken = portHomeViewModel.configPort4852SensorIDToSensorModelMap[sensorType]?.modelToken
                             ?: "",
                     )
                 }

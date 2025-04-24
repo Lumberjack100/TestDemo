@@ -21,8 +21,7 @@ data class MR702PortSensorConfig(
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class SensorModel(
-    @Json(name = "sensorlist")
-    var sensorId: String = "",
+    var sensorID: String = "",
     var sensorType: String = "",
     var sensorName: String = "",
     var modelToken: String = "",

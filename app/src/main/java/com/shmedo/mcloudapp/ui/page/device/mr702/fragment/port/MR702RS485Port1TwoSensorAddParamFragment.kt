@@ -97,10 +97,10 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
         }
         binding.llToolbar.toolbar.title = sensorItem.sensorName
 
-        portHomeViewModel.sensorIdToSensorModelMap[sensorItem.sensorId]?.let {
+        portHomeViewModel.configPort4851SensorIDToSensorModelMap[sensorItem.sensorID]?.let {
             mStates.curSensorModel = it
         }
-        mStates.isCustomSensor.set(mStates.curSensorModel.sensorId == "0")//是否自定义传感器
+        mStates.isCustomSensor.set(mStates.curSensorModel.sensorID == "0")//是否自定义传感器
 
         mStates.modelName.set(mStates.curSensorModel.modelName)//物模型名称
         mStates.modelToken.set(mStates.curSensorModel.modelToken)//物模型编号
@@ -434,7 +434,7 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
             model = mStates.modelToken.get() + "_" + mStates.address.get(),
             c_model = "1",
             num = "0",
-            sensorlist = sensorItem.sensorId,
+            sensorlist = sensorItem.sensorID,
             baud = mStates.baudRate.get(),
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
@@ -480,7 +480,7 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
             model = mStates.modelToken.get() + "_" + mStates.address.get(),
             c_model = "1",
             num = "1",
-            sensorlist = sensorItem.sensorId,
+            sensorlist = sensorItem.sensorID,
             baud = mStates.baudRate.get(),
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),

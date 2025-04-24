@@ -211,12 +211,12 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                 }
                 mStates.configPortSensorModelListMap["485port1"]?.let { modelList ->
                     modelList.onEachIndexed { index, sensorModel ->
-                        mStates.sensorIdToSensorModelMap[sensorModel.sensorId] = sensorModel
+                        mStates.configPort4851SensorIDToSensorModelMap[sensorModel.sensorID] = sensorModel
                     }
                 }
                 mStates.configPortSensorModelListMap["485port2"]?.let { modelList ->
                     modelList.onEachIndexed { index, sensorModel ->
-                        mStates.configPort4852SensorTypeToSensorModelMap[sensorModel.sensorType] =
+                        mStates.configPort4852SensorIDToSensorModelMap[sensorModel.sensorID] =
                             sensorModel
                     }
                 }

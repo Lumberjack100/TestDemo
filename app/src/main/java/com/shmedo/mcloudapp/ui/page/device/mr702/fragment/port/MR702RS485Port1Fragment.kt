@@ -127,7 +127,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                             deviceInfo,
                             bleDevice
                         )
-                        portHomeViewModel.sensorIdToSensorModelMap[item.sensorId]?.modelFieldList?.size?.let { fieldSize ->
+                        portHomeViewModel.configPort4851SensorIDToSensorModelMap[item.sensorID]?.modelFieldList?.size?.let { fieldSize ->
                             nav().navigate(
                                 if (fieldSize > 1) R.id.action_mR702PortHomeFragment_to_mR702RS485Port1TwoSensorParamFragment
                                 else R.id.action_mR702PortHomeFragment_to_mR702RS485Port1SingleSensorParamFragment,
@@ -181,8 +181,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                 override fun onSelect(sensorModel: SensorModel) {
                     val bundle = MR702RS485Port1SingleSensorAddParamFragment.newBundleArguments(
                         MRSensorItem(
-                            sensorId = sensorModel.sensorId,
-                            sensorType = sensorModel.sensorType,
+                            sensorID = sensorModel.sensorID,
                             sensorName = sensorModel.sensorName,
                             modelToken = sensorModel.modelToken,
                         ),
@@ -480,8 +479,8 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                     isPlugin = sensorStatusMap[sensorParam.model] == "0",
                     addr = address,
                     addrDesc = "地址-$address",
-                    sensorId = sensorParam.sensorId,
-                    sensorName = portHomeViewModel.sensorIdToSensorModelMap[sensorParam.sensorId]?.sensorName
+                    sensorID = sensorParam.sensorId,
+                    sensorName = portHomeViewModel.configPort4851SensorIDToSensorModelMap[sensorParam.sensorId]?.sensorName
                         ?: "自定义传感器",
                     modelToken = modelToken,
                 )

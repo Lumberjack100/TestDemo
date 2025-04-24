@@ -12,10 +12,9 @@ open class MR702PortHomeViewModel : ViewModel() {
     val configPortSensorModelListMap =
         mutableMapOf<String, MutableList<SensorModel>>() // key: 串口名称，value: 传感器 model列表
 
-    val sensorIdToSensorModelMap = mutableMapOf<String, SensorModel>()// key: sensorId，value: 传感器 model
+    val configPort4851SensorIDToSensorModelMap = mutableMapOf<String, SensorModel>()// key: sensorId，value: 传感器 model
 
 
-    val configPort4852SensorTypeToSensorModelMap =
-        mutableMapOf<String, SensorModel>()// key: sensorName，value: 传感器 model
+    val configPort4852SensorIDToSensorModelMap = mutableMapOf<String, SensorModel>()// key: sensorName，value: 传感器 model
 
 }
