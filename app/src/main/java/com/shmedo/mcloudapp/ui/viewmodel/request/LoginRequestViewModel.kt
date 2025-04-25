@@ -384,11 +384,6 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
     fun loadMR702SensorConfig() {
         viewModelScope.launch(Dispatchers.Default) {
             try {
-                //获取远程配置文件
-                val amsToken: String = appConfigLogin() ?: ""
-                MmkvCacheUtil.setRemoteConfigToken(amsToken)
-
-                //远程配置信息
                 val remoteSensorConfigList: List<SensorModel> = queryRemoteMR702SensorConfigList()
                 if (remoteSensorConfigList.isEmpty()) {
                     val localSensorConfigInfo =
@@ -418,19 +413,17 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
     /**
      * 获取远程 MR702 传感器配置列表
      */
-    private suspend fun queryRemoteMR702SensorConfigList(): List<SensorModel> {
-        //与远程配置文件比较
+    suspend fun queryRemoteMR702SensorConfigList(): List<SensorModel> {
         val amsToken: String = appConfigLogin() ?: return arrayListOf()
         MmkvCacheUtil.setRemoteConfigToken(amsToken)
 
-        //远程配置信息
         val remoteAppConfigInfo: MR702PortSensorConfig =
             queryMR702SensorConfigList() ?: return arrayListOf()
 
         return remoteAppConfigInfo.sensorModelList
     }
 
-    private suspend fun appConfigLogin(): String? {
+    suspend fun appConfigLogin(): String? {
         val jsonObject = JSONObject().apply {
             put("access_type", "android")
             put("account", "medo_gh")
@@ -454,7 +447,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             put("port", "")
             put("sensorName", "")
         }
-        return NetDataRepository.instance.queryMR702SensorConfigList(jsonObject.toString())  { error: Throwable ->
+        return NetDataRepository.instance.queryMR702SensorConfigList(jsonObject.toString()) { error: Throwable ->
             error.printStackTrace()
             val msg =
                 "${BaseURL.MIYITONG_REMOTE_CONFIG_ADDRESS.baseUrl}/QueryMR702SensorConfigList error: ${error.localizedMessage}" //这里的msg是网络请求的错误信息
