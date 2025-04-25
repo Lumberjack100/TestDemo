@@ -10,7 +10,6 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.core.commonlib.extensions.decimalStringToHexString
 import com.shmedo.core.commonlib.extensions.hexStringToDecimalString
 import com.shmedo.core.commonlib.extensions.stringToGBK16UByteString
 import com.shmedo.core.commonlib.utils.AppContants
@@ -216,7 +215,7 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
         //水文标识
         mStates.hydrologicalIdentification2.set(
             if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[1].hydrologicalIdentification.decimalStringToHexString()
+                mStates.curSensorModel.modelFieldList[1].hydrologicalIdentification
             else ""
         )
         //采集指令

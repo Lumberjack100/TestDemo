@@ -130,15 +130,10 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
         mStates.dataBit.set(dataBitList[3])//默认数据位 8
         mStates.checkBit.set(checkBitList[0])//默认校验位 无
         mStates.stopBit.set(stopBitList[0])//默认停止位 1
-        //水文标识
-        mStates.hydrologicalIdentification.set(
-            if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[0].hydrologicalIdentification
-            else ""
-        )
+
         mStates.siteType.set(siteTypeList[0])//站点类型 默认无
         mStates.calculate.set(calculateList[0])//计算方式 默认不计算
-        mStates.sensitivityK.set("0")
+        mStates.sensitivityK.set("1")
         mStates.temperatureCorrectionCoefficientB.set("0")
         mStates.powValue.set("0")
         mStates.initialFrequencyF0.set("0")
@@ -160,6 +155,12 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
         mStates.modelFieldUnit.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[0].engUnit
+            else ""
+        )
+        //水文标识
+        mStates.hydrologicalIdentification.set(
+            if (checkModelFieldList())
+                mStates.curSensorModel.modelFieldList[0].hydrologicalIdentification
             else ""
         )
         //采集指令

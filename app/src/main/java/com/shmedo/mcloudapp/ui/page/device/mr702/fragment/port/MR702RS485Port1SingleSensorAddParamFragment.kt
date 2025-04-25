@@ -157,7 +157,7 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
                 mStates.curSensorModel.modelFieldList[modelFieldIndex].collectionInstructions
             else ""
         )
-        //倍率 1
+        //倍率
         mStates.ratio.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[modelFieldIndex].ratio
