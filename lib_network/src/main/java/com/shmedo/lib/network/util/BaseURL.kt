@@ -31,7 +31,7 @@ enum class BaseURL(@JvmField var baseUrl: String) {
     /**
      * 米易通远程配置服务地址
      */
-    MIYITONG_REMOTE_CONFIG_ADDRESS("https://miyitong-remote-config-api.lumberjack2.com/api/v1/"),
+    MIYITONG_REMOTE_CONFIG_ADDRESS("https://miyitong-remote-config-api.lumberjack2.cn/api/v1/"),
 
     /**
      * ADME配置接口服务地址
