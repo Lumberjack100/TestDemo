@@ -1,7 +1,7 @@
 package com.shmedo.core.commonlib.mmkv
 
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
-import com.shmedo.core.model.AppConfigInfo
+import com.shmedo.core.model.SensorModel
 import com.shmedo.core.model.UserPermissionInfo
 import com.tencent.mmkv.MMKV
 
@@ -17,9 +17,7 @@ object MmkvCacheUtil {
         return kv.encode("private", first)
     }
 
-    /**
-     * 用户名
-     */
+    /** 用户名 */
     fun getAccount(): String {
         val kv = MMKV.defaultMMKV()
         val value = kv.decodeString("username")
@@ -31,9 +29,7 @@ object MmkvCacheUtil {
         kv.encode("username", value)
     }
 
-    /**
-     * 密码
-     */
+    /** 密码 */
     fun getPassword(): String {
         val kv = MMKV.defaultMMKV()
         val value = kv.decodeString("password")
@@ -58,14 +54,10 @@ object MmkvCacheUtil {
 
     fun setUserPermissionList(list: List<UserPermissionInfo>?) {
         val kv = MMKV.defaultMMKV()
-        list?.let {
-            kv.encode("user_permission_list", MoshiUtil.toJson(it))
-        }
+        list?.let { kv.encode("user_permission_list", MoshiUtil.toJson(it)) }
     }
 
-    /**
-     * 获取搜索历史缓存数据
-     */
+    /** 获取搜索历史缓存数据 */
     fun getSearchHistoryData(): List<String> {
         val kv = MMKV.defaultMMKV()
         val searchCacheStr = kv.decodeString("device_search_history")
@@ -78,10 +70,8 @@ object MmkvCacheUtil {
         kv.encode("device_search_history", searchResponseStr)
     }
 
-    //<editor-fold desc="ADME ">
-    /**
-     * 获取 ADME 自动测孔深上一次电机下放速度
-     */
+    // <editor-fold desc="ADME ">
+    /** 获取 ADME 自动测孔深上一次电机下放速度 */
     fun getAdmeAutoLastMotorDropSpeed(): String {
         val kv = MMKV.defaultMMKV()
         val value = kv.decodeString("auto_last_motor_drop_speed")
@@ -93,9 +83,7 @@ object MmkvCacheUtil {
         kv.encode("auto_last_motor_drop_speed", value)
     }
 
-    /**
-     * 获取 ADME 手动测孔深上一次电机上拉速度
-     */
+    /** 获取 ADME 手动测孔深上一次电机上拉速度 */
     fun getAdmeManualLastMotorPullUpSpeed(): String {
         val kv = MMKV.defaultMMKV()
         val value = kv.decodeString("manual_last_motor_pull_up_speed")
@@ -107,9 +95,7 @@ object MmkvCacheUtil {
         kv.encode("manual_last_motor_pull_up_speed", value)
     }
 
-    /**
-     * 获取 ADME 手动测孔深上一次电机上拉距离
-     */
+    /** 获取 ADME 手动测孔深上一次电机上拉距离 */
     fun getAdmeManualLastMotorPullUpDistance(): String {
         val kv = MMKV.defaultMMKV()
         val value = kv.decodeString("manual_last_motor_pull_up_distance")
@@ -121,9 +107,7 @@ object MmkvCacheUtil {
         kv.encode("manual_last_motor_pull_up_distance", value)
     }
 
-    /**
-     * 获取 ADME 手动测孔深上一次电机下放速度
-     */
+    /** 获取 ADME 手动测孔深上一次电机下放速度 */
     fun getAdmeManualLastMotorDropSpeed(): String {
         val kv = MMKV.defaultMMKV()
         val value = kv.decodeString("manual_last_motor_drop_speed")
@@ -135,9 +119,7 @@ object MmkvCacheUtil {
         kv.encode("manual_last_motor_drop_speed", value)
     }
 
-    /**
-     * 获取 ADME 手动测孔深上一次电机下放距离
-     */
+    /** 获取 ADME 手动测孔深上一次电机下放距离 */
     fun getAdmeManualLastMotorDropDistance(): String {
         val kv = MMKV.defaultMMKV()
         val value = kv.decodeString("manual_last_motor_drop_distance")
@@ -150,37 +132,28 @@ object MmkvCacheUtil {
     }
     // </editor-fold>
 
-    fun getAmsToken(): String {
+    fun getRemoteConfigToken(): String {
         val kv = MMKV.defaultMMKV()
-        val token = kv.decodeString("ams_token")
+        val token = kv.decodeString("remote_config_token")
         return token ?: ""
     }
 
-    fun setAmsToken(token: String) {
+    fun setRemoteConfigToken(token: String) {
         val kv = MMKV.defaultMMKV()
-        kv.encode("ams_token", token)
+        kv.encode("remote_config_token", token)
     }
 
-    fun getAppConfigInfo(): AppConfigInfo? {
+    fun getMR702SensorConfigInfo(): List<SensorModel> {
         val kv = MMKV.defaultMMKV()
-        val userStr = kv.decodeString("ams_app_config_info")
+        val value = kv.decodeString("mr702_sensor_config_info")
 
-        return if (userStr.isNullOrEmpty()) null
-        else MoshiUtil.fromJson<AppConfigInfo>(userStr)
+        return if (value.isNullOrEmpty()) arrayListOf()
+        else MoshiUtil.fromJson<List<SensorModel>>(value) ?: arrayListOf()
     }
 
-    fun setAppConfigInfo(info: AppConfigInfo?) {
+    fun setMR702SensorConfigInfo(list: List<SensorModel>?) {
         val kv = MMKV.defaultMMKV()
-        info?.let {
-            kv.encode("ams_app_config_info", MoshiUtil.toJson(it))
-        }
-    }
-
-    fun setAppConfigInfo(jsonParam: String?) {
-        val kv = MMKV.defaultMMKV()
-        jsonParam?.let {
-            kv.encode("ams_app_config_info", jsonParam)
-        }
+        list?.let { kv.encode("mr702_sensor_config_info", MoshiUtil.toJson(it)) }
     }
 
 }

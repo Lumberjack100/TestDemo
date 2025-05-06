@@ -13,13 +13,12 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.data.extensions.getLogItem
-import com.shmedo.core.model.AppConfigInfo
 import com.shmedo.core.model.DeviceInfo
+import com.shmedo.core.model.SensorModel
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.network.ext.errorMsg
@@ -31,7 +30,6 @@ import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.model.AppConfigContent
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.adapter.PageAdapter
@@ -199,24 +197,13 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private fun loadSensorModeConfig() {
         launchWithViewLifecycle(Dispatchers.IO) {
             try {
-                val localAppConfigInfo: AppConfigInfo = MmkvCacheUtil.getAppConfigInfo()!!
-                val jsonStr = localAppConfigInfo.configPara.replace("\\", "")
-                //Timber.d("configPara = $jsonStr")
-                val appConfigContent: AppConfigContent =
-                    MoshiUtil.fromJson(jsonStr) ?: return@launchWithViewLifecycle
-
-                appConfigContent.mr702.forEach { mPort ->
-                    mStates.configPortSensorModelListMap[mPort.portName] =
-                        mPort.sensorModelList.toMutableList()
-                }
-                mStates.configPortSensorModelListMap["485port1"]?.let { modelList ->
-                    modelList.onEachIndexed { index, sensorModel ->
-                        mStates.sensorIdToSensorModelMap[sensorModel.sensorId] = sensorModel
-                    }
-                }
-                mStates.configPortSensorModelListMap["485port2"]?.let { modelList ->
-                    modelList.onEachIndexed { index, sensorModel ->
-                        mStates.configPort4852SensorTypeToSensorModelMap[sensorModel.sensorType] =
+                val sensorConfigList: List<SensorModel> = MmkvCacheUtil.getMR702SensorConfigInfo()
+                sensorConfigList.forEach { sensorModel ->
+                    if (sensorModel.port == "485-1") {
+                        mStates.configPort4851SensorIDToSensorModelMap[sensorModel.sensorID] =
+                            sensorModel
+                    } else if (sensorModel.port == "485-2") {
+                        mStates.configPort4852SensorIDToSensorModelMap[sensorModel.sensorID] =
                             sensorModel
                     }
                 }

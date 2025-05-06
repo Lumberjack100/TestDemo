@@ -12,6 +12,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.model.SensorModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRRS485Port1CollectionParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -37,7 +38,6 @@ import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.MRRS485Port1
 import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.model.RVEmptyFooter
-import com.shmedo.mcloudapp.model.SensorModel
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.MR702SensorSelectionPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
@@ -127,7 +127,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                             deviceInfo,
                             bleDevice
                         )
-                        portHomeViewModel.sensorIdToSensorModelMap[item.sensorId]?.modelFieldList?.size?.let { fieldSize ->
+                        portHomeViewModel.configPort4851SensorIDToSensorModelMap[item.sensorID]?.modelFieldList?.size?.let { fieldSize ->
                             nav().navigate(
                                 if (fieldSize > 1) R.id.action_mR702PortHomeFragment_to_mR702RS485Port1TwoSensorParamFragment
                                 else R.id.action_mR702PortHomeFragment_to_mR702RS485Port1SingleSensorParamFragment,
@@ -174,15 +174,14 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
      * 显示添加传感器弹窗
      */
     private fun showAddSensorPopup() {
-        val sensorList = portHomeViewModel.configPortSensorModelListMap["485port1"] ?: listOf()
+        val sensorList = portHomeViewModel.configPort4851SensorIDToSensorModelMap.values.toList()
         val selectionPopupView = MR702SensorSelectionPopupView(requireContext())
         selectionPopupView.setData("请选择传感器", sensorList)
             .setSelectListener(object : MR702SensorSelectionPopupView.OnSelectListener {
                 override fun onSelect(sensorModel: SensorModel) {
                     val bundle = MR702RS485Port1SingleSensorAddParamFragment.newBundleArguments(
                         MRSensorItem(
-                            sensorId = sensorModel.sensorId,
-                            sensorType = sensorModel.sensorType,
+                            sensorID = sensorModel.sensorID,
                             sensorName = sensorModel.sensorName,
                             modelToken = sensorModel.modelToken,
                         ),
@@ -480,8 +479,8 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                     isPlugin = sensorStatusMap[sensorParam.model] == "0",
                     addr = address,
                     addrDesc = "地址-$address",
-                    sensorId = sensorParam.sensorId,
-                    sensorName = portHomeViewModel.sensorIdToSensorModelMap[sensorParam.sensorId]?.sensorName
+                    sensorID = sensorParam.sensorId,
+                    sensorName = portHomeViewModel.configPort4851SensorIDToSensorModelMap[sensorParam.sensorId]?.sensorName
                         ?: "自定义传感器",
                     modelToken = modelToken,
                 )

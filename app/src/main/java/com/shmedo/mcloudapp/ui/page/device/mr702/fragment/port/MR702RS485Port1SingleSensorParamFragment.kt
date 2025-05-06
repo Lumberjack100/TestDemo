@@ -112,7 +112,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
         }
         binding.llToolbar.toolbar.title = sensorItem.sensorName
 
-        portHomeViewModel.sensorIdToSensorModelMap[sensorItem.sensorId]?.let {
+        portHomeViewModel.configPort4851SensorIDToSensorModelMap[sensorItem.sensorID]?.let {
             mStates.curSensorModel = it
         }
 
@@ -130,15 +130,10 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
         mStates.dataBit.set(dataBitList[3])//默认数据位 8
         mStates.checkBit.set(checkBitList[0])//默认校验位 无
         mStates.stopBit.set(stopBitList[0])//默认停止位 1
-        //水文标识
-        mStates.hydrologicalIdentification.set(
-            if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[0].hydrologicalIdentification
-            else ""
-        )
+
         mStates.siteType.set(siteTypeList[0])//站点类型 默认无
         mStates.calculate.set(calculateList[0])//计算方式 默认不计算
-        mStates.sensitivityK.set("0")
+        mStates.sensitivityK.set("1")
         mStates.temperatureCorrectionCoefficientB.set("0")
         mStates.powValue.set("0")
         mStates.initialFrequencyF0.set("0")
@@ -160,6 +155,12 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
         mStates.modelFieldUnit.set(
             if (checkModelFieldList())
                 mStates.curSensorModel.modelFieldList[0].engUnit
+            else ""
+        )
+        //水文标识
+        mStates.hydrologicalIdentification.set(
+            if (checkModelFieldList())
+                mStates.curSensorModel.modelFieldList[0].hydrologicalIdentification
             else ""
         )
         //采集指令
@@ -370,7 +371,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
             model = mStates.modelToken.get() + "_" + mStates.address.get(),
             c_model = "0",
             num = "0",
-            sensorlist = sensorItem.sensorId,
+            sensorlist = sensorItem.sensorID,
             baud = mStates.baudRate.get(),
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
@@ -582,7 +583,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
                     mStates.correctValue.set(sensorParam.corrvalue)
                     mStates.ngateval.set(sensorParam.ngateval)
 
-                    if (sensorItem.sensorId == "0") {
+                    if (sensorItem.sensorID == "0") {
                         mStates.modelName.set(sensorParam.sgbk.gbkHexToString())
                         mStates.modelFieldName.set(sensorParam.mgbk.gbkHexToString())
                         mStates.modelFieldUnit.set(sensorParam.egbk.gbkHexToString())

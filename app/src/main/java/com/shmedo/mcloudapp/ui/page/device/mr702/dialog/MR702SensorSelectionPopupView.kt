@@ -6,9 +6,10 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import com.lxj.xpopup.core.CenterPopupView
+import com.shmedo.core.model.SensorModel
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.CustomMr702SensorSelectionPopupBinding
-import com.shmedo.mcloudapp.model.SensorModel
+import kotlin.collections.map
 
 /**
  * 创建者:   gonghe <br/>
