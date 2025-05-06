@@ -14,6 +14,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.model.SensorModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRRS485Port2CollectionParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRSerialPortParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
@@ -39,7 +40,6 @@ import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.MRRS485Port2
 import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.model.RVEmptyFooter
-import com.shmedo.mcloudapp.model.SensorModel
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.MR702SensorSelectionPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
@@ -159,14 +159,14 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     }
 
     private fun showAddSensorPopup() {
-        val sensorList = portHomeViewModel.configPortSensorModelListMap["485port2"] ?: listOf()
+        val sensorList = portHomeViewModel.configPort4852SensorIDToSensorModelMap.values.toList()
         val selectionPopupView = MR702SensorSelectionPopupView(requireContext())
         selectionPopupView.setData("请选择传感器", sensorList)
             .setSelectListener(object : MR702SensorSelectionPopupView.OnSelectListener {
                 override fun onSelect(sensorModel: SensorModel) {
                     val bundle = MR702RS485Port2SensorParamFragment.newBundleArguments(
                         MRSensorItem(
-                            sensorType = sensorModel.sensorType,
+                            sensorID = sensorModel.sensorID,
                             sensorName = sensorModel.sensorName,
                             modelToken = sensorModel.modelToken,
                         ),
@@ -556,10 +556,10 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                         isPlugin = sensorStatus.sta == "0",
                         chl = sensorStatus.chl,
                         addrDesc = "通道-${sensorStatus.chl}",
-                        sensorName = portHomeViewModel.configPort4852SensorTypeToSensorModelMap[sensorType]?.sensorName
+                        sensorID = sensorType,
+                        sensorName = portHomeViewModel.configPort4852SensorIDToSensorModelMap[sensorType]?.sensorName
                             ?: "未知类型",
-                        sensorType = sensorType,
-                        modelToken = portHomeViewModel.configPort4852SensorTypeToSensorModelMap[sensorType]?.modelToken
+                        modelToken = portHomeViewModel.configPort4852SensorIDToSensorModelMap[sensorType]?.modelToken
                             ?: "",
                     )
                 }

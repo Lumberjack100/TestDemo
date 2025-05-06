@@ -110,7 +110,7 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
             binding.refreshLayout.setEnableRefresh(false)
         }
 
-        mStates.sensorType.set(sensorItem.sensorType)
+        mStates.sensorType.set(sensorItem.sensorID)
         mStates.modelName.set(sensorItem.sensorName)
         mStates.modelToken.set(sensorItem.modelToken)
 

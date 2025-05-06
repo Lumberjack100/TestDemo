@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.model
+package com.shmedo.core.model
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
@@ -13,16 +13,15 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class MR702PortSensorConfig(
-    var portName: String = "",
-    @Json(name = "sensors")
+    @Json(name = "sensorList")
     var sensorModelList: List<SensorModel> = listOf(),
 ) : Parcelable
 
 @Parcelize
 @JsonClass(generateAdapter = true)
 data class SensorModel(
-    @Json(name = "sensorlist")
-    var sensorId: String = "",
+    var port: String = "",
+    var sensorID: String = "",
     var sensorType: String = "",
     var sensorName: String = "",
     var modelToken: String = "",

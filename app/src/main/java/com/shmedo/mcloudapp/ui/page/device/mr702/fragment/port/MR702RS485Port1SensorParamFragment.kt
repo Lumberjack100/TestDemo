@@ -135,7 +135,7 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
         }
         binding.llToolbar.toolbar.title = sensorItem.sensorName
 
-        portHomeViewModel.sensorIdToSensorModelMap[sensorItem.modelToken]?.let {
+        portHomeViewModel.configPort4851SensorIDToSensorModelMap[sensorItem.modelToken]?.let {
             mStates.curSensorModel = it
         }
         if (mStates.curSensorModel.modelFieldList.isNotEmpty()) {
