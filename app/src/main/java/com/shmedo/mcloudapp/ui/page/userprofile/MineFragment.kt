@@ -16,6 +16,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentMineBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.login.LoginActivity
@@ -87,21 +88,21 @@ class MineFragment : BaseFragment() {
          * 编辑用户信息
          */
         fun onUpdateUserClick() {
-            nav().navigate(R.id.action_mainFragment_to_userInfoHomeFragment)
+            nav().safeNavigate(R.id.action_mainFragment_to_userInfoHomeFragment)
         }
 
         /**
          *  所属单位
          */
         fun onCompanyClick() {
-            nav().navigate(R.id.action_mainFragment_to_companyHomeFragment)
+            nav().safeNavigate(R.id.action_mainFragment_to_companyHomeFragment)
         }
 
         /**
          * 修改密码
          */
         fun onModifyPasswordClick() {
-            nav().navigate(R.id.action_mainFragment_to_resetPasswordFragment)
+            nav().safeNavigate(R.id.action_mainFragment_to_resetPasswordFragment)
         }
 
         /**
@@ -112,7 +113,7 @@ class MineFragment : BaseFragment() {
         }
 
         fun onSettingClick() {
-            nav().navigate(R.id.action_mainFragment_to_settingFragment)
+            nav().safeNavigate(R.id.action_mainFragment_to_settingFragment)
         }
 
         fun logout() {

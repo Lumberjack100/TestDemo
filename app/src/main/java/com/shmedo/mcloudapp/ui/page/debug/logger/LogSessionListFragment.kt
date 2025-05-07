@@ -21,6 +21,7 @@ import com.shmedo.mcloudapp.databinding.FragmentLogSessionListBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.HoverHeaderModel
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
@@ -79,7 +80,7 @@ class LogSessionListFragment : BaseFragment() {
                     else -> {
                         val item = getModel<LogSession>()
                         val bundle = LogDataFragment.newBundleArguments(item)
-                        nav().navigate(
+                        nav().safeNavigate(
                             R.id.action_logSessionListFragment_to_logDataFragment,
                             bundle
                         )

@@ -22,6 +22,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port3Binding
 import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
@@ -85,7 +86,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
                         deviceInfo,
                         bleDevice
                     )
-                    nav().navigate(
+                    nav().safeNavigate(
                         R.id.action_mR702PortHomeFragment_to_mR702RS485Port3CameraParamFragment,
                         bundle
                     )
@@ -97,7 +98,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
                             deviceInfo,
                             bleDevice
                         )
-                    nav().navigate(
+                    nav().safeNavigate(
                         R.id.action_mR702PortHomeFragment_to_mR702RS485Port3AcousticOpticalAlarmParamFragmen,
                         bundle
                     )
@@ -109,7 +110,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
                         deviceInfo,
                         bleDevice
                     )
-                    nav().navigate(
+                    nav().safeNavigate(
                         R.id.action_mR702PortHomeFragment_to_mR702RS485Port3SensorParamFragment,
                         bundle
                     )

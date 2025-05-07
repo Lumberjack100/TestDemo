@@ -34,6 +34,7 @@ import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.notNull
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
@@ -376,7 +377,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            nav().navigate(
+            nav().safeNavigate(
                 R.id.action_global_to_udLocationInfoFragment,
                 newBundleArguments(
                     productType,
@@ -396,7 +397,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         }
 
         fun onGoToSensorDataHistoryClick() {
-            nav().navigate(
+            nav().safeNavigate(
                 R.id.action_global_to_udMonitorDataHistoryFragment,
                 UDSensorDataHistoryFragment.Companion.newBundleArguments(productType, deviceInfo)
             )
@@ -410,7 +411,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         }
         when (module) {
             is DataCenterModule -> {
-                nav().navigate(
+                nav().safeNavigate(
                     module.navId,
                     UniversalDataCenterHomeFragment.Companion.newBundleArguments(
                         centerNum = 4,
@@ -430,7 +431,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                     deviceInfo,
                     bleDevice
                 )
-                nav().navigate(module.navId, bundle)
+                nav().safeNavigate(module.navId, bundle)
             }
 
             else -> {
@@ -441,7 +442,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                         deviceInfo,
                         bleDevice
                     )
-                    nav().navigate(
+                    nav().safeNavigate(
                         module.navId,
                         bundle
                     )

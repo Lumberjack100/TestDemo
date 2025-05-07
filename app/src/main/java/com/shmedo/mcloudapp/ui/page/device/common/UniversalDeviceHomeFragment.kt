@@ -22,6 +22,7 @@ import com.shmedo.mcloudapp.databinding.FragmentUniversalDeviceHomeBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.BleConnect
@@ -175,7 +176,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
             val bundle = QueryDeviceDataFragment.newBundleArguments(
                 deviceInfo.deviceToken
             )
-            nav(binding.llToolbar.ivAction).navigate(
+            nav(binding.llToolbar.ivAction).safeNavigate(
                 R.id.action_global_to_queryDeviceDataFragment, bundle
             )
         }
@@ -547,7 +548,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
                 deviceInfo,
                 bleDevice
             )
-            nav().navigate(
+            nav().safeNavigate(
                 configModule.navId,
                 bundle
             )

@@ -28,6 +28,7 @@ import com.shmedo.mcloudapp.databinding.FragmentBleDasDataCenterHomeBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
@@ -99,7 +100,7 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
                     deviceInfo,
                     bleDevice
                 )
-                nav().navigate(
+                nav().safeNavigate(
                     R.id.action_bleDasDataCenterHomeFragment_to_bleDataCenterParamFragment,
                     bundle
                 )

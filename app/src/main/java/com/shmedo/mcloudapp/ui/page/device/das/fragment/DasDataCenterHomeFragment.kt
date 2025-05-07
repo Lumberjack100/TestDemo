@@ -33,6 +33,7 @@ import com.shmedo.mcloudapp.databinding.FragmentDasDataCenterHomeBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
@@ -103,7 +104,7 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
                     deviceInfo,
                     bleDevice
                 )
-                nav().navigate(
+                nav().safeNavigate(
                     R.id.action_dasDataCenterHomeFragment_to_dataCenterParamFragment,
                     bundle
                 )

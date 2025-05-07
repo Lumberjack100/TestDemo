@@ -23,6 +23,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentDeviceSearchBinding
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.RequestSearchViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
@@ -154,7 +155,7 @@ class DeviceSearchFragment : BaseFragment() {
             queryStr,
             R.color.white
         )
-        nav().navigate(
+        nav().safeNavigate(
             R.id.action_deviceSearchFragment_to_deviceSearchResultFragment,
             bundle
         )

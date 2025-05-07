@@ -20,6 +20,7 @@ import com.shmedo.mcloudapp.databinding.FragmentLb20sAdHocNetworkSettingsBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.BleConnect
@@ -90,7 +91,7 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
                 deviceInfo,
                 bleDevice
             )
-            nav().navigate(
+            nav().safeNavigate(
                 R.id.action_global_to_radioSettingsFragment,
                 bundle
             )
@@ -111,7 +112,7 @@ class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
                 deviceInfo,
                 bleDevice
             )
-            nav().navigate(
+            nav().safeNavigate(
                 R.id.action_global_to_loraSettingFragment,
                 bundle
             )

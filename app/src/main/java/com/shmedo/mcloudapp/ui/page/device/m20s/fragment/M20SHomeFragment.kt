@@ -6,6 +6,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.model.AlarmConfigModule
 import com.shmedo.mcloudapp.model.BleConnect
@@ -135,7 +136,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
                     deviceInfo,
                     bleDevice
                 )
-                nav().navigate(
+                nav().safeNavigate(
                     configModule.navId,
                     bundle
                 )
@@ -149,7 +150,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
                     deviceInfo,
                     bleDevice
                 )
-                nav().navigate(configModule.navId, bundle)
+                nav().safeNavigate(configModule.navId, bundle)
             }
 
             else -> {
@@ -160,7 +161,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
                         deviceInfo,
                         bleDevice
                     )
-                    nav().navigate(
+                    nav().safeNavigate(
                         configModule.navId,
                         bundle
                     )

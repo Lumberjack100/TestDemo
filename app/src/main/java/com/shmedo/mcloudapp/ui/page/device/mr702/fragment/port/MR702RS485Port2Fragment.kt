@@ -34,6 +34,7 @@ import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
@@ -139,7 +140,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                             deviceInfo,
                             bleDevice
                         )
-                        nav().navigate(
+                        nav().safeNavigate(
                             R.id.action_mR702PortHomeFragment_to_mR702RS485Port2SensorParamFragment,
                             bundle
                         )
@@ -176,7 +177,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                         deviceInfo,
                         bleDevice
                     )
-                    nav().navigate(
+                    nav().safeNavigate(
                         R.id.action_mR702PortHomeFragment_to_mR702RS485Port2SensorParamFragment,
                         bundle
                     )

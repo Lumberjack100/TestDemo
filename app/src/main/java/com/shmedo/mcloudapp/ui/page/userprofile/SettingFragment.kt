@@ -14,6 +14,7 @@ import com.shmedo.mcloudapp.extensions.getAppViewModel
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.webview.WebviewActivity
 import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
@@ -102,21 +103,21 @@ class SettingFragment : BaseFragment() {
          * 帮助与反馈
          */
         fun onHelpAndFeedbackClick() {
-//            nav().navigate(R.id.action_mainFragment_to_helpAndFeedbackFragment)
+//            nav().safeNavigate(R.id.action_mainFragment_to_helpAndFeedbackFragment)
         }
 
         /**
          * 关于
          */
         fun onAboutUsClick() {
-            nav().navigate(R.id.action_settingFragment_to_aboutFragment)
+            nav().safeNavigate(R.id.action_settingFragment_to_aboutFragment)
         }
 
         /**
          * 应用日志查看
          */
         fun onViewLogClick() {
-            nav().navigate(R.id.action_global_to_logSessionListFragment)
+            nav().safeNavigate(R.id.action_global_to_logSessionListFragment)
         }
 
     }

@@ -26,6 +26,7 @@ import com.shmedo.mcloudapp.databinding.FragmentNewNetDeviceListBinding
 import com.shmedo.mcloudapp.extensions.getAppViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.FilterDeviceTabItem
 import com.shmedo.mcloudapp.model.SingleSelectionItem
 import com.shmedo.mcloudapp.ui.dialog.ProductSelectionPartShadowPopupView
@@ -102,7 +103,7 @@ class NewNetDeviceListFragment : BaseFragment() {
                     }
 
                     "我的收藏" -> {
-                        nav().navigate(
+                        nav().safeNavigate(
                             R.id.action_global_to_followDeviceListFragment
                         )
                     }
@@ -317,7 +318,7 @@ class NewNetDeviceListFragment : BaseFragment() {
 
     inner class ClickProxy : BaseClickProxy() {
         override fun onGoToSearch() {
-            nav().navigate(
+            nav().safeNavigate(
                 R.id.action_mainFragment_to_deviceSearchFragment
             )
         }

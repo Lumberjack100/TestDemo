@@ -29,6 +29,7 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentDasExternalSensorListBinding
 import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
@@ -140,7 +141,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 deviceInfo,
                                 bleDevice
                             )
-                            nav().navigate(
+                            nav().safeNavigate(
                                 R.id.action_bleDasSensorHomeFragment_to_bleDasExternalDigitalSensorFragment,
                                 bundle
                             )
@@ -153,7 +154,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 deviceInfo,
                                 bleDevice,
                             )
-                            nav().navigate(
+                            nav().safeNavigate(
                                 R.id.action_bleDasSensorHomeFragment_to_bleDasExternalVibratingSensorFragment,
                                 bundle
                             )
@@ -171,7 +172,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 deviceInfo = deviceInfo,
                                 bleDevice = bleDevice,
                             )
-                            nav().navigate(
+                            nav().safeNavigate(
                                 R.id.action_bleDasSensorHomeFragment_to_bleDasExternalDigitalSensorFragment,
                                 bundle
                             )
@@ -184,7 +185,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 deviceInfo,
                                 bleDevice,
                             )
-                            nav().navigate(
+                            nav().safeNavigate(
                                 R.id.action_bleDasSensorHomeFragment_to_bleDasExternalVibratingSensorFragment,
                                 bundle
                             )

@@ -39,10 +39,23 @@ fun NavController.navigateAction(resId: Int, bundle: Bundle? = null, interval: L
     if (currentTime >= lastNavTime + interval) {
         lastNavTime = currentTime
         try {
-            navigate(resId, bundle)
+            safeNavigate(resId, bundle)
         } catch (ignore: Exception) {
             //防止出现 当 fragment 中 action 的 duration设置为 0 时，连续点击两个不同的跳转会导致如下崩溃 #issue53
         }
+    }
+}
+
+fun NavController.safeNavigate(actionId: Int, args: Bundle? = null) {
+    // 获取当前导航目的地
+    val currentDestination = currentDestination ?: return
+
+    // 获取当前目的地中定义的action
+    val action = currentDestination.getAction(actionId) ?: return
+
+    // 确保目标destination与当前destination不同
+    if (action.destinationId != currentDestination.id) {
+        safeNavigate(actionId, args)
     }
 }
 

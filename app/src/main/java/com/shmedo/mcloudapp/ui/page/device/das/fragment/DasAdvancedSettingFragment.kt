@@ -5,7 +5,6 @@ import android.view.View
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
@@ -13,12 +12,14 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseDasAdvancedSettingClickProxy
+import com.shmedo.mcloudapp.databinding.FragmentDasAdvancedSettingBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
-import com.shmedo.mcloudapp.databinding.FragmentDasAdvancedSettingBinding
-import com.shmedo.mcloudapp.baseclickproxy.BaseDasAdvancedSettingClickProxy
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
@@ -64,7 +65,7 @@ class DasAdvancedSettingFragment : BaseIOTDeviceFragment() {
                 deviceInfo,
                 bleDevice
             )
-            nav().navigate(R.id.action_global_to_firmwareUpgradeFragment, bundle)
+            nav().safeNavigate(R.id.action_global_to_firmwareUpgradeFragment, bundle)
         }
 
         override fun onResetClick() {
@@ -88,7 +89,7 @@ class DasAdvancedSettingFragment : BaseIOTDeviceFragment() {
                 deviceInfo,
                 bleDevice
             )
-            nav().navigate(R.id.action_dasAdvancedSettingFragment_to_dasAudibleAlarmFragment, bundle)
+            nav().safeNavigate(R.id.action_dasAdvancedSettingFragment_to_dasAudibleAlarmFragment, bundle)
         }
     }
 
