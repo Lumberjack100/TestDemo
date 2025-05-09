@@ -32,7 +32,6 @@ import com.shmedo.mcloudapp.databinding.ItemSubConfigModuleBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.extensions.notNull
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
@@ -68,7 +67,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
@@ -88,8 +86,8 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
     private val iotParseManager: IOTParserManager by inject()
 
+    private var onlineStatus: Boolean = false//在线状态
     private var deviceStatusCheckJob: Job? = null
-    private var abnormalInfoJob: Job? = null
 
 
     override fun initViewModel() {
@@ -487,6 +485,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun onNetPlatformReady() {
+        onlineStatus = deviceInfo.onlineStatus
         if (deviceInfo.onlineStatus) {
             mHeadStates.iotPlatformStateText.set("米度平台在线")
             queryStatusInfo()
@@ -520,7 +519,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_DEVICE_STATUS -> {
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
                 dismissLoadingDialog()
             }
 
@@ -565,7 +564,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_DEVICE_STATUS -> {
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
                 dismissLoadingDialog()
             }
 
@@ -611,7 +610,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         errMsg: String
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.MD_GET_DEVICE_STATUS -> {
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
                     isDismissLoadingDialog = isDismissLoadingDialog,
@@ -731,7 +730,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                     "-3" -> "故障"
                     else -> "正常"
                 }
-                mHeadStates.deviceStatusCode.set(stateInfo.deviceStatus)
                 mHeadStates.productLogoResId.set(
                     status.compareAndReturn(
                         "故障",
@@ -743,66 +741,11 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                         )
                     )
                 )
-                if (status == "正常") {
-                    mHeadStates.warnErrorText.set("正常")
-                    return@launchWithViewLifecycle
-                }
-                val errorInfoList = mutableListOf<String>()
-                stateInfo.deviceError.notNull(notNullAction = { resultMap ->
-                    resultMap["ld"]?.let { errorInfoList.add("雷达故障") }
-                    resultMap["cam"]?.let { errorInfoList.add("摄像头故障") }
-                    resultMap["qj"]?.let { errorInfoList.add("加速度计故障") }
-                    resultMap["4G"]?.let { errorInfoList.add("4G故障") }
-                    resultMap["bt"]?.let { errorInfoList.add("蓝牙故障") }
-                    resultMap["radio"]?.let { errorInfoList.add("电台故障") }
-                    resultMap["flash"]?.let { errorInfoList.add("存储故障") }
-                    resultMap["ath"]?.let { errorInfoList.add("温湿度故障") }
-                })
-                stateInfo.deviceWarn.notNull(notNullAction = { resultMap ->
-                    resultMap["loc_offset"]?.let { errorInfoList.add("位置偏移") }
-                    resultMap["angle_offset"]?.let { errorInfoList.add("角度偏移") }
-                    resultMap["extern_volt"]?.let { volt -> errorInfoList.add(if (volt == "-1") "外部电压过高" else "外部电压过低") }
-                    resultMap["bat_cap"]?.let { errorInfoList.add("电池电量过低") }
-                    resultMap["bat_temp"]?.let { errorInfoList.add("电池温度过高") }
-                    resultMap["bat_health"]?.let { errorInfoList.add("电池容量过低") }
-                    resultMap["inside_temp"]?.let { temp -> errorInfoList.add(if (temp == "-1") "内部温度过高" else "内部温度过低") }
-                    resultMap["sim_card"]?.let { errorInfoList.add("无SIM卡") }
-                })
-                handleAbnormalInfo(errorInfoList)
-
+                mHeadStates.deviceStatusCode.set(stateInfo.deviceStatus)
+                mHeadStates.warnErrorText.set(status)
             } catch (e: Exception) {
                 Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
-            }
-        }
-    }
-
-    /**
-     * 处理设备异常信息轮播展示
-     * 每隔3秒切换一次，取出异常信息列表中的每一条异常信息，轮播显示
-     */
-    private fun handleAbnormalInfo(errorInfoList: List<String>) {
-        //取消之前的job（如果存在）
-        abnormalInfoJob?.cancel()
-
-        //如果列表为空，直接返回
-        if (errorInfoList.isEmpty()) {
-            return
-        }
-        if (errorInfoList.size == 1) {
-            mHeadStates.warnErrorText.set(errorInfoList[0])
-            return
-        }
-        abnormalInfoJob = launchWithViewLifecycle {
-            flow {
-                while (true) {
-                    errorInfoList.forEach { errorInfo ->
-                        emit(errorInfo)
-                        delay(1500) // 延迟3秒
-                    }
-                }
-            }.collect { errorInfo ->
-                mHeadStates.warnErrorText.set(errorInfo)
             }
         }
     }
@@ -884,9 +827,8 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                     deviceRequestViewModel.getDeviceDetailInfo(deviceInfo.deviceToken) { error: Throwable ->
                         addDeviceLogItem(Log.ERROR, error.errorMsg)
                     }?.let { deviceDetailInfo ->
-                        deviceInfo = deviceDetailInfo.deviceInfo
                         // 如果设备在线状态发生变化，更新UI
-                        if (deviceInfo.onlineStatus != mHeadStates.isConnected.get()) {
+                        if (deviceDetailInfo.deviceInfo.onlineStatus != onlineStatus) {
                             onNetPlatformReady()
                         }
                     }

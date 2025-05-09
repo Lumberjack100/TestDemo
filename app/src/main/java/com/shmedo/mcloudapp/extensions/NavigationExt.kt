@@ -39,7 +39,7 @@ fun NavController.navigateAction(resId: Int, bundle: Bundle? = null, interval: L
     if (currentTime >= lastNavTime + interval) {
         lastNavTime = currentTime
         try {
-            safeNavigate(resId, bundle)
+            navigate(resId, bundle)
         } catch (ignore: Exception) {
             //防止出现 当 fragment 中 action 的 duration设置为 0 时，连续点击两个不同的跳转会导致如下崩溃 #issue53
         }
@@ -55,7 +55,7 @@ fun NavController.safeNavigate(actionId: Int, args: Bundle? = null) {
 
     // 确保目标destination与当前destination不同
     if (action.destinationId != currentDestination.id) {
-        safeNavigate(actionId, args)
+        navigate(actionId, args)
     }
 }
 
