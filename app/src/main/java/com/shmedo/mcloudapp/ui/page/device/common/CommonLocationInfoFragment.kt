@@ -127,7 +127,11 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            measureLocation("1")
+            if (productType == ProductType.GNSS_M_5) {
+                queryInfo()
+            } else {
+                measureLocation("0")
+            }
         }
 
         fun backLocation() {
