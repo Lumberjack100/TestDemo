@@ -28,6 +28,7 @@ import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
@@ -197,7 +198,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             val bundle = QueryDeviceDataFragment.newBundleArguments(
                 deviceInfo.deviceToken
             )
-            nav(binding.llToolbar.ivAction).navigate(
+            nav(binding.llToolbar.ivAction).safeNavigate(
                 R.id.action_global_to_queryDeviceDataFragment, bundle
             )
         }
@@ -265,7 +266,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                         deviceInfo,
                         bleDevice
                     )
-                    nav().navigate(
+                    nav().safeNavigate(
                         module.functionModule.navId,
                         bundle
                     )

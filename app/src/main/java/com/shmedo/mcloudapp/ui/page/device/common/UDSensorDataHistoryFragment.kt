@@ -29,6 +29,7 @@ import com.shmedo.mcloudapp.databinding.ItemUdSensorDataBinding
 import com.shmedo.mcloudapp.databinding.ItemUdSensorDataHeaderBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.HoverHeaderModel
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.CapturedPictureViewFragment
@@ -184,7 +185,7 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                 }
             }
 
-            nav().navigate(
+            nav().safeNavigate(
                 R.id.action_global_to_capturedPictureViewFragment,
                 CapturedPictureViewFragment.newBundleArguments(position)
             )

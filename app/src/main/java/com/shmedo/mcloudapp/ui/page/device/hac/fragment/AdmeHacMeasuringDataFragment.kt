@@ -40,6 +40,7 @@ import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showAdmeErrorProtectionDialog
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
@@ -657,7 +658,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                                 deviceInfo,
                                 bleDevice
                             )
-                            nav().navigate(
+                            nav().safeNavigate(
                                 R.id.action_global_to_admeHacMeasuringDataProcedureFragment,
                                 bundle
                             )
@@ -718,7 +719,7 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
                 deviceInfo,
                 bleDevice
             )
-            nav().navigate(
+            nav().safeNavigate(
                 R.id.action_global_to_admeHacMeasuringDataProcedureFragment,
                 bundle
             )

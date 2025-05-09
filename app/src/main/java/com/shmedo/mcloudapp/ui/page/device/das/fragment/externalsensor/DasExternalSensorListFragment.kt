@@ -28,6 +28,7 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentDasExternalSensorListBinding
 import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
@@ -110,7 +111,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 deviceInfo,
                                 bleDevice
                             )
-                            nav().navigate(
+                            nav().safeNavigate(
                                 R.id.action_dasSensorHomeFragment_to_dasExternalDigitalSensorFragment,
                                 bundle
                             )
@@ -123,7 +124,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 deviceInfo,
                                 bleDevice,
                             )
-                            nav().navigate(
+                            nav().safeNavigate(
                                 R.id.action_dasSensorHomeFragment_to_dasExternalVibratingSensorFragment,
                                 bundle
                             )
@@ -141,7 +142,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 deviceInfo = deviceInfo,
                                 bleDevice = bleDevice,
                             )
-                            nav().navigate(
+                            nav().safeNavigate(
                                 R.id.action_dasSensorHomeFragment_to_dasExternalDigitalSensorFragment,
                                 bundle
                             )
@@ -154,7 +155,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 deviceInfo,
                                 bleDevice,
                             )
-                            nav().navigate(
+                            nav().safeNavigate(
                                 R.id.action_dasSensorHomeFragment_to_dasExternalVibratingSensorFragment,
                                 bundle
                             )

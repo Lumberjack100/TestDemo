@@ -23,6 +23,7 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentNetDeviceListBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.ui.adapter.PageAdapter
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
@@ -75,7 +76,7 @@ class NetDeviceListFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
     inner class ClickProxy : BaseClickProxy() {
         override fun onGoToSearch() {
-            nav().navigate(
+            nav().safeNavigate(
                 R.id.action_mainFragment_to_deviceSearchFragment
             )
         }

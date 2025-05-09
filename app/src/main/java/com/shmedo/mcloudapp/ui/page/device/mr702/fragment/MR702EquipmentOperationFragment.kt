@@ -26,6 +26,7 @@ import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.BleConnect
@@ -256,7 +257,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                         deviceInfo,
                         bleDevice
                     )
-                    nav().navigate(
+                    nav().safeNavigate(
                         module.functionModule.navId,
                         bundle
                     )

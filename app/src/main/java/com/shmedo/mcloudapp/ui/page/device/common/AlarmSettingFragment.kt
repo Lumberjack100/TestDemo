@@ -25,6 +25,7 @@ import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.AlarmSettingViewModel
@@ -160,7 +161,7 @@ class AlarmSettingFragment : BaseIOTDeviceFragment() {
                 deviceInfo,
                 bleDevice
             )
-            nav().navigate(
+            nav().safeNavigate(
                 R.id.action_global_to_alarmParamSettingFragment,
                 bundle
             )

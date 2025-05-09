@@ -21,6 +21,7 @@ import com.shmedo.mcloudapp.databinding.FragmentUniversalDataCenterHomeBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment
@@ -88,7 +89,7 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
                         deviceInfo,
                         bleDevice
                     )
-                nav().navigate(
+                nav().safeNavigate(
                     R.id.action_mR702DataCenterHomeFragment_to_mR702DataCenterParamFragment,
                     bundle
                 )

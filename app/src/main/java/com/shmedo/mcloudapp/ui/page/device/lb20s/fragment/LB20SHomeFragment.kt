@@ -8,6 +8,10 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
@@ -23,9 +27,6 @@ import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDeviceHomeFragment
-import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.extensions.showMessage
 
 /**
  * 创建者：gonghe
@@ -127,7 +128,7 @@ class LB20SHomeFragment : UniversalDeviceHomeFragment() {
                     deviceInfo,
                     bleDevice
                 )
-                nav().navigate(
+                nav().safeNavigate(
                     configModule.navId,
                     bundle
                 )
@@ -153,7 +154,7 @@ class LB20SHomeFragment : UniversalDeviceHomeFragment() {
                     deviceInfo,
                     bleDevice
                 )
-                nav().navigate(configModule.navId, bundle)
+                nav().safeNavigate(configModule.navId, bundle)
             }
 
             else -> {
@@ -164,7 +165,7 @@ class LB20SHomeFragment : UniversalDeviceHomeFragment() {
                         deviceInfo,
                         bleDevice
                     )
-                    nav().navigate(
+                    nav().safeNavigate(
                         configModule.navId,
                         bundle
                     )

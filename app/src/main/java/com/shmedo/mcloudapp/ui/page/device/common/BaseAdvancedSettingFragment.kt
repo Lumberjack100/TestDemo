@@ -37,6 +37,7 @@ import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.AdvancedSettingItem
@@ -265,7 +266,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
                     deviceInfo,
                     bleDevice
                 )
-                nav().navigate(R.id.action_global_to_firmwareUpgradeFragment, bundle)
+                nav().safeNavigate(R.id.action_global_to_firmwareUpgradeFragment, bundle)
             }
 
             AdvancedSettingItem.Type.SYNC_INSTALL_POSITION -> {
@@ -285,7 +286,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
                     deviceInfo,
                     bleDevice
                 )
-                nav().navigate(R.id.action_global_to_remoteDebugFragment, bundle)
+                nav().safeNavigate(R.id.action_global_to_remoteDebugFragment, bundle)
             }
 
             AdvancedSettingItem.Type.STANDBY -> {

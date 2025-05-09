@@ -32,6 +32,7 @@ import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
@@ -128,7 +129,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                             bleDevice
                         )
                         portHomeViewModel.configPort4851SensorIDToSensorModelMap[item.sensorID]?.modelFieldList?.size?.let { fieldSize ->
-                            nav().navigate(
+                            nav().safeNavigate(
                                 if (fieldSize > 1) R.id.action_mR702PortHomeFragment_to_mR702RS485Port1TwoSensorParamFragment
                                 else R.id.action_mR702PortHomeFragment_to_mR702RS485Port1SingleSensorParamFragment,
                                 bundle
@@ -190,7 +191,7 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                         deviceInfo,
                         bleDevice
                     )
-                    nav().navigate(
+                    nav().safeNavigate(
                         if (sensorModel.modelFieldList.size > 1) R.id.action_mR702PortHomeFragment_to_mR702RS485Port1TwoSensorAddParamFragment
                         else R.id.action_mR702PortHomeFragment_to_mR702RS485Port1SingleSensorAddParamFragment,
                         bundle

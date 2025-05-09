@@ -1,11 +1,12 @@
 package com.shmedo.mcloudapp.ui.page.device.common
 
 import com.drake.brv.utils.models
+import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.extensions.nav
 
 /**
  * 创建者：gonghe
@@ -35,7 +36,7 @@ class TestDeviceHomeFragment : UniversalDeviceHomeFragment() {
                     deviceInfo,
                     bleDevice
                 )
-                nav().navigate(configModule.navId, bundle)
+                nav().safeNavigate(configModule.navId, bundle)
             }
 
             else -> {
@@ -46,7 +47,7 @@ class TestDeviceHomeFragment : UniversalDeviceHomeFragment() {
                         deviceInfo,
                         bleDevice
                     )
-                    nav().navigate(
+                    nav().safeNavigate(
                         configModule.navId,
                         bundle
                     )

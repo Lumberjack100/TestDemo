@@ -34,6 +34,7 @@ import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
 import com.shmedo.mcloudapp.extensions.showMessage
@@ -421,7 +422,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         }
 
         fun onGoToSensorDataHistoryClick() {
-            nav().navigate(
+            nav().safeNavigate(
                 R.id.action_global_to_udMonitorDataHistoryFragment,
                 UDSensorDataHistoryFragment.newBundleArguments(productType, deviceInfo)
             )
@@ -435,7 +436,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         }
         when (module) {
             is DataCenterModule -> {
-                nav().navigate(
+                nav().safeNavigate(
                     module.navId,
                     UniversalDataCenterHomeFragment.newBundleArguments(
                         centerNum = 4,
@@ -455,7 +456,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     deviceInfo,
                     bleDevice
                 )
-                nav().navigate(module.navId, bundle)
+                nav().safeNavigate(module.navId, bundle)
             }
 
             else -> {
@@ -466,7 +467,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         deviceInfo,
                         bleDevice
                     )
-                    nav().navigate(
+                    nav().safeNavigate(
                         module.navId,
                         bundle
                     )

@@ -34,6 +34,7 @@ import com.shmedo.mcloudapp.databinding.FragmentDeviceManageHomeBinding
 import com.shmedo.mcloudapp.extensions.getAppViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CustomActivityResult
 import com.shmedo.mcloudapp.model.SingleSelectionItem
@@ -211,7 +212,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
                         }
 
                         "查询数据" -> {
-                            nav().navigate(R.id.action_global_to_queryDeviceDataFragment)
+                            nav().safeNavigate(R.id.action_global_to_queryDeviceDataFragment)
                         }
                     }
                 }.show()

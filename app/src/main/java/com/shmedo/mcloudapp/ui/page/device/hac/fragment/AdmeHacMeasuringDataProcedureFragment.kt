@@ -40,6 +40,7 @@ import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showAdmeErrorProtectionDialog
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
@@ -199,7 +200,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 if (mStates.motionStateWrapper.get().motorinfo == "8") {
                     processBack(false)
                     //等待下次测量,进入测量结果展示页面
-                    nav().navigate(
+                    nav().safeNavigate(
                         R.id.action_global_to_admeHacMeasuringDataResultsFragment
                     )
                 } else {
