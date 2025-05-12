@@ -15,7 +15,7 @@ val patchVersion = 22
 
 val testMajorVersion = 5
 val testMinorVersion = 2
-val testPatchVersion = 46
+val testPatchVersion = 47
 
 /**
  * 获取Git库HEAD的SHA1码前5位
@@ -103,11 +103,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
     buildFeatures {
         viewBinding = true
@@ -184,7 +184,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     //通过 exclude 把对官方 java 包的依赖排除了，引用默认指向 smooth-Navigation
-    implementation(libs.androidx.navigation.fragment.ktx) {
+    implementation(libs.androidx.navigation.fragment) {
         exclude(group = "androidx.navigation", module = "navigation-fragment")
     }
 

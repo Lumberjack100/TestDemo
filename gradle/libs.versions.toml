@@ -14,50 +14,48 @@
 ## limitations under the License.
 ##
 [versions]
-activityKtx = "1.9.1"
-agp = "8.3.2"
+activityKtx = "1.10.1"
+agp = "8.8.2"
 agentweb = "v5.1.1-androidx"
 appcompat = "1.7.0"
 baidumapsdk_location_all = "9.6.4"
-baidumapsdk_map = "7.6.2"
-baseRecyclerView = "1.5.8"
-classgraph = "4.8.165"
-compileSdk = "34"
-constraintLayout = "2.1.4"
-crashreport = "4.1.9.2"
+baidumapsdk_map = "7.6.4"
+baseRecyclerView = "1.6.1"
+compileSdk = "35"
+constraintLayout = "2.2.1"
+crashreport = "4.1.9.3"
 customactivityoncrash = "2.4.0"
 dateTimePicker = "0.6.3"
-dialogX = "0.0.48"
+dialogX = "0.0.49"
 espresso = "3.6.1"
 fastscroll = "2.1.0"
 flexbox = "3.0.0"
-fragmentKtx = "1.8.2"
-getActivityLogcat = "11.8"
+fragmentKtx = "1.8.6"
 glideVersion = "4.16.0"
 hmsScan = "2.12.0.301"
 immersionbar = "3.2.2"
 junit = "4.13.2"
-koinAndroid = "3.5.4"
-kotlin = "1.9.23"
+koinAndroid = "4.0.4"
+kotlin = "2.1.20"
 keyboardvisibilityevent = "3.0.0-RC3"
-ksp = "1.9.23-1.0.19"
+ksp = "2.1.20-2.0.1"
 leakcanary = "2.12"
-lifecycle = "2.8.4"
+lifecycle = "2.9.0"
 legacyV4 = "1.0.0"
 material = "1.12.0"
 materialDialogs = "3.3.0"
 minSdk = "24"
-mmkv = "1.3.4"
-moshiVersion = "1.15.1"
+mmkv = "2.2.1"
+moshiVersion = "1.15.2"
 navigation = "2.7.7"
 nettyAll = "4.1.110.Final"
-nordicsemiBleKtx = "2.7.5"
+nordicsemiBleKtx = "2.10.0"
 nordicsemiScanner = "1.6.0"
 okhttpVersion = "4.12.0"
 pictureselector = "v3.11.2"
 rangeSeekBar = "v3.0.0"
-room = "2.6.1"
-rxhttp = "3.3.0"
+room = "2.7.1"
+rxhttp = "3.3.1"
 share2 = "0.9.3"
 smoothNavigation = "4.0.0"
 startupRuntime = "1.2.0"
@@ -65,15 +63,15 @@ strictDatabinding = "6.2.0"
 subsamplingScaleImageView = "3.10.0"
 switchbutton = "2.1.0"
 tableView = "v0.8.9.4"
-targetSdk = "34"
+targetSdk = "35"
 testExtJunit = "1.2.1"
 timber = "5.0.1"
-toastUtils = "12.6"
+toastUtils = "12.8"
 unpeekLivedata = "7.8.0"
 utilcodex = "1.31.1"
-xpopup = "2.9.19"
+xpopup = "2.10.0"
 xUpdate = "2.1.5"
-xxPermission = "18.63"
+xxPermission = "21.3"
 
 [libraries]
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
@@ -86,8 +84,8 @@ androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", 
 androidx-lifecycle-service = { module = "androidx.lifecycle:lifecycle-service", version.ref = "lifecycle" }
 androidx-lifecycle-viewmodel-ktx = { module = "androidx.lifecycle:lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 androidx-legacy-support = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacyV4" }
-androidx-navigation-fragment-ktx = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
-#androidx-navigation-ui-ktx = { module = "androidx.navigation:navigation-ui-ktx", version.ref = "navigation" }
+androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment-ktx", version.ref = "navigation" }
+#androidx-navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "navigation" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-startup-runtime = { module = "androidx.startup:startup-runtime", version.ref = "startupRuntime" }
@@ -96,13 +94,11 @@ agentweb-core = { module = "io.github.justson:agentweb-core", version.ref = "age
 baidumapsdk_location_all = { module = "com.baidu.lbsyun:BaiduMapSDK_Location_All", version.ref = "baidumapsdk_location_all" }
 baidumapsdk_map = { module = "com.baidu.lbsyun:BaiduMapSDK_Map", version.ref = "baidumapsdk_map" }
 bugly-crashreport = { module = "com.tencent.bugly:crashreport", version.ref = "crashreport" }
-classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classgraph" }
 customactivityoncrash = { module = "cat.ereza:customactivityoncrash", version.ref = "customactivityoncrash" }
 datetime-picker = { module = "com.github.loper7:DateTimePicker", version.ref = "dateTimePicker" }
 dialogx = { module = "com.kongzue.dialogx:DialogX", version.ref = "dialogX" }
 fastscroll = { module = "io.github.l4digital:fastscroll", version.ref = "fastscroll" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
-#getActivity-logcat = { module = "com.github.getActivity:Logcat", version.ref = "getActivityLogcat" }
 getActivity-xxpermission = { module = "com.github.getActivity:XXPermissions", version.ref = "xxPermission" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
 glide-ksp = { module = "com.github.bumptech.glide:ksp", version.ref = "glideVersion" }
