@@ -58,13 +58,14 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 
     private val dataTypeList =
         arrayListOf("CMD", "NMEA", "DIFF_IN", "DIFF_OUT", "RAW_OUT", "RES_OUT")
-    private val dataProtocolList = arrayListOf("MQTT", "TCP-C", "SL651")
+    private val dataProtocolList = arrayListOf("MQTT", "TCP-C", "SL651", "NTRIP")
 
     private val allPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
     private val mqttPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_mqtt_register_platform) }
     private val tcpPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_tcp_register_platform) }
     private val sl651PlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_sl651_register_platform) }
     private val szy206PlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_szy206_register_platform) }
+    private val ntripPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_ntrip_register_platform) }
 
     private val platformList: MutableList<String> = arrayListOf()
 
@@ -204,11 +205,19 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                                 mStates.platformType.set(platformList.first())
                             }
 
-                            else -> {//SL651
+                            "SL651" -> {//SL651
                                 mStates.isMqttItemVisible.set(false)
                                 mStates.isSL651ItemVisible.set(true)
                                 platformList.clear()
                                 platformList.addAll(sl651PlatformList.asList())
+                                mStates.platformType.set(platformList.first())
+                            }
+
+                            "NTRIP" -> {//NTRIP
+                                mStates.isMqttItemVisible.set(false)
+                                mStates.isSL651ItemVisible.set(false)
+                                platformList.clear()
+                                platformList.addAll(ntripPlatformList.asList())
                                 mStates.platformType.set(platformList.first())
                             }
                         }
@@ -536,11 +545,18 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                 platformList.addAll(tcpPlatformList.asList())
             }
 
-            else -> {//SL651
+            "SL651" -> {//SL651
                 mStates.isMqttItemVisible.set(false)
                 mStates.isSL651ItemVisible.set(true)
                 platformList.clear()
                 platformList.addAll(sl651PlatformList.asList())
+            }
+
+            "NTRIP" -> {//NTRIP
+                mStates.isMqttItemVisible.set(false)
+                mStates.isSL651ItemVisible.set(false)
+                platformList.clear()
+                platformList.addAll(ntripPlatformList.asList())
             }
         }
         data.plattype.toIntOrNull()?.let {

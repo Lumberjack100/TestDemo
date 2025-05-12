@@ -23,6 +23,7 @@
         <item>湖北水文平台</item>
         <item>湖北生态流量平台</item>
         <item>贵州加密平台</item>
+        <item>CORS站</item>
     </string-array>
 
     <string-array name="data_center_tcp_register_platform">
@@ -47,6 +48,10 @@
 
     <string-array name="data_center_szy206_register_platform">
         <item>湖北生态流量平台</item>
+    </string-array>
+
+    <string-array name="data_center_ntrip_register_platform">
+        <item>CORS站</item>
     </string-array>
 
     <!-- 广东水利平台测站类型-->
