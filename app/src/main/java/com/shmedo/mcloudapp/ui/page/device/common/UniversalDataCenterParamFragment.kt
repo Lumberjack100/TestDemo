@@ -192,6 +192,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                             "MQTT" -> {
                                 mStates.isMqttItemVisible.set(true)
                                 mStates.isSL651ItemVisible.set(false)
+                                mStates.isNtripItemVisible.set(false)
                                 platformList.clear()
                                 platformList.addAll(mqttPlatformList.asList())
                                 mStates.platformType.set(platformList.first())
@@ -200,6 +201,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                             "TCP-C" -> {
                                 mStates.isMqttItemVisible.set(false)
                                 mStates.isSL651ItemVisible.set(false)
+                                mStates.isNtripItemVisible.set(false)
                                 platformList.clear()
                                 platformList.addAll(tcpPlatformList.asList())
                                 mStates.platformType.set(platformList.first())
@@ -208,6 +210,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                             "SL651" -> {//SL651
                                 mStates.isMqttItemVisible.set(false)
                                 mStates.isSL651ItemVisible.set(true)
+                                mStates.isNtripItemVisible.set(false)
                                 platformList.clear()
                                 platformList.addAll(sl651PlatformList.asList())
                                 mStates.platformType.set(platformList.first())
@@ -216,6 +219,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                             "NTRIP" -> {//NTRIP
                                 mStates.isMqttItemVisible.set(false)
                                 mStates.isSL651ItemVisible.set(false)
+                                mStates.isNtripItemVisible.set(true)
                                 platformList.clear()
                                 platformList.addAll(ntripPlatformList.asList())
                                 mStates.platformType.set(platformList.first())
@@ -342,6 +346,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             protocol = mStates.dataProtocol.get(),
             plattype = allPlatformList.indexOf(mStates.platformType.get()).toString()
         )
+        
         if (mStates.dataProtocol.get() == "MQTT") {
             //当产品 ID、设备 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
             if (mStates.isRegisterVisible.get() && mStates.productId.get()
@@ -390,6 +395,10 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             entity.data_link = mStates.maintainReportInterval.get()
             entity.valid_day = mStates.reissuingDataValidDays.get()
             entity.reissue_time = mStates.reissuingDataInterval.get()
+        } else if (mStates.dataProtocol.get() == "NTRIP") {//NTRIP
+            entity.projid = mStates.productId.get()
+            entity.deviceid = mStates.deviceId.get()
+            entity.devicekey = mStates.deviceKey.get()
         }
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_SET_DATA_CENTER_PARAM,
@@ -534,6 +543,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             "MQTT" -> {//
                 mStates.isMqttItemVisible.set(true)
                 mStates.isSL651ItemVisible.set(false)
+                mStates.isNtripItemVisible.set(false)
                 platformList.clear()
                 platformList.addAll(mqttPlatformList.asList())
             }
@@ -541,6 +551,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             "TCP-C" -> {//
                 mStates.isMqttItemVisible.set(false)
                 mStates.isSL651ItemVisible.set(false)
+                mStates.isNtripItemVisible.set(false)
                 platformList.clear()
                 platformList.addAll(tcpPlatformList.asList())
             }
@@ -548,6 +559,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             "SL651" -> {//SL651
                 mStates.isMqttItemVisible.set(false)
                 mStates.isSL651ItemVisible.set(true)
+                mStates.isNtripItemVisible.set(false)
                 platformList.clear()
                 platformList.addAll(sl651PlatformList.asList())
             }
@@ -555,6 +567,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             "NTRIP" -> {//NTRIP
                 mStates.isMqttItemVisible.set(false)
                 mStates.isSL651ItemVisible.set(false)
+                mStates.isNtripItemVisible.set(true)
                 platformList.clear()
                 platformList.addAll(ntripPlatformList.asList())
             }
@@ -565,13 +578,14 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             }
         }
 
-        //MQTT 协议参数
+        //MQTT/NTRIP 协议参数
         mStates.productId.set(data.projid)
         mStates.deviceId.set(data.deviceid)
         mStates.deviceKey.set(data.devicekey)
         mStates.registerCode.set(data.regcode)
         mStates.registerAddress.set(data.httpaddr)
         mStates.registerPort.set(data.httpport)
+       
         //重庆地灾平台不显示注册码、注册地址、注册端口号
         mStates.isRegisterVisible.set(!mStates.platformType.get().contains("重庆地灾"))
 

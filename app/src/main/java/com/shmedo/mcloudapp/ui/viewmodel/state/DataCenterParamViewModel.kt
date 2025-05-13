@@ -30,6 +30,7 @@ class DataCenterParamViewModel : BaseDataCenterParamViewModel() {
     val reissuingDataValidDays = NonNullObservableField("")//数据补发有效天数
     val reissuingDataInterval = NonNullObservableField("")//数据补发间隔
 
+    val isNtripItemVisible = NonNullObservableField(false)//NTRIP是否可见
 
     init {
         // 在所有字段初始化后调用 registerField()

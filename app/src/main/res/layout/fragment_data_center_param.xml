@@ -510,6 +510,67 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/ll_ntrip"
+                        visible="@{stateVM.isNtripItemVisible}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="用户名" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="@={stateVM.deviceId}"
+                                app:lengthFilter="@{100}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="密码" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="@={stateVM.deviceKey}"
+                                app:lengthFilter="@{100}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="站点信息" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
+                                textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                                android:text="@={stateVM.productId}"
+                                app:lengthFilter="@{100}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_reset"
                         style="@style/ResetButton_Style2"
