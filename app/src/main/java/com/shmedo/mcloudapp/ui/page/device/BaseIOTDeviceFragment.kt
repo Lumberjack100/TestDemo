@@ -275,13 +275,12 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         crossinline finishAction: () -> Unit = {}
     ) {
         //指令队列为空，结束
-        if (commandItems.size <= 0) {
+        if (commandItems.isEmpty()) {
             cancelNearbyCommunicationTimeoutJob()
             finishAction()
             return
         }
-        val command = commandItems.first
-        commandItems.removeFirst()
+        val command = commandItems.removeFirst()
 
         //4G远程下发指令模式
         if (communicateWay is NetPlatformConnect) {

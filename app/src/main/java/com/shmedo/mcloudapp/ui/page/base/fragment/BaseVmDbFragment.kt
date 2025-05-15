@@ -17,30 +17,24 @@ package com.shmedo.mcloudapp.ui.page.base.fragment
 
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.View
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.kunminx.architecture.ui.page.DataBindingFragment
-import com.shmedo.mcloudapp.utils.network.NetState
-import com.shmedo.mcloudapp.utils.network.NetworkStateManager
-
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 /**
  * Create by KunMinX at 19/7/11
  */
 abstract class BaseVmDbFragment : DataBindingFragment() {
-    private val handler = Handler(Looper.getMainLooper())
 
-    //是否第一次加载
-    protected var isFirst = true
+    // 用于跟踪 Fragment 是否第一次可见
+    protected var isFirstVisible = true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Timber.i("onViewCreated,Fragment=%s", javaClass.simpleName)
         super.onViewCreated(view, savedInstanceState)
-        isFirst = true
         initView(savedInstanceState)
         initData()
         createObserver()
@@ -71,21 +65,15 @@ abstract class BaseVmDbFragment : DataBindingFragment() {
      * 是否需要懒加载
      */
     private fun onVisible() {
-        if (lifecycle.currentState == Lifecycle.State.STARTED && isFirst) {
-            // 延迟加载 防止 切换动画还没执行完毕时数据就已经加载好了，这时页面会有渲染卡顿
-            handler.postDelayed({
+        // 处理懒加载
+        if (isFirstVisible) {
+            viewLifecycleOwner.lifecycleScope.launch {
+                // 延迟加载，避免转场动画卡顿
+                delay(lazyLoadTime())
+                // 延迟加载，避免转场动画卡顿
                 lazyLoadData()
-                //在Fragment中，只有懒加载过了才能开启网络变化监听
-                NetworkStateManager.instance.mNetworkStateCallback.observe(
-                    viewLifecycleOwner,
-                    Observer {
-                        //不是首次订阅时调用方法，防止数据第一次监听错误
-                        if (!isFirst) {
-                            onNetworkStateChanged(it)
-                        }
-                    })
-                isFirst = false
-            }, lazyLoadTime())
+                isFirstVisible = false
+            }
         }
     }
 
@@ -93,11 +81,6 @@ abstract class BaseVmDbFragment : DataBindingFragment() {
      * 懒加载 只有当前fragment视图显示时才会触发该方法
      */
     open fun lazyLoadData() {}
-
-    /**
-     * 网络变化监听 子类重写
-     */
-    open fun onNetworkStateChanged(netState: NetState) {}
 
     /**
      * 延迟加载 防止 切换动画还没执行完毕时数据就已经加载好了，这时页面会有渲染卡顿  bug
@@ -150,7 +133,6 @@ abstract class BaseVmDbFragment : DataBindingFragment() {
     override fun onDestroy() {
         Timber.i("onDestroy,Fragment=%s", javaClass.simpleName)
         super.onDestroy()
-        handler.removeCallbacksAndMessages(null)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
