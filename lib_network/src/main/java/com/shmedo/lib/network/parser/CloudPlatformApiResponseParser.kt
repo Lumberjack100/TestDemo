@@ -1,8 +1,6 @@
 package com.shmedo.lib.network.parser
 
 import com.shmedo.lib.network.response.CloudPlatformApiResponse
-import com.shmedo.lib.network.response.PageList
-import rxhttp.wrapper.annotation.Parser
 import rxhttp.wrapper.exception.ParseException
 import rxhttp.wrapper.parse.TypeParser
 import rxhttp.wrapper.utils.convertTo
@@ -18,7 +16,6 @@ import java.lang.reflect.Type
  *
  *
  */
-@Parser(name = "Response", wrappers = [PageList::class])
 open class CloudPlatformApiResponseParser<T> : TypeParser<T> {
     /**
      * 此构造方法适用于任意Class对象，但更多用于带泛型的Class对象，
