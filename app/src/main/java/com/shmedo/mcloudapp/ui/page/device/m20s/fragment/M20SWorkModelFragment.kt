@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.m20s.fragment
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -22,7 +23,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentM20sWorkModelBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
@@ -34,8 +34,8 @@ import timber.log.Timber
 
 class M20SWorkModelFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentM20sWorkModelBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: M20SWorkModelViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: M20SWorkModelViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val modelList = arrayListOf("基站", "测站")
@@ -43,8 +43,6 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -61,19 +59,12 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentM20sWorkModelBinding
         binding.llToolbar.toolbar.title = "工作模式"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         initRefresh()
-    }
-
-    override fun initData() {
-        super.initData()
-        resetParams()
     }
 
     private fun initRefresh() {
@@ -86,6 +77,18 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
             }
             queryData()
         }
+    }
+
+    override fun initData() {
+        super.initData()
+        resetDefaultParams()
+        // 保存初始状态
+        mStates.saveInitialState()
+    }
+
+    private fun resetDefaultParams() {
+        mStates.model.set(modelList[1])//默认测站
+        mStates.frontCalc.set(frontCalcList[2])//默认自动
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -130,7 +133,7 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
          * 恢复默认配置
          */
         fun onResetClick() {
-            resetParams()
+            resetDefaultParams()
         }
 
         override fun onSubmitButtonClick() {
@@ -141,11 +144,6 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
             }
             initSaveCommand()
         }
-    }
-
-    private fun resetParams() {
-        mStates.model.set(modelList[1])//默认移动站
-        mStates.frontCalc.set(frontCalcList[2])//默认自动
     }
 
     private fun initSaveCommand() {
@@ -178,6 +176,59 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = "设备未响应"
+        )
+    }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.GM_MD_CFG_RTK -> {
@@ -203,6 +254,7 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
                             initParamData(result.data as RtkParamInfo)
                         } else {
                             Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -227,10 +279,21 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
                     mStates.frontCalc.set(frontCalcList[it])
                 }
             }
+
+            // 保存初始状态
+            mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
+    }
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
     }
 
     override fun onResume() {

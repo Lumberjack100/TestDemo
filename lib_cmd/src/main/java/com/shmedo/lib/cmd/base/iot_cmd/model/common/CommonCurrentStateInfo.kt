@@ -92,7 +92,7 @@ data class CommonCurrentStateInfo(
     var lF_Cumulative: String = IOTConstants.NULL_KEY, //拉绳长度累计变化量，单位mm
 
     @Json(name = "SN")
-    var sN: String = IOTConstants.NULL_KEY, //设备SN号
+    var sn: String = IOTConstants.NULL_KEY, //设备SN号
     @Json(name = "eMMC Free")
     var eMMCFree: String = IOTConstants.NULL_KEY, //存储状态
     var emmc_storage: String = IOTConstants.NULL_KEY,//emmc存储

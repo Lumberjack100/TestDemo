@@ -228,7 +228,7 @@ class NewM20SHomeFragment : BaseIOTDeviceFragment() {
                             name = "基本信息",
                             resID = R.drawable.ic_module_basic_info,
                             iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_m50BaseInfoFragment
+                            navId = R.id.action_global_to_m20SBaseInfoFragment
                         )
                     ),
                     ConfigModule(
@@ -236,7 +236,7 @@ class NewM20SHomeFragment : BaseIOTDeviceFragment() {
                             name = "网络信息",
                             resID = R.drawable.ic_module_net_info,
                             iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_m50NetInfoFragment
+                            navId = R.id.action_global_to_m20SNetInfoFragment
                         )
                     ),
                     ConfigModule(
@@ -244,7 +244,7 @@ class NewM20SHomeFragment : BaseIOTDeviceFragment() {
                             name = "状态信息",
                             resID = R.drawable.ic_module_state_info,
                             iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_m50StatusInfoFragment
+                            navId = R.id.action_global_to_m20SStatusInfoFragment
                         )
                     )
                 )

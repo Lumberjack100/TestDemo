@@ -6,6 +6,7 @@
     app:startDestination="@id/m20SHomeFragment">
 
     <include app:graph="@navigation/include_query_data_graph" />
+    <include app:graph="@navigation/include_time_calibration_graph" />
     <include app:graph="@navigation/include_data_center_graph" />
     <include app:graph="@navigation/include_alarm_setting_graph" />
     <include app:graph="@navigation/include_firmware_upgrade_graph" />
@@ -17,6 +18,24 @@
         android:name="com.shmedo.mcloudapp.ui.page.device.m20s.fragment.NewM20SHomeFragment"
         android:label="M20SHomeFragment"
         tools:layout="@layout/fragment_m20s_home" />
+
+    <fragment
+        android:id="@+id/m20SBaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m20s.fragment.M20SBaseInfoFragment"
+        android:label="M20SBaseInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
+        android:id="@+id/m20SNetInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50NetInfoFragment"
+        android:label="M20SNetInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
+        android:id="@+id/m20SStatusInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m20s.fragment.M20SStatusInfoFragment"
+        android:label="M20SStatusInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
         android:id="@+id/m20SWorkModelFragment"
@@ -39,6 +58,30 @@
     <action
         android:id="@+id/action_global_to_queryDeviceDataFragment"
         app:destination="@id/query_data_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_m20SBaseInfoFragment"
+        app:destination="@id/m20SBaseInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_m20SNetInfoFragment"
+        app:destination="@id/m20SNetInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_m20SStatusInfoFragment"
+        app:destination="@id/m20SStatusInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -102,6 +145,14 @@
     <action
         android:id="@+id/action_global_to_remoteDebugFragment"
         app:destination="@id/remote_command_debug_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_time_calibration"
+        app:destination="@id/time_calibration_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
