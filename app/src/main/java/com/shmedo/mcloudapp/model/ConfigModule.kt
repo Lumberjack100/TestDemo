@@ -20,7 +20,7 @@ data class ConfigModuleTree(
 sealed class DeviceFunctionModule(
     val name: String = "",
     val desc: String = "",
-    val iconResId: Int = 0,
+    val resID: Int = 0,
     val iconSize: Int = ConvertUtils.dp2px(40f),
     val navId: Int = 0,
     var isConnected: Boolean = true,
@@ -48,7 +48,7 @@ class CommonModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     iconSize = iconSize,
     navId = navId,
     isSupport = isSupport
@@ -62,7 +62,7 @@ class RunningStatusModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -74,7 +74,7 @@ class TimeCalibrationModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -86,7 +86,7 @@ class TelemetryDataModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -98,7 +98,7 @@ class WorkModeModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -110,7 +110,7 @@ class RebootModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -122,7 +122,7 @@ class DataCenterModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -134,7 +134,7 @@ class AdvancedSettingsModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -146,7 +146,7 @@ class LoraConfigModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -158,7 +158,7 @@ class AlarmConfigModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -170,7 +170,7 @@ class CommandDebugConfigModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -183,7 +183,7 @@ class BasicConfigModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 // </editor-fold>
@@ -196,7 +196,7 @@ class SetupWizard(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -209,7 +209,7 @@ class CollectorConfigModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -221,7 +221,7 @@ class SensorConfigModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 // </editor-fold>
@@ -235,7 +235,7 @@ class MR702PortConfigModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -247,7 +247,7 @@ class MR702TerminalParameterModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -259,7 +259,7 @@ class DeviceOperationModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -271,7 +271,7 @@ class NetworkCommunicationModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -283,7 +283,7 @@ class MR702ManualSettingModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -295,7 +295,7 @@ class DeviceLogUploadModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -307,7 +307,7 @@ class MR702ParameterExportModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -319,7 +319,7 @@ class MR702ParameterImportModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -331,7 +331,7 @@ class MR702ManualPhotoTakingModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 
@@ -343,7 +343,7 @@ class MR702Remote485SilenceModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 class MR702CleanClearAlarmModule(
@@ -354,7 +354,7 @@ class MR702CleanClearAlarmModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 class MR702RainSetZeroModule(
@@ -365,7 +365,7 @@ class MR702RainSetZeroModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 // </editor-fold>
@@ -378,7 +378,7 @@ class OneClickSilenceModule(
 ) : DeviceFunctionModule(
     name = name,
     desc = desc,
-    iconResId = resID,
+    resID = resID,
     navId = navId,
 )
 

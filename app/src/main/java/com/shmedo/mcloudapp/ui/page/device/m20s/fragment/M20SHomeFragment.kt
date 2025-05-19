@@ -33,7 +33,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
     override fun initData() {
         super.initData()
         mHeadStates.productLightResId.set(R.drawable.device_logo_m20)
-        mHeadStates.productGrayResId.set(R.drawable.device_logo_m20_gray)
+        mHeadStates.productGrayResId.set(R.drawable.device_logo_m20_offline)
         mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
         mHeadStates.isIOTPlatformStateVisible.set(false)
         mHeadStates.productToken.set(if (deviceInfo.deviceToken.endsWith(ProductType.GNSS_M_1.newSuffix)) "M20 (单北斗)" else "M20 (全星座)")
@@ -61,7 +61,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
             ConfigModule(
                 WorkModeModule(
                     resID = R.drawable.ic_module_work_mode,
-                    navId = R.id.action_m20SHomeFragment_to_m20SWorkModelFragment
+                    navId = R.id.action_global_to_m20SWorkModelFragment
                 )
             )
         )
@@ -71,7 +71,7 @@ class M20SHomeFragment : UniversalDeviceHomeFragment() {
                     name = "电台配置",
                     desc = "RTCM电台配置",
                     resID = R.drawable.ic_module_lora,
-                    navId = R.id.action_m20SHomeFragment_to_m20SRadioSettingFragment
+                    navId = R.id.action_global_to_m20SRadioSettingFragment
                 )
             )
         )
