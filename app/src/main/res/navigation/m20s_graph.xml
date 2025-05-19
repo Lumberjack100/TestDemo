@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/m20SNetInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50NetInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.m20s.fragment.M20SNetInfoFragment"
         android:label="M20SNetInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 

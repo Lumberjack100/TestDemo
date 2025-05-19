@@ -45,12 +45,6 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 val groupList = mutableListOf<Any>()
 
                 groupList.add(DeviceStatusInfoGroupItem("供电信息"))
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "光伏板电压",
-                    value = stateInfo.solar_volt.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
-                    unit = "V"
-                )
 
                 val externalVoltage = stateInfo.ext_power_volt.toDoubleOrNull() ?: Double.MAX_VALUE
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -62,29 +56,6 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         R.color.warn_FF9D00
                     ),
                     isBottomItem = true
-                )
-
-                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                groupList.add(DeviceStatusInfoGroupItem("电池信息"))
-                val batteryVoltage = stateInfo.battery_volt.toDoubleOrNull() ?: Double.MAX_VALUE
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "电池电压",
-                    value = if (batteryVoltage == 0.0) "0" else stateInfo.battery_volt.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
-                    unit = "V",
-                )
-
-                val batteryCapacity =
-                    stateInfo.volt_percent.replace("%", "").toDoubleOrNull() ?: Double.MAX_VALUE
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "电池电量",
-                    value = stateInfo.volt_percent.replace("%", "")
-                        .ifEmpty { AppContants.PLACE_HOLDER_VALUE },
-                    unit = "%",
-                    textColorRes = if (batteryCapacity > 25) 0 else ColorUtils.getColor(
-                        R.color.warn_FF9D00
-                    ),
                 )
 
                 groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
@@ -183,7 +154,7 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 if (stateInfo.self_check.uppercase().indexOf("EMMC") != -1) {
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                         groupList,
-                        name = "存储卡",
+                        name = "存储模块",
                         value = if (stateInfo.self_check.uppercase()
                                 .indexOf("EMMC:0") == -1
                         ) "正常" else "异常",
@@ -203,6 +174,20 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         ) "正常" else "异常",
                         textColorRes = if (stateInfo.self_check.uppercase()
                                 .indexOf("SHT21:0") == -1
+                        ) 0 else ColorUtils.getColor(
+                            R.color.error_FF4400
+                        )
+                    )
+                }
+                if (stateInfo.self_check.uppercase().indexOf("MEMS") != -1) {
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                        groupList,
+                        name = "倾角计模块",
+                        value = if (stateInfo.self_check.uppercase()
+                                .indexOf("MEMS:0") == -1
+                        ) "正常" else "异常",
+                        textColorRes = if (stateInfo.self_check.uppercase()
+                                .indexOf("MEMS:0") == -1
                         ) 0 else ColorUtils.getColor(
                             R.color.error_FF4400
                         )
