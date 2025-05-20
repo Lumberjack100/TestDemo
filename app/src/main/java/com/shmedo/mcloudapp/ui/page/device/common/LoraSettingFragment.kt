@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.common
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -11,7 +12,6 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.LoraCommunicateEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
@@ -24,21 +24,21 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentLoraSettingBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.LoraSettingViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.databinding.FragmentLoraSettingBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.LoraSettingViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 class LoraSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentLoraSettingBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: LoraSettingViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: LoraSettingViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val loraReceiveChannelList by lazy { Utils.getApp().resources.getStringArray(R.array.lora_channel) }
@@ -50,8 +50,6 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -68,20 +66,12 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentLoraSettingBinding
         binding.llToolbar.toolbar.title = "LORA配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         initRefresh()
-    }
-
-    override fun initData() {
-        super.initData()
-        mStates.isTargetAddressSupport.set(productType != ProductType.COLLECTOR_G_0)
-        resetParams()
     }
 
     private fun initRefresh() {
@@ -94,6 +84,23 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
             }
             queryData()
         }
+    }
+
+    override fun initData() {
+        super.initData()
+        mStates.isTargetAddressSupport.set(productType != ProductType.COLLECTOR_G_0)
+        resetDefaultParams()
+        // 保存初始状态
+        mStates.saveInitialState()
+    }
+
+    private fun resetDefaultParams() {
+        mStates.channel.set(loraReceiveChannelList[10])//信道 [0~19] 载波频率以410Mhz为起始，间隔1Mhz，进行信道划分，共划分30个信道，默认10
+        mStates.transmitPower.set(transmitPowerList[transmitPowerList.lastIndex])//[5~20] 默认20
+        mStates.airSpeed.set(airSpeedList[2])//空中速率  [1~6] 默认3
+        mStates.networkNumber.set(networkNumberList[0])//网络号 [1~10] 默认1
+        mStates.localAddress.set(if (productType == ProductType.COLLECTOR_G_0) localAddressList[0] else localAddressList[1])//本机地址 [1~20] 网关默认1,监测设备默认2
+        mStates.targetAddress.set(if (productType == ProductType.COLLECTOR_G_0) targetAddressList[1] else targetAddressList[0])//目标地址 [1~20] 网关默认2,监测设备默认1
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -221,7 +228,7 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
          * 恢复默认配置
          */
         fun onResetClick() {
-            resetParams()
+            resetDefaultParams()
         }
 
         override fun onSubmitButtonClick() {
@@ -232,15 +239,6 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
             }
             initSaveCommand()
         }
-    }
-
-    private fun resetParams() {
-        mStates.channel.set(loraReceiveChannelList[10])//信道 [0~19] 载波频率以410Mhz为起始，间隔1Mhz，进行信道划分，共划分30个信道，默认10
-        mStates.transmitPower.set(transmitPowerList[transmitPowerList.lastIndex])//[5~20] 默认20
-        mStates.airSpeed.set(airSpeedList[2])//空中速率  [1~6] 默认3
-        mStates.networkNumber.set(networkNumberList[0])//网络号 [1~10] 默认1
-        mStates.localAddress.set(if (productType == ProductType.COLLECTOR_G_0) localAddressList[0] else localAddressList[1])//本机地址 [1~20] 网关默认1,监测设备默认2
-        mStates.targetAddress.set(if (productType == ProductType.COLLECTOR_G_0) targetAddressList[1] else targetAddressList[0])//目标地址 [1~20] 网关默认2,监测设备默认1
     }
 
     private fun initSaveCommand() {
@@ -281,6 +279,59 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = "设备未响应"
+        )
+    }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_LORA_CTRL -> {
@@ -314,7 +365,7 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -341,10 +392,20 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
             mStates.localAddress.set(info.localid)
             mStates.targetAddress.set(info.dstid)
 
+            // 保存初始状态
+            mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
+    }
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
     }
 
     override fun onResume() {

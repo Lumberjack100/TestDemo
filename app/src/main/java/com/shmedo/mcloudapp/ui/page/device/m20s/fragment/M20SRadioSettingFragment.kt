@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.m20s.fragment
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -24,7 +25,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentM20sRadioSettingBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
@@ -36,8 +36,8 @@ import timber.log.Timber
 
 class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentM20sRadioSettingBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: M20SRadioSettingViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: M20SRadioSettingViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private var radioChannelList: List<String> = emptyList()
@@ -46,8 +46,6 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
