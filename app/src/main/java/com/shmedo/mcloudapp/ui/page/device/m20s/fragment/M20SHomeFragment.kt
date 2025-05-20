@@ -634,10 +634,10 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
                 mHeadStates.productLogoResId.set(
                     status.compareAndReturn(
                         "故障",
-                        R.drawable.device_logo_m50_error,
+                        R.drawable.device_logo_m20_error,
                         status.compareAndReturn(
                             "告警",
-                            R.drawable.device_logo_m50_alarm,
+                            R.drawable.device_logo_m20_alarm,
                             R.drawable.device_logo_m20
                         )
                     )
