@@ -11,11 +11,11 @@
 
         <variable
             name="stateVM"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.UDSensorDataHistoryViewModel" />
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.CommonSensorDataHistoryViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.common.UDSensorDataHistoryFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment.ClickProxy" />
 
     </data>
 

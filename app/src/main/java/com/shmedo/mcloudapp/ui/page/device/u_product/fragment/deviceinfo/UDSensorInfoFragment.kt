@@ -156,7 +156,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = when (stateInfo.ldStatus) {
                         "0" -> "正常"
                         "-2" -> "数据异常"
-                        "-3" -> "模块异常"
+                        "-3" -> "模块故障"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.ldStatus == "-2" || stateInfo.ldStatus == "-3") ColorUtils.getColor(
@@ -170,7 +170,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = when (stateInfo.cameraStatus) {
                         "0" -> "正常"
                         "-2" -> "数据异常"
-                        "-3" -> "模块异常"
+                        "-3" -> "模块故障"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.cameraStatus == "-2" || stateInfo.cameraStatus == "-3") ColorUtils.getColor(
@@ -184,7 +184,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = when (stateInfo.gnssStatus) {
                         "0" -> "正常"
                         "-2" -> "数据异常"
-                        "-3" -> "模块异常"
+                        "-3" -> "模块故障"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.gnssStatus == "-2" || stateInfo.gnssStatus == "-3") ColorUtils.getColor(
@@ -196,9 +196,9 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     groupList,
                     name = "倾角模块",
                     value = when (stateInfo.accelerometerStatus) {
-                        "-3" -> "模块异常"
-                        "-2" -> "数据异常"
                         "0" -> "正常"
+                        "-2" -> "数据异常"
+                        "-3" -> "模块故障"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.accelerometerStatus == "-2" || stateInfo.accelerometerStatus == "-3") ColorUtils.getColor(
@@ -212,7 +212,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = when (stateInfo._4gStatus) {
                         "0" -> "正常"
                         "-2" -> "数据异常"
-                        "-3" -> "模块异常"
+                        "-3" -> "模块故障"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo._4gStatus == "-2" || stateInfo._4gStatus == "-3") ColorUtils.getColor(
@@ -226,7 +226,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = when (stateInfo.btStatus) {
                         "0" -> "正常"
                         "-2" -> "数据异常"
-                        "-3" -> "模块异常"
+                        "-3" -> "模块故障"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.btStatus == "-2" || stateInfo.btStatus == "-3") ColorUtils.getColor(
@@ -240,7 +240,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = when (stateInfo.radioStatus) {
                         "0" -> "正常"
                         "-2" -> "数据异常"
-                        "-3" -> "模块异常"
+                        "-3" -> "模块故障"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.radioStatus == "-2" || stateInfo.radioStatus == "-3") ColorUtils.getColor(
@@ -254,7 +254,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = when (stateInfo.flashStatus) {
                         "0" -> "正常"
                         "-2" -> "数据异常"
-                        "-3" -> "模块异常"
+                        "-3" -> "模块故障"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.flashStatus == "-2" || stateInfo.flashStatus == "-3") ColorUtils.getColor(
@@ -268,7 +268,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = when (stateInfo.athStatus) {
                         "0" -> "正常"
                         "-2" -> "数据异常"
-                        "-3" -> "模块异常"
+                        "-3" -> "模块故障"
                         else -> AppContants.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.athStatus == "-2" || stateInfo.athStatus == "-3") ColorUtils.getColor(

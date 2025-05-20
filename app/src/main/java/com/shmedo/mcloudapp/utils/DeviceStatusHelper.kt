@@ -95,7 +95,7 @@ object DeviceStatusHelper {
                     }
                 }
 
-                "battery" -> {
+                "BATTERY" -> {
                     if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("电池异常")
                     }
@@ -107,7 +107,7 @@ object DeviceStatusHelper {
                     }
                 }
 
-                "fram" -> {
+                "FRAM" -> {
                     if (errors.size > 1 && errors[1] == "0") {
                         deviceAbnormalList.add("铁电存储器异常")
                     }
