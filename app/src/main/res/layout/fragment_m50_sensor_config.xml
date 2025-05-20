@@ -71,18 +71,15 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable}">
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="经度（度）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:drawableEnd="@null"
                             android:text="@{stateVM.longitude}"
                             tools:text="114.058503" />
@@ -90,18 +87,15 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable}">
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="纬度（度）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:drawableEnd="@null"
                             android:text="@{stateVM.latitude}"
                             tools:text="22.544604" />
@@ -109,18 +103,15 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable}">
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="高度（米）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:drawableEnd="@null"
                             android:text="@{stateVM.altitude}"
                             tools:text="10.5" />
@@ -160,18 +151,15 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable}">
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="X轴倾角值（度）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:drawableEnd="@null"
                             android:text="@{stateVM.XAxis}"
                             tools:text="1.5" />
@@ -179,18 +167,15 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable}">
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="Y轴倾角值（度）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:drawableEnd="@null"
                             android:text="@{stateVM.YAxis}"
                             tools:text="2.3" />
@@ -198,18 +183,15 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable}">
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="Z轴倾角值（度）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:drawableEnd="@null"
                             android:text="@{stateVM.ZAxis}"
                             tools:text="0.8" />
@@ -236,7 +218,7 @@
                         style="@style/SubmitButton_Style2"
                         onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
                         android:layout_marginTop="@dimen/reset_button_margin_top_50"
-                        android:text="@string/button_save_text"  />
+                        android:text="@string/button_save_text" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>

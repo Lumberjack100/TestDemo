@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
@@ -17,7 +18,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentLr200SensorParamBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
@@ -37,16 +37,13 @@ import org.koin.android.ext.android.inject
  */
 class LR200SensorParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentLr200SensorParamBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: LR200SensorParamViewModel
-    private lateinit var mCommandResponseStates: LR200ZeroValueCalibrationViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: LR200SensorParamViewModel by viewModels()
+    private val mCommandResponseStates: LR200ZeroValueCalibrationViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-        mCommandResponseStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {

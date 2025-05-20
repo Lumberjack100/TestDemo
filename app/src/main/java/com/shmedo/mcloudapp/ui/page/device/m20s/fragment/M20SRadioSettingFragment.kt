@@ -391,7 +391,6 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
                             processNavigateUp()
                         }
                     }

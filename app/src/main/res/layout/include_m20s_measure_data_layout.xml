@@ -90,6 +90,7 @@
                 android:layout_weight="1" />
 
             <com.google.android.material.button.MaterialButton
+                android:visibility="invisible"
                 style="@style/MeasureData_Button_Style"
                 android:layout_marginStart="@dimen/dimen_size_10"
                 android:onClick="@{()->click.onGoToSensorDataHistoryClick()}"
