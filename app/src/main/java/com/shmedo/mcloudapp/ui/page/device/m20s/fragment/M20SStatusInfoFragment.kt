@@ -87,7 +87,7 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         name = "GNSS模块",
                         value = if (stateInfo.self_check.uppercase()
                                 .indexOf("GNSS:0") == -1
-                        ) "正常" else "异常",
+                        ) "正常" else "故障",
                         textColorRes = if (stateInfo.self_check.uppercase()
                                 .indexOf("GNSS:0") == -1
                         ) 0 else ColorUtils.getColor(
@@ -101,7 +101,7 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         name = "加速度计",
                         value = if (stateInfo.self_check.uppercase()
                                 .indexOf("SCL:0") == -1
-                        ) "正常" else "异常",
+                        ) "正常" else "故障",
                         textColorRes = if (stateInfo.self_check.uppercase()
                                 .indexOf("SCL:0") == -1
                         ) 0 else ColorUtils.getColor(
@@ -115,7 +115,7 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         name = "4G模块",
                         value = if (stateInfo.self_check.uppercase()
                                 .indexOf("4G:0") == -1
-                        ) "正常" else "异常",
+                        ) "正常" else "故障",
                         textColorRes = if (stateInfo.self_check.uppercase()
                                 .indexOf("4G:0") == -1
                         ) 0 else ColorUtils.getColor(
@@ -129,7 +129,7 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         name = "蓝牙模块",
                         value = if (stateInfo.self_check.uppercase()
                                 .indexOf("BT:0") == -1
-                        ) "正常" else "异常",
+                        ) "正常" else "故障",
                         textColorRes = if (stateInfo.self_check.uppercase()
                                 .indexOf("BT:0") == -1
                         ) 0 else ColorUtils.getColor(
@@ -143,7 +143,7 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         name = "电台模块",
                         value = if (stateInfo.self_check.uppercase()
                                 .indexOf("RADIO:0") == -1
-                        ) "正常" else "异常",
+                        ) "正常" else "故障",
                         textColorRes = if (stateInfo.self_check.uppercase()
                                 .indexOf("RADIO:0") == -1
                         ) 0 else ColorUtils.getColor(
@@ -157,7 +157,7 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         name = "存储模块",
                         value = if (stateInfo.self_check.uppercase()
                                 .indexOf("EMMC:0") == -1
-                        ) "正常" else "异常",
+                        ) "正常" else "故障",
                         textColorRes = if (stateInfo.self_check.uppercase()
                                 .indexOf("EMMC:0") == -1
                         ) 0 else ColorUtils.getColor(
@@ -171,7 +171,7 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         name = "温湿度模块",
                         value = if (stateInfo.self_check.uppercase()
                                 .indexOf("SHT21:0") == -1
-                        ) "正常" else "异常",
+                        ) "正常" else "故障",
                         textColorRes = if (stateInfo.self_check.uppercase()
                                 .indexOf("SHT21:0") == -1
                         ) 0 else ColorUtils.getColor(
@@ -185,7 +185,7 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         name = "倾角计模块",
                         value = if (stateInfo.self_check.uppercase()
                                 .indexOf("MEMS:0") == -1
-                        ) "正常" else "异常",
+                        ) "正常" else "故障",
                         textColorRes = if (stateInfo.self_check.uppercase()
                                 .indexOf("MEMS:0") == -1
                         ) 0 else ColorUtils.getColor(
@@ -199,7 +199,7 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         name = "太阳能控制器模块",
                         value = if (stateInfo.self_check.uppercase()
                                 .indexOf("SOLAR485:0") == -1
-                        ) "正常" else "异常",
+                        ) "正常" else "故障",
                         textColorRes = if (stateInfo.self_check.uppercase()
                                 .indexOf("SOLAR485:0") == -1
                         ) 0 else ColorUtils.getColor(

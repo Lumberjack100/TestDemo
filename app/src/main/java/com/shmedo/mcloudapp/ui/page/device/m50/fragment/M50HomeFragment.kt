@@ -56,7 +56,7 @@ import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.model.WorkModeModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
-import com.shmedo.mcloudapp.ui.page.device.common.UDSensorDataHistoryFragment
+import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
@@ -223,6 +223,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
 
     private fun initModuleData() {
         val groupList = mutableListOf<Any>()
+        groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
         groupList.add(DeviceStatusInfoGroupItem("设备信息"))
         groupList.add(
             ConfigModuleTree(
@@ -377,7 +378,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 return
             }
             nav().safeNavigate(
-                R.id.action_global_to_udLocationInfoFragment,
+                R.id.action_global_to_commonLocationInfoFragment,
                 newBundleArguments(
                     productType,
                     communicateWay,
@@ -397,8 +398,8 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
 
         fun onGoToSensorDataHistoryClick() {
             nav().safeNavigate(
-                R.id.action_global_to_udMonitorDataHistoryFragment,
-                UDSensorDataHistoryFragment.Companion.newBundleArguments(productType, deviceInfo)
+                R.id.action_global_to_commonSensorDataHistoryFragment,
+                CommonSensorDataHistoryFragment.Companion.newBundleArguments(productType, deviceInfo)
             )
         }
     }

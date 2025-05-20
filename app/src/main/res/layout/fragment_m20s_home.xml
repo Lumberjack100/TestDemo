@@ -58,6 +58,11 @@
                 android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
                 android:paddingTop="@dimen/page_content_container_padding_top_12">
 
+                <include
+                    layout="@layout/include_m20s_measure_data_layout"
+                    app:click="@{click}"
+                    app:stateVM="@{stateVM}" />
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_module"
                     android:layout_width="match_parent"

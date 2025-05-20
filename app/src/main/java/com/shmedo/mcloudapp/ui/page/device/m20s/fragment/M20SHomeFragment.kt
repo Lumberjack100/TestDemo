@@ -17,8 +17,8 @@ import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -54,12 +54,15 @@ import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.model.WorkModeModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
+import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.M20SHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
+import com.shmedo.mcloudapp.utils.DeviceStatusHelper
+import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -219,6 +222,7 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
 
     private fun initModuleData() {
         val groupList = mutableListOf<Any>()
+        groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
         groupList.add(DeviceStatusInfoGroupItem("设备信息"))
         groupList.add(
             ConfigModuleTree(
@@ -337,6 +341,32 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
             } else {
                 bleViewModel.launch(bleDevice!!)
             }
+        }
+
+        fun onGotoLocationClick() {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            nav().safeNavigate(
+                R.id.action_global_to_commonLocationInfoFragment,
+                newBundleArguments(
+                    productType,
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
+            )
+        }
+
+        fun onGoToSensorDataHistoryClick() {
+            nav().safeNavigate(
+                R.id.action_global_to_commonSensorDataHistoryFragment,
+                CommonSensorDataHistoryFragment.Companion.newBundleArguments(
+                    productType,
+                    deviceInfo
+                )
+            )
         }
     }
 
@@ -592,14 +622,15 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<M50CurrentStateInfo>(content)
+                    MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
 
-                val status = when (stateInfo.deviceStatus) {
-                    "-2" -> "告警"
-                    "-3" -> "故障"
-                    else -> "正常"
-                }
+
+                val deviceAbnormalList =
+                    if (stateInfo.self_check.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkDeviceAbnormal(
+                        stateInfo.self_check
+                    )
+                val status = if (deviceAbnormalList.isEmpty()) "正常" else "故障"
                 mHeadStates.productLogoResId.set(
                     status.compareAndReturn(
                         "故障",
@@ -611,8 +642,32 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
                         )
                     )
                 )
-                mHeadStates.deviceStatusCode.set(stateInfo.deviceStatus)
+                mHeadStates.deviceStatusCode.set(if (deviceAbnormalList.isEmpty()) "0" else "-3")
                 mHeadStates.warnErrorText.set(status)
+
+                mHeadStates.xAngle.set(
+                    DeviceStatusInfoProcessor.formatDoubleValue(
+                        stateInfo.x_Angle,
+                        "--",
+                        2
+                    ) + "°"
+                )
+
+                mHeadStates.yAngle.set(
+                    DeviceStatusInfoProcessor.formatDoubleValue(
+                        stateInfo.y_Angle,
+                        "--",
+                        2
+                    ) + "°"
+                )
+
+                mHeadStates.zAngle.set(
+                    DeviceStatusInfoProcessor.formatDoubleValue(
+                        stateInfo.z_Angle,
+                        "--",
+                        2
+                    ) + "°"
+                )
             } catch (e: Exception) {
                 Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)

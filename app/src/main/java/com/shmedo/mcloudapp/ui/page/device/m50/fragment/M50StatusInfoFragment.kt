@@ -156,7 +156,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "GNSS模块",
-                    value = stateInfo.gnss.uppercase().compareAndReturn("OK", "正常", "异常"),
+                    value = stateInfo.gnss.uppercase().compareAndReturn("OK", "正常", "故障"),
                     textColorRes = if (stateInfo.gnss.uppercase() == "OK") 0 else ColorUtils.getColor(
                         R.color.error_FF4400
                     )
@@ -164,7 +164,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "加速度计",
-                    value = stateInfo.scl.uppercase().compareAndReturn("OK", "正常", "异常"),
+                    value = stateInfo.scl.uppercase().compareAndReturn("OK", "正常", "故障"),
                     textColorRes = if (stateInfo.scl.uppercase() == "OK") 0 else ColorUtils.getColor(
                         R.color.error_FF4400
                     )
@@ -172,7 +172,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "4G模块",
-                    value = stateInfo._4g.uppercase().compareAndReturn("OK", "正常", "异常"),
+                    value = stateInfo._4g.uppercase().compareAndReturn("OK", "正常", "故障"),
                     textColorRes = if (stateInfo._4g.uppercase() == "OK") 0 else ColorUtils.getColor(
                         R.color.error_FF4400
                     )
@@ -180,7 +180,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "SIM卡",
-                    value = stateInfo.simStatus.uppercase().compareAndReturn("OK", "正常", "异常"),
+                    value = stateInfo.simStatus.uppercase().compareAndReturn("OK", "正常", "故障"),
                     textColorRes = if (stateInfo.simStatus.uppercase() == "OK") 0 else ColorUtils.getColor(
                         R.color.error_FF4400
                     )
@@ -188,7 +188,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "蓝牙模块",
-                    value = stateInfo.bt.uppercase().compareAndReturn("OK", "正常", "异常"),
+                    value = stateInfo.bt.uppercase().compareAndReturn("OK", "正常", "故障"),
                     textColorRes = if (stateInfo.bt.uppercase() == "OK") 0 else ColorUtils.getColor(
                         R.color.error_FF4400
                     )
@@ -196,7 +196,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "电台模块",
-                    value = stateInfo.lora.uppercase().compareAndReturn("OK", "正常", "异常"),
+                    value = stateInfo.lora.uppercase().compareAndReturn("OK", "正常", "故障"),
                     textColorRes = if (stateInfo.lora.uppercase() == "OK") 0 else ColorUtils.getColor(
                         R.color.error_FF4400
                     )
@@ -204,7 +204,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "存储卡",
-                    value = stateInfo.sd.uppercase().compareAndReturn("OK", "正常", "异常"),
+                    value = stateInfo.sd.uppercase().compareAndReturn("OK", "正常", "故障"),
                     textColorRes = if (stateInfo.sd.uppercase() == "OK") 0 else ColorUtils.getColor(
                         R.color.error_FF4400
                     )
@@ -212,7 +212,7 @@ class M50StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "温湿度模块",
-                    value = stateInfo.sht21.uppercase().compareAndReturn("OK", "正常", "异常"),
+                    value = stateInfo.sht21.uppercase().compareAndReturn("OK", "正常", "故障"),
                     textColorRes = if (stateInfo.sht21.uppercase() == "OK") 0 else ColorUtils.getColor(
                         R.color.error_FF4400
                     ),

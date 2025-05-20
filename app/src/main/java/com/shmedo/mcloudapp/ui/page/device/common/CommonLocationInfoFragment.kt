@@ -19,6 +19,7 @@ import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
@@ -127,10 +128,10 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            if (productType == ProductType.GNSS_M_5) {
-                queryInfo()
-            } else {
-                measureLocation("0")
+
+            when (productType) {
+                ProductType.U_D_1, ProductType.U_D_2 -> measureLocation("0")
+                else -> queryInfo()
             }
         }
 
@@ -176,6 +177,10 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
             ProductType.U_D_1, ProductType.U_D_2 -> IOTCommandUtil.getCommand(
                 IOTCommandType.MD_GET_DEVICE_STATUS,
                 "method=3"
+            )
+
+            ProductType.GNSS_M_1, ProductType.GNSS_M_2, ProductType.GNSS_M_5 -> IOTCommandUtil.getCommand(
+                IOTCommandType.QUERY_DEVICE_STATUS
             )
 
             else -> IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
@@ -317,7 +322,12 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
 
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList {}
-                        initM50StatusInfo(result.data)
+
+                        when (productType) {
+                            ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> initM20StatusInfo(result.data)
+                            ProductType.GNSS_M_5 -> initM50StatusInfo(result.data)
+                            else -> {}
+                        }
                     }
                 }
             }
@@ -378,6 +388,33 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    private fun initM20StatusInfo(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val stateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
+                } ?: return@launchWithViewLifecycle
+
+                //109.709961E,31.139160N,33.0862
+                stateInfo.location.split(",".toRegex()).dropLastWhile { it.isEmpty() }.let {
+                    if (it.size >= 2) {
+                        mStates.longitude.set("E ${it[0].replace("E", "")}°")
+                        mStates.latitude.set("N ${it[1].replace("N", "")}°")
+
+                        val longitude = it[0].replace("E", "").toDoubleOrNull() ?: 121.59840681
+                        val latitude = it[1].replace("N", "").toDoubleOrNull() ?: 31.21032874
+                        gcjLatLng = CustomLatLng(latitude, longitude).toGcj02LatLng().apply {
+                            addMarker(this)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
     private fun initM50StatusInfo(content: String) {
         launchWithViewLifecycle {
             try {
@@ -387,7 +424,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
 
                 //109.709961E,31.139160N,33.0862  31.21032874, 121.59840681
                 stateInfo.location.split(",".toRegex()).dropLastWhile { it.isEmpty() }.let {
-                    if (it.size == 3) {
+                    if (it.size >= 3) {
                         mStates.longitude.set("E ${it[0]}°")
                         mStates.latitude.set("N ${it[1]}°")
                         mStates.elevation.set("${it[2]} m")
@@ -478,9 +515,10 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
 
                             val longitude = longitudeStr.toDoubleOrNull() ?: 121.59840681
                             val latitude = latitudeStr.toDoubleOrNull() ?: 31.21032874
-                            gcjLatLng = CustomLatLng(latitude, longitude).toGcj02LatLng().apply {
-                                addMarker(this)
-                            }
+                            gcjLatLng =
+                                CustomLatLng(latitude, longitude).toGcj02LatLng().apply {
+                                    addMarker(this)
+                                }
                             return
                         }
 
