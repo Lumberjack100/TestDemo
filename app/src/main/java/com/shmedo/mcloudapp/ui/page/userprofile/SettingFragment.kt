@@ -17,7 +17,6 @@ import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
-import com.shmedo.mcloudapp.ui.page.webview.WebviewActivity
 import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.ui.viewmodel.state.SettingViewModel
@@ -73,7 +72,12 @@ class SettingFragment : BaseFragment() {
     }
 
     private fun checkNotificationPermission() {
-        mStates.isAllowNotification.set(XXPermissions.isGranted(requireContext(), Permission.POST_NOTIFICATIONS))
+        mStates.isAllowNotification.set(
+            XXPermissions.isGranted(
+                requireContext(),
+                Permission.POST_NOTIFICATIONS
+            )
+        )
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -138,14 +142,6 @@ class SettingFragment : BaseFragment() {
             nav().safeNavigate(R.id.action_global_to_logSessionListFragment)
         }
 
-        /**
-         * 服务协议
-         */
-        fun onUserProtocolClick() {
-            val url = "file:///android_asset/private/UserProtocol.html"
-            WebviewActivity.startActivity(mActivity, "用户协议与免责条款", url)
-        }
     }
-
 
 }

@@ -12,6 +12,7 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAboutBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
+import com.shmedo.mcloudapp.ui.page.webview.WebviewActivity
 import com.shmedo.mcloudapp.ui.viewmodel.state.AboutViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 
@@ -27,7 +28,7 @@ class AboutFragment : BaseFragment() {
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_about, BR.vm, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
-            .addBindingParam(BR.click, BaseClickProxy())
+            .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -54,5 +55,22 @@ class AboutFragment : BaseFragment() {
     override fun onResume() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    inner class ClickProxy : BaseClickProxy() {
+        /**
+         * 用户协议
+         */
+        fun onUserProtocolClick() {
+            val url = "file:///android_asset/private/UserProtocol.html"
+            WebviewActivity.startActivity(mActivity, "用户协议与免责条款", url)
+        }
+
+        /**
+         * 隐私协议
+         */
+        fun onPrivacyProtocolClick() {
+
+        }
     }
 }
