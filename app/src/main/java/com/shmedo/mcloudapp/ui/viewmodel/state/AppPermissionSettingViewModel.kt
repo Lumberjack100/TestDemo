@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.userprofile
+package com.shmedo.mcloudapp.ui.viewmodel.state
 
 import androidx.lifecycle.ViewModel
 

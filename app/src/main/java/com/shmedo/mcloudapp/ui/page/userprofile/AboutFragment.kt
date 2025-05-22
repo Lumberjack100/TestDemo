@@ -11,8 +11,9 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAboutBinding
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
-import com.shmedo.mcloudapp.ui.page.webview.WebviewActivity
+import com.shmedo.mcloudapp.ui.page.webview.WebViewFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.AboutViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 
@@ -63,14 +64,32 @@ class AboutFragment : BaseFragment() {
          */
         fun onUserProtocolClick() {
             val url = "file:///android_asset/private/UserProtocol.html"
-            WebviewActivity.startActivity(mActivity, "用户协议与免责条款", url)
+//            WebviewActivity.startActivity(mActivity, "用户协议与免责条款", url)
+            val bundle = WebViewFragment.newBundleArguments(
+                "用户协议与免责条款",
+                url
+            )
+            nav().safeNavigate(
+                R.id.action_aboutFragment_to_webViewFragment,
+                bundle
+            )
         }
 
         /**
          * 隐私协议
          */
         fun onPrivacyProtocolClick() {
+            val url = "file:///android_asset/private/PrivacyPolicy.html"
+//            WebviewActivity.startActivity(mActivity, "隐私政策", url)
 
+            val bundle = WebViewFragment.newBundleArguments(
+                "隐私政策",
+                url
+            )
+            nav().safeNavigate(
+                R.id.action_aboutFragment_to_webViewFragment,
+                bundle
+            )
         }
     }
 }

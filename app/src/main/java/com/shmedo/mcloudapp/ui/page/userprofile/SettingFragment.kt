@@ -17,6 +17,7 @@ import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
+import com.shmedo.mcloudapp.ui.page.webview.WebViewFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.ui.viewmodel.state.SettingViewModel
@@ -109,7 +110,15 @@ class SettingFragment : BaseFragment() {
          * 第三方信息共享清单
          */
         fun onThirdPartyInformationSharingListClick() {
-
+            val url = "file:///android_asset/private/markdown_template.html"
+            val bundle = WebViewFragment.newBundleArguments(
+                "第三方信息共享清单",
+                url
+            )
+            nav().safeNavigate(
+                R.id.action_aboutFragment_to_webViewFragment,
+                bundle
+            )
         }
 
         /**

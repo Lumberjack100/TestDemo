@@ -19,6 +19,7 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.ResetPasswordViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 

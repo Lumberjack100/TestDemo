@@ -6,6 +6,7 @@
     app:startDestination="@id/mainFragment">
 
     <include app:graph="@navigation/include_query_data_graph" />
+    <include app:graph="@navigation/include_webview_graph" />
     <include app:graph="@navigation/include_log_session_graph" />
 
     <fragment
@@ -141,6 +142,14 @@
     <action
         android:id="@+id/action_global_to_logSessionListFragment"
         app:destination="@id/log_session_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_aboutFragment_to_webViewFragment"
+        app:destination="@id/webview_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

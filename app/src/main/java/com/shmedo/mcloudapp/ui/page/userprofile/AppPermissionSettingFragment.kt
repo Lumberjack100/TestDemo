@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.ui.viewmodel.state.AppPermissionSettingViewModel
 
 class AppPermissionSettingFragment : Fragment() {
 
