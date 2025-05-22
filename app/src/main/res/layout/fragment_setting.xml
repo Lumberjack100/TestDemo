@@ -70,7 +70,7 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        android:text="权限设置" />
+                        android:text="系统权限设置" />
 
                     <com.google.android.material.textview.MaterialTextView style="@style/Common_ClickableItem_Value_Style" />
                 </androidx.appcompat.widget.LinearLayoutCompat>

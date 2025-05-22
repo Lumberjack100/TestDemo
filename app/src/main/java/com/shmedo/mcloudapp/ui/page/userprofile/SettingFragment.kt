@@ -12,14 +12,12 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentSettingBinding
-import com.shmedo.mcloudapp.extensions.getAppViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.webview.WebViewFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.ui.viewmodel.state.SettingViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.Dispatchers
@@ -28,14 +26,12 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingFragment : BaseFragment() {
     private lateinit var binding: FragmentSettingBinding
-    private lateinit var mMessenger: PageMessenger
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: SettingViewModel by viewModels()
     private val logViewModel: LogViewModel by viewModel()
 
 
     override fun initViewModel() {
-        mMessenger = getAppViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -48,12 +44,10 @@ class SettingFragment : BaseFragment() {
         binding = getBinding() as FragmentSettingBinding
         toolbarViewModel.toolbarTitleText.set("设置")
         binding.llToolbar.toolbar.setNavigationOnClickListener {
-            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                mMessenger.requestStatusBarColor(R.color.colorPrimary)
                 nav().navigateUp()
             }
         })
@@ -96,7 +90,7 @@ class SettingFragment : BaseFragment() {
          * 权限设置
          */
         fun onPermissionSettingClick() {
-
+            nav().safeNavigate(R.id.action_global_to_appPermissionSettingFragment)
         }
 
         /**

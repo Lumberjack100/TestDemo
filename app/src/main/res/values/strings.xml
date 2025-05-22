@@ -50,6 +50,10 @@
     <string name="message_permission_update_version_rationale">请在系统 "权限" 中打开 "读写手机存储" 开关，以执行版本更新 </string>
     <string name="message_permission_location_rationale">需要使用定位权限，用于提供精确的定位及导航服务，请前往设置页面授予权限 </string>
     <string name="message_permission_wifi_location_rational">使用WiFi扫描功能需要开启定位权限，请前往设置页面授予权限</string>
+    <string name="permission_location_setting_purpose">用于查找设备、同步位置信息到设备。</string>
+    <string name="permission_bluetooth_setting_purpose">用于蓝牙连接设备。</string>
+    <string name="permission_camera_setting_purpose">用于扫描设备二维码。</string>
+    <string name="permission_storage_setting_purpose">用于保存图片、头像上传。</string>
 
     <!-- 用户 -->
     <string name="take_photo">拍照</string>

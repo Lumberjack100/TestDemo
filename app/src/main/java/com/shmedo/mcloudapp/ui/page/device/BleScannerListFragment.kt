@@ -268,6 +268,17 @@ class BleScannerListFragment : BaseFragment() {
                     }
                     permissionViewModel.refreshBluetoothPermission()
                 }
+
+                override fun onDenied(
+                    permissions: MutableList<String>,
+                    doNotAskAgain: kotlin.Boolean
+                ) {
+                    // 如果是被永久拒绝就跳转到应用权限系统设置页面
+                    XXPermissions.startPermissionActivity(
+                        this@BleScannerListFragment,
+                        permissions
+                    )
+                }
             })
     }
 
