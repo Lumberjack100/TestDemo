@@ -72,6 +72,7 @@ utilcodex = "1.31.1"
 xpopup = "2.10.0"
 xUpdate = "2.1.5"
 xxPermission = "21.3"
+webkit = "1.13.0"
 
 [libraries]
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
@@ -143,6 +144,7 @@ toastutils = { module = "com.github.getActivity:ToastUtils", version.ref = "toas
 utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
 xpopup = { module = "com.github.li-xiaojun:XPopup", version.ref = "xpopup" }
 xuexiangjys-xupdate = { module = "com.github.xuexiangjys:XUpdate", version.ref = "xUpdate" }
+androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
 
 
 [bundles]

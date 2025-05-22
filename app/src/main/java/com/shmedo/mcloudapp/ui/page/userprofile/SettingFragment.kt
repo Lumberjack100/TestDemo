@@ -110,7 +110,8 @@ class SettingFragment : BaseFragment() {
          * 第三方信息共享清单
          */
         fun onThirdPartyInformationSharingListClick() {
-            val url = "file:///android_asset/private/markdown_template.html"
+//            val url = "file:///android_asset/private/third_party_sharing_list.html"
+            val url = "https://appassets.androidplatform.net/assets/private/third_party_sharing_list.html"
             val bundle = WebViewFragment.newBundleArguments(
                 "第三方信息共享清单",
                 url

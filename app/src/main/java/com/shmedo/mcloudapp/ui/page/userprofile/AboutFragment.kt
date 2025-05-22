@@ -63,7 +63,9 @@ class AboutFragment : BaseFragment() {
          * 用户协议
          */
         fun onUserProtocolClick() {
-            val url = "file:///android_asset/private/UserProtocol.html"
+//            val url = "file:///android_asset/private/user_protocol.html"
+            val url = "https://appassets.androidplatform.net/assets/private/user_protocol.html"
+
 //            WebviewActivity.startActivity(mActivity, "用户协议与免责条款", url)
             val bundle = WebViewFragment.newBundleArguments(
                 "用户协议与免责条款",
@@ -79,7 +81,9 @@ class AboutFragment : BaseFragment() {
          * 隐私协议
          */
         fun onPrivacyProtocolClick() {
-            val url = "file:///android_asset/private/PrivacyPolicy.html"
+//            val url = "file:///android_asset/private/privacy_policy.html"
+            val url = "https://appassets.androidplatform.net/assets/private/privacy_policy.html"
+
 //            WebviewActivity.startActivity(mActivity, "隐私政策", url)
 
             val bundle = WebViewFragment.newBundleArguments(

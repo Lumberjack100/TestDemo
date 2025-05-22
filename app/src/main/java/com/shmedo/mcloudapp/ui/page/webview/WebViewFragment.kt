@@ -66,9 +66,11 @@ class WebViewFragment : BaseFragment() {
         toolbarViewModel.toolbarTitleText.set(title)
 
         val url = arguments?.getString(ARG_URL) ?: ""
+
         mAgentWeb = AgentWeb.with(this)
             .setAgentWebParent(binding.container, LinearLayout.LayoutParams(-1, -1))//传入AgentWeb的父控件
             .useDefaultIndicator()//设置进度条颜色与高度
+            .useMiddlewareWebClient(LocalContentWebViewClient(requireContext())) //设置WebViewClient中间件，支持多个WebViewClient， AgentWeb 3.0.0 加入。
             .setWebViewClient(mWebViewClient) // 添加 WebViewClient
             .setWebChromeClient(mWebChromeClient) // 添加 WebChromeClient
             .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK) //严格模式 Android 4.2.2 以下会放弃注入对象
@@ -78,10 +80,9 @@ class WebViewFragment : BaseFragment() {
 
         // 确保对本地文件的访问权限，尤其是 file:///android_asset/ 路径下的 JS 通过 fetch/XHR 访问其他本地文件
         mAgentWeb.agentWebSettings.webSettings.apply {
-            allowFileAccess = true//允许加载本地文件html  file协议
-            allowFileAccessFromFileURLs = true // 允许 file URI 访问其他 file URI
-            allowUniversalAccessFromFileURLs = true // 允许 file URI 进行跨域访问(对于 fetch API 很重要)
-        }
+            allowFileAccess = false//允许加载本地文件html  file协议
+            allowContentAccess = false // 允许 WebView 使用 File协议
+       }
     }
 
     override fun onResume() {
