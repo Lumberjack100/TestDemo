@@ -59,21 +59,44 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- <script src="../js/marked.min.js"></script> -->
 </head>
 <body>
     <div id="content"></div>
     
     <script>
-        // 获取Markdown内容并转换为HTML
-        fetch('third_party_sharing_list.md')
-            .then(response => response.text())
-            .then(markdown => {
-                document.getElementById('content').innerHTML = marked.parse(markdown);
-            })
-            .catch(error => {
-                console.error('Error loading markdown file:', error);
+        // 使用 XMLHttpRequest 代替 Fetch API 加载 Markdown 文件
+        function loadMarkdown() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'third_party_sharing_list.md', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        // 成功加载 Markdown 文件
+                        var markdown = xhr.responseText;
+                        // 确保 marked 已加载
+                        if (typeof marked === 'undefined') {
+                            console.error('marked.js library is not loaded.');
+                            document.getElementById('content').innerHTML = '<p>错误: Markdown 渲染库未加载。</p>';
+                            return;
+                        }
+                        document.getElementById('content').innerHTML = marked.parse(markdown);
+                    } else {
+                        // 加载失败
+                        console.error('Failed to load markdown file. Status: ' + xhr.status);
+                        document.getElementById('content').innerHTML = '<p>加载内容失败，请稍后重试。</p>';
+                    }
+                }
+            };
+            xhr.onerror = function() {
+                console.error('Error loading markdown file');
                 document.getElementById('content').innerHTML = '<p>加载内容失败，请稍后重试。</p>';
-            });
+            };
+            xhr.send();
+        }
+
+        // 页面加载完成后执行
+        document.addEventListener('DOMContentLoaded', loadMarkdown);
     </script>
 </body>
 </html> 

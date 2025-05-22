@@ -1,11 +1,19 @@
 package com.shmedo.mcloudapp.ui.page.webview
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.view.View
+import android.webkit.ConsoleMessage
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
+import android.webkit.WebView
 import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import com.just.agentweb.AgentWeb
+import com.just.agentweb.WebChromeClient
+import com.just.agentweb.WebViewClient
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -14,6 +22,7 @@ import com.shmedo.mcloudapp.databinding.FragmentWebviewBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import timber.log.Timber
 
 /**
  * 通用的WebView Fragment，可以加载网页、本地HTML或Markdown文件
@@ -60,9 +69,19 @@ class WebViewFragment : BaseFragment() {
         mAgentWeb = AgentWeb.with(this)
             .setAgentWebParent(binding.container, LinearLayout.LayoutParams(-1, -1))//传入AgentWeb的父控件
             .useDefaultIndicator()//设置进度条颜色与高度
+            .setWebViewClient(mWebViewClient) // 添加 WebViewClient
+            .setWebChromeClient(mWebChromeClient) // 添加 WebChromeClient
+            .setSecurityType(AgentWeb.SecurityType.STRICT_CHECK) //严格模式 Android 4.2.2 以下会放弃注入对象
             .createAgentWeb()//创建AgentWeb
             .ready()//设置 WebSettings
             .go(url) //WebView载入该url地址的页面并显示。
+
+        // 确保对本地文件的访问权限，尤其是 file:///android_asset/ 路径下的 JS 通过 fetch/XHR 访问其他本地文件
+        mAgentWeb.agentWebSettings.webSettings.apply {
+            allowFileAccess = true//允许加载本地文件html  file协议
+            allowFileAccessFromFileURLs = true // 允许 file URI 访问其他 file URI
+            allowUniversalAccessFromFileURLs = true // 允许 file URI 进行跨域访问(对于 fetch API 很重要)
+        }
     }
 
     override fun onResume() {
@@ -85,6 +104,54 @@ class WebViewFragment : BaseFragment() {
 
     inner class ClickProxy : BaseClickProxy() {
 
+    }
+
+    private val mWebViewClient: WebViewClient = object : WebViewClient() {
+        override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
+            super.onPageStarted(view, url, favicon)
+            Timber.d("onPageStarted: $url")
+        }
+
+        override fun onPageFinished(view: WebView, url: String) {
+            super.onPageFinished(view, url)
+            Timber.d("onPageFinished: $url")
+        }
+
+        override fun onReceivedHttpError(
+            view: WebView,
+            request: WebResourceRequest,
+            errorResponse: WebResourceResponse
+        ) {
+            super.onReceivedHttpError(view, request, errorResponse)
+            Timber
+                .e("onReceivedHttpError: ${errorResponse.statusCode} for URL: ${request.url}")
+        }
+
+        override fun onReceivedError(
+            view: WebView,
+            request: WebResourceRequest,
+            error: WebResourceError
+        ) {
+            super.onReceivedError(view, request, error)
+            Timber
+                .e("onReceivedError: ${error.errorCode}, Description: ${error.description} for URL: ${request.url}")
+        }
+    }
+
+    private val mWebChromeClient: WebChromeClient = object : WebChromeClient() {
+        override fun onReceivedTitle(view: WebView, title: String) {
+            super.onReceivedTitle(view, title)
+            // 如果HTML本身有title且我们没有在Fragment参数中传递标题，或者希望HTML的title覆盖参数title
+            // arguments?.getString(ARG_TITLE).isNullOrEmpty().let {
+            // if (it) toolbarViewModel.toolbarTitleText.set(title)
+            // }
+        }
+
+        override fun onConsoleMessage(consoleMessage: ConsoleMessage): Boolean {
+            Timber.tag("WebViewConsole")
+                .d("${consoleMessage.message()} -- From line ${consoleMessage.lineNumber()} of ${consoleMessage.sourceId()}")
+            return super.onConsoleMessage(consoleMessage)
+        }
     }
 
     companion object {
