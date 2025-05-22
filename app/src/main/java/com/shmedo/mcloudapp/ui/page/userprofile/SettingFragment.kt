@@ -103,7 +103,15 @@ class SettingFragment : BaseFragment() {
          * 个人信息收集清单
          */
         fun onPersonalInformationCollectionListClick() {
-
+            val url = "https://appassets.androidplatform.net/assets/private/personal_information_collection_list.html"
+            val bundle = WebViewFragment.newBundleArguments(
+                "个人信息收集清单",
+                url
+            )
+            nav().safeNavigate(
+                R.id.action_global_to_webViewFragment,
+                bundle
+            )
         }
 
         /**
@@ -117,7 +125,7 @@ class SettingFragment : BaseFragment() {
                 url
             )
             nav().safeNavigate(
-                R.id.action_aboutFragment_to_webViewFragment,
+                R.id.action_global_to_webViewFragment,
                 bundle
             )
         }

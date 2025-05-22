@@ -72,7 +72,7 @@ class AboutFragment : BaseFragment() {
                 url
             )
             nav().safeNavigate(
-                R.id.action_aboutFragment_to_webViewFragment,
+                R.id.action_global_to_webViewFragment,
                 bundle
             )
         }
@@ -91,7 +91,7 @@ class AboutFragment : BaseFragment() {
                 url
             )
             nav().safeNavigate(
-                R.id.action_aboutFragment_to_webViewFragment,
+                R.id.action_global_to_webViewFragment,
                 bundle
             )
         }

@@ -187,8 +187,6 @@ dependencies {
     implementation(libs.androidx.navigation.fragment) {
         exclude(group = "androidx.navigation", module = "navigation-fragment")
     }
-    // 添加WebViewAssetLoader依赖
-    implementation(libs.androidx.webkit)
 
     implementation(libs.kunminx.unpeek.livedata)
     implementation(libs.kunminx.strict.databinding)
@@ -215,6 +213,8 @@ dependencies {
     implementation(libs.fastscroll)
     implementation(libs.tableview)
 
+    // 添加WebViewAssetLoader依赖
+    implementation(libs.androidx.webkit)
     implementation(libs.agentweb.core)
 
     //开关 Button

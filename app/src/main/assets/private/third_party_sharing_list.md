@@ -1,13 +1,7 @@
 # 第三方信息共享清单
 
-| 第三方SDK名称 | 使用目的 | 权限 | 收集数据类型 |
-| --- | --- | --- | --- |
-| 微信开放平台 | 微信登录、帮助用户分享内容至第三方应用 | 网络访问权限 | 设备识别信息、应用程序安装列表 |
-| 华为PUSH | 推送消息 | 网络访问权限、查看wlan连接、访问GSM网络信息、写入外部存储卡 | 设备识别信息 |
-| 小米PUSH | 推送消息 | 网络访问权限、改变网络连接状态、访问GSM网络信息、写入外部存储卡、读取手机状态及身份、查看wlan连接 | 设备识别信息 |
-| OPPO PUSH | 推送消息 | 网络访问权限、改变网络连接状态、访问GSM网络信息、写入外部存储卡、读取手机状态及身份、查看wlan连接 | 设备识别信息 |
-| 阿里云 | 推送信息、崩溃分析 | 网络访问权限、查看wlan连接 | 设备识别信息、运行中进程信息 |
-| OKHTTP | 网络请求框架 | 处理网络请求的开源框架 | 设备信息 |
-| AndroidSupportLibrary | 兼容函数库，它使得开发者可以提升设计开发效果 | 无 | 无 |
-| 神策数据-iOS SDK | 基础数据收集与建模，驱动业务决策分析 | 网络（国服专门） | 设备信息、网络信息 |
-| 神策数据-Android SDK | 基础数据收集与建模，驱动业务决策分析 | INTERNET、ACCESS_NETWORK_STATE | 网络信息 | 
+| 第三方SDK名称 | 第三方公司名称 | 共享信息 | 使用目的 | 共享方式 | 隐私政策 |
+| --- | --- | --- | --- | --- | --- |
+| Bugly Android SDK | 深圳市腾讯计算机系统有限公司 | 设备标识信息 | 用于对米易通应用进行崩溃分析 | SDK 本机采集 | [https://privacy.qq.com/document/preview/fc748b3d96224fdb825ea79e132c1a56](https://privacy.qq.com/document/preview/fc748b3d96224fdb825ea79e132c1a56) |
+| 百度地图 SDK | 北京百度网讯科技有限公司 | 设备信息，包括终端设备唯一标识符【包含 IDFV、OAID、IMEI（针对 Android Q 以下版本）、MEID、IMSI 等】、MAC 地址、操作系统版本、设备品牌及型号、设备配置、运营商类型、应用信息（应用名、应用版本号）。位置信息，包括 GNSS 信息、IP 地址、WLAN 热点、基站信息、蓝牙设备以及其他能够用于定位的传感器信息 | 用于在地图图面上展示物联网设备位置 | SDK 本机采集 | [https://lbs.baidu.com/index.php?title=openprivacy ](https://lbs.baidu.com/index.php?title=openprivacy)|
+| 百度定位 SDK | 北京百度网讯科技有限公司 | 设备信息，包括终端设备唯一标识符【包含 IDFV、OAID、IMEI（针对 Android Q 以下版本）、MEID、IMSI 等】、MAC 地址、操作系统版本、设备品牌及型号、设备配置、运营商类型、应用信息（应用名、应用版本号）。位置信息，包括 GNSS 信息、IP 地址、WLAN 热点、基站信息、蓝牙设备以及其他能够用于定位的传感器信息 | 用于获取用户定位 | SDK 本机采集 | [https://lbs.baidu.com/index.php?title=openprivacy ](https://lbs.baidu.com/index.php?title=openprivacy)|
