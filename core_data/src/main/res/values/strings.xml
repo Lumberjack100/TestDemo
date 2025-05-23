@@ -15,19 +15,44 @@
   -->
 
 <resources translatable="false">
+    <!-- 权限申请-->
+    <string name="permission_request_location_hardware">需要打开系统定位开关，用于提供精确的定位及导航服务</string>
+    <string name="message_permissions_denied">请求相关权限失败，无法继续操作</string>
+    <string name="message_permission_camera_denied">请求相机权限失败，无法继续操作</string>
+    <string name="message_permission_storage_denied">请求 SD 卡权限失败，无法继续操作</string>
+    <string name="message_permission_location_denied">请求定位权限失败，无法继续操作</string>
+    <string name="message_permission_bluetooth_location_rational">使用蓝牙功能需要开启定位权限，请前往设置页面授予权限</string>
+    <string name="message_permission_camera_rationale">需要在系统 "权限" 中打开 "相机" 开关，才能使用相机拍照或扫描 </string>
+    <string name="message_permission_storage_rationale">需要在系统 "权限" 中打开 "读写手机存储" 开关，才能继续操作 </string>
+    <string name="message_permission_update_version_rationale">请在系统 "权限" 中打开 "读写手机存储" 开关，以执行版本更新 </string>
+    <string name="message_permission_location_rationale">需要使用定位权限，用于提供精确的定位及导航服务，请前往设置页面授予权限 </string>
+    <string name="message_permission_wifi_location_rational">使用WiFi扫描功能需要开启定位权限，请前往设置页面授予权限</string>
+    <string name="permission_location_setting_purpose">用于查找设备、同步位置信息到设备。</string>
+    <string name="permission_bluetooth_setting_purpose">用于蓝牙连接设备。</string>
+    <string name="permission_camera_setting_purpose">用于扫描设备二维码。</string>
+    <string name="permission_storage_setting_purpose">用于保存图片、头像上传。</string>
 
+
+    <string name="common_permission_description">权限说明</string>
+    <string name="common_permission_message">使用此功能需要先授予%s</string>
+    <string name="common_permission_granted">授予</string>
+    <string name="common_permission_denied">取消</string>
     <string name="common_permission_alert">授权提醒</string>
+    <string name="common_permission_fail_hint">授权失败，请正确授予权限</string>
+    <string name="common_permission_fail_assign_hint">授权失败，请正确授予%s</string>
+    <string name="common_permission_manual_fail_hint">获取权限失败，请手动授予权限</string>
+    <string name="common_permission_manual_assign_fail_hint">获取权限失败，请手动授予%s</string>
+    <string name="common_permission_manual_assign_fail_background_location_hint">获取后台定位权限失败，请在定位权限中选择%s</string>
+    <string name="common_permission_manual_assign_fail_background_sensors_hint">获取后台传感器权限失败，请在传感器权限中选择%s</string>
     <string name="common_permission_background_location_fail_hint">获取后台定位权限失败，\n请您选择《%s》选项</string>
     <string name="common_permission_background_sensors_fail_hint">获取后台传感器权限失败，\n请您选择《%s》选项</string>
     <string name="common_permission_background_default_option_label">始终允许</string>
     <string name="common_permission_media_location_hint_fail">获取媒体位置权限失败\n请清除应用数据后重试</string>
     <string name="common_permission_goto_setting_page">前往授权</string>
-    <string name="common_permission_fail_hint">授权失败，请正确授予权限</string>
-    <string name="common_permission_fail_assign_hint">授权失败，请正确授予%s</string>
-    <string name="common_permission_manual_fail_hint">获取权限失败，请手动授予权限</string>
-    <string name="common_permission_manual_assign_fail_hint">获取权限失败，请手动授予%s</string>
+
     <string name="common_permission_unknown">权限</string>
     <string name="common_permission_comma">、</string>
+
     <string name="common_permission_calendar">日历权限</string>
     <string name="common_permission_camera">相机权限</string>
     <string name="common_permission_contacts">通讯录权限</string>
@@ -48,6 +73,7 @@
     <string name="common_permission_image_and_video">照片和视频权限</string>
     <string name="common_permission_music_and_audio">音乐和音频权限</string>
     <string name="common_permission_get_installed_apps">读取应用列表权限</string>
+
     <string name="common_permission_all_file_access">所有文件访问权限</string>
     <string name="common_permission_install_unknown_apps">安装应用权限</string>
     <string name="common_permission_display_over_other_apps">悬浮窗权限</string>

@@ -107,10 +107,10 @@ class PolicyDialog : BaseVmDbDialogFragment() {
 
         override fun onClick(view: View) {
             if (contentType == ContentType.USER_PROTOCOL) {
-                val url = "file:///android_asset/private/UserProtocol.html"
+                val url = "https://appassets.androidplatform.net/assets/private/user_protocol.html"
                 WebviewActivity.startActivity(context, "用户协议与免责条款", url)
             } else {
-                val url = "file:///android_asset/private/PrivacyPolicy.html"
+                val url = "https://appassets.androidplatform.net/assets/private/privacy_policy.html"
                 WebviewActivity.startActivity(context, "隐私政策", url)
             }
         }

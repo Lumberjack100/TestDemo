@@ -209,10 +209,12 @@ dependencies {
 
     //Android 快速构建 RecyclerView, 比 BRVAH 更简单强大 https://github.com/liangjingkanji/BRV
     implementation(libs.liangjingkanji.brv)
-    //A ListView-like FastScroller for Android’s RecyclerView.
+    //A ListView-like FastScroller for Android's RecyclerView.
     implementation(libs.fastscroll)
     implementation(libs.tableview)
 
+    // 添加WebViewAssetLoader依赖
+    implementation(libs.androidx.webkit)
     implementation(libs.agentweb.core)
 
     //开关 Button

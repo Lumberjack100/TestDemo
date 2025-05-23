@@ -10,7 +10,7 @@
             type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
-            name="vm"
+            name="stateVM"
             type="com.shmedo.mcloudapp.ui.viewmodel.state.SettingViewModel" />
 
         <variable
@@ -44,100 +44,96 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:padding="@dimen/dimen_size_15">
+                android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                android:paddingTop="@dimen/page_content_container_padding_top_12"
+                android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
-                    onClickWithDebouncing="@{()->click.onClearLogClick()}"
-                    android:layout_marginTop="@dimen/dimen_size_10"
-                    app:drawable_radius="@{6}"
-                    app:drawable_solidColor="@{@color/white}"
-                    tools:background="@color/white">
+                    android:background="@drawable/layer_common_click_item_top_corner_4_with_divider"
+                    android:onClick="@{()->click.onMessageNotificationClick()}">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Title_Style"
+                        android:text="消息通知" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Value_Style"
+                        tools:text="未开启"
+                        android:text='@{stateVM.isAllowNotification ? "已开启" : "未开启"}' />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_ClickableItem_Layout_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider"
+                    android:onClick="@{()->click.onPermissionSettingClick()}">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Title_Style"
+                        android:text="系统权限设置" />
+
+                    <com.google.android.material.textview.MaterialTextView style="@style/Common_ClickableItem_Value_Style" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_ClickableItem_Layout_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider"
+                    android:onClick="@{()->click.onPersonalInformationCollectionListClick()}">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Title_Style"
+                        android:text="个人信息收集清单" />
+
+                    <com.google.android.material.textview.MaterialTextView style="@style/Common_ClickableItem_Value_Style" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_ClickableItem_Layout_Style"
+                    android:background="@drawable/shape_common_click_item_bottom_corner_4"
+                    android:onClick="@{()->click.onThirdPartyInformationSharingListClick()}">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Title_Style"
+                        android:text="第三方信息共享清单" />
+
+                    <com.google.android.material.textview.MaterialTextView style="@style/Common_ClickableItem_Value_Style" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_ClickableItem_Layout_Style"
+                    android:layout_marginTop="@dimen/dimen_size_20"
+                    android:background="@drawable/layer_common_click_item_top_corner_4_with_divider"
+                    android:onClick="@{()->click.onClearLogClick()}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
                         android:text="清除缓存" />
 
                     <com.google.android.material.textview.MaterialTextView style="@style/Common_ClickableItem_Value_Style" />
-
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
-                    onClickWithDebouncing="@{()->click.onUserProtocolClick()}"
-                    android:layout_marginTop="@dimen/dimen_size_20"
-                    app:drawable_radiusLT="@{6}"
-                    app:drawable_radiusRT="@{6}"
-                    app:drawable_solidColor="@{@color/white}"
-                    tools:background="@color/white">
+                    android:background="@drawable/layer_common_click_item_with_divider"
+                    android:onClick="@{()->click.onLogViewClick()}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        android:text="协议与条款" />
+                        android:text="系统与设备日志" />
 
                     <com.google.android.material.textview.MaterialTextView style="@style/Common_ClickableItem_Value_Style" />
-
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
-                    onClickWithDebouncing="@{()->click.onPrivacyPolicyClick()}"
-                    android:layout_marginTop="1dp"
-                    android:background="@color/white">
+                    android:background="@drawable/shape_common_click_item_bottom_corner_4"
+                    android:onClick="@{()->click.onAboutUsClick()}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        android:text="隐私政策" />
+                        android:text="关于我们" />
 
                     <com.google.android.material.textview.MaterialTextView style="@style/Common_ClickableItem_Value_Style" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_Layout_Style"
-                    onClickWithDebouncing="@{()->click.onHelpAndFeedbackClick()}"
-                    android:layout_marginTop="1dp"
-                    android:background="@color/white">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_Title_Style"
-                        android:text="帮助与反馈" />
-
-                    <com.google.android.material.textview.MaterialTextView style="@style/Common_ClickableItem_Value_Style" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_Layout_Style"
-                    onClickWithDebouncing="@{()->click.onAboutUsClick()}"
-                    android:layout_marginTop="1dp"
-                    app:drawable_radiusLB="@{6}"
-                    app:drawable_radiusRB="@{6}"
-                    app:drawable_solidColor="@{@color/white}"
-                    tools:background="@color/white">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_Title_Style"
-                        android:text="关于" />
-
-                    <com.google.android.material.textview.MaterialTextView style="@style/Common_ClickableItem_Value_Style" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_Layout_Style"
-                    onClickWithDebouncing="@{()->click.onViewLogClick()}"
-                    android:layout_marginTop="@dimen/dimen_size_20"
-                    app:drawable_radius="@{6}"
-                    app:drawable_solidColor="@{@color/white}"
-                    tools:background="@color/white">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_Title_Style"
-                        android:text="日志浏览" />
-
-                    <com.google.android.material.textview.MaterialTextView style="@style/Common_ClickableItem_Value_Style" />
-
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
             </androidx.appcompat.widget.LinearLayoutCompat>

@@ -6,6 +6,8 @@
     <string name="privacy_agreement_title">温馨提示</string>
     <string name="privacy_agreement_desc">欢迎您使用米易通！\n\n我们高度重视并保护您的个人隐私，我们将严格在国家法律允许范围内，且只以为您提供服务为目的，收集必要的相关信息。为了便于您详细了解您的权利和义务，请您仔细阅读米易通《用户协议和免责条款》，并做出是否同意授权的决定。</string>
     <string name="login_protocol_desc">登录即代表已阅读并同意《用户协议与免责条款》</string>
+    <string name="user_agreement">用户协议</string>
+    <string name="privacy_policy">隐私协议</string>
     <string name="login_way_account_zh">账号登录</string>
     <string name="login_way_account_en">Account Login</string>
     <string name="login_way_phone_zh">手机登录</string>
@@ -35,19 +37,6 @@
     <string name="bad_network_view_tip">您的网络不给力，点击屏幕可重新加载</string>
     <string name="load_failed_click_to_reload">加载失败，点击屏幕可重新加载</string>
     <string name="network_error_tip">当前网络不可用，请检查您的网络设置！</string>
-
-    <!-- 权限申请-->
-    <string name="permission_request_location_hardware">需要打开系统定位开关，用于提供精确的定位及导航服务</string>
-    <string name="message_permissions_denied">请求相关权限失败，无法继续操作</string>
-    <string name="message_permission_camera_denied">请求相机权限失败，无法继续操作</string>
-    <string name="message_permission_storage_denied">请求 SD 卡权限失败，无法继续操作</string>
-    <string name="message_permission_location_denied">请求定位权限失败，无法继续操作</string>
-    <string name="message_permission_bluetooth_location_rational">使用蓝牙功能需要开启定位权限，请前往设置页面授予权限</string>
-    <string name="message_permission_camera_rationale">需要在系统 “权限” 中打开 “相机” 开关，才能使用相机拍照或扫描 </string>
-    <string name="message_permission_storage_rationale">需要在系统 “权限” 中打开 “读写手机存储” 开关，才能继续操作 </string>
-    <string name="message_permission_update_version_rationale">请在系统 “权限” 中打开 “读写手机存储” 开关，以执行版本更新 </string>
-    <string name="message_permission_location_rationale">需要使用定位权限，用于提供精确的定位及导航服务，请前往设置页面授予权限 </string>
-    <string name="message_permission_wifi_location_rational">使用WiFi扫描功能需要开启定位权限，请前往设置页面授予权限</string>
 
     <!-- 用户 -->
     <string name="take_photo">拍照</string>
