@@ -38,23 +38,6 @@
     <string name="load_failed_click_to_reload">加载失败，点击屏幕可重新加载</string>
     <string name="network_error_tip">当前网络不可用，请检查您的网络设置！</string>
 
-    <!-- 权限申请-->
-    <string name="permission_request_location_hardware">需要打开系统定位开关，用于提供精确的定位及导航服务</string>
-    <string name="message_permissions_denied">请求相关权限失败，无法继续操作</string>
-    <string name="message_permission_camera_denied">请求相机权限失败，无法继续操作</string>
-    <string name="message_permission_storage_denied">请求 SD 卡权限失败，无法继续操作</string>
-    <string name="message_permission_location_denied">请求定位权限失败，无法继续操作</string>
-    <string name="message_permission_bluetooth_location_rational">使用蓝牙功能需要开启定位权限，请前往设置页面授予权限</string>
-    <string name="message_permission_camera_rationale">需要在系统 "权限" 中打开 "相机" 开关，才能使用相机拍照或扫描 </string>
-    <string name="message_permission_storage_rationale">需要在系统 "权限" 中打开 "读写手机存储" 开关，才能继续操作 </string>
-    <string name="message_permission_update_version_rationale">请在系统 "权限" 中打开 "读写手机存储" 开关，以执行版本更新 </string>
-    <string name="message_permission_location_rationale">需要使用定位权限，用于提供精确的定位及导航服务，请前往设置页面授予权限 </string>
-    <string name="message_permission_wifi_location_rational">使用WiFi扫描功能需要开启定位权限，请前往设置页面授予权限</string>
-    <string name="permission_location_setting_purpose">用于查找设备、同步位置信息到设备。</string>
-    <string name="permission_bluetooth_setting_purpose">用于蓝牙连接设备。</string>
-    <string name="permission_camera_setting_purpose">用于扫描设备二维码。</string>
-    <string name="permission_storage_setting_purpose">用于保存图片、头像上传。</string>
-
     <!-- 用户 -->
     <string name="take_photo">拍照</string>
     <string name="your_album">你的相册</string>

@@ -1,6 +1,5 @@
 package com.shmedo.mcloudapp.ui.page.main
 
-import android.Manifest
 import android.app.Activity
 import android.graphics.Typeface
 import android.os.Bundle
@@ -13,6 +12,7 @@ import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.hjq.permissions.OnPermissionCallback
+import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.hjq.toast.Toaster
 import com.huawei.hms.hmsscankit.ScanUtil
@@ -273,16 +273,9 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     //<editor-fold desc="扫码处理">
     private fun requestPermissionForBluetooth() {
         XXPermissions.with(this)
-            // 申请多个权限
-            .permission(
-                arrayOf(
-                    Manifest.permission.CAMERA
-                )
-            )
+            .permission(Permission.CAMERA)
             // 设置权限请求拦截器（局部设置）
             .interceptor(PermissionInterceptor())
-            // 设置不触发错误检测机制（局部设置）
-            //.unchecked()
             .request(object : OnPermissionCallback {
                 override fun onGranted(
                     grantedPermissions: MutableList<String>, allGranted: Boolean
@@ -293,6 +286,7 @@ class DeviceManageHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
                     // 扫一扫
                     val options = HmsScanAnalyzerOptions.Creator().setErrorCheck(true)
                         .setHmsScanTypes(HmsScan.QRCODE_SCAN_TYPE).create()
+
                     ScanUtil.startScan(
                         mActivity, PermissionHelper.REQUEST_CODE_SCAN, options
                     )
