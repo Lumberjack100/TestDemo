@@ -25,7 +25,7 @@ enum class ProductType(
         oldSuffix = "",
         newSuffix = "CG0",
         productName = "自组网报警网关",
-        productToken = "",
+        productToken = "MD-GW100",
         description = ""
     ),
 
@@ -34,17 +34,17 @@ enum class ProductType(
         prefix = "",
         oldSuffix = "",
         newSuffix = "CR1",
-        productName = "智能采集器",
+        productName = "智能遥测终端机",
         productToken = "MR701",
-        description = "对应MR-701"
+        description = "RTU"
     ),
     COLLECTOR_R_2(
         prefix = "",
         oldSuffix = "",
         newSuffix = "CR2",
-        productName = "智能采集器",
+        productName = "智能遥测终端机",
         productToken = "MR702",
-        description = "对应MR-702"
+        description = "RTU"
     ),
     COLLECTOR_R_3(
         prefix = "",
@@ -52,7 +52,7 @@ enum class ProductType(
         newSuffix = "CR3",
         productName = "遥测终端倾斜仪",
         productToken = "MR501",
-        description = "对应MR501,暂时对应M20"
+        description = "暂时对应M20"
     ),
 
     //GNSS产品线 E(分体机)
@@ -60,25 +60,25 @@ enum class ProductType(
         prefix = "",
         oldSuffix = "",
         newSuffix = "GE1",
-        productName = "测地形GNSS接收机",
+        productName = "测地型GNSS接收机",
         productToken = "E40",
-        description = "对应E40"
+        description = "分体机"
     ),
     GNSS_E_2(
         prefix = "",
         oldSuffix = "",
         newSuffix = "GE2",
-        productName = "测地形GNSS接收机",
+        productName = "测地型GNSS接收机",
         productToken = "E40S",
-        description = "对应E40S"
+        description = "分体机"
     ),
     GNSS_E_3(
         prefix = "",
         oldSuffix = "",
         newSuffix = "GE3",
-        productName = "测地形GNSS接收机",
+        productName = "GNSS基准站接收机",
         productToken = "E50Pro",
-        description = "基站接收机,应E50 Pro"
+        description = "分体机，基站接收机"
     ),
 
     //GNSS产品线 M(一体机)
@@ -86,17 +86,17 @@ enum class ProductType(
         prefix = "",
         oldSuffix = "",
         newSuffix = "GM1",
-        productName = "测地形GNSS接收机",
+        productName = "普适型GNSS接收机",
         productToken = "M20(单北斗)",
-        description = "单北斗,对应UM960版本"
+        description = "单北斗，对应UM960版本"
     ),
     GNSS_M_2(
         prefix = "",
         oldSuffix = "",
         newSuffix = "GM2",
-        productName = "测地形GNSS接收机",
+        productName = "普适型GNSS接收机",
         productToken = "M20(全星座)",
-        description = "全星座,对应UM960D版本"
+        description = "全星座，对应UM960D版本"
     ),
     GNSS_M_5(
         prefix = "",
@@ -113,7 +113,7 @@ enum class ProductType(
         prefix = "",
         oldSuffix = "",
         newSuffix = "GT1",
-        productName = "测地形GNSS接收机",
+        productName = "测地型GNSS接收机",
         productToken = "GT600",
         description = "对应当前GT600"
     ),
@@ -124,16 +124,16 @@ enum class ProductType(
         oldSuffix = "",
         newSuffix = "MA1",
         productName = "基坑自动测斜仪",
-        productToken = "",
-        description = "AC50,基坑自动测斜仪"
+        productToken = "AC50",
+        description = "基坑自动测斜仪"
     ),
     M_A_2(
         prefix = "",
         oldSuffix = "",
         newSuffix = "MA2",
         productName = "水电站深层测斜仪",
-        productToken = "",
-        description = "BC10,水电站深层测斜仪"
+        productToken = "BC10",
+        description = "水电站深层测斜仪"
     ),
 
     //SINGLE(单传感器产品线) A(倾角计)
@@ -159,7 +159,7 @@ enum class ProductType(
         newSuffix = "SA3",
         productName = "倾角计",
         productToken = "",
-        description = "三轴,对应MD-QJ390P"
+        description = "三轴，对应MD-QJ390P"
     ),
 
     //SINGLE(单传感器产品线)  V(VMS)
@@ -168,7 +168,7 @@ enum class ProductType(
         oldSuffix = "",
         newSuffix = "SV1",
         productName = "振弦式采集仪",
-        productToken = "",
+        productToken = "VMS",
         description = ""
     ),
 
@@ -203,8 +203,8 @@ enum class ProductType(
         prefix = "",
         oldSuffix = "",
         newSuffix = "UL1",
-        productName = "裂缝计",
-        productToken = "",
+        productName = "一体化裂缝计",
+        productToken = "BHY3S-LF",
         description = ""
     ),
 
@@ -213,9 +213,9 @@ enum class ProductType(
         prefix = "",
         oldSuffix = "",
         newSuffix = "UI1",
-        productName = "倾斜仪",
-        productToken = "",
-        description = "三轴,对应BHY-3S"
+        productName = "一体化倾斜仪",
+        productToken = "BHY3S-QJ",
+        description = "三轴，对应BHY-3S"
     ),
 
     //INTEGRATION(一体化传感器产品线) R(雨量计)
@@ -223,8 +223,8 @@ enum class ProductType(
         prefix = "",
         oldSuffix = "",
         newSuffix = "UR1",
-        productName = "雨量计",
-        productToken = "",
+        productName = "一体化雨量计",
+        productToken = "BHY3S-YL",
         description = ""
     ),
 
@@ -248,15 +248,15 @@ enum class ProductType(
         prefix = "BHY",
         oldSuffix = "H",
         newSuffix = "",
-        productName = "崩滑仪",
-        productToken = "",
+        productName = "倾斜震动监测仪",
+        productToken = "BHY-3S",
         description = ""
     ),
     DAS(
         prefix = "DAS",
         oldSuffix = "L",
         newSuffix = "",
-        productName = "智能采集器",
+        productName = "数字式物联网采集器",
         productToken = "",
         description = ""
     ),
@@ -264,49 +264,24 @@ enum class ProductType(
         prefix = "LR200",
         oldSuffix = "Z",
         newSuffix = "Z",
-        productName = "米度一体式裂缝计",
-        productToken = "",
-        description = ""
-    ),
-    M20(
-        prefix = "M20",
-        oldSuffix = "V",
-        newSuffix = "",
-        productName = "M20-GNSS",
-        productToken = "",
-        description = ""
-    ),
-    MR702(
-        prefix = "MR702",
-        oldSuffix = "A",
-        newSuffix = "",
-        productName = "水利遥测终端机",
-        productToken = "",
-        description = ""
-    ),
-    RN20(
-        prefix = "RN20",
-        oldSuffix = "Y",
-        newSuffix = "",
-        productName = "轴力计",
-        productToken = "",
+        productName = "一体化多参数裂缝计",
+        productToken = "BHY-3-LR200",
         description = ""
     ),
     LB20S(
         prefix = "MD-LB20S",
         oldSuffix = "S",
         newSuffix = "",
-        productName = "无线预警广播",
-        productToken = "",
+        productName = "智能无线预警广播",
+        productToken = "LB20S",
         description = ""
     ),
-
-    INCLINOMETER_DEBUG_BOX(
-        prefix = "INCLINOMETER",
-        oldSuffix = "#",
+    M20(
+        prefix = "M20",
+        oldSuffix = "V",
         newSuffix = "",
-        productName = "蓝牙测斜仪调试盒子",
-        productToken = "",
+        productName = "普适型GNSS接收机",
+        productToken = "M20",
         description = ""
     ),
     TEST_DEVICE(

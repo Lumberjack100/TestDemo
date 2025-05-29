@@ -36,7 +36,6 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.model.AlarmConfigModule
 import com.shmedo.mcloudapp.model.BleConnect
@@ -358,15 +357,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     inner class ClickProxy : BaseClickProxy() {
         override fun onToolbarIvClick() {
             if (bleViewModel.isConnected()) {
-                showMessage(
-                    StringUtils.getString(R.string.disconnect_device_warn),
-                    "温馨提示",
-                    "确定",
-                    {
-                        bleViewModel.disconnect()
-                    },
-                    "取消"
-                )
+                bleViewModel.disconnect()
             } else {
                 bleViewModel.launch(bleDevice!!)
             }

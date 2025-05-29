@@ -144,7 +144,7 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
-            ProductType.COLLECTOR_R_2, ProductType.MR702 -> navController.setGraph(
+            ProductType.COLLECTOR_R_2 -> navController.setGraph(
                 R.navigation.mr702_graph,
                 bundle2
             )

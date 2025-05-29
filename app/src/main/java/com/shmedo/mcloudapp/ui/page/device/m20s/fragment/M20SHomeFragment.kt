@@ -329,15 +329,7 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
     inner class ClickProxy : BaseClickProxy() {
         override fun onToolbarIvClick() {
             if (bleViewModel.isConnected()) {
-                showMessage(
-                    StringUtils.getString(R.string.disconnect_device_warn),
-                    "温馨提示",
-                    "确定",
-                    {
-                        bleViewModel.disconnect()
-                    },
-                    "取消"
-                )
+                bleViewModel.disconnect()
             } else {
                 bleViewModel.launch(bleDevice!!)
             }
