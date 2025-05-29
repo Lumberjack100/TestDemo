@@ -25,7 +25,7 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentURProductSensorParamBinding
+import com.shmedo.mcloudapp.databinding.FragmentUrProductSensorParamBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
@@ -45,7 +45,7 @@ import java.util.Locale
  *
  */
 class URProductSensorParamFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentURProductSensorParamBinding
+    private lateinit var binding: FragmentUrProductSensorParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: URProductSensorParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
@@ -59,7 +59,7 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_u_r_product_sensor_param,
+            R.layout.fragment_ur_product_sensor_param,
             BR.stateVM,
             mStates
         )
@@ -68,7 +68,7 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentURProductSensorParamBinding
+        binding = getBinding() as FragmentUrProductSensorParamBinding
         binding.llToolbar.toolbar.title = "传感配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()

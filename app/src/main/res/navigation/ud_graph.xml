@@ -87,7 +87,7 @@
         android:id="@+id/udProductSensorParamFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDSensorParamFragment"
         android:label="UDProductSensorParamFragment"
-        tools:layout="@layout/fragment_u_d_product_sensor_param" />
+        tools:layout="@layout/fragment_ud_product_sensor_param" />
 
     <fragment
         android:id="@+id/udSerialPortParamFragment"

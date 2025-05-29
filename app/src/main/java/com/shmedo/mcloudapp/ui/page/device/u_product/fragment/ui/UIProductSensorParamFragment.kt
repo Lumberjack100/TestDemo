@@ -17,7 +17,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentUIProductSensorParamBinding
+import com.shmedo.mcloudapp.databinding.FragmentUiProductSensorParamBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -34,7 +34,7 @@ import org.koin.android.ext.android.inject
  *
  */
 class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentUIProductSensorParamBinding
+    private lateinit var binding: FragmentUiProductSensorParamBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: UIProductSensorParamViewModel
     private val iotParseManager: IOTParserManager by inject()
@@ -51,7 +51,7 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_u_i_product_sensor_param,
+            R.layout.fragment_ui_product_sensor_param,
             BR.stateVM,
             mStates
         )
@@ -60,7 +60,7 @@ class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentUIProductSensorParamBinding
+        binding = getBinding() as FragmentUiProductSensorParamBinding
         binding.llToolbar.toolbar.title = "传感配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)

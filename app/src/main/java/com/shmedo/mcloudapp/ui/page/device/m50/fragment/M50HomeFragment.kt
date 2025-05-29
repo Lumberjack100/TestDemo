@@ -85,7 +85,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
     private val iotParseManager: IOTParserManager by inject()
 
-    private var onlineStatus: Boolean = false//在线状态
+    private var lastOnlineStatus: Boolean = false//在线状态
     private var deviceStatusCheckJob: Job? = null
 
 
@@ -478,7 +478,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun onNetPlatformReady() {
-        onlineStatus = deviceInfo.onlineStatus
+        lastOnlineStatus = deviceInfo.onlineStatus
         if (deviceInfo.onlineStatus) {
             mHeadStates.iotPlatformStateText.set("米度平台在线")
             queryStatusInfo()
@@ -821,7 +821,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                         addDeviceLogItem(Log.ERROR, error.errorMsg)
                     }?.let { deviceDetailInfo ->
                         // 如果设备在线状态发生变化，更新UI
-                        if (deviceDetailInfo.deviceInfo.onlineStatus != onlineStatus) {
+                        if (deviceDetailInfo.deviceInfo.onlineStatus != lastOnlineStatus) {
                             onNetPlatformReady()
                         }
                     }

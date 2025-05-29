@@ -37,7 +37,6 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
-import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.model.AlarmConfigModule
@@ -90,6 +89,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
     private val iotParseManager: IOTParserManager by inject()
 
+    private var lastOnlineStatus: Boolean = false//在线状态
     private var deviceStatusCheckJob: Job? = null
     private var abnormalInfoJob: Job? = null
     private var queryMeasureResultTimeoutJob: Job? = null
@@ -527,6 +527,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun onNetPlatformReady() {
+        lastOnlineStatus = deviceInfo.onlineStatus
         if (deviceInfo.onlineStatus) {
             mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
             mHeadStates.iotPlatformStateText.set("米度平台在线")
@@ -1026,7 +1027,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     }?.let { deviceDetailInfo ->
                         deviceInfo = deviceDetailInfo.deviceInfo
                         // 如果设备在线状态发生变化，更新UI
-                        if (deviceInfo.onlineStatus != mHeadStates.isConnected.get()) {
+                        if (deviceInfo.onlineStatus != lastOnlineStatus) {
                             onNetPlatformReady()
                         }
                     }

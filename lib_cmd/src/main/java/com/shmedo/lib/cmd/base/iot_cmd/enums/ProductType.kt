@@ -213,7 +213,7 @@ enum class ProductType(
         prefix = "",
         oldSuffix = "",
         newSuffix = "UI1",
-        productName = "一体化倾斜仪",
+        productName = "一体化倾斜震动监测仪",
         productToken = "BHY3S-QJ",
         description = "三轴，对应BHY-3S"
     ),
@@ -248,7 +248,7 @@ enum class ProductType(
         prefix = "BHY",
         oldSuffix = "H",
         newSuffix = "",
-        productName = "倾斜震动监测仪",
+        productName = "一体化倾斜震动监测仪",
         productToken = "BHY-3S",
         description = ""
     ),
@@ -264,7 +264,7 @@ enum class ProductType(
         prefix = "LR200",
         oldSuffix = "Z",
         newSuffix = "Z",
-        productName = "一体化多参数裂缝计",
+        productName = "一体化裂缝计",
         productToken = "BHY-3-LR200",
         description = ""
     ),

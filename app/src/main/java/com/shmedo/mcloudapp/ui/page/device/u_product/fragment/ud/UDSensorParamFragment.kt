@@ -27,7 +27,7 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentUDProductSensorParamBinding
+import com.shmedo.mcloudapp.databinding.FragmentUdProductSensorParamBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -52,7 +52,7 @@ import timber.log.Timber
  *
  */
 class UDSensorParamFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentUDProductSensorParamBinding
+    private lateinit var binding: FragmentUdProductSensorParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: UDSensorParamViewModel by activityViewModels()
     private val iotParseManager: IOTParserManager by inject()
@@ -74,7 +74,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_u_d_product_sensor_param,
+            R.layout.fragment_ud_product_sensor_param,
             BR.stateVM,
             mStates
         )
@@ -83,7 +83,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentUDProductSensorParamBinding
+        binding = getBinding() as FragmentUdProductSensorParamBinding
         toolbarViewModel.toolbarTitleText.set("传感配置")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
