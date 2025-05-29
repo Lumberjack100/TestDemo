@@ -19,11 +19,11 @@ import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702BaseIn
 import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702ModuleStatusInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702PortStatusInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702RunningStatusInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.LR200BaseInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.LR200SensorInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UIProductSensorInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UProductBaseInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.URProductSensorInfoFragment
+import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200BaseInfoFragment
+import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200SensorInfoFragment
+import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ui.UIProductSensorInfoFragment
+import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.UProductBaseInfoFragment
+import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ur.URProductSensorInfoFragment
 
 /**
  * 创建者：gonghe

@@ -1,15 +1,20 @@
-package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul
 
 import com.drake.brv.utils.models
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoFragment
-import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import timber.log.Timber
-
+/**
+ * @author：gonghe
+ * @time: 2025/5/29
+ * @desc: 一体式裂缝计传感器信息
+ *
+ */
 class LR200SensorInfoFragment : BaseDeviceStatusInfoFragment() {
 
     override fun initStatusInfo(content: String) {
@@ -79,7 +84,7 @@ class LR200SensorInfoFragment : BaseDeviceStatusInfoFragment() {
 
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
             }
         }
     }

@@ -33,7 +33,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/8/22
- * @desc: 一体化雷达泥位计移动网络参数
+ * @desc: 一体化雷达水位/泥位计移动网络参数
  *
  */
 class UDMobileNetworkParamFragment : BaseIOTDeviceFragment() {

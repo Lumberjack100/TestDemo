@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
 import android.os.Bundle
 import android.util.Log
@@ -24,7 +24,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/4/26
- * @desc: 一体化雷达泥位计电池、传感器等信息
+ * @desc: 一体化雷达水位/泥位计电池、传感器等信息
  *
  */
 class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
@@ -60,7 +60,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "外部电压",
-                    value = if (externalVoltage == 0.0) "0" else stateInfo.externalVoltage.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                    value = if (externalVoltage == 0.0) "0" else stateInfo.externalVoltage.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
                     unit = "V",
                     textColorRes = if ((externalVoltage >= 9 && externalVoltage < 28) || externalVoltage == Double.MAX_VALUE) 0 else ColorUtils.getColor(
                         R.color.warn_FF9D00
@@ -75,7 +75,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "1" -> "充电中"
                         "2" -> "空闲"
                         "-1" -> "异常"
-                        else -> AppContants.PLACE_HOLDER_VALUE
+                        else -> AppContants.Companion.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.batteryStatus == "-1") ColorUtils.getColor(
                         R.color.error_FF4400
@@ -86,7 +86,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "电池电压",
-                    value = if (batteryVoltage == 0.0) "0" else stateInfo.batteryVoltage.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                    value = if (batteryVoltage == 0.0) "0" else stateInfo.batteryVoltage.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
                     unit = "V",
                 )
 
@@ -94,7 +94,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "电池电量",
-                    value = stateInfo.batteryCapacity.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                    value = stateInfo.batteryCapacity.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
                     unit = "%",
                     textColorRes = if (batteryCapacity > 25) 0 else ColorUtils.getColor(
                         R.color.warn_FF9D00
@@ -105,7 +105,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "电池温度",
-                    value = stateInfo.batteryTemp.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                    value = stateInfo.batteryTemp.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
                     textColorRes = if ((batteryTemp > -20 && batteryTemp < 80) || batteryTemp == Double.MAX_VALUE) 0 else ColorUtils.getColor(
                         R.color.warn_FF9D00
                     ),
@@ -116,7 +116,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "最大容量",
-                    value = stateInfo.batteryHealth.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                    value = stateInfo.batteryHealth.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
                     textColorRes = if (batteryHealth > 70) 0 else ColorUtils.getColor(
                         R.color.warn_FF9D00
                     ),
@@ -130,7 +130,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "内部温度",
-                    value = stateInfo.internalTemp.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                    value = stateInfo.internalTemp.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
                     textColorRes = if ((internalTemp > -20 && internalTemp < 70) || internalTemp == Double.MAX_VALUE) 0 else ColorUtils.getColor(
                         R.color.warn_FF9D00
                     ),
@@ -139,7 +139,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "内部湿度",
-                    value = stateInfo.internalHumidity.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                    value = stateInfo.internalHumidity.ifEmpty { AppContants.Companion.PLACE_HOLDER_VALUE },
                     unit = "%",
                     isBottomItem = true
                 )
@@ -157,7 +157,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "正常"
                         "-2" -> "数据异常"
                         "-3" -> "模块故障"
-                        else -> AppContants.PLACE_HOLDER_VALUE
+                        else -> AppContants.Companion.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.ldStatus == "-2" || stateInfo.ldStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
@@ -171,7 +171,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "正常"
                         "-2" -> "数据异常"
                         "-3" -> "模块故障"
-                        else -> AppContants.PLACE_HOLDER_VALUE
+                        else -> AppContants.Companion.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.cameraStatus == "-2" || stateInfo.cameraStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
@@ -185,7 +185,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "正常"
                         "-2" -> "数据异常"
                         "-3" -> "模块故障"
-                        else -> AppContants.PLACE_HOLDER_VALUE
+                        else -> AppContants.Companion.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.gnssStatus == "-2" || stateInfo.gnssStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
@@ -199,7 +199,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "正常"
                         "-2" -> "数据异常"
                         "-3" -> "模块故障"
-                        else -> AppContants.PLACE_HOLDER_VALUE
+                        else -> AppContants.Companion.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.accelerometerStatus == "-2" || stateInfo.accelerometerStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
@@ -213,7 +213,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "正常"
                         "-2" -> "数据异常"
                         "-3" -> "模块故障"
-                        else -> AppContants.PLACE_HOLDER_VALUE
+                        else -> AppContants.Companion.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo._4gStatus == "-2" || stateInfo._4gStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
@@ -227,7 +227,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "正常"
                         "-2" -> "数据异常"
                         "-3" -> "模块故障"
-                        else -> AppContants.PLACE_HOLDER_VALUE
+                        else -> AppContants.Companion.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.btStatus == "-2" || stateInfo.btStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
@@ -241,7 +241,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "正常"
                         "-2" -> "数据异常"
                         "-3" -> "模块故障"
-                        else -> AppContants.PLACE_HOLDER_VALUE
+                        else -> AppContants.Companion.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.radioStatus == "-2" || stateInfo.radioStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
@@ -255,7 +255,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "正常"
                         "-2" -> "数据异常"
                         "-3" -> "模块故障"
-                        else -> AppContants.PLACE_HOLDER_VALUE
+                        else -> AppContants.Companion.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.flashStatus == "-2" || stateInfo.flashStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
@@ -269,7 +269,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "0" -> "正常"
                         "-2" -> "数据异常"
                         "-3" -> "模块故障"
-                        else -> AppContants.PLACE_HOLDER_VALUE
+                        else -> AppContants.Companion.PLACE_HOLDER_VALUE
                     },
                     textColorRes = if (stateInfo.athStatus == "-2" || stateInfo.athStatus == "-3") ColorUtils.getColor(
                         R.color.error_FF4400
@@ -280,7 +280,7 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 binding.recyclerview.models = groupList
 
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }

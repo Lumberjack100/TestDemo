@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment
 
 import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
@@ -135,7 +135,7 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoFragment() {
 
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }

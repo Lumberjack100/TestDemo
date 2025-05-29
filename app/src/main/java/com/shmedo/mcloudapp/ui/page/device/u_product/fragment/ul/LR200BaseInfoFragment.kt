@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul
 
 import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
@@ -14,7 +14,12 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoSignalItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoFragment
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import timber.log.Timber
-
+/**
+ * @author：gonghe
+ * @time: 2025/5/29
+ * @desc: 一体化裂缝计基本信息
+ *
+ */
 class LR200BaseInfoFragment : BaseDeviceStatusInfoFragment() {
 
     override fun initStatusInfo(content: String) {
@@ -137,7 +142,7 @@ class LR200BaseInfoFragment : BaseDeviceStatusInfoFragment() {
 
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }

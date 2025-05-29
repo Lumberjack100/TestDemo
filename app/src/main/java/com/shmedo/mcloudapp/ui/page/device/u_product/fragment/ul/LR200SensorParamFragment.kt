@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.u_product.fragment
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul
 
 import android.os.Bundle
 import android.view.View
@@ -105,7 +105,7 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            val bundle = BaseIOTDeviceFragment.newBundleArguments(
+            val bundle = newBundleArguments(
                 productType,
                 communicateWay,
                 deviceInfo,

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ui
 
 import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
@@ -27,7 +27,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/4/26
- * @desc: 倾斜仪传感器状态
+ * @desc: 一体化倾斜仪传感器状态
  *
  */
 class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
@@ -85,7 +85,7 @@ class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
 
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
@@ -246,7 +246,7 @@ class UIProductSensorInfoFragment : BaseDeviceStatusInfoFragment() {
                 binding.recyclerview.mutable.addAll(groupList)
                 binding.recyclerview.bindingAdapter.notifyDataSetChanged()
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }

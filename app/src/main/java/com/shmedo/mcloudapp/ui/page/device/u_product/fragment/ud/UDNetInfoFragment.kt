@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
 import android.os.Bundle
 import android.util.Log
@@ -29,7 +29,7 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/8/29
- * 描述： 一体化雷达泥位计网络信息
+ * 描述： 一体化雷达水位/泥位计网络信息
  */
 class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
@@ -84,7 +84,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         "CMCC" -> "中国移动"
                         "CU" -> "中国联通"
                         "CT" -> "中国电信"
-                        else -> AppContants.PLACE_HOLDER_VALUE
+                        else -> AppContants.Companion.PLACE_HOLDER_VALUE
                     }
                 )
                 stateInfo.csq.notNullKey {
@@ -173,7 +173,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
                 binding.recyclerview.models = groupList
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }

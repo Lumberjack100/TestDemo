@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
 import android.os.Bundle
 import android.util.Log
@@ -12,7 +12,6 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
-import com.shmedo.mcloudapp.extensions.notNull
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoTextSwitcherItem
@@ -30,7 +29,7 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/8/28
- * 描述： 一体化雷达泥位计基本信息
+ * 描述： 一体化雷达水位/泥位计基本信息
  */
 class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     private var abnormalInfoJob: Job? = null
@@ -183,7 +182,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 binding.recyclerview.models = groupList
 
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
@@ -197,7 +196,7 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
             val errorInfoList = UDDeviceStatusProcessor.processAbnormalInfo(deviceError, deviceWarn)
             handleAbnormalInfo(errorInfoList)
         } catch (e: Exception) {
-            Timber.e(e)
+            Timber.Forest.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.u_product.fragment
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ur
 
 import android.os.Bundle
 import android.util.Log
@@ -303,7 +303,7 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
 
     private fun initParamData(ioSensorInfo: DasIOSensorInfo) {
         try {
-            when (IOTRainStation.value(ioSensorInfo.type)) {
+            when (IOTRainStation.Companion.value(ioSensorInfo.type)) {
                 IOTRainStation.RAIN_OPEN -> {//1：雨量站模式
                     ioSensorInfo.value.toDoubleOrNull()?.let { value ->
                         mStates.rainResolution.set(decimalFormat.format(value))
@@ -318,7 +318,7 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
             // 保存初始状态，用于后续修改检测
             mStates.saveInitialState()
         } catch (e: Exception) {
-            Timber.e(e)
+            Timber.Forest.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
