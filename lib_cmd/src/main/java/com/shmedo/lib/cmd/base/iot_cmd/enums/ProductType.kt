@@ -35,7 +35,7 @@ enum class ProductType(
         oldSuffix = "",
         newSuffix = "CR1",
         productName = "智能采集器",
-        productToken = "",
+        productToken = "MR701",
         description = "对应MR-701"
     ),
     COLLECTOR_R_2(
@@ -43,7 +43,7 @@ enum class ProductType(
         oldSuffix = "",
         newSuffix = "CR2",
         productName = "智能采集器",
-        productToken = "",
+        productToken = "MR702",
         description = "对应MR-702"
     ),
     COLLECTOR_R_3(
@@ -61,7 +61,7 @@ enum class ProductType(
         oldSuffix = "",
         newSuffix = "GE1",
         productName = "测地形GNSS接收机",
-        productToken = "",
+        productToken = "E40",
         description = "对应E40"
     ),
     GNSS_E_2(
@@ -69,7 +69,7 @@ enum class ProductType(
         oldSuffix = "",
         newSuffix = "GE2",
         productName = "测地形GNSS接收机",
-        productToken = "",
+        productToken = "E40S",
         description = "对应E40S"
     ),
     GNSS_E_3(
@@ -77,7 +77,7 @@ enum class ProductType(
         oldSuffix = "",
         newSuffix = "GE3",
         productName = "测地形GNSS接收机",
-        productToken = "",
+        productToken = "E50Pro",
         description = "基站接收机,应E50 Pro"
     ),
 
@@ -87,7 +87,7 @@ enum class ProductType(
         oldSuffix = "",
         newSuffix = "GM1",
         productName = "测地形GNSS接收机",
-        productToken = "",
+        productToken = "M20(单北斗)",
         description = "单北斗,对应UM960版本"
     ),
     GNSS_M_2(
@@ -95,7 +95,7 @@ enum class ProductType(
         oldSuffix = "",
         newSuffix = "GM2",
         productName = "测地形GNSS接收机",
-        productToken = "",
+        productToken = "M20(全星座)",
         description = "全星座,对应UM960D版本"
     ),
     GNSS_M_5(
@@ -114,7 +114,7 @@ enum class ProductType(
         oldSuffix = "",
         newSuffix = "GT1",
         productName = "测地形GNSS接收机",
-        productToken = "",
+        productToken = "GT600",
         description = "对应当前GT600"
     ),
 

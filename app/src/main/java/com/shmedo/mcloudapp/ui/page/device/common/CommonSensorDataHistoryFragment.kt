@@ -24,7 +24,7 @@ import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentUdSensorDataHistoryBinding
+import com.shmedo.mcloudapp.databinding.FragmentCommonSensorDataHistoryBinding
 import com.shmedo.mcloudapp.databinding.ItemUdSensorDataBinding
 import com.shmedo.mcloudapp.databinding.ItemUdSensorDataHeaderBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
@@ -35,16 +35,16 @@ import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.CapturedPictureViewFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.CapturedPictureViewViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.CommonSensorDataHistoryViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.UDSensorDataHistoryViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class UDSensorDataHistoryFragment : BaseFragment() {
-    private lateinit var binding: FragmentUdSensorDataHistoryBinding
+class CommonSensorDataHistoryFragment : BaseFragment() {
+    private lateinit var binding: FragmentCommonSensorDataHistoryBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: UDSensorDataHistoryViewModel by viewModels()
+    private val mStates: CommonSensorDataHistoryViewModel by viewModels()
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
     private val capturedPictureViewViewModel: CapturedPictureViewViewModel by activityViewModels()
 
@@ -70,13 +70,13 @@ class UDSensorDataHistoryFragment : BaseFragment() {
     override fun initViewModel() {}
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_ud_sensor_data_history, BR.stateVM, mStates)
+        return DataBindingConfig(R.layout.fragment_common_sensor_data_history, BR.stateVM, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentUdSensorDataHistoryBinding
+        binding = getBinding() as FragmentCommonSensorDataHistoryBinding
         toolbarViewModel.toolbarTitleText.set("历史数据")
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             nav().navigateUp()
@@ -175,12 +175,13 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                     if (it is Map<*, *>) {
                         val filePath = it["filePath"] as String
                         val shortFileName = it["fileName"] as String
-                        capturedPictureViewViewModel.mData.add(LocalMedia.generateHttpAsLocalMedia(
-                            filePath
-                        )
-                            .apply {
-                                fileName = shortFileName
-                            })
+                        capturedPictureViewViewModel.mData.add(
+                            LocalMedia.generateHttpAsLocalMedia(
+                                filePath
+                            )
+                                .apply {
+                                    fileName = shortFileName
+                                })
                     }
                 }
             }
@@ -227,6 +228,33 @@ class UDSensorDataHistoryFragment : BaseFragment() {
                     arrayListOf(
                         "liquid_surface_alt",
                         "ullage",
+                        "z"
+                    )
+                )
+            }
+
+            ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {
+                modelNameList.addAll(
+                    arrayListOf(
+                        "合位移量",
+                        "安装角度"
+                    )
+                )
+                modelTokenList.addAll(
+                    arrayListOf(
+                        "904",
+                        "103"
+                    )
+                )
+                modelValueDescList.addAll(
+                    arrayListOf(
+                        "高度(mm)",
+                        "角度(°)"
+                    )
+                )
+                modelFieldJsonPathList.addAll(
+                    arrayListOf(
+                        "liquid_surface_alt",
                         "z"
                     )
                 )

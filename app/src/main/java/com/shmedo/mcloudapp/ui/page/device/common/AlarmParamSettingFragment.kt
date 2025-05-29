@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.common
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -26,7 +27,6 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAlarmParamSettingBinding
 import com.shmedo.mcloudapp.extensions.formatDoubleValue
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
@@ -39,16 +39,14 @@ import timber.log.Timber
 
 class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentAlarmParamSettingBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: AlarmParamSettingViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: AlarmParamSettingViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val monitorPointList: List<String> = (1..10).map { it.toString() }
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -65,12 +63,20 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentAlarmParamSettingBinding
         binding.llToolbar.toolbar.title = "报警参数配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         initRefresh()
+    }
+
+    override fun initData() {
+        super.initData()
+        initTitles()
+        resetDefaultParams()
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
     }
 
     private fun initRefresh() {
@@ -85,18 +91,12 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun initData() {
-        super.initData()
-        initTitles()
-        resetDefaultParams()
-    }
-
     private fun initTitles() {
         when (productType) {
             ProductType.GNSS_M_1,//M20S
             ProductType.GNSS_M_2,
             ProductType.U_R_1 //一体化雨量计
-            -> {
+                -> {
                 mStates.firstAlarmThresholdTitle.set("一级报警阈值（毫米）")
                 mStates.secondAlarmThresholdTitle.set("二级报警阈值（毫米）")
                 mStates.thirdAlarmThresholdTitle.set("三级报警阈值（毫米）")
@@ -127,24 +127,10 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
     private fun resetDefaultParams() {
         //监测点编号 [1~15] 默认01
         mStates.monitorPoint.set("1")
+
         //播报次数 [0~255] 其中0表示关闭当前报警，255表示一直报警，默认03
         mStates.broadcastTimes.set("3")
-        //一级报警语音编号  [1~255] 默认 4
-        mStates.firstAlarmVoice.set("4")
-        //二级报警语音编号  [1~255] 默认 3
-        mStates.secondAlarmVoice.set("3")
-        //三级报警语音编号  [1~255] 默认 2
-        mStates.thirdAlarmVoice.set("2")
-        //四级报警语音编号  [1~255] 默认 1
 
-        //一级报警阈值 默认40
-        mStates.firstAlarmThreshold.set("40")
-        //二级报警阈值 默认20
-        mStates.secondAlarmThreshold.set("20")
-        //三级报警阈值 默认10
-        mStates.thirdAlarmThreshold.set("10")
-        //四级报警阈值 默认5
-        mStates.fourthAlarmThreshold.set("5")
 
         //一级报警上报间隔 默认60,单位s
         mStates.firstAlarmReportInterval.set("60")
@@ -154,6 +140,49 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         mStates.thirdAlarmReportInterval.set("1800")
         //四级报警上报间隔 默认3600,单位s
         mStates.fourthAlarmReportInterval.set("3600")
+
+        when (productType) {
+            ProductType.LR200 //一体化雨量计
+                -> {
+                //一级报警语音编号  [1~255] 默认 4
+                mStates.firstAlarmVoice.set("84")
+                //二级报警语音编号  [1~255] 默认 3
+                mStates.secondAlarmVoice.set("83")
+                //三级报警语音编号  [1~255] 默认 2
+                mStates.thirdAlarmVoice.set("82")
+                //四级报警语音编号  [1~255] 默认 1
+                mStates.fourthAlarmVoice.set("81")
+
+                //一级报警阈值
+                mStates.firstAlarmThreshold.set("80")
+                //二级报警阈值
+                mStates.secondAlarmThreshold.set("60")
+                //三级报警阈值
+                mStates.thirdAlarmThreshold.set("40")
+                //四级报警阈值
+                mStates.fourthAlarmThreshold.set("20")
+            }
+
+            else -> {
+                //一级报警语音编号  [1~255] 默认 4
+                mStates.firstAlarmVoice.set("4")
+                //二级报警语音编号  [1~255] 默认 3
+                mStates.secondAlarmVoice.set("3")
+                //三级报警语音编号  [1~255] 默认 2
+                mStates.thirdAlarmVoice.set("2")
+                //四级报警语音编号  [1~255] 默认 1
+                mStates.fourthAlarmVoice.set("1")
+
+                //一级报警阈值
+                mStates.firstAlarmThreshold.set("40")
+                //二级报警阈值
+                mStates.secondAlarmThreshold.set("20")
+                //三级报警阈值
+                mStates.thirdAlarmThreshold.set("10")
+                //四级报警阈值
+                mStates.fourthAlarmThreshold.set("5")
+            }
+        }
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -435,6 +464,59 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = "设备未响应"
+        )
+    }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL -> {
@@ -510,7 +592,7 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -526,7 +608,7 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -542,7 +624,7 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -563,6 +645,9 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
             mStates.secondAlarmVoice.set(info.level2)
             mStates.thirdAlarmVoice.set(info.level3)
             mStates.fourthAlarmVoice.set(info.level4)
+
+            //添加这行来保存初始状态
+            mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -583,6 +668,9 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
             mStates.thirdAlarmThreshold.set(info.level3.formatDoubleValue("", 3))
             mStates.fourthAlarmThreshold.set(info.level4.formatDoubleValue("", 3))
         }
+
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
     }
 
     /**
@@ -593,6 +681,17 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         mStates.secondAlarmReportInterval.set(info.level2)
         mStates.thirdAlarmReportInterval.set(info.level3)
         mStates.fourthAlarmReportInterval.set(info.level4)
+
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
+    }
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
     }
 
     override fun onResume() {

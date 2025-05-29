@@ -37,17 +37,20 @@
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                android:paddingTop="@dimen/page_content_container_padding_top_12"
+                android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
                 <RelativeLayout
                     style="@style/SwitchButton_Item_Layout_Style"
-                    android:layout_marginTop="@dimen/dimen_size_1"
-                    android:background="@drawable/layer_common_click_item_with_divider">
+                    android:background="@drawable/shape_common_click_item_top_corner_4">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/SwitchButton_Item_Title_Style"
@@ -65,94 +68,99 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
-                    android:layout_height="40dp"
-                    android:background="@color/transparent"
-                    android:onClick="@{()->click.onGoToParamSettingClick()}">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="参数配置"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_16"
-                        android:textStyle="bold" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_arrow_right" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:background="@color/white" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_GroupItem_Title_Style"
-                    android:text="报警测试" />
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_Layout_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
+                    onClickWithDebouncing="@{()->click.onGoToParamSettingClick()}"
+                    android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
+                        android:text="参数配置" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Value_Style"
+                        tools:text="" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_Layout_Style"
+                    android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                    android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="14dp"
+                        android:background="@color/black" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_GroupItem_Title_Style2"
+                        android:layout_marginStart="@dimen/dimen_size_8"
+                        android:text="报警测试" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_Layout_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="0dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/TestButton_Style"
                         enabledTextColor="@{@color/colorPrimary}"
                         onClickWithDebouncing="@{()->click.onTestFirstAlarmClick()}"
                         textViewEnabled="@{stateVM.isOpened}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dimen_size_30"
                         android:text="一级报警测试"
-                        android:textStyle="bold"
-                        tools:textColor="@color/colorPrimary" />
+                        android:textStyle="bold" />
 
                     <View
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_Title_Style"
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/TestButton_Style"
                         enabledTextColor="@{@color/colorPrimary}"
                         onClickWithDebouncing="@{()->click.onTestSecondAlarmClick()}"
                         textViewEnabled="@{stateVM.isOpened}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dimen_size_30"
                         android:text="二级报警测试"
-                        android:textStyle="bold"
-                        tools:textColor="@color/colorPrimary" />
+                        android:textStyle="bold" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_Layout_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
+                    android:background="@drawable/shape_common_click_item_bottom_corner_4"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="0dp">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_Title_Style"
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/TestButton_Style"
                         enabledTextColor="@{@color/colorPrimary}"
                         onClickWithDebouncing="@{()->click.onTestThirdAlarmClick()}"
                         textViewEnabled="@{stateVM.isOpened}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dimen_size_30"
                         android:text="三级报警测试"
-                        android:textStyle="bold"
-                        tools:textColor="@color/colorPrimary" />
+                        android:textStyle="bold" />
 
                     <View
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_Title_Style"
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/TestButton_Style"
                         enabledTextColor="@{@color/colorPrimary}"
                         onClickWithDebouncing="@{()->click.onTestFourthAlarmClick()}"
                         textViewEnabled="@{stateVM.isOpened}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/dimen_size_30"
                         android:text="四级报警测试"
-                        android:textStyle="bold"
-                        tools:textColor="@color/colorPrimary" />
-
+                        android:textStyle="bold" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
-
             </androidx.appcompat.widget.LinearLayoutCompat>
         </com.drake.brv.PageRefreshLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>

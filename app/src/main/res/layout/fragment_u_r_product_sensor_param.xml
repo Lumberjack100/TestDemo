@@ -37,7 +37,7 @@
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_reset"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <androidx.core.widget.NestedScrollView
@@ -47,26 +47,23 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/dimen_size_25">
+                    android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                    android:paddingTop="@dimen/page_content_container_padding_top_12"
+                    android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onChooseResolutionClick()}"
-                        android:layout_marginTop="@dimen/dimen_size_1"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:background="@drawable/layer_common_click_item_top_corner_4_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="雨量分辨率（毫米）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.rainResolution}"
                             tools:text="0.1" />
@@ -74,47 +71,36 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider">
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp">
 
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            enabledTextColor="@{@color/colorPrimary}"
-                            onClickWithDebouncing="@{()->click.onRainValueClearClick()}"
-                            textViewEnabled="@{stateVM.isEditable }"
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/TestButton_Style"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{()->click.onRainValueClearClick()}"
                             android:text="雨量值清零"
-                            android:textStyle="bold"
-                            tools:textColor="@color/colorPrimary" />
+                            android:textStyle="bold" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_reset"
+                        style="@style/ResetButton_Style2"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:onClick="@{()->click.onResetClick()}"
+                        android:text="@string/button_reset_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_confirm"
+                        style="@style/SubmitButton_Style2"
+                        onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                        android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                        android:enabled="@{stateVM.isDataModified}"
+                        android:text="@string/button_save_text" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_reset"
-            style="@style/ResetButton_Style"
-            onClickWithDebouncing="@{()->click.onResetClick()}"
-            visible="@{stateVM.isEditable }"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="35dp"
-            android:text="@string/button_reset_text"
-            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/refreshLayout" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_Style"
-            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-            visible="@{stateVM.isEditable }"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="55dp"
-            android:text="@string/button_save_text"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_reset" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

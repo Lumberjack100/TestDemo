@@ -37,7 +37,7 @@
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_reset"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <androidx.core.widget.NestedScrollView
@@ -47,26 +47,23 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/dimen_size_25">
+                    android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                    android:paddingTop="@dimen/page_content_container_padding_top_12"
+                    android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onChannelChooseClick()}"
-                        android:layout_marginTop="@dimen/dimen_size_1"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:background="@drawable/layer_common_click_item_top_corner_4_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="收发频点" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.channel}"
                             tools:text="410.00MHz" />
@@ -75,18 +72,14 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onTransmitPowerChooseClick()}"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="发射功率" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.transmitPower}"
                             tools:text="5" />
@@ -95,18 +88,14 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onAirSpeedChooseClick()}"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="空中速率" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.airSpeed}"
                             tools:text="5" />
@@ -115,18 +104,14 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onNetworkNumberChooseClick()}"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="网络编号" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.networkNumber}"
                             tools:text="5" />
@@ -135,18 +120,14 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onLocalAddressChooseClick()}"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="本机地址" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.localAddress}"
                             tools:text="5" />
@@ -156,51 +137,36 @@
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onTargetAddressChooseClick()}"
                         visible="@{stateVM.isTargetAddressSupport}"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="目标地址" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.targetAddress}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_reset"
+                        style="@style/ResetButton_Style2"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:onClick="@{()->click.onResetClick()}"
+                        android:text="@string/button_reset_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_confirm"
+                        style="@style/SubmitButton_Style2"
+                        onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                        android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                        android:enabled="@{stateVM.isDataModified}"
+                        android:text="@string/button_save_text" />
+
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_reset"
-            style="@style/ResetButton_Style"
-            onClickWithDebouncing="@{()->click.onResetClick()}"
-            visible="@{stateVM.isEditable }"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="35dp"
-            android:text="@string/button_reset_text"
-            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/refreshLayout" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_Style"
-            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-            visible="@{stateVM.isEditable }"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="55dp"
-            android:text="@string/button_save_text"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_reset" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

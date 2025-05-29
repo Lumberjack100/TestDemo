@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="com.shmedo.core.model.DeviceInfo" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:focusable="true"
+        android:foreground="?android:selectableItemBackground"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dimen_size_10">
+
+            <!-- 顶部区域：设备 SN 号 -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_device_sn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text='@{m.deviceToken==""?m.deviceSn:m.deviceToken}'
+                android:textColor="@{m.onlineStatus?@color/title_text_color_black_90:@color/offline_BABABA}"
+                android:textSize="@dimen/text_size_13"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="2300001G6"
+                tools:textColor="@color/title_text_color" />
+
+            <!-- 固件版本 -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_firmware_version_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_size_8"
+                android:text="固件版本："
+                android:textColor="@{m.onlineStatus?@color/title_text_color_black_90:@color/offline_BABABA}"
+                android:textSize="@dimen/text_size_13"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_device_sn"
+                tools:textColor="@color/title_text_color" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_firmware_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{m.firmwareVersion}"
+                android:textColor="@{m.onlineStatus?@color/title_text_color_black_90:@color/offline_BABABA}"
+                android:textSize="@dimen/text_size_13"
+                app:layout_constraintBaseline_toBaselineOf="@+id/tv_firmware_version_label"
+                app:layout_constraintStart_toEndOf="@+id/tv_firmware_version_label"
+                tools:text="V1.4.3.12"
+                tools:textColor="@color/title_text_color" />
+
+            <!-- 中间区域：设备图像和在线状态 -->
+            <LinearLayout
+                android:id="@+id/layout_device_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_size_10"
+                android:gravity="center_vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_firmware_version_label">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_device_image"
+                    android:layout_width="120dp"
+                    android:layout_height="80dp"
+                    android:scaleType="fitCenter"
+                    tools:src="@drawable/device_logo_niweiji" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_device_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{m.deviceName}"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/text_size_16"
+                    android:textStyle="bold"
+                    tools:text="GT600" />
+
+                <!--                <com.google.android.material.textview.MaterialTextView-->
+                <!--                    android:id="@+id/tv_device_state_flag"-->
+                <!--                    android:layout_width="wrap_content"-->
+                <!--                    android:layout_height="16dp"-->
+                <!--                    android:layout_gravity="center_horizontal"-->
+                <!--                    android:layout_marginTop="@dimen/dimen_size_4"-->
+                <!--                    android:background="@{m.onlineStatus?@drawable/bg_label_online_corner_1dp:@drawable/bg_label_offline_corner_1dp}"-->
+                <!--                    android:gravity="center"-->
+                <!--                    android:paddingStart="8dp"-->
+                <!--                    android:paddingEnd="8dp"-->
+                <!--                    android:text="@{m.onlineStatus?@string/device_online:@string/device_offline}"-->
+                <!--                    android:textColor="@{m.onlineStatus?@color/online_colorPrimary:@color/offline_BABABA}"-->
+                <!--                    android:textSize="@dimen/text_size_10"-->
+                <!--                    tools:background="@drawable/bg_label_online_corner_1dp"-->
+                <!--                    tools:text="（在线）"-->
+                <!--                    tools:textColor="@color/online_colorPrimary" />-->
+
+            </LinearLayout>
+
+            <!-- 右侧区域：设备描述 -->
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_device_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_size_8"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="@{m.productName}"
+                android:textColor="@{m.onlineStatus?@color/title_text_color_black_90:@color/offline_BABABA}"
+                android:textSize="@dimen/text_size_13"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_device_image"
+                tools:text="分体测地型GNSS接收机"
+                tools:textColor="@color/title_text_color"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+</layout>

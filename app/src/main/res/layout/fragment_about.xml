@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="toolbarVM"
             type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
@@ -14,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.userprofile.AboutFragment.ClickProxy" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -35,7 +36,7 @@
             android:id="@+id/ivLogo"
             android:layout_width="70dp"
             android:layout_height="70dp"
-            android:layout_marginTop="@dimen/dimen_size_30"
+            android:layout_marginTop="@dimen/dimen_size_60"
             android:scaleType="centerCrop"
             android:src="@mipmap/logo"
             app:layout_constraintEnd_toEndOf="parent"
@@ -46,27 +47,79 @@
             android:id="@+id/tv_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_10"
+            android:layout_marginTop="@dimen/dimen_size_15"
             android:text="@{vm.appVersion}"
             android:textColor="@color/title_text_color"
-            android:textSize="@dimen/text_size_14"
+            android:textSize="@dimen/text_size_15"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ivLogo"
             tools:text="米易通 v3.2.0" />
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_agreements"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_size_20"
+            app:layout_constraintBottom_toTopOf="@+id/tv_caseNumber"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_user_agreement"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> click.onUserProtocolClick()}"
+                android:text="@string/user_agreement"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/text_size_13"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_divider"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="用户协议" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_divider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="|"
+                android:textColor="@color/title_text_color"
+                android:textSize="@dimen/text_size_15"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_privacy_policy"
+                app:layout_constraintStart_toEndOf="@+id/tv_user_agreement"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_privacy_policy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> click.onPrivacyProtocolClick()}"
+                android:text="@string/privacy_policy"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="@dimen/text_size_13"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_divider"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="隐私协议" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_caseNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_3"
+            android:layout_marginBottom="50dp"
             android:text="@{vm.caseNumber}"
             android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_14"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_version"
-            tools:text="沪 ICP 备 06060176 号-24A" />
+            tools:text="ICP 备案号: 京ICP备20007642号-9A" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

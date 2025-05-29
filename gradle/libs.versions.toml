@@ -66,12 +66,13 @@ tableView = "v0.8.9.4"
 targetSdk = "35"
 testExtJunit = "1.2.1"
 timber = "5.0.1"
-toastUtils = "12.8"
+toaster = "12.8"
 unpeekLivedata = "7.8.0"
 utilcodex = "1.31.1"
 xpopup = "2.10.0"
 xUpdate = "2.1.5"
 xxPermission = "21.3"
+webkit = "1.13.0"
 
 [libraries]
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "activityKtx" }
@@ -139,10 +140,11 @@ subsampling-scale-image-view = { module = "com.davemorrissey.labs:subsampling-sc
 switchbutton-library = { module = "com.kyleduo.switchbutton:library", version.ref = "switchbutton" }
 tableview = { module = "com.github.evrencoskun:TableView", version.ref = "tableView" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
-toastutils = { module = "com.github.getActivity:ToastUtils", version.ref = "toastUtils" }
+toastutils = { module = "com.github.getActivity:Toaster", version.ref = "toaster" }
 utilcodex = { module = "com.blankj:utilcodex", version.ref = "utilcodex" }
 xpopup = { module = "com.github.li-xiaojun:XPopup", version.ref = "xpopup" }
 xuexiangjys-xupdate = { module = "com.github.xuexiangjys:XUpdate", version.ref = "xUpdate" }
+androidx-webkit = { group = "androidx.webkit", name = "webkit", version.ref = "webkit" }
 
 
 [bundles]

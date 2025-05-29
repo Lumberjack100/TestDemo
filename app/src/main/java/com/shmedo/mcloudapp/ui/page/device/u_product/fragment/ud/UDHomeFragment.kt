@@ -58,7 +58,7 @@ import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.model.WorkModeModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
-import com.shmedo.mcloudapp.ui.page.device.common.UDSensorDataHistoryFragment
+import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
@@ -270,7 +270,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                             name = "位置信息",
                             resID = R.drawable.ic_module_location_info,
                             iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_udLocationInfoFragment
+                            navId = R.id.action_global_to_commonLocationInfoFragment
                         )
                     )
                 )
@@ -423,8 +423,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
         fun onGoToSensorDataHistoryClick() {
             nav().safeNavigate(
-                R.id.action_global_to_udMonitorDataHistoryFragment,
-                UDSensorDataHistoryFragment.newBundleArguments(productType, deviceInfo)
+                R.id.action_global_to_commonSensorDataHistoryFragment,
+                CommonSensorDataHistoryFragment.newBundleArguments(productType, deviceInfo)
             )
         }
     }

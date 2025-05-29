@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.m20s.fragment
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -24,7 +25,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentM20sRadioSettingBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
@@ -36,8 +36,8 @@ import timber.log.Timber
 
 class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentM20sRadioSettingBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: M20SRadioSettingViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: M20SRadioSettingViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private var radioChannelList: List<String> = emptyList()
@@ -46,8 +46,6 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -64,10 +62,10 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentM20sRadioSettingBinding
         binding.llToolbar.toolbar.title = "电台配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         initRefresh()
     }
@@ -105,6 +103,9 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
         mStates.isSupportSwitch.set(productType == ProductType.GNSS_M_5)
 
         resetDefaultParams()
+
+        // 保存初始状态
+        mStates.saveInitialState()
     }
 
     private fun resetDefaultParams() {
@@ -302,6 +303,59 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = "设备未响应"
+        )
+    }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_RADIO_CTRL -> {
@@ -335,7 +389,7 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -368,10 +422,20 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
             mStates.transmitPower.set(info.outpwr)
             mStates.airSpeed.set(info.airbaud)
 
+            // 保存初始状态
+            mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
+    }
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
     }
 
     override fun onResume() {

@@ -11,11 +11,11 @@ plugins {
 
 val majorVersion = 5
 val minorVersion = 2
-val patchVersion = 22
+val patchVersion = 23
 
 val testMajorVersion = 5
 val testMinorVersion = 2
-val testPatchVersion = 48
+val testPatchVersion = 49
 
 /**
  * 获取Git库HEAD的SHA1码前5位
@@ -209,10 +209,12 @@ dependencies {
 
     //Android 快速构建 RecyclerView, 比 BRVAH 更简单强大 https://github.com/liangjingkanji/BRV
     implementation(libs.liangjingkanji.brv)
-    //A ListView-like FastScroller for Android’s RecyclerView.
+    //A ListView-like FastScroller for Android's RecyclerView.
     implementation(libs.fastscroll)
     implementation(libs.tableview)
 
+    // 添加WebViewAssetLoader依赖
+    implementation(libs.androidx.webkit)
     implementation(libs.agentweb.core)
 
     //开关 Button

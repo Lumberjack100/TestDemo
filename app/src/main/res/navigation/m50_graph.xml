@@ -5,7 +5,6 @@
     android:id="@+id/m50_graph"
     app:startDestination="@id/m50HomeFragment">
 
-    <include app:graph="@navigation/include_query_data_graph" />
     <include app:graph="@navigation/include_time_calibration_graph" />
     <include app:graph="@navigation/include_data_center_graph" />
     <include app:graph="@navigation/include_firmware_upgrade_graph" />
@@ -19,16 +18,16 @@
         tools:layout="@layout/fragment_m50_home" />
 
     <fragment
-        android:id="@+id/udLocationInfoFragment"
+        android:id="@+id/commonLocationInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.common.CommonLocationInfoFragment"
-        android:label="UDLocationInfoFragment"
+        android:label="CommonLocationInfoFragment"
         tools:layout="@layout/fragment_common_location_info" />
 
     <fragment
-        android:id="@+id/udMonitorDataHistoryFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.common.UDSensorDataHistoryFragment"
-        android:label="UDMonitorDataHistoryFragment"
-        tools:layout="@layout/fragment_ud_sensor_data_history" />
+        android:id="@+id/commonSensorDataHistoryFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment"
+        android:label="CommonSensorDataHistoryFragment"
+        tools:layout="@layout/fragment_common_sensor_data_history" />
 
     <fragment
         android:id="@+id/m50BaseInfoFragment"
@@ -103,24 +102,16 @@
         tools:layout="@layout/fragment_advanced_setting" />
 
     <action
-        android:id="@+id/action_global_to_queryDeviceDataFragment"
-        app:destination="@id/query_data_graph"
+        android:id="@+id/action_global_to_commonLocationInfoFragment"
+        app:destination="@id/commonLocationInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_udLocationInfoFragment"
-        app:destination="@id/udLocationInfoFragment"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <action
-        android:id="@+id/action_global_to_udMonitorDataHistoryFragment"
-        app:destination="@id/udMonitorDataHistoryFragment"
+        android:id="@+id/action_global_to_commonSensorDataHistoryFragment"
+        app:destination="@id/commonSensorDataHistoryFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

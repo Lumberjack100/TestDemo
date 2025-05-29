@@ -106,7 +106,7 @@ class MainFragment : BaseFragment() {
         // 申请通知栏权限
         XXPermissions.with(this)
             .permission(Permission.POST_NOTIFICATIONS)
-            .interceptor(PermissionInterceptor())
+            // .interceptor(PermissionInterceptor())
             .request(OnPermissionCallback { permissions, allGranted ->
                 if (!allGranted) {
                     return@OnPermissionCallback

@@ -357,7 +357,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
         }
 
         //GNSS 设备报警启用开关关闭时处理
-        if (!mStates.isOpened.get() && (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2 || productType == ProductType.GNSS_M_5)) {
+        if (!mStates.isOpened.get() && (productType == ProductType.GNSS_M_5)) {
             val command = IOTCommandUtil.getCommand(
                 IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL,
                 "sw=0"
@@ -368,7 +368,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
         //报警启用开关打开时，才发送报警信息设置指令
         if (mStates.isOpened.get()) {
             val monitorPointEntity = AlarmMonitorPointEntity(
-                sw = if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2 || productType == ProductType.GNSS_M_5)
+                sw = if (productType == ProductType.GNSS_M_5)
                     "1"
                 else IOTConstants.NULL_KEY,
                 monitorpoint = mStates.monitorPoint.get(),

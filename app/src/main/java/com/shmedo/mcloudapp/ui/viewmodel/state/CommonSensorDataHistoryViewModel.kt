@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import com.shmedo.core.model.DeviceSensorBasicInfo
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
-class UDSensorDataHistoryViewModel : ViewModel() {
+class CommonSensorDataHistoryViewModel : ViewModel() {
     val periodDate = NonNullObservableField("")
     val startTime = NonNullObservableField("")
     val endTime = NonNullObservableField("")

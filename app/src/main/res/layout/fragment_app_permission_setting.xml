@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="toolbarVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.AppPermissionSettingViewModel" />
+
+        <variable
+            name="click"
+            type="com.shmedo.mcloudapp.ui.page.userprofile.AppPermissionSettingFragment.ClickProxy" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_bg_gray">
+
+        <include
+            android:id="@+id/ll_toolbar"
+            layout="@layout/include_device_config_toolbar_white"
+            app:click="@{click}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:vm="@{toolbarVM}" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                android:paddingTop="@dimen/page_content_container_padding_top_12">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/layer_common_click_item_top_corner_4_with_divider"
+                    android:onClick="@{()->click.onLocationPermissionClick()}"
+                    android:orientation="vertical"
+                    android:padding="@dimen/page_content_item_padding_horizontal_16">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="允许位置信息权限访问" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text='@{stateVM.isAllowLocation ? "已允许" : "去设置"}'
+                            tools:text="去设置" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_size_10"
+                        android:text="@string/permission_location_setting_purpose"
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_12" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/layer_common_click_item_with_divider"
+                    android:onClick="@{()->click.onBluetoothPermissionClick()}"
+                    android:orientation="vertical"
+                    android:padding="@dimen/page_content_item_padding_horizontal_16">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="允许蓝牙权限访问" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text='@{stateVM.isAllowBluetooth ? "已允许" : "去设置"}'
+                            tools:text="去设置" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_size_10"
+                        android:text="@string/permission_bluetooth_setting_purpose"
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_12" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/layer_common_click_item_with_divider"
+                    android:onClick="@{()->click.onCameraPermissionClick()}"
+                    android:orientation="vertical"
+                    android:padding="@dimen/page_content_item_padding_horizontal_16">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="允许相机权限访问" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text='@{stateVM.isAllowCamera ? "已允许" : "去设置"}'
+                            tools:text="去设置" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_size_10"
+                        android:text="@string/permission_camera_setting_purpose"
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_12" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_common_click_item_bottom_corner_4"
+                    android:onClick="@{()->click.onStoragePermissionClick()}"
+                    android:orientation="vertical"
+                    android:padding="@dimen/page_content_item_padding_horizontal_16">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="允许设备存储权限访问" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text='@{stateVM.isAllowStorage ? "已允许" : "去设置"}'
+                            tools:text="去设置" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_size_10"
+                        android:text="@string/permission_storage_setting_purpose"
+                        android:textColor="@color/sub_title_text_color"
+                        android:textSize="@dimen/text_size_12" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

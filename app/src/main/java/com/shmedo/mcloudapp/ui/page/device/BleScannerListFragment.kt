@@ -252,12 +252,9 @@ class BleScannerListFragment : BaseFragment() {
 
     private fun requestPermissionForBluetooth() {
         XXPermissions.with(this)
-            // 申请多个权限
             .permission(needPermissions)
             // 设置权限请求拦截器（局部设置）
             .interceptor(PermissionInterceptor())
-            // 设置不触发错误检测机制（局部设置）
-            //.unchecked()
             .request(object : OnPermissionCallback {
                 override fun onGranted(
                     grantedPermissions: MutableList<String>,
@@ -268,6 +265,21 @@ class BleScannerListFragment : BaseFragment() {
                     }
                     permissionViewModel.refreshBluetoothPermission()
                 }
+
+//                override fun onDenied(
+//                    permissions: MutableList<String>,
+//                    doNotAskAgain:Boolean
+//                ) {
+//                    if (doNotAskAgain) {
+//                        Timber.i("被永久拒绝授权，请手动授予通知栏权限")
+//                        // 如果是被永久拒绝就跳转到应用权限系统设置页面
+//                        XXPermissions.startPermissionActivity(
+//                            this@BleScannerListFragment,
+//                            permissions
+//                        )
+//                    }
+//                }
+
             })
     }
 

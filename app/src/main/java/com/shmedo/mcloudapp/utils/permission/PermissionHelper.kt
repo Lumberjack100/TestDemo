@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
-import com.shmedo.mcloudapp.R
+import com.shmedo.lib.core.R
 import com.shmedo.mcloudapp.extensions.showMessage
 
 /**

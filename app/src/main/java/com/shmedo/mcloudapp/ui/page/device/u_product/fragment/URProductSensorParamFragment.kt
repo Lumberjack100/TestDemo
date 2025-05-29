@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -11,7 +12,6 @@ import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.das.DasIOSensorEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTRainStation
@@ -24,14 +24,14 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentURProductSensorParamBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.URProductSensorParamViewModel
+import com.shmedo.mcloudapp.databinding.FragmentURProductSensorParamBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.URProductSensorParamViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
@@ -46,8 +46,8 @@ import java.util.Locale
  */
 class URProductSensorParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentURProductSensorParamBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: URProductSensorParamViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: URProductSensorParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
     private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
@@ -55,8 +55,6 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -73,19 +71,12 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentURProductSensorParamBinding
         binding.llToolbar.toolbar.title = "传感配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         initRefresh()
-    }
-
-    override fun initData() {
-        super.initData()
-        resetParams()
     }
 
     private fun initRefresh() {
@@ -98,6 +89,17 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
             }
             queryData()
         }
+    }
+
+    override fun initData() {
+        super.initData()
+        resetDefaultParams()
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
+    }
+
+    private fun resetDefaultParams() {
+        mStates.rainResolution.set(rainResolutionList[0])
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -142,7 +144,7 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
          * 恢复默认配置
          */
         fun onResetClick() {
-            resetParams()
+            resetDefaultParams()
         }
 
         override fun onSubmitButtonClick() {
@@ -153,10 +155,6 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
             }
             initSaveCommand()
         }
-    }
-
-    private fun resetParams() {
-        mStates.rainResolution.set(rainResolutionList[0])
     }
 
     private fun initSaveCommand() {
@@ -187,6 +185,59 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
         )
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = errMsg
+        )
     }
 
     override fun setResultData(cmdStr: String) {
@@ -222,11 +273,12 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
             }
+
             IOTCommandType.MD_SET_SENSOR_INITIAL -> {//设置开关量传感器
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
@@ -263,10 +315,20 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            // 保存初始状态，用于后续修改检测
+            mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
+    }
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
     }
 
     override fun onResume() {

@@ -5,8 +5,6 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseStateViewModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 class UDSensorParamViewModel : BaseStateViewModel() {
-    val isEditable = NonNullObservableField(true)
-
     val measureInterval = NonNullObservableField("") //雷达测量间隔
     val installAngleOffsetThreshold = NonNullObservableField("") //安装角度偏移阈值
     val airAltitudeInitialValue = NonNullObservableField("") //海拔
