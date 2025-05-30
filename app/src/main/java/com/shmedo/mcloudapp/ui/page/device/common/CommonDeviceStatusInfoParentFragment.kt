@@ -21,8 +21,6 @@ import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702PortSt
 import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702RunningStatusInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.UProductBaseInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ui.UIProductSensorInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200BaseInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200SensorInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ur.URProductSensorInfoFragment
 
 /**
@@ -61,30 +59,6 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
         )
         val fragmentList = mutableListOf<Fragment>()
         when (productType) {
-            ProductType.LR200 -> {//米度一体式裂缝计
-                fragmentList.add(
-                    LR200BaseInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    CommonCommunicationInfoFragment.newInstance().apply {
-                        arguments = CommonCommunicationInfoFragment.newBundleArguments(
-                            centerNum = 4,
-                            productType,
-                            communicateWay,
-                            deviceInfo,
-                            bleDevice
-                        )
-                    }
-                )
-                fragmentList.add(
-                    LR200SensorInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-            }
-
             ProductType.U_I_1 -> {//倾斜仪
                 fragmentList.add(
                     UProductBaseInfoFragment.newInstance().apply {
@@ -133,24 +107,6 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                 )
             }
 
-            ProductType.M20,
-            ProductType.COLLECTOR_R_3 -> {//M20
-                fragmentList.add(
-                    M20BaseInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    M20CommunicationInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    M20SensorInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-            }
 
             ProductType.COLLECTOR_R_1,
             ProductType.BHY,
@@ -175,7 +131,6 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                 )
             }
 
-
             ProductType.COLLECTOR_R_2 -> {//水利遥测终端机
                 fragmentList.add(
                     MR702BaseInfoFragment.newInstance().apply {
@@ -194,6 +149,26 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                 )
                 fragmentList.add(
                     MR702ModuleStatusInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                )
+            }
+
+            ProductType.COLLECTOR_R_3,
+            ProductType.M20
+                -> {//M20
+                fragmentList.add(
+                    M20BaseInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                )
+                fragmentList.add(
+                    M20CommunicationInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                )
+                fragmentList.add(
+                    M20SensorInfoFragment.newInstance().apply {
                         arguments = bundle
                     }
                 )
@@ -223,29 +198,7 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                 )
             }
 
-            else -> {
-                fragmentList.add(
-                    UProductBaseInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    CommonCommunicationInfoFragment.newInstance().apply {
-                        arguments = CommonCommunicationInfoFragment.newBundleArguments(
-                            centerNum = 3,
-                            productType,
-                            communicateWay,
-                            deviceInfo,
-                            bleDevice,
-                        )
-                    }
-                )
-                fragmentList.add(
-                    URProductSensorInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-            }
+            else -> {}
         }
 
         return fragmentList

@@ -123,6 +123,18 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
+            ProductType.COLLECTOR_R_2 -> navController.setGraph(
+                R.navigation.mr702_graph,
+                bundle2
+            )
+
+            ProductType.COLLECTOR_R_3, ProductType.M20 -> {
+                navController.setGraph(
+                    R.navigation.m20_graph,
+                    bundle2
+                )
+            }
+
             ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {
                 navController.setGraph(
                     R.navigation.m20s_graph,
@@ -136,18 +148,6 @@ class DeviceHomeActivity : BaseActivity() {
                     bundle2
                 )
             }
-
-            ProductType.COLLECTOR_R_3, ProductType.M20 -> {
-                navController.setGraph(
-                    R.navigation.m20_graph,
-                    bundle2
-                )
-            }
-
-            ProductType.COLLECTOR_R_2 -> navController.setGraph(
-                R.navigation.mr702_graph,
-                bundle2
-            )
 
             ProductType.LR200, ProductType.U_I_1, ProductType.U_R_1 -> {
                 navController.setGraph(
@@ -177,10 +177,7 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
-
-            else -> {
-
-            }
+            else -> {}
         }
     }
 

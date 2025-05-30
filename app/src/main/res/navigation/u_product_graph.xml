@@ -5,9 +5,7 @@
     android:id="@+id/u_product_graph"
     app:startDestination="@id/uProductHomeFragment">
 
-    <include app:graph="@navigation/include_query_data_graph" />
     <include app:graph="@navigation/include_time_calibration_graph" />
-    <include app:graph="@navigation/include_common_running_device_info_graph" />
     <include app:graph="@navigation/include_data_center_graph" />
     <include app:graph="@navigation/include_lora_graph" />
     <include app:graph="@navigation/include_alarm_setting_graph" />
@@ -19,33 +17,37 @@
         android:id="@+id/uProductHomeFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.UProductCommonHomeFragment"
         android:label="UProductCommonHomeFragment"
-        tools:layout="@layout/fragment_u_product_common_home">
+        tools:layout="@layout/fragment_u_product_common_home" />
 
-        <action
-            android:id="@+id/action_uProductHomeFragment_to_uIProductSensorParamFragment"
-            app:destination="@id/uIProductSensorParamFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
+    <fragment
+        android:id="@+id/commonLocationInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.CommonLocationInfoFragment"
+        android:label="CommonLocationInfoFragment"
+        tools:layout="@layout/fragment_common_location_info" />
 
-        <action
-            android:id="@+id/action_uProductHomeFragment_to_uRProductSensorParamFragment"
-            app:destination="@id/uRProductSensorParamFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
+    <fragment
+        android:id="@+id/commonSensorDataHistoryFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment"
+        android:label="CommonSensorDataHistoryFragment"
+        tools:layout="@layout/fragment_common_sensor_data_history" />
 
-        <action
-            android:id="@+id/action_uProductHomeFragment_to_lR200SensorParamFragment"
-            app:destination="@id/lR200SensorParamFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
+    <fragment
+        android:id="@+id/lR200BaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200BaseInfoFragment"
+        android:label="LR200BaseInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
 
-    </fragment>
+    <fragment
+        android:id="@+id/lR200NetInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200NetInfoFragment"
+        android:label="LR200NetInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
+        android:id="@+id/lR200StatusInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200StatusInfoFragment"
+        android:label="LR200StatusInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
         android:id="@+id/uIProductSensorParamFragment"
@@ -63,17 +65,7 @@
         android:id="@+id/lR200SensorParamFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200SensorParamFragment"
         android:label="LR200SensorParamFragment"
-        tools:layout="@layout/fragment_lr200_sensor_param">
-
-        <action
-            android:id="@+id/action_lR200SensorParamFragment_to_lR200InitialValueFragment"
-            app:destination="@id/lR200InitialValueFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-    </fragment>
+        tools:layout="@layout/fragment_lr200_sensor_param"/>
 
     <fragment
         android:id="@+id/lR200InitialValueFragment"
@@ -88,16 +80,40 @@
         tools:layout="@layout/fragment_advanced_setting" />
 
     <action
-        android:id="@+id/action_global_to_queryDeviceDataFragment"
-        app:destination="@id/query_data_graph"
+        android:id="@+id/action_global_to_commonLocationInfoFragment"
+        app:destination="@id/commonLocationInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_commonRunningDeviceInfoFragment"
-        app:destination="@id/common_running_device_info_graph"
+        android:id="@+id/action_global_to_commonSensorDataHistoryFragment"
+        app:destination="@id/commonSensorDataHistoryFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_lR200BaseInfoFragment"
+        app:destination="@id/lR200BaseInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_lR200NetInfoFragment"
+        app:destination="@id/lR200NetInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_lR200StatusInfoFragment"
+        app:destination="@id/lR200StatusInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -114,6 +130,38 @@
     <action
         android:id="@+id/action_global_to_loraSettingFragment"
         app:destination="@id/lora_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_uIProductSensorParamFragment"
+        app:destination="@id/uIProductSensorParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_uRProductSensorParamFragment"
+        app:destination="@id/uRProductSensorParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_lR200SensorParamFragment"
+        app:destination="@id/lR200SensorParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_lR200SensorParamFragment_to_lR200InitialValueFragment"
+        app:destination="@id/lR200InitialValueFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -166,4 +214,5 @@
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
+
 </navigation>
