@@ -91,7 +91,6 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         )
                     )
                 }
-
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "IMEI",
@@ -130,13 +129,14 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     isBottomItem = true
                 )
 
-                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                groupList.add(DeviceStatusInfoGroupItem("数据链路"))
                 if (stateInfo.dataCenterStatus != IOTConstants.NULL_KEY
                     && stateInfo.dataCenterPlatformType != IOTConstants.NULL_KEY
                     && stateInfo.dataCenterStatus.isNotEmpty()
                     && stateInfo.dataCenterPlatformType.isNotEmpty()
                 ) {
+                    groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                    groupList.add(DeviceStatusInfoGroupItem("数据链路"))
+
                     //根据逗号分隔
                     val onlineStatusList = stateInfo.dataCenterStatus.split(",".toRegex())
                         .dropLastWhile { it.isEmpty() }

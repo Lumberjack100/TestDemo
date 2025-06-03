@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.image_preview
+package com.shmedo.mcloudapp.ui.adapter
 
 import android.graphics.Bitmap
 import android.graphics.PointF

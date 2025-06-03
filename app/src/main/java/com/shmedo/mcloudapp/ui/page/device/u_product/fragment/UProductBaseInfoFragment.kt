@@ -107,6 +107,7 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 stateInfo.emmcStorage.notNullKey {
                     groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
                     groupList.add(DeviceStatusInfoGroupItem("存储信息"))
+
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                         groupList,
                         name = "可用空间",

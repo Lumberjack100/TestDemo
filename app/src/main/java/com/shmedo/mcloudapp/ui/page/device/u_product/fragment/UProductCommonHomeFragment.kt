@@ -12,13 +12,13 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.URCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -32,6 +32,7 @@ import com.shmedo.mcloudapp.databinding.ItemSubConfigModuleBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
@@ -60,7 +61,6 @@ import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UProductCommonHomeViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
-import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -248,7 +248,12 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
                             name = "基本信息",
                             resID = R.drawable.ic_module_basic_info,
                             iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_lR200BaseInfoFragment
+                            navId = when (productType) {
+                                ProductType.LR200 -> R.id.action_global_to_lR200BaseInfoFragment //米度一体式裂缝计
+                                ProductType.U_I_1,//倾斜仪
+                                ProductType.U_R_1 -> R.id.action_global_to_uProductBaseInfoFragment //一体化雨量计
+                                else -> 0
+                            }
                         )
                     ),
                     ConfigModule(
@@ -256,7 +261,12 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
                             name = "网络信息",
                             resID = R.drawable.ic_module_net_info,
                             iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_lR200NetInfoFragment
+                            navId = when (productType) {
+                                ProductType.LR200 -> R.id.action_global_to_lR200NetInfoFragment //米度一体式裂缝计
+                                ProductType.U_I_1,//倾斜仪
+                                ProductType.U_R_1 -> R.id.action_global_to_uProductNetInfoFragment //一体化雨量计
+                                else -> 0
+                            }
                         )
                     ),
                     ConfigModule(
@@ -264,7 +274,12 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
                             name = "状态信息",
                             resID = R.drawable.ic_module_state_info,
                             iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_lR200StatusInfoFragment
+                            navId = when (productType) {
+                                ProductType.LR200 -> R.id.action_global_to_lR200StatusInfoFragment //米度一体式裂缝计
+                                ProductType.U_I_1 -> R.id.action_global_to_uProductStatusInfoFragment//倾斜仪
+                                ProductType.U_R_1 -> R.id.action_global_to_uRProductStatusInfoFragment //一体化雨量计
+                                else -> 0
+                            }
                         )
                     )
                 )
@@ -719,54 +734,136 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
-                } ?: return@launchWithViewLifecycle
-
-
-                val deviceAbnormalList =
-                    if (stateInfo.self_check.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkDeviceAbnormal(
-                        stateInfo.self_check
-                    )
-                val status = if (deviceAbnormalList.isEmpty()) "正常" else "故障"
-                mHeadStates.productLogoResId.set(
-                    status.compareAndReturn(
-                        "故障",
-                        R.drawable.device_logo_m20_error,
-                        status.compareAndReturn(
-                            "告警",
-                            R.drawable.device_logo_m20_alarm,
-                            R.drawable.device_logo_m20
-                        )
-                    )
-                )
-                mHeadStates.deviceStatusCode.set(if (deviceAbnormalList.isEmpty()) "0" else "-3")
-                mHeadStates.warnErrorText.set(status)
+                    MoshiUtil.fromJson<URCurrentStateInfo>(content)
+                }
+                if (stateInfo == null) {
+                    return@launchWithViewLifecycle
+                }
+                val uRSensorInfoList = stateInfo.attach_data
+                if (uRSensorInfoList.isNullOrEmpty()) {
+                    return@launchWithViewLifecycle
+                }
 
                 mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
 
-                mHeadStates.xAngle.set(
-                    DeviceStatusInfoProcessor.formatDoubleValue(
-                        stateInfo.x_Angle,
-                        "--",
-                        2
-                    ) + "°"
-                )
+                uRSensorInfoList.forEach { info ->
+                    when (info.key) {
+                        "dayRain" -> {//24小时雨量值
+                            mHeadStates.rain24h.set(
+                                DeviceStatusInfoProcessor.formatDoubleValue(
+                                    info.value,
+                                    "--",
+                                    2
+                                ) + "mm"
+                            )
+                        }
 
-                mHeadStates.yAngle.set(
-                    DeviceStatusInfoProcessor.formatDoubleValue(
-                        stateInfo.y_Angle,
-                        "--",
-                        2
-                    ) + "°"
-                )
+                        "initAngle" -> {
+                            info.value.notNullKey { value ->
+                                //根据逗号分隔
+                                val initAngle =
+                                    value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                                if (initAngle.isNotEmpty()) {
+                                    mHeadStates.xInitialAngle.set(
+                                        DeviceStatusInfoProcessor.formatDoubleValue(
+                                            initAngle[0],
+                                            "--",
+                                            2
+                                        ) + "°"
+                                    )
+                                }
+                                if (initAngle.size > 1) {
+                                    mHeadStates.yInitialAngle.set(
+                                        DeviceStatusInfoProcessor.formatDoubleValue(
+                                            initAngle[1],
+                                            "--",
+                                            2
+                                        ) + "°"
+                                    )
+                                }
+                                if (initAngle.size > 2) {
+                                    mHeadStates.zInitialAngle.set(
+                                        DeviceStatusInfoProcessor.formatDoubleValue(
+                                            initAngle[2],
+                                            "--",
+                                            2
+                                        ) + "°"
+                                    )
+                                }
+                            }
+                        }
 
-                mHeadStates.zAngle.set(
-                    DeviceStatusInfoProcessor.formatDoubleValue(
-                        stateInfo.z_Angle,
-                        "--",
-                        2
-                    ) + "°"
-                )
+                        "angle" -> {
+                            info.value.notNullKey { value ->
+                                //根据逗号分隔
+                                val angle =
+                                    value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                                if (angle.isNotEmpty()) {
+                                    mHeadStates.xAngle.set(
+                                        DeviceStatusInfoProcessor.formatDoubleValue(
+                                            angle[0],
+                                            "--",
+                                            2
+                                        ) + "°"
+                                    )
+                                }
+                                if (angle.size > 1) {
+                                    mHeadStates.yAngle.set(
+                                        DeviceStatusInfoProcessor.formatDoubleValue(
+                                            angle[1],
+                                            "--",
+                                            2
+                                        ) + "°"
+                                    )
+                                }
+                                if (angle.size > 2) {
+                                    mHeadStates.zAngle.set(
+                                        DeviceStatusInfoProcessor.formatDoubleValue(
+                                            angle[2],
+                                            "--",
+                                            2
+                                        ) + "°"
+                                    )
+                                }
+                            }
+                        }
+
+                        "acc" -> {
+                            info.value.notNullKey { value ->
+                                //根据逗号分隔
+                                val acc = value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                                if (acc.isNotEmpty()) {
+                                    mHeadStates.xAcc.set(
+                                        DeviceStatusInfoProcessor.formatDoubleValue(
+                                            acc[0],
+                                            "--",
+                                            2
+                                        ) + "°"
+                                    )
+                                }
+                                if (acc.size > 1) {
+                                    mHeadStates.yAcc.set(
+                                        DeviceStatusInfoProcessor.formatDoubleValue(
+                                            acc[1],
+                                            "--",
+                                            2
+                                        ) + "°"
+                                    )
+                                }
+                                if (acc.size > 2) {
+                                    mHeadStates.zAcc.set(
+                                        DeviceStatusInfoProcessor.formatDoubleValue(
+                                            acc[2],
+                                            "--",
+                                            2
+                                        ) + "°"
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
             } catch (e: Exception) {
                 Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)

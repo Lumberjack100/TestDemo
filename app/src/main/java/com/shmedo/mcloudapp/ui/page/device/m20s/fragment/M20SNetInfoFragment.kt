@@ -62,7 +62,6 @@ class M20SNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         )
                     )
                 }
-
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "IMEI",

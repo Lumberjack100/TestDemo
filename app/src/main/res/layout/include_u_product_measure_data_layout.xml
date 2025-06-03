@@ -45,7 +45,16 @@
         <include
             visible='@{stateVM.productType == ProductType.LR200}'
             layout="@layout/include_lr200_product_measure_data_layout"
-            app:click="@{click}"
+            app:stateVM="@{stateVM}" />
+
+        <include
+            visible='@{stateVM.productType == ProductType.U_R_1}'
+            layout="@layout/include_ur_product_measure_data_layout"
+            app:stateVM="@{stateVM}" />
+
+        <include
+            visible='@{stateVM.productType == ProductType.U_I_1}'
+            layout="@layout/include_ui_product_measure_data_layout"
             app:stateVM="@{stateVM}" />
 
 

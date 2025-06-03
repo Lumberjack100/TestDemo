@@ -38,9 +38,21 @@
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
+        android:id="@+id/uProductBaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.UProductBaseInfoFragment"
+        android:label="UProductBaseInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
         android:id="@+id/lR200NetInfoFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200NetInfoFragment"
         android:label="LR200NetInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
+        android:id="@+id/uProductNetInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.UProductNetInfoFragment"
+        android:label="UProductNetInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
@@ -48,6 +60,19 @@
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul.LR200StatusInfoFragment"
         android:label="LR200StatusInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
+        android:id="@+id/uRProductStatusInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ur.URProductStatusInfoFragment"
+        android:label="URProductStatusInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
+        android:id="@+id/uProductStatusInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.UProductStatusInfoFragment"
+        android:label="UProductStatusInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
+
 
     <fragment
         android:id="@+id/uIProductSensorParamFragment"
@@ -104,6 +129,14 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
+        android:id="@+id/action_global_to_uProductBaseInfoFragment"
+        app:destination="@id/uProductBaseInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
         android:id="@+id/action_global_to_lR200NetInfoFragment"
         app:destination="@id/lR200NetInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
@@ -112,8 +145,32 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
+        android:id="@+id/action_global_to_uProductNetInfoFragment"
+        app:destination="@id/uProductNetInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
         android:id="@+id/action_global_to_lR200StatusInfoFragment"
         app:destination="@id/lR200StatusInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_uRProductStatusInfoFragment"
+        app:destination="@id/uRProductStatusInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_uProductStatusInfoFragment"
+        app:destination="@id/uProductStatusInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

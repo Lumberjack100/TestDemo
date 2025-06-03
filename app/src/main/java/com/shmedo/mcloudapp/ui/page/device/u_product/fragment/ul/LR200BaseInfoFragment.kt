@@ -48,7 +48,6 @@ class LR200BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "设备SN",
                     value = stateInfo.sn,
                 )
-
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "硬件版本",

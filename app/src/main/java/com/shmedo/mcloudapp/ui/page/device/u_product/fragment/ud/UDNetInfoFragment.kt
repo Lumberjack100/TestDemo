@@ -132,8 +132,6 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     isBottomItem = true
                 )
 
-                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                groupList.add(DeviceStatusInfoGroupItem("数据链路"))
                 if (stateInfo.dataCenterEnableStatus != IOTConstants.NULL_KEY
                     && stateInfo.dataCenterLinkStatus != IOTConstants.NULL_KEY
                     && stateInfo.dataCenterPlatformType != IOTConstants.NULL_KEY
@@ -141,6 +139,9 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     && stateInfo.dataCenterLinkStatus.isNotEmpty()
                     && stateInfo.dataCenterPlatformType.isNotEmpty()
                 ) {
+                    groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                    groupList.add(DeviceStatusInfoGroupItem("数据链路"))
+
                     //根据逗号分隔
                     val enableStatusList = stateInfo.dataCenterEnableStatus.split(",".toRegex())
                         .dropLastWhile { it.isEmpty() }

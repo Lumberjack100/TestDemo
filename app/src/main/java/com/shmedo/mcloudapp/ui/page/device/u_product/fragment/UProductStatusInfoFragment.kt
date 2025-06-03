@@ -71,6 +71,7 @@ class UProductStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     isBottomItem = true
                 )
 
+                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
                 groupList.add(DeviceStatusInfoGroupItem("电池信息"))
                 val batteryVoltage =
                     stateInfo.batPowerVolt.toDoubleOrNull() ?: Double.MAX_VALUE
@@ -79,6 +80,7 @@ class UProductStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "电池电压",
                     value = if (batteryVoltage == 0.0) "0" else stateInfo.batPowerVolt.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                     unit = "V",
+                    isBottomItem = true
                 )
 
                 groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
@@ -117,7 +119,7 @@ class UProductStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 stateInfo.scl.notNullKey(notNullKeyAction = {
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                         groupList,
-                        name = "加速度计",
+                        name = "倾角加速度计",
                         value = stateInfo.scl.uppercase().compareAndReturn("OK", "正常", "故障"),
                         textColorRes = if (stateInfo.scl.uppercase() == "OK") 0 else ColorUtils.getColor(
                             R.color.error_FF4400
@@ -254,13 +256,12 @@ class UProductStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         value = stateInfo.rtc.uppercase().compareAndReturn("OK", "正常", "故障"),
                         textColorRes = if (stateInfo.rtc.uppercase() == "OK") 0 else ColorUtils.getColor(
                             R.color.error_FF4400
-                        )
+                        ),
+                        isBottomItem = true
                     )
                 })
 
-
                 binding.recyclerview.models = groupList
-
             } catch (e: Exception) {
                 Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.UProductCommonHomeViewModel" />
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:background="@color/white">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:text='@{"24小时雨量值："+stateVM.rain24h}'
+            android:textColor="@color/title_text_color_black_90"
+            android:textSize="@dimen/page_content_item_text_size_14"
+            tools:text="24小时雨量：3.22mm" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

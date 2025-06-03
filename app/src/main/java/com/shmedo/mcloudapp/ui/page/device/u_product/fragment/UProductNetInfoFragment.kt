@@ -105,13 +105,14 @@ class UProductNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     isBottomItem = true
                 )
 
-                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                groupList.add(DeviceStatusInfoGroupItem("数据链路"))
                 if (stateInfo.dataCenterUseSta != IOTConstants.NULL_KEY
                     && stateInfo.dataCenterStatus != IOTConstants.NULL_KEY
                     && stateInfo.dataCenterUseSta.isNotEmpty()
                     && stateInfo.dataCenterStatus.isNotEmpty()
                 ) {
+                    groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                    groupList.add(DeviceStatusInfoGroupItem("数据链路"))
+
                     //根据逗号分隔
                     val enableStatusList = stateInfo.dataCenterUseSta.split(",".toRegex())
                         .dropLastWhile { it.isEmpty() }
