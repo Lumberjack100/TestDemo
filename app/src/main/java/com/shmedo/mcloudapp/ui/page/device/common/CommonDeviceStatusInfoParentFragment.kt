@@ -19,11 +19,6 @@ import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702BaseIn
 import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702ModuleStatusInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702PortStatusInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702RunningStatusInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.LR200BaseInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.LR200SensorInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UIProductSensorInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UProductBaseInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.URProductSensorInfoFragment
 
 /**
  * 创建者：gonghe
@@ -33,20 +28,13 @@ import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.URProdu
 class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment() {
     override fun initData() {
         super.initData()
-        mStates.productType.set(
-            when (productType) {
-                ProductType.GNSS_M_1 -> "型号：M20 (单北斗)"
-                ProductType.GNSS_M_2 -> "型号：M20 (全星座)"
-                else -> "型号：${deviceInfo.deviceName}"
-            }
-        )
+        mStates.productType.set("型号：${deviceInfo.deviceName}")
         when (productType) {
             ProductType.LB20S -> {
                 tabs.clear()
                 tabs.addAll(listOf("基本信息", "通讯状态", "网关信息"))
             }
 
-            ProductType.MR702,
             ProductType.COLLECTOR_R_2 -> {//水利遥测终端机
                 tabs.clear()
                 tabs.addAll(listOf("基本信息", "运行状态", "接口状态", "模块状态"))
@@ -68,96 +56,6 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
         )
         val fragmentList = mutableListOf<Fragment>()
         when (productType) {
-            ProductType.LR200 -> {//米度一体式裂缝计
-                fragmentList.add(
-                    LR200BaseInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    CommonCommunicationInfoFragment.newInstance().apply {
-                        arguments = CommonCommunicationInfoFragment.newBundleArguments(
-                            centerNum = 4,
-                            productType,
-                            communicateWay,
-                            deviceInfo,
-                            bleDevice
-                        )
-                    }
-                )
-                fragmentList.add(
-                    LR200SensorInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-            }
-
-            ProductType.U_I_1 -> {//倾斜仪
-                fragmentList.add(
-                    UProductBaseInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    CommonCommunicationInfoFragment.newInstance().apply {
-                        arguments = CommonCommunicationInfoFragment.newBundleArguments(
-                            centerNum = 3,
-                            productType,
-                            communicateWay,
-                            deviceInfo,
-                            bleDevice,
-                        )
-                    }
-                )
-                fragmentList.add(
-                    UIProductSensorInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-            }
-
-            ProductType.U_R_1 -> {//一体化雨量计
-                fragmentList.add(
-                    UProductBaseInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    CommonCommunicationInfoFragment.newInstance().apply {
-                        arguments = CommonCommunicationInfoFragment.newBundleArguments(
-                            centerNum = 3,
-                            productType,
-                            communicateWay,
-                            deviceInfo,
-                            bleDevice,
-                        )
-                    }
-                )
-                fragmentList.add(
-                    URProductSensorInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-            }
-
-            ProductType.M20, ProductType.GNSS_M_1, ProductType.GNSS_M_2, ProductType.COLLECTOR_R_3 -> {//M20
-                fragmentList.add(
-                    M20BaseInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    M20CommunicationInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    M20SensorInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-            }
-
             ProductType.COLLECTOR_R_1,
             ProductType.BHY,
             ProductType.DAS -> {
@@ -178,6 +76,49 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                     if (communicateWay is BleConnect) BleDasSensorInfoFragment.newInstance().apply {
                         arguments = bundle
                     } else DasSensorInfoFragment.newInstance().apply { arguments = bundle }
+                )
+            }
+
+            ProductType.COLLECTOR_R_2 -> {//水利遥测终端机
+                fragmentList.add(
+                    MR702BaseInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                )
+                fragmentList.add(
+                    MR702RunningStatusInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                )
+                fragmentList.add(
+                    MR702PortStatusInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                )
+                fragmentList.add(
+                    MR702ModuleStatusInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                )
+            }
+
+            ProductType.COLLECTOR_R_3,
+            ProductType.M20
+                -> {//M20
+                fragmentList.add(
+                    M20BaseInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                )
+                fragmentList.add(
+                    M20CommunicationInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
+                )
+                fragmentList.add(
+                    M20SensorInfoFragment.newInstance().apply {
+                        arguments = bundle
+                    }
                 )
             }
 
@@ -205,53 +146,7 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                 )
             }
 
-            ProductType.MR702,
-            ProductType.COLLECTOR_R_2 -> {//水利遥测终端机
-                fragmentList.add(
-                    MR702BaseInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    MR702RunningStatusInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    MR702PortStatusInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    MR702ModuleStatusInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-            }
-
-            else -> {
-                fragmentList.add(
-                    UProductBaseInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    CommonCommunicationInfoFragment.newInstance().apply {
-                        arguments = CommonCommunicationInfoFragment.newBundleArguments(
-                            centerNum = 3,
-                            productType,
-                            communicateWay,
-                            deviceInfo,
-                            bleDevice,
-                        )
-                    }
-                )
-                fragmentList.add(
-                    URProductSensorInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-            }
+            else -> {}
         }
 
         return fragmentList

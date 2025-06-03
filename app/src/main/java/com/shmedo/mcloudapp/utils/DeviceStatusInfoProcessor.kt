@@ -51,7 +51,7 @@ object DeviceStatusInfoProcessor {
         isClipboard: Boolean = false,
         isBottomItem: Boolean = false,
     ) {
-        value.notNullKey(action = {
+        value.notNullKey(notNullKeyAction = {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = name,

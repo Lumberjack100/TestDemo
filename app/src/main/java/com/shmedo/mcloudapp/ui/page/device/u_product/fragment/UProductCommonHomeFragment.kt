@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m20s.fragment
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment
 
 import android.os.Bundle
 import android.util.Log
@@ -12,13 +12,13 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.URCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -27,11 +27,12 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.baseclickproxy.DoubleClickListener
-import com.shmedo.mcloudapp.databinding.FragmentM20sHomeBinding
+import com.shmedo.mcloudapp.databinding.FragmentUProductCommonHomeBinding
 import com.shmedo.mcloudapp.databinding.ItemSubConfigModuleBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
@@ -49,18 +50,17 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.LoraConfigModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.model.SensorConfigModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
-import com.shmedo.mcloudapp.model.WorkModeModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.M20SHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.UProductCommonHomeViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
-import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -72,15 +72,10 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-/**
- * 创建者:   gonghe <br></br>
- * 创建时间:  2020/8/27 <br></br>
- * 描述：  M20S 配置主页
- */
-class M20SHomeFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentM20sHomeBinding
+class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentUProductCommonHomeBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mHeadStates: M20SHomeViewModel by viewModels()
+    private val mHeadStates: UProductCommonHomeViewModel by viewModels()
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
     private val iotParseManager: IOTParserManager by inject()
 
@@ -93,13 +88,13 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_m20s_home, BR.stateVM, mHeadStates)
+        return DataBindingConfig(R.layout.fragment_u_product_common_home, BR.stateVM, mHeadStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentM20sHomeBinding
+        binding = getBinding() as FragmentUProductCommonHomeBinding
         binding.llToolbar.toolbar.title = "返回"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             if (bleViewModel.isConnected()) {
@@ -130,7 +125,15 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        mHeadStates.productLogoResId.set(R.drawable.device_logo_m20)
+        mHeadStates.productType.set(productType)
+        mHeadStates.productLogoResId.set(
+            when (productType) {
+                ProductType.U_I_1 -> R.drawable.device_logo_qingxieyi //倾斜仪
+                ProductType.U_R_1 -> R.drawable.device_logo_rain_gauge//一体化雨量计
+                ProductType.LR200 -> R.drawable.device_logo_qingxieyi//米度一体式裂缝计
+                else -> 0
+            }
+        )
         mHeadStates.productName.set(productType.productName)
         mHeadStates.productToken.set(productType.productToken)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
@@ -154,12 +157,27 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
     override fun onConnectionStateChanged(isConnected: Boolean) {
         mHeadStates.isConnected.set(isConnected)
         if (isConnected) {
+            mHeadStates.productLogoResId.set(
+                when (productType) {
+                    ProductType.U_I_1 -> R.drawable.device_logo_qingxieyi //倾斜仪
+                    ProductType.U_R_1 -> R.drawable.device_logo_rain_gauge//一体化雨量计
+                    ProductType.LR200 -> R.drawable.device_logo_qingxieyi//米度一体式裂缝计
+                    else -> 0
+                }
+            )
             toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_m20)
             mHeadStates.iotPlatformStateText.set("蓝牙已连接")
+
         } else {
+            mHeadStates.productLogoResId.set(
+                when (productType) {
+                    ProductType.U_I_1 -> R.drawable.device_logo_qingxieyi_gray //倾斜仪
+                    ProductType.U_R_1 -> R.drawable.device_logo_rain_gauge_gray//一体化雨量计
+                    ProductType.LR200 -> R.drawable.device_logo_qingxieyi_gray//米度一体式裂缝计
+                    else -> 0
+                }
+            )
             toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_m20_offline)
             mHeadStates.iotPlatformStateText.set("蓝牙已断开")
 
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
@@ -215,7 +233,6 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
                     }
                 }
             }
-
         }
     }
 
@@ -231,7 +248,12 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
                             name = "基本信息",
                             resID = R.drawable.ic_module_basic_info,
                             iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_m20SBaseInfoFragment
+                            navId = when (productType) {
+                                ProductType.LR200 -> R.id.action_global_to_lR200BaseInfoFragment //米度一体式裂缝计
+                                ProductType.U_I_1,//倾斜仪
+                                ProductType.U_R_1 -> R.id.action_global_to_uProductBaseInfoFragment //一体化雨量计
+                                else -> 0
+                            }
                         )
                     ),
                     ConfigModule(
@@ -239,7 +261,12 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
                             name = "网络信息",
                             resID = R.drawable.ic_module_net_info,
                             iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_m20SNetInfoFragment
+                            navId = when (productType) {
+                                ProductType.LR200 -> R.id.action_global_to_lR200NetInfoFragment //米度一体式裂缝计
+                                ProductType.U_I_1,//倾斜仪
+                                ProductType.U_R_1 -> R.id.action_global_to_uProductNetInfoFragment //一体化雨量计
+                                else -> 0
+                            }
                         )
                     ),
                     ConfigModule(
@@ -247,7 +274,12 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
                             name = "状态信息",
                             resID = R.drawable.ic_module_state_info,
                             iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_m20SStatusInfoFragment
+                            navId = when (productType) {
+                                ProductType.LR200 -> R.id.action_global_to_lR200StatusInfoFragment //米度一体式裂缝计
+                                ProductType.U_I_1 -> R.id.action_global_to_uProductStatusInfoFragment//倾斜仪
+                                ProductType.U_R_1 -> R.id.action_global_to_uRProductStatusInfoFragment //一体化雨量计
+                                else -> 0
+                            }
                         )
                     )
                 )
@@ -258,13 +290,6 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
         groupList.add(DeviceStatusInfoGroupItem("设备配置"))
         val configModuleTree = ConfigModuleTree(
             configModules = arrayListOf(
-                ConfigModule(
-                    WorkModeModule(
-                        name = "工作模式",
-                        resID = R.drawable.ic_module_work_mode_new,
-                        navId = R.id.action_global_to_m20SWorkModelFragment
-                    )
-                ),
                 ConfigModule(
                     DataCenterModule(
                         name = "链路配置",
@@ -277,7 +302,14 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
                     LoraConfigModule(
                         name = "电台配置",
                         resID = R.drawable.ic_module_lora_new,
-                        navId = R.id.action_global_to_m20SRadioSettingFragment
+                        navId = R.id.action_global_to_loraSettingFragment
+                    )
+                ),
+                ConfigModule(
+                    SensorConfigModule(
+                        name = "传感配置",
+                        resID = R.drawable.ic_module_sensor_setting_new,
+                        navId = 0
                     )
                 ),
                 ConfigModule(
@@ -285,14 +317,6 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
                         name = "报警配置",
                         resID = R.drawable.ic_module_alarm_new,
                         navId = R.id.action_global_to_alarmSettingFragment
-                    )
-                ),
-                ConfigModule(
-                    CommonModule(
-                        name = "卫星通信",
-                        resID = R.drawable.ic_module_cors,
-                        navId = 0,
-                        isSupport = false
                     )
                 ),
                 ConfigModule(
@@ -368,10 +392,35 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
         }
         when (module) {
             is DataCenterModule -> {
+                val centerNum = when (productType) {
+                    ProductType.U_I_1,//倾斜仪
+                    ProductType.U_R_1 //一体化雨量计
+                        -> 3
+
+                    ProductType.LR200 -> 4//米度一体式裂缝计
+                    else -> 3
+                }
                 nav().safeNavigate(
                     module.navId,
                     UniversalDataCenterHomeFragment.Companion.newBundleArguments(
-                        centerNum = 4,
+                        centerNum,
+                        productType,
+                        communicateWay,
+                        deviceInfo,
+                        bleDevice
+                    )
+                )
+            }
+
+            is SensorConfigModule -> {
+                var navId = when (productType) {
+                    ProductType.U_I_1 -> R.id.action_global_to_uIProductSensorParamFragment//倾斜仪
+                    ProductType.U_R_1 -> R.id.action_global_to_uRProductSensorParamFragment//一体化雨量计
+                    ProductType.LR200 -> R.id.action_global_to_lR200SensorParamFragment//米度一体式裂缝计
+                    else -> 0
+                }
+                nav().safeNavigate(
+                    navId, BaseIOTDeviceFragment.newBundleArguments(
                         productType,
                         communicateWay,
                         deviceInfo,
@@ -382,7 +431,7 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
 
             is CommandDebugConfigModule -> {//指令下发
                 val bundle = BleCustomCommandLogPrintFragment.Companion.newBundleArguments(
-                    true,
+                    isIotCmd = true,
                     productType,
                     communicateWay,
                     deviceInfo,
@@ -434,7 +483,14 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
             mHeadStates.iotPlatformStateText.set("米度平台在线")
             queryStatusInfo()
         } else {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_m20_offline)
+            mHeadStates.productLogoResId.set(
+                when (productType) {
+                    ProductType.U_I_1 -> R.drawable.device_logo_qingxieyi_gray //倾斜仪
+                    ProductType.U_R_1 -> R.drawable.device_logo_rain_gauge_gray//一体化雨量计
+                    ProductType.LR200 -> R.drawable.device_logo_qingxieyi_gray//米度一体式裂缝计
+                    else -> 0
+                }
+            )
             mHeadStates.iotPlatformStateText.set("米度平台离线")
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
@@ -580,7 +636,11 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
 
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList()
-                        initStatusInfo(result.data)
+                        if (productType == ProductType.LR200) {
+                            initLR200StatusInfo(result.data)
+                        } else if (productType == ProductType.U_R_1) {
+                            initURStatusInfo(result.data)
+                        }
                     }
                 }
             }
@@ -609,32 +669,14 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initStatusInfo(content: String) {
+    private fun initLR200StatusInfo(content: String) {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
                     MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
                 } ?: return@launchWithViewLifecycle
 
-
-                val deviceAbnormalList =
-                    if (stateInfo.self_check.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkDeviceAbnormal(
-                        stateInfo.self_check
-                    )
-                val status = if (deviceAbnormalList.isEmpty()) "正常" else "故障"
-                mHeadStates.productLogoResId.set(
-                    status.compareAndReturn(
-                        "故障",
-                        R.drawable.device_logo_m20_error,
-                        status.compareAndReturn(
-                            "告警",
-                            R.drawable.device_logo_m20_alarm,
-                            R.drawable.device_logo_m20
-                        )
-                    )
-                )
-                mHeadStates.deviceStatusCode.set(if (deviceAbnormalList.isEmpty()) "0" else "-3")
-                mHeadStates.warnErrorText.set(status)
+                mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
 
                 mHeadStates.xAngle.set(
                     DeviceStatusInfoProcessor.formatDoubleValue(
@@ -659,6 +701,169 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
                         2
                     ) + "°"
                 )
+
+                mHeadStates.lFInitial.set(
+                    DeviceStatusInfoProcessor.formatDoubleValue(
+                        stateInfo.lF_initial,
+                        "--",
+                        2
+                    ) + "mm"
+                )
+                mHeadStates.lFCurrent.set(
+                    DeviceStatusInfoProcessor.formatDoubleValue(
+                        stateInfo.lF_current,
+                        "--",
+                        2
+                    ) + "mm"
+                )
+                mHeadStates.lFCumulative.set(
+                    DeviceStatusInfoProcessor.formatDoubleValue(
+                        stateInfo.lF_Cumulative,
+                        "--",
+                        2
+                    ) + "mm"
+                )
+            } catch (e: Exception) {
+                Timber.Forest.e(e)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
+    private fun initURStatusInfo(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val stateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<URCurrentStateInfo>(content)
+                }
+                if (stateInfo == null) {
+                    return@launchWithViewLifecycle
+                }
+                val uRSensorInfoList = stateInfo.attach_data
+                if (uRSensorInfoList.isNullOrEmpty()) {
+                    return@launchWithViewLifecycle
+                }
+
+                mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
+
+                uRSensorInfoList.forEach { info ->
+                    when (info.key) {
+                        "dayRain" -> {//24小时雨量值
+                            mHeadStates.rain24h.set(
+                                DeviceStatusInfoProcessor.formatDoubleValue(
+                                    info.value,
+                                    "--",
+                                    2
+                                ) + "mm"
+                            )
+                        }
+
+                        "initAngle" -> {
+                            info.value.notNullKey { value ->
+                                //根据逗号分隔
+                                val initAngle =
+                                    value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                                if (initAngle.isNotEmpty()) {
+                                    mHeadStates.xInitialAngle.set(
+                                        DeviceStatusInfoProcessor.formatDoubleValue(
+                                            initAngle[0],
+                                            "--",
+                                            2
+                                        ) + "°"
+                                    )
+                                }
+                                if (initAngle.size > 1) {
+                                    mHeadStates.yInitialAngle.set(
+                                        DeviceStatusInfoProcessor.formatDoubleValue(
+                                            initAngle[1],
+                                            "--",
+                                            2
+                                        ) + "°"
+                                    )
+                                }
+                                if (initAngle.size > 2) {
+                                    mHeadStates.zInitialAngle.set(
+                                        DeviceStatusInfoProcessor.formatDoubleValue(
+                                            initAngle[2],
+                                            "--",
+                                            2
+                                        ) + "°"
+                                    )
+                                }
+                            }
+                        }
+
+                        "angle" -> {
+                            info.value.notNullKey { value ->
+                                //根据逗号分隔
+                                val angle =
+                                    value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                                if (angle.isNotEmpty()) {
+                                    mHeadStates.xAngle.set(
+                                        DeviceStatusInfoProcessor.formatDoubleValue(
+                                            angle[0],
+                                            "--",
+                                            2
+                                        ) + "°"
+                                    )
+                                }
+                                if (angle.size > 1) {
+                                    mHeadStates.yAngle.set(
+                                        DeviceStatusInfoProcessor.formatDoubleValue(
+                                            angle[1],
+                                            "--",
+                                            2
+                                        ) + "°"
+                                    )
+                                }
+                                if (angle.size > 2) {
+                                    mHeadStates.zAngle.set(
+                                        DeviceStatusInfoProcessor.formatDoubleValue(
+                                            angle[2],
+                                            "--",
+                                            2
+                                        ) + "°"
+                                    )
+                                }
+                            }
+                        }
+
+                        "acc" -> {
+                            info.value.notNullKey { value ->
+                                //根据逗号分隔
+                                val acc = value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                                if (acc.isNotEmpty()) {
+                                    mHeadStates.xAcc.set(
+                                        DeviceStatusInfoProcessor.formatDoubleValue(
+                                            acc[0],
+                                            "--",
+                                            2
+                                        ) + "°"
+                                    )
+                                }
+                                if (acc.size > 1) {
+                                    mHeadStates.yAcc.set(
+                                        DeviceStatusInfoProcessor.formatDoubleValue(
+                                            acc[1],
+                                            "--",
+                                            2
+                                        ) + "°"
+                                    )
+                                }
+                                if (acc.size > 2) {
+                                    mHeadStates.zAcc.set(
+                                        DeviceStatusInfoProcessor.formatDoubleValue(
+                                            acc[2],
+                                            "--",
+                                            2
+                                        ) + "°"
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+
             } catch (e: Exception) {
                 Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)

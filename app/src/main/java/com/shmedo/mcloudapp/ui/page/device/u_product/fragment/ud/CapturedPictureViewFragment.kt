@@ -25,7 +25,7 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
-import com.shmedo.mcloudapp.ui.page.device.image_preview.CustomPreviewAdapter
+import com.shmedo.mcloudapp.ui.adapter.CustomPreviewAdapter
 import com.shmedo.mcloudapp.ui.viewmodel.state.CapturedPictureViewViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor

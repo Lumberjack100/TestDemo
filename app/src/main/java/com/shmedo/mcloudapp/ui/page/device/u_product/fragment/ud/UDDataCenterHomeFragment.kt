@@ -39,7 +39,7 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/4/29
- * 描述： 一体化雷达泥位计数据链路主页面
+ * 描述： 一体化雷达水位/泥位计数据链路主页面
  */
 class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUniversalDataCenterHomeBinding

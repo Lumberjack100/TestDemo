@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m20s.fragment
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ul
 
 import android.os.Bundle
 import android.util.Log
@@ -24,9 +24,9 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/9/19
- * 描述： 网络信息
+ * 描述： 一体化裂缝计网络信息
  */
-class M20SNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
+class LR200NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -62,6 +62,7 @@ class M20SNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         )
                     )
                 }
+
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "IMEI",
@@ -71,7 +72,7 @@ class M20SNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "ICCID",
-                    value = stateInfo.cCID,
+                    value = stateInfo.iCCID,
                     isClipboard = true,
                     isBottomItem = true
                 )
@@ -134,5 +135,6 @@ class M20SNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
             }
         }
     }
+
 
 }

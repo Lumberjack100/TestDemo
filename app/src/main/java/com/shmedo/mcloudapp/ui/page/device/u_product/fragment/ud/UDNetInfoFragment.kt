@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m50.fragment
+package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
 import android.os.Bundle
 import android.util.Log
@@ -9,7 +9,9 @@ import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
-import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
@@ -26,10 +28,10 @@ import timber.log.Timber
 
 /**
  * 创建者：gonghe
- * 创建时间：2024/9/19
- * 描述： 基本信息
+ * 创建时间：2024/8/29
+ * 描述： 一体化雷达水位/泥位计网络信息
  */
-class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
+class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
 
 
@@ -38,11 +40,19 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         toolbarViewModel.toolbarTitleText.set("网络信息")
     }
 
+    override fun queryStatusInfo() {
+        commandItems.clear()
+
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "method=1")
+        commandItems.add(command)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
     override fun initStatusInfo(content: String) {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<M50CurrentStateInfo>(content)
+                    MoshiUtil.fromJson<UDCurrentStateInfo>(content)
                 }
                 if (stateInfo == null) {
                     binding.refreshLayout.showEmpty()
@@ -66,6 +76,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     name = "网络类型",
                     value = stateInfo.netType,
                 )
+
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "运营商",
@@ -100,7 +111,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "ICCID",
-                    value = stateInfo.ccid,
+                    value = stateInfo.iccid,
                     isClipboard = true
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
@@ -117,46 +128,43 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     value = stateInfo.bt_connected.compareAndReturn("1", "已连接", "未连接"),
                     textColorRes = if (stateInfo.bt_connected == "1") ColorUtils.getColor(
                         R.color.online_colorPrimary
-                    ) else 0
-                )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "CORS",
-                    value = stateInfo.corsEnableStatus.compareAndReturn("1", "已启用", "未启用"),
-                    textColorRes = if (stateInfo.corsEnableStatus == "1") ColorUtils.getColor(
-                        R.color.online_colorPrimary
                     ) else 0,
                     isBottomItem = true
                 )
 
-                if (stateInfo.dataCenterStatus != IOTConstants.NULL_KEY
+                if (stateInfo.dataCenterEnableStatus != IOTConstants.NULL_KEY
+                    && stateInfo.dataCenterLinkStatus != IOTConstants.NULL_KEY
                     && stateInfo.dataCenterPlatformType != IOTConstants.NULL_KEY
-                    && stateInfo.dataCenterStatus.isNotEmpty()
+                    && stateInfo.dataCenterEnableStatus.isNotEmpty()
+                    && stateInfo.dataCenterLinkStatus.isNotEmpty()
                     && stateInfo.dataCenterPlatformType.isNotEmpty()
                 ) {
                     groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
                     groupList.add(DeviceStatusInfoGroupItem("数据链路"))
 
                     //根据逗号分隔
-                    val onlineStatusList = stateInfo.dataCenterStatus.split(",".toRegex())
+                    val enableStatusList = stateInfo.dataCenterEnableStatus.split(",".toRegex())
+                        .dropLastWhile { it.isEmpty() }
+                    val onlineStatusList = stateInfo.dataCenterLinkStatus.split(",".toRegex())
                         .dropLastWhile { it.isEmpty() }
                     val platformTypeList = stateInfo.dataCenterPlatformType.split(",".toRegex())
                         .dropLastWhile { it.isEmpty() }
 
-                    onlineStatusList.forEachIndexed { index, status ->
+                    enableStatusList.forEachIndexed { index, enableStatus ->
                         val platformIndex = platformTypeList.getOrNull(index)?.toIntOrNull() ?: 0
                         val platformType = platformList.getOrNull(platformIndex) ?: "未知"
-                        val statusText = status.compareAndReturn(
-                            "1",
-                            "已连接",
-                            status.compareAndReturn("2", "未连接", "未启用")
-                        )
+                        val onlineStatus = onlineStatusList.getOrNull(index)
+                            ?.compareAndReturn("1", "已连接", "未连接") ?: "未连接"
 
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
                             name = "数据链路${index + 1}",
-                            value = "$statusText($platformType)",
-                            textColorRes = if (status == "0" || statusText == "未连接") 0 else ColorUtils.getColor(
+                            value = enableStatus.compareAndReturn(
+                                "1",
+                                "$onlineStatus($platformType)",
+                                "未启用"
+                            ),
+                            textColorRes = if (enableStatus == "0" || onlineStatus == "未连接") 0 else ColorUtils.getColor(
                                 R.color.online_colorPrimary
                             ),
                             isBottomItem = true
@@ -171,4 +179,5 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
             }
         }
     }
+
 }

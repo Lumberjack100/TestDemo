@@ -45,7 +45,6 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 val groupList = mutableListOf<Any>()
 
                 groupList.add(DeviceStatusInfoGroupItem("供电信息"))
-
                 val externalVoltage = stateInfo.ext_power_volt.toDoubleOrNull() ?: Double.MAX_VALUE
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
@@ -70,7 +69,6 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     ),
                     unit = "℃",
                 )
-
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "内部湿度",
@@ -218,8 +216,4 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 }

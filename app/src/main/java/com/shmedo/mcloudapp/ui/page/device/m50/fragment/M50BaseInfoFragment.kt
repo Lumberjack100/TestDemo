@@ -172,8 +172,4 @@ class M50BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 }

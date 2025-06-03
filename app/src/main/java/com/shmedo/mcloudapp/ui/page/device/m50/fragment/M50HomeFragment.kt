@@ -36,7 +36,6 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.model.AlarmConfigModule
 import com.shmedo.mcloudapp.model.BleConnect
@@ -86,7 +85,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
     private val iotParseManager: IOTParserManager by inject()
 
-    private var onlineStatus: Boolean = false//在线状态
+    private var lastOnlineStatus: Boolean = false//在线状态
     private var deviceStatusCheckJob: Job? = null
 
 
@@ -358,15 +357,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     inner class ClickProxy : BaseClickProxy() {
         override fun onToolbarIvClick() {
             if (bleViewModel.isConnected()) {
-                showMessage(
-                    StringUtils.getString(R.string.disconnect_device_warn),
-                    "温馨提示",
-                    "确定",
-                    {
-                        bleViewModel.disconnect()
-                    },
-                    "取消"
-                )
+                bleViewModel.disconnect()
             } else {
                 bleViewModel.launch(bleDevice!!)
             }
@@ -487,7 +478,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun onNetPlatformReady() {
-        onlineStatus = deviceInfo.onlineStatus
+        lastOnlineStatus = deviceInfo.onlineStatus
         if (deviceInfo.onlineStatus) {
             mHeadStates.iotPlatformStateText.set("米度平台在线")
             queryStatusInfo()
@@ -830,7 +821,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                         addDeviceLogItem(Log.ERROR, error.errorMsg)
                     }?.let { deviceDetailInfo ->
                         // 如果设备在线状态发生变化，更新UI
-                        if (deviceDetailInfo.deviceInfo.onlineStatus != onlineStatus) {
+                        if (deviceDetailInfo.deviceInfo.onlineStatus != lastOnlineStatus) {
                             onNetPlatformReady()
                         }
                     }

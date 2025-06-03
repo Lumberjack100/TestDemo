@@ -42,7 +42,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/8/23
- * @desc: 一体化雷达泥位计报警参数设置
+ * @desc: 一体化雷达水位/泥位计报警参数设置
  *
  */
 class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {

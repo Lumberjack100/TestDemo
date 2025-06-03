@@ -10,7 +10,6 @@ import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.cmd.base.iot_cmd.model.lb20s.LB20SCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
@@ -91,12 +90,11 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
     private fun queryInfo() {
         commandItems.clear()
 
-        val command =
-            if (productType == ProductType.LR200 || productType == ProductType.LB20S) IOTCommandUtil.getCommand(
-                IOTCommandType.QUERY_DEVICE_STATUS
-            ) else IOTCommandUtil.getCommand(
-                IOTCommandType.MD_GET_DEVICE_STATUS
-            )
+        val command = if (productType == ProductType.LB20S) IOTCommandUtil.getCommand(
+            IOTCommandType.QUERY_DEVICE_STATUS
+        ) else IOTCommandUtil.getCommand(
+            IOTCommandType.MD_GET_DEVICE_STATUS
+        )
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -146,9 +144,7 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
                             binding.refreshLayout.finish()
                         }
                         val content: String = result.data
-                        if (productType == ProductType.LR200) {
-                            initLR200StatusInfo(content)
-                        } else if (productType == ProductType.LB20S) {
+                        if (productType == ProductType.LB20S) {
                             initLB20SStatusInfo(content)
                         }
                     }
@@ -175,8 +171,10 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
                 val info = commonCurrentStateInfoList[0]
                 if (info.dataCenterUseSta != IOTConstants.NULL_KEY && info.dataCenterStatus != IOTConstants.NULL_KEY && info.dataCenterUseSta.isNotEmpty() && info.dataCenterStatus.isNotEmpty()) {
                     //根据逗号分隔
-                    val enableStatusList = info.dataCenterUseSta.split(",".toRegex()).dropLastWhile { it.isEmpty() }
-                    val onlineStatusList = info.dataCenterStatus.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                    val enableStatusList =
+                        info.dataCenterUseSta.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                    val onlineStatusList =
+                        info.dataCenterStatus.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                     tableAdapter.setAllItems(
                         getColumnHeaderList(enableStatusList),
                         getRowHeaderList(),
@@ -208,41 +206,6 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initLR200StatusInfo(content: String) {
-        launchWithViewLifecycle {
-            try {
-                val info = MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
-                    ?: return@launchWithViewLifecycle
-
-                //根据逗号分隔
-                val enableStatusList = ArrayList<String>()
-                val onlineStatusList = ArrayList<String>()
-                for (i in 1..centerNum)
-                    enableStatusList.add("1")
-
-                onlineStatusList.add(if (info.dataCenter1 == 1) "1" else "0")
-                onlineStatusList.add(if (info.dataCenter2 == 1) "1" else "0")
-                onlineStatusList.add(if (info.dataCenter3 == 1) "1" else "0")
-                onlineStatusList.add(if (info.dataCenter4 == 1) "1" else "0")
-
-                tableAdapter.setAllItems(
-                    getColumnHeaderList(enableStatusList),
-                    getRowHeaderList(),
-                    getCellDataList(enableStatusList, onlineStatusList)
-                )
-
-                mStates.signalValue.set(info._4g_signal.let {
-                    if (it <= 0)
-                        it
-                    else
-                        it * 2 - 113
-                })
-            } catch (e: Exception) {
-                Timber.e(e)
-            }
-        }
-    }
-
     private fun initLB20SStatusInfo(content: String) {
         launchWithViewLifecycle {
             try {
@@ -257,7 +220,8 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
 
                 if (info.datacenterStatus != IOTConstants.NULL_KEY && info.datacenterStatus.isNotEmpty()) {
                     //根据逗号分隔
-                    val onlineStatusList = info.datacenterStatus.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                    val onlineStatusList =
+                        info.datacenterStatus.split(",".toRegex()).dropLastWhile { it.isEmpty() }
                     tableAdapter.setAllItems(
                         getColumnHeaderList(enableStatusList),
                         getRowHeaderList(),

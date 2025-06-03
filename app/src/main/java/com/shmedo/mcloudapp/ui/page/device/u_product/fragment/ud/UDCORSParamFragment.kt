@@ -40,7 +40,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/8/28
- * @desc:  一体化雷达泥位计RTK测高参数
+ * @desc:  一体化雷达水位/泥位计RTK测高参数
  *
  */
 class UDCORSParamFragment : BaseIOTDeviceFragment() {

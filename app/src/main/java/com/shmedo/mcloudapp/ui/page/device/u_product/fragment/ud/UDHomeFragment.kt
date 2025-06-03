@@ -37,7 +37,6 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
-import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.model.AlarmConfigModule
@@ -65,7 +64,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDHomeViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
-import com.shmedo.mcloudapp.utils.UDDeviceStatusProcessor
+import com.shmedo.mcloudapp.utils.UDDeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -80,7 +79,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/8/21
- * @desc: 一体化雷达水位计首页
+ * @desc: 一体化雷达水位/泥位计首页
  *
  */
 class UDHomeFragment : BaseIOTDeviceFragment() {
@@ -90,6 +89,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
     private val iotParseManager: IOTParserManager by inject()
 
+    private var lastOnlineStatus: Boolean = false//在线状态
     private var deviceStatusCheckJob: Job? = null
     private var abnormalInfoJob: Job? = null
     private var queryMeasureResultTimeoutJob: Job? = null
@@ -388,15 +388,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     inner class ClickProxy : BaseClickProxy() {
         override fun onToolbarIvClick() {
             if (bleViewModel.isConnected()) {
-                showMessage(
-                    StringUtils.getString(R.string.disconnect_device_warn),
-                    "温馨提示",
-                    "确定",
-                    {
-                        bleViewModel.disconnect()
-                    },
-                    "取消"
-                )
+                bleViewModel.disconnect()
+
             } else {
                 bleViewModel.launch(bleDevice!!)
             }
@@ -534,6 +527,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun onNetPlatformReady() {
+        lastOnlineStatus = deviceInfo.onlineStatus
         if (deviceInfo.onlineStatus) {
             mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
             mHeadStates.iotPlatformStateText.set("米度平台在线")
@@ -862,7 +856,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         deviceWarn: Map<String, String>? = null
     ) {
         try {
-            val errorInfoList = UDDeviceStatusProcessor.processAbnormalInfo(deviceError, deviceWarn)
+            val errorInfoList = UDDeviceStatusHelper.processAbnormalInfo(deviceError, deviceWarn)
             handleAbnormalInfo(errorInfoList)
         } catch (e: Exception) {
             Timber.e(e)
@@ -1033,7 +1027,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     }?.let { deviceDetailInfo ->
                         deviceInfo = deviceDetailInfo.deviceInfo
                         // 如果设备在线状态发生变化，更新UI
-                        if (deviceInfo.onlineStatus != mHeadStates.isConnected.get()) {
+                        if (deviceInfo.onlineStatus != lastOnlineStatus) {
                             onNetPlatformReady()
                         }
                     }
