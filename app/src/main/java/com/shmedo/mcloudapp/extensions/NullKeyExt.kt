@@ -19,15 +19,15 @@ inline fun <reified T> T?.notNull(notNullAction: (T) -> Unit, nullAction: () -> 
     }
 }
 
-inline fun <reified T> T.notNullKey(action: (T) -> Unit) {
+inline fun <reified T> T.notNullKey(notNullKeyAction: (T) -> Unit) {
     if (this != IOTConstants.NULL_KEY) {
-        action.invoke(this)
+        notNullKeyAction.invoke(this)
     }
 }
 
-inline fun <reified T> T.notNullKey(action: (T) -> Unit, nullKeyAction: () -> Unit = {}) {
+inline fun <reified T> T.notNullKey(notNullKeyAction: (T) -> Unit, nullKeyAction: () -> Unit = {}) {
     if (this != IOTConstants.NULL_KEY) {
-        action.invoke(this)
+        notNullKeyAction.invoke(this)
     } else {
         nullKeyAction.invoke()
     }

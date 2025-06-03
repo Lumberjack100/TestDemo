@@ -19,9 +19,6 @@ import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702BaseIn
 import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702ModuleStatusInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702PortStatusInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702RunningStatusInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.UProductBaseInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ui.UIProductSensorInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ur.URProductSensorInfoFragment
 
 /**
  * 创建者：gonghe
@@ -59,55 +56,6 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
         )
         val fragmentList = mutableListOf<Fragment>()
         when (productType) {
-            ProductType.U_I_1 -> {//倾斜仪
-                fragmentList.add(
-                    UProductBaseInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    CommonCommunicationInfoFragment.newInstance().apply {
-                        arguments = CommonCommunicationInfoFragment.newBundleArguments(
-                            centerNum = 3,
-                            productType,
-                            communicateWay,
-                            deviceInfo,
-                            bleDevice,
-                        )
-                    }
-                )
-                fragmentList.add(
-                    UIProductSensorInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-            }
-
-            ProductType.U_R_1 -> {//一体化雨量计
-                fragmentList.add(
-                    UProductBaseInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    CommonCommunicationInfoFragment.newInstance().apply {
-                        arguments = CommonCommunicationInfoFragment.newBundleArguments(
-                            centerNum = 3,
-                            productType,
-                            communicateWay,
-                            deviceInfo,
-                            bleDevice,
-                        )
-                    }
-                )
-                fragmentList.add(
-                    URProductSensorInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-            }
-
-
             ProductType.COLLECTOR_R_1,
             ProductType.BHY,
             ProductType.DAS -> {

@@ -218,8 +218,4 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
 }

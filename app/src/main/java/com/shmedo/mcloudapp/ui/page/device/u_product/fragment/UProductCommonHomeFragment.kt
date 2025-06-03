@@ -125,6 +125,7 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        mHeadStates.productType.set(productType)
         mHeadStates.productLogoResId.set(
             when (productType) {
                 ProductType.U_I_1 -> R.drawable.device_logo_qingxieyi //倾斜仪
@@ -620,7 +621,11 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
 
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList()
-                        initStatusInfo(result.data)
+                        if (productType == ProductType.LR200) {
+                            initLR200StatusInfo(result.data)
+                        } else if (productType == ProductType.U_R_1) {
+                            initURStatusInfo(result.data)
+                        }
                     }
                 }
             }
@@ -649,7 +654,68 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initStatusInfo(content: String) {
+    private fun initLR200StatusInfo(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val stateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
+                } ?: return@launchWithViewLifecycle
+
+                mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
+
+                mHeadStates.xAngle.set(
+                    DeviceStatusInfoProcessor.formatDoubleValue(
+                        stateInfo.x_Angle,
+                        "--",
+                        2
+                    ) + "°"
+                )
+
+                mHeadStates.yAngle.set(
+                    DeviceStatusInfoProcessor.formatDoubleValue(
+                        stateInfo.y_Angle,
+                        "--",
+                        2
+                    ) + "°"
+                )
+
+                mHeadStates.zAngle.set(
+                    DeviceStatusInfoProcessor.formatDoubleValue(
+                        stateInfo.z_Angle,
+                        "--",
+                        2
+                    ) + "°"
+                )
+
+                mHeadStates.lFInitial.set(
+                    DeviceStatusInfoProcessor.formatDoubleValue(
+                        stateInfo.lF_initial,
+                        "--",
+                        2
+                    ) + "mm"
+                )
+                mHeadStates.lFCurrent.set(
+                    DeviceStatusInfoProcessor.formatDoubleValue(
+                        stateInfo.lF_current,
+                        "--",
+                        2
+                    ) + "mm"
+                )
+                mHeadStates.lFCumulative.set(
+                    DeviceStatusInfoProcessor.formatDoubleValue(
+                        stateInfo.lF_Cumulative,
+                        "--",
+                        2
+                    ) + "mm"
+                )
+            } catch (e: Exception) {
+                Timber.Forest.e(e)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
+    private fun initURStatusInfo(content: String) {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
@@ -675,6 +741,8 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
                 )
                 mHeadStates.deviceStatusCode.set(if (deviceAbnormalList.isEmpty()) "0" else "-3")
                 mHeadStates.warnErrorText.set(status)
+
+                mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
 
                 mHeadStates.xAngle.set(
                     DeviceStatusInfoProcessor.formatDoubleValue(

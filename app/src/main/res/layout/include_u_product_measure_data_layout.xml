@@ -4,9 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="stateVM"
             type="com.shmedo.mcloudapp.ui.viewmodel.state.UProductCommonHomeViewModel" />
+
+        <import type="com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType" />
 
         <variable
             name="click"
@@ -39,32 +42,12 @@
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_10"
-            android:text='@{"X轴角度："+stateVM.xAngle}'
-            android:textColor="@color/title_text_color_black_90"
-            android:textSize="@dimen/page_content_item_text_size_14"
-            tools:text="X轴角度：3.22°" />
+        <include
+            visible='@{stateVM.productType == ProductType.LR200}'
+            layout="@layout/include_lr200_product_measure_data_layout"
+            app:click="@{click}"
+            app:stateVM="@{stateVM}" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_10"
-            android:text='@{"Y轴角度："+stateVM.yAngle}'
-            android:textColor="@color/title_text_color_black_90"
-            android:textSize="@dimen/page_content_item_text_size_14"
-            tools:text="Y轴角度：3.22°" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_size_10"
-            android:text='@{"Z轴角度："+stateVM.zAngle}'
-            android:textColor="@color/title_text_color_black_90"
-            android:textSize="@dimen/page_content_item_text_size_14"
-            tools:text="Z轴角度：3.22°" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
@@ -89,12 +72,12 @@
                 android:layout_weight="1" />
 
             <com.google.android.material.button.MaterialButton
-                android:visibility="invisible"
                 style="@style/MeasureData_Button_Style"
                 android:layout_marginStart="@dimen/dimen_size_10"
                 android:onClick="@{()->click.onGoToSensorDataHistoryClick()}"
                 android:text='历史'
                 android:textColor="@color/measure_data_button_text_color"
+                android:visibility="invisible"
                 app:backgroundTint="@drawable/measure_data_button_background_tint"
                 app:icon="@drawable/ic_device_sensor_data_history"
                 app:iconSize="@dimen/dimen_size_18"

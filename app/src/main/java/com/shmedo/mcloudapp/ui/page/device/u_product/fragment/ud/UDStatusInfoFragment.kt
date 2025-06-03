@@ -27,7 +27,7 @@ import timber.log.Timber
  * @desc: 一体化雷达水位/泥位计电池、传感器等信息
  *
  */
-class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
+class UDStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
@@ -286,8 +286,5 @@ class UDSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
+
 }

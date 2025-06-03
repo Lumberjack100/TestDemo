@@ -1,31 +1,45 @@
 package com.shmedo.mcloudapp.ui.page.device.u_product.fragment
 
+import android.os.Bundle
 import android.util.Log
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.utils.models
-import com.hjq.toast.Toaster
-import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo2
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
-import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoFragment
+import com.shmedo.mcloudapp.model.DeviceStatusInfoTextSwitcherItem
+import com.shmedo.mcloudapp.model.GapItem
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-class UProductBaseInfoFragment : BaseDeviceStatusInfoFragment() {
-    private val deviceAbnormalList: ArrayList<String> = ArrayList()
+class UProductBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
+    private var abnormalInfoJob: Job? = null
+
+    private var textSwitcherItem: DeviceStatusInfoTextSwitcherItem? = null
+
+
+    override fun initView(savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
+        toolbarViewModel.toolbarTitleText.set("基本信息")
+    }
 
     override fun queryStatusInfo() {
+        abnormalInfoJob?.cancel()
         commandItems.clear()
 
         val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS)
@@ -43,30 +57,33 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     binding.refreshLayout.showEmpty()
                     return@launchWithViewLifecycle
                 }
+
                 val stateInfo = commonCurrentStateInfoList[0]
                 binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
 
+                groupList.add(DeviceStatusInfoGroupItem("设备信息"))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "设备SN",
                     value = stateInfo.sn,
                 )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "设备IMEI",
-                    value = stateInfo.imei,
+
+                val deviceAbnormalList = DeviceStatusHelper.checkDeviceAbnormal(stateInfo)
+                val statusText = if (deviceAbnormalList.isEmpty()) "正常" else "故障"
+                textSwitcherItem = DeviceStatusInfoTextSwitcherItem(
+                    name = "设备状态",
+                    value = statusText,
+                    deviceStatusCode =  if (deviceAbnormalList.isEmpty()) "0" else "-3",
+                    textColorRes = when (statusText) {
+                        "正常" -> ColorUtils.getColor(R.color.online_colorPrimary)
+
+                        else -> 0
+                    }
                 )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "设备IMSI",
-                    value = stateInfo.imsi,
-                )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "设备ICCID",
-                    value = stateInfo.ccid,
-                )
+                groupList.add(textSwitcherItem!!)
+                handleAbnormalInfo(deviceAbnormalList)
+
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "硬件版本",
@@ -77,59 +94,31 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoFragment() {
                     name = "固件版本",
                     value = stateInfo.firmwareVersion,
                 )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBatteryLevel(
-                    groupList,
-                    name = "外部供电电压",
-                    value = stateInfo.extPowerVolt,
-                    defaultValue = "0",
-                    downLimitValue = 5.0,
-                    digit = 2,
-                    unit = "V",
-                )
-                deviceAbnormalList.clear()
-                deviceAbnormalList.addAll(DeviceStatusHelper.checkDeviceAbnormal(stateInfo))
-                groupList.add(
-                    DeviceStatusInfoBasicItem(
-                        name = "设备状态",
-                        value = if (deviceAbnormalList.isEmpty()) "正常" else "异常",
-                        textColorRes = if (deviceAbnormalList.isEmpty()) ColorUtils.getColor(
-                            R.color.online_colorPrimary
-                        ) else ColorUtils.getColor(R.color.error_FF4400),
-                        isClickable = deviceAbnormalList.isNotEmpty()
-                    )
-                )
-                if (stateInfo.worktime != IOTConstants.NULL_KEY || stateInfo.emmcStorage != IOTConstants.NULL_KEY)
-                    groupList.add(DeviceStatusInfoGroupItem("运行数据"))
-
                 stateInfo.worktime.toIntOrNull()?.let {
                     groupList.add(
                         DeviceStatusInfoBasicItem(
-                            name = "运行时间",
-                            value = DeviceStatusInfoProcessor.millis2FitTimeSpan(
-                                it * 1000L,
-                                3
-                            )
+                            name = "累计运行时间",
+                            value = DeviceStatusInfoProcessor.millis2FitTimeSpan(it * 1000L, 3),
+                            isBottomItem = true
                         )
                     )
                 }
-                if (stateInfo.emmcStorage != IOTConstants.NULL_KEY && stateInfo.emmcFree != IOTConstants.NULL_KEY) {
-                    val free = DeviceStatusInfoProcessor.formatDoubleValue(
-                        stateInfo.emmcFree.replace(
-                            "MB",
-                            ""
-                        ), "0", 1
+
+                stateInfo.emmcStorage.notNullKey {
+                    groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                    groupList.add(DeviceStatusInfoGroupItem("存储信息"))
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                        groupList,
+                        name = "可用空间",
+                        value = stateInfo.emmcFree,
+                        unit = "MB"
                     )
-                    val total = DeviceStatusInfoProcessor.formatDoubleValue(
-                        stateInfo.emmcStorage.replace(
-                            "MB",
-                            ""
-                        ), "0", 1
-                    )
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "存储状态",
-                            value = "${free}/${total}MB"
-                        )
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                        groupList,
+                        name = "总空间",
+                        value = stateInfo.emmcStorage,
+                        unit = "MB",
+                        isBottomItem = true
                     )
                 }
 
@@ -141,29 +130,33 @@ class UProductBaseInfoFragment : BaseDeviceStatusInfoFragment() {
         }
     }
 
-    override fun processItemClick(item: DeviceStatusInfoBasicItem) {
-        if (item.name == "设备状态" && item.value == "异常") {
-            showErrorModulesInfoDialog()
-        }
-    }
+    /**
+     * 处理设备异常信息轮播展示
+     * 每隔3秒切换一次，取出异常信息列表中的每一条异常信息，轮播显示
+     */
+    private fun handleAbnormalInfo(errorInfoList: List<String>) {
+        // 取消之前的job（如果存在）
+        abnormalInfoJob?.cancel()
 
-    private fun showErrorModulesInfoDialog() {
-        if (deviceAbnormalList.isEmpty()) {
-            Toaster.show("设备异常信息为空")
+        //如果列表为空，直接返回
+        if (errorInfoList.isEmpty()) {
             return
         }
-        XPopup.Builder(context)
-            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-            .enableDrag(false)
-            .asCenterList(
-                "异常信息", deviceAbnormalList.toTypedArray(),
-                null, -1,
-                null, 0, R.layout.custom_xpopup_adapter_abnormal_info
-            )
-            .show()
-    }
-
-    companion object {
-        fun newInstance() = UProductBaseInfoFragment()
+        if (errorInfoList.size == 1) {
+            textSwitcherItem?.refreshValue(value = errorInfoList[0])
+            return
+        }
+        abnormalInfoJob = launchWithViewLifecycle {
+            flow {
+                while (true) {
+                    errorInfoList.forEach { errorInfo ->
+                        emit(errorInfo)
+                        delay(1500) // 延迟3秒
+                    }
+                }
+            }.collect { errorInfo ->
+                textSwitcherItem?.refreshValue(value = errorInfo)
+            }
+        }
     }
 }

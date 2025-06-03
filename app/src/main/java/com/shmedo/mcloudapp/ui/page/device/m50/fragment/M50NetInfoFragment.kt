@@ -146,22 +146,17 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     onlineStatusList.forEachIndexed { index, status ->
                         val platformIndex = platformTypeList.getOrNull(index)?.toIntOrNull() ?: 0
                         val platformType = platformList.getOrNull(platformIndex) ?: "未知"
-                        val onlineStatus =
-                            status.compareAndReturn(
-                                "1",
-                                "已连接",
-                                status.compareAndReturn("2", "未连接", "未启用")
-                            )
+                        val statusText = status.compareAndReturn(
+                            "1",
+                            "已连接",
+                            status.compareAndReturn("2", "未连接", "未启用")
+                        )
 
                         DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                             groupList,
                             name = "数据链路${index + 1}",
-                            value = status.compareAndReturn(
-                                "0",
-                                "未启用",
-                                "$onlineStatus($platformType)"
-                            ),
-                            textColorRes = if (status == "0" || onlineStatus == "未连接") 0 else ColorUtils.getColor(
+                            value = "$statusText($platformType)",
+                            textColorRes = if (status == "0" || statusText == "未连接") 0 else ColorUtils.getColor(
                                 R.color.online_colorPrimary
                             ),
                             isBottomItem = true
@@ -175,10 +170,5 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
     }
 }

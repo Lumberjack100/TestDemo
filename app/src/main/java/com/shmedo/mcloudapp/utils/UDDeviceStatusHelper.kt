@@ -3,7 +3,7 @@ package com.shmedo.mcloudapp.utils
 /**
  * 一体化雷达设备状态处理工具类
  */
-object UDDeviceStatusProcessor {
+object UDDeviceStatusHelper {
 
     /**
      * 处理设备异常信息
