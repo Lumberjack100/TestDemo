@@ -12,9 +12,9 @@ import com.shmedo.mcloudapp.ui.page.device.das.fragment.deviceinfo.DasCommunicat
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.deviceinfo.DasSensorInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.lb20s.fragment.deviceinfo.LB20SBaseInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.lb20s.fragment.deviceinfo.LB20SGatewayInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.m20.fragment.deviceinfo.M20BaseInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.m20.fragment.deviceinfo.M20CommunicationInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.m20.fragment.deviceinfo.M20SensorInfoFragment
+import com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20.M20BaseInfoFragment
+import com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20.M20CommunicationInfoFragment
+import com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20.M20SensorInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702BaseInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702ModuleStatusInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702PortStatusInfoFragment

@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.m20s.fragment.M20SRadioSettingFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.M20SRadioSettingFragment.ClickProxy" />
 
     </data>
 

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m20s.fragment
+package com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50
 
 import android.os.Bundle
 import android.util.Log
@@ -11,59 +11,57 @@ import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.RtkParamEntity
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRWirelessNetEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.RtkParamInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRWirelessNet
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentM20sWorkModelBinding
+import com.shmedo.mcloudapp.databinding.FragmentM50NetworkConfigBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.M20SWorkModelViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.M50NetworkConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-class M20SWorkModelFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentM20sWorkModelBinding
+/**
+ * @author：gonghe
+ * @time: 2024/8/25
+ * @desc: M50网络配置页面
+ */
+class M50NetworkConfigFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentM50NetworkConfigBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: M20SWorkModelViewModel by viewModels()
+    private val mStates: M50NetworkConfigViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
-
-    private val modelList = arrayListOf("基站", "测站")
-    private val frontCalcList = arrayListOf("关", "开", "自动")
+    private val networkTypeList = arrayListOf("eSIM", "外置SIM", "自动")
 
     override fun initViewModel() {
         super.initViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(
-            R.layout.fragment_m20s_work_model,
-            BR.stateVM,
-            mStates
-        )
+        return DataBindingConfig(R.layout.fragment_m50_network_config, BR.stateVM, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentM20sWorkModelBinding
-        binding.llToolbar.toolbar.title = "工作模式"
+        binding = getBinding() as FragmentM50NetworkConfigBinding
+        toolbarViewModel.toolbarTitleText.set("网络配置")
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }
-        registerOnBackPressedDispatcher {
-            handleBackByCheckDataModified()
-        }
+        registerOnBackPressedDispatcher { handleBackByCheckDataModified() }
         initRefresh()
     }
 
@@ -87,51 +85,34 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
     }
 
     private fun resetDefaultParams() {
-        mStates.model.set(modelList[1])//默认测站
-        mStates.frontCalc.set(frontCalcList[2])//默认自动
+        mStates.networkType.set(networkTypeList[1]) // 默认外置SIM
+        mStates.apnName.set("")
+        mStates.userName.set("")
+        mStates.pwd.set("")
     }
 
     inner class ClickProxy : BaseClickProxy() {
-        /**
-         * 选择模式
-         */
-        fun onModelChooseClick() {
-            val selectedIndex = modelList.indexOf(mStates.model.get())
+
+        /** 选择网络类型 */
+        fun onNetworkTypeSelected() {
+            val selectedIndex = networkTypeList.indexOf(mStates.networkType.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .isDestroyOnDismiss(true) // 对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", modelList.toTypedArray(),
+                    "", networkTypeList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
-                        mStates.model.set(text)
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                        mStates.networkType.set(text)
+                    },
+                    0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
         }
 
-        fun onFrontCalcChooseClick() {
-            val selectedIndex = frontCalcList.indexOf(mStates.frontCalc.get())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "", frontCalcList.toTypedArray(),
-                    null, selectedIndex,
-                    { position, text ->
-                        mStates.frontCalc.set(text)
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
-        }
-
-        /**
-         * 恢复默认配置
-         */
+        /** 恢复默认配置 */
         fun onResetClick() {
             resetDefaultParams()
         }
@@ -147,15 +128,21 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initSaveCommand() {
-        val entity = RtkParamEntity(
-            mode = (modelList.indexOf(mStates.model.get()) + 1).toString(),
-            frontCalc = frontCalcList.indexOf(mStates.frontCalc.get()).toString()
-        )
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.GM_MD_CFG_RTK,
-            entity.toCommandString()
-        )
+
+        val networkConfigEntity =
+            MRWirelessNetEntity(
+                switch = "1",
+                networkType = networkTypeList.indexOf(mStates.networkType.get()).toString(),
+                apn = mStates.apnName.get().ifEmpty { IOTConstants.NULL_KEY },
+                username = mStates.userName.get().ifEmpty { IOTConstants.NULL_KEY },
+                password = mStates.pwd.get().ifEmpty { IOTConstants.NULL_KEY }
+            )
+        val command =
+            IOTCommandUtil.getCommand(
+                IOTCommandType.MR_MD_SET_DATA_NETWORK,
+                networkConfigEntity.toCommandString()
+            )
         commandItems.add(command)
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
@@ -168,10 +155,7 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
 
     private fun queryData() {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.GM_MD_CFG_RTK,
-            "method=0"
-        )
+        val command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DATA_NETWORK)
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -231,30 +215,36 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.GM_MD_CFG_RTK -> {
-                val result = if (cmdStr.contains("method=0"))
-                    iotParseManager.parse<RtkParamInfo>(
+            IOTCommandType.MR_MD_GET_DATA_NETWORK -> {
+                val result =
+                    iotParseManager.parse<MRWirelessNet>(
                         cmdStr,
-                        IOTCommandType.GM_MD_CFG_RTK
+                        IOTCommandType.MR_MD_GET_DATA_NETWORK
                     )
-                else iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg =
-                            if (cmdStr.contains("method=0")) "查询信息出错: ${result.message}" else "数据保存出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        val errMsg = "查询参数出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
-                        }
-                        if (cmdStr.contains("method=0")) {
-                            initParamData(result.data as RtkParamInfo)
-                        } else {
-                            processNavigateUp()
-                        }
+                        sendCommandFromCmdList { binding.refreshLayout.finish() }
+                        initNetworkData(result.data)
+                    }
+                }
+            }
+
+            IOTCommandType.MR_MD_SET_DATA_NETWORK -> {
+                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "数据保存出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList { processNavigateUp() }
                     }
                 }
             }
@@ -265,19 +255,17 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initParamData(info: RtkParamInfo) {
+    private fun initNetworkData(networkConfig: MRWirelessNet) {
         try {
-            info.mode.toIntOrNull()?.let {
-                if (it in 1..modelList.size) {
-                    mStates.model.set(modelList[it - 1])
+            // 设置网络类型
+            networkConfig.networkType.toIntOrNull()?.let {
+                if (it in networkTypeList.indices) {
+                    mStates.networkType.set(networkTypeList[it])
                 }
             }
-
-            info.frontCalc.toIntOrNull()?.let {
-                if (it in frontCalcList.indices) {
-                    mStates.frontCalc.set(frontCalcList[it])
-                }
-            }
+            mStates.apnName.set(networkConfig.apn)
+            mStates.userName.set(networkConfig.username)
+            mStates.pwd.set(networkConfig.password)
 
             // 保存初始状态
             mStates.saveInitialState()

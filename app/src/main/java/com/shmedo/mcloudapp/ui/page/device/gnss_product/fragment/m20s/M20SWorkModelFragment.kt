@@ -1,47 +1,45 @@
-package com.shmedo.mcloudapp.ui.page.device.m50.fragment
+package com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s
 
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
+import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
+import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.m50.M50CorsEntity
+import com.lxj.xpopup.XPopup
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.RtkParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CorsParam
+import com.shmedo.lib.cmd.base.iot_cmd.model.common.RtkParamInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentM50CorsConfigBinding
+import com.shmedo.mcloudapp.databinding.FragmentM20sWorkModelBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.M50CORSConfigViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.M20SWorkModelViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
-/**
- * @author：gonghe
- * @time: 2024/8/28
- * @desc: M50 CORS接入页面
- *
- */
-class M50CORSConfigFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentM50CorsConfigBinding
+class M20SWorkModelFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentM20sWorkModelBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: M50CORSConfigViewModel by viewModels()
+    private val mStates: M20SWorkModelViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
+    private val modelList = arrayListOf("基站", "测站")
+    private val frontCalcList = arrayListOf("关", "开", "自动")
 
     override fun initViewModel() {
         super.initViewModel()
@@ -49,7 +47,7 @@ class M50CORSConfigFragment : BaseIOTDeviceFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_m50_cors_config,
+            R.layout.fragment_m20s_work_model,
             BR.stateVM,
             mStates
         )
@@ -58,8 +56,8 @@ class M50CORSConfigFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentM50CorsConfigBinding
-        toolbarViewModel.toolbarTitleText.set("CORS接入")
+        binding = getBinding() as FragmentM20sWorkModelBinding
+        binding.llToolbar.toolbar.title = "工作模式"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }
@@ -89,14 +87,48 @@ class M50CORSConfigFragment : BaseIOTDeviceFragment() {
     }
 
     private fun resetDefaultParams() {
-        mStates.isOpened.set(false)
-        mStates.domain.set("rtk.ntrip.qxwz.com")
-        mStates.port.set("8002")
-        mStates.diffAccount.set("")
-        mStates.diffPassword.set("")
+        mStates.model.set(modelList[1])//默认测站
+        mStates.frontCalc.set(frontCalcList[2])//默认自动
     }
 
     inner class ClickProxy : BaseClickProxy() {
+        /**
+         * 选择模式
+         */
+        fun onModelChooseClick() {
+            val selectedIndex = modelList.indexOf(mStates.model.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "", modelList.toTypedArray(),
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.model.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        fun onFrontCalcChooseClick() {
+            val selectedIndex = frontCalcList.indexOf(mStates.frontCalc.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "", frontCalcList.toTypedArray(),
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.frontCalc.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
         /**
          * 恢复默认配置
          */
@@ -104,10 +136,7 @@ class M50CORSConfigFragment : BaseIOTDeviceFragment() {
             resetDefaultParams()
         }
 
-        /**
-         * 连接/断开
-         */
-        fun onConnectClick() {
+        override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
@@ -118,18 +147,14 @@ class M50CORSConfigFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initSaveCommand() {
-        commandItems.clear()
-
-        val networkConfigEntity = M50CorsEntity(
-            sw = "1",
-            host = mStates.domain.get().ifEmpty { IOTConstants.NULL_KEY },
-            port = mStates.port.get().ifEmpty { IOTConstants.NULL_KEY },
-            username = mStates.diffAccount.get().ifEmpty { IOTConstants.NULL_KEY },
-            password = mStates.diffPassword.get().ifEmpty { IOTConstants.NULL_KEY }
+        val entity = RtkParamEntity(
+            mode = (modelList.indexOf(mStates.model.get()) + 1).toString(),
+            frontCalc = frontCalcList.indexOf(mStates.frontCalc.get()).toString()
         )
+        commandItems.clear()
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.M50_MD_SET_CORS,
-            networkConfigEntity.toCommandString()
+            IOTCommandType.GM_MD_CFG_RTK,
+            entity.toCommandString()
         )
         commandItems.add(command)
 
@@ -143,10 +168,11 @@ class M50CORSConfigFragment : BaseIOTDeviceFragment() {
 
     private fun queryData() {
         commandItems.clear()
-
-        val command = IOTCommandUtil.getCommand(IOTCommandType.M50_MD_GET_CORS)
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.GM_MD_CFG_RTK,
+            "method=0"
+        )
         commandItems.add(command)
-
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
@@ -205,36 +231,30 @@ class M50CORSConfigFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.M50_MD_GET_CORS -> {
-                val result =
-                    iotParseManager.parse<M50CorsParam>(
+            IOTCommandType.GM_MD_CFG_RTK -> {
+                val result = if (cmdStr.contains("method=0"))
+                    iotParseManager.parse<RtkParamInfo>(
                         cmdStr,
-                        IOTCommandType.M50_MD_GET_CORS
+                        IOTCommandType.GM_MD_CFG_RTK
                     )
+                else iotParseManager.parse<CommonSettingCmdResult>(cmdStr)
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询参数出错: ${result.message}"
-                        handleFailureResult(errMsg, isMessageDialog = true)
+                        val errMsg =
+                            if (cmdStr.contains("method=0")) "查询信息出错: ${result.message}" else "数据保存出错: ${result.message}"
+                        handleFailureResult(errMsg)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList { binding.refreshLayout.finish() }
-                        initParamData(result.data)
-                    }
-                }
-            }
-
-            IOTCommandType.M50_MD_SET_CORS -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "数据保存出错: ${result.message}"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList { processNavigateUp() }
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        if (cmdStr.contains("method=0")) {
+                            initParamData(result.data as RtkParamInfo)
+                        } else {
+                            processNavigateUp()
+                        }
                     }
                 }
             }
@@ -245,14 +265,19 @@ class M50CORSConfigFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initParamData(m50CorsParam: M50CorsParam) {
+    private fun initParamData(info: RtkParamInfo) {
         try {
-            // 设置网络类型
-            mStates.isOpened.set(m50CorsParam.sw == "1")
-            mStates.domain.set(m50CorsParam.host)
-            mStates.port.set(m50CorsParam.port)
-            mStates.diffAccount.set(m50CorsParam.username)
-            mStates.diffPassword.set(m50CorsParam.password)
+            info.mode.toIntOrNull()?.let {
+                if (it in 1..modelList.size) {
+                    mStates.model.set(modelList[it - 1])
+                }
+            }
+
+            info.frontCalc.toIntOrNull()?.let {
+                if (it in frontCalcList.indices) {
+                    mStates.frontCalc.set(frontCalcList[it])
+                }
+            }
 
             // 保存初始状态
             mStates.saveInitialState()
@@ -261,6 +286,7 @@ class M50CORSConfigFragment : BaseIOTDeviceFragment() {
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
+
     override fun handleBackByCheckDataModified() {
         if (mStates.isDataModified.value == true) {
             showExitConfirmationDialog()
@@ -273,8 +299,4 @@ class M50CORSConfigFragment : BaseIOTDeviceFragment() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
     }
-
 }
-
-
-

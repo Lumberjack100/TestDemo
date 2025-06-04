@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m20.fragment.deviceinfo
+package com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20
 
 import android.os.Bundle
 import android.util.Log

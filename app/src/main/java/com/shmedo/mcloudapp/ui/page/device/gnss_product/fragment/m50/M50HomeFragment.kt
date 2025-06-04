@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m50.fragment
+package com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50
 
 import android.os.Bundle
 import android.util.Log

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.m20.fragment
+package com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20
 
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
@@ -21,7 +21,6 @@ import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.RebootModule
 import com.shmedo.mcloudapp.model.RunningStatusModule
 import com.shmedo.mcloudapp.model.SetupWizard
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDeviceHomeFragment
@@ -82,7 +81,7 @@ class M20HomeFragment : UniversalDeviceHomeFragment() {
             }
 
             is DataCenterModule -> {
-                val bundle = UniversalDataCenterHomeFragment.newBundleArguments(
+                val bundle = UniversalDataCenterHomeFragment.Companion.newBundleArguments(
                     4,
                     productType,
                     communicateWay,
@@ -96,7 +95,7 @@ class M20HomeFragment : UniversalDeviceHomeFragment() {
             }
 
             is CommandDebugConfigModule -> {
-                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+                val bundle = BleCustomCommandLogPrintFragment.Companion.newBundleArguments(
                     true,
                     productType,
                     communicateWay,
@@ -108,7 +107,7 @@ class M20HomeFragment : UniversalDeviceHomeFragment() {
 
             else -> {
                 if (configModule.navId != 0) {
-                    val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                    val bundle = newBundleArguments(
                         productType,
                         communicateWay,
                         deviceInfo,

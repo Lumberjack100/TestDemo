@@ -14,7 +14,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50CORSConfigFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50CORSConfigFragment.ClickProxy" />
 
     </data>
 
