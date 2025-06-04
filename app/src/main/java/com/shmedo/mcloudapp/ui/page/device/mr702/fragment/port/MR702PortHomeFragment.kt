@@ -35,7 +35,7 @@ import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.adapter.PageAdapter
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.MR702PortSelectionPartShadowPopupView
+import com.shmedo.mcloudapp.ui.page.device.collector_product.dialog.MR702PortSelectionPartShadowPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel

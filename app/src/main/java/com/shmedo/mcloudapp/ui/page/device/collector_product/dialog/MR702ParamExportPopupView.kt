@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.dialog
+package com.shmedo.mcloudapp.ui.page.device.collector_product.dialog
 
 import android.content.Context
 import androidx.databinding.DataBindingUtil

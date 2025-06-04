@@ -33,8 +33,8 @@ import com.shmedo.mcloudapp.model.RebootModule
 import com.shmedo.mcloudapp.model.TelemetryDataModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.TelemetryPopupView
-import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.TimeCalibrationPopupView
+import com.shmedo.mcloudapp.ui.dialog.TelemetryPopupView
+import com.shmedo.mcloudapp.ui.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommonDeviceHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel

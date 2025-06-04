@@ -23,8 +23,8 @@ import com.shmedo.mcloudapp.databinding.FragmentMr702RunningStatusInfoBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.model.MRRunningDataItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.CommunicationDataTableAdapter
-import com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.model.CommunicationDataCellModel
+import com.shmedo.mcloudapp.ui.widget.tableview.CommunicationDataTableAdapter
+import com.shmedo.mcloudapp.ui.widget.tableview.model.CommunicationDataCellModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702DeviceStatusInfoParentViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.android.ext.android.inject

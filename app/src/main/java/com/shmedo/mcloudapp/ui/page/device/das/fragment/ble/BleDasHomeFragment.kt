@@ -50,7 +50,7 @@ import com.shmedo.mcloudapp.model.TelemetryDataModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment
-import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.TimeCalibrationPopupView
+import com.shmedo.mcloudapp.ui.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.state.BleDasHomeFragmentViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel

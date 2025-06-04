@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.dialog
+package com.shmedo.mcloudapp.ui.page.device.collector_product.dialog
 
 import android.content.Context
 import android.view.View
@@ -6,63 +6,64 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import com.blankj.utilcode.util.TimeUtils
+import com.hjq.toast.Toaster
 import com.lxj.xpopup.core.CenterPopupView
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.CustomMr702DeviceDataUploadPopupBinding
+import com.shmedo.mcloudapp.databinding.CustomManualSettingPopupBinding
+import com.shmedo.mcloudapp.model.MonitoringElement
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702EquipmentOperationViewModel
 
 /**
  * 创建者：gonghe
  *
- * 创建时间：2023/12/8
+ * 创建时间：2023/12/6
  *
- * 描述： MR702 设备数据上传
+ * 描述： 人工置数
  *
  *
  */
-class MR702DeviceDataUploadPopupView(context: Context) : CenterPopupView(context) {
-    private lateinit var binding: CustomMr702DeviceDataUploadPopupBinding
+class MR702ManualSettingPopupView(context: Context) : CenterPopupView(context) {
+    private lateinit var binding: CustomManualSettingPopupBinding
     private lateinit var stateVM: MR702EquipmentOperationViewModel
 
     private var title: String = ""
-    private val data: List<String> = arrayListOf("日志", "传感器数据")
-    private var selectedType: Int = 1
+    private lateinit var monitoringElementList: List<MonitoringElement>
+    private lateinit var data: List<String>
+    private var selectedElement: MonitoringElement? = null
     private var clickListener: OnClickListener? = null
-
-    private var startTime: String = TimeUtils.millis2String(
-        TimeUtils.getNowMills() - 10L * 24 * 3600 * 1000,
-        "yyyy/MM/dd"
-    )//10年前
-    private val endTime: String = TimeUtils.millis2String(TimeUtils.getNowMills(), "yyyy/MM/dd")
 
 
     fun setTitle(
         title: String = "",
+        list: List<MonitoringElement>,
         vm: MR702EquipmentOperationViewModel
-    ): MR702DeviceDataUploadPopupView {
+    ): MR702ManualSettingPopupView {
         this.title = title
+        this.monitoringElementList = list.toList()
+        this.data = monitoringElementList.map { it.name }
         this.stateVM = vm
         return this
     }
 
-    fun setClickListener(clickListener: OnClickListener): MR702DeviceDataUploadPopupView {
+    fun setClickListener(clickListener: OnClickListener): MR702ManualSettingPopupView {
         this.clickListener = clickListener
         return this
     }
 
     override fun getImplLayoutId(): Int {
-        return R.layout.custom_mr702_device_data_upload_popup
+        return R.layout.custom_manual_setting_popup
     }
 
     override fun onCreate() {
         super.onCreate()
         binding = DataBindingUtil.bind(popupImplView)!!
         binding.stateVM = stateVM
+        binding.stateVM!!.observationTime.set(TimeUtils.getNowString())
+        binding.stateVM!!.unit.set(monitoringElementList[0].engUnit)
 
         if (title.isNotEmpty())
             binding.popupHead.tvTitle.text = title
 
-        binding.tvTime.text = "$startTime-$endTime"
         initAdapter()
 
         binding.popupHead.ivClose.setOnClickListener {
@@ -72,12 +73,17 @@ class MR702DeviceDataUploadPopupView(context: Context) : CenterPopupView(context
             dismiss()
         }
         binding.tvConfirm.setOnClickListener {
+            if (binding.etCollectData.text.isNullOrEmpty()) {
+                Toaster.show("请输入采集数据")
+                return@setOnClickListener
+            }
             clickListener?.onConfirmClick(
-                selectedType,
-                binding.tvTime.text.toString(),
+                System.currentTimeMillis(),
+                selectedElement!!.code,
+                binding.etCollectData.text.toString(),
+                selectedElement!!.engUnit
             )
         }
-
         binding.popupFooter.tvOk.setOnClickListener {
             dismiss()
         }
@@ -96,7 +102,8 @@ class MR702DeviceDataUploadPopupView(context: Context) : CenterPopupView(context
                 position: Int,
                 id: Long
             ) {
-                selectedType = position + 1
+                selectedElement = monitoringElementList[position]
+                stateVM.unit.set(selectedElement!!.engUnit)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -107,6 +114,6 @@ class MR702DeviceDataUploadPopupView(context: Context) : CenterPopupView(context
     }
 
     interface OnClickListener {
-        fun onConfirmClick(type: Int, time: String)
+        fun onConfirmClick(otime: Long, type: Int, data: String, unit: String)
     }
 }

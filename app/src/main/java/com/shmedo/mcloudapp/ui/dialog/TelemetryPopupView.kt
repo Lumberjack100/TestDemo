@@ -1,10 +1,10 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.dialog
+package com.shmedo.mcloudapp.ui.dialog
 
 import android.content.Context
 import androidx.databinding.DataBindingUtil
 import com.lxj.xpopup.core.CenterPopupView
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.CustomTimeCalibrationPopupBinding
+import com.shmedo.mcloudapp.databinding.CustomTelemetryPopupBinding
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 
 /**
@@ -12,32 +12,26 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
  *
  * 创建时间：2023/12/6
  *
- * 描述： 时间校准
+ * 描述： 遥测
+ *
+ *
  */
-class TimeCalibrationPopupView(context: Context) : CenterPopupView(context) {
-    private lateinit var binding: CustomTimeCalibrationPopupBinding
+class TelemetryPopupView(context: Context) : CenterPopupView(context) {
+    private lateinit var binding: CustomTelemetryPopupBinding
     private lateinit var stateVM: CommandResponseViewModel
-
     private var title: String = ""
-    private lateinit var clickListener: OnClickListener
-
 
     fun setTitle(
         title: String = "",
         vm: CommandResponseViewModel
-    ): TimeCalibrationPopupView {
+    ): TelemetryPopupView {
         this.title = title
         this.stateVM = vm
         return this
     }
 
-    fun setClickListener(clickListener: OnClickListener): TimeCalibrationPopupView {
-        this.clickListener = clickListener
-        return this
-    }
-
     override fun getImplLayoutId(): Int {
-        return R.layout.custom_time_calibration_popup
+        return R.layout.custom_telemetry_popup
     }
 
     override fun onCreate() {
@@ -54,14 +48,5 @@ class TimeCalibrationPopupView(context: Context) : CenterPopupView(context) {
         binding.popupFooter.tvOk.setOnClickListener {
             dismiss()
         }
-        binding.tvCalibration.setOnClickListener {
-            if (!stateVM.isCalibratingSuccess.get()) {
-                clickListener.onSettingClick()
-            }
-        }
-    }
-
-    interface OnClickListener {
-        fun onSettingClick()
     }
 }

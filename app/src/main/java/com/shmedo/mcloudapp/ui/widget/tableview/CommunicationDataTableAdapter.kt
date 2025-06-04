@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview
+package com.shmedo.mcloudapp.ui.widget.tableview
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,10 +9,10 @@ import com.shmedo.mcloudapp.databinding.CommunicationDataTableviewCellLayoutBind
 import com.shmedo.mcloudapp.databinding.CommunicationDataTableviewColumnHeaderLayoutBinding
 import com.shmedo.mcloudapp.databinding.CommunicationDataTableviewCornerLayoutBinding
 import com.shmedo.mcloudapp.databinding.CommunicationDataTableviewRowHeaderLayoutBinding
-import com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.holder.CommunicationDataCellViewHolder
-import com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.holder.CommunicationDataColumnHeaderViewHolder
-import com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.holder.CommunicationDataRowHeaderViewHolder
-import com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.model.CommunicationDataCellModel
+import com.shmedo.mcloudapp.ui.widget.tableview.holder.CommunicationDataCellViewHolder
+import com.shmedo.mcloudapp.ui.widget.tableview.holder.CommunicationDataColumnHeaderViewHolder
+import com.shmedo.mcloudapp.ui.widget.tableview.holder.CommunicationDataRowHeaderViewHolder
+import com.shmedo.mcloudapp.ui.widget.tableview.model.CommunicationDataCellModel
 
 /**
  * 创建者:   gonghe <br/>

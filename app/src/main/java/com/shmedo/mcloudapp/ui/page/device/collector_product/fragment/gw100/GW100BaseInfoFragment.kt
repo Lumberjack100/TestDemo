@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.gw100.fragment
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.gw100
 
 import android.os.Bundle
 import android.util.Log
@@ -9,8 +9,6 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo2
@@ -20,14 +18,16 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.databinding.FragmentGw100BaseInfoBinding
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.databinding.FragmentGw100BaseInfoBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.model.DeviceStatusInfoBasicItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.GW100BaseInfoViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -184,7 +184,7 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
 
                 checkDeviceIsNormal(info)
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
@@ -213,7 +213,7 @@ class GW100BaseInfoFragment : BaseIOTDeviceFragment() {
                         }
                     }
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }

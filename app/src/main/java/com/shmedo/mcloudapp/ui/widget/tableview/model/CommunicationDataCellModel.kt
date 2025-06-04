@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.model
+package com.shmedo.mcloudapp.ui.widget.tableview.model
 
 import com.shmedo.mcloudapp.R
 

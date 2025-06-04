@@ -17,9 +17,9 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentM20CommunicationInfoBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.CommunicationDataTableAdapter
-import com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.model.CommunicationDataCellModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.M20CommunicationInfoViewModel
+import com.shmedo.mcloudapp.ui.widget.tableview.CommunicationDataTableAdapter
+import com.shmedo.mcloudapp.ui.widget.tableview.model.CommunicationDataCellModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview
+package com.shmedo.mcloudapp.ui.widget.tableview
 
 /**
  * 创建者:   gonghe <br/>

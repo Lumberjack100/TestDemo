@@ -1,9 +1,9 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.holder
+package com.shmedo.mcloudapp.ui.widget.tableview.holder
 
 import android.view.View
 import com.evrencoskun.tableview.adapter.recyclerview.holder.AbstractViewHolder
 import com.shmedo.mcloudapp.databinding.CommunicationDataTableviewRowHeaderLayoutBinding
-import com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.model.CommunicationDataCellModel
+import com.shmedo.mcloudapp.ui.widget.tableview.model.CommunicationDataCellModel
 
 /**
  * 创建者:   gonghe <br/>

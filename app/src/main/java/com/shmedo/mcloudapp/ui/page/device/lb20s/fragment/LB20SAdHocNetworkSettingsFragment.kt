@@ -25,7 +25,7 @@ import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.TimeCalibrationPopupView
+import com.shmedo.mcloudapp.ui.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.LB20SAdHocNetworkSettingsViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel

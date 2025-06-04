@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.gw100.fragment
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.gw100
 
 import android.util.Log
 import com.drake.brv.utils.models
@@ -23,7 +23,6 @@ import com.shmedo.mcloudapp.model.LoraConfigModule
 import com.shmedo.mcloudapp.model.RebootModule
 import com.shmedo.mcloudapp.model.RunningStatusModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDeviceHomeFragment
 import kotlinx.coroutines.Dispatchers
@@ -121,7 +120,7 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
     override fun processOtherItemClick(configModule: DeviceFunctionModule) {
         when (configModule) {
             is CommandDebugConfigModule -> {
-                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+                val bundle = BleCustomCommandLogPrintFragment.Companion.newBundleArguments(
                     true,
                     productType,
                     communicateWay,
@@ -132,7 +131,7 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
             }
             else -> {
                 if (configModule.navId != 0) {
-                    val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                    val bundle = newBundleArguments(
                         productType,
                         communicateWay,
                         deviceInfo,
@@ -188,7 +187,7 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
                 }
                 mHeadStates.firmwareVersion.set(commonCurrentStateInfoList[0].firmwareVersion)
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
