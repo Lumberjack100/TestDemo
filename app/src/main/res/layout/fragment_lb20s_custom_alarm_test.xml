@@ -51,7 +51,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Value_Style"
-                enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                 textViewEnabled="@{stateVM.isEditable }"
                 android:drawableEnd="@drawable/ic_arrow_down"
                 android:text="@{stateVM.broadcastNum}"
@@ -72,7 +72,7 @@
 
             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                 style="@style/Common_EditItem_EditText_Style"
-                enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                 textViewEnabled="@{stateVM.isEditable }"
                 android:text="@={stateVM.broadcastContent}"
                 app:lengthFilter="@{100}" />

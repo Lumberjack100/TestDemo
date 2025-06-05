@@ -245,7 +245,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="numberDecimal|numberSigned"
@@ -264,7 +264,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="numberDecimal|numberSigned"
@@ -283,7 +283,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="numberDecimal|numberSigned"
@@ -302,7 +302,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="numberDecimal|numberSigned"
@@ -325,7 +325,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
@@ -344,7 +344,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
@@ -363,7 +363,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
@@ -382,7 +382,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
@@ -405,7 +405,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
@@ -424,7 +424,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
@@ -443,7 +443,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
@@ -462,7 +462,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{ stateVM.isOpened  &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="请输入"
                             android:inputType="number"
@@ -486,7 +486,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="数值范围[1-255]"
                             android:inputType="number"
@@ -505,7 +505,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="数值范围[1-255]"
                             android:inputType="number"
@@ -524,7 +524,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="数值范围[1-255]"
                             android:inputType="number"
@@ -543,7 +543,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{ stateVM.isOpened &amp;&amp; stateVM.waterLevelFunctionEnabled}"
                             android:hint="数值范围[1-255]"
                             android:inputType="number"

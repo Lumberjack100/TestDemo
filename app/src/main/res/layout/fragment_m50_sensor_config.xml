@@ -79,7 +79,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             android:drawableEnd="@null"
                             android:text="@{stateVM.longitude}"
                             tools:text="114.058503" />
@@ -95,7 +95,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             android:drawableEnd="@null"
                             android:text="@{stateVM.latitude}"
                             tools:text="22.544604" />
@@ -111,7 +111,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             android:drawableEnd="@null"
                             android:text="@{stateVM.altitude}"
                             tools:text="10.5" />
@@ -159,7 +159,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             android:drawableEnd="@null"
                             android:text="@{stateVM.XAxis}"
                             tools:text="1.5" />
@@ -175,7 +175,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             android:drawableEnd="@null"
                             android:text="@{stateVM.YAxis}"
                             tools:text="2.3" />
@@ -191,7 +191,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             android:drawableEnd="@null"
                             android:text="@{stateVM.ZAxis}"
                             tools:text="0.8" />

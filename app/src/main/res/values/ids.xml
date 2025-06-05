@@ -15,6 +15,9 @@
  limitations under the License.
  -->
 <resources>
+  <item type="id" name="tag_original_text_color"/>
+
+
   <item type="id" name="collector_address"/>
   <item type="id" name="collector_collect_interval"/>
   <item type="id" name="collector_solution_interval"/>
@@ -38,4 +41,5 @@
   <item type="id" name="tv_link_one"/>
   <item type="id" name="tv_link_two"/>
   <item type="id" name="tv_link_three"/>
+
 </resources>
