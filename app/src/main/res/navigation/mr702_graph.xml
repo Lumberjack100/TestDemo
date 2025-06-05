@@ -48,9 +48,9 @@
         tools:layout="@layout/fragment_mr702_work_model" />
 
     <fragment
-        android:id="@+id/mR702NetworkCommunicationFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702NetworkCommunicationFragment"
-        android:label="MR702NetworkCommunicationFragment"
+        android:id="@+id/mR702NetworkConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702NetworkConfigFragment"
+        android:label="MR702NetworkConfigFragment"
         tools:layout="@layout/fragment_mr702_network_communication" />
 
     <fragment
@@ -66,10 +66,10 @@
         tools:layout="@layout/fragment_mr702_data_center_param" />
 
     <fragment
-        android:id="@+id/mR702TerminalParameterFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702TerminalParameterFragment"
-        android:label="MR702TerminalParameterFragment"
-        tools:layout="@layout/fragment_mr702_terminal_parameter" />
+        android:id="@+id/mR702ReportConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702ReportConfigFragment"
+        android:label="MR702ReportConfigFragment"
+        tools:layout="@layout/fragment_mr702_report_config" />
 
     <fragment
         android:id="@+id/mR702PortHomeFragment"
@@ -190,8 +190,8 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_mR702NetworkCommunicationFragment"
-        app:destination="@id/mR702NetworkCommunicationFragment"
+        android:id="@+id/action_global_to_mR702NetworkConfigFragment"
+        app:destination="@id/mR702NetworkConfigFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -214,8 +214,8 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_mR702TerminalParameterFragment"
-        app:destination="@id/mR702TerminalParameterFragment"
+        android:id="@+id/action_global_to_mR702ReportConfigFragment"
+        app:destination="@id/mR702ReportConfigFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

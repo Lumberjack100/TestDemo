@@ -146,9 +146,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-
                             android:text="@{stateVM.dataProtocol}"
                             tools:text="MQTT" />
                     </androidx.appcompat.widget.LinearLayoutCompat>

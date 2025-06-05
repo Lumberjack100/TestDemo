@@ -1,17 +1,17 @@
 package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import android.widget.CompoundButton
-import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.RegexUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRWiredNetEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRWirelessNetEntity
@@ -23,30 +23,31 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentMr702NetworkCommunicationBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.MR702NetworkCommunicationViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.MR702NetworkConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 /**
  * 创建者:   gonghe <br></br>
  * 创建时间:  2020/8/27 <br></br>
- * 描述：   网络配置页面
+ * 描述：    遥测终端机网络配置页面
  */
-class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
+class MR702NetworkConfigFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702NetworkCommunicationBinding
-    private lateinit var mStates: MR702NetworkCommunicationViewModel
-    private lateinit var toolbarViewModel: ToolbarViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: MR702NetworkConfigViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val ipModeList by lazy { Utils.getApp().resources.getStringArray(R.array.ip_mode) }
@@ -54,8 +55,6 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -68,58 +67,53 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentMr702NetworkCommunicationBinding
         binding.llToolbar.toolbar.title = "网络配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
-                nav().navigateUp()
+        registerOnBackPressedDispatcher {
+            handleBackByCheckDataModified()
+        }
+        initRefresh()
+    }
+
+    private fun initRefresh() {
+        refreshLayout = binding.refreshLayout
+        binding.refreshLayout.setEnableLoadMore(false)
+        binding.refreshLayout.onRefresh {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return@onRefresh
             }
-        })
+            queryData()
+        }
     }
 
     override fun initData() {
         super.initData()
+        resetDefaultParams()
+        // 保存初始状态
+        mStates.saveInitialState()
+    }
+
+    private fun resetDefaultParams() {
         //4G 交互方式下不允许操作
         mStates.isWirelessDisabled.set(communicateWay is NetPlatformConnect)
+
+        mStates.isWirelessOpened.set(true)
+        mStates.apnName.set("")
+        mStates.userName.set("")
+        mStates.pwd.set("")
+
+        mStates.isEthernetOpened.set(true)
+        mStates.ipMode.set(ipModeList[1])
+        mStates.isManualVisible.set(false)
+        mStates.ip.set("")
+        mStates.subnetMask.set("")
+        mStates.gateway.set("")
+        mStates.preferredDNS.set("")
+        mStates.alternateDNS.set("")
     }
 
     inner class ClickProxy : BaseClickProxy() {
-
-        override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
-                return
-            }
-            when (button.id) {
-                R.id.mobileCommunicationSB -> { //4G通信
-                    mStates.isWirelessOpened.set(isChecked)
-                    if (!isChecked) {
-                        showMessage("确定关闭4G接入吗？", "温馨提示", "确定", {
-                            closeWireless()
-                        }, "取消", {
-                            mStates.isWirelessOpened.set(true)
-                            (button as SwitchButton).setCheckedImmediatelyNoEvent(true)
-                        })
-                    }
-                }
-
-                R.id.ethernetAccessSB -> { //以太网接入
-                    mStates.isEthernetOpened.set(isChecked)
-                    if (!isChecked) {
-                        showMessage("确定关闭以太网接入吗？", "温馨提示", "确定", {
-                            closeEthernet()
-                        }, "取消", {
-                            mStates.isEthernetOpened.set(true)
-                            (button as SwitchButton).setCheckedImmediatelyNoEvent(true)
-                        })
-                    }
-                }
-            }
-        }
-
         fun onIPModeChooseClick() {
             val selectedIndex = ipModeList.indexOf(mStates.ipMode.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -138,7 +132,15 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        fun onSubmitClick() {
+        /**
+         * 恢复默认配置
+         */
+        fun onResetClick() {
+            resetDefaultParams()
+        }
+
+        override fun onSubmitButtonClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
@@ -147,50 +149,10 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun closeWireless() {
-        commandItems.clear()
-        val wirelessNetEntity = MRWirelessNetEntity(
-            switch = "0"
-        )
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MR_MD_SET_DATA_NETWORK,
-            wirelessNetEntity.toCommandString()
-        )
-        commandItems.add(command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    private fun closeEthernet() {
-        commandItems.clear()
-        val wiredNetEntity = MRWiredNetEntity(
-            switch = "0"
-        )
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.MR_MD_SET_WIRELESS_NETWORK,
-            wiredNetEntity.toCommandString()
-        )
-        commandItems.add(command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
     private fun initSaveCommand() {
         commandItems.clear()
 
         if (mStates.isWirelessOpened.get()) {
-//            if (mStates.apnName.get().isEmpty()) {
-//                Toaster.show("请输入APN名称")
-//                return
-//            }
-//            if (mStates.userName.get().isEmpty()) {
-//                Toaster.show("请输入用户名")
-//                return
-//            }
-//            if (mStates.pwd.get().isEmpty()) {
-//                Toaster.show("请输入密码")
-//                return
-//            }
             val wirelessNetEntity = MRWirelessNetEntity(
                 switch = "1",
                 apn = mStates.apnName.get().ifEmpty { IOTConstants.NULL_KEY },
@@ -202,7 +164,15 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                 wirelessNetEntity.toCommandString()
             )
             commandItems.add(command)
+        } else {
+            val wirelessNetEntity = MRWirelessNetEntity(switch = "0")
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.MR_MD_SET_DATA_NETWORK,
+                wirelessNetEntity.toCommandString()
+            )
+            commandItems.add(command)
         }
+
 
         //手动模式
         if (mStates.isEthernetOpened.get()) {
@@ -223,22 +193,24 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                     showMessageDialog("请输入有效的首选DNS!")
                     return
                 }
-//                if (!RegexUtils.isIP(mStates.alternateDNS.get())) {
-//                    showMessageDialog("请输入有效的备用DNS!")
-//                    return
-//                }
             }
             val wiredNetEntity = MRWiredNetEntity(
                 switch = "1",
-                dhcp = if (mStates.ipMode.get() == "手动") "0" else "1",
+                dhcp = ipModeList.toList().indexOf(mStates.ipMode.get()).toString(),
                 ipaddr = mStates.ip.get(),
                 mask = mStates.subnetMask.get(),
                 gateway = mStates.gateway.get(),
-                dns = mStates.preferredDNS.get(),
-//                dnss = mStates.alternateDNS.get()
+                dns = mStates.preferredDNS.get()
             )
             val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MR_MD_SET_WIRELESS_NETWORK,
+                IOTCommandType.MR_MD_SET_WIRED_NETWORK,
+                wiredNetEntity.toCommandString()
+            )
+            commandItems.add(command)
+        } else {
+            val wiredNetEntity = MRWiredNetEntity(switch = "0")
+            val command = IOTCommandUtil.getCommand(
+                IOTCommandType.MR_MD_SET_WIRED_NETWORK,
                 wiredNetEntity.toCommandString()
             )
             commandItems.add(command)
@@ -248,7 +220,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
     }
 
     override fun lazyLoadData() {
-        queryData()
+        binding.refreshLayout.autoRefresh()
     }
 
     private fun queryData() {
@@ -257,11 +229,63 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
         var command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_DATA_NETWORK)
         commandItems.add(command)
 
-        command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_WIRELESS_NETWORK)
+        command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_WIRED_NETWORK)
         commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.loading))
         sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = "设备未响应"
+        )
     }
 
     override fun setResultData(cmdStr: String) {
@@ -273,32 +297,36 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询无线配置出错: ${result.message}"
+                        val errMsg = "查询移动网络配置出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
                         initWirelessData(result.data)
                     }
                 }
             }
 
-            IOTCommandType.MR_MD_GET_WIRELESS_NETWORK -> {
+            IOTCommandType.MR_MD_GET_WIRED_NETWORK -> {
                 val result = iotParseManager.parse<MRWiredNet>(
                     cmdStr,
-                    IOTCommandType.MR_MD_GET_WIRELESS_NETWORK
+                    IOTCommandType.MR_MD_GET_WIRED_NETWORK
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询以太网配置出错: ${result.message}"
+                        val errMsg = "查询以太网络配置出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList {}
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
                         initWiredData(result.data)
                     }
                 }
@@ -307,30 +335,30 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MR_MD_SET_DATA_NETWORK -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "无线配置出错: ${result.message}"
+                        val errMsg = "移动网络配置出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
             }
 
-            IOTCommandType.MR_MD_SET_WIRELESS_NETWORK -> {
+            IOTCommandType.MR_MD_SET_WIRED_NETWORK -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "以太网配置出错: ${result.message}"
+                        val errMsg = "以太网络配置出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -343,21 +371,48 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initWirelessData(mrWirelessNet: MRWirelessNet) {
-        mStates.isWirelessOpened.set(mrWirelessNet.switch == "1")
-        mStates.apnName.set(mrWirelessNet.apn)
-        mStates.userName.set(mrWirelessNet.username)
-        mStates.pwd.set(mrWirelessNet.password)
+        try {
+            mStates.isWirelessOpened.set(mrWirelessNet.switch == "1")
+            mStates.apnName.set(mrWirelessNet.apn)
+            mStates.userName.set(mrWirelessNet.username)
+            mStates.pwd.set(mrWirelessNet.password)
+
+            // 保存初始状态
+            mStates.saveInitialState()
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
     }
 
     private fun initWiredData(mrWiredNet: MRWiredNet) {
-        mStates.isEthernetOpened.set(mrWiredNet.switch == "1")
-        mStates.ipMode.set(ipModeList[if (mrWiredNet.dhcp == "1") 0 else 1])
-        mStates.isManualVisible.set(mrWiredNet.dhcp == "0")
-        mStates.ip.set(mrWiredNet.ipaddr)
-        mStates.subnetMask.set(mrWiredNet.mask)
-        mStates.gateway.set(mrWiredNet.gateway)
-        mStates.preferredDNS.set(mrWiredNet.dns)
-//        mStates.alternateDNS.set(mrWiredNet.dnss)
+        try {
+            mStates.isEthernetOpened.set(mrWiredNet.switch == "1")
+            mrWiredNet.dhcp.toIntOrNull()?.let {
+                if (it in ipModeList.indices) {
+                    mStates.ipMode.set(ipModeList[it])
+                }
+            }
+            mStates.isManualVisible.set(mrWiredNet.dhcp == "0")
+            mStates.ip.set(mrWiredNet.ipaddr)
+            mStates.subnetMask.set(mrWiredNet.mask)
+            mStates.gateway.set(mrWiredNet.gateway)
+            mStates.preferredDNS.set(mrWiredNet.dns)
+
+            // 保存初始状态
+            mStates.saveInitialState()
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
     }
 
     override fun onResume() {

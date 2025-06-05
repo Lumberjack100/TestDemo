@@ -268,7 +268,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     CommonModule(
                         name = "网络配置",
                         resID = R.drawable.ic_module_network_setting,
-                        navId = R.id.action_global_to_mR702NetworkCommunicationFragment
+                        navId = R.id.action_global_to_mR702NetworkConfigFragment
                     )
                 ),
                 ConfigModule(
@@ -283,7 +283,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     LoraConfigModule(
                         name = "上报配置",
                         resID = R.drawable.ic_module_lora_new,
-                        navId = R.id.action_global_to_mR702TerminalParameterFragment
+                        navId = R.id.action_global_to_mR702ReportConfigFragment
                     )
                 ),
                 ConfigModule(

@@ -510,7 +510,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             ConfigModule(DeviceOperationModule(navId = R.id.action_global_to_mR702StatusInfoFragment))
         )
         moduleList.add(
-            ConfigModule(NetworkCommunicationModule(navId = R.id.action_global_to_mR702NetworkCommunicationFragment))
+            ConfigModule(NetworkCommunicationModule(navId = R.id.action_global_to_mR702NetworkConfigFragment))
         )
         moduleList.add(
             ConfigModule(RebootModule())

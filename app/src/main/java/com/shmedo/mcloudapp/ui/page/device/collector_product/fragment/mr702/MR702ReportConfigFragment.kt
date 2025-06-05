@@ -1,63 +1,68 @@
 package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
+import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRReportMethodEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.WorkModeBean
+import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRReportMethod
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentMr702WorkModelBinding
+import com.shmedo.mcloudapp.databinding.FragmentMr702ReportConfigBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.MR702WorkModelViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.MR702ReportConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
+import timber.log.Timber
+
 /**
  * @author：gonghe
  * @time: 2025/6/5
- * @desc: 遥测终端机工作模式配置页面
+ * @desc:  遥测终端机上报参数配置页面
  *
  */
-class MR702WorkModelFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentMr702WorkModelBinding
+class MR702ReportConfigFragment : BaseIOTDeviceFragment() {
+    private lateinit var binding: FragmentMr702ReportConfigBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: MR702WorkModelViewModel by viewModels()
+    private val mStates: MR702ReportConfigViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
-    private val modelList = arrayListOf("正常", "低功耗")
+    private val reportMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_report_method) }
+    private val reportStartTimeList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_report_start_time) }
+
 
     override fun initViewModel() {
         super.initViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(
-            R.layout.fragment_mr702_work_model,
-            BR.stateVM,
-            mStates
-        )
+        return DataBindingConfig(R.layout.fragment_mr702_report_config, BR.stateVM, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentMr702WorkModelBinding
-        binding.llToolbar.toolbar.title = "工作模式"
+        binding = getBinding() as FragmentMr702ReportConfigBinding
+        binding.llToolbar.toolbar.title = "上报配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }
@@ -87,29 +92,47 @@ class MR702WorkModelFragment : BaseIOTDeviceFragment() {
     }
 
     private fun resetDefaultParams() {
-        mStates.model.set(modelList[0])//默认正常
+        mStates.reportMethod.set(reportMethodList[0])
+        mStates.startTime.set(reportStartTimeList[0])
+        mStates.interval.set("")
     }
 
     inner class ClickProxy : BaseClickProxy() {
         /**
-         * 选择模式
+         * 上报方式
          */
-        fun onModelChooseClick() {
-            val selectedIndex = modelList.indexOf(mStates.model.get())
+        fun onReportingMethodClick() {
+            val selectedIndex = reportMethodList.indexOf(mStates.reportMethod.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
             XPopup.Builder(context)
                 .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", modelList.toTypedArray(),
+                    "请选择上报方式", reportMethodList,
                     null, selectedIndex,
                     { position, text ->
-                        mStates.model.set(text)
+                        mStates.reportMethod.set(text)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
         }
+
+        /**
+         * 上报起始时间
+         */
+        fun onReportingStartTimeClick() {
+            XPopup.Builder(context)
+                .hasShadowBg(false)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.4f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .atView(binding.tvStartTime) // 依附于所点击的View，内部会自动判断在上方或者下方显示
+                .asAttachList(reportStartTimeList, null, { _, text ->
+                    mStates.startTime.set(text)
+                }, 0, 0)
+                .show()
+        }
+
 
         /**
          * 恢复默认配置
@@ -130,9 +153,23 @@ class MR702WorkModelFragment : BaseIOTDeviceFragment() {
 
     private fun initSaveCommand() {
         commandItems.clear()
+
+        if (mStates.reportMethod.get().contains("定时定点") && mStates.startTime.get().isEmpty()) {
+            showMessageDialog("请选择上报起始时间!")
+            return
+        }
+        if (mStates.interval.get().isEmpty()) {
+            showMessageDialog("请输入上报间隔!")
+            return
+        }
+        val entity = MRReportMethodEntity(
+            type = (reportMethodList.indexOf(mStates.reportMethod.get()) + 1).toString(),
+            basis = reportStartTimeList.indexOf(mStates.startTime.get()).toString(),
+            interval = mStates.interval.get()
+        )
         val command = IOTCommandUtil.getCommand(
-            IOTCommandType.SET_WORK_MODE,
-            "mode=${modelList.indexOf(mStates.model.get()) + 1}"
+            IOTCommandType.MR_MD_SET_REPORT_METHOD,
+            entity.toCommandString()
         )
         commandItems.add(command)
 
@@ -140,15 +177,17 @@ class MR702WorkModelFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    private fun queryData() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.GET_WORK_MODE)
-        commandItems.add(command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
     override fun lazyLoadData() {
         binding.refreshLayout.autoRefresh()
+    }
+
+    private fun queryData() {
+        commandItems.clear()
+
+        var command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_REPORT_METHOD)
+        commandItems.add(command)
+
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     /**
@@ -206,34 +245,32 @@ class MR702WorkModelFragment : BaseIOTDeviceFragment() {
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.GET_WORK_MODE -> {
-                val result =
-                    iotParseManager.parse<WorkModeBean>(cmdStr, IOTCommandType.GET_WORK_MODE)
+            IOTCommandType.MR_MD_GET_REPORT_METHOD -> {
+                val result = iotParseManager.parse<MRReportMethod>(
+                    cmdStr,
+                    IOTCommandType.MR_MD_GET_REPORT_METHOD
+                )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询工作模式出错: ${result.message}"
+                        val errMsg = "查询参数出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        val modeBean: WorkModeBean = result.data
-                        modeBean.mode.toIntOrNull()?.let {
-                            if (it in 1..modelList.size) {
-                                mStates.model.set(modelList[it - 1])
-                                // 保存初始状态
-                                mStates.saveInitialState()
-                            }
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
                         }
+                        initReportMethod(result.data)
                     }
                 }
             }
 
-            IOTCommandType.SET_WORK_MODE -> {
+
+            IOTCommandType.MR_MD_SET_REPORT_METHOD -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置工作模式出错: ${result.message}"
+                        val errMsg = "数据保存出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -249,6 +286,28 @@ class MR702WorkModelFragment : BaseIOTDeviceFragment() {
             else -> {
                 cancelNearbyCommunicationTimeoutJob()
             }
+        }
+    }
+
+    private fun initReportMethod(info: MRReportMethod) {
+        try {
+            info.type.toInt().let {
+                if (it in 1..reportMethodList.size) {
+                    mStates.reportMethod.set(reportMethodList[it - 1])
+                }
+            }
+            info.basis.toInt().let {
+                if (it in reportStartTimeList.indices) {
+                    mStates.startTime.set(reportStartTimeList[it])
+                }
+            }
+            mStates.interval.set(info.interval)
+
+            // 保存初始状态
+            mStates.saveInitialState()
+        } catch (e: Exception) {
+            Timber.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
 
