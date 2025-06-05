@@ -27,7 +27,7 @@
             imageResId="@{stateVM.productLogoResId}"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            tools:src="@drawable/device_logo_niweiji" />
+            tools:src="@drawable/device_logo_ud" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"

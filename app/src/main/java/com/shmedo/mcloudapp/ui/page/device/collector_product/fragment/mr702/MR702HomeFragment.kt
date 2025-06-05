@@ -282,7 +282,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 ConfigModule(
                     LoraConfigModule(
                         name = "上报配置",
-                        resID = R.drawable.ic_module_lora_new,
+                        resID = R.drawable.ic_module_work_mode_new,
                         navId = R.id.action_global_to_mR702ReportConfigFragment
                     )
                 ),
@@ -291,6 +291,13 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                         name = "端口配置",
                         resID = R.drawable.ic_module_serial_port,
                         navId = R.id.action_global_to_mR702PortHomeFragment
+                    )
+                ),
+                ConfigModule(
+                    SensorConfigModule(
+                        name = "设备操作",
+                        resID = R.drawable.ic_module_work_mode_new,
+                        navId = R.id.action_global_to_mR702EquipmentOperationFragment
                     )
                 ),
                 ConfigModule(

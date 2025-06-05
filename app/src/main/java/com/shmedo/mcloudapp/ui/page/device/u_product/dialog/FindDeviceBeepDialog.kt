@@ -46,9 +46,9 @@ class FindDeviceBeepDialog : BaseVmDbDialogFragment() {
             ProductType.U_D_1, ProductType.U_D_2 -> {
                 logoResIdList.addAll(
                     arrayListOf(
-                        R.drawable.device_logo_niweiji,
-                        R.drawable.device_logo_niweiji_alarm,
-                        R.drawable.device_logo_niweiji_error
+                        R.drawable.device_logo_ud,
+                        R.drawable.device_logo_ud_alarm,
+                        R.drawable.device_logo_ud_error
                     )
                 )
             }

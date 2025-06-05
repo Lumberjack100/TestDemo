@@ -133,13 +133,13 @@
 
     <fragment
         android:id="@+id/mR702EquipmentOperationFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702EquipmentOperationFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702EquipmentOperationFragment"
         android:label="MR702EquipmentOperationFragment"
         tools:layout="@layout/fragment_mr702_equipment_operation" />
 
     <fragment
         android:id="@+id/mR702ReservoirCapacityFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702ReservoirCapacityFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702ReservoirCapacityFragment"
         android:label="MR702ReservoirCapacityFragment"
         tools:layout="@layout/fragment_mr702_reservoir_capacity" />
 

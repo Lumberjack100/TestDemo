@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.fragment
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702
 
 import android.os.Bundle
 import android.view.View
@@ -43,13 +43,13 @@ import com.shmedo.mcloudapp.model.MR702Remote485SilenceModule
 import com.shmedo.mcloudapp.model.MonitoringElement
 import com.shmedo.mcloudapp.model.TelemetryDataModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
+import com.shmedo.mcloudapp.ui.dialog.TelemetryPopupView
+import com.shmedo.mcloudapp.ui.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.collector_product.dialog.MR702DeviceDataUploadPopupView
 import com.shmedo.mcloudapp.ui.page.device.collector_product.dialog.MR702ManualSettingPopupView
 import com.shmedo.mcloudapp.ui.page.device.collector_product.dialog.MR702ParamExportPopupView
 import com.shmedo.mcloudapp.ui.page.device.collector_product.dialog.MR702ParamImportPopupView
-import com.shmedo.mcloudapp.ui.dialog.TelemetryPopupView
-import com.shmedo.mcloudapp.ui.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702EquipmentOperationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -251,7 +251,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
 
             else -> {
                 if (module.functionModule.navId != 0) {
-                    val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                    val bundle = newBundleArguments(
                         productType,
                         communicateWay,
                         deviceInfo,
@@ -782,7 +782,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                     }
                 }
             }
-                        
+
 
             IOTCommandType.MR_MD_RS485_CLEAR_RAIN_GAUGE -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
@@ -813,7 +813,6 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
 
     private fun getModuleList() =
         arrayListOf<ConfigModule>(
-            ConfigModule(TimeCalibrationModule()),
             ConfigModule(TelemetryDataModule()),
             ConfigModule(MR702ManualSettingModule()),
             ConfigModule(DeviceLogUploadModule()),

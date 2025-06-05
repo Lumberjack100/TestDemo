@@ -1,11 +1,11 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.fragment
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702
 
 import android.os.Bundle
 import android.text.Editable
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.viewModels
+import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -21,6 +21,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentMr702ReservoirCapacityBinding
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
@@ -54,21 +55,36 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentMr702ReservoirCapacityBinding
         binding.llToolbar.toolbar.title = "库容计算"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
-                nav().navigateUp()
-            }
-        })
-
+        registerOnBackPressedDispatcher {
+            handleBackByCheckDataModified()
+        }
+        initRefresh()
         initOtherListener()
+    }
+
+    private fun initRefresh() {
+        refreshLayout = binding.refreshLayout
+        binding.refreshLayout.setEnableLoadMore(false)
+        binding.refreshLayout.onRefresh {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return@onRefresh
+            }
+            queryData()
+        }
     }
 
     override fun initData() {
         super.initData()
+        resetDefaultParams()
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
+    }
+
+    private fun resetDefaultParams() {
+        mStates.isOpened.set(true)
         mStates.pointCount.set("3")
     }
 
@@ -85,14 +101,46 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
     }
 
     inner class ClickProxy : BaseClickProxy() {
+        /**
+         * 恢复默认配置
+         */
+        fun onResetClick() {
+            resetDefaultParams()
+        }
 
-        fun onSubmitClick() {
+        override fun onSubmitButtonClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
+            if (!mStates.isOpened.get()) {
+                disable()
+                return
+            }
             initSaveCommand()
         }
+    }
+
+    /**
+     * 关闭
+     */
+    private fun disable() {
+        commandItems.clear()
+        val entity = MRReservoirCapacityEntity(
+            switch = "0",
+            count = mStates.pointCount.get(),
+            xparam = "",
+            yparam = ""
+        )
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MR_MD_SET_RESERVOIR_CAPACITY,
+            entity.toCommandString()
+        )
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun initSaveCommand() {
@@ -102,13 +150,11 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
             Toaster.show("请输入坐标点数量")
             return
         }
-
+        val pointCount = mStates.pointCount.get().toInt()
         // Build x and y parameter strings
         val xParams = StringBuilder()
         val yParams = StringBuilder()
-        
-        // Add coordinates based on point count
-        val pointCount = mStates.pointCount.get().toInt()
+
         for (i in 1..pointCount) {
             val xValue = when (i) {
                 1 -> mStates.x1.get()
@@ -163,7 +209,7 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
                 50 -> mStates.x50.get()
                 else -> ""
             }
-            
+
             val yValue = when (i) {
                 1 -> mStates.y1.get()
                 2 -> mStates.y2.get()
@@ -217,7 +263,7 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
                 50 -> mStates.y50.get()
                 else -> ""
             }
-            
+
             if (i > 1) {
                 xParams.append(",")
                 yParams.append(",")
@@ -227,10 +273,10 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
         }
 
         val entity = MRReservoirCapacityEntity(
-            switch = if (mStates.isOpened.get()) "1" else "0",
+            switch = "1",
             count = mStates.pointCount.get(),
-            xparam = if (!mStates.isOpened.get()) "" else xParams.toString(),
-            yparam = if (!mStates.isOpened.get()) "" else yParams.toString()
+            xparam = xParams.toString(),
+            yparam = yParams.toString()
         )
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MR_MD_SET_RESERVOIR_CAPACITY,
@@ -243,7 +289,7 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
     }
 
     override fun lazyLoadData() {
-        queryData()
+        binding.refreshLayout.autoRefresh()
     }
 
     private fun queryData() {
@@ -252,8 +298,60 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
         val command = IOTCommandUtil.getCommand(IOTCommandType.MR_MD_GET_RESERVOIR_CAPACITY)
         commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.loading))
         sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = "设备未响应"
+        )
     }
 
     override fun setResultData(cmdStr: String) {
@@ -271,7 +369,9 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
                         initParam(result.data)
                     }
                 }
@@ -287,8 +387,7 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
-//                            processBack()
+                            processNavigateUp()
                         }
                     }
                 }
@@ -302,12 +401,12 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
 
     private fun initParam(data: MRReservoirCapacity) {
         mStates.isOpened.set(data.switch == "1")
-        mStates.pointCount.set(if(data.count.isEmpty() || data.count.toInt() < 3) "3" else data.count)
-        
+        mStates.pointCount.set(if (data.count.isEmpty() || data.count.toInt() < 3) "3" else data.count)
+
         // Split x and y coordinates
         val xValues = data.xparam.split(",")
         val yValues = data.yparam.split(",")
-        
+
         // Set x coordinates
         if (xValues.isNotEmpty()) mStates.x1.set(xValues[0])
         if (xValues.size >= 2) mStates.x2.set(xValues[1])
@@ -411,6 +510,17 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
         if (yValues.size >= 48) mStates.y48.set(yValues[47])
         if (yValues.size >= 49) mStates.y49.set(yValues[48])
         if (yValues.size >= 50) mStates.y50.set(yValues[49])
+
+        // 保存初始状态
+        mStates.saveInitialState()
+    }
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
     }
 
     override fun onResume() {
