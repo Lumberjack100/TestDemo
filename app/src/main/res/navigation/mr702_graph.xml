@@ -49,7 +49,7 @@
 
     <fragment
         android:id="@+id/mR702NetworkCommunicationFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702NetworkCommunicationFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702NetworkCommunicationFragment"
         android:label="MR702NetworkCommunicationFragment"
         tools:layout="@layout/fragment_mr702_network_communication" />
 

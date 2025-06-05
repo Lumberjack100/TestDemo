@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.fragment
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702
 
 import android.os.Bundle
 import android.view.View
