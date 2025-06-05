@@ -513,10 +513,6 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show(ToastParams().apply {
-                                text = "数据保存成功"
-                                duration = 1000
-                            })
                             processNavigateUp()
                         }
                     }

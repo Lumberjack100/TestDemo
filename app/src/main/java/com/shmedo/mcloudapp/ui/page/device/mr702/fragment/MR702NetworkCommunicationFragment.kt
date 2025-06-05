@@ -41,7 +41,7 @@ import org.koin.android.ext.android.inject
 /**
  * 创建者:   gonghe <br></br>
  * 创建时间:  2020/8/27 <br></br>
- * 描述：   网络与通信页面
+ * 描述：   网络配置页面
  */
 class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702NetworkCommunicationBinding
@@ -66,7 +66,7 @@ class MR702NetworkCommunicationFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentMr702NetworkCommunicationBinding
-        binding.llToolbar.toolbar.title = "网络与通信"
+        binding.llToolbar.toolbar.title = "网络配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()

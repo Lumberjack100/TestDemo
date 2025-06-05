@@ -18,6 +18,7 @@ import com.lxj.xpopup.interfaces.SimpleCallback
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasSensorStatusInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRDeviceInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -760,13 +761,34 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO -> {
+                val result = iotParseManager.parse<MRDeviceInfo>(
+                    cmdStr,
+                    IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询状态出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initStatusInfo(result.data)
+                    }
+                }
+            }
+
             else -> {
                 cancelNearbyCommunicationTimeoutJob()
             }
         }
     }
 
-    protected open fun initStatusInfo(content: String) {}
+    protected open fun <T> initStatusInfo(content: T) {}
 
 
     override fun onResume() {

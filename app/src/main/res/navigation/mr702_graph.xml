@@ -5,81 +5,59 @@
     android:id="@+id/mr702_graph"
     app:startDestination="@id/mR702HomeFragment">
 
-    <include app:graph="@navigation/include_query_data_graph" />
-    <include app:graph="@navigation/include_data_center_graph" />
+    <include app:graph="@navigation/include_time_calibration_graph" />
     <include app:graph="@navigation/include_firmware_upgrade_graph" />
     <include app:graph="@navigation/include_ble_command_debug_graph" />
     <include app:graph="@navigation/include_remote_command_debug_graph" />
 
+
     <fragment
         android:id="@+id/mR702HomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702HomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702HomeFragment"
         android:label="MR702HomeFragment"
-        tools:layout="@layout/fragment_mr702_home">
-
-        <action
-            android:id="@+id/action_mR702HomeFragment_to_mR702DeviceInfoFragment"
-            app:destination="@id/mR702DeviceInfoFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_mR702HomeFragment_to_mR702DataCenterHomeFragment"
-            app:destination="@id/mR702DataCenterHomeFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_mR702HomeFragment_to_mR702PortHomeFragment"
-            app:destination="@id/mR702PortHomeFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_mR702HomeFragment_to_mR702TerminalParameterFragment"
-            app:destination="@id/mR702TerminalParameterFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_mR702HomeFragment_to_mR702NetworkCommunicationFragment"
-            app:destination="@id/mR702NetworkCommunicationFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-    </fragment>
+        tools:layout="@layout/fragment_mr702_home" />
 
     <fragment
-        android:id="@+id/mR702DeviceInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.common.CommonDeviceStatusInfoParentFragment"
-        android:label="MR702DeviceInfoFragment"
-        tools:layout="@layout/fragment_base_device_status_info_parent" />
+        android:id="@+id/mR702BaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702BaseInfoFragment"
+        android:label="MR702BaseInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
+        android:id="@+id/mR702NetInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702NetInfoFragment"
+        android:label="MR702NetInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
+        android:id="@+id/mR702StatusInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702StatusInfoFragment"
+        android:label="MR702StatusInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
+        android:id="@+id/commonLocationInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.CommonLocationInfoFragment"
+        android:label="CommonLocationInfoFragment"
+        tools:layout="@layout/fragment_common_location_info" />
+
+    <fragment
+        android:id="@+id/mR702WorkModelFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702WorkModelFragment"
+        android:label="MR702WorkModelFragment"
+        tools:layout="@layout/fragment_mr702_work_model" />
+
+    <fragment
+        android:id="@+id/mR702NetworkCommunicationFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702NetworkCommunicationFragment"
+        android:label="MR702NetworkCommunicationFragment"
+        tools:layout="@layout/fragment_mr702_network_communication" />
 
     <fragment
         android:id="@+id/mR702DataCenterHomeFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702DataCenterHomeFragment"
         android:label="MR702DataCenterHomeFragment"
-        tools:layout="@layout/fragment_universal_data_center_home">
-
-        <action
-            android:id="@+id/action_mR702DataCenterHomeFragment_to_mR702DataCenterParamFragment"
-            app:destination="@id/mR702DataCenterParamFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-    </fragment>
+        tools:layout="@layout/fragment_universal_data_center_home" />
 
     <fragment
         android:id="@+id/mR702DataCenterParamFragment"
@@ -88,83 +66,16 @@
         tools:layout="@layout/fragment_mr702_data_center_param" />
 
     <fragment
+        android:id="@+id/mR702TerminalParameterFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702TerminalParameterFragment"
+        android:label="MR702TerminalParameterFragment"
+        tools:layout="@layout/fragment_mr702_terminal_parameter" />
+
+    <fragment
         android:id="@+id/mR702PortHomeFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702PortHomeFragment"
         android:label="MR702PortHomeFragment"
-        tools:layout="@layout/fragment_mr702_port_home">
-
-        <action
-            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1SingleSensorAddParamFragment"
-            app:destination="@id/mR702RS485Port1SingleSensorAddParamFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1TwoSensorAddParamFragment"
-            app:destination="@id/mR702RS485Port1TwoSensorAddParamFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1SensorParamFragment"
-            app:destination="@id/mR702RS485Port1SensorParamFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1SingleSensorParamFragment"
-            app:destination="@id/mR702RS485Port1SingleSensorParamFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port1TwoSensorParamFragment"
-            app:destination="@id/mR702RS485Port1TwoSensorParamFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port2SensorParamFragment"
-            app:destination="@id/mR702RS485Port2SensorParamFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port3SensorParamFragment"
-            app:destination="@id/mR702RS485Port3SensorParamFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port3AcousticOpticalAlarmParamFragmen"
-            app:destination="@id/mR702RS485Port3AcousticOpticalAlarmParamFragmen"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_mR702PortHomeFragment_to_mR702RS485Port3CameraParamFragment"
-            app:destination="@id/mR702RS485Port3CameraParamFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-    </fragment>
+        tools:layout="@layout/fragment_mr702_port_home" />
 
     <fragment
         android:id="@+id/mR702RS485Port1SingleSensorAddParamFragment"
@@ -173,28 +84,28 @@
         tools:layout="@layout/fragment_mr702_rs485_port1_single_sensor_add_param" />
 
     <fragment
-        android:id="@+id/mR702RS485Port1TwoSensorAddParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1TwoSensorAddParamFragment"
-        android:label="MR702RS485Port1TwoSensorAddParamFragment"
-        tools:layout="@layout/fragment_mr702_rs485_port1_two_sensor_add_param" />
-
-    <fragment
-        android:id="@+id/mR702RS485Port1SensorParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SensorParamFragment"
-        android:label="MR702RS485Port1SensorParamFragment"
-        tools:layout="@layout/fragment_mr702_rs485_port1_sensor_param" />
-
-    <fragment
         android:id="@+id/mR702RS485Port1SingleSensorParamFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SingleSensorParamFragment"
         android:label="MR702RS485Port1SingleSensorParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port1_single_sensor_param" />
 
     <fragment
+        android:id="@+id/mR702RS485Port1TwoSensorAddParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1TwoSensorAddParamFragment"
+        android:label="MR702RS485Port1TwoSensorAddParamFragment"
+        tools:layout="@layout/fragment_mr702_rs485_port1_two_sensor_add_param" />
+
+    <fragment
         android:id="@+id/mR702RS485Port1TwoSensorParamFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1TwoSensorParamFragment"
         android:label="MR702RS485Port1TwoSensorParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port1_two_sensor_param" />
+
+    <fragment
+        android:id="@+id/mR702RS485Port1SensorParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SensorParamFragment"
+        android:label="MR702RS485Port1SensorParamFragment"
+        tools:layout="@layout/fragment_mr702_rs485_port1_sensor_param" />
 
     <fragment
         android:id="@+id/mR702RS485Port2SensorParamFragment"
@@ -209,7 +120,7 @@
         tools:layout="@layout/fragment_mr702_rs485_port3_sensor_param" />
 
     <fragment
-        android:id="@+id/mR702RS485Port3AcousticOpticalAlarmParamFragmen"
+        android:id="@+id/mR702RS485Port3AcousticOpticalAlarmParamFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port3AcousticOpticalAlarmParamFragment"
         android:label="MR702RS485Port3AcousticOpticalAlarmParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port3_acoustic_optical_alarm_param" />
@@ -219,24 +130,6 @@
         android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port3CameraParamFragment"
         android:label="MR702RS485Port3CameraParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port3_camera_param" />
-
-    <fragment
-        android:id="@+id/mR702TerminalParameterFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702TerminalParameterFragment"
-        android:label="MR702TerminalParameterFragment"
-        tools:layout="@layout/fragment_mr702_terminal_parameter" />
-
-    <fragment
-        android:id="@+id/mR702AlarmParamSettingFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702AlarmParamSettingFragment"
-        android:label="MR702AlarmParamSettingFragment"
-        tools:layout="@layout/fragment_mr702_alarm_param_setting" />
-
-    <fragment
-        android:id="@+id/mR702NetworkCommunicationFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702NetworkCommunicationFragment"
-        android:label="MR702NetworkCommunicationFragment"
-        tools:layout="@layout/fragment_mr702_network_communication" />
 
     <fragment
         android:id="@+id/mR702EquipmentOperationFragment"
@@ -257,8 +150,152 @@
         tools:layout="@layout/fragment_advanced_setting" />
 
     <action
-        android:id="@+id/action_global_to_alarmSettingFragment"
-        app:destination="@id/mR702AlarmParamSettingFragment"
+        android:id="@+id/action_global_to_mR702BaseInfoFragment"
+        app:destination="@id/mR702BaseInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_mR702NetInfoFragment"
+        app:destination="@id/mR702NetInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_mR702StatusInfoFragment"
+        app:destination="@id/mR702StatusInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_commonLocationInfoFragment"
+        app:destination="@id/commonLocationInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_mR702WorkModelFragment"
+        app:destination="@id/mR702WorkModelFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_mR702NetworkCommunicationFragment"
+        app:destination="@id/mR702NetworkCommunicationFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_mR702DataCenterHomeFragment"
+        app:destination="@id/mR702DataCenterHomeFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_mR702DataCenterParamFragment"
+        app:destination="@id/mR702DataCenterParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_mR702TerminalParameterFragment"
+        app:destination="@id/mR702TerminalParameterFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_mR702PortHomeFragment"
+        app:destination="@id/mR702PortHomeFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_mR702RS485Port1SingleSensorAddParamFragment"
+        app:destination="@id/mR702RS485Port1SingleSensorAddParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_mR702RS485Port1SingleSensorParamFragment"
+        app:destination="@id/mR702RS485Port1SingleSensorParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_mR702RS485Port1TwoSensorAddParamFragment"
+        app:destination="@id/mR702RS485Port1TwoSensorAddParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_mR702RS485Port1TwoSensorParamFragment"
+        app:destination="@id/mR702RS485Port1TwoSensorParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_mR702RS485Port1SensorParamFragment"
+        app:destination="@id/mR702RS485Port1SensorParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_mR702RS485Port2SensorParamFragment"
+        app:destination="@id/mR702RS485Port2SensorParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_mR702RS485Port3SensorParamFragment"
+        app:destination="@id/mR702RS485Port3SensorParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_mR702RS485Port3AcousticOpticalAlarmParamFragment"
+        app:destination="@id/mR702RS485Port3AcousticOpticalAlarmParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_mR702RS485Port3CameraParamFragment"
+        app:destination="@id/mR702RS485Port3CameraParamFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -281,8 +318,8 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_queryDeviceDataFragment"
-        app:destination="@id/query_data_graph"
+        android:id="@+id/action_global_to_time_calibration"
+        app:destination="@id/time_calibration_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -311,6 +348,7 @@
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
+
     <action
         android:id="@+id/action_global_to_remoteDebugFragment"
         app:destination="@id/remote_command_debug_graph"

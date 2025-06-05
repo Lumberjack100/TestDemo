@@ -177,7 +177,12 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
-            else -> {}
+            else -> {
+                navController.setGraph(
+                    R.navigation.test_device_graph,
+                    bundle2
+                )
+            }
         }
     }
 

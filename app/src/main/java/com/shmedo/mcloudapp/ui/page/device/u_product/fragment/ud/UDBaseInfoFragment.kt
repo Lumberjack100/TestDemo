@@ -50,11 +50,11 @@ class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    override fun initStatusInfo(content: String) {
+    override fun <T> initStatusInfo(content: T) {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<UDCurrentStateInfo>(content)
+                    MoshiUtil.fromJson<UDCurrentStateInfo>(content as String)
                 }
                 if (stateInfo == null) {
                     binding.refreshLayout.showEmpty()

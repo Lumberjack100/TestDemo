@@ -130,8 +130,8 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                         )
                         portHomeViewModel.configPort4851SensorIDToSensorModelMap[item.sensorID]?.modelFieldList?.size?.let { fieldSize ->
                             nav().safeNavigate(
-                                if (fieldSize > 1) R.id.action_mR702PortHomeFragment_to_mR702RS485Port1TwoSensorParamFragment
-                                else R.id.action_mR702PortHomeFragment_to_mR702RS485Port1SingleSensorParamFragment,
+                                if (fieldSize > 1) R.id.action_global_to_mR702RS485Port1TwoSensorParamFragment
+                                else R.id.action_global_to_mR702RS485Port1SingleSensorParamFragment,
                                 bundle
                             )
                         }
@@ -192,8 +192,8 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
                         bleDevice
                     )
                     nav().safeNavigate(
-                        if (sensorModel.modelFieldList.size > 1) R.id.action_mR702PortHomeFragment_to_mR702RS485Port1TwoSensorAddParamFragment
-                        else R.id.action_mR702PortHomeFragment_to_mR702RS485Port1SingleSensorAddParamFragment,
+                        if (sensorModel.modelFieldList.size > 1) R.id.action_global_to_mR702RS485Port1TwoSensorAddParamFragment
+                        else R.id.action_global_to_mR702RS485Port1SingleSensorAddParamFragment,
                         bundle
                     )
                 }

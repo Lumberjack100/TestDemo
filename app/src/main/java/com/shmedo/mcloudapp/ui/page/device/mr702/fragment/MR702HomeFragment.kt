@@ -23,7 +23,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentMr702HomeBinding
+import com.shmedo.mcloudapp.databinding.FragmentMr702HomeOldBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -59,7 +59,7 @@ import timber.log.Timber
  * 描述：   配置主页
  */
 class MR702HomeFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentMr702HomeBinding
+    private lateinit var binding: FragmentMr702HomeOldBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mHeadStates: MR702HomeViewModel
     private val iotParseManager: IOTParserManager by inject()
@@ -72,13 +72,13 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_mr702_home, BR.stateVM, mHeadStates)
+        return DataBindingConfig(R.layout.fragment_mr702_home_old, BR.stateVM, mHeadStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentMr702HomeBinding
+        binding = getBinding() as FragmentMr702HomeOldBinding
         binding.llToolbar.toolbar.title = "设备配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
@@ -484,18 +484,18 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                     name = "关于设备",
                     desc = "设备基本信息、运行数据",
                     resID = R.drawable.ic_device_running_info,
-                    navId = R.id.action_mR702HomeFragment_to_mR702DeviceInfoFragment
+                    navId = 0
                 )
             )
         )
         moduleList.add(
-            ConfigModule(DataCenterModule(navId = R.id.action_mR702HomeFragment_to_mR702DataCenterHomeFragment))
+            ConfigModule(DataCenterModule(navId = R.id.action_global_to_mR702BaseInfoFragment))
         )
         moduleList.add(
-            ConfigModule(MR702PortConfigModule(navId = R.id.action_mR702HomeFragment_to_mR702PortHomeFragment))
+            ConfigModule(MR702PortConfigModule(navId = R.id.action_global_to_mR702PortHomeFragment))
         )
         moduleList.add(
-            ConfigModule(MR702TerminalParameterModule(navId = R.id.action_mR702HomeFragment_to_mR702TerminalParameterFragment))
+            ConfigModule(MR702TerminalParameterModule(navId = R.id.action_global_to_mR702NetInfoFragment))
         )
 //        moduleList.add(
 //            ConfigModule(
@@ -507,10 +507,10 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
 //            )
 //        )
         moduleList.add(
-            ConfigModule(DeviceOperationModule(navId = R.id.action_global_to_mR702EquipmentOperationFragment))
+            ConfigModule(DeviceOperationModule(navId = R.id.action_global_to_mR702StatusInfoFragment))
         )
         moduleList.add(
-            ConfigModule(NetworkCommunicationModule(navId = R.id.action_mR702HomeFragment_to_mR702NetworkCommunicationFragment))
+            ConfigModule(NetworkCommunicationModule(navId = R.id.action_global_to_mR702NetworkCommunicationFragment))
         )
         moduleList.add(
             ConfigModule(RebootModule())

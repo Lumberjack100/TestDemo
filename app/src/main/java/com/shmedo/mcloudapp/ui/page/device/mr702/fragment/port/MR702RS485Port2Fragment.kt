@@ -141,7 +141,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                             bleDevice
                         )
                         nav().safeNavigate(
-                            R.id.action_mR702PortHomeFragment_to_mR702RS485Port2SensorParamFragment,
+                            R.id.action_global_to_mR702RS485Port2SensorParamFragment,
                             bundle
                         )
                     }
@@ -178,7 +178,7 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
                         bleDevice
                     )
                     nav().safeNavigate(
-                        R.id.action_mR702PortHomeFragment_to_mR702RS485Port2SensorParamFragment,
+                        R.id.action_global_to_mR702RS485Port2SensorParamFragment,
                         bundle
                     )
                 }

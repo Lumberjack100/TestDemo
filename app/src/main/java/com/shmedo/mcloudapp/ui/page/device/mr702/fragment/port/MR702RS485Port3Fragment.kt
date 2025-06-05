@@ -87,7 +87,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
                         bleDevice
                     )
                     nav().safeNavigate(
-                        R.id.action_mR702PortHomeFragment_to_mR702RS485Port3CameraParamFragment,
+                        R.id.action_global_to_mR702RS485Port3CameraParamFragment,
                         bundle
                     )
                 } else if (item.sensorName == "声光报警器") {
@@ -99,7 +99,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
                             bleDevice
                         )
                     nav().safeNavigate(
-                        R.id.action_mR702PortHomeFragment_to_mR702RS485Port3AcousticOpticalAlarmParamFragmen,
+                        R.id.action_global_to_mR702RS485Port3AcousticOpticalAlarmParamFragment,
                         bundle
                     )
                 } else {
@@ -111,7 +111,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
                         bleDevice
                     )
                     nav().safeNavigate(
-                        R.id.action_mR702PortHomeFragment_to_mR702RS485Port3SensorParamFragment,
+                        R.id.action_global_to_mR702RS485Port3SensorParamFragment,
                         bundle
                     )
                 }

@@ -90,7 +90,7 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
                         bleDevice
                     )
                 nav().safeNavigate(
-                    R.id.action_mR702DataCenterHomeFragment_to_mR702DataCenterParamFragment,
+                    R.id.action_global_to_mR702DataCenterParamFragment,
                     bundle
                 )
             }

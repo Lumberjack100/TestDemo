@@ -59,8 +59,8 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        tools:text="未开启"
-                        android:text='@{stateVM.isAllowNotification ? "已开启" : "未开启"}' />
+                        android:text='@{stateVM.isAllowNotification ? "已开启" : "未开启"}'
+                        tools:text="未开启" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
