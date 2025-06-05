@@ -69,7 +69,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.measureMethodText }"
                             tools:text="实时测量" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -89,7 +89,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.dataSettlementMethod }"
                             tools:text="顶部固定法" />
 
@@ -110,7 +110,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.dataResponse }"
                             tools:text="开启" />
 
@@ -151,7 +151,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.measurementIntervalPerRound }"
                             tools:text="3" />
 

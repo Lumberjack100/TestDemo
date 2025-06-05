@@ -88,7 +88,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isAudibleOpened}"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.alarmType}"
                             tools:text="降雨量" />
                     </androidx.appcompat.widget.LinearLayoutCompat>

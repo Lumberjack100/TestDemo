@@ -144,7 +144,7 @@
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Value_Style"
                                 textViewEnabled="@{stateVM.isEditable }"
-                                android:drawableEnd="@drawable/ic_arrow_down"
+
                                 android:text="@{stateVM.calculate}"
                                 tools:text="是" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -163,7 +163,7 @@
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Value_Style"
                                 textViewEnabled="@{stateVM.isEditable }"
-                                android:drawableEnd="@drawable/ic_arrow_down"
+
                                 android:text="@{stateVM.calculateFormula}"
                                 tools:text="直线式" />
                         </androidx.appcompat.widget.LinearLayoutCompat>

@@ -59,7 +59,7 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        android:drawableEnd="@drawable/ic_arrow_down"
+
                         android:text="@{stateVM.modelType }"
                         tools:text="坐标模型" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -77,7 +77,7 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
-                        android:drawableEnd="@drawable/ic_arrow_down"
+
                         android:text="@{stateVM.childSensorType }"
                         tools:text="雷达物位计" />
 

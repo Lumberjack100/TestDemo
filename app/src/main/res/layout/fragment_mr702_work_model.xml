@@ -64,7 +64,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.model}"
                             tools:text="基站" />
                     </androidx.appcompat.widget.LinearLayoutCompat>

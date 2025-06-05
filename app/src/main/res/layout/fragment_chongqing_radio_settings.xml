@@ -77,7 +77,7 @@
                             style="@style/Common_ClickableItem_Value_Style"
 
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.receiveChannel}"
                             tools:text="410.00MHz" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -97,7 +97,7 @@
                             style="@style/Common_ClickableItem_Value_Style"
 
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.sendChannel}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -117,7 +117,7 @@
                             style="@style/Common_ClickableItem_Value_Style"
 
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.transmitPower}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -137,7 +137,7 @@
                             style="@style/Common_ClickableItem_Value_Style"
 
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.airSpeed}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>

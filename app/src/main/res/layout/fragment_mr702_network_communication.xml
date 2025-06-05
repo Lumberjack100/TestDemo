@@ -76,7 +76,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/SwitchButton_Item_Title_Style"
                             android:text="4G通信"
-                            android:textColor="@{!stateVM.isWirelessDisabled?@color/title_text_color:@color/sub_title_text_color}" />
+                            android:textColor="@{!stateVM.isWirelessDisabled?@color/title_text_color_black_90:@color/title_text_color_black_25}" />
 
                         <com.kyleduo.switchbutton.SwitchButton
                             android:id="@+id/mobileCommunicationSB"

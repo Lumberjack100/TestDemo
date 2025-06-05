@@ -64,7 +64,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.workModel}"
                             tools:text="自动" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -80,7 +80,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.reportModel}"
                             tools:text="自动" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -96,7 +96,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.networkModel}"
                             tools:text="自动" />
                     </androidx.appcompat.widget.LinearLayoutCompat>

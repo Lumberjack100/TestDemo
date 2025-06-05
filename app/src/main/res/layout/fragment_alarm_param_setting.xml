@@ -84,7 +84,7 @@
                             style="@style/Common_ClickableItem_Value_Style"
 
                             textViewEnabled="@{stateVM.isOpened }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.monitorPoint}"
                             tools:text="1" />
                     </androidx.appcompat.widget.LinearLayoutCompat>

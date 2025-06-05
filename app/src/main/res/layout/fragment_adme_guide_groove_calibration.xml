@@ -67,7 +67,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.motionType }"
                             tools:text="正转" />
                     </androidx.appcompat.widget.LinearLayoutCompat>

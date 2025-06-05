@@ -114,7 +114,7 @@
                             style="@style/Common_ClickableItem_Value_Style"
 
                             textViewEnabled="@{stateVM.isCenterOpened}"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.communicateWay}"
                             tools:text="无线" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -134,7 +134,7 @@
                             style="@style/Common_ClickableItem_Value_Style"
 
                             textViewEnabled="@{stateVM.isCenterOpened}"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.ipLeve}"
                             tools:text="IPV6" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -154,7 +154,7 @@
                             style="@style/Common_ClickableItem_Value_Style"
 
                             textViewEnabled="@{stateVM.isCenterOpened}"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.transferProtocol}"
                             tools:text="TCP" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -174,7 +174,7 @@
                             style="@style/Common_ClickableItem_Value_Style"
 
                             textViewEnabled="@{stateVM.isCenterOpened}"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.dataProtocol}"
                             tools:text="MQTT" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -194,7 +194,7 @@
                             style="@style/Common_ClickableItem_Value_Style"
 
                             textViewEnabled="@{stateVM.isCenterOpened}"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.platformType}"
                             tools:text="成都理工平台" />
 
@@ -217,7 +217,7 @@
                             style="@style/Common_ClickableItem_Value_Style"
 
                             textViewEnabled="@{stateVM.isCenterOpened}"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.guangdongWaterPlatformStationType}"
                             tools:text="山洪灾害监测站" />
 
@@ -404,7 +404,7 @@
                                 style="@style/Common_ClickableItem_Value_Style"
 
                                 textViewEnabled="@{stateVM.isCenterOpened}"
-                                android:drawableEnd="@drawable/ic_arrow_down"
+
                                 android:text="@{stateVM.stationType}"
                                 tools:text="降水" />
                         </androidx.appcompat.widget.LinearLayoutCompat>

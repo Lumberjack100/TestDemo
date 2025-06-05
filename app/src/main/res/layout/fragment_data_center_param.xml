@@ -128,7 +128,7 @@
                             style="@style/Common_ClickableItem_Value_Style"
 
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.dataType}"
                             tools:text="NMEA" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -148,7 +148,7 @@
                             style="@style/Common_ClickableItem_Value_Style"
 
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.dataProtocol}"
                             tools:text="MQTT" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -168,7 +168,7 @@
                             style="@style/Common_ClickableItem_Value_Style"
 
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.platformType}"
                             tools:text="成都理工平台" />
 
@@ -316,7 +316,7 @@
                                 style="@style/Common_ClickableItem_Value_Style"
 
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                android:drawableEnd="@drawable/ic_arrow_down"
+
                                 android:text="@{stateVM.stationType}"
                                 tools:text="降水" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
