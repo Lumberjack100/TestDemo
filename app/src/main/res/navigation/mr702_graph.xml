@@ -55,13 +55,13 @@
 
     <fragment
         android:id="@+id/mR702DataCenterHomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702DataCenterHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702DataCenterHomeFragment"
         android:label="MR702DataCenterHomeFragment"
         tools:layout="@layout/fragment_universal_data_center_home" />
 
     <fragment
         android:id="@+id/mR702DataCenterParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702DataCenterParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702DataCenterParamFragment"
         android:label="MR702DataCenterParamFragment"
         tools:layout="@layout/fragment_mr702_data_center_param" />
 

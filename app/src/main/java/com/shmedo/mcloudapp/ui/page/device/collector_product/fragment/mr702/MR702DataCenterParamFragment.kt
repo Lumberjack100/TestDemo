@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.fragment
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702
 
 import android.os.Bundle
 import android.view.View
@@ -6,6 +6,7 @@ import android.widget.CompoundButton
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -29,7 +30,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentMr702DataCenterParamBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
@@ -43,8 +43,8 @@ import org.koin.android.ext.android.inject
 
 class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702DataCenterParamBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: MR702DataCenterParamViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: MR702DataCenterParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private lateinit var statusItem: DataCenterStatusItem
@@ -63,8 +63,6 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -446,7 +444,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
 
         } else if (mStates.dataProtocol.get() == "SL651" || mStates.dataProtocol.get() == "SZY206") {//SL651/SZY206
             entity.type_code =
-                if (mStates.dataProtocol.get() == "SL651") StationCode.valueByDescription(
+                if (mStates.dataProtocol.get() == "SL651") StationCode.Companion.valueByDescription(
                     mStates.stationType.get()
                 ).code else IOTConstants.NULL_KEY
             entity.co_address =
@@ -607,7 +605,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
 
         //SL651/SZY206 协议参数
         if (mStates.dataProtocol.get() == dataProtocolList[2]) {
-            mStates.stationType.set(StationCode.valueByCode(data.type_code).description)//测站分类编码
+            mStates.stationType.set(StationCode.Companion.valueByCode(data.type_code).description)//测站分类编码
             mStates.centerStationAddr.set(data.co_address)
         }
         mStates.password.set(data.password)

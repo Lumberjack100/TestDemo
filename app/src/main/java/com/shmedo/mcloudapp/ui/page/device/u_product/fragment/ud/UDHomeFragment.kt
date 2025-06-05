@@ -347,7 +347,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         configModuleTree.configModules.add(
             ConfigModule(
                 AlarmConfigModule(
-                    resID = R.drawable.ic_module_lora_new,
+                    resID = R.drawable.ic_module_alarm_new,
                     navId = R.id.action_global_to_alarmSettingFragment
                 )
             )

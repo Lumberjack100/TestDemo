@@ -6,12 +6,12 @@ import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
-import com.hjq.toast.ToastParams
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
@@ -34,7 +34,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentDataCenterParamBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
@@ -50,8 +49,8 @@ import timber.log.Timber
 
 class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDataCenterParamBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: DataCenterParamViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: DataCenterParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private lateinit var statusItem: DataCenterStatusItem
@@ -72,8 +71,6 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {

@@ -1,8 +1,9 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.fragment
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702
 
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -18,7 +19,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentUniversalDataCenterHomeBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
@@ -31,15 +31,13 @@ import org.koin.android.ext.android.inject
 
 class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUniversalDataCenterHomeBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: UniversalDataCenterHomeViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: UniversalDataCenterHomeViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -82,13 +80,13 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
             addType<DataCenterStatusItem>(R.layout.data_center_status_item)
             R.id.item.onClick {
                 val item = getModel<DataCenterStatusItem>()
-                val bundle = UniversalDataCenterParamFragment.newBundleArguments(
-                        item,
-                        productType,
-                        communicateWay,
-                        deviceInfo,
-                        bleDevice
-                    )
+                val bundle = UniversalDataCenterParamFragment.Companion.newBundleArguments(
+                    item,
+                    productType,
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
                 nav().safeNavigate(
                     R.id.action_global_to_mR702DataCenterParamFragment,
                     bundle
@@ -119,6 +117,59 @@ class MR702DataCenterHomeFragment : BaseIOTDeviceFragment() {
         commandItems.add(command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = errMsg
+        )
     }
 
     override fun setResultData(cmdStr: String) {
