@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port
 
 import android.os.Bundle
 import android.util.Log
@@ -9,8 +9,6 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRDOPortParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -22,14 +20,16 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
-import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.databinding.FragmentMr702IoPortBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
+import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.MRDODIPortItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.extensions.showMessage
+import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
+import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -216,7 +216,7 @@ class MR702IOPortFragment : BaseIOTDeviceFragment() {
 
                 binding.rv.models = tempList
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
@@ -236,7 +236,7 @@ class MR702IOPortFragment : BaseIOTDeviceFragment() {
 
                 binding.rv.bindingAdapter.addModels(tempList)
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }

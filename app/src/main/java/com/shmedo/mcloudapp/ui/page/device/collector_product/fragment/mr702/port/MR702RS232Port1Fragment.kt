@@ -89,6 +89,7 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
      * 初始化默认参数
      */
     private fun resetDefaultParams() {
+        mStates.isOpened.set(true)
         mStates.cameraModel.set(cameraModelList[0])
         mStates.cameraResolution.set(cameraResolutionList[0])
         mStates.photoInterval.set("65535")
@@ -220,14 +221,14 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
                 return
             }
             if (!mStates.isOpened.get()) {
-                disable()
+                closeSwitch()
                 return
             }
             initSaveCommand()
         }
     }
 
-    private fun disable() {
+    private fun closeSwitch() {
         commandItems.clear()
         val entity = MRRS232Port2ParamEntity(
             switch = "0"

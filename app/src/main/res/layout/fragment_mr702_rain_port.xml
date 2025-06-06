@@ -15,14 +15,14 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RainPortFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RainPortFragment.ClickProxy" />
     </data>
 
     <com.drake.brv.PageRefreshLayout
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/main_bg_gray">
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/scrollView"
@@ -32,13 +32,27 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="60dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                android:paddingTop="@dimen/page_content_container_padding_top_12"
+                android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dimen_size_8"
-                    android:background="@color/main_bg_gray" />
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_Layout_Style"
+                    android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                    android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="14dp"
+                        android:background="@color/black" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_GroupItem_Title_Style2"
+                        android:layout_marginStart="@dimen/dimen_size_8"
+                        android:text="雨量计参数" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
@@ -46,49 +60,38 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        android:text="状态" />
+                        android:text="接入状态" />
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
                         android:drawableEnd="@null"
                         android:text="@{stateVM.status}"
-                        android:textSize="17sp"
                         tools:text="已接入" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <RelativeLayout style="@style/SwitchButton_Item_Layout_Style">
+                <RelativeLayout
+                    style="@style/SwitchButton_Item_Layout_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/SwitchButton_Item_Title_Style"
-                        android:text="雨量计"
-                        android:textStyle="bold" />
+                        android:text="开关" />
 
                     <com.kyleduo.switchbutton.SwitchButton
-                        android:id="@+id/sensorSB"
                         style="@style/SwitchButton_Item_Button_Style"
-                        checkedImmediatelyNoEvent="@{stateVM.isOpened}"
-                        android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
+                        android:checked="@={stateVM.isOpened}"
                         app:kswAnimationDuration="100"
                         app:kswBackDrawable="@drawable/sl_switchbutton_back"
                         app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
 
                 </RelativeLayout>
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="@dimen/dimen_size_10"
-                    android:layout_marginBottom="@dimen/dimen_size_20"
-                    android:src="@{stateVM.isOpened?@drawable/ic_mr702_rain_gauge_bright:@drawable/ic_mr702_rain_gauge_gray}"
-                    tools:src="@drawable/ic_mr702_rain_gauge_bright" />
-
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
+                    onClickWithDebouncing="@{()->click.onChooseResolutionClick()}"
                     android:background="@drawable/layer_common_click_item_with_divider"
-                    android:enabled="@{stateVM.isOpened}"
-                    onClickWithDebouncing="@{()->click.onChooseResolutionClick()}">
+                    android:enabled="@{stateVM.isOpened}">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
@@ -98,14 +101,13 @@
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
                         textViewEnabled="@{stateVM.isOpened}"
-
                         android:text="@{stateVM.rainResolution}"
                         tools:text="0.2" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_Layout_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
+                    android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
@@ -116,20 +118,25 @@
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{stateVM.isOpened}"
-                        android:hint="请输入"
-                        android:text="@={stateVM.debounceCoefficient}"
                         android:inputType="number"
+                        android:text="@={stateVM.debounceCoefficient}"
                         app:lengthFilter="@{6}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <com.google.android.material.textview.MaterialTextView
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_reset"
+                    style="@style/ResetButton_Style2"
+                    android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                    android:onClick="@{()->click.onResetClick()}"
+                    android:text="@string/button_reset_text" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_confirm"
-                    style="@style/SubmitButton_Style"
-                    onClickWithDebouncing="@{()->click.onSubmitClick()}"
-                    visible="@{stateVM.isOpened}"
-                    android:layout_marginTop="150dp"
-                    android:layout_marginBottom="15dp"
-                    android:text="保存" />
+                    style="@style/SubmitButton_Style2"
+                    onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                    android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                    android:enabled="@{stateVM.isDataModified}"
+                    android:text="@string/button_save_text" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.core.widget.NestedScrollView>
