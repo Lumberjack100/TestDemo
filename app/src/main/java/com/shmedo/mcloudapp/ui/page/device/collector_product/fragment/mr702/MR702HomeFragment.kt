@@ -46,7 +46,6 @@ import com.shmedo.mcloudapp.model.LoraConfigModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.SensorConfigModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
-import com.shmedo.mcloudapp.model.WorkModeModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
@@ -122,7 +121,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        mHeadStates.productLogoResId.set(R.drawable.device_logo_m20)
+        mHeadStates.productLogoResId.set(R.drawable.ic_mr702)
         mHeadStates.productName.set(productType.productName)
         mHeadStates.productToken.set(productType.productToken)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
@@ -147,11 +146,11 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         mHeadStates.isConnected.set(isConnected)
         if (isConnected) {
             toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_m20)
+            mHeadStates.productLogoResId.set(R.drawable.ic_mr702)
             mHeadStates.iotPlatformStateText.set("蓝牙已连接")
         } else {
             toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_m20_offline)
+            mHeadStates.productLogoResId.set(R.drawable.ic_mr702)
             mHeadStates.iotPlatformStateText.set("蓝牙已断开")
 
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
@@ -257,13 +256,13 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         groupList.add(DeviceStatusInfoGroupItem("设备配置"))
         val configModuleTree = ConfigModuleTree(
             configModules = arrayListOf(
-                ConfigModule(
-                    WorkModeModule(
-                        name = "工作模式",
-                        resID = R.drawable.ic_module_work_mode_new,
-                        navId = R.id.action_global_to_mR702WorkModelFragment
-                    )
-                ),
+//                ConfigModule(
+//                    WorkModeModule(
+//                        name = "工作模式",
+//                        resID = R.drawable.ic_module_work_mode_new,
+//                        navId = R.id.action_global_to_mR702WorkModelFragment
+//                    )
+//                ),
                 ConfigModule(
                     CommonModule(
                         name = "网络配置",
@@ -434,7 +433,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             mHeadStates.iotPlatformStateText.set("米度平台在线")
             queryStatusInfo()
         } else {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_m20_offline)
+            mHeadStates.productLogoResId.set(R.drawable.ic_mr702)
             mHeadStates.iotPlatformStateText.set("米度平台离线")
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
