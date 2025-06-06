@@ -1,17 +1,21 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port
 
+import android.graphics.Typeface
 import android.os.Bundle
+import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
+import com.google.android.material.tabs.TabLayout
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.core.commonlib.extensions.hexStringToDecimalString
-import com.shmedo.core.commonlib.extensions.stringToGBK16UByteString
+import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
@@ -19,14 +23,16 @@ import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRRS485Port1SensorPara
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
+import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRRS485Port1SensorParam
+import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRRS485Port1SensorParamWrapper
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SingleSensorAddParamBinding
+import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorParamBinding
 import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
@@ -39,15 +45,20 @@ import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port1SingleSensorParamViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port1SensorParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
-class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentMr702Rs485Port1SingleSensorAddParamBinding
+@Deprecated("This class is deprecated", ReplaceWith("MR702RS485Port1SingleSensorAddParamFragment"))
+class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
+    TabLayout.OnTabSelectedListener {
+    private lateinit var binding: FragmentMr702Rs485Port1SensorParamBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: MR702RS485Port1SingleSensorParamViewModel
+    private lateinit var mStates: MR702RS485Port1SensorParamViewModel
     private lateinit var portHomeViewModel: MR702PortHomeViewModel
     private val iotParseManager: IOTParserManager by inject()
 
@@ -56,11 +67,15 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
     private val checkBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_check_bit) }
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
     private val dataFormatList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_data_format) }
-    private val siteTypeList = mutableListOf("无", "测点", "参考点")
-    private val calculateList = mutableListOf("不计算", "线性方程计算", "传感器联合计算")
+    private val solutionMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs232_port1_sensor_solution_method) }
 
+    private val activeColor: Int = ColorUtils.getColor(R.color.colorPrimary)
+    private val normalColor: Int = ColorUtils.getColor(R.color.title_text_color)
+    private val activeSize: Float = 17f
+    private val normalSize: Float = 15f
+    private var selectedFieldIndex = 0
 
-    private var modelFieldIndex: Int = 0
+    private val tabList: MutableList<String> = arrayListOf()
 
 
     override fun initViewModel() {
@@ -72,7 +87,7 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_mr702_rs485_port1_single_sensor_add_param,
+            R.layout.fragment_mr702_rs485_port1_sensor_param,
             BR.stateVM,
             mStates
         )
@@ -81,7 +96,7 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentMr702Rs485Port1SingleSensorAddParamBinding
+        binding = getBinding() as FragmentMr702Rs485Port1SensorParamBinding
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)
         }
@@ -90,6 +105,28 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
                 processBack(true)
             }
         })
+        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
+        toolbarViewModel.toolbarTvActionText.set("取消")
+        toolbarViewModel.toolbarIvActionVisible.set(true)
+        initRefresh()
+    }
+
+    private fun setEditable(editable: Boolean) {
+        toolbarViewModel.toolbarIvActionVisible.set(!editable)
+        toolbarViewModel.toolbarTvActionVisible.set(editable)
+        mStates.isEditable.set(editable)
+    }
+
+    private fun initRefresh() {
+        refreshLayout = binding.refreshLayout
+        binding.refreshLayout.setEnableLoadMore(false)
+        binding.refreshLayout.onRefresh {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return@onRefresh
+            }
+            queryData()
+        }
     }
 
     override fun initData() {
@@ -99,113 +136,87 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
         }
         binding.llToolbar.toolbar.title = sensorItem.sensorName
 
-        portHomeViewModel.configPort4851SensorIDToSensorModelMap[sensorItem.sensorID]?.let {
+        portHomeViewModel.configPort4851SensorIDToSensorModelMap[sensorItem.modelToken]?.let {
             mStates.curSensorModel = it
         }
-        mStates.isCustomSensor.set(mStates.curSensorModel.sensorID == "0")//是否自定义传感器
-
-        mStates.modelName.set(mStates.curSensorModel.modelName)//物模型名称
-        mStates.modelToken.set(mStates.curSensorModel.modelToken)//物模型编号
+        if (mStates.curSensorModel.modelFieldList.isNotEmpty()) {
+            tabList.clear()
+            tabList.addAll(mStates.curSensorModel.modelFieldList.map { it.fieldName })
+            initTabLayout()
+        }
+        mStates.modelName.set(sensorItem.sensorName)
+        mStates.modelToken.set(sensorItem.modelToken)
         mStates.address.set("1")//传感器地址,默认1
-        resetDefaultParam()
+        resetDefaultModelField()
     }
 
     /**
      * 重置采集项
      */
-    private fun resetDefaultParam() {
+    private fun resetDefaultModelField() {
         mStates.baudRate.set("9600")  //默认波特率
         mStates.dataBit.set(dataBitList[3])//默认数据位 8
         mStates.checkBit.set(checkBitList[0])//默认校验位 无
         mStates.stopBit.set(stopBitList[0])//默认停止位 1
 
-        mStates.siteType.set(siteTypeList[0])//站点类型 默认无
-        mStates.calculate.set(calculateList[0])//计算方式 默认不计算
-        mStates.sensitivityK.set("1")//
-        mStates.temperatureCorrectionCoefficientB.set("0")
-        mStates.powValue.set("0")
-        mStates.initialFrequencyF0.set("0")
-        mStates.initialTemperatureT0.set("0")
-        mStates.initialWaterLevel.set("0")
-        mStates.initialMeasureValue.set("0")
-
-        resetDefaultModelField1()
+        mStates.hydrologicalIdentification.set("")//水文标识
+        mStates.collectionInstructions.set("")//采集指令
+        mStates.ratio.set("1")//默认倍率 1
+        mStates.dataFormat.set(dataFormatList[0])
+        mStates.solutionMethod.set(solutionMethodList[0])//默认解算方法 加权平均
+        mStates.triggerValue.set("0")//默认触发值 0
+        mStates.upperLimit.set("100")//默认上限 100
+        mStates.lowerLimit.set("0")//默认下限 0
+        mStates.correctValue.set("0")//默认修正值 0
+        mStates.ngateval.set("3")//默认阈值次数 3
     }
 
-    private fun resetDefaultModelField1() {
-        //采集项名称
-        mStates.modelFieldName.set(
-            if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].fieldName
-            else "采集项1"
-        )
-        //采集项单位
-        mStates.modelFieldUnit.set(
-            if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].engUnit
-            else ""
-        )
-        //水文标识
-        mStates.hydrologicalIdentification.set(
-            if (checkModelFieldList()) {
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].hydrologicalIdentification
-            } else ""
-        )
-        //采集指令
-        mStates.collectionInstructions.set(
-            if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].collectionInstructions
-            else ""
-        )
-        //倍率
-        mStates.ratio.set(
-            if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].ratio
-            else "1"
-        )
-        //数据类型
-        mStates.dataFormat.set(
-            if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].dataFormat
-            else dataFormatList[0]
-        )
-
-        //触发值
-        mStates.triggerValue.set(
-            if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].triggerValue
-            else "0"
-        )
-        //上限值
-        mStates.upperLimit.set(
-            if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].upperLimit
-            else "100"
-        )
-        //下限值
-        mStates.lowerLimit.set(
-            if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].lowerLimit
-            else "0"
-        )
-        //默认修正值 0
-        mStates.correctValue.set(
-            if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].correctValue
-            else "0"
-        )
-        //阈值次数 3
-        mStates.ngateval.set(
-            if (checkModelFieldList())
-                mStates.curSensorModel.modelFieldList[modelFieldIndex].ngateval
-            else "3"
-        )
+    private fun initTabLayout() {
+        val tabLayout = binding.tabs
+        tabLayout.removeAllTabs()
+        tabList.forEachIndexed { index, name ->
+            val textView = TextView(requireContext())
+            textView.text = name
+            textView.textSize = if (index == 0) activeSize else normalSize
+            textView.typeface = if (index == 0) Typeface.DEFAULT_BOLD else Typeface.DEFAULT
+            textView.gravity = Gravity.CENTER
+            textView.setTextColor(if (index == 0) activeColor else normalColor)
+            tabLayout.addTab(tabLayout.newTab().setCustomView(textView))
+        }
+        tabLayout.addOnTabSelectedListener(this)
     }
+
+    override fun onTabSelected(tab: TabLayout.Tab) {
+        val textView = tab.customView as TextView?
+        textView?.apply {
+            textSize = activeSize
+            typeface = Typeface.DEFAULT_BOLD
+            setTextColor(activeColor)
+        }
+        selectedFieldIndex = tab.position
+        binding.refreshLayout.autoRefresh()
+    }
+
+    override fun onTabUnselected(tab: TabLayout.Tab) {
+        val textView = tab.customView as TextView?
+        textView?.apply {
+            textSize = normalSize
+            typeface = Typeface.DEFAULT
+            setTextColor(normalColor)
+        }
+    }
+
+    override fun onTabReselected(tab: TabLayout.Tab) {}
 
     inner class ClickProxy : BaseClickProxy() {
-        /**
-         * 选择数据位
-         */
+        override fun onToolbarIvClick() {
+            setEditable(true)
+        }
+
+        override fun onToolbarTvClick() {
+            setEditable(false)
+        }
+
         fun onDataBitChooseClick() {
             val selectedIndex = dataBitList.indexOf(mStates.dataBit.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -223,9 +234,6 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        /**
-         * 选择校验位
-         */
         fun onCheckBitChooseClick() {
             val selectedIndex = checkBitList.indexOf(mStates.checkBit.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -243,9 +251,6 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        /**
-         * 选择停止位
-         */
         fun onStopBitChooseClick() {
             val selectedIndex = stopBitList.indexOf(mStates.stopBit.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -263,49 +268,6 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        /**
-         * 站点类型
-         */
-        fun onSiteTypeChooseClick() {
-            val selectedIndex = siteTypeList.indexOf(mStates.siteType.get())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "请选择站点类型", siteTypeList.toTypedArray(),
-                    null, selectedIndex,
-                    { position, text ->
-                        mStates.siteType.set(text)
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
-        }
-
-        /**
-         * 计算方式
-         */
-        fun onIsCalculateChooseClick() {
-            val selectedIndex = calculateList.indexOf(mStates.calculate.get())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "请选择计算方式", calculateList.toTypedArray(),
-                    null, selectedIndex,
-                    { position, text ->
-                        mStates.calculate.set(text)
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
-        }
-
-        /**
-         * 选择数据类型
-         */
         fun onDataFormatChooseClick() {
             val selectedIndex = dataFormatList.indexOf(mStates.dataFormat.get())
             XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
@@ -323,21 +285,38 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        fun onSubmitClick() {
+        fun onSolutionMethodChooseClick() {
+            val selectedIndex = solutionMethodList.indexOf(mStates.solutionMethod.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .enableDrag(false)
+                .asBottomList(
+                    "请选择解算", solutionMethodList,
+                    null, selectedIndex,
+                    { position, text ->
+                        mStates.solutionMethod.set(text)
+                    }, 0, R.layout.custom_xpopup_adapter_text_center
+                )
+                .show()
+        }
+
+        fun onSaveModelFieldClick() {
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
             initSaveCommand()
         }
+
+        fun onSubmitClick() {
+            processBack()
+        }
     }
 
     private fun initSaveCommand() {
         commandItems.clear()
-        if (mStates.modelName.get().isEmpty()) {
-            showMessageDialog("请输入物模型名称")
-            return
-        }
         if (mStates.modelToken.get().isEmpty()) {
             showMessageDialog("请输入物模型编号")
             return
@@ -350,46 +329,51 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
             showMessageDialog("请输入波特率")
             return
         }
-        if (!checkModelField())
+        if (mStates.hydrologicalIdentification.get().isEmpty()) {
+            showMessageDialog("请输入水文标识")
             return
-
+        }
+        if (mStates.collectionInstructions.get().isEmpty()) {
+            showMessageDialog("请输入采集指令")
+            return
+        }
+        if (mStates.ratio.get().isEmpty()) {
+            showMessageDialog("请输入倍率")
+            return
+        }
+        if (mStates.triggerValue.get().isEmpty()) {
+            showMessageDialog("请输入触发值")
+            return
+        }
+        if (mStates.upperLimit.get().isEmpty()) {
+            showMessageDialog("请输入上限值")
+            return
+        }
+        if (mStates.lowerLimit.get().isEmpty()) {
+            showMessageDialog("请输入下限值")
+            return
+        }
+        if (mStates.correctValue.get().isEmpty()) {
+            showMessageDialog("请输入修正值")
+            return
+        }
+        if (mStates.ngateval.get().isEmpty()) {
+            showMessageDialog("请输入阈值次数")
+            return
+        }
         val entity = MRRS485Port1SensorParamEntity(
+            c_model = "0",
+            num = selectedFieldIndex.toString(),
             model = mStates.modelToken.get() + "_" + mStates.address.get(),
-            c_model = "1",
-            num = modelFieldIndex.toString(),
-            sensorlist = sensorItem.sensorID,
             baud = mStates.baudRate.get(),
             databit = mStates.dataBit.get(),
             parity = (checkBitList.indexOf(mStates.checkBit.get())).toString(),
             stopbit = (stopBitList.indexOf(mStates.stopBit.get())).toString(),
-            baseflag = if (siteTypeList.indexOf(mStates.siteType.get()) == 0) IOTConstants.NULL_KEY else (siteTypeList.indexOf(
-                mStates.siteType.get()
-            ) - 1).toString(),
-            calctype = calculateList.indexOf(mStates.calculate.get()).toString(),
-            kvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.sensitivityK.get() else
-                IOTConstants.NULL_KEY,
-            bvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.temperatureCorrectionCoefficientB.get() else
-                IOTConstants.NULL_KEY,
-            powvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.powValue.get() else
-                IOTConstants.NULL_KEY,
-            r0value = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialFrequencyF0.get() else
-                IOTConstants.NULL_KEY,
-            t0value = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialTemperatureT0.get() else
-                IOTConstants.NULL_KEY,
-            l0value = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialWaterLevel.get() else
-                IOTConstants.NULL_KEY,
-            lvalue = if (calculateList.indexOf(mStates.calculate.get()) == 1) mStates.initialMeasureValue.get() else
-                IOTConstants.NULL_KEY,
-            initvalue = if (calculateList.indexOf(mStates.calculate.get()) == 2) mStates.initialValue.get() else
-                IOTConstants.NULL_KEY,
-
-            swtoken = mStates.hydrologicalIdentification.get().hexStringToDecimalString(),
-            sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
-            mgbk = mStates.modelFieldName.get().stringToGBK16UByteString(),//采集项名称GBK编码
-            egbk = mStates.modelFieldUnit.get().stringToGBK16UByteString(),//采集项单位GBK编码
+            swtoken = mStates.hydrologicalIdentification.get(),
             cmd = mStates.collectionInstructions.get(),
             ratio = mStates.ratio.get(),
             dataformat = (dataFormatList.indexOf(mStates.dataFormat.get())).toString(),
+            calctype = (solutionMethodList.indexOf(mStates.solutionMethod.get())).toString(),
             gateval = mStates.triggerValue.get(),
             uplimit = mStates.upperLimit.get(),
             lowlimit = mStates.lowerLimit.get(),
@@ -401,62 +385,52 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
             entity.toCommandString()
         )
         commandItems.add(command)
-
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    private fun checkModelField(): Boolean {
-        if (mStates.modelFieldName.get().isEmpty()) {
-            showMessageDialog("请输入采集项名称")
-            return false
-        }
-        if (mStates.modelFieldUnit.get().isEmpty()) {
-            showMessageDialog("请输入采集项单位")
-            return false
-        }
-        if (mStates.hydrologicalIdentification.get().isEmpty()) {
-            showMessageDialog("请输入水文标识")
-            return false
-        }
-        if (mStates.collectionInstructions.get().isEmpty()) {
-            showMessageDialog("请输入采集指令")
-            return false
-        }
-        if (mStates.ratio.get().isEmpty()) {
-            showMessageDialog("请输入倍率")
-            return false
-        }
-        if (mStates.triggerValue.get().isEmpty()) {
-            showMessageDialog("请输入触发值")
-            return false
-        }
-        if (mStates.upperLimit.get().isEmpty()) {
-            showMessageDialog("请输入上限值")
-            return false
-        }
-        if (mStates.lowerLimit.get().isEmpty()) {
-            showMessageDialog("请输入下限值")
-            return false
-        }
-        if (mStates.correctValue.get().isEmpty()) {
-            showMessageDialog("请输入修正值")
-            return false
-        }
-        if (mStates.ngateval.get().isEmpty()) {
-            Toaster.show("请输入阈值次数")
-            return false
-        }
+    override fun lazyLoadData() {
+        binding.refreshLayout.autoRefresh()
+    }
 
-        return true
+    private fun queryData() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.MR_MD_GET_RS485_PORT1_SENSOR_PARAM,
+            "model=${sensorItem.modelToken}_${sensorItem.addr}&index=${selectedFieldIndex}"
+        )
+        commandItems.add(command)
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MR_MD_GET_RS485_PORT1_SENSOR_PARAM -> {
+                val result = iotParseManager.parse<String>(
+                    cmdStr,
+                    IOTCommandType.MR_MD_GET_RS485_PORT1_SENSOR_PARAM
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询参数出错: ${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initParamData(result.data)
+                    }
+                }
+            }
+
             IOTCommandType.MR_MD_SET_RS485_PORT1_SENSOR_PARAM -> {
+                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "数据保存出错：${result.message}"
+                        val errMsg = "数据保存出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -464,7 +438,6 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("数据保存成功")
-                            processBack()
                         }
                     }
                 }
@@ -476,6 +449,69 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    private fun initParamData(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val sensorParamWrapper = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<MRRS485Port1SensorParamWrapper>(content)
+                } ?: return@launchWithViewLifecycle
+                if (mStates.curSensorModel.modelFieldList.isEmpty() && selectedFieldIndex == 0) {
+                    tabList.clear()
+                    for (i in 0..sensorParamWrapper.indexnum.toInt()) {
+                        tabList.add("采集项${i + 1}")
+                    }
+                    initTabLayout()
+                }
+                sensorParamWrapper.port1_param.let { portParam ->
+                    val sensorParam: MRRS485Port1SensorParam = portParam[0]
+                    mStates.sensorParamWrapper.set(sensorParam)
+
+                    val strs = sensorParam.model.split("_")
+                    mStates.address.set(strs[1])
+                    mStates.modelToken.set(strs[0])
+                    mStates.baudRate.set(sensorParam.baud)
+                    mStates.dataBit.set(sensorParam.databit)
+                    sensorParam.parity.toInt().let { value ->
+                        if (value in checkBitList.indices) {
+                            mStates.checkBit.set(checkBitList[value])
+                        }
+                    }
+                    sensorParam.stopbit.toInt().let { value ->
+                        if (value in stopBitList.indices) {
+                            mStates.stopBit.set(stopBitList[value])
+                        }
+                    }
+                    mStates.hydrologicalIdentification.set(sensorParam.swtoken)
+                    mStates.collectionInstructions.set(sensorParam.cmd)
+                    mStates.ratio.set(sensorParam.ratio)
+                    sensorParam.dataformat.toInt().let { value ->
+                        if (value in dataFormatList.indices) {
+                            mStates.dataFormat.set(dataFormatList[value])
+                        }
+                    }
+                    sensorParam.calctype.toInt().let { value ->
+                        if (value in solutionMethodList.indices) {
+                            mStates.solutionMethod.set(solutionMethodList[value])
+                        }
+                    }
+                    mStates.triggerValue.set(sensorParam.gateval)
+                    mStates.upperLimit.set(sensorParam.uplimit)
+                    mStates.lowerLimit.set(sensorParam.lowlimit)
+                    mStates.correctValue.set(sensorParam.corrvalue)
+                    mStates.ngateval.set(sensorParam.ngateval)
+                }
+            } catch (e: Exception) {
+                Timber.Forest.e(e)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initImmersionBar(binding.llToolbar.toolbar)
+    }
+
     private fun processBack(isPressBackBtn: Boolean = false) {
         launchWithViewLifecycle {
             if (isPressBackBtn) {
@@ -483,25 +519,14 @@ class MR702RS485Port1SingleSensorAddParamFragment : BaseIOTDeviceFragment() {
                 nav().navigateUp()
                 return@launchWithViewLifecycle
             }
-
-            delay(1500)
+            delay(1000)
             //需要给上一级浏览页面传递最新的事件信息
             mMessenger.requestMR702Rs485PortSensorRefresh(MRRS485Port1)
             nav().navigateUp()
         }
     }
 
-
-    private fun checkModelFieldList() =
-        mStates.curSensorModel.modelFieldList.isNotEmpty() && modelFieldIndex < mStates.curSensorModel.modelFieldList.size
-
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
-
     companion object {
-        fun newInstance() = MR702RS485Port1SingleSensorAddParamFragment()
         private const val SENSOR_MODEL_ITEM = "sensor_model_item"
 
         fun newBundleArguments(

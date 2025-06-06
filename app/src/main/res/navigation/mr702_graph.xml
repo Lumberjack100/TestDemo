@@ -79,55 +79,55 @@
 
     <fragment
         android:id="@+id/mR702RS485Port1SingleSensorAddParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SingleSensorAddParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port1SingleSensorAddParamFragment"
         android:label="MR702RS485Port1SingleSensorAddParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port1_single_sensor_add_param" />
 
     <fragment
         android:id="@+id/mR702RS485Port1SingleSensorParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SingleSensorParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port1SingleSensorParamFragment"
         android:label="MR702RS485Port1SingleSensorParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port1_single_sensor_param" />
 
     <fragment
         android:id="@+id/mR702RS485Port1TwoSensorAddParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1TwoSensorAddParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port1TwoSensorAddParamFragment"
         android:label="MR702RS485Port1TwoSensorAddParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port1_two_sensor_add_param" />
 
     <fragment
         android:id="@+id/mR702RS485Port1TwoSensorParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1TwoSensorParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port1TwoSensorParamFragment"
         android:label="MR702RS485Port1TwoSensorParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port1_two_sensor_param" />
 
     <fragment
         android:id="@+id/mR702RS485Port1SensorParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SensorParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port1SensorParamFragment"
         android:label="MR702RS485Port1SensorParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port1_sensor_param" />
 
     <fragment
         android:id="@+id/mR702RS485Port2SensorParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port2SensorParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port2SensorParamFragment"
         android:label="MR702RS485Port2SensorParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port2_sensor_param" />
 
     <fragment
         android:id="@+id/mR702RS485Port3SensorParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port3SensorParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port3SensorParamFragment"
         android:label="MR702RS485Port3SensorParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port3_sensor_param" />
 
     <fragment
         android:id="@+id/mR702RS485Port3AcousticOpticalAlarmParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port3AcousticOpticalAlarmParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port3AcousticOpticalAlarmParamFragment"
         android:label="MR702RS485Port3AcousticOpticalAlarmParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port3_acoustic_optical_alarm_param" />
 
     <fragment
         android:id="@+id/mR702RS485Port3CameraParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port3CameraParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port3CameraParamFragment"
         android:label="MR702RS485Port3CameraParamFragment"
         tools:layout="@layout/fragment_mr702_rs485_port3_camera_param" />
 

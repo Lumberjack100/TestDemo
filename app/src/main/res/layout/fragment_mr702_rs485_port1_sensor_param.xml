@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SensorParamFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port1SensorParamFragment.ClickProxy" />
 
     </data>
 

@@ -11,7 +11,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port3SensorParamFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port3SensorParamFragment.ClickProxy" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat

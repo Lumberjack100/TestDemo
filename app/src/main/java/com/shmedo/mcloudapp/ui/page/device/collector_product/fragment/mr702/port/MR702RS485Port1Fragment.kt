@@ -42,7 +42,7 @@ import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.model.RVEmptyFooter
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.collector_product.dialog.MR702SensorSelectionPopupView
-import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SingleSensorAddParamFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port1SingleSensorAddParamFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port1ViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration

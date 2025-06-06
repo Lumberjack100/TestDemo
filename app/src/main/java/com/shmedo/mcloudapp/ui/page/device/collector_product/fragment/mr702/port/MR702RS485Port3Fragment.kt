@@ -25,9 +25,9 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port3AcousticOpticalAlarmParamFragment
-import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port3CameraParamFragment
-import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port3SensorParamFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port3AcousticOpticalAlarmParamFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port3CameraParamFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port3SensorParamFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.android.ext.android.inject

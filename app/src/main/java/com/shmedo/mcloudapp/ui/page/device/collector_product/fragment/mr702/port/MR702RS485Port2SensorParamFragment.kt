@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port
 
 import android.os.Bundle
 import android.util.Log
@@ -185,7 +185,7 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        fun onSubmitClick() {
+        override fun onSubmitButtonClick() {
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
@@ -360,7 +360,7 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
             mStates.polyB.set(sensorParam.polybvalue)
             mStates.polyC.set(sensorParam.polycvalue)
         } catch (e: Exception) {
-            Timber.e(e)
+            Timber.Forest.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }

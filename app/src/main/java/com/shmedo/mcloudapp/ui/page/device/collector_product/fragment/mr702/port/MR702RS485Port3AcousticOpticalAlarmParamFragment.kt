@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port
 
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +8,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
@@ -43,7 +44,6 @@ import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port3Fragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port3AcousticOpticalAlarmParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
@@ -220,7 +220,8 @@ class MR702RS485Port3AcousticOpticalAlarmParamFragment : BaseIOTDeviceFragment()
                 .show()
         }
 
-        fun onSubmitClick() {
+        override fun onSubmitButtonClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
@@ -573,7 +574,7 @@ class MR702RS485Port3AcousticOpticalAlarmParamFragment : BaseIOTDeviceFragment()
                 }
             }
         } catch (e: Exception) {
-            Timber.e(e)
+            Timber.Forest.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
@@ -613,7 +614,7 @@ class MR702RS485Port3AcousticOpticalAlarmParamFragment : BaseIOTDeviceFragment()
                     mStates.getVoiceIndexNumber(alarmModuleParam.voiceindex4)
                 )
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
