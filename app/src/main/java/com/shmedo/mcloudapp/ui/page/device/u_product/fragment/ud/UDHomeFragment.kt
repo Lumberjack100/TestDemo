@@ -139,11 +139,11 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         super.initData()
         when (productType) {
             ProductType.U_D_1 -> {
-                mHeadStates.productLogoResId.set(R.drawable.device_logo_ud)
+                mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030)
             }
 
             ProductType.U_D_2 -> {
-                mHeadStates.productLogoResId.set(R.drawable.device_logo_ud)
+                mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030)
             }
 
             else -> {}
@@ -171,11 +171,11 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         mHeadStates.isConnected.set(isConnected)
         if (isConnected) {
             toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_ud)
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030)
             mHeadStates.iotPlatformStateText.set("蓝牙已连接")
         } else {
             toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_ud_offline)
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030_offline)
             mHeadStates.iotPlatformStateText.set("蓝牙已断开")
 
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
@@ -529,11 +529,11 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     private fun onNetPlatformReady() {
         lastOnlineStatus = deviceInfo.onlineStatus
         if (deviceInfo.onlineStatus) {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_ud)
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030)
             mHeadStates.iotPlatformStateText.set("米度平台在线")
             queryDeviceStatusInfo()
         } else {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_ud_offline)
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030_offline)
             mHeadStates.iotPlatformStateText.set("米度平台离线")
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
@@ -831,11 +831,11 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 mHeadStates.productLogoResId.set(
                     status.compareAndReturn(
                         "故障",
-                        R.drawable.device_logo_ud_error,
+                        R.drawable.device_logo_dr030_error,
                         status.compareAndReturn(
                             "告警",
-                            R.drawable.device_logo_ud_alarm,
-                            R.drawable.device_logo_ud
+                            R.drawable.device_logo_dr030_alarm,
+                            R.drawable.device_logo_dr030
                         )
                     )
                 )
