@@ -1,15 +1,14 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port
 
 import android.os.Bundle
 import android.util.Log
-import android.widget.CompoundButton
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRRS232Port1ParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRRS232Port2ParamEntity
@@ -27,7 +26,6 @@ import com.shmedo.mcloudapp.databinding.FragmentMr702Rs232Port1Binding
 import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
@@ -82,13 +80,15 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        initDefaultParam()
+        resetDefaultParams()
+        // 保存初始状态
+        mStates.saveInitialState()
     }
 
     /**
      * 初始化默认参数
      */
-    private fun initDefaultParam() {
+    private fun resetDefaultParams() {
         mStates.cameraModel.set(cameraModelList[0])
         mStates.cameraResolution.set(cameraResolutionList[0])
         mStates.photoInterval.set("65535")
@@ -100,22 +100,6 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
     }
 
     inner class ClickProxy : BaseClickProxy() {
-        override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
-                return
-            }
-            mStates.isOpened.set(isChecked)
-            if (!isChecked) {
-                showMessage("确定要关闭吗？", "温馨提示", "确定", {
-                    closeSwitch()
-                }, "取消", {
-                    mStates.isOpened.set(true)
-                    (button as SwitchButton).setCheckedImmediatelyNoEvent(true)
-                })
-            }
-        }
 
         fun onChooseCameraModelClick() {
             val selectedIndex = cameraModelList.indexOf(mStates.cameraModel.get())
@@ -222,16 +206,28 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        fun onSubmitClick() {
+        /**
+         * 恢复默认配置
+         */
+        fun onResetClick() {
+            resetDefaultParams()
+        }
+
+        override fun onSubmitButtonClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            if (!mStates.isOpened.get()) {
+                disable()
                 return
             }
             initSaveCommand()
         }
     }
 
-    private fun closeSwitch() {
+    private fun disable() {
         commandItems.clear()
         val entity = MRRS232Port2ParamEntity(
             switch = "0"
@@ -290,6 +286,59 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = "设备未响应"
+        )
+    }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MR_MD_GET_RS232_PORT1_PARAM -> {
@@ -324,6 +373,8 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("数据保存成功")
+                            // 保存初始状态
+                            mStates.saveInitialState()
                         }
                     }
                 }
@@ -368,8 +419,11 @@ class MR702RS232Port1Fragment : BaseIOTDeviceFragment() {
                     mStates.stopBit.set(stopBitList[it])
                 }
             }
+
+            // 保存初始状态
+            mStates.saveInitialState()
         } catch (e: Exception) {
-            Timber.e(e)
+            Timber.Forest.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }

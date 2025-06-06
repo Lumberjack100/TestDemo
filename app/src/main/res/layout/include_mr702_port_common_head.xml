@@ -14,7 +14,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@drawable/shape_common_click_item_top_corner_4"
         android:padding="@dimen/dimen_size_16">
 
         <androidx.appcompat.widget.AppCompatImageView

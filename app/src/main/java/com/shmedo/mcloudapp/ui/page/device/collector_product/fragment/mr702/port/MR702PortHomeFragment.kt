@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port
 
 import android.graphics.Color
 import android.os.Bundle
@@ -11,6 +11,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.android.material.textview.MaterialTextView
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
@@ -36,6 +37,14 @@ import com.shmedo.mcloudapp.ui.adapter.PageAdapter
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.collector_product.dialog.MR702PortSelectionPartShadowPopupView
+import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702IOPortFragment
+import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702PlusePortFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS232Port1Fragment
+import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS232Port2Fragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port1Fragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port2Fragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port3Fragment
+import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RainPortFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -107,7 +116,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     }
 
     private fun initViewPager() {
-        val bundle = BaseIOTDeviceFragment.newBundleArguments(
+        val bundle = BaseIOTDeviceFragment.Companion.newBundleArguments(
             productType,
             communicateWay,
             deviceInfo,
@@ -115,28 +124,28 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         )
         val mFragments =
             listOf<Fragment>(
-                MR702RS485Port1Fragment.newInstance().apply {
+                MR702RS485Port1Fragment.Companion.newInstance().apply {
                     arguments = bundle
                 },
-                MR702RS485Port2Fragment.newInstance().apply {
+                MR702RS485Port2Fragment.Companion.newInstance().apply {
                     arguments = bundle
                 },
-                MR702RS485Port3Fragment.newInstance().apply {
+                MR702RS485Port3Fragment.Companion.newInstance().apply {
                     arguments = bundle
                 },
-                MR702RS232Port1Fragment.newInstance().apply {
+                MR702RS232Port1Fragment.Companion.newInstance().apply {
                     arguments = bundle
                 },
-                MR702RS232Port2Fragment.newInstance().apply {
+                MR702RS232Port2Fragment.Companion.newInstance().apply {
                     arguments = bundle
                 },
-                MR702RainPortFragment.newInstance().apply {
+                MR702RainPortFragment.Companion.newInstance().apply {
                     arguments = bundle
                 },
-                MR702IOPortFragment.newInstance().apply {
+                MR702IOPortFragment.Companion.newInstance().apply {
                     arguments = bundle
                 },
-                MR702PlusePortFragment.newInstance().apply {
+                MR702PlusePortFragment.Companion.newInstance().apply {
                     arguments = bundle
                 }
             )
@@ -178,7 +187,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                     LayoutInflater.from(mActivity)
                         .inflate(R.layout.custom_tab_mr702_interface, null)
                 val textView =
-                    tabView.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.tabText)
+                    tabView.findViewById<MaterialTextView>(R.id.tabText)
                 textView.text = tabNames[position]
                 if (position == 0) { // 第一个为默认选中
                     tabView.setBackgroundResource(activeBg)
@@ -208,7 +217,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                     }
                 }
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
@@ -218,7 +227,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         tab.customView?.let {
             it.setBackgroundResource(activeBg)
             val textView =
-                it.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.tabText)
+                it.findViewById<MaterialTextView>(R.id.tabText)
             textView.textSize = activeSize
             textView.setTextColor(activeColor)
         }
@@ -228,7 +237,7 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         tab.customView?.let {
             it.setBackgroundResource(normalBg)
             val textView =
-                it.findViewById<com.google.android.material.textview.MaterialTextView>(R.id.tabText)
+                it.findViewById<MaterialTextView>(R.id.tabText)
             textView.textSize = normalSize
             textView.setTextColor(normalColor)
         }

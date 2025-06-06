@@ -73,7 +73,7 @@
 
     <fragment
         android:id="@+id/mR702PortHomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702PortHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702PortHomeFragment"
         android:label="MR702PortHomeFragment"
         tools:layout="@layout/fragment_mr702_port_home" />
 

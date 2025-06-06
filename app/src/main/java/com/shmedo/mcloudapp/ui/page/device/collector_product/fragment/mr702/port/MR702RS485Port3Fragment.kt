@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port
 
 import android.os.Bundle
 import androidx.fragment.app.setFragmentResultListener
@@ -25,6 +25,9 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port3AcousticOpticalAlarmParamFragment
+import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port3CameraParamFragment
+import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port3SensorParamFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.android.ext.android.inject
@@ -79,7 +82,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
             R.id.item.onClick {
                 val item = getModel<MRSensorItem>()
                 if (item.sensorName == "串口摄像头") {
-                    val bundle = MR702RS485Port3CameraParamFragment.newBundleArguments(
+                    val bundle = MR702RS485Port3CameraParamFragment.Companion.newBundleArguments(
                         item.chl.toInt(),
                         productType,
                         communicateWay,
@@ -92,7 +95,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
                     )
                 } else if (item.sensorName == "声光报警器") {
                     val bundle =
-                        MR702RS485Port3AcousticOpticalAlarmParamFragment.newBundleArguments(
+                        MR702RS485Port3AcousticOpticalAlarmParamFragment.Companion.newBundleArguments(
                             productType,
                             communicateWay,
                             deviceInfo,
@@ -103,7 +106,7 @@ class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
                         bundle
                     )
                 } else {
-                    val bundle = MR702RS485Port3SensorParamFragment.newBundleArguments(
+                    val bundle = MR702RS485Port3SensorParamFragment.Companion.newBundleArguments(
                         modelPosition + 1,
                         productType,
                         communicateWay,
