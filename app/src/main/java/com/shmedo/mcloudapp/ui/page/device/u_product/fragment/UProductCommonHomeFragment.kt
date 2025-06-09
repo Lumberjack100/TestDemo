@@ -262,6 +262,14 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
                                 else -> 0
                             }
                         )
+                    ),
+                    ConfigModule(
+                        CommonModule(
+                            name = "位置信息",
+                            resID = R.drawable.ic_module_location_info,
+                            iconSize = ConvertUtils.dp2px(34f),
+                            navId = R.id.action_global_to_commonLocationInfoFragment
+                        )
                     )
                 )
             )
