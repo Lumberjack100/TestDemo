@@ -22,9 +22,9 @@ import com.shmedo.mcloudapp.ui.page.device.common.UniversalDeviceHomeFragment
 class DasHomeFragment : UniversalDeviceHomeFragment() {
     override fun initData() {
         super.initData()
-        mHeadStates.productLightResId.set(R.drawable.device_logo_qingxieyi)
-        mHeadStates.productGrayResId.set(R.drawable.device_logo_qingxieyi_gray)
-        mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
+        mHeadStates.productNormalResId.set(R.drawable.device_logo_qingxieyi)
+        mHeadStates.productOfflineResId.set(R.drawable.device_logo_qingxieyi_gray)
+        mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
     }
 
     override fun updateConfigModuleData() {

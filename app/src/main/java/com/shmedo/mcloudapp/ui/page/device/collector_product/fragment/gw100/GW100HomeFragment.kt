@@ -38,9 +38,9 @@ class GW100HomeFragment : UniversalDeviceHomeFragment() {
     override fun initData() {
         super.initData()
         toolbarViewModel.toolbarIvActionVisible.set(false)
-        mHeadStates.productLightResId.set(R.drawable.device_logo_gateway)
-        mHeadStates.productGrayResId.set(R.drawable.device_logo_gateway_gray)
-        mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
+        mHeadStates.productNormalResId.set(R.drawable.device_logo_gateway)
+        mHeadStates.productOfflineResId.set(R.drawable.device_logo_gateway_gray)
+        mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
         mHeadStates.isIOTPlatformStateVisible.set(false)
     }
 
