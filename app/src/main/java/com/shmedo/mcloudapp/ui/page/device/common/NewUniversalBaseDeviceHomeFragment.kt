@@ -59,7 +59,7 @@ import timber.log.Timber
  * 创建时间：2025/6/9
  * 描述： TODO
  */
-abstract class NewUniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
+abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentUniversalDeviceHomeNewBinding
     protected val toolbarViewModel: ToolbarViewModel by viewModels()
     protected val mHeadStates: CommonDeviceHomeViewModel by viewModels()
@@ -76,7 +76,11 @@ abstract class NewUniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_universal_device_home, BR.stateVM, mHeadStates)
+        return DataBindingConfig(
+            R.layout.fragment_universal_device_home_new,
+            BR.stateVM,
+            mHeadStates
+        )
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
@@ -113,8 +117,10 @@ abstract class NewUniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        mHeadStates.productName.set(productType.productName)
-        mHeadStates.productToken.set(productType.productToken)
+        mHeadStates.productName.set(productType.productName.ifEmpty { deviceInfo.productName })
+        val deviceName =
+            if (deviceInfo.deviceName == deviceInfo.deviceToken) deviceInfo.productToken else deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken }
+        mHeadStates.productToken.set(productType.productToken.ifEmpty { deviceName })
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
 
         toolbarViewModel.toolbarIvActionVisible.set(communicateWay is BleConnect)

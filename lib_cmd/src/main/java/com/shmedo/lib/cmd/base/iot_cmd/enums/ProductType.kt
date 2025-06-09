@@ -284,19 +284,12 @@ enum class ProductType(
         productToken = "M20",
         description = ""
     ),
-    TEST_DEVICE(
-        prefix = "TEST",
-        oldSuffix = "",
-        newSuffix = "",
-        productName = "测试设备",
-        productToken = "",
-        description = ""
-    ),
+
     UnKnown(
         prefix = "UnKnown",
         oldSuffix = "",
         newSuffix = "",
-        productName = "未知类型",
+        productName = "",
         productToken = "",
         description = ""
     );
