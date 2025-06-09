@@ -11,6 +11,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
+import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDeviceStatusInfoStyle2Fragment
@@ -77,134 +78,136 @@ class M20SStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     isBottomItem = true
                 )
 
-                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                groupList.add(DeviceStatusInfoGroupItem("模块信息"))
-                if (stateInfo.self_check.uppercase().indexOf("GNSS") != -1) {
-                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                        groupList,
-                        name = "GNSS模块",
-                        value = if (stateInfo.self_check.uppercase()
-                                .indexOf("GNSS:0") == -1
-                        ) "正常" else "故障",
-                        textColorRes = if (stateInfo.self_check.uppercase()
-                                .indexOf("GNSS:0") == -1
-                        ) 0 else ColorUtils.getColor(
-                            R.color.error_FF4400
+                stateInfo.self_check.notNullKey {
+                    groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                    groupList.add(DeviceStatusInfoGroupItem("模块信息"))
+                    if (stateInfo.self_check.uppercase().indexOf("GNSS") != -1) {
+                        DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                            groupList,
+                            name = "GNSS模块",
+                            value = if (stateInfo.self_check.uppercase()
+                                    .indexOf("GNSS:0") == -1
+                            ) "正常" else "故障",
+                            textColorRes = if (stateInfo.self_check.uppercase()
+                                    .indexOf("GNSS:0") == -1
+                            ) 0 else ColorUtils.getColor(
+                                R.color.error_FF4400
+                            )
                         )
-                    )
-                }
-                if (stateInfo.self_check.uppercase().indexOf("SCL") != -1) {
-                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                        groupList,
-                        name = "加速度计",
-                        value = if (stateInfo.self_check.uppercase()
-                                .indexOf("SCL:0") == -1
-                        ) "正常" else "故障",
-                        textColorRes = if (stateInfo.self_check.uppercase()
-                                .indexOf("SCL:0") == -1
-                        ) 0 else ColorUtils.getColor(
-                            R.color.error_FF4400
+                    }
+                    if (stateInfo.self_check.uppercase().indexOf("SCL") != -1) {
+                        DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                            groupList,
+                            name = "加速度计",
+                            value = if (stateInfo.self_check.uppercase()
+                                    .indexOf("SCL:0") == -1
+                            ) "正常" else "故障",
+                            textColorRes = if (stateInfo.self_check.uppercase()
+                                    .indexOf("SCL:0") == -1
+                            ) 0 else ColorUtils.getColor(
+                                R.color.error_FF4400
+                            )
                         )
-                    )
-                }
-                if (stateInfo.self_check.uppercase().indexOf("4G") != -1) {
-                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                        groupList,
-                        name = "4G模块",
-                        value = if (stateInfo.self_check.uppercase()
-                                .indexOf("4G:0") == -1
-                        ) "正常" else "故障",
-                        textColorRes = if (stateInfo.self_check.uppercase()
-                                .indexOf("4G:0") == -1
-                        ) 0 else ColorUtils.getColor(
-                            R.color.error_FF4400
+                    }
+                    if (stateInfo.self_check.uppercase().indexOf("4G") != -1) {
+                        DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                            groupList,
+                            name = "4G模块",
+                            value = if (stateInfo.self_check.uppercase()
+                                    .indexOf("4G:0") == -1
+                            ) "正常" else "故障",
+                            textColorRes = if (stateInfo.self_check.uppercase()
+                                    .indexOf("4G:0") == -1
+                            ) 0 else ColorUtils.getColor(
+                                R.color.error_FF4400
+                            )
                         )
-                    )
-                }
-                if (stateInfo.self_check.uppercase().indexOf("BT") != -1) {
-                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                        groupList,
-                        name = "蓝牙模块",
-                        value = if (stateInfo.self_check.uppercase()
-                                .indexOf("BT:0") == -1
-                        ) "正常" else "故障",
-                        textColorRes = if (stateInfo.self_check.uppercase()
-                                .indexOf("BT:0") == -1
-                        ) 0 else ColorUtils.getColor(
-                            R.color.error_FF4400
+                    }
+                    if (stateInfo.self_check.uppercase().indexOf("BT") != -1) {
+                        DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                            groupList,
+                            name = "蓝牙模块",
+                            value = if (stateInfo.self_check.uppercase()
+                                    .indexOf("BT:0") == -1
+                            ) "正常" else "故障",
+                            textColorRes = if (stateInfo.self_check.uppercase()
+                                    .indexOf("BT:0") == -1
+                            ) 0 else ColorUtils.getColor(
+                                R.color.error_FF4400
+                            )
                         )
-                    )
-                }
-                if (stateInfo.self_check.uppercase().indexOf("RADIO") != -1) {
-                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                        groupList,
-                        name = "电台模块",
-                        value = if (stateInfo.self_check.uppercase()
-                                .indexOf("RADIO:0") == -1
-                        ) "正常" else "故障",
-                        textColorRes = if (stateInfo.self_check.uppercase()
-                                .indexOf("RADIO:0") == -1
-                        ) 0 else ColorUtils.getColor(
-                            R.color.error_FF4400
+                    }
+                    if (stateInfo.self_check.uppercase().indexOf("RADIO") != -1) {
+                        DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                            groupList,
+                            name = "电台模块",
+                            value = if (stateInfo.self_check.uppercase()
+                                    .indexOf("RADIO:0") == -1
+                            ) "正常" else "故障",
+                            textColorRes = if (stateInfo.self_check.uppercase()
+                                    .indexOf("RADIO:0") == -1
+                            ) 0 else ColorUtils.getColor(
+                                R.color.error_FF4400
+                            )
                         )
-                    )
-                }
-                if (stateInfo.self_check.uppercase().indexOf("EMMC") != -1) {
-                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                        groupList,
-                        name = "存储模块",
-                        value = if (stateInfo.self_check.uppercase()
-                                .indexOf("EMMC:0") == -1
-                        ) "正常" else "故障",
-                        textColorRes = if (stateInfo.self_check.uppercase()
-                                .indexOf("EMMC:0") == -1
-                        ) 0 else ColorUtils.getColor(
-                            R.color.error_FF4400
+                    }
+                    if (stateInfo.self_check.uppercase().indexOf("EMMC") != -1) {
+                        DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                            groupList,
+                            name = "存储模块",
+                            value = if (stateInfo.self_check.uppercase()
+                                    .indexOf("EMMC:0") == -1
+                            ) "正常" else "故障",
+                            textColorRes = if (stateInfo.self_check.uppercase()
+                                    .indexOf("EMMC:0") == -1
+                            ) 0 else ColorUtils.getColor(
+                                R.color.error_FF4400
+                            )
                         )
-                    )
-                }
-                if (stateInfo.self_check.uppercase().indexOf("SHT21") != -1) {
-                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                        groupList,
-                        name = "温湿度模块",
-                        value = if (stateInfo.self_check.uppercase()
-                                .indexOf("SHT21:0") == -1
-                        ) "正常" else "故障",
-                        textColorRes = if (stateInfo.self_check.uppercase()
-                                .indexOf("SHT21:0") == -1
-                        ) 0 else ColorUtils.getColor(
-                            R.color.error_FF4400
+                    }
+                    if (stateInfo.self_check.uppercase().indexOf("SHT21") != -1) {
+                        DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                            groupList,
+                            name = "温湿度模块",
+                            value = if (stateInfo.self_check.uppercase()
+                                    .indexOf("SHT21:0") == -1
+                            ) "正常" else "故障",
+                            textColorRes = if (stateInfo.self_check.uppercase()
+                                    .indexOf("SHT21:0") == -1
+                            ) 0 else ColorUtils.getColor(
+                                R.color.error_FF4400
+                            )
                         )
-                    )
-                }
-                if (stateInfo.self_check.uppercase().indexOf("MEMS") != -1) {
-                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                        groupList,
-                        name = "倾角计模块",
-                        value = if (stateInfo.self_check.uppercase()
-                                .indexOf("MEMS:0") == -1
-                        ) "正常" else "故障",
-                        textColorRes = if (stateInfo.self_check.uppercase()
-                                .indexOf("MEMS:0") == -1
-                        ) 0 else ColorUtils.getColor(
-                            R.color.error_FF4400
+                    }
+                    if (stateInfo.self_check.uppercase().indexOf("MEMS") != -1) {
+                        DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                            groupList,
+                            name = "倾角计模块",
+                            value = if (stateInfo.self_check.uppercase()
+                                    .indexOf("MEMS:0") == -1
+                            ) "正常" else "故障",
+                            textColorRes = if (stateInfo.self_check.uppercase()
+                                    .indexOf("MEMS:0") == -1
+                            ) 0 else ColorUtils.getColor(
+                                R.color.error_FF4400
+                            )
                         )
-                    )
-                }
-                if (stateInfo.self_check.uppercase().indexOf("SOLAR485") != -1) {
-                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                        groupList,
-                        name = "太阳能控制器模块",
-                        value = if (stateInfo.self_check.uppercase()
-                                .indexOf("SOLAR485:0") == -1
-                        ) "正常" else "故障",
-                        textColorRes = if (stateInfo.self_check.uppercase()
-                                .indexOf("SOLAR485:0") == -1
-                        ) 0 else ColorUtils.getColor(
-                            R.color.error_FF4400
-                        ),
-                        isBottomItem = true
-                    )
+                    }
+                    if (stateInfo.self_check.uppercase().indexOf("SOLAR485") != -1) {
+                        DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                            groupList,
+                            name = "太阳能控制器模块",
+                            value = if (stateInfo.self_check.uppercase()
+                                    .indexOf("SOLAR485:0") == -1
+                            ) "正常" else "故障",
+                            textColorRes = if (stateInfo.self_check.uppercase()
+                                    .indexOf("SOLAR485:0") == -1
+                            ) 0 else ColorUtils.getColor(
+                                R.color.error_FF4400
+                            ),
+                            isBottomItem = true
+                        )
+                    }
                 }
 
                 binding.recyclerview.models = groupList

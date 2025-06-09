@@ -48,7 +48,7 @@ class LR200NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
                 groupList.add(DeviceStatusInfoGroupItem("数据网络"))
                 stateInfo._4g_signal.notNullKey {
-                    var temp = it
+                    var temp = it.toDoubleOrNull()?.toInt() ?: 0
                     if (temp !in -110..-50) {
                         temp = 0
                     }
@@ -80,49 +80,49 @@ class LR200NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
                 groupList.add(DeviceStatusInfoGroupItem("数据链路"))
                 val status1 = stateInfo.dataCenter1.compareAndReturn(
-                    0, "未启用", stateInfo.dataCenter1.compareAndReturn(1, "已连接", "未连接")
+                    "0", "未启用", stateInfo.dataCenter1.compareAndReturn("1", "已连接", "未连接")
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "数据链路1",
                     value = status1,
-                    textColorRes = if (stateInfo.dataCenter1 == 0 || status1 == "未连接") 0 else ColorUtils.getColor(
+                    textColorRes = if (stateInfo.dataCenter1 == "0" || status1 == "未连接") 0 else ColorUtils.getColor(
                         R.color.online_colorPrimary
                     )
                 )
 
                 val status2 = stateInfo.dataCenter2.compareAndReturn(
-                    0, "未启用", stateInfo.dataCenter2.compareAndReturn(1, "已连接", "未连接")
+                    "0", "未启用", stateInfo.dataCenter2.compareAndReturn("1", "已连接", "未连接")
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "数据链路2",
                     value = status2,
-                    textColorRes = if (stateInfo.dataCenter2 == 0 || status2 == "未连接") 0 else ColorUtils.getColor(
+                    textColorRes = if (stateInfo.dataCenter2 == "0" || status2 == "未连接") 0 else ColorUtils.getColor(
                         R.color.online_colorPrimary
                     )
                 )
 
                 val status3 = stateInfo.dataCenter3.compareAndReturn(
-                    0, "未启用", stateInfo.dataCenter3.compareAndReturn(1, "已连接", "未连接")
+                    "0", "未启用", stateInfo.dataCenter3.compareAndReturn("1", "已连接", "未连接")
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "数据链路3",
                     value = "$status3(米度物联平台)",
-                    textColorRes = if (stateInfo.dataCenter3 == 0 || status3 == "未连接") 0 else ColorUtils.getColor(
+                    textColorRes = if (stateInfo.dataCenter3 == "0" || status3 == "未连接") 0 else ColorUtils.getColor(
                         R.color.online_colorPrimary
                     )
                 )
 
                 val status4 = stateInfo.dataCenter4.compareAndReturn(
-                    0, "未启用", stateInfo.dataCenter4.compareAndReturn(1, "已连接", "未连接")
+                    "0", "未启用", stateInfo.dataCenter4.compareAndReturn("1", "已连接", "未连接")
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "数据链路4",
                     value = status4,
-                    textColorRes = if (stateInfo.dataCenter4 == 0 || status4 == "未连接") 0 else ColorUtils.getColor(
+                    textColorRes = if (stateInfo.dataCenter4 == "0" || status4 == "未连接") 0 else ColorUtils.getColor(
                         R.color.online_colorPrimary
                     ),
                     isBottomItem = true

@@ -49,8 +49,8 @@ data class CommonCurrentStateInfo(
     var temp_out: String = IOTConstants.NULL_KEY, //设备外部环境温度，单位 ℃
     var humidity_out: String = IOTConstants.NULL_KEY, //设备外部环境湿度，单位RH%
     @Json(name = "4g_signal")
-    var _4g_signal: Int = 0, //4g信号强度（dBm），dBm=2*CSQ值-113，数值99表示无信号
-    var bd_signal: Double = 0.0, //北斗信号强度，参数预留，默认99值；数值99表示无信号
+    var _4g_signal: String = IOTConstants.NULL_KEY, //4g信号强度（dBm），dBm=2*CSQ值-113，数值99表示无信号
+    var bd_signal: String = IOTConstants.NULL_KEY, //北斗信号强度，参数预留，默认99值；数值99表示无信号
     var hw_version: String = IOTConstants.NULL_KEY, //硬件版本
     var sw_version: String = IOTConstants.NULL_KEY, //固件版本
     var location: String = IOTConstants.NULL_KEY, //设备位置-经纬度，经度在前,纬度在后。E表示东经，W表示西经，N表示北纬，S表示南纬。
@@ -96,11 +96,11 @@ data class CommonCurrentStateInfo(
     @Json(name = "eMMC Free")
     var eMMCFree: String = IOTConstants.NULL_KEY, //存储状态
     var emmc_storage: String = IOTConstants.NULL_KEY,//emmc存储
-    var dataCenter1: Int = 0, //数据链路1
-    var dataCenter2: Int = 0, //数据链路2
-    var dataCenter3: Int = 0, //数据链路3
-    var dataCenter4: Int = 0, //数据链路4
-    var starNum: Int = 0, //星数
+    var dataCenter1: String = IOTConstants.NULL_KEY, //数据链路1
+    var dataCenter2: String = IOTConstants.NULL_KEY, //数据链路2
+    var dataCenter3: String = IOTConstants.NULL_KEY, //数据链路3
+    var dataCenter4: String = IOTConstants.NULL_KEY, //数据链路4
+    var starNum: String = IOTConstants.NULL_KEY, //星数
     var gpsCard: String = IOTConstants.NULL_KEY, //板卡
     var self_check: String = IOTConstants.NULL_KEY,//设备自检
     var workMode: String = IOTConstants.NULL_KEY, //工作模式 1:基站  2:测站

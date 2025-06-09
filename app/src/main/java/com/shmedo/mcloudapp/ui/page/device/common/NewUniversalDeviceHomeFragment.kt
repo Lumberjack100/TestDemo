@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s
+package com.shmedo.mcloudapp.ui.page.device.common
 
 import android.os.Bundle
 import android.util.Log
@@ -12,12 +12,9 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.core.commonlib.extensions.compareAndReturn
-import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
@@ -27,62 +24,48 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.baseclickproxy.DoubleClickListener
-import com.shmedo.mcloudapp.databinding.FragmentM20sHomeBinding
+import com.shmedo.mcloudapp.databinding.FragmentUniversalDeviceHomeNewBinding
 import com.shmedo.mcloudapp.databinding.ItemSubConfigModuleBinding
-import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
-import com.shmedo.mcloudapp.model.AdvancedSettingsModule
-import com.shmedo.mcloudapp.model.AlarmConfigModule
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
-import com.shmedo.mcloudapp.model.CommonModule
 import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
-import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusEnum
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.model.LoraConfigModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
-import com.shmedo.mcloudapp.model.TimeCalibrationModule
-import com.shmedo.mcloudapp.model.WorkModeModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
-import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
-import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.M20SHomeViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.CommonDeviceHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
-import com.shmedo.mcloudapp.utils.DeviceStatusHelper
-import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.isActive
-import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 /**
- * 创建者:   gonghe <br></br>
- * 创建时间:  2020/8/27 <br></br>
- * 描述：  M20S 配置主页
+ * 创建者：gonghe
+ * 创建时间：2025/6/9
+ * 描述： TODO
  */
-class M20SHomeFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentM20sHomeBinding
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mHeadStates: M20SHomeViewModel by viewModels()
-    private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
-    private val iotParseManager: IOTParserManager by inject()
+abstract class NewUniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
+    protected lateinit var binding: FragmentUniversalDeviceHomeNewBinding
+    protected val toolbarViewModel: ToolbarViewModel by viewModels()
+    protected val mHeadStates: CommonDeviceHomeViewModel by viewModels()
+    protected val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
+
+    protected val iotParseManager: IOTParserManager by inject()
 
     private var lastOnlineStatus: Boolean = false//在线状态
     private var deviceStatusCheckJob: Job? = null
@@ -93,13 +76,13 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_m20s_home, BR.stateVM, mHeadStates)
+        return DataBindingConfig(R.layout.fragment_universal_device_home, BR.stateVM, mHeadStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentM20sHomeBinding
+        binding = getBinding() as FragmentUniversalDeviceHomeNewBinding
         binding.llToolbar.toolbar.title = "返回"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             if (bleViewModel.isConnected()) {
@@ -142,11 +125,12 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
     override fun onConnectionStateChanged(isConnected: Boolean) {
         mHeadStates.isConnected.set(isConnected)
         if (isConnected) {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_m20)
+            mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
             mHeadStates.iotPlatformStateText.set("蓝牙已连接")
             toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
+
         } else {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_m20_offline)
+            mHeadStates.productLogoResId.set(mHeadStates.productOfflineResId.get())
             mHeadStates.iotPlatformStateText.set("蓝牙已断开")
             toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
 
@@ -207,137 +191,7 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initModuleData() {
-        val groupList = mutableListOf<Any>()
-        groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-        groupList.add(DeviceStatusInfoGroupItem("设备信息"))
-        groupList.add(
-            ConfigModuleTree(
-                configModules = arrayListOf(
-                    ConfigModule(
-                        CommonModule(
-                            name = "基本信息",
-                            resID = R.drawable.ic_module_basic_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_m20SBaseInfoFragment
-                        )
-                    ),
-                    ConfigModule(
-                        CommonModule(
-                            name = "网络信息",
-                            resID = R.drawable.ic_module_net_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_m20SNetInfoFragment
-                        )
-                    ),
-                    ConfigModule(
-                        CommonModule(
-                            name = "状态信息",
-                            resID = R.drawable.ic_module_state_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_m20SStatusInfoFragment
-                        )
-                    ),
-                    ConfigModule(
-                        CommonModule(
-                            name = "位置信息",
-                            resID = R.drawable.ic_module_location_info,
-                            iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_commonLocationInfoFragment
-                        )
-                    )
-                )
-            )
-        )
-
-        groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-        groupList.add(DeviceStatusInfoGroupItem("设备配置"))
-        val configModuleTree = ConfigModuleTree()
-        if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) {
-            configModuleTree.configModules.add(
-                ConfigModule(
-                    WorkModeModule(
-                        name = "工作模式",
-                        resID = R.drawable.ic_module_work_mode_new,
-                        navId = R.id.action_global_to_m20SWorkModelFragment
-                    )
-                )
-            )
-        }
-        configModuleTree.configModules.add(
-            ConfigModule(
-                DataCenterModule(
-                    name = "链路配置",
-                    resID = R.drawable.ic_module_datacenter_new,
-                    navId = R.id.action_global_to_universalDataCenterHomeFragment
-                )
-            )
-        )
-        if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) {
-            configModuleTree.configModules.add(
-                ConfigModule(
-                    LoraConfigModule(
-                        name = "电台配置",
-                        resID = R.drawable.ic_module_lora_new,
-                        navId = R.id.action_global_to_m20SRadioSettingFragment
-                    )
-                )
-            )
-        }
-        if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) {
-            configModuleTree.configModules.add(
-                ConfigModule(
-                    AlarmConfigModule(
-                        name = "报警配置",
-                        resID = R.drawable.ic_module_alarm_new,
-                        navId = R.id.action_global_to_alarmSettingFragment
-                    )
-                )
-            )
-        }
-        if (productType == ProductType.GNSS_M_1 || productType == ProductType.GNSS_M_2) {
-            configModuleTree.configModules.add(
-                ConfigModule(
-                    CommonModule(
-                        name = "卫星通信",
-                        resID = R.drawable.ic_module_cors,
-                        navId = 0,
-                        isSupport = false
-                    )
-                )
-            )
-        }
-        configModuleTree.configModules.add(
-            ConfigModule(
-                TimeCalibrationModule(
-                    name = "时间校准",
-                    resID = R.drawable.ic_module_time_calibration_new,
-                    navId = R.id.action_global_to_time_calibration
-                )
-            )
-        )
-        configModuleTree.configModules.add(
-            ConfigModule(
-                AdvancedSettingsModule(
-                    name = "系统配置",
-                    resID = R.drawable.ic_module_system_setting,
-                    navId = R.id.action_global_to_advancedSettingFragment
-                )
-            )
-        )
-        if (communicateWay is BleConnect) {
-            configModuleTree.configModules.add(
-                ConfigModule(
-                    CommandDebugConfigModule(
-                        resID = R.drawable.ic_module_cmd_debug_new,
-                    )
-                )
-            )
-        }
-
-        groupList.add(configModuleTree)
-        binding.rvModule.models = groupList
-    }
+    protected abstract fun initModuleData()
 
     inner class ClickProxy : BaseClickProxy() {
         override fun onToolbarIvClick() {
@@ -365,19 +219,6 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
             return
         }
         when (module) {
-            is DataCenterModule -> {
-                nav().safeNavigate(
-                    module.navId,
-                    UniversalDataCenterHomeFragment.Companion.newBundleArguments(
-                        centerNum = 4,
-                        productType,
-                        communicateWay,
-                        deviceInfo,
-                        bleDevice
-                    )
-                )
-            }
-
             is CommandDebugConfigModule -> {//指令下发
                 val bundle = BleCustomCommandLogPrintFragment.Companion.newBundleArguments(
                     true,
@@ -390,31 +231,26 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-                if (module.navId != 0) {
-                    val bundle = newBundleArguments(
-                        productType,
-                        communicateWay,
-                        deviceInfo,
-                        bleDevice
-                    )
-                    nav().safeNavigate(
-                        module.navId,
-                        bundle
-                    )
-                } else {
-                    Toaster.show("正在开发中")
-                }
+                processOtherItemClick(module)
             }
         }
     }
 
-    private fun queryStatusInfo() {
-        commandItems.clear()
-
-        var command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
-        commandItems.add(command)
-
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+    protected open fun processOtherItemClick(configModule: DeviceFunctionModule) {
+        if (configModule.navId != 0) {
+            val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                productType,
+                communicateWay,
+                deviceInfo,
+                bleDevice
+            )
+            nav().safeNavigate(
+                configModule.navId,
+                bundle
+            )
+        } else {
+            Toaster.show("正在开发中")
+        }
     }
 
     override fun lazyLoadData() {
@@ -429,10 +265,11 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
     private fun onNetPlatformReady() {
         lastOnlineStatus = deviceInfo.onlineStatus
         if (deviceInfo.onlineStatus) {
+            mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
             mHeadStates.iotPlatformStateText.set("米度平台在线")
             queryStatusInfo()
         } else {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_m20_offline)
+            mHeadStates.productLogoResId.set(mHeadStates.productOfflineResId.get())
             mHeadStates.iotPlatformStateText.set("米度平台离线")
 
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
@@ -452,6 +289,10 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
         queryStatusInfo()
     }
 
+    open fun queryStatusInfo() {
+
+    }
+
     /**
      * 4G 下发指令响应失败
      */
@@ -462,10 +303,6 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_DEVICE_STATUS -> {
-                dismissLoadingDialog()
-            }
-
             IOTCommandType.MD_SEARCH_DEVICE -> {
                 super.doCmdResponseResultError(
                     cmdStr = cmdStr,
@@ -496,10 +333,6 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_DEVICE_STATUS -> {
-                dismissLoadingDialog()
-            }
-
             IOTCommandType.MD_SEARCH_DEVICE -> {
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
@@ -531,16 +364,6 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
         errMsg: String
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_DEVICE_STATUS -> {
-                super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr = cmdStr,
-                    isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = false,
-                    isMessageDialog = isMessageDialog,
-                    errMsg = errMsg
-                )
-            }
-
             IOTCommandType.MD_SEARCH_DEVICE -> {
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
@@ -567,23 +390,6 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
         updateLastCommunicationTime()
 
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_DEVICE_STATUS -> {
-                val result =
-                    iotParseManager.parse<String>(cmdStr, IOTCommandType.QUERY_DEVICE_STATUS)
-                when (result) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "查询设备状态出错: ${result.message}"
-                        handleFailureResult(errMsg, isShowErrMsg = false)
-                        return
-                    }
-
-                    is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        initStatusInfo(result.data)
-                    }
-                }
-            }
-
             IOTCommandType.MD_SEARCH_DEVICE -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
@@ -603,67 +409,15 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
             }
 
             else -> {
-
+                processOtherCmdResult(
+                    IOTCommandUtil.extractCommandType(cmdStr),
+                    cmdStr
+                )
             }
         }
     }
 
-    private fun initStatusInfo(content: String) {
-        launchWithViewLifecycle {
-            try {
-                val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
-                } ?: return@launchWithViewLifecycle
-
-
-                val deviceAbnormalList =
-                    if (stateInfo.self_check.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkDeviceAbnormal(
-                        stateInfo.self_check
-                    )
-                val status = if (deviceAbnormalList.isEmpty()) "正常" else "故障"
-                mHeadStates.productLogoResId.set(
-                    status.compareAndReturn(
-                        "故障",
-                        R.drawable.device_logo_m20_error,
-                        status.compareAndReturn(
-                            "告警",
-                            R.drawable.device_logo_m20_alarm,
-                            R.drawable.device_logo_m20
-                        )
-                    )
-                )
-                mHeadStates.deviceStatusCode.set(if (deviceAbnormalList.isEmpty()) "0" else "-3")
-                mHeadStates.warnErrorText.set(status)
-
-                mHeadStates.xAngle.set(
-                    DeviceStatusInfoProcessor.formatDoubleValue(
-                        stateInfo.x_Angle,
-                        "--",
-                        2
-                    ) + "°"
-                )
-
-                mHeadStates.yAngle.set(
-                    DeviceStatusInfoProcessor.formatDoubleValue(
-                        stateInfo.y_Angle,
-                        "--",
-                        2
-                    ) + "°"
-                )
-
-                mHeadStates.zAngle.set(
-                    DeviceStatusInfoProcessor.formatDoubleValue(
-                        stateInfo.z_Angle,
-                        "--",
-                        2
-                    ) + "°"
-                )
-            } catch (e: Exception) {
-                Timber.Forest.e(e)
-                addDeviceLogItem(Log.ERROR, e.errorMsg)
-            }
-        }
-    }
+    protected open fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {}
 
     override fun createObserver() {
         super.createObserver()

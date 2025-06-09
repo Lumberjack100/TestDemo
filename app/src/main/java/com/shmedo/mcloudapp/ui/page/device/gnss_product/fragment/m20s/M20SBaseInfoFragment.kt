@@ -8,6 +8,7 @@ import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
@@ -55,7 +56,7 @@ class M20SBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 )
 
                 val deviceAbnormalList =
-                    if (stateInfo.self_check.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkDeviceAbnormal(
+                    if (stateInfo.self_check == IOTConstants.NULL_KEY || stateInfo.self_check.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkDeviceAbnormal(
                         stateInfo.self_check
                     )
                 val deviceStatus = if (deviceAbnormalList.isEmpty()) "正常" else "故障"
@@ -74,39 +75,48 @@ class M20SBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                         }
                     )
                 )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "硬件版本",
-                    value = stateInfo.hw_version,
-                )
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "固件版本",
-                    value = stateInfo.sw_version,
-                )
-                stateInfo.worktime.toIntOrNull()?.let {
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "累计运行时间",
-                            value = DeviceStatusInfoProcessor.millis2FitTimeSpan(it * 1000L, 3),
-                            isBottomItem = true
-                        )
+                stateInfo.hw_version.notNullKey {
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                        groupList,
+                        name = "硬件版本",
+                        value = stateInfo.hw_version,
                     )
                 }
+                stateInfo.sw_version.notNullKey {
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                        groupList,
+                        name = "固件版本",
+                        value = stateInfo.sw_version,
+                    )
+                }
+                stateInfo.worktime.notNullKey {
+                    stateInfo.worktime.toIntOrNull()?.let {
+                        groupList.add(
+                            DeviceStatusInfoBasicItem(
+                                name = "累计运行时间",
+                                value = DeviceStatusInfoProcessor.millis2FitTimeSpan(it * 1000L, 3),
+                                isBottomItem = true
+                            )
+                        )
+                    }
+                }
 
-                groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                groupList.add(DeviceStatusInfoGroupItem("工作信息"))
-                DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
-                    groupList,
-                    name = "工作模式",
-                    value = when (stateInfo.workMode) {
-                        "1" -> "基站"
-                        "2" -> "测站"
-                        "3" -> "PPP-B2b"
-                        "4" -> "CORS接入"
-                        else -> AppContants.PLACE_HOLDER_VALUE
-                    },
-                )
+                stateInfo.workMode.notNullKey {
+                    groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                    groupList.add(DeviceStatusInfoGroupItem("工作信息"))
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                        groupList,
+                        name = "工作模式",
+                        value = when (stateInfo.workMode) {
+                            "1" -> "基站"
+                            "2" -> "测站"
+                            "3" -> "PPP-B2b"
+                            "4" -> "CORS接入"
+                            else -> AppContants.PLACE_HOLDER_VALUE
+                        },
+                        isBottomItem = true
+                    )
+                }
 
                 stateInfo.emmc_storage.notNullKey {
                     groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
@@ -134,6 +144,23 @@ class M20SBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             isBottomItem = true
                         )
                     }
+                }
+
+                stateInfo.eMMCFree.notNullKey {
+                    groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+                    groupList.add(DeviceStatusInfoGroupItem("存储信息"))
+
+                    val storages = it.replace("MB", "")
+                    val free = DeviceStatusInfoProcessor.formatDoubleValue(
+                        storages, "0", 1
+                    )
+                    DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                        groupList,
+                        name = "可用空间",
+                        value = free,
+                        unit = "MB",
+                        isBottomItem = true
+                    )
                 }
 
                 binding.recyclerview.models = groupList

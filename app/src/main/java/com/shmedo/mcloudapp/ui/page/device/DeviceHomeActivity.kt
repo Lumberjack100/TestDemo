@@ -128,14 +128,14 @@ class DeviceHomeActivity : BaseActivity() {
                 bundle2
             )
 
-            ProductType.COLLECTOR_R_3, ProductType.M20 -> {
-                navController.setGraph(
-                    R.navigation.m20_graph,
-                    bundle2
-                )
-            }
+//            ProductType.COLLECTOR_R_3, ProductType.M20 -> {
+//                navController.setGraph(
+//                    R.navigation.m20_graph,
+//                    bundle2
+//                )
+//            }
 
-            ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {
+            ProductType.M20, ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {
                 navController.setGraph(
                     R.navigation.m20s_graph,
                     bundle2
