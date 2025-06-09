@@ -130,23 +130,11 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        mHeadStates.productLogoResId.set(R.drawable.device_logo_m20)
         mHeadStates.productName.set(productType.productName)
         mHeadStates.productToken.set(productType.productToken)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
 
-        when (communicateWay) {
-            NetPlatformConnect -> {
-                toolbarViewModel.toolbarIvActionVisible.set(false)
-            }
-
-            BleConnect -> {
-                toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
-                toolbarViewModel.toolbarIvActionVisible.set(true)
-            }
-
-            else -> {}
-        }
+        toolbarViewModel.toolbarIvActionVisible.set(communicateWay is BleConnect)
 
         initModuleData()
     }
@@ -154,13 +142,13 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
     override fun onConnectionStateChanged(isConnected: Boolean) {
         mHeadStates.isConnected.set(isConnected)
         if (isConnected) {
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
             mHeadStates.productLogoResId.set(R.drawable.device_logo_m20)
             mHeadStates.iotPlatformStateText.set("蓝牙已连接")
+            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
         } else {
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
             mHeadStates.productLogoResId.set(R.drawable.device_logo_m20_offline)
             mHeadStates.iotPlatformStateText.set("蓝牙已断开")
+            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
 
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
@@ -436,6 +424,7 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
         } else {
             mHeadStates.productLogoResId.set(R.drawable.device_logo_m20_offline)
             mHeadStates.iotPlatformStateText.set("米度平台离线")
+
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
         //刷新模块状态

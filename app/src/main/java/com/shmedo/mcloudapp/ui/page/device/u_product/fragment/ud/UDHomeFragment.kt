@@ -137,46 +137,25 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        when (productType) {
-            ProductType.U_D_1 -> {
-                mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030)
-            }
-
-            ProductType.U_D_2 -> {
-                mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030)
-            }
-
-            else -> {}
-        }
         mHeadStates.productName.set(productType.productName)
         mHeadStates.productToken.set(productType.productToken)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
 
-        when (communicateWay) {
-            NetPlatformConnect -> {
-                toolbarViewModel.toolbarIvActionVisible.set(false)
-            }
+        toolbarViewModel.toolbarIvActionVisible.set(communicateWay is BleConnect)
 
-            BleConnect -> {
-                toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
-                toolbarViewModel.toolbarIvActionVisible.set(true)
-            }
-
-            else -> {}
-        }
         initModuleData()
     }
 
     override fun onConnectionStateChanged(isConnected: Boolean) {
         mHeadStates.isConnected.set(isConnected)
         if (isConnected) {
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
             mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030)
             mHeadStates.iotPlatformStateText.set("蓝牙已连接")
+            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
         } else {
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
             mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030_offline)
             mHeadStates.iotPlatformStateText.set("蓝牙已断开")
+            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
 
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
@@ -334,7 +313,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 )
             )
         )
-//        if (productType == ProductType.U_D_2) {
         configModuleTree.configModules.add(
             ConfigModule(
                 LoraConfigModule(
@@ -352,7 +330,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 )
             )
         )
-//        }
         configModuleTree.configModules.add(
             ConfigModule(
                 TimeCalibrationModule(
@@ -535,6 +512,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         } else {
             mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030_offline)
             mHeadStates.iotPlatformStateText.set("米度平台离线")
+
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
         //刷新模块状态

@@ -126,30 +126,11 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         mHeadStates.productType.set(productType)
-        mHeadStates.productLogoResId.set(
-            when (productType) {
-                ProductType.U_I_1 -> R.drawable.device_logo_qingxieyi //倾斜仪
-                ProductType.U_R_1 -> R.drawable.device_logo_rain_gauge//一体化雨量计
-                ProductType.LR200 -> R.drawable.device_logo_qingxieyi//米度一体式裂缝计
-                else -> 0
-            }
-        )
         mHeadStates.productName.set(productType.productName)
         mHeadStates.productToken.set(productType.productToken)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
 
-        when (communicateWay) {
-            NetPlatformConnect -> {
-                toolbarViewModel.toolbarIvActionVisible.set(false)
-            }
-
-            BleConnect -> {
-                toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
-                toolbarViewModel.toolbarIvActionVisible.set(true)
-            }
-
-            else -> {}
-        }
+        toolbarViewModel.toolbarIvActionVisible.set(communicateWay is BleConnect)
 
         initModuleData()
     }
@@ -159,26 +140,26 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
         if (isConnected) {
             mHeadStates.productLogoResId.set(
                 when (productType) {
-                    ProductType.U_I_1 -> R.drawable.device_logo_qingxieyi //倾斜仪
-                    ProductType.U_R_1 -> R.drawable.device_logo_rain_gauge//一体化雨量计
+                    ProductType.U_I_1 -> R.drawable.device_logo_bhy_3s //倾斜仪
+                    ProductType.U_R_1 -> R.drawable.device_logo_bhy_3s//一体化雨量计
                     ProductType.LR200 -> R.drawable.device_logo_qingxieyi//米度一体式裂缝计
                     else -> 0
                 }
             )
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
             mHeadStates.iotPlatformStateText.set("蓝牙已连接")
+            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
 
         } else {
             mHeadStates.productLogoResId.set(
                 when (productType) {
-                    ProductType.U_I_1 -> R.drawable.device_logo_qingxieyi_gray //倾斜仪
-                    ProductType.U_R_1 -> R.drawable.device_logo_rain_gauge_gray//一体化雨量计
+                    ProductType.U_I_1 -> R.drawable.device_logo_bhy_3s_offline //倾斜仪
+                    ProductType.U_R_1 -> R.drawable.device_logo_bhy_3s_offline//一体化雨量计
                     ProductType.LR200 -> R.drawable.device_logo_qingxieyi_gray//米度一体式裂缝计
                     else -> 0
                 }
             )
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
             mHeadStates.iotPlatformStateText.set("蓝牙已断开")
+            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
 
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
@@ -459,15 +440,6 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun queryStatusInfo() {
-        commandItems.clear()
-
-        var command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
-        commandItems.add(command)
-
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
     override fun lazyLoadData() {
         //4G 模式下，直接查询设备工作模式
         if (communicateWay is NetPlatformConnect) {
@@ -480,18 +452,27 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
     private fun onNetPlatformReady() {
         lastOnlineStatus = deviceInfo.onlineStatus
         if (deviceInfo.onlineStatus) {
+            mHeadStates.productLogoResId.set(
+                when (productType) {
+                    ProductType.U_I_1 -> R.drawable.device_logo_bhy_3s //倾斜仪
+                    ProductType.U_R_1 -> R.drawable.device_logo_bhy_3s//一体化雨量计
+                    ProductType.LR200 -> R.drawable.device_logo_qingxieyi//米度一体式裂缝计
+                    else -> 0
+                }
+            )
             mHeadStates.iotPlatformStateText.set("米度平台在线")
             queryStatusInfo()
         } else {
             mHeadStates.productLogoResId.set(
                 when (productType) {
-                    ProductType.U_I_1 -> R.drawable.device_logo_qingxieyi_gray //倾斜仪
-                    ProductType.U_R_1 -> R.drawable.device_logo_rain_gauge_gray//一体化雨量计
+                    ProductType.U_I_1 -> R.drawable.device_logo_bhy_3s_offline //倾斜仪
+                    ProductType.U_R_1 -> R.drawable.device_logo_bhy_3s_offline//一体化雨量计
                     ProductType.LR200 -> R.drawable.device_logo_qingxieyi_gray//米度一体式裂缝计
                     else -> 0
                 }
             )
             mHeadStates.iotPlatformStateText.set("米度平台离线")
+
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
         //刷新模块状态
@@ -507,6 +488,15 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
     override fun onBleDeviceReady() {
         super.onBleDeviceReady()
         queryStatusInfo()
+    }
+
+    private fun queryStatusInfo() {
+        commandItems.clear()
+
+        var command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
+        commandItems.add(command)
+
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     /**

@@ -121,23 +121,11 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        mHeadStates.productLogoResId.set(R.drawable.ic_mr702)
         mHeadStates.productName.set(productType.productName)
         mHeadStates.productToken.set(productType.productToken)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
 
-        when (communicateWay) {
-            NetPlatformConnect -> {
-                toolbarViewModel.toolbarIvActionVisible.set(false)
-            }
-
-            BleConnect -> {
-                toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
-                toolbarViewModel.toolbarIvActionVisible.set(true)
-            }
-
-            else -> {}
-        }
+        toolbarViewModel.toolbarIvActionVisible.set(communicateWay is BleConnect)
 
         initModuleData()
     }
@@ -145,13 +133,14 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     override fun onConnectionStateChanged(isConnected: Boolean) {
         mHeadStates.isConnected.set(isConnected)
         if (isConnected) {
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
-            mHeadStates.productLogoResId.set(R.drawable.ic_mr702)
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_mr702)
             mHeadStates.iotPlatformStateText.set("蓝牙已连接")
+            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
+
         } else {
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
-            mHeadStates.productLogoResId.set(R.drawable.ic_mr702)
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_mr702_offline)
             mHeadStates.iotPlatformStateText.set("蓝牙已断开")
+            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
 
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
@@ -256,13 +245,6 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         groupList.add(DeviceStatusInfoGroupItem("设备配置"))
         val configModuleTree = ConfigModuleTree(
             configModules = arrayListOf(
-//                ConfigModule(
-//                    WorkModeModule(
-//                        name = "工作模式",
-//                        resID = R.drawable.ic_module_work_mode_new,
-//                        navId = R.id.action_global_to_mR702WorkModelFragment
-//                    )
-//                ),
                 ConfigModule(
                     CommonModule(
                         name = "网络配置",
@@ -414,10 +396,6 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun queryStatusInfo() {
-
-    }
-
     override fun lazyLoadData() {
         //4G 模式下，直接查询设备工作模式
         if (communicateWay is NetPlatformConnect) {
@@ -430,11 +408,13 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     private fun onNetPlatformReady() {
         lastOnlineStatus = deviceInfo.onlineStatus
         if (deviceInfo.onlineStatus) {
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_mr702)
             mHeadStates.iotPlatformStateText.set("米度平台在线")
             queryStatusInfo()
         } else {
-            mHeadStates.productLogoResId.set(R.drawable.ic_mr702)
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_mr702_offline)
             mHeadStates.iotPlatformStateText.set("米度平台离线")
+
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
         //刷新模块状态
@@ -450,6 +430,10 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
     override fun onBleDeviceReady() {
         super.onBleDeviceReady()
         queryStatusInfo()
+    }
+
+    private fun queryStatusInfo() {
+
     }
 
     /**
