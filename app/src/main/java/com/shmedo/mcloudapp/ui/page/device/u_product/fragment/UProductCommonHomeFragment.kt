@@ -142,7 +142,7 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
                 when (productType) {
                     ProductType.U_I_1 -> R.drawable.device_logo_bhy_3s //倾斜仪
                     ProductType.U_R_1 -> R.drawable.device_logo_bhy_3s//一体化雨量计
-                    ProductType.LR200 -> R.drawable.device_logo_qingxieyi//米度一体式裂缝计
+                    ProductType.LR200 -> R.drawable.device_logo_bhy_3_lr200//米度一体式裂缝计
                     else -> 0
                 }
             )
@@ -154,7 +154,7 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
                 when (productType) {
                     ProductType.U_I_1 -> R.drawable.device_logo_bhy_3s_offline //倾斜仪
                     ProductType.U_R_1 -> R.drawable.device_logo_bhy_3s_offline//一体化雨量计
-                    ProductType.LR200 -> R.drawable.device_logo_qingxieyi_gray//米度一体式裂缝计
+                    ProductType.LR200 -> R.drawable.device_logo_bhy_3_lr200_offline//米度一体式裂缝计
                     else -> 0
                 }
             )
@@ -456,7 +456,7 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
                 when (productType) {
                     ProductType.U_I_1 -> R.drawable.device_logo_bhy_3s //倾斜仪
                     ProductType.U_R_1 -> R.drawable.device_logo_bhy_3s//一体化雨量计
-                    ProductType.LR200 -> R.drawable.device_logo_qingxieyi//米度一体式裂缝计
+                    ProductType.LR200 -> R.drawable.device_logo_bhy_3_lr200//米度一体式裂缝计
                     else -> 0
                 }
             )
@@ -467,7 +467,7 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
                 when (productType) {
                     ProductType.U_I_1 -> R.drawable.device_logo_bhy_3s_offline //倾斜仪
                     ProductType.U_R_1 -> R.drawable.device_logo_bhy_3s_offline//一体化雨量计
-                    ProductType.LR200 -> R.drawable.device_logo_qingxieyi_gray//米度一体式裂缝计
+                    ProductType.LR200 -> R.drawable.device_logo_bhy_3_lr200_offline//米度一体式裂缝计
                     else -> 0
                 }
             )
