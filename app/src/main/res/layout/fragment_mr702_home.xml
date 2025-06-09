@@ -34,7 +34,7 @@
 
         <include
             android:id="@+id/ll_device_info"
-            layout="@layout/device_config_head_info_ud"
+            layout="@layout/device_config_head_info_common_new"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="0.5dp"
