@@ -66,7 +66,7 @@ class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUniversalDataCenterHomeBinding
-        toolbarViewModel.toolbarTitleText.set("数据链路")
+        binding.llToolbar.toolbar.title = "数据链路"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }

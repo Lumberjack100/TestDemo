@@ -59,7 +59,7 @@ class UDMobileNetworkParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdMobileNetworkParamBinding
-        toolbarViewModel.toolbarTitleText.set("网络配置")
+        binding.llToolbar.toolbar.title = "网络配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }

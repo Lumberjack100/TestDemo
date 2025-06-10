@@ -107,7 +107,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdHomeBinding
-        toolbarViewModel.toolbarTitleText.set("返回")
+        binding.llToolbar.toolbar.title = "返回"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             if (bleViewModel.isConnected()) {
                 bleViewModel.disconnect()

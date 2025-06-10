@@ -2,41 +2,23 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/gw100_graph"
-    app:startDestination="@id/gW100HomeFragment">
+    android:id="@+id/gw_graph"
+    app:startDestination="@id/gWHomeFragment">
 
     <include app:graph="@navigation/include_lora_graph" />
     <include app:graph="@navigation/include_ble_command_debug_graph" />
 
     <fragment
-        android:id="@+id/gW100HomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.gw100.GW100HomeFragment"
-        android:label="GW100HomeFragment"
-        tools:layout="@layout/fragment_universal_device_home">
-
-        <action
-            android:id="@+id/action_gW100HomeFragment_to_gW100BaseInfoFragment"
-            app:destination="@id/gW100BaseInfoFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_gW100HomeFragment_to_radioSettingsFragment"
-            app:destination="@id/radioSettingsFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-    </fragment>
+        android:id="@+id/gWHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.gw.GWHomeFragment"
+        android:label="GWHomeFragment"
+        tools:layout="@layout/fragment_universal_device_home" />
 
     <fragment
-        android:id="@+id/gW100BaseInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.gw100.GW100BaseInfoFragment"
-        android:label="GW100BaseInfoFragment"
-        tools:layout="@layout/fragment_gw100_base_info" />
+        android:id="@+id/gWBaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.gw.GWBaseInfoFragment"
+        android:label="GWBaseInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
         android:id="@+id/radioSettingsFragment"
@@ -49,6 +31,22 @@
         android:name="com.shmedo.mcloudapp.ui.page.device.common.BaseAdvancedSettingFragment"
         android:label="BaseAdvancedSettingFragment"
         tools:layout="@layout/fragment_advanced_setting" />
+
+    <action
+        android:id="@+id/action_global_to_gWBaseInfoFragment"
+        app:destination="@id/gWBaseInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_radioSettingsFragment"
+        app:destination="@id/radioSettingsFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
 
     <action
         android:id="@+id/action_global_to_loraSettingFragment"

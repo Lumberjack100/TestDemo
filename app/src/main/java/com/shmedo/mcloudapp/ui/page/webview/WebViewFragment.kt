@@ -63,7 +63,7 @@ class WebViewFragment : BaseFragment() {
 
     override fun initData() {
         val title = arguments?.getString(ARG_TITLE) ?: ""
-        toolbarViewModel.toolbarTitleText.set(title)
+        binding.llToolbar.toolbar.title = title
 
         val url = arguments?.getString(ARG_URL) ?: ""
 

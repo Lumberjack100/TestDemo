@@ -289,7 +289,7 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
 
                 ConfigModule(
                     LoraConfigModule(
-                        name = "电台配置",
+                        name = "LORA配置",
                         resID = R.drawable.ic_module_lora_new,
                         navId = R.id.action_global_to_loraSettingFragment
                     )

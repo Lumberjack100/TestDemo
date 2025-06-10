@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.lb20s
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -18,7 +19,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentLb20sVolumeSettingsBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
@@ -35,16 +35,14 @@ import org.koin.android.ext.android.inject
  */
 class LB20SVolumeSettingsFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentLb20sVolumeSettingsBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: LB20SVolumeSettingsViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: LB20SVolumeSettingsViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val volumeLevelList = arrayListOf("无", "低", "中", "高")
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -61,18 +59,22 @@ class LB20SVolumeSettingsFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentLb20sVolumeSettingsBinding
         binding.llToolbar.toolbar.title = "音量调节"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
     }
 
     override fun initData() {
         super.initData()
-        resetParams()
+        resetDefaultParams()
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
+    }
+
+    private fun resetDefaultParams() {
+        mStates.volumeLevel.set(volumeLevelList[3])
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -100,7 +102,7 @@ class LB20SVolumeSettingsFragment : BaseIOTDeviceFragment() {
          * 恢复默认配置
          */
         fun onResetClick() {
-            resetParams()
+            resetDefaultParams()
         }
 
         override fun onSubmitButtonClick() {
@@ -111,10 +113,6 @@ class LB20SVolumeSettingsFragment : BaseIOTDeviceFragment() {
             }
             initSaveCommand()
         }
-    }
-
-    private fun resetParams() {
-        mStates.volumeLevel.set(volumeLevelList[3])
     }
 
     private fun initSaveCommand() {
@@ -129,6 +127,59 @@ class LB20SVolumeSettingsFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = errMsg
+        )
+    }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.SET_VOICE_BROADCAST_VOLUME_LEVEL -> {//
@@ -141,7 +192,7 @@ class LB20SVolumeSettingsFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -151,6 +202,14 @@ class LB20SVolumeSettingsFragment : BaseIOTDeviceFragment() {
                 cancelNearbyCommunicationTimeoutJob()
             }
         }
+    }
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
     }
 
     override fun onResume() {

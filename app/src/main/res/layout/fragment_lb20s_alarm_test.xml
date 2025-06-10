@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -37,39 +36,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="@dimen/dimen_size_25"
+            android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+            android:paddingTop="@dimen/page_content_container_padding_top_12"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 style="@style/Common_EditItem_Layout_Style"
-                android:layout_marginTop="@dimen/dimen_size_1"
-                android:background="@drawable/layer_common_click_item_with_divider">
+                android:background="@drawable/layer_common_click_item_top_corner_4_with_divider"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp">
 
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_ClickableItem_Title_Style"
-                    enabledTextColor="@{@color/colorPrimary}"
-                    onClickWithDebouncing="@{()->click.onOnClickAlarmTestClick()}"
-                    textViewEnabled="@{stateVM.isEditable }"
+                <com.google.android.material.button.MaterialButton
+                    style="@style/TestButton_Style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dimen_size_30"
+                    android:onClick="@{()->click.onOnClickAlarmTestClick()}"
                     android:text="一键报警测试"
-                    android:textStyle="bold"
-                    tools:textColor="@color/colorPrimary" />
+                    android:textStyle="bold" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 style="@style/Common_ClickableItem_Layout_Style"
                 onClickWithDebouncing="@{()->click.onCustomBroadcastClick()}"
-                android:background="@drawable/layer_common_click_item_with_divider"
-                android:enabled="@{stateVM.isEditable }">
+                android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                 <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_ClickableItem_Title_Style"
-                    textViewEnabled="@{stateVM.isEditable }"
                     android:text="自定义内容播报" />
 
                 <com.google.android.material.textview.MaterialTextView
                     style="@style/Common_ClickableItem_Value_Style"
-                    textViewEnabled="@{stateVM.isEditable }"
                     android:drawableEnd="@drawable/ic_arrow_right" />
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.appcompat.widget.LinearLayoutCompat>

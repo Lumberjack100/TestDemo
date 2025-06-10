@@ -44,7 +44,7 @@ class ResetPasswordFragment : BaseFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentResetPasswordBinding
-        toolbarViewModel.toolbarTitleText.set("修改密码")
+        binding.llToolbar.toolbar.title = "修改密码"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             nav().navigateUp()
         }

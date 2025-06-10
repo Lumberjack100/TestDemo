@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.lb20s
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -17,7 +18,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentLb20sAdHocNetworkSettingsBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
@@ -27,7 +27,6 @@ import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.ui.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.LB20SAdHocNetworkSettingsViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 
@@ -39,38 +38,31 @@ import org.koin.android.ext.android.inject
  */
 class LB20SAdHocNetworkSettingsFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentLb20sAdHocNetworkSettingsBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: LB20SAdHocNetworkSettingsViewModel
-    private lateinit var mCommandResponseStates: CommandResponseViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mCommandResponseStates: CommandResponseViewModel by viewModels()
 
     private val iotParseManager: IOTParserManager by inject()
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-        mCommandResponseStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_lb20s_ad_hoc_network_settings,
-            BR.stateVM,
-            mStates
+            BR.toolbarVM,
+            toolbarViewModel
         )
-            .addBindingParam(BR.toolbarVM, toolbarViewModel)
             .addBindingParam(BR.click, ClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentLb20sAdHocNetworkSettingsBinding
-        binding.llToolbar.toolbar.title = "自组网设置"
+        binding.llToolbar.toolbar.title = "自组网配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
     }

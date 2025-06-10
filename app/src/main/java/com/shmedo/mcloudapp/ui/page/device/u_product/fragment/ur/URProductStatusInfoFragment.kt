@@ -30,7 +30,7 @@ import timber.log.Timber
 class URProductStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        toolbarViewModel.toolbarTitleText.set("状态信息")
+        binding.llToolbar.toolbar.title = "状态信息"
     }
 
     override fun queryStatusInfo() {

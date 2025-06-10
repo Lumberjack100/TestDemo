@@ -42,7 +42,7 @@ class SettingFragment : BaseFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentSettingBinding
-        toolbarViewModel.toolbarTitleText.set("设置")
+        binding.llToolbar.toolbar.title = "设置"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             nav().navigateUp()
         }

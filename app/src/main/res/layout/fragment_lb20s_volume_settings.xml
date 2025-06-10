@@ -37,50 +37,44 @@
             android:id="@+id/ll_volume_level"
             style="@style/Common_ClickableItem_Layout_Style"
             onClickWithDebouncing="@{()->click.onVolumeChooseClick()}"
-            android:layout_marginTop="@dimen/dimen_size_1"
-            android:background="@drawable/layer_common_click_item_with_divider"
-            android:enabled="@{stateVM.isEditable }"
+            android:layout_marginHorizontal="@dimen/page_content_container_padding_horizontal_12"
+            android:layout_marginTop="@dimen/page_content_container_padding_top_12"
+            android:background="@drawable/bg_white_corner_4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
-                textViewEnabled="@{stateVM.isEditable }"
                 android:text="音量等级" />
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Value_Style"
-
-                textViewEnabled="@{stateVM.isEditable }"
-
                 android:text="@{stateVM.volumeLevel}"
                 tools:text="410.00MHz" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_reset"
-            style="@style/ResetButton_Style"
-            onClickWithDebouncing="@{()->click.onResetClick()}"
-            visible="@{stateVM.isEditable }"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="35dp"
+            style="@style/ResetButton_Style2"
+            android:layout_marginHorizontal="@dimen/page_content_container_padding_horizontal_12"
+            android:layout_marginTop="@dimen/reset_button_margin_top_50"
+            android:onClick="@{()->click.onResetClick()}"
             android:text="@string/button_reset_text"
-            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ll_volume_level" />
 
-        <com.google.android.material.textview.MaterialTextView
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_Style"
+            style="@style/SubmitButton_Style2"
             onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-            visible="@{stateVM.isEditable }"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="55dp"
+            android:layout_marginTop="@dimen/summit_button_margin_top_20"
+            android:enabled="@{stateVM.isDataModified}"
             android:text="@string/button_save_text"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_reset" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

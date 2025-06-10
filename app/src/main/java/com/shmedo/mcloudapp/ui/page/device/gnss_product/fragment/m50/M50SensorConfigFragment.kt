@@ -69,7 +69,7 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentM50SensorConfigBinding
-        toolbarViewModel.toolbarTitleText.set("传感配置")
+        binding.llToolbar.toolbar.title = "传感配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }

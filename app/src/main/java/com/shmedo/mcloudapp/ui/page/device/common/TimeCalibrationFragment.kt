@@ -53,7 +53,7 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentTimeCalibrationBinding
-        toolbarViewModel.toolbarTitleText.set("时间校准")
+        binding.llToolbar.toolbar.title = "时间校准"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }

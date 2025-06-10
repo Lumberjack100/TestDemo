@@ -51,7 +51,7 @@ class LogSessionListFragment : BaseFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentLogSessionListBinding
-        toolbarViewModel.toolbarTitleText.set("应用日志")
+        binding.llToolbar.toolbar.title = "应用日志"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }

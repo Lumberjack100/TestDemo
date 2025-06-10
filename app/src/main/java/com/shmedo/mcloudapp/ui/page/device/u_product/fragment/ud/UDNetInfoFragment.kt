@@ -37,7 +37,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        toolbarViewModel.toolbarTitleText.set("网络信息")
+        binding.llToolbar.toolbar.title = "网络信息"
     }
 
     override fun queryStatusInfo() {

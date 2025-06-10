@@ -69,7 +69,7 @@ class UserInfoHomeFragment : BaseFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUserInfoHomeBinding
-        toolbarViewModel.toolbarTitleText.set("个人资料")
+        binding.llToolbar.toolbar.title = "个人资料"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }

@@ -124,7 +124,7 @@ class DeviceHomeActivity : BaseActivity() {
 
             ProductType.COLLECTOR_G_0 -> {//自组网报警网关
                 navController.setGraph(
-                    R.navigation.gw100_graph,
+                    R.navigation.gw_graph,
                     bundle2
                 )
             }

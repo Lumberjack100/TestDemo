@@ -44,7 +44,7 @@ class AppPermissionSettingFragment : BaseFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentAppPermissionSettingBinding
-        toolbarViewModel.toolbarTitleText.set("系统权限设置")
+        binding.llToolbar.toolbar.title = "系统权限设置"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             nav().navigateUp()
         }

@@ -97,7 +97,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
         registerOnBackPressedDispatcher {
             nav().navigateUp()
         }
-        toolbarViewModel.toolbarTitleText.set("位置")
+        binding.llToolbar.toolbar.title = "位置信息"
         setUpMap()
     }
 
