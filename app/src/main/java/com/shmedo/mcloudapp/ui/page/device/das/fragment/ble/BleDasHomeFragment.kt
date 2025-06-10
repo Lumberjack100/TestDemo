@@ -50,7 +50,7 @@ import com.shmedo.mcloudapp.model.TelemetryDataModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment
-import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.TimeCalibrationPopupView
+import com.shmedo.mcloudapp.ui.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.state.BleDasHomeFragmentViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -140,9 +140,9 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        mStates.productLightResId.set(R.drawable.device_logo_qingxieyi)
-        mStates.productGrayResId.set(R.drawable.device_logo_qingxieyi_gray)
-        mStates.productLogoResId.set(mStates.productLightResId.get())
+        mStates.productNormalResId.set(R.drawable.device_logo_qingxieyi)
+        mStates.productOfflineResId.set(R.drawable.device_logo_qingxieyi_gray)
+        mStates.productLogoResId.set(mStates.productNormalResId.get())
         mStates.productName.set(deviceInfo.productName)
         mStates.deviceToken.set(deviceInfo.deviceToken)
         mStates.productToken.set(deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken }
@@ -165,11 +165,11 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         if (isConnected) {
             mStates.deviceStateTagText.set("已连接")
             mStates.connectOperateText.set("断开连接")
-            mStates.productLogoResId.set(mStates.productLightResId.get())
+            mStates.productLogoResId.set(mStates.productNormalResId.get())
         } else {
             mStates.deviceStateTagText.set("未连接")
             mStates.connectOperateText.set("蓝牙连接")
-            mStates.productLogoResId.set(mStates.productGrayResId.get())
+            mStates.productLogoResId.set(mStates.productOfflineResId.get())
         }
     }
 

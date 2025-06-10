@@ -442,8 +442,8 @@ enum class IOTCommandType(val value: String) {
     MR_MD_SET_DATA_NETWORK("md_mrsetdatanetwork"),
 
     /** 有线网络配置 */
-    MR_MD_GET_WIRELESS_NETWORK("md_mrgetwirednetwork"),
-    MR_MD_SET_WIRELESS_NETWORK("md_mrsetwirednetwork"),
+    MR_MD_GET_WIRED_NETWORK("md_mrgetwirednetwork"),
+    MR_MD_SET_WIRED_NETWORK("md_mrsetwirednetwork"),
 
     /** 终端参数-上报方式 */
     MR_MD_GET_REPORT_METHOD("md_mrgetreporttype"),

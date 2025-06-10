@@ -137,46 +137,25 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        when (productType) {
-            ProductType.U_D_1 -> {
-                mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
-            }
-
-            ProductType.U_D_2 -> {
-                mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
-            }
-
-            else -> {}
-        }
         mHeadStates.productName.set(productType.productName)
         mHeadStates.productToken.set(productType.productToken)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
 
-        when (communicateWay) {
-            NetPlatformConnect -> {
-                toolbarViewModel.toolbarIvActionVisible.set(false)
-            }
+        toolbarViewModel.toolbarIvActionVisible.set(communicateWay is BleConnect)
 
-            BleConnect -> {
-                toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
-                toolbarViewModel.toolbarIvActionVisible.set(true)
-            }
-
-            else -> {}
-        }
         initModuleData()
     }
 
     override fun onConnectionStateChanged(isConnected: Boolean) {
         mHeadStates.isConnected.set(isConnected)
         if (isConnected) {
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030)
             mHeadStates.iotPlatformStateText.set("蓝牙已连接")
+            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
         } else {
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030_offline)
             mHeadStates.iotPlatformStateText.set("蓝牙已断开")
+            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
 
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
@@ -334,7 +313,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 )
             )
         )
-//        if (productType == ProductType.U_D_2) {
         configModuleTree.configModules.add(
             ConfigModule(
                 LoraConfigModule(
@@ -347,12 +325,11 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         configModuleTree.configModules.add(
             ConfigModule(
                 AlarmConfigModule(
-                    resID = R.drawable.ic_module_lora_new,
+                    resID = R.drawable.ic_module_alarm_new,
                     navId = R.id.action_global_to_alarmSettingFragment
                 )
             )
         )
-//        }
         configModuleTree.configModules.add(
             ConfigModule(
                 TimeCalibrationModule(
@@ -529,12 +506,13 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     private fun onNetPlatformReady() {
         lastOnlineStatus = deviceInfo.onlineStatus
         if (deviceInfo.onlineStatus) {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030)
             mHeadStates.iotPlatformStateText.set("米度平台在线")
             queryDeviceStatusInfo()
         } else {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030_offline)
             mHeadStates.iotPlatformStateText.set("米度平台离线")
+
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
         //刷新模块状态
@@ -831,11 +809,11 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 mHeadStates.productLogoResId.set(
                     status.compareAndReturn(
                         "故障",
-                        R.drawable.device_logo_niweiji_error,
+                        R.drawable.device_logo_dr030_error,
                         status.compareAndReturn(
                             "告警",
-                            R.drawable.device_logo_niweiji_alarm,
-                            R.drawable.device_logo_niweiji
+                            R.drawable.device_logo_dr030_alarm,
+                            R.drawable.device_logo_dr030
                         )
                     )
                 )

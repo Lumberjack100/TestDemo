@@ -64,7 +64,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.channel}"
                             tools:text="410.00MHz" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -80,7 +80,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.transmitPower}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -96,7 +96,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.airSpeed}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -112,7 +112,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.networkNumber}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -128,7 +128,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.localAddress}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -145,7 +145,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.targetAddress}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>

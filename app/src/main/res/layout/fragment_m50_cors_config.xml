@@ -14,7 +14,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50CORSConfigFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50CORSConfigFragment.ClickProxy" />
 
     </data>
 
@@ -80,7 +80,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:maxLength="60"
@@ -99,7 +99,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:inputType="number"
@@ -118,7 +118,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:maxLength="20"
@@ -136,7 +136,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isOpened }"
                             android:hint="请输入"
                             android:maxLength="20"

@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.common
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.bindingAdapter
@@ -31,7 +32,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentUniversalDataCenterHomeBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
@@ -47,15 +47,13 @@ import org.koin.android.ext.android.inject
 
 class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUniversalDataCenterHomeBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: UniversalDataCenterHomeViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: UniversalDataCenterHomeViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
     private var centerNum = 0//数据链路数量
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {

@@ -41,11 +41,11 @@ class URProductStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    override fun initStatusInfo(content: String) {
+    override fun <T> initStatusInfo(content: T) {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<URCurrentStateInfo>(content)
+                    MoshiUtil.fromJson<URCurrentStateInfo>(content as String)
                 }
                 if (stateInfo == null) {
                     binding.refreshLayout.showEmpty()

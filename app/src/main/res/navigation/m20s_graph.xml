@@ -15,7 +15,7 @@
 
     <fragment
         android:id="@+id/m20SHomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m20s.fragment.M20SHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.M20SHomeFragment"
         android:label="M20SHomeFragment"
         tools:layout="@layout/fragment_m20s_home" />
 
@@ -33,31 +33,31 @@
 
     <fragment
         android:id="@+id/m20SBaseInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m20s.fragment.M20SBaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.M20SBaseInfoFragment"
         android:label="M20SBaseInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
         android:id="@+id/m20SNetInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m20s.fragment.M20SNetInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.M20SNetInfoFragment"
         android:label="M20SNetInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
         android:id="@+id/m20SStatusInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m20s.fragment.M20SStatusInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.M20SStatusInfoFragment"
         android:label="M20SStatusInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
         android:id="@+id/m20SWorkModelFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m20s.fragment.M20SWorkModelFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.M20SWorkModelFragment"
         android:label="M20SWorkModelFragment"
         tools:layout="@layout/fragment_m20s_work_model" />
 
     <fragment
         android:id="@+id/m20SRadioSettingFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m20s.fragment.M20SRadioSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.M20SRadioSettingFragment"
         android:label="M20SRadioSettingFragment"
         tools:layout="@layout/fragment_m20s_radio_setting" />
 
@@ -114,6 +114,7 @@
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
+
     <action
         android:id="@+id/action_global_to_m20SRadioSettingFragment"
         app:destination="@id/m20SRadioSettingFragment"

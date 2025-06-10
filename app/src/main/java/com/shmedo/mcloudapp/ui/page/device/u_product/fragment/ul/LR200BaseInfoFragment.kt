@@ -29,11 +29,11 @@ class LR200BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         toolbarViewModel.toolbarTitleText.set("基本信息")
     }
 
-    override fun initStatusInfo(content: String) {
+    override fun <T> initStatusInfo(content: T) {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
+                    MoshiUtil.fromJson<CommonCurrentStateInfo>(content as String)
                 }
                 if (stateInfo == null) {
                     binding.refreshLayout.showEmpty()

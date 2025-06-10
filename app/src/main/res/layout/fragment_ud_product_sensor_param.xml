@@ -78,7 +78,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             android:hint="请输入"
                             android:inputType="number"
                             android:maxLength="4"
@@ -95,7 +95,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             android:hint="请输入"
                             android:inputType="numberDecimal"
                             android:maxLength="15"
@@ -112,7 +112,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             android:drawableEnd="@null"
                             android:text="@{stateVM.airAltitudeInitialValue}"
                             tools:text="1" />
@@ -162,8 +162,8 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
+
                             android:text="@{stateVM.captureFrequency}"
                             tools:text="2小时/次" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -179,8 +179,8 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
+
                             android:text="@{stateVM.imageResolution}"
                             tools:text="1600 x 1200" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -212,7 +212,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             android:drawableEnd="@null"
                             android:text="@{stateVM.locationInitialValue}"
                             tools:text="1" />

@@ -85,7 +85,7 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_data_server_address"
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="@={stateVM.centerServerAddress}"
                             app:lengthFilter="@{100}" />
@@ -104,7 +104,7 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_data_server_port"
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:inputType="number"
                             android:text="@={stateVM.centerServerPort}"
@@ -126,9 +126,9 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.dataType}"
                             tools:text="NMEA" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -146,9 +146,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.dataProtocol}"
                             tools:text="MQTT" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -166,9 +164,9 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.platformType}"
                             tools:text="成都理工平台" />
 
@@ -192,7 +190,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.productId}"
                                 app:lengthFilter="@{100}" />
@@ -210,7 +208,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.deviceId}"
                                 app:lengthFilter="@{100}" />
@@ -228,7 +226,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.deviceKey}"
                                 app:lengthFilter="@{100}" />
@@ -247,7 +245,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.registerCode}"
                                 app:lengthFilter="@{100}" />
@@ -266,7 +264,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.registerAddress}"
                                 app:lengthFilter="@{100}" />
@@ -285,7 +283,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:inputType="number"
                                 android:text="@={stateVM.registerPort}"
@@ -314,9 +312,9 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Value_Style"
-                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-                                android:drawableEnd="@drawable/ic_arrow_down"
+
                                 android:text="@{stateVM.stationType}"
                                 tools:text="降水" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -332,7 +330,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:inputType="number"
                                 android:text="@={stateVM.centerStationAddr}"
@@ -351,7 +349,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:inputType="number"
                                 android:text="@={stateVM.password}"
@@ -370,7 +368,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.telemetryStationAddr}"
                                 app:inputTypeFilter='@{"character"}'
@@ -462,7 +460,7 @@
 
                                 <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"
-                                    enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:inputType="number"
                                     android:text="@={stateVM.maintainReportInterval}"
@@ -481,7 +479,7 @@
 
                                 <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"
-                                    enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:inputType="number"
                                     android:text="@={stateVM.reissuingDataValidDays}"
@@ -500,7 +498,7 @@
 
                                 <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"
-                                    enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:inputType="number"
                                     android:text="@={stateVM.reissuingDataInterval}"
@@ -528,7 +526,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.deviceId}"
                                 app:lengthFilter="@{100}" />
@@ -546,7 +544,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.deviceKey}"
                                 app:lengthFilter="@{100}" />
@@ -563,7 +561,7 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-                                enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.productId}"
                                 app:lengthFilter="@{100}" />

@@ -8,7 +8,7 @@
         android:right="16dp">
         <color android:color="@color/divider_line_bg" />
     </item>
-    <item android:bottom="0.7dp">
+    <item android:bottom="0.6dp">
         <color android:color="@color/white" />
     </item>
 </layer-list>

@@ -55,7 +55,7 @@
                         android:text="工作模式" />
 
                     <com.google.android.material.textview.MaterialTextView style="@style/Common_ClickableItem_Value_Style"
-                        android:drawableEnd="@drawable/ic_arrow_down"
+
                         android:text="@{stateVM.measureWorkMode }"
                         tools:text="3" />
 

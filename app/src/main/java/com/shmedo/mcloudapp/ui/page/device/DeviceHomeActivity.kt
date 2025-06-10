@@ -128,14 +128,8 @@ class DeviceHomeActivity : BaseActivity() {
                 bundle2
             )
 
-            ProductType.COLLECTOR_R_3, ProductType.M20 -> {
-                navController.setGraph(
-                    R.navigation.m20_graph,
-                    bundle2
-                )
-            }
 
-            ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {
+            ProductType.M20, ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {
                 navController.setGraph(
                     R.navigation.m20s_graph,
                     bundle2
@@ -170,14 +164,12 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
-            ProductType.TEST_DEVICE -> {
+            else -> {
                 navController.setGraph(
-                    R.navigation.test_device_graph,
+                    R.navigation.default_device_graph,
                     bundle2
                 )
             }
-
-            else -> {}
         }
     }
 
@@ -203,7 +195,6 @@ class DeviceHomeActivity : BaseActivity() {
                     ///根据设备 SN 后缀用旧的产品规则判断所属产品类型
                     type = ProductType.valueByOldSuffix(deviceInfo.deviceToken)
                     if (type == ProductType.UnKnown) {
-                        type = ProductType.TEST_DEVICE
 //                        return
                     }
                 }

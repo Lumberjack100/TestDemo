@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/gW100HomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.gw100.fragment.GW100HomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.gw100.GW100HomeFragment"
         android:label="GW100HomeFragment"
         tools:layout="@layout/fragment_universal_device_home">
 
@@ -34,7 +34,7 @@
 
     <fragment
         android:id="@+id/gW100BaseInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.gw100.fragment.GW100BaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.gw100.GW100BaseInfoFragment"
         android:label="GW100BaseInfoFragment"
         tools:layout="@layout/fragment_gw100_base_info" />
 

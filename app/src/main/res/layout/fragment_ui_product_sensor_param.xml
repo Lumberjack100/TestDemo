@@ -65,9 +65,9 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{!stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.measureInterval}"
                             tools:text="10" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -86,9 +86,9 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{!stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.averageTimes}"
                             tools:text="10" />
                     </androidx.appcompat.widget.LinearLayoutCompat>

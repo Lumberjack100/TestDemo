@@ -177,17 +177,17 @@ enum class ProductType(
         prefix = "",
         oldSuffix = "",
         newSuffix = "UD1",
-        productName = "一体可视化雷达水位计",
-        productToken = "MD-DR030",
-        description = "对应型号 MD-DR030"
+        productName = "一体可视化雷达泥位计",
+        productToken = "MD-NW030",
+        description = "对应型号 MD-NW030"
     ),
     U_D_2(
         prefix = "",
         oldSuffix = "",
         newSuffix = "UD2",
-        productName = "一体可视化雷达泥位计",
-        productToken = "MD-NW030",
-        description = "对应型号 MD-NW030"
+        productName = "一体可视化雷达水位计",
+        productToken = "MD-DR030",
+        description = "对应型号 MD-DR030"
     ),
     U_D_3(
         prefix = "",
@@ -284,19 +284,12 @@ enum class ProductType(
         productToken = "M20",
         description = ""
     ),
-    TEST_DEVICE(
-        prefix = "TEST",
-        oldSuffix = "",
-        newSuffix = "",
-        productName = "测试设备",
-        productToken = "",
-        description = ""
-    ),
+
     UnKnown(
         prefix = "UnKnown",
         oldSuffix = "",
         newSuffix = "",
-        productName = "未知类型",
+        productName = "",
         productToken = "",
         description = ""
     );

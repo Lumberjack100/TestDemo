@@ -75,9 +75,9 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.receiveChannel}"
                             tools:text="410.00MHz" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -95,9 +95,9 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.sendChannel}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -115,9 +115,9 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.transmitPower}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -135,9 +135,9 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.airSpeed}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -163,7 +163,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode1}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
@@ -182,7 +182,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode2}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
@@ -201,7 +201,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode3}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
@@ -220,7 +220,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode4}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
@@ -238,7 +238,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode5}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
@@ -256,7 +256,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode6}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
@@ -274,7 +274,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode7}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
@@ -292,7 +292,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode8}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
@@ -310,7 +310,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode9}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
@@ -328,7 +328,7 @@
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-                            enabledTextColor="@{@color/sub_title_text_color_black_60}"
+
                             textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode10}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'

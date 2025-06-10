@@ -25,8 +25,8 @@ import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.CommunicationDataTableAdapter
-import com.shmedo.mcloudapp.ui.page.device.mr702.widget.tableview.model.CommunicationDataCellModel
+import com.shmedo.mcloudapp.ui.widget.tableview.CommunicationDataTableAdapter
+import com.shmedo.mcloudapp.ui.widget.tableview.model.CommunicationDataCellModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommonCommunicationInfoViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

@@ -12,13 +12,6 @@ import com.shmedo.mcloudapp.ui.page.device.das.fragment.deviceinfo.DasCommunicat
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.deviceinfo.DasSensorInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.lb20s.fragment.deviceinfo.LB20SBaseInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.lb20s.fragment.deviceinfo.LB20SGatewayInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.m20.fragment.deviceinfo.M20BaseInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.m20.fragment.deviceinfo.M20CommunicationInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.m20.fragment.deviceinfo.M20SensorInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702BaseInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702ModuleStatusInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702PortStatusInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.mr702.fragment.deviceinfo.MR702RunningStatusInfoFragment
 
 /**
  * 创建者：gonghe
@@ -33,11 +26,6 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
             ProductType.LB20S -> {
                 tabs.clear()
                 tabs.addAll(listOf("基本信息", "通讯状态", "网关信息"))
-            }
-
-            ProductType.COLLECTOR_R_2 -> {//水利遥测终端机
-                tabs.clear()
-                tabs.addAll(listOf("基本信息", "运行状态", "接口状态", "模块状态"))
             }
 
             else -> {
@@ -76,49 +64,6 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                     if (communicateWay is BleConnect) BleDasSensorInfoFragment.newInstance().apply {
                         arguments = bundle
                     } else DasSensorInfoFragment.newInstance().apply { arguments = bundle }
-                )
-            }
-
-            ProductType.COLLECTOR_R_2 -> {//水利遥测终端机
-                fragmentList.add(
-                    MR702BaseInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    MR702RunningStatusInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    MR702PortStatusInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    MR702ModuleStatusInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-            }
-
-            ProductType.COLLECTOR_R_3,
-            ProductType.M20
-                -> {//M20
-                fragmentList.add(
-                    M20BaseInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    M20CommunicationInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    M20SensorInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
                 )
             }
 

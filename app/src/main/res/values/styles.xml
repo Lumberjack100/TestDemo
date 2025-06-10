@@ -132,7 +132,7 @@
         <item name="android:layout_weight">1</item>
         <item name="android:layout_marginStart">10dp</item>
         <item name="android:drawablePadding">8dp</item>
-        <item name="android:drawableEnd">@drawable/ic_arrow_right</item>
+        <item name="android:drawableEnd">@drawable/ic_arrow_down</item>
         <item name="android:gravity">center_vertical|right</item>
         <item name="android:singleLine">true</item>
         <item name="android:textColorHint">@color/text_color_hint</item>
@@ -369,19 +369,6 @@
         <item name="android:textColorHint">@color/text_color_hint</item>
         <item name="android:textColor">@color/title_text_color</item>
         <item name="android:textSize">17sp</item>
-    </style>
-
-
-    <style name="ColorPrimary.FloatingActionButton" parent="Widget.MaterialComponents.FloatingActionButton">
-        <item name="materialThemeOverlay">@style/ThemeOverlay.App.FloatingActionButton</item>
-        <item name="pressedTranslationZ">0dp</item>
-        <item name="rippleColor">@color/ripple_material_light</item>
-    </style>
-
-    <style name="ThemeOverlay.App.FloatingActionButton" parent="">
-        <item name="colorSecondary">@color/colorPrimary_10</item>
-        <item name="colorOnSecondary">@color/colorPrimary</item>
-        <item name="colorOnSurface">@color/colorPrimary_10</item>
     </style>
 
     <style name="MaterialAutoCompleteTextView_Style">

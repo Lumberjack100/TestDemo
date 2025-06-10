@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1SensorParamFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port1SensorParamFragment.ClickProxy" />
 
     </data>
 
@@ -165,7 +165,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.dataBit}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -184,7 +184,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.checkBit}"
                             tools:text="NONE" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -203,7 +203,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.stopBit}"
                             tools:text="2" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -285,7 +285,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.dataFormat}"
                             tools:text="XXX" />
 
@@ -305,7 +305,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isEditable }"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.solutionMethod}"
                             tools:text="加权平均" />
 

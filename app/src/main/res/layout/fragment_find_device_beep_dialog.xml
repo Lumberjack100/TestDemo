@@ -55,7 +55,7 @@
                 android:layout_width="150dp"
                 android:layout_height="100dp"
                 android:layout_marginTop="@dimen/dimen_size_15"
-                tools:src="@drawable/device_logo_niweiji" />
+                tools:src="@drawable/device_logo_ud" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_product_name"

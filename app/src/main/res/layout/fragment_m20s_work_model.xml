@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.m20s.fragment.M20SWorkModelFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m20s.M20SWorkModelFragment.ClickProxy" />
 
     </data>
 
@@ -64,7 +64,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.model}"
                             tools:text="基站" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -81,7 +81,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.frontCalc}"
                             tools:text="自动" />
                     </androidx.appcompat.widget.LinearLayoutCompat>

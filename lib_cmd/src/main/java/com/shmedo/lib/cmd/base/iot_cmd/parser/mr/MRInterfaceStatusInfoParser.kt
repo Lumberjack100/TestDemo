@@ -20,7 +20,9 @@ class MRInterfaceStatusInfoParser {
             adc_a3 = keyValueMap.getOrDefault("adc_a3", adc_a3)
             adc_a4 = keyValueMap.getOrDefault("adc_a4", adc_a4)
             adc_v1 = keyValueMap.getOrDefault("adc_v1", adc_v1)
-            adc_v2 = keyValueMap.getOrDefault("adc_v2", adc_v2)
+            adc_v1 = keyValueMap.getOrDefault("adc_v2", adc_v2)
+            adc_v1 = keyValueMap.getOrDefault("adc_v3", adc_v3)
+            adc_v2 = keyValueMap.getOrDefault("adc_v4", adc_v4)
         }
     }
 }

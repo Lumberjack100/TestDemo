@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50SerialPortParamFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50SerialPortParamFragment.ClickProxy" />
 
     </data>
 
@@ -81,7 +81,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.rs232ExternalDevice}"
                             tools:text="无" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -104,7 +104,7 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Value_Style"
-                                android:drawableEnd="@drawable/ic_arrow_down"
+
                                 android:text="@{stateVM.captureFrequency}"
                                 tools:text="2小时/次" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -121,7 +121,7 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Value_Style"
-                                android:drawableEnd="@drawable/ic_arrow_down"
+
                                 android:text="@{stateVM.imageResolution}"
                                 tools:text="1600 x 1200" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -138,7 +138,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.rs485ExternalDevice}"
                             tools:text="无" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -154,7 +154,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.rs485BaudRate}"
                             tools:text="无" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
