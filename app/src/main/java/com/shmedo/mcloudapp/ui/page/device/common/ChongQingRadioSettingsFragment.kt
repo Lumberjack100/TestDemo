@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.common
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -22,7 +23,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentChongqingRadioSettingsBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
@@ -35,8 +35,8 @@ import timber.log.Timber
 
 class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentChongqingRadioSettingsBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: ChongQingRadioSettingsViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: ChongQingRadioSettingsViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private var radioChannelList: List<String> = emptyList()
@@ -46,8 +46,6 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -62,30 +60,12 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentChongqingRadioSettingsBinding
-        binding.llToolbar.toolbar.title = "电台设置"
+        binding.llToolbar.toolbar.title = "电台配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
-        registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
-        }
+        registerOnBackPressedDispatcher { handleBackByCheckDataModified() }
         initRefresh()
-    }
-
-    override fun initData() {
-        super.initData()
-        radioChannelList = if (productType == ProductType.LB20S)
-            (451125..480125 step 1000).map {
-                (it.toFloat() / 1000).toString() + "MHz"
-            }
-        else
-            (45015..46915 step 100).map {
-                (it.toFloat() / 100).toString() + "MHz"
-            }
-
-        resetParams()
     }
 
     private fun initRefresh() {
@@ -98,6 +78,58 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
             }
             queryData()
         }
+    }
+
+    override fun initData() {
+        super.initData()
+        radioChannelList = if (productType == ProductType.LB20S)
+            (451125..480125 step 1000).map {
+                (it.toFloat() / 1000).toString() + "MHz"
+            }
+        else
+            (45015..46915 step 100).map {
+                (it.toFloat() / 100).toString() + "MHz"
+            }
+        resetDefaultParams()
+        // 保存初始状态
+        mStates.saveInitialState()
+    }
+
+    private fun resetDefaultParams() {
+        when (productType) {
+            ProductType.COLLECTOR_G_0 -> {//自组网网关 载波频率以 450.15Mhz 为起始，间隔 1Mhz，进行信道划分，共划分 20 个信道
+                //发送默认 13 即 463.15MHz
+                mStates.sendChannel.set(radioChannelList[13])
+                //接收默认 6 即 456.15MHz
+                mStates.receiveChannel.set(radioChannelList[6])
+            }
+
+            ProductType.LB20S -> {//LB20S 载波频率以 451.125 为起始，间隔 1Mhz，进行信道划分，共划分 30 个信道
+                //发送默认 10 即 461.125MHz
+                mStates.sendChannel.set(radioChannelList[10])
+                //接收默认 20 即 471.125MHz
+                mStates.receiveChannel.set(radioChannelList[20])
+            }
+
+            else -> {
+
+            }
+        }
+        //发射功率 [0~22] 默认22
+        mStates.transmitPower.set(transmitPowerList[transmitPowerList.lastIndex])
+        //空中速率  [0~2] 默认1
+        mStates.airSpeed.set(airSpeedList[1])
+
+        mStates.telemetryStationNode1.set("")
+        mStates.telemetryStationNode2.set("")
+        mStates.telemetryStationNode3.set("")
+        mStates.telemetryStationNode4.set("")
+        mStates.telemetryStationNode5.set("")
+        mStates.telemetryStationNode6.set("")
+        mStates.telemetryStationNode7.set("")
+        mStates.telemetryStationNode8.set("")
+        mStates.telemetryStationNode9.set("")
+        mStates.telemetryStationNode10.set("")
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -181,11 +213,9 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        /**
-         * 恢复默认配置
-         */
+        /** 恢复默认配置 */
         fun onResetClick() {
-            resetParams()
+            resetDefaultParams()
         }
 
         override fun onSubmitButtonClick() {
@@ -196,50 +226,6 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
             }
             initSaveCommand()
         }
-    }
-
-    private fun resetParams() {
-        when (productType) {
-            ProductType.COLLECTOR_G_0 -> {//自组网网关 载波频率以 450.15Mhz 为起始，间隔 1Mhz，进行信道划分，共划分 20 个信道
-                //发送默认 13 即 463.15MHz
-                mStates.sendChannel.set(radioChannelList[13])
-                //接收默认 6 即 456.15MHz
-                mStates.receiveChannel.set(radioChannelList[6])
-            }
-
-            ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {//M20S 载波频率以 450.15Mhz 为起始，间隔 1Mhz，进行信道划分，共划分 20 个信道
-                //发送默认 6 即 456.15MHz
-                mStates.sendChannel.set(radioChannelList[6])
-                //接收默认 13 即 463.15MHz
-                mStates.receiveChannel.set(radioChannelList[13])
-            }
-
-            ProductType.LB20S -> {//LB20S 载波频率以 451.125 为起始，间隔 1Mhz，进行信道划分，共划分 30 个信道
-                //发送默认 10 即 461.125MHz
-                mStates.sendChannel.set(radioChannelList[10])
-                //接收默认 20 即 471.125MHz
-                mStates.receiveChannel.set(radioChannelList[20])
-            }
-
-            else -> {
-
-            }
-        }
-        //发射功率 [0~22] 默认22
-        mStates.transmitPower.set(transmitPowerList[transmitPowerList.lastIndex])
-        //空中速率  [0~2] 默认1
-        mStates.airSpeed.set(airSpeedList[1])
-
-        mStates.telemetryStationNode1.set("")
-        mStates.telemetryStationNode2.set("")
-        mStates.telemetryStationNode3.set("")
-        mStates.telemetryStationNode4.set("")
-        mStates.telemetryStationNode5.set("")
-        mStates.telemetryStationNode6.set("")
-        mStates.telemetryStationNode7.set("")
-        mStates.telemetryStationNode8.set("")
-        mStates.telemetryStationNode9.set("")
-        mStates.telemetryStationNode10.set("")
     }
 
     private fun initSaveCommand() {
@@ -351,6 +337,59 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = "设备未响应"
+        )
+    }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_GET_RADIO_CTRL -> {
@@ -438,9 +477,7 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
-                        }
+                        sendCommandFromCmdList { processNavigateUp() }
                     }
                 }
             }
@@ -470,6 +507,8 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
             mStates.transmitPower.set(info.outpwr)
             mStates.airSpeed.set(info.airbaud)
 
+            // 保存初始状态
+            mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
         }
@@ -555,19 +594,19 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
                 }
             )
 
-            mStates.telemetryStationNodeBack1.set(mStates.telemetryStationNode1.get())
-            mStates.telemetryStationNodeBack2.set(mStates.telemetryStationNode2.get())
-            mStates.telemetryStationNodeBack3.set(mStates.telemetryStationNode3.get())
-            mStates.telemetryStationNodeBack4.set(mStates.telemetryStationNode4.get())
-            mStates.telemetryStationNodeBack5.set(mStates.telemetryStationNode5.get())
-            mStates.telemetryStationNodeBack6.set(mStates.telemetryStationNode6.get())
-            mStates.telemetryStationNodeBack7.set(mStates.telemetryStationNode7.get())
-            mStates.telemetryStationNodeBack8.set(mStates.telemetryStationNode8.get())
-            mStates.telemetryStationNodeBack9.set(mStates.telemetryStationNode9.get())
-            mStates.telemetryStationNodeBack10.set(mStates.telemetryStationNode10.get())
+            // 保存初始状态
+            mStates.saveInitialState()
         } catch (e: Exception) {
             Timber.e(e)
         }
+    }
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
     }
 
     override fun onResume() {

@@ -59,7 +59,7 @@ class M50CORSConfigFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentM50CorsConfigBinding
-        toolbarViewModel.toolbarTitleText.set("CORS接入")
+        binding.llToolbar.toolbar.title = "CORS接入"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }

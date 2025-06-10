@@ -44,7 +44,7 @@ class ErrorActivity : BaseActivity() {
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as ActivityErrorBinding
         setToolBar(binding.llToolbar.toolbar)
-        toolbarViewModel.toolbarTitleText.set("发生错误")
+        binding.llToolbar.toolbar.title = "发生错误"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             finish()
         }

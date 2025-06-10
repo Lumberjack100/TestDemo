@@ -29,11 +29,6 @@ class DefaultDeviceHomeFragment : NewUniversalBaseDeviceHomeFragment() {
 
     override fun initData() {
         super.initData()
-        mHeadStates.productErrorResId.set(R.drawable.ic_device_logo_def)
-        mHeadStates.productAlarmResId.set(R.drawable.ic_device_logo_def)
-        mHeadStates.productOfflineResId.set(R.drawable.ic_device_logo_def)
-        mHeadStates.productNormalResId.set(R.drawable.ic_device_logo_def)
-
         when (productType) {
             ProductType.GNSS_E_1, ProductType.GNSS_E_2 -> {
                 mHeadStates.productErrorResId.set(R.drawable.device_logo_e40_error)
@@ -57,10 +52,10 @@ class DefaultDeviceHomeFragment : NewUniversalBaseDeviceHomeFragment() {
             }
 
             else -> {
-                mHeadStates.productErrorResId.set(R.drawable.ic_device_logo_def)
-                mHeadStates.productAlarmResId.set(R.drawable.ic_device_logo_def)
-                mHeadStates.productOfflineResId.set(R.drawable.ic_device_logo_def)
-                mHeadStates.productNormalResId.set(R.drawable.ic_device_logo_def)
+                mHeadStates.productErrorResId.set(R.drawable.device_logo_default_error)
+                mHeadStates.productAlarmResId.set(R.drawable.device_logo_default_alarm)
+                mHeadStates.productOfflineResId.set(R.drawable.device_logo_default_offline)
+                mHeadStates.productNormalResId.set(R.drawable.device_logo_default)
             }
         }
     }

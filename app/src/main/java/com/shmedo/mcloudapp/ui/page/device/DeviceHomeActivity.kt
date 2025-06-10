@@ -98,13 +98,6 @@ class DeviceHomeActivity : BaseActivity() {
         )
         val navController = findNavController(R.id.device_home_host_fragment)
         when (productType) {
-            ProductType.COLLECTOR_G_0 -> {//自组网报警网关
-                navController.setGraph(
-                    R.navigation.gw100_graph,
-                    bundle2
-                )
-            }
-
             ProductType.M_A_1, ProductType.ADME -> navController.setGraph(
                 R.navigation.adme_graph,
                 bundle2
@@ -114,20 +107,6 @@ class DeviceHomeActivity : BaseActivity() {
                 R.navigation.adme_hac_graph,
                 bundle2
             )
-
-            ProductType.COLLECTOR_R_1, ProductType.DAS, ProductType.BHY -> {
-                val graphId =
-                    if (communicateWay == BleConnect) R.navigation.ble_das_graph else R.navigation.das_graph
-                navController.setGraph(
-                    graphId, bundle2
-                )
-            }
-
-            ProductType.COLLECTOR_R_2 -> navController.setGraph(
-                R.navigation.mr702_graph,
-                bundle2
-            )
-
 
             ProductType.M20, ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> {
                 navController.setGraph(
@@ -143,7 +122,27 @@ class DeviceHomeActivity : BaseActivity() {
                 )
             }
 
-            ProductType.LR200, ProductType.U_I_1, ProductType.U_R_1 -> {
+            ProductType.COLLECTOR_G_0 -> {//自组网报警网关
+                navController.setGraph(
+                    R.navigation.gw_graph,
+                    bundle2
+                )
+            }
+
+            ProductType.COLLECTOR_R_1, ProductType.DAS, ProductType.BHY -> {
+                val graphId =
+                    if (communicateWay == BleConnect) R.navigation.ble_das_graph else R.navigation.das_graph
+                navController.setGraph(
+                    graphId, bundle2
+                )
+            }
+
+            ProductType.COLLECTOR_R_2 -> navController.setGraph(
+                R.navigation.mr702_graph,
+                bundle2
+            )
+
+            ProductType.LR200, ProductType.U_I_1, ProductType.U_L_1, ProductType.U_R_1 -> {
                 navController.setGraph(
                     R.navigation.u_product_graph,
                     bundle2
@@ -192,7 +191,7 @@ class DeviceHomeActivity : BaseActivity() {
                 //根据设备产品标识判断所属产品类型
                 type = ProductType.valueByPrefix(deviceInfo.productToken.uppercase())
                 if (type == ProductType.UnKnown) {
-                    ///根据设备 SN 后缀用旧的产品规则判断所属产品类型
+                    //根据设备 SN 后缀用旧的产品规则判断所属产品类型
                     type = ProductType.valueByOldSuffix(deviceInfo.deviceToken)
                     if (type == ProductType.UnKnown) {
 //                        return

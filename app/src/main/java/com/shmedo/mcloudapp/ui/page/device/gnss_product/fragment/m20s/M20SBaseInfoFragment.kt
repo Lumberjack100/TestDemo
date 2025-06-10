@@ -32,7 +32,7 @@ class M20SBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        toolbarViewModel.toolbarTitleText.set("基本信息")
+        binding.llToolbar.toolbar.title = "基本信息"
     }
 
     override fun <T> initStatusInfo(content: T) {

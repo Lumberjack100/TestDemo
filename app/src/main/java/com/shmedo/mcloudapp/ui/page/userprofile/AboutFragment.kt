@@ -34,7 +34,7 @@ class AboutFragment : BaseFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentAboutBinding
-        toolbarViewModel.toolbarTitleText.set("关于")
+        binding.llToolbar.toolbar.title = "关于"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()

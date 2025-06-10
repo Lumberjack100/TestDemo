@@ -75,7 +75,7 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdReportModelParamBinding
-        toolbarViewModel.toolbarTitleText.set("工作模式")
+        binding.llToolbar.toolbar.title = "工作模式"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }

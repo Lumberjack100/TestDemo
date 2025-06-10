@@ -70,7 +70,7 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdSerialPortParamBinding
-        toolbarViewModel.toolbarTitleText.set("端口配置")
+        binding.llToolbar.toolbar.title = "端口配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }

@@ -37,7 +37,7 @@
             android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_reset"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
             <androidx.core.widget.NestedScrollView
@@ -47,37 +47,39 @@
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingBottom="@dimen/dimen_size_25">
+                    android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                    android:paddingTop="@dimen/page_content_container_padding_top_12"
+                    android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="@dimen/dimen_size_10"
-                        android:layout_marginStart="@dimen/dimen_size_20"
-                        android:text="收发设置"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_16"
-                        android:textStyle="bold" />
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="14dp"
+                            android:background="@color/black" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_GroupItem_Title_Style2"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:text="收发设置" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onReceiveChannelChooseClick()}"
-                        android:layout_marginTop="@dimen/dimen_size_1"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="广播接收频点" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
-                            textViewEnabled="@{stateVM.isEditable }"
-
                             android:text="@{stateVM.receiveChannel}"
                             tools:text="410.00MHz" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -85,19 +87,14 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onSendChannelChooseClick()}"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="广播发射频点" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
-                            textViewEnabled="@{stateVM.isEditable }"
-
                             android:text="@{stateVM.sendChannel}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -105,19 +102,14 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onTransmitPowerChooseClick()}"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="发射功率" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
-                            textViewEnabled="@{stateVM.isEditable }"
-
                             android:text="@{stateVM.transmitPower}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -125,32 +117,33 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onAirSpeedChooseClick()}"
-                        android:background="@drawable/layer_common_click_item_with_divider"
-                        android:enabled="@{stateVM.isEditable }">
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="空中速率" />
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
-                            textViewEnabled="@{stateVM.isEditable }"
-
                             android:text="@{stateVM.airSpeed}"
                             tools:text="5" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginVertical="@dimen/dimen_size_10"
-                        android:layout_marginStart="@dimen/dimen_size_20"
-                        android:text="测站节点设置"
-                        android:textColor="@color/title_text_color"
-                        android:textSize="@dimen/text_size_16"
-                        android:textStyle="bold" />
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="14dp"
+                            android:background="@color/black" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_GroupItem_Title_Style2"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:text="测站节点设置" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
@@ -158,13 +151,10 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站1编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode1}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
                             app:lengthFilter="@{16}" />
@@ -177,13 +167,10 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站2编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode2}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
                             app:lengthFilter="@{16}" />
@@ -196,13 +183,10 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站3编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode3}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
                             app:lengthFilter="@{16}" />
@@ -215,13 +199,10 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站4编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode4}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
                             app:lengthFilter="@{16}" />
@@ -233,13 +214,10 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
                             android:text="测站5编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
-
-                            textViewEnabled="@{stateVM.isEditable}"
                             android:text="@={stateVM.telemetryStationNode5}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
                             app:lengthFilter="@{16}" />
@@ -251,13 +229,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
+
                             android:text="测站6编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
 
-                            textViewEnabled="@{stateVM.isEditable}"
+
                             android:text="@={stateVM.telemetryStationNode6}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
                             app:lengthFilter="@{16}" />
@@ -269,13 +247,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
+
                             android:text="测站7编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
 
-                            textViewEnabled="@{stateVM.isEditable}"
+
                             android:text="@={stateVM.telemetryStationNode7}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
                             app:lengthFilter="@{16}" />
@@ -287,13 +265,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
+
                             android:text="测站8编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
 
-                            textViewEnabled="@{stateVM.isEditable}"
+
                             android:text="@={stateVM.telemetryStationNode8}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
                             app:lengthFilter="@{16}" />
@@ -305,13 +283,13 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
+
                             android:text="测站9编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
 
-                            textViewEnabled="@{stateVM.isEditable}"
+
                             android:text="@={stateVM.telemetryStationNode9}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
                             app:lengthFilter="@{16}" />
@@ -323,46 +301,35 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEditable }"
+
                             android:text="测站10编号" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
 
-                            textViewEnabled="@{stateVM.isEditable}"
+
                             android:text="@={stateVM.telemetryStationNode10}"
                             app:inputTypeFilter='@{@string/lora_station_node_edittext_input_filter}'
                             app:lengthFilter="@{16}" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_reset"
+                        style="@style/ResetButton_Style2"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:onClick="@{()->click.onResetClick()}"
+                        android:text="@string/button_reset_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_confirm"
+                        style="@style/SubmitButton_Style2"
+                        onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                        android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                        android:enabled="@{stateVM.isDataModified}"
+                        android:text="@string/button_save_text" />
+
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>
         </com.drake.brv.PageRefreshLayout>
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_reset"
-            style="@style/ResetButton_Style"
-            onClickWithDebouncing="@{()->click.onResetClick()}"
-            visible="@{stateVM.isEditable }"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="35dp"
-            android:text="@string/button_reset_text"
-            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/refreshLayout" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_Style"
-            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-            visible="@{stateVM.isEditable }"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="55dp"
-            android:text="@string/button_save_text"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_reset" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

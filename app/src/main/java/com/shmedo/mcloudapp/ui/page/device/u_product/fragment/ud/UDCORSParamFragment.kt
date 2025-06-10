@@ -71,7 +71,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdCorsParamBinding
-        toolbarViewModel.toolbarTitleText.set("海拔配置")
+        binding.llToolbar.toolbar.title = "海拔配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }

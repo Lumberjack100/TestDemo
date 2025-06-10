@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/gw_graph"
+    app:startDestination="@id/gWHomeFragment">
+
+    <include app:graph="@navigation/include_lora_graph" />
+    <include app:graph="@navigation/include_ble_command_debug_graph" />
+
+    <fragment
+        android:id="@+id/gWHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.gw.GWHomeFragment"
+        android:label="GWHomeFragment"
+        tools:layout="@layout/fragment_universal_device_home" />
+
+    <fragment
+        android:id="@+id/gWBaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.gw.GWBaseInfoFragment"
+        android:label="GWBaseInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
+        android:id="@+id/radioSettingsFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.ChongQingRadioSettingsFragment"
+        android:label="RadioSettingsFragment"
+        tools:layout="@layout/fragment_chongqing_radio_settings" />
+
+    <fragment
+        android:id="@+id/advancedSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.BaseAdvancedSettingFragment"
+        android:label="BaseAdvancedSettingFragment"
+        tools:layout="@layout/fragment_advanced_setting" />
+
+    <action
+        android:id="@+id/action_global_to_gWBaseInfoFragment"
+        app:destination="@id/gWBaseInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_radioSettingsFragment"
+        app:destination="@id/radioSettingsFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_loraSettingFragment"
+        app:destination="@id/lora_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_advancedSettingFragment"
+        app:destination="@id/advancedSettingFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_commandDebug"
+        app:destination="@id/ble_command_debug_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+</navigation>

@@ -51,7 +51,7 @@ class M50SatelliteInfoFragment : BaseIOTDeviceFragment() {
         registerOnBackPressedDispatcher {
             nav().navigateUp()
         }
-        toolbarViewModel.toolbarTitleText.set("卫星信息")
+        binding.llToolbar.toolbar.title = "卫星信息"
     }
 
     inner class ClickProxy : BaseClickProxy() {

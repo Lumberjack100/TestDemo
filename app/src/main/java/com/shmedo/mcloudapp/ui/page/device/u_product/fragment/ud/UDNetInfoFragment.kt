@@ -37,7 +37,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        toolbarViewModel.toolbarTitleText.set("网络信息")
+        binding.llToolbar.toolbar.title = "网络信息"
     }
 
     override fun queryStatusInfo() {
@@ -167,7 +167,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             textColorRes = if (enableStatus == "0" || onlineStatus == "未连接") 0 else ColorUtils.getColor(
                                 R.color.online_colorPrimary
                             ),
-                            isBottomItem = true
+                            isBottomItem = index == onlineStatusList.size - 1
                         )
                     }
                 }

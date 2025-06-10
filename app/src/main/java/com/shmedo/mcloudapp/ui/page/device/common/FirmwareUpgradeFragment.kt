@@ -71,7 +71,7 @@ class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        toolbarViewModel.toolbarTitleText.set("固件升级")
+        binding.llToolbar.toolbar.title = "固件升级"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()

@@ -118,7 +118,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
      * 初始化默认参数
      */
     private fun resetDefaultParams() {
-        toolbarViewModel.toolbarTitleText.set(statusItem.name.replace("数据", "") + "配置")
+        binding.llToolbar.toolbar.title = statusItem.name.replace("数据", "") + "配置"
         mStates.isEditable.set(true)
         mStates.isCenterOpened.set(statusItem.status != "0")
         mStates.isDataTypeVisible.set(

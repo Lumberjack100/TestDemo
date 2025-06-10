@@ -90,7 +90,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentAdvancedSettingBinding
-        toolbarViewModel.toolbarTitleText.set("系统配置")
+        binding.llToolbar.toolbar.title = "系统配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }
@@ -147,12 +147,14 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         }
 
         if (communicateWay is NetPlatformConnect) {
-            moduleList.add(
-                AdvancedSettingItem(
-                    "固件升级",
-                    AdvancedSettingItem.Type.FIRMWARE,
+            if (productType != ProductType.COLLECTOR_G_0) {
+                moduleList.add(
+                    AdvancedSettingItem(
+                        "固件升级",
+                        AdvancedSettingItem.Type.FIRMWARE,
+                    )
                 )
-            )
+            }
         }
 
         moduleList.add(
@@ -172,12 +174,15 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         }
 
         if (communicateWay is BleConnect) {
-            moduleList.add(
-                AdvancedSettingItem(
-                    "远程调试",
-                    AdvancedSettingItem.Type.REMOTE_DEBUG,
+            if (productType != ProductType.COLLECTOR_G_0) {
+                moduleList.add(
+                    AdvancedSettingItem(
+                        "远程调试",
+                        AdvancedSettingItem.Type.REMOTE_DEBUG,
+                    )
                 )
-            )
+            }
+
             if (productType == ProductType.U_I_1) {
                 moduleList.add(
                     AdvancedSettingItem(
@@ -192,9 +197,11 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
     }
 
     private fun isNeedSyncLocation(): Boolean {
-        return communicateWay is BleConnect && (productType == ProductType.LR200
-                || productType == ProductType.LB20S
-                || productType == ProductType.U_R_1 || productType == ProductType.U_I_1)
+        return communicateWay is BleConnect &&
+                (productType == ProductType.LR200
+                        || productType == ProductType.LB20S
+                        || productType == ProductType.U_R_1
+                        || productType == ProductType.U_I_1)
     }
 
     /**

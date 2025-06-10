@@ -77,7 +77,7 @@ class CommonSensorDataHistoryFragment : BaseFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentCommonSensorDataHistoryBinding
-        toolbarViewModel.toolbarTitleText.set("历史数据")
+        binding.llToolbar.toolbar.title = "历史数据"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             nav().navigateUp()
         }

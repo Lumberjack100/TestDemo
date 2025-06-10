@@ -20,6 +20,7 @@ import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.lb20s.LB20SCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
@@ -96,7 +97,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
         registerOnBackPressedDispatcher {
             nav().navigateUp()
         }
-        toolbarViewModel.toolbarTitleText.set("位置")
+        binding.llToolbar.toolbar.title = "位置信息"
         setUpMap()
     }
 
@@ -324,6 +325,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
 
                         when (productType) {
                             ProductType.GNSS_M_5 -> initM50StatusInfo(result.data)
+                            ProductType.LB20S -> initLB20StatusInfo(result.data)
                             else -> initCommonStatusInfo(result.data)
                         }
                     }
@@ -411,6 +413,44 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                         gcjLatLng = CustomLatLng(latitude, longitude).toGcj02LatLng().apply {
                             addMarker(this)
                         }
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
+    private fun initLB20StatusInfo(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val dataMap = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<Map<String, LB20SCurrentStateInfo>>(content)
+                }
+                if (dataMap.isNullOrEmpty()) {
+                    return@launchWithViewLifecycle
+                }
+                val stateInfo = dataMap["000_1"]
+                if (stateInfo == null) {
+                    return@launchWithViewLifecycle
+                }
+                stateInfo.location.split(",".toRegex()).dropLastWhile { it.isEmpty() }.let {
+                    if (it.size >= 2) {
+                        mStates.longitude.set("E ${it[0].replace("E", "")}°")
+                        mStates.latitude.set("N ${it[1].replace("N", "")}°")
+
+                        var longitude =
+                            it[0].replace("E", "").toDoubleOrNull() ?: 121.59840681
+                        var latitude =
+                            it[1].replace("N", "").toDoubleOrNull() ?: 31.21032874
+                        if (longitude < 1) longitude = 121.59840681
+                        if (latitude < 1) latitude = 31.21032874
+
+                        gcjLatLng =
+                            CustomLatLng(latitude, longitude).toGcj02LatLng().apply {
+                                addMarker(this)
+                            }
                     }
                 }
             } catch (e: Exception) {

@@ -48,7 +48,7 @@ class FollowDeviceListFragment : BaseFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentFollowDeviceListBinding
-        toolbarViewModel.toolbarTitleText.set("我的收藏")
+        binding.llToolbar.toolbar.title = "我的收藏"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }

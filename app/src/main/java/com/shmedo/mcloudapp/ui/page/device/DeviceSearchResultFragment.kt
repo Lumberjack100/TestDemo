@@ -128,7 +128,7 @@ class DeviceSearchResultFragment : BaseFragment() {
         arguments?.let {
             keyWord = it.getString(AppContants.Extras.DEVICE_SEARCH_KEYWORD, "")
             statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
-            toolbarViewModel.toolbarTitleText.set(keyWord)
+            binding.llToolbar.toolbar.title = keyWord
         }
     }
 

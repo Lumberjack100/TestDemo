@@ -45,7 +45,7 @@ class CompanyHomeFragment : BaseFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentCompanyHomeBinding
-        toolbarViewModel.toolbarTitleText.set("企业详情")
+        binding.llToolbar.toolbar.title = "企业详情"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()

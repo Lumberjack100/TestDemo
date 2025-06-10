@@ -67,7 +67,7 @@ class CapturedPictureViewFragment : BaseFragment() {
     }
 
     private fun initToolbar() {
-        toolbarViewModel.toolbarTitleText.set("返回")
+        binding.llToolbar.toolbar.title = "返回"
         binding.llToolbar.toolbar.apply {
             setNavigationOnClickListener { nav().navigateUp() }
         }

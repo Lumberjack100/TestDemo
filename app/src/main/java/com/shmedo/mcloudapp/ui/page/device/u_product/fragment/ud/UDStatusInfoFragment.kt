@@ -31,7 +31,7 @@ class UDStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         super.initView(savedInstanceState)
-        toolbarViewModel.toolbarTitleText.set("状态信息")
+        binding.llToolbar.toolbar.title = "状态信息"
     }
 
     override fun queryStatusInfo() {
@@ -147,7 +147,7 @@ class UDStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
                 groupList.add(
                     DeviceStatusInfoGroupItem(
-                        "模块信息", bgColorRes = ColorUtils.getColor(R.color.main_bg_gray)
+                        "模块信息"
                     )
                 )
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
