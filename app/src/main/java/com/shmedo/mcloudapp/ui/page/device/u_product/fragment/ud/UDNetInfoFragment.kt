@@ -167,7 +167,7 @@ class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             textColorRes = if (enableStatus == "0" || onlineStatus == "未连接") 0 else ColorUtils.getColor(
                                 R.color.online_colorPrimary
                             ),
-                            isBottomItem = true
+                            isBottomItem = index == onlineStatusList.size - 1
                         )
                     }
                 }

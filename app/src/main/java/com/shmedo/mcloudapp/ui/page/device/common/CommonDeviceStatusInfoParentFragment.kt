@@ -10,8 +10,6 @@ import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.deviceinfo.BleDasSen
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.deviceinfo.DasBaseInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.deviceinfo.DasCommunicationInfoFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.deviceinfo.DasSensorInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.lb20s.fragment.deviceinfo.LB20SBaseInfoFragment
-import com.shmedo.mcloudapp.ui.page.device.lb20s.fragment.deviceinfo.LB20SGatewayInfoFragment
 
 /**
  * 创建者：gonghe
@@ -64,30 +62,6 @@ class CommonDeviceStatusInfoParentFragment : BaseDeviceStatusInfoParentFragment(
                     if (communicateWay is BleConnect) BleDasSensorInfoFragment.newInstance().apply {
                         arguments = bundle
                     } else DasSensorInfoFragment.newInstance().apply { arguments = bundle }
-                )
-            }
-
-            ProductType.LB20S -> {//预警广播
-                fragmentList.add(
-                    LB20SBaseInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
-                )
-                fragmentList.add(
-                    CommonCommunicationInfoFragment.newInstance().apply {
-                        arguments = CommonCommunicationInfoFragment.newBundleArguments(
-                            centerNum = 3,
-                            productType,
-                            communicateWay,
-                            deviceInfo,
-                            bleDevice,
-                        )
-                    }
-                )
-                fragmentList.add(
-                    LB20SGatewayInfoFragment.newInstance().apply {
-                        arguments = bundle
-                    }
                 )
             }
 

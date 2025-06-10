@@ -107,7 +107,6 @@ enum class ProductType(
         description = "自供电版"
     ),
 
-
     //GNSS产品线 T(抗干扰)
     GNSS_T_1(
         prefix = "",

@@ -159,7 +159,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                             textColorRes = if (status == "0" || statusText == "未连接") 0 else ColorUtils.getColor(
                                 R.color.online_colorPrimary
                             ),
-                            isBottomItem = true
+                            isBottomItem = index == onlineStatusList.size - 1
                         )
                     }
                 }

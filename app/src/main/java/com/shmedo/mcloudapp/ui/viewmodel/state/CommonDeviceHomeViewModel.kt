@@ -7,11 +7,11 @@ import com.shmedo.mcloudapp.model.DeviceStatusEnum
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 open class CommonDeviceHomeViewModel : ViewModel() {
-    val productErrorResId = NonNullObservableField(R.drawable.ic_device_logo_def)
-    val productAlarmResId = NonNullObservableField(R.drawable.ic_device_logo_def)
-    val productOfflineResId = NonNullObservableField(R.drawable.ic_device_logo_def)
-    val productNormalResId = NonNullObservableField(R.drawable.ic_device_logo_def)
-    val productLogoResId = NonNullObservableField(R.drawable.ic_device_logo_def)
+    val productErrorResId = NonNullObservableField(R.drawable.device_logo_default_error)
+    val productAlarmResId = NonNullObservableField(R.drawable.device_logo_default_alarm)
+    val productOfflineResId = NonNullObservableField(R.drawable.device_logo_default_offline)
+    val productNormalResId = NonNullObservableField(R.drawable.device_logo_default)
+    val productLogoResId = NonNullObservableField(R.drawable.device_logo_default)
 
     val productName = NonNullObservableField("")
     val productToken = NonNullObservableField("")

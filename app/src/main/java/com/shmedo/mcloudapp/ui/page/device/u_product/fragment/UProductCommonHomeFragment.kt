@@ -347,22 +347,6 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
             }
         }
 
-        fun onGotoLocationClick() {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return
-            }
-            nav().safeNavigate(
-                R.id.action_global_to_commonLocationInfoFragment,
-                newBundleArguments(
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-            )
-        }
-
         fun onGoToSensorDataHistoryClick() {
             nav().safeNavigate(
                 R.id.action_global_to_commonSensorDataHistoryFragment,
