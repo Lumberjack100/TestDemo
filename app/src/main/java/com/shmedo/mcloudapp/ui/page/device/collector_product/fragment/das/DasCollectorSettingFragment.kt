@@ -1,13 +1,13 @@
-package com.shmedo.mcloudapp.ui.page.device.das.fragment
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.das.DasCollectorEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -19,20 +19,19 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.databinding.FragmentDasCollectorSettingBinding
+import com.shmedo.mcloudapp.extensions.formatDoubleValue
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.databinding.FragmentDasCollectorSettingBinding
-import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasCollectorSettingViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
 
 /**
  * @author：gonghe
@@ -42,16 +41,13 @@ import java.util.Locale
  */
 class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasCollectorSettingBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: DasCollectorSettingViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: DasCollectorSettingViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
-    val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -68,12 +64,10 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentDasCollectorSettingBinding
         binding.llToolbar.toolbar.title = "采集器参数"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         registerOnBackPressedDispatcher {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
         initRefresh()
     }
@@ -90,19 +84,28 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun setEditable(editable: Boolean) {
-        toolbarViewModel.toolbarIvActionVisible.set(!editable)
-        toolbarViewModel.toolbarTvActionVisible.set(editable)
-        mStates.isEditable.set(editable)
+    override fun initData() {
+        super.initData()
+        resetDefaultParams()
+        // 保存初始状态
+        mStates.saveInitialState()
+    }
+
+    private fun resetDefaultParams() {
+        mStates.isShowSensitivity.set(false)
+        mStates.collectorAddress.set("")
+        mStates.solvingInterval.set("")
+        mStates.standbyTime.set("")
+        mStates.collectionInterval.set("")
+        mStates.sensitivity.set("")
     }
 
     inner class ClickProxy : BaseClickProxy() {
-        override fun onToolbarIvClick() {
-            setEditable(true)
-        }
-
-        override fun onToolbarTvClick() {
-            setEditable(false)
+        /**
+         * 恢复默认配置
+         */
+        override fun onResetButtonClick() {
+            resetDefaultParams()
         }
 
         override fun onSubmitButtonClick() {
@@ -160,13 +163,14 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
         }
 
         val entity = DasCollectorEntity(
-            type = mStates.infoWrapper.get().type,
+            type = mStates.type.get(),
             addr = mStates.collectorAddress.get(),
             collgap = mStates.collectionInterval.get(),
             calcgap = mStates.solvingInterval.get(),
             standbygap = mStates.standbyTime.get(),
             sensitivity = if (mStates.isShowSensitivity.get()) mStates.sensitivity.get() else IOTConstants.NULL_KEY
         )
+
         commandItems.clear()
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL,
@@ -192,6 +196,59 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = "设备未响应"
+        )
+    }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL -> {
@@ -203,8 +260,6 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Failure -> {
                         val errMsg = "查询采集器参数出错: ${result.message}"
                         handleFailureResult(errMsg)
-                        //设备版本不支持，隐藏编辑按钮
-                        toolbarViewModel.toolbarIvActionVisible.set(!errMsg.contains("设备版本不支持"))
                         return
                     }
 
@@ -241,22 +296,30 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
 
     private fun initParamData(collectorInfo: DasCollectorInfo) {
         try {
-            mStates.infoWrapper.set(collectorInfo)
+            mStates.type.set(collectorInfo.type)
             mStates.collectorAddress.set(collectorInfo.addr)
             mStates.solvingInterval.set(collectorInfo.calcgap)
             mStates.standbyTime.set(collectorInfo.standbygap)
             mStates.collectionInterval.set(collectorInfo.collgap)
-            mStates.sensitivity.set(collectorInfo.sensitivity)
+
             mStates.isShowSensitivity.set(collectorInfo.sensitivity != IOTConstants.NULL_KEY)
-            if (mStates.isShowSensitivity.get()) {
-                collectorInfo.sensitivity.toDoubleOrNull()?.let {
-                    mStates.sensitivity.set(decimalFormat.format(it))
-                }
+            collectorInfo.sensitivity.notNullKey {
+                mStates.sensitivity.set(it.formatDoubleValue("", 1))
             }
+            // 保存初始状态
+            mStates.saveInitialState()
         } catch (e: Exception) {
-            Timber.e(e)
+            Timber.Forest.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
+    }
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
     }
 
     override fun onResume() {

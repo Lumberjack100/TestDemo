@@ -50,7 +50,7 @@
 
     <fragment
         android:id="@+id/dasCollectorSettingFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.DasCollectorSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasCollectorSettingFragment"
         android:label="DasCollectorSettingFragment"
         tools:layout="@layout/fragment_das_collector_setting" />
 

@@ -333,12 +333,10 @@ class BleDasCollectorSettingFragment : BaseIOTDeviceFragment() {
 
     private fun initCollectorInfo(collectorInfo: DasCollectorInfo) {
         try {
-            mStates.infoWrapper.set(collectorInfo)
             mStates.collectorAddress.set(collectorInfo.addr)
             mStates.solvingInterval.set(collectorInfo.calcgap)
             mStates.standbyTime.set(collectorInfo.standbygap)
             mStates.collectionInterval.set(collectorInfo.collgap)
-            mStates.sensitivity.set(collectorInfo.sensitivity)
             mStates.isShowSensitivity.set(collectorInfo.sensitivity != IOTConstants.NULL_KEY)
             if (mStates.isShowSensitivity.get()) {
                 collectorInfo.sensitivity.toDoubleOrNull()?.let {

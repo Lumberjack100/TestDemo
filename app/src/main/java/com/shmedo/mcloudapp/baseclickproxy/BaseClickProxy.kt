@@ -32,6 +32,10 @@ open class BaseClickProxy {
 
     }
 
+    open fun onResetButtonClick() {
+
+    }
+
     open fun onSubmitButtonClick() {
 
     }
