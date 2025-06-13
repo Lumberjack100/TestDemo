@@ -89,7 +89,7 @@ class DasAdvancedSettingFragment : BaseIOTDeviceFragment() {
                 deviceInfo,
                 bleDevice
             )
-            nav().safeNavigate(R.id.action_dasAdvancedSettingFragment_to_dasAudibleAlarmFragment, bundle)
+            nav().safeNavigate(R.id.action_global_to_dasAudibleAlarmFragment, bundle)
         }
     }
 

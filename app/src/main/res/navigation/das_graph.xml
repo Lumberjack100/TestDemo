@@ -7,46 +7,28 @@
 
     <include app:graph="@navigation/include_query_data_graph" />
     <include app:graph="@navigation/include_common_running_device_info_graph" />
+
+    <include app:graph="@navigation/include_time_calibration_graph" />
     <include app:graph="@navigation/include_firmware_upgrade_graph" />
+
 
     <fragment
         android:id="@+id/dasHomeFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.DasHomeFragment"
         android:label="DasHomeFragment"
-        tools:layout="@layout/fragment_universal_device_home">
+        tools:layout="@layout/fragment_universal_device_home" />
 
-        <action
-            android:id="@+id/action_dasHomeFragment_to_dasCollectorSettingFragment"
-            app:destination="@id/dasCollectorSettingFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
+    <fragment
+        android:id="@+id/dasBaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasBaseInfoFragment"
+        android:label="DasBaseInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
 
-        <action
-            android:id="@+id/action_dasHomeFragment_to_dasTerminalParameterFragment"
-            app:destination="@id/dasTerminalParameterFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_dasHomeFragment_to_dasDataCenterHomeFragment"
-            app:destination="@id/dasDataCenterHomeFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_dasHomeFragment_to_dasSensorHomeFragment"
-            app:destination="@id/dasSensorHomeFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-    </fragment>
+    <fragment
+        android:id="@+id/dasNetInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasNetInfoFragment"
+        android:label="DasNetInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
         android:id="@+id/dasCollectorSettingFragment"
@@ -55,26 +37,10 @@
         tools:layout="@layout/fragment_das_collector_setting" />
 
     <fragment
-        android:id="@+id/dasTerminalParameterFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.DasTerminalParameterFragment"
-        android:label="DasTerminalParameterFragment"
-        tools:layout="@layout/fragment_das_terminal_parameter" />
-
-    <fragment
         android:id="@+id/dasDataCenterHomeFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.DasDataCenterHomeFragment"
         android:label="DasDataCenterHomeFragment"
-        tools:layout="@layout/fragment_das_data_center_home">
-
-        <action
-            android:id="@+id/action_dasDataCenterHomeFragment_to_dataCenterParamFragment"
-            app:destination="@id/dataCenterParamFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-    </fragment>
+        tools:layout="@layout/fragment_das_data_center_home" />
 
     <fragment
         android:id="@+id/dataCenterParamFragment"
@@ -83,27 +49,16 @@
         tools:layout="@layout/fragment_data_center_param" />
 
     <fragment
+        android:id="@+id/dasTerminalParameterFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.DasTerminalParameterFragment"
+        android:label="DasTerminalParameterFragment"
+        tools:layout="@layout/fragment_das_terminal_parameter" />
+
+    <fragment
         android:id="@+id/dasSensorHomeFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.DasSensorHomeFragment"
         android:label="DasSensorHomeFragment"
-        tools:layout="@layout/fragment_das_sensor_home">
-
-        <action
-            android:id="@+id/action_dasSensorHomeFragment_to_dasExternalDigitalSensorFragment"
-            app:destination="@id/dasExternalDigitalSensorFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-
-        <action
-            android:id="@+id/action_dasSensorHomeFragment_to_dasExternalVibratingSensorFragment"
-            app:destination="@id/dasExternalVibratingSensorFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-    </fragment>
+        tools:layout="@layout/fragment_das_sensor_home" />
 
     <fragment
         android:id="@+id/dasExternalDigitalSensorFragment"
@@ -121,16 +76,7 @@
         android:id="@+id/dasAdvancedSettingFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.DasAdvancedSettingFragment"
         android:label="DasAdvancedSettingFragment"
-        tools:layout="@layout/fragment_das_advanced_setting">
-
-        <action
-            android:id="@+id/action_dasAdvancedSettingFragment_to_dasAudibleAlarmFragment"
-            app:destination="@id/dasAudibleAlarmFragment"
-            app:enterAnim="@anim/activity_open_enter"
-            app:exitAnim="@anim/activity_open_exit"
-            app:popEnterAnim="@anim/activity_close_enter"
-            app:popExitAnim="@anim/activity_close_exit" />
-    </fragment>
+        tools:layout="@layout/fragment_das_advanced_setting" />
 
     <fragment
         android:id="@+id/dasAudibleAlarmFragment"
@@ -145,6 +91,7 @@
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
+
     <action
         android:id="@+id/action_global_to_commonRunningDeviceInfoFragment"
         app:destination="@id/common_running_device_info_graph"
@@ -152,6 +99,79 @@
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_dasBaseInfoFragment"
+        app:destination="@id/dasBaseInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_dasNetInfoFragment"
+        app:destination="@id/dasNetInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_dasCollectorSettingFragment"
+        app:destination="@id/dasCollectorSettingFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_dasDataCenterHomeFragment"
+        app:destination="@id/dasDataCenterHomeFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_dataCenterParamFragment"
+        app:destination="@id/dataCenterParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_dasTerminalParameterFragment"
+        app:destination="@id/dasTerminalParameterFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_dasSensorHomeFragment"
+        app:destination="@id/dasSensorHomeFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_dasExternalDigitalSensorFragment"
+        app:destination="@id/dasExternalDigitalSensorFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_dasExternalVibratingSensorFragment"
+        app:destination="@id/dasExternalVibratingSensorFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
     <action
         android:id="@+id/action_global_to_firmwareUpgradeFragment"
         app:destination="@id/firmware_upgrade_graph"
@@ -159,9 +179,18 @@
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
         app:popExitAnim="@anim/activity_close_exit" />
+
     <action
         android:id="@+id/action_global_to_dasAdvancedSettingFragment"
         app:destination="@id/dasAdvancedSettingFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_dasAudibleAlarmFragment"
+        app:destination="@id/dasAudibleAlarmFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

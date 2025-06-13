@@ -142,7 +142,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 bleDevice
                             )
                             nav().safeNavigate(
-                                R.id.action_bleDasSensorHomeFragment_to_bleDasExternalDigitalSensorFragment,
+                                R.id.action_global_to_bleDasExternalDigitalSensorFragment,
                                 bundle
                             )
                         } else {
@@ -155,7 +155,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 bleDevice,
                             )
                             nav().safeNavigate(
-                                R.id.action_bleDasSensorHomeFragment_to_bleDasExternalVibratingSensorFragment,
+                                R.id.action_global_to_bleDasExternalVibratingSensorFragment,
                                 bundle
                             )
                         }
@@ -173,7 +173,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 bleDevice = bleDevice,
                             )
                             nav().safeNavigate(
-                                R.id.action_bleDasSensorHomeFragment_to_bleDasExternalDigitalSensorFragment,
+                                R.id.action_global_to_bleDasExternalDigitalSensorFragment,
                                 bundle
                             )
                         } else {
@@ -186,7 +186,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 bleDevice,
                             )
                             nav().safeNavigate(
-                                R.id.action_bleDasSensorHomeFragment_to_bleDasExternalVibratingSensorFragment,
+                                R.id.action_global_to_bleDasExternalVibratingSensorFragment,
                                 bundle
                             )
                         }

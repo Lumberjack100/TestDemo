@@ -111,11 +111,9 @@ class GWBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 } ?: return@launchWithViewLifecycle
 
                 if (commonCurrentStateInfoList.isEmpty()) {
-                    binding.refreshLayout.showEmpty()
                     return@launchWithViewLifecycle
                 }
                 val stateInfo = commonCurrentStateInfoList[0]
-                binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
 
                 groupList.add(DeviceStatusInfoGroupItem("设备信息"))

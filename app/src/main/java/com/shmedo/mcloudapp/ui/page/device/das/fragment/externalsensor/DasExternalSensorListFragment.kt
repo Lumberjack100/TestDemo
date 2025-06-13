@@ -112,7 +112,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 bleDevice
                             )
                             nav().safeNavigate(
-                                R.id.action_dasSensorHomeFragment_to_dasExternalDigitalSensorFragment,
+                                R.id.action_global_to_dasExternalDigitalSensorFragment,
                                 bundle
                             )
                         } else {
@@ -125,7 +125,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 bleDevice,
                             )
                             nav().safeNavigate(
-                                R.id.action_dasSensorHomeFragment_to_dasExternalVibratingSensorFragment,
+                                R.id.action_global_to_dasExternalVibratingSensorFragment,
                                 bundle
                             )
                         }
@@ -143,7 +143,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 bleDevice = bleDevice,
                             )
                             nav().safeNavigate(
-                                R.id.action_dasSensorHomeFragment_to_dasExternalDigitalSensorFragment,
+                                R.id.action_global_to_dasExternalDigitalSensorFragment,
                                 bundle
                             )
                         } else {
@@ -156,7 +156,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 bleDevice,
                             )
                             nav().safeNavigate(
-                                R.id.action_dasSensorHomeFragment_to_dasExternalVibratingSensorFragment,
+                                R.id.action_global_to_dasExternalVibratingSensorFragment,
                                 bundle
                             )
                         }

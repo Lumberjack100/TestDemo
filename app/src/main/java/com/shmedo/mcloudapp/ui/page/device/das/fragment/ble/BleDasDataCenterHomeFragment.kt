@@ -101,7 +101,7 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
                     bleDevice
                 )
                 nav().safeNavigate(
-                    R.id.action_bleDasDataCenterHomeFragment_to_bleDataCenterParamFragment,
+                    R.id.action_global_to_bleDataCenterParamFragment,
                     bundle
                 )
             }

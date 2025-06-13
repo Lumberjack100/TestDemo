@@ -59,7 +59,6 @@ class MR702NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     private fun initBaseInfo(stateInfo: MRBaseInfo) {
         launchWithViewLifecycle {
             try {
-                binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
 
                 groupList.add(DeviceStatusInfoGroupItem("数据网络"))
@@ -138,7 +137,7 @@ class MR702NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "数据链路3",
-                    value = status3,
+                    value = "$status3(米度物联平台)",
                     textColorRes = if (communicationData.status3 == "0" || status3 == "未连接") 0 else ColorUtils.getColor(
                         R.color.online_colorPrimary
                     )

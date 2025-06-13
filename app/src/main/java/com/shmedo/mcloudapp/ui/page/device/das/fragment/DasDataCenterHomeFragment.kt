@@ -105,7 +105,7 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
                     bleDevice
                 )
                 nav().safeNavigate(
-                    R.id.action_dasDataCenterHomeFragment_to_dataCenterParamFragment,
+                    R.id.action_global_to_dataCenterParamFragment,
                     bundle
                 )
             }
