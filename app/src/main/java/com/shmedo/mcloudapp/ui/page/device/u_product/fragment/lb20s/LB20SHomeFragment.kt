@@ -44,7 +44,6 @@ class LB20SHomeFragment : NewUniversalBaseDeviceHomeFragment() {
 
     override fun initModuleData() {
         val groupList = mutableListOf<Any>()
-        groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
         groupList.add(DeviceStatusInfoGroupItem("设备信息"))
         groupList.add(
             ConfigModuleTree(

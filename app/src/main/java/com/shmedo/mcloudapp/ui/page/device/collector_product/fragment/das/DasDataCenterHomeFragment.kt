@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.das.fragment
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 
 import android.os.Bundle
 import android.view.View
@@ -97,7 +97,7 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
             addType<DataCenterStatusItem>(R.layout.data_center_status_item)
             R.id.item.onClick {
                 val item = getModel<DataCenterStatusItem>()
-                val bundle = UniversalDataCenterParamFragment.newBundleArguments(
+                val bundle = UniversalDataCenterParamFragment.Companion.newBundleArguments(
                     item,
                     productType,
                     communicateWay,

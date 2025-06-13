@@ -8,6 +8,7 @@ import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
 import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasBaseInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasNetStatusInfo
@@ -240,6 +241,16 @@ class DasNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
             val groupList = mutableListOf<Any>()
 
             groupList.add(DeviceStatusInfoGroupItem("数据网络"))
+            DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
+                groupList,
+                name = "运营商",
+                value = when (baseInfo.isp) {
+                    "1" -> "中国移动"
+                    "2" -> "中国联通"
+                    "3" -> "中国电信"
+                    else -> AppContants.Companion.PLACE_HOLDER_VALUE
+                }
+            )
             baseInfo.csq.notNullKey {
                 var temp = it.toIntOrNull() ?: 0
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(

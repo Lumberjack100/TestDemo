@@ -60,7 +60,7 @@ class LR200StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "电池电量",
-                    value = stateInfo.volt_percent.ifEmpty { AppContants.PLACE_HOLDER_VALUE },
+                    value = stateInfo.volt_percent.replace("%", "").ifEmpty { AppContants.PLACE_HOLDER_VALUE },
                     unit = "%",
                     textColorRes = if (batteryCapacity > 25) 0 else ColorUtils.getColor(
                         R.color.warn_FF9D00

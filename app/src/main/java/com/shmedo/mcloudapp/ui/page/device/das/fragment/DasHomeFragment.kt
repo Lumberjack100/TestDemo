@@ -5,7 +5,6 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
-import com.shmedo.mcloudapp.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.model.CollectorConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
 import com.shmedo.mcloudapp.model.ConfigModule
@@ -35,7 +34,7 @@ class DasHomeFragment : UniversalDeviceHomeFragment() {
                     name = "关于设备",
                     desc = "设备基本信息、运行数据",
                     R.drawable.ic_device_running_info,
-                    navId = R.id.action_global_to_commonRunningDeviceInfoFragment
+                    navId = R.id.action_global_to_dasStatusInfoFragment
                 )
             )
         )
@@ -49,13 +48,13 @@ class DasHomeFragment : UniversalDeviceHomeFragment() {
             ConfigModule(RebootModule())
         )
         moduleList.add(
-            ConfigModule(CollectorConfigModule(navId = R.id.action_dasHomeFragment_to_dasCollectorSettingFragment))
+            ConfigModule(CollectorConfigModule(navId = R.id.action_global_to_dasNetInfoFragment))
         )
         moduleList.add(
-            ConfigModule(DataCenterModule(navId = R.id.action_dasHomeFragment_to_dasDataCenterHomeFragment))
+            ConfigModule(DataCenterModule(navId = R.id.action_global_to_dasDataCenterHomeFragment))
         )
         moduleList.add(
-            ConfigModule(SensorConfigModule(navId = R.id.action_dasHomeFragment_to_dasSensorHomeFragment))
+            ConfigModule(SensorConfigModule(navId = R.id.action_global_to_dasSensorHomeFragment))
         )
         moduleList.add(
             ConfigModule(
@@ -63,13 +62,11 @@ class DasHomeFragment : UniversalDeviceHomeFragment() {
                     name = "上报方式",
                     desc = "上报规则设置",
                     resID = R.drawable.ic_device_data_center,
-                    navId = R.id.action_dasHomeFragment_to_dasTerminalParameterFragment
+                    navId = R.id.action_global_to_dasTerminalParameterFragment
                 )
             )
         )
-        moduleList.add(
-            ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_dasAdvancedSettingFragment))
-        )
+
         binding.rvModule.models = moduleList
     }
 

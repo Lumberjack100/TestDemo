@@ -1,16 +1,17 @@
-package com.shmedo.mcloudapp.ui.page.device.das.fragment
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View
-import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.das.DasReportEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -18,31 +19,38 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasReportInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.databinding.FragmentDasTerminalParameterBinding
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.databinding.FragmentDasTerminalParameterBinding
-import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasTerminalParameterViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 import java.util.Locale
 
-class DasTerminalParameterFragment : BaseIOTDeviceFragment() {
+/**
+ * @author：gonghe
+ * @time: 2025/6/13
+ * @desc: 上报参数配置页面
+ *
+ */
+class DasReportConfigFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasTerminalParameterBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: DasTerminalParameterViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: DasTerminalParameterViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
     private val reportMethodList: MutableList<String> = arrayListOf("固定间隔上报", "定时定点上报")
 
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -53,23 +61,39 @@ class DasTerminalParameterFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentDasTerminalParameterBinding
-        binding.llToolbar.toolbar.title = "上报方式"
+        binding.llToolbar.toolbar.title = "上报配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
-            nav().navigateUp()
+            handleBackByCheckDataModified()
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
-                nav().navigateUp()
+        registerOnBackPressedDispatcher {
+            handleBackByCheckDataModified()
+        }
+        initRefresh()
+    }
+
+    private fun initRefresh() {
+        refreshLayout = binding.refreshLayout
+        binding.refreshLayout.setEnableLoadMore(false)
+        binding.refreshLayout.onRefresh {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return@onRefresh
             }
-        })
+            queryData()
+        }
     }
 
     override fun initData() {
         super.initData()
+        resetDefaultParams()
+        // 保存初始状态
+        mStates.saveInitialState()
+    }
+
+    private fun resetDefaultParams() {
         mStates.reportMethod.set(reportMethodList[0])
         mStates.startTime.set("0")
+        mStates.interval.set("")
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -84,11 +108,10 @@ class DasTerminalParameterFragment : BaseIOTDeviceFragment() {
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "", reportMethodList.toTypedArray(),
+                    "请选择上报方式", reportMethodList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.reportMethod.set(text)
-                        mStates.isStartTimeItemVisible.set(position == 1)
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -101,13 +124,22 @@ class DasTerminalParameterFragment : BaseIOTDeviceFragment() {
             TimePickerDialog(
                 mActivity,
                 { view, hourOfDay, minute ->
-                    val time = String.format(Locale.getDefault(), "%2d", hourOfDay)
+                    val time = String.Companion.format(Locale.getDefault(), "%2d", hourOfDay)
                     mStates.startTime.set(time)
                 }, 0, 0, true
             ).show()
         }
 
-        fun onSubmitClick() {
+
+        /**
+         * 恢复默认配置
+         */
+        override fun onResetButtonClick() {
+            resetDefaultParams()
+        }
+
+        override fun onSubmitButtonClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
@@ -145,7 +177,7 @@ class DasTerminalParameterFragment : BaseIOTDeviceFragment() {
     }
 
     override fun lazyLoadData() {
-        queryData()
+        binding.refreshLayout.autoRefresh()
     }
 
     private fun queryData() {
@@ -154,8 +186,60 @@ class DasTerminalParameterFragment : BaseIOTDeviceFragment() {
         val command = IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_DATA_REPORT_TYPE)
         commandItems.add(command)
 
-        showLoadingDialog(StringUtils.getString(R.string.loading))
         sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = "设备未响应"
+        )
     }
 
     override fun setResultData(cmdStr: String) {
@@ -167,30 +251,31 @@ class DasTerminalParameterFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询上报参数出错: ${result.message}"
+                        val errMsg = "查询参数出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
 
                     is IOTCommandResult.Success -> {
-                        sendCommandFromCmdList()
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
                         initReportMethod(result.data)
                     }
                 }
             }
 
             IOTCommandType.DAS_MD_SET_DATA_REPORT_TYPE -> {
-//                setEditable(false)
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "上报参数设置出错: ${result.message}"
+                        val errMsg = "数据保存出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -203,16 +288,29 @@ class DasTerminalParameterFragment : BaseIOTDeviceFragment() {
     }
 
     private fun initReportMethod(info: DasReportInfo) {
-        mStates.isStartTimeItemVisible.set(info.type.toInt() == 1)
-        mStates.reportMethod.set(
-            if (info.type.toInt() == 0) {
-                reportMethodList[0]
-            } else {
-                reportMethodList[1]
+        try {
+            info.type.toInt().let {
+                if (it in 0..reportMethodList.size - 1) {
+                    mStates.reportMethod.set(reportMethodList[it])
+                }
             }
-        )
-        mStates.startTime.set(info.timepoint)
-        mStates.interval.set(info.timegap)
+            mStates.startTime.set(info.timepoint)
+            mStates.interval.set(info.timegap)
+
+            // 保存初始状态
+            mStates.saveInitialState()
+        } catch (e: Exception) {
+            Timber.Forest.e(e)
+            addDeviceLogItem(Log.ERROR, e.errorMsg)
+        }
+    }
+
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
     }
 
     override fun onResume() {
