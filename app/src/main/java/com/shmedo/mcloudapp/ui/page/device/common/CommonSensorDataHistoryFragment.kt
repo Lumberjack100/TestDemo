@@ -218,9 +218,9 @@ class CommonSensorDataHistoryFragment : BaseFragment() {
                 )
                 modelValueDescList.addAll(
                     arrayListOf(
-                        "高度(m)",
-                        "高度(m)",
-                        "角度(°)",
+                        "高度（米）",
+                        "高度（米）",
+                        "角度（度）",
                         "操作"
                     )
                 )
@@ -248,8 +248,8 @@ class CommonSensorDataHistoryFragment : BaseFragment() {
                 )
                 modelValueDescList.addAll(
                     arrayListOf(
-                        "高度(mm)",
-                        "角度(°)"
+                        "高度（毫米）",
+                        "角度（度）"
                     )
                 )
                 modelFieldJsonPathList.addAll(
@@ -277,8 +277,8 @@ class CommonSensorDataHistoryFragment : BaseFragment() {
                 )
                 modelValueDescList.addAll(
                     arrayListOf(
-                        "高度(mm)",
-                        "角度(°)",
+                        "高度（毫米）",
+                        "角度（度）",
                         "操作"
                     )
                 )

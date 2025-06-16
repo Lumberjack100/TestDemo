@@ -306,27 +306,27 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                 -> {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
-                            name = "触发值(°)",
+                            name = "触发值（度）",
                             value = sensorInfo.threshold.formatDoubleValue("", 2)
                         )
                     )
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
-                            name = "X轴初始角度(°)",
+                            name = "X轴初始角度（度）",
                             value = sensorInfo.initvalx.formatDoubleValue("", 2),
                             desc = "初始值大于 360，设备将自动计算!"
                         )
                     )
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
-                            name = "Y轴初始角度(°)",
+                            name = "Y轴初始角度（度）",
                             value = sensorInfo.initvaly.formatDoubleValue("", 2),
                             desc = "初始值大于 360，设备将自动计算!"
                         )
                     )
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
-                            name = "Z轴初始角度(°)",
+                            name = "Z轴初始角度（度）",
                             value = sensorInfo.initvalz.formatDoubleValue("", 2),
                             desc = "初始值大于 360，设备将自动计算!"
                         )
@@ -337,13 +337,13 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                 -> {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
-                            name = "触发值(Hz)",
+                            name = "触发值（赫兹）",
                             value = sensorInfo.threshold.formatDoubleValue("", 2)
                         )
                     )
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
-                            name = "修正值(Hz)",
+                            name = "修正值（赫兹）",
                             value = sensorInfo.corrval.formatDoubleValue("", 2)
                         )
                     )
@@ -353,7 +353,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
                 -> {
                     groupList.add(
                         ExternalDigitalSensorParamEditItem(
-                            name = "触发值(m³/s)",
+                            name = "触发值（立方米/秒）",
                             value = sensorInfo.threshold.formatDoubleValue("", 3)
                         )
                     )

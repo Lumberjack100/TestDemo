@@ -28,7 +28,7 @@
             android:id="@+id/iv_device_logo"
             imageResId="@{stateVM.productLogoResId}"
             android:layout_width="90dp"
-            android:layout_height="70dp"
+            android:layout_height="80dp"
             tools:src="@drawable/device_logo_gt600" />
 
         <androidx.appcompat.widget.LinearLayoutCompat

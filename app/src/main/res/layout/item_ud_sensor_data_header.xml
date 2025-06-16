@@ -26,7 +26,7 @@
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="3.5"
+            android:layout_weight="3"
             android:gravity="center"
             android:text="时间"
             android:textColor="@color/title_text_color"
@@ -49,7 +49,7 @@
             android:gravity="center"
             android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_13"
-            tools:text="高度(m)" />
+            tools:text="高度（米）"/>
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_opt_name"
@@ -60,7 +60,7 @@
             android:textColor="@color/title_text_color"
             android:textSize="@dimen/text_size_13"
             android:visibility="visible"
-            tools:text="高度(m)" />
+            tools:text="高度（米）"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

@@ -687,7 +687,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                     name = "关于设备",
                     desc = "设备基本信息、运行数据",
                     resID = R.drawable.ic_device_running_info,
-                    navId = R.id.action_global_to_dasStatusInfoFragment
+                    navId = R.id.action_global_to_dasSensorInfoFragment
                 )
             )
         )

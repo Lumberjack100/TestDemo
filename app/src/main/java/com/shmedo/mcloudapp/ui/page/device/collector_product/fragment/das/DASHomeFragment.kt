@@ -66,10 +66,10 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
                     ),
                     ConfigModule(
                         CommonModule(
-                            name = "状态信息",
+                            name = "传感信息",
                             resID = R.drawable.ic_module_state_info,
                             iconSize = ConvertUtils.dp2px(34f),
-                            navId = R.id.action_global_to_dasStatusInfoFragment
+                            navId = R.id.action_global_to_dasSensorInfoFragment
                         )
                     ),
                     ConfigModule(

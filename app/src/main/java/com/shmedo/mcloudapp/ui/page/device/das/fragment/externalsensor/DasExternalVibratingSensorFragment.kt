@@ -192,7 +192,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
 
                     //初始温度，精确到小数点后两位
                     mStates.isExtension7Support.set(true)
-                    mStates.extension7Title.set("初始温度T0(℃)")
+                    mStates.extension7Title.set("初始温度T0（摄氏度）")
                     mStates.extension7Value.set("0")//默认值 0
                     decimalFormat.applyPattern("#.##")
                     sensorInfo.temp_t0.toDoubleOrNull()?.let {
@@ -257,7 +257,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
 
                     //初始温度，精确到小数点后两位
                     mStates.isExtension6Support.set(true)
-                    mStates.extension6Title.set("初始温度T0(℃)")
+                    mStates.extension6Title.set("初始温度T0（摄氏度）")
                     mStates.extension6Value.set("0")//默认值 0
                     decimalFormat.applyPattern("#.##")
                     sensorInfo.temp_t0.toDoubleOrNull()?.let {
@@ -323,7 +323,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
 
                     //初始温度，精确到小数点后两位
                     mStates.isExtension6Support.set(true)
-                    mStates.extension6Title.set("初始温度T0(℃)")
+                    mStates.extension6Title.set("初始温度T0（摄氏度）")
                     mStates.extension6Value.set("0")//默认值 0
                     decimalFormat.applyPattern("#.##")
                     sensorInfo.temp_t0.toDoubleOrNull()?.let {
@@ -375,7 +375,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
 
                     //初始温度，精确到小数点后两位
                     mStates.isExtension6Support.set(true)
-                    mStates.extension6Title.set("初始温度T0(℃)")
+                    mStates.extension6Title.set("初始温度T0（摄氏度）")
                     mStates.extension6Value.set("0")//默认值 0
                     decimalFormat.applyPattern("#.##")
                     sensorInfo.temp_t0.toDoubleOrNull()?.let {
@@ -416,7 +416,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
 
                         //初始温度，精确到小数点后两位
                         mStates.isExtension4Support.set(true)
-                        mStates.extension4Title.set("初始温度T0(℃)")
+                        mStates.extension4Title.set("初始温度T0（摄氏度）")
                         mStates.extension4Value.set("0")//默认值 0
                         decimalFormat.applyPattern("#.##")
                         sensorInfo.temp_t0.toDoubleOrNull()?.let {

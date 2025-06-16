@@ -200,12 +200,12 @@ class OldDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
                 IOTSensorType.LUYAN_INCLINOMETER //倾角仪
                 -> {
-                    mStates.triggerTitle.set("触发值(°)")
+                    mStates.triggerTitle.set("触发值（度）")
                     mStates.isCorrectSupport.set(false)
 
                     mStates.isExtension1Support.set(true)
                     mStates.isExtension1TipBtnSupport.set(true)
-                    mStates.extension1Title.set("X轴初始角度(°)")
+                    mStates.extension1Title.set("X轴初始角度（度）")
                     decimalFormat.applyPattern("#.#")
                     sensorInfo.initvalx.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
@@ -213,14 +213,14 @@ class OldDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
                     mStates.isExtension2Support.set(true)
                     mStates.isExtension2TipBtnSupport.set(true)
-                    mStates.extension2Title.set("Y轴初始角度(°)")
+                    mStates.extension2Title.set("Y轴初始角度（度）")
                     sensorInfo.initvaly.toDoubleOrNull()?.let {
                         mStates.extension2Value.set(decimalFormat.format(it))
                     }
 
                     mStates.isExtension3Support.set(true)
                     mStates.isExtension3TipBtnSupport.set(true)
-                    mStates.extension3Title.set("Z轴初始角度(°)")
+                    mStates.extension3Title.set("Z轴初始角度（度）")
                     sensorInfo.initvalz.toDoubleOrNull()?.let {
                         mStates.extension3Value.set(decimalFormat.format(it))
                     }
@@ -228,13 +228,13 @@ class OldDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
 
                 IOTSensorType.INFRASOUND //次声
                 -> {
-                    mStates.triggerTitle.set("触发值(Hz)")
-                    mStates.correctTitle.set("修正值(Hz)")
+                    mStates.triggerTitle.set("触发值（赫兹）")
+                    mStates.correctTitle.set("修正值（赫兹）")
                 }
 
                 IOTSensorType.WEIR //量水堰计
                 -> {
-                    mStates.triggerTitle.set("触发值(m³/s)")
+                    mStates.triggerTitle.set("触发值（立方米/秒）")
                     mStates.correctTitle.set("修正值（毫米）")
                     mStates.isCorrectTipBtnSupport.set(true)
 
