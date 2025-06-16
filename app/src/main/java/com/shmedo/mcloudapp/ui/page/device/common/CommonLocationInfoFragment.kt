@@ -3,9 +3,11 @@ package com.shmedo.mcloudapp.ui.page.device.common
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import androidx.fragment.app.viewModels
 import com.baidu.mapapi.map.BaiduMap
 import com.baidu.mapapi.map.BitmapDescriptorFactory
+import com.baidu.mapapi.map.InfoWindow
 import com.baidu.mapapi.map.LogoPosition
 import com.baidu.mapapi.map.MapStatusUpdateFactory
 import com.baidu.mapapi.map.Marker
@@ -51,6 +53,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+
 
 /**
  * @author：gonghe
@@ -508,8 +511,11 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
 
             //在地图上添加Marker，并显示
             curMaker = baiduMap.addOverlay(markerOption) as Marker
+
             //设置指定的可视区域地图
             moveCameraToLocation(latLng)
+
+            initInfoWindow(latLng)
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
@@ -517,6 +523,22 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
 
     private fun moveCameraToLocation(latLng: LatLng) {
         baiduMap.setMapStatus(MapStatusUpdateFactory.newLatLngZoom(latLng, mZoomLevel))
+    }
+
+    private fun initInfoWindow(latLng: LatLng) {
+        val button = Button(requireContext())
+        button.setBackgroundResource(R.drawable.map_info_window)
+        button.text = "去这里"
+
+        val infoWindow = InfoWindow(
+            button,
+            latLng,
+            -70
+        )
+        infoWindow.view.setOnClickListener {
+            Toaster.show("Click on InfoWindow")
+        }
+        baiduMap.showInfoWindow(infoWindow)
     }
 
     private fun startTimer() {
