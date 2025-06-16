@@ -277,7 +277,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 ConfigModule(
                     SensorConfigModule(
                         name = "设备操作",
-                        resID = R.drawable.ic_module_work_mode_new,
+                        resID = R.drawable.ic_module_equip_operation,
                         navId = R.id.action_global_to_mR702EquipmentOperationFragment
                     )
                 ),

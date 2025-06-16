@@ -10,6 +10,7 @@ import com.baidu.mapapi.map.LogoPosition
 import com.baidu.mapapi.map.MapStatusUpdateFactory
 import com.baidu.mapapi.map.Marker
 import com.baidu.mapapi.map.MarkerOptions
+import com.baidu.mapapi.map.MarkerOptions.MarkerAnimateType
 import com.baidu.mapapi.model.LatLng
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -502,6 +503,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
             val markerOption = MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_device_location))
                 .position(latLng)
+                .animateType(MarkerAnimateType.jump)
                 .draggable(false)
 
             //在地图上添加Marker，并显示

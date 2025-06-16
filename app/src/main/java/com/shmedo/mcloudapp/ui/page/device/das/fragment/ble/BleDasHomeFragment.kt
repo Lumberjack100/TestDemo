@@ -48,9 +48,10 @@ import com.shmedo.mcloudapp.model.RunningStatusModule
 import com.shmedo.mcloudapp.model.SensorConfigModule
 import com.shmedo.mcloudapp.model.TelemetryDataModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.ui.dialog.TimeCalibrationPopupView
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasCollectorSettingFragment
+import com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.BleDasHomeFragmentViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -245,7 +246,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
 
             is CollectorConfigModule -> {//采集器配置
                 if (module.functionModule.navId != 0) {
-                    val bundle = BleDasCollectorSettingFragment.newBundleArguments(
+                    val bundle = DasCollectorSettingFragment.newBundleArguments(
                         mStates.collectorModel.get(),
                         productType,
                         communicateWay,
@@ -686,7 +687,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                     name = "关于设备",
                     desc = "设备基本信息、运行数据",
                     resID = R.drawable.ic_device_running_info,
-                    navId = R.id.action_global_to_commonRunningDeviceInfoFragment
+                    navId = R.id.action_global_to_dasStatusInfoFragment
                 )
             )
         )
@@ -700,13 +701,13 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             ConfigModule(RebootModule())
         )
         moduleList.add(
-            ConfigModule(CollectorConfigModule(navId = R.id.action_bleDasHomeFragment_to_bleDasCollectorSettingFragment))
+            ConfigModule(CollectorConfigModule(navId = R.id.action_global_to_dasNetInfoFragment))
         )
         moduleList.add(
-            ConfigModule(DataCenterModule(navId = R.id.action_bleDasHomeFragment_to_bleDasDataCenterHomeFragment))
+            ConfigModule(DataCenterModule(navId = R.id.action_global_to_bleDasDataCenterHomeFragment))
         )
         moduleList.add(
-            ConfigModule(SensorConfigModule(navId = R.id.action_bleDasHomeFragment_to_bleDasSensorHomeFragment))
+            ConfigModule(SensorConfigModule(navId = R.id.action_global_to_bleDasSensorHomeFragment))
         )
         moduleList.add(
             ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_bleDasAdvancedSettingFragment))

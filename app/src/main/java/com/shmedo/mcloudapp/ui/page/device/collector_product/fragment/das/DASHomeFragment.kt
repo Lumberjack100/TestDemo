@@ -91,7 +91,7 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
             ConfigModule(
                 DataCenterModule(
                     name = "采集配置",
-                    resID = R.drawable.ic_module_work_mode_new,
+                    resID = R.drawable.ic_module_collect_setting,
                     navId = R.id.action_global_to_dasCollectorSettingFragment
                 )
             )

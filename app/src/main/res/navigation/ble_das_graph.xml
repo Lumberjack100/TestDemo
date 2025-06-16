@@ -6,7 +6,6 @@
     app:startDestination="@id/bleDasHomeFragment">
 
     <include app:graph="@navigation/include_query_data_graph" />
-    <include app:graph="@navigation/include_common_running_device_info_graph" />
 
     <include app:graph="@navigation/include_firmware_upgrade_graph" />
     <include app:graph="@navigation/include_ble_command_debug_graph" />
@@ -30,6 +29,18 @@
         android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasNetInfoFragment"
         android:label="DasNetInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
+        android:id="@+id/dasStatusInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasStatusInfoFragment"
+        android:label="DasStatusInfoFragment"
+        tools:layout="@layout/fragment_base_device_status_info_style2" />
+
+    <fragment
+        android:id="@+id/commonLocationInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.common.CommonLocationInfoFragment"
+        android:label="CommonLocationInfoFragment"
+        tools:layout="@layout/fragment_common_location_info" />
 
     <fragment
         android:id="@+id/dasCollectorSettingFragment"
@@ -80,14 +91,6 @@
         tools:layout="@layout/fragment_das_audible_alarm" />
 
     <action
-        android:id="@+id/action_global_to_commonRunningDeviceInfoFragment"
-        app:destination="@id/common_running_device_info_graph"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <action
         android:id="@+id/action_global_to_dasBaseInfoFragment"
         app:destination="@id/dasBaseInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
@@ -98,6 +101,22 @@
     <action
         android:id="@+id/action_global_to_dasNetInfoFragment"
         app:destination="@id/dasNetInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_dasStatusInfoFragment"
+        app:destination="@id/dasStatusInfoFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_commonLocationInfoFragment"
+        app:destination="@id/commonLocationInfoFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
