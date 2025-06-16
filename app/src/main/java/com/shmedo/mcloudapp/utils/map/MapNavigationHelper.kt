@@ -10,7 +10,6 @@ import com.baidu.location.BDLocation
 import com.baidu.location.LocationClient
 import com.baidu.location.LocationClientOption
 import com.baidu.mapapi.model.LatLng
-import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import timber.log.Timber
 
@@ -20,34 +19,34 @@ import timber.log.Timber
  * @desc: 地图导航工具类
  */
 object MapNavigationHelper {
-    
+
     // 地图应用包名
     private const val BAIDU_MAP_PACKAGE = "com.baidu.BaiduMap"
     private const val GAODE_MAP_PACKAGE = "com.autonavi.minimap"
     private const val TENCENT_MAP_PACKAGE = "com.tencent.map"
     private const val GOOGLE_MAP_PACKAGE = "com.google.android.apps.maps"
-    
+
     data class MapApp(
         val name: String,
         val packageName: String,
-        val navigateAction: (Context, LatLng, LatLng?, String) -> Unit
+        val navigateAction: (Context, LatLng?, LatLng, String) -> Unit
     )
-    
+
     private val mapApps = listOf(
-        MapApp("百度地图", BAIDU_MAP_PACKAGE) { context, destination, origin, destinationName ->
-            navigateWithBaidu(context, destination, origin, destinationName)
+        MapApp("百度地图", BAIDU_MAP_PACKAGE) { context, origin, destination, destinationName ->
+            navigateWithBaidu(context, origin, destination, destinationName)
         },
-        MapApp("高德地图", GAODE_MAP_PACKAGE) { context, destination, origin, destinationName ->
-            navigateWithGaode(context, destination, origin, destinationName)
+        MapApp("高德地图", GAODE_MAP_PACKAGE) { context, origin, destination, destinationName ->
+            navigateWithGaode(context, origin, destination, destinationName)
         },
-        MapApp("腾讯地图", TENCENT_MAP_PACKAGE) { context, destination, origin, destinationName ->
-            navigateWithTencent(context, destination, origin, destinationName)
+        MapApp("腾讯地图", TENCENT_MAP_PACKAGE) { context, origin, destination, destinationName ->
+            navigateWithTencent(context, origin, destination, destinationName)
         },
-        MapApp("谷歌地图", GOOGLE_MAP_PACKAGE) { context, destination, origin, destinationName ->
-            navigateWithGoogle(context, destination, origin, destinationName)
+        MapApp("谷歌地图", GOOGLE_MAP_PACKAGE) { context, origin, destination, destinationName ->
+            navigateWithGoogle(context, origin, destination, destinationName)
         }
     )
-    
+
     /**
      * 显示地图应用选择对话框并导航
      * @param context 上下文
@@ -59,27 +58,30 @@ object MapNavigationHelper {
         destinationLatLng: LatLng,
         destinationName: String = "设备位置"
     ) {
-        // 获取当前位置
-        getCurrentLocation(context) { currentLocation ->
-            val installedMapApps = getInstalledMapApps(context)
-            
-            if (installedMapApps.isEmpty()) {
-                // 没有找到已安装的地图应用，尝试使用隐式Intent
-                navigateWithImplicitIntent(context, destinationLatLng, destinationName)
-                return@getCurrentLocation
-            }
-            
-            if (installedMapApps.size == 1) {
-                // 只有一个地图应用，直接打开
-                val mapApp = installedMapApps[0]
-                mapApp.navigateAction(context, destinationLatLng, currentLocation, destinationName)
-            } else {
-                // 多个地图应用，显示选择对话框
-                showMapAppDialog(context, installedMapApps, destinationLatLng, currentLocation, destinationName)
-            }
+        val installedMapApps = getInstalledMapApps(context)
+
+        if (installedMapApps.isEmpty()) {
+            // 没有找到已安装的地图应用，尝试使用隐式Intent
+            navigateWithImplicitIntent(context, destinationLatLng, destinationName)
+            return
+        }
+
+        if (installedMapApps.size == 1) {
+            // 只有一个地图应用，直接打开
+            val mapApp = installedMapApps[0]
+            mapApp.navigateAction(context, null, destinationLatLng, destinationName)
+        } else {
+            // 多个地图应用，显示选择对话框
+            showMapAppDialog(
+                context,
+                installedMapApps,
+                null,
+                destinationLatLng,
+                destinationName
+            )
         }
     }
-    
+
     /**
      * 获取已安装的地图应用列表
      */
@@ -94,29 +96,34 @@ object MapNavigationHelper {
             }
         }
     }
-    
+
     /**
      * 显示地图应用选择对话框
      */
     private fun showMapAppDialog(
         context: Context,
         installedMapApps: List<MapApp>,
-        destinationLatLng: LatLng,
         currentLocation: LatLng?,
+        destinationLatLng: LatLng,
         destinationName: String
     ) {
         val appNames = installedMapApps.map { it.name }.toTypedArray()
-        
+
         AlertDialog.Builder(context)
             .setTitle("选择地图应用")
             .setItems(appNames) { _, which ->
                 val selectedApp = installedMapApps[which]
-                selectedApp.navigateAction(context, destinationLatLng, currentLocation, destinationName)
+                selectedApp.navigateAction(
+                    context,
+                    currentLocation,
+                    destinationLatLng,
+                    destinationName
+                )
             }
             .setNegativeButton("取消", null)
             .show()
     }
-    
+
     /**
      * 获取当前位置
      */
@@ -128,10 +135,10 @@ object MapNavigationHelper {
                 isOpenGps = true
                 coorType = "gcj02" // 设置返回的定位结果坐标系为GCJ02
                 setScanSpan(0) // 单次定位
-                setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy)
+                locationMode = LocationClientOption.LocationMode.Hight_Accuracy
             }
             locationClient.locOption = option
-            
+
             locationClient.registerLocationListener(object : BDAbstractLocationListener() {
                 override fun onReceiveLocation(location: BDLocation?) {
                     locationClient.stop()
@@ -143,7 +150,7 @@ object MapNavigationHelper {
                     }
                 }
             })
-            
+
             locationClient.start()
         } catch (e: Exception) {
             Timber.e(e, "获取当前位置失败")
@@ -151,14 +158,14 @@ object MapNavigationHelper {
             callback(null)
         }
     }
-    
+
     /**
      * 使用百度地图导航
      */
     private fun navigateWithBaidu(
         context: Context,
-        destinationLatLng: LatLng,
         originLatLng: LatLng?,
+        destinationLatLng: LatLng,
         destinationName: String
     ) {
         try {
@@ -178,7 +185,7 @@ object MapNavigationHelper {
                         "&coord_type=gcj02" +
                         "&src=${context.packageName}"
             }
-            
+
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
@@ -187,14 +194,14 @@ object MapNavigationHelper {
             Toaster.show("打开百度地图失败")
         }
     }
-    
+
     /**
      * 使用高德地图导航
      */
     private fun navigateWithGaode(
         context: Context,
-        destinationLatLng: LatLng,
         originLatLng: LatLng?,
+        destinationLatLng: LatLng,
         destinationName: String
     ) {
         try {
@@ -218,7 +225,7 @@ object MapNavigationHelper {
                         "&dev=0" +
                         "&t=0"
             }
-            
+
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
@@ -227,14 +234,14 @@ object MapNavigationHelper {
             Toaster.show("打开高德地图失败")
         }
     }
-    
+
     /**
      * 使用腾讯地图导航
      */
     private fun navigateWithTencent(
         context: Context,
-        destinationLatLng: LatLng,
         originLatLng: LatLng?,
+        destinationLatLng: LatLng,
         destinationName: String
     ) {
         try {
@@ -257,7 +264,7 @@ object MapNavigationHelper {
                         "&coord_type=2" +
                         "&referer=${context.packageName}"
             }
-            
+
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
@@ -266,14 +273,14 @@ object MapNavigationHelper {
             Toaster.show("打开腾讯地图失败")
         }
     }
-    
+
     /**
      * 使用谷歌地图导航
      */
     private fun navigateWithGoogle(
         context: Context,
-        destinationLatLng: LatLng,
         originLatLng: LatLng?,
+        destinationLatLng: LatLng,
         destinationName: String
     ) {
         try {
@@ -281,7 +288,7 @@ object MapNavigationHelper {
             val wgs84Destination = JZLocationConverter.gcj02ToWgs84(
                 CustomLatLng(destinationLatLng.latitude, destinationLatLng.longitude)
             )
-            
+
             val uri = if (originLatLng != null) {
                 val wgs84Origin = JZLocationConverter.gcj02ToWgs84(
                     CustomLatLng(originLatLng.latitude, originLatLng.longitude)
@@ -291,7 +298,7 @@ object MapNavigationHelper {
             } else {
                 "google.navigation:q=${wgs84Destination.latitude},${wgs84Destination.longitude}"
             }
-            
+
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
             intent.setPackage(GOOGLE_MAP_PACKAGE)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -301,7 +308,7 @@ object MapNavigationHelper {
             Toaster.show("打开谷歌地图失败")
         }
     }
-    
+
     /**
      * 使用隐式Intent导航（备用方案）
      * 当无法获取已安装的地图应用时使用
@@ -313,10 +320,11 @@ object MapNavigationHelper {
     ) {
         try {
             // 使用geo URI格式，大多数地图应用都支持
-            val geoUri = "geo:${destinationLatLng.latitude},${destinationLatLng.longitude}?q=${destinationLatLng.latitude},${destinationLatLng.longitude}($destinationName)"
+            val geoUri =
+                "geo:${destinationLatLng.latitude},${destinationLatLng.longitude}?q=${destinationLatLng.latitude},${destinationLatLng.longitude}($destinationName)"
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(geoUri))
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            
+
             // 检查是否有应用可以处理这个Intent
             if (intent.resolveActivity(context.packageManager) != null) {
                 context.startActivity(intent)
@@ -329,7 +337,7 @@ object MapNavigationHelper {
             Toaster.show("打开地图失败")
         }
     }
-    
+
     /**
      * 在浏览器中打开地图（最后的备用方案）
      */
@@ -340,7 +348,8 @@ object MapNavigationHelper {
     ) {
         try {
             // 使用百度地图网页版
-            val webUrl = "https://map.baidu.com/mobile/webapp/place/detail/qt=s&c=1&searchFlag=bigBox&wd=${destinationName}&center=${destinationLatLng.longitude},${destinationLatLng.latitude}&radius=1000"
+            val webUrl =
+                "https://map.baidu.com/mobile/webapp/place/detail/qt=s&c=1&searchFlag=bigBox&wd=${destinationName}&center=${destinationLatLng.longitude},${destinationLatLng.latitude}&radius=1000"
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(webUrl))
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)

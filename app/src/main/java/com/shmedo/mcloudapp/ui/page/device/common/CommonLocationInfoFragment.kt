@@ -1,5 +1,6 @@
 package com.shmedo.mcloudapp.ui.page.device.common
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -528,17 +529,20 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
 
     private fun initInfoWindow(latLng: LatLng) {
         val button = Button(requireContext())
-        button.setBackgroundResource(R.drawable.map_info_window)
+        button.setBackgroundResource(R.drawable.bubble_sel_bg)//bubble_sel_bg   map_info_window
         button.text = "去这里"
+        button.setTextColor(Color.WHITE)
+        button.setPadding(0, 0, 0, 5)
+        button.textSize = 12f
 
         val infoWindow = InfoWindow(
             button,
             latLng,
-            -70
+            -65
         )
         infoWindow.view.setOnClickListener {
             // 获取设备名称作为目的地名称
-            val destinationName = deviceInfo?.deviceName ?: "设备位置"
+            val destinationName = deviceInfo.deviceToken
             // 显示地图应用选择器并导航
             MapNavigationHelper.showMapAppSelector(
                 requireContext(),
