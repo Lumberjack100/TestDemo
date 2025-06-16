@@ -46,6 +46,7 @@ import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommonLocationInfoViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.utils.map.CustomLatLng
+import com.shmedo.mcloudapp.utils.map.MapNavigationHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -536,7 +537,14 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
             -70
         )
         infoWindow.view.setOnClickListener {
-            Toaster.show("Click on InfoWindow")
+            // 获取设备名称作为目的地名称
+            val destinationName = deviceInfo?.deviceName ?: "设备位置"
+            // 显示地图应用选择器并导航
+            MapNavigationHelper.showMapAppSelector(
+                requireContext(),
+                latLng,
+                destinationName
+            )
         }
         baiduMap.showInfoWindow(infoWindow)
     }
