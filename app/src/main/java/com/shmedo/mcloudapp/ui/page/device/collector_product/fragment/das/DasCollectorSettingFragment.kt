@@ -48,7 +48,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/1/8
- * @desc: DAS 采集器参数配置页面 - 支持4G和蓝牙两种通讯方式
+ * @desc: 物联网采集器(DAS)参数配置页面 - 支持4G和蓝牙两种通讯方式
  *
  */
 class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
@@ -382,7 +382,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询采集器参数出错: ${result.message}"
+                        val errMsg = "查询参数出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -399,7 +399,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
             IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置采集器参数出错: ${result.message}"
+                        val errMsg = "配置参数出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }

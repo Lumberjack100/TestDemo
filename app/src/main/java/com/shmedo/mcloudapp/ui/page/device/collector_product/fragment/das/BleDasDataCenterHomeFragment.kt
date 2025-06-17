@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.das.fragment.ble
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 
 import android.os.Bundle
 import android.view.View
@@ -11,6 +11,7 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerOne
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerThree
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerTwo
@@ -37,7 +38,12 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.BleDasDataCenterHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-
+/**
+ * @author：gonghe
+ * @time: 2025/6/17
+ * @desc: 物联网采集器(DAS)数据中心参数配置页面 - 支持蓝牙通讯方式
+ *
+ */
 class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentBleDasDataCenterHomeBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
@@ -93,7 +99,7 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
             addType<DataCenterStatusItem>(R.layout.data_center_status_item)
             R.id.item.onClick {
                 val item = getModel<DataCenterStatusItem>()
-                val bundle = BleDasDataCenterParamFragment.newBundleArguments(
+                val bundle = BleDasDataCenterParamFragment.Companion.newBundleArguments(
                     item,
                     productType,
                     communicateWay,
@@ -116,8 +122,8 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
     override fun createObserver() {
         super.createObserver()
         //从编辑页面返回需要刷新事件详情页面
-        setFragmentResultListener(com.shmedo.core.commonlib.utils.AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { key, bundle ->
-            val centerNumber = bundle.getInt(com.shmedo.core.commonlib.utils.AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
+        setFragmentResultListener(AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { key, bundle ->
+            val centerNumber = bundle.getInt(AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
 
             commandItems.clear()
             val command = MDCommandUtil.getCommand(MDCommandType.QUERY_NETWORK_STATUS, centerNumber.toString())
@@ -147,7 +153,7 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        fun onSubmitClick() {
+        override fun onSubmitButtonClick() {
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
@@ -174,14 +180,14 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
             MDCommandType.DATA_MASSAGE_MODEL,
             (communicatModeList.indexOf(mStates.dataCommunicationMode.get()) + 1).toString()
         )
-        Timber.d("设置数据通讯模式===%s", command)
+        Timber.Forest.d("设置数据通讯模式===%s", command)
         commandItems.add(command)
 
         command = MDCommandUtil.getCommand(
             MDCommandType.DATA_REPORT_INTERVAL,
             mStates.reportingInterval.get()
         )
-        Timber.d("设置数据上报间隔===%s", command)
+        Timber.Forest.d("设置数据上报间隔===%s", command)
         commandItems.add(command)
 
         if (mStates.isBdCardNumberVisible.get()) {
@@ -189,7 +195,7 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 MDCommandType.SIX_TARGER_BD_NUMBER,
                 mStates.bdCardNumber.get()
             )
-            Timber.d("北斗配置参数===%s", command)
+            Timber.Forest.d("北斗配置参数===%s", command)
             commandItems.add(command)
         }
 

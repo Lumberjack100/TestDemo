@@ -31,7 +31,7 @@ import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragmen
 /**
  * 创建者：gonghe
  * 创建时间：2024/5/7
- * 描述： 物联网采集器(DAS)(江苏赛立科技有限公司)
+ * 描述： 物联网采集器(DAS)
  */
 class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
     override fun initData() {

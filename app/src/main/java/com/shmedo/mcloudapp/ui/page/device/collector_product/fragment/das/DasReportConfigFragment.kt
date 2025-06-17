@@ -38,7 +38,7 @@ import java.util.Locale
 /**
  * @author：gonghe
  * @time: 2025/6/13
- * @desc: 上报参数配置页面
+ * @desc: 物联网采集器(DAS)上报参数配置页面 - 支持 4G 通讯方式
  *
  */
 class DasReportConfigFragment : BaseIOTDeviceFragment() {

@@ -42,7 +42,12 @@ import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasIOSensorViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-
+/**
+ * @author：gonghe
+ * @time: 2025/6/17
+ * @desc: 物联网采集器(DAS)开关量传感器参数配置页面 - 支持4G和蓝牙两种通讯方式
+ *
+ */
 class DasIOSensorFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasIoSensorBinding
     private lateinit var mStates: DasIOSensorViewModel

@@ -50,13 +50,13 @@
 
     <fragment
         android:id="@+id/bleDasDataCenterHomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.BleDasDataCenterHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.BleDasDataCenterHomeFragment"
         android:label="BleDasDataCenterHomeFragment"
         tools:layout="@layout/fragment_ble_das_data_center_home"/>
 
     <fragment
         android:id="@+id/bleDataCenterParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.BleDasDataCenterParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.BleDasDataCenterParamFragment"
         android:label="BleDataCenterParamFragment"
         tools:layout="@layout/fragment_ble_das_data_center_param" />
 
@@ -80,7 +80,7 @@
 
     <fragment
         android:id="@+id/bleDasAdvancedSettingFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.BleDasAdvancedSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.BleDasAdvancedSettingFragment"
         android:label="BleDasAdvancedSettingFragment"
         tools:layout="@layout/fragment_ble_das_advanced_setting"/>
 

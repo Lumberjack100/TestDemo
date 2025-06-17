@@ -44,7 +44,7 @@ import com.shmedo.mcloudapp.model.AdvancedSettingItem
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.dialog.SyncInstallationLocationPopupView
+import com.shmedo.mcloudapp.ui.page.device.collector_product.dialog.SyncInstallationLocationPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.request.LocationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.AdvancedSettingViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel

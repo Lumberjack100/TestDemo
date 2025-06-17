@@ -31,12 +31,17 @@ import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BaseBleDasExternalSensorListFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BleDasExternalDigitalSensorListFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BleDasExternalVibratingSensorListFragment
-import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.internalsensor.BleDasDigitalOsmometerFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor.DasExternalSensorListFragment
-import com.shmedo.mcloudapp.ui.page.device.das.fragment.internalsensor.DasDigitalOsmometerFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasDigitalOsmometerFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.internalsensor.DasMCUAddressFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 
+/**
+ * @author：gonghe
+ * @time: 2025/6/17
+ * @desc:物联网采集器(DAS)传感器主页面 - 支持4G和蓝牙两种通讯方式
+ *
+ */
 class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentDasSensorHomeBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
@@ -108,7 +113,7 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             fragmentList.add(DasIOSensorFragment.Companion.newInstance().apply {
                 arguments = bundle
             })
-            fragmentList.add(BleDasDigitalOsmometerFragment.Companion.newInstance().apply {
+            fragmentList.add(DasDigitalOsmometerFragment.Companion.newInstance().apply {
                 arguments = bundle
             })
 

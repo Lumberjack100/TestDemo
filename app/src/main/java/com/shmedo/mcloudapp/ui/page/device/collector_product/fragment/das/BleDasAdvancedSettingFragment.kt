@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.das.fragment.ble
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 
 import android.content.Intent
 import android.os.Bundle
@@ -8,7 +8,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Lifecycle
 import com.baidu.location.BDLocation
-
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.XXPermissions
@@ -31,16 +30,14 @@ import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.dialog.SyncInstallationLocationPopupView
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
-import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.dialog.SyncInstallationLocationPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.request.LocationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.AdvancedSettingViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.utils.map.CustomLatLng
 import com.shmedo.mcloudapp.utils.map.JZLocationConverter
 import com.shmedo.mcloudapp.utils.permission.PermissionHelper
-import com.shmedo.mcloudapp.utils.permission.PermissionHelper.isLocationEnabled
-import com.shmedo.mcloudapp.utils.permission.PermissionHelper.showGPSSettingDialog
 import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.android.ext.android.inject
@@ -112,7 +109,7 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment() {
                     )
                     mStates.location.set(
                         Html.fromHtml(
-                            String.format(
+                            String.Companion.format(
                                 Locale.getDefault(),
                                 "%.8f,%.8f",
                                 mWgsLatLng.longitude,
@@ -142,7 +139,7 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+            val bundle = BleCustomCommandLogPrintFragment.Companion.newBundleArguments(
                 false,
                 productType,
                 communicateWay,
@@ -171,7 +168,7 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            val bundle = BaseIOTDeviceFragment.newBundleArguments(
+            val bundle = newBundleArguments(
                 productType,
                 communicateWay,
                 deviceInfo,
@@ -266,10 +263,10 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment() {
      * 检查是否打开系统位置服务，如果开启了，接着检查是否授予 APP 定位权限
      */
     private fun checkPermissions() {
-        if (isLocationEnabled()) {
+        if (PermissionHelper.isLocationEnabled()) {
             checkPermissionForLocation()
         } else {
-            showGPSSettingDialog(mActivity, locationSettingLauncher)
+            PermissionHelper.showGPSSettingDialog(mActivity, locationSettingLauncher)
         }
     }
 

@@ -43,7 +43,12 @@ import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragme
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasSensorHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
-
+/**
+ * @author：gonghe
+ * @time: 2025/6/17
+ * @desc: 物联网采集器(DAS)数据中心参数配置页面 - 支持 4G 通讯方式
+ *
+ */
 class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasDataCenterHomeBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
@@ -165,7 +170,7 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        fun onSubmitClick() {
+        override fun onSubmitButtonClick() {
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return

@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.das.fragment.ble
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 
 import android.os.Bundle
 import android.view.View
@@ -46,7 +46,12 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-
+/**
+ * @author：gonghe
+ * @time: 2025/6/17
+ * @desc: 物联网采集器(DAS)数据中心参数配置页面 - 支持蓝牙通讯方式
+ *
+ */
 class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentBleDasDataCenterParamBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
@@ -209,7 +214,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             statusItem.centerid.toString()
         )
         commandItems.add(command)
-        Timber.d("关闭数据服务器%s指令===%s", statusItem.centerid.toString(), command)
+        Timber.Forest.d("关闭数据服务器%s指令===%s", statusItem.centerid.toString(), command)
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -316,7 +321,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             MDCommandType.NET_LINK_COMMUN_PROTOCOL,
             "${statusItem.centerid}${mStates.transferProtocolCode.get()}"
         )
-        Timber.d("设置网络中心通讯协议===%s", command)
+        Timber.Forest.d("设置网络中心通讯协议===%s", command)
         commandItems.add(command)
 
         //数据服务器地址、端口
@@ -329,7 +334,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             MDCommandType.SET_SERVER_ADDRESS_PORT,
             entity.toCommandString()
         )
-        Timber.d("设置数据服务器地址、端口===%s", command)
+        Timber.Forest.d("设置数据服务器地址、端口===%s", command)
         commandItems.add(command)
 
         if (mStates.transferProtocolCode.get() == "4") {//MQTT自动注册
@@ -338,7 +343,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 MDCommandType.AUTO_REGISTRATION_PLATFORM,
                 "${statusItem.centerid}${platformList.indexOf(mStates.platformType.get())}"
             )
-            Timber.d("选择平台配置===%s", command)
+            Timber.Forest.d("选择平台配置===%s", command)
             commandItems.add(command)
 
             //自动注册平台地址端口
@@ -351,7 +356,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 MDCommandType.SET_AUTO_REGISTRATION_PLATFORM_SERVER_ADDRESS_PORT,
                 entity.toCommandString()
             )
-            Timber.d("自动注册平台地址、端口===%s", command)
+            Timber.Forest.d("自动注册平台地址、端口===%s", command)
             commandItems.add(command)
 
             //MQTT KeepAlive值
@@ -359,7 +364,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 MDCommandType.MQTT_KEEP_ALIVE,
                 "${statusItem.centerid}${mStates.keepAlive.get()}"
             )
-            Timber.d("设置KeepAlive===%s", command)
+            Timber.Forest.d("设置KeepAlive===%s", command)
             commandItems.add(command)
 
             //自动注册平台参数：设备SN号+产品ID+注册码
@@ -373,7 +378,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 MDCommandType.SET_AUTO_REGISTRATION_PLATFORM_PARAM,
                 platformEntity.toCommandString()
             )
-            Timber.d("自动注册平台参数===%s", command)
+            Timber.Forest.d("自动注册平台参数===%s", command)
             commandItems.add(command)
 
         } else if (mStates.transferProtocolCode.get() == "5") {//MQTT手动注册
@@ -382,7 +387,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 MDCommandType.AUTO_REGISTRATION_PLATFORM,
                 "${statusItem.centerid}${platformList.indexOf(mStates.platformType.get())}"
             )
-            Timber.d("选择平台配置===%s", command)
+            Timber.Forest.d("选择平台配置===%s", command)
             commandItems.add(command)
 
             //MQTT KeepAlive值
@@ -390,7 +395,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 MDCommandType.MQTT_KEEP_ALIVE,
                 "${statusItem.centerid}${mStates.keepAlive.get()}"
             )
-            Timber.d("设置KeepAlive===%s", command)
+            Timber.Forest.d("设置KeepAlive===%s", command)
             commandItems.add(command)
 
             //手动注册平台参数：产品ID+设备ID+设备KEY
@@ -404,7 +409,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
                 MDCommandType.SET_MANUAL_REGISTRATION_PLATFORM_PARAM,
                 platformEntity.toCommandString()
             )
-            Timber.d("手动注册平台参数===%s", command)
+            Timber.Forest.d("手动注册平台参数===%s", command)
             commandItems.add(command)
         }
 
@@ -439,7 +444,7 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             statusItem.centerid.toString()
         )
         commandItems.add(command)
-        Timber.d("查询数据链路%s的参数===%s", statusItem.centerid.toString(), command)
+        Timber.Forest.d("查询数据链路%s的参数===%s", statusItem.centerid.toString(), command)
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -670,8 +675,8 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             delay(1000)
             //巡护事件需要给上一级浏览页面传递最新的事件信息
             setFragmentResult(
-                com.shmedo.core.commonlib.utils.AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY,
-                bundleOf(com.shmedo.core.commonlib.utils.AppContants.Extras.REFRESH_DATA_CENTER_STATUS to statusItem.centerid)
+                AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY,
+                bundleOf(AppContants.Extras.REFRESH_DATA_CENTER_STATUS to statusItem.centerid)
             )
             nav().navigateUp()
         }
@@ -686,12 +691,12 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.SERVER_NUMBER, item)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putParcelable(AppContants.Extras.SERVER_NUMBER, item)
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }
