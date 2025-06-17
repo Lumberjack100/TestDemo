@@ -32,6 +32,7 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentMr702DataCenterParamBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
@@ -77,11 +78,9 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                processBack(true)
-            }
-        })
+        registerOnBackPressedDispatcher {
+           processBack(true)
+        }
         mStates.isEditable.set(true)
         initRefresh()
     }

@@ -59,7 +59,6 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
     private val mdParseManager: MDParserManager by inject()
 
     private var collectorModel = "-1"
-    private var isBleMode = false
 
     override fun initViewModel() {
         super.initViewModel()
@@ -77,7 +76,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentDasCollectorSettingBinding
-        binding.llToolbar.toolbar.title = if (isBleMode) "采集器参数" else "采集器配置"
+        binding.llToolbar.toolbar.title = "采集器配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }
@@ -101,11 +100,8 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        // 判断通讯方式
-        isBleMode = communicateWay == BleConnect
-        
         // 蓝牙模式下获取采集器模型参数
-        if (isBleMode) {
+        if (communicateWay == BleConnect) {
             arguments?.let {
                 collectorModel = it.getString(COLLECTOR_MODEL, "-1")
             }
@@ -149,7 +145,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
             return
         }
 
-        if (isBleMode) {
+        if (communicateWay == BleConnect) {
             initBleSaveCommand()
         } else {
             init4GSaveCommand()
@@ -281,7 +277,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
     }
 
     private fun queryData() {
-        if (isBleMode) {
+        if (communicateWay == BleConnect) {
             queryBleCollectorInfo()
         } else {
             query4GCollectorInfo()
@@ -367,7 +363,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
-        if (isBleMode) {
+        if (communicateWay == BleConnect) {
             handleBleCommandResult(cmdStr)
         } else {
             handle4GCommandResult(cmdStr)

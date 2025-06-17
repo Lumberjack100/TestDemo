@@ -31,6 +31,7 @@ import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CommunicateWay
@@ -82,11 +83,9 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                processBack(true)
-            }
-        })
+        registerOnBackPressedDispatcher {
+            processBack(true)
+        }
     }
 
     override fun initData() {

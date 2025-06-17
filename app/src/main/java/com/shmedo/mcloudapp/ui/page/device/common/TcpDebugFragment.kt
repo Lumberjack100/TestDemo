@@ -49,6 +49,7 @@ import com.shmedo.mcloudapp.databinding.FragmentTcpDebugBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.NoDeviceState
 import com.shmedo.mcloudapp.model.WorkingState
@@ -97,6 +98,9 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentTcpDebugBinding
         binding.toolbar.title = "远程调试"
         binding.toolbar.setNavigationOnClickListener { v: View? ->
+            processBackPress()
+        }
+        registerOnBackPressedDispatcher {
             processBackPress()
         }
         mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {

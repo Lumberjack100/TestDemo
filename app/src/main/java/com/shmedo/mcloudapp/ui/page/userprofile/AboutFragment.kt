@@ -11,6 +11,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAboutBinding
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.webview.WebViewFragment
@@ -39,12 +40,9 @@ class AboutFragment : BaseFragment() {
 //            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
-                nav().navigateUp()
-            }
-        })
+        registerOnBackPressedDispatcher {
+            nav().navigateUp()
+        }
     }
 
     override fun initData() {

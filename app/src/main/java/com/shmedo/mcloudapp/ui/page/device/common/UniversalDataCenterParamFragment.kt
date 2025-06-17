@@ -36,6 +36,7 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentDataCenterParamBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CommunicateWay
@@ -84,11 +85,9 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                handleBackByCheckDataModified()
-            }
-        })
+        registerOnBackPressedDispatcher {
+            handleBackByCheckDataModified()
+        }
         initRefresh()
     }
 

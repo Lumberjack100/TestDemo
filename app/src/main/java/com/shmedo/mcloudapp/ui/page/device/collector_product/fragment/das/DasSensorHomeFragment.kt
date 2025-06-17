@@ -1,15 +1,15 @@
 package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 
-import android.graphics.Typeface
+import android.graphics.Color
 import android.os.Bundle
-import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.android.material.textview.MaterialTextView
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
@@ -20,8 +20,8 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentDasSensorHomeBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
@@ -32,16 +32,16 @@ import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BaseB
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BleDasExternalDigitalSensorListFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BleDasExternalVibratingSensorListFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.internalsensor.BleDasDigitalOsmometerFragment
-import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.internalsensor.BleDasIOSensorFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor.DasExternalSensorListFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.internalsensor.DasDigitalOsmometerFragment
-import com.shmedo.mcloudapp.ui.page.device.das.fragment.internalsensor.DasIOSensorFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.internalsensor.DasMCUAddressFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 
 class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentDasSensorHomeBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+
+    private var mLayoutMediator: TabLayoutMediator? = null
 
     private var collectorModel = "-1"
     private var productType = ProductType.UnKnown
@@ -54,7 +54,6 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
 
 
     override fun initViewModel() {
-        toolbarViewModel = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -66,15 +65,11 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         binding = getBinding() as FragmentDasSensorHomeBinding
         binding.llToolbar.toolbar.title = "传感器配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-//            mMessenger.requestStatusBarColor(R.color.colorPrimary)
             nav().navigateUp()
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-//                mMessenger.requestStatusBarColor(R.color.colorPrimary)
-                nav().navigateUp()
-            }
-        })
+        registerOnBackPressedDispatcher {
+            nav().navigateUp()
+        }
     }
 
     override fun initData() {
@@ -110,7 +105,7 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                 bleDevice
             )
 
-            fragmentList.add(BleDasIOSensorFragment.Companion.newInstance().apply {
+            fragmentList.add(DasIOSensorFragment.Companion.newInstance().apply {
                 arguments = bundle
             })
             fragmentList.add(BleDasDigitalOsmometerFragment.Companion.newInstance().apply {
@@ -118,25 +113,28 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
             })
 
             // 根据collectorModel决定使用哪种扩展传感器Fragment
-            val externalSensorFragment = if (collectorModel == "0${IOTSensorType.VIBRATING_SENSOR.code}")
-                BleDasExternalVibratingSensorListFragment.Companion.newInstance().apply {
-                    arguments = BaseBleDasExternalSensorListFragment.Companion.newBundleArguments(
-                        collectorModel,
-                        productType,
-                        communicateWay,
-                        deviceInfo,
-                        bleDevice,
-                    )
-                } else
-                BleDasExternalDigitalSensorListFragment.Companion.newInstance().apply {
-                    arguments = BaseBleDasExternalSensorListFragment.Companion.newBundleArguments(
-                        collectorModel,
-                        productType,
-                        communicateWay,
-                        deviceInfo,
-                        bleDevice,
-                    )
-                }
+            val externalSensorFragment =
+                if (collectorModel == "0${IOTSensorType.VIBRATING_SENSOR.code}")
+                    BleDasExternalVibratingSensorListFragment.Companion.newInstance().apply {
+                        arguments =
+                            BaseBleDasExternalSensorListFragment.Companion.newBundleArguments(
+                                collectorModel,
+                                productType,
+                                communicateWay,
+                                deviceInfo,
+                                bleDevice,
+                            )
+                    } else
+                    BleDasExternalDigitalSensorListFragment.Companion.newInstance().apply {
+                        arguments =
+                            BaseBleDasExternalSensorListFragment.Companion.newBundleArguments(
+                                collectorModel,
+                                productType,
+                                communicateWay,
+                                deviceInfo,
+                                bleDevice,
+                            )
+                    }
             fragmentList.add(externalSensorFragment)
         } else {
             // 4G模式使用原有的Fragment
@@ -164,44 +162,48 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         }
 
         binding.viewpager.adapter = PageAdapter(this, fragmentList)
-        binding.viewpager.offscreenPageLimit = tabNames.size
+        binding.viewpager.offscreenPageLimit = 1
         binding.viewpager.isUserInputEnabled = false
         binding.tabs.addOnTabSelectedListener(this)
-
-        TabLayoutMediator(binding.tabs, binding.viewpager) { tab, position ->
-            val textView = TextView(requireContext())
-
-            textView.text = tabNames[position]
-            if (position == 0) { // 第一个为默认选中
-                textView.textSize = activeSize
-                textView.typeface = Typeface.DEFAULT_BOLD
-                textView.gravity = Gravity.CENTER
-                textView.setTextColor(activeColor)
-            } else {
-                textView.textSize = normalSize
-                textView.typeface = Typeface.DEFAULT
-                textView.gravity = Gravity.CENTER
-                textView.setTextColor(normalColor)
+        mLayoutMediator =
+            TabLayoutMediator(binding.tabs, binding.viewpager, true, false) { tab, position ->
+                val tabView =
+                    LayoutInflater.from(mActivity)
+                        .inflate(R.layout.custom_tab_mr702_interface, null)
+                val textView =
+                    tabView.findViewById<MaterialTextView>(R.id.tabText)
+                textView.text = tabNames[position]
+                if (position == 0) { // 第一个为默认选中
+                    tabView.setBackgroundResource(activeBg)
+                    textView.textSize = activeSize
+                    textView.setTextColor(activeColor)
+                } else {
+                    tabView.setBackgroundResource(normalBg)
+                    textView.textSize = normalSize
+                    textView.setTextColor(normalColor)
+                }
+                tab.customView = tabView
             }
-            tab.customView = textView
-        }.attach()
+        mLayoutMediator?.attach()
     }
 
     override fun onTabSelected(tab: TabLayout.Tab) {
-        val textView = tab.customView as TextView?
-        textView?.apply {
-            textSize = activeSize
-            typeface = Typeface.DEFAULT_BOLD
-            setTextColor(activeColor)
+        tab.customView?.let {
+            it.setBackgroundResource(activeBg)
+            val textView =
+                it.findViewById<MaterialTextView>(R.id.tabText)
+            textView.textSize = activeSize
+            textView.setTextColor(activeColor)
         }
     }
 
     override fun onTabUnselected(tab: TabLayout.Tab) {
-        val textView = tab.customView as TextView?
-        textView?.apply {
-            textSize = normalSize
-            typeface = Typeface.DEFAULT
-            setTextColor(normalColor)
+        tab.customView?.let {
+            it.setBackgroundResource(normalBg)
+            val textView =
+                it.findViewById<MaterialTextView>(R.id.tabText)
+            textView.textSize = normalSize
+            textView.setTextColor(normalColor)
         }
     }
 
@@ -212,11 +214,20 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         initImmersionBar(binding.llToolbar.toolbar)
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // TabLayout 解绑
+        mLayoutMediator?.detach()
+        mLayoutMediator = null
+    }
+
     companion object {
-        private val activeColor: Int = ColorUtils.getColor(R.color.colorPrimary)
-        private val normalColor: Int = ColorUtils.getColor(R.color.text_color_666666)
-        private const val activeSize: Float = 17f
-        private const val normalSize: Float = 15f
+        private val activeBg: Int = R.drawable.bg_mr702_port_tab_checked
+        private val normalBg: Int = R.drawable.bg_mr702_port_tab_normal
+        private val activeColor: Int = ColorUtils.getColor(R.color.white)
+        private val normalColor: Int = Color.parseColor("#65A2CD")
+        private val activeSize: Float = 15f
+        private val normalSize: Float = 15f
 
         const val COLLECTOR_MODEL = "collector_model"
 

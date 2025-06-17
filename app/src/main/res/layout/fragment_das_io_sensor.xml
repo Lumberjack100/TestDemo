@@ -5,199 +5,111 @@
 
     <data>
 
-        <import type="com.shmedo.lib.cmd.base.iot_cmd.enums.IOTRainStation" />
-
         <variable
             name="stateVM"
             type="com.shmedo.mcloudapp.ui.viewmodel.state.DasIOSensorViewModel" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.baseclickproxy.BaseDasIOSensorClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasIOSensorFragment.ClickProxy" />
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.drake.brv.PageRefreshLayout
+        android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/main_bg_gray">
 
-        <com.drake.brv.PageRefreshLayout
-            android:id="@+id/refreshLayout"
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+            android:paddingTop="@dimen/page_content_container_padding_top_12"
+            android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
             <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="vertical">
+                style="@style/Common_ClickableItem_Layout_Style"
+                onClickWithDebouncing="@{()->click.onModeChooseClick()}"
+                android:background='@{stateVM.mode.contains("关闭")?@drawable/bg_white_corner_4dp:@drawable/layer_common_click_item_top_corner_4_with_divider}'>
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/radio_close"
-                    onClickWithDebouncing="@{(textView)->click.onModeCheckedChanged(textView)}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="@dimen/dimen_size_16"
-                    android:drawableStart="@{stateVM.switchType==IOTRainStation.CLOSE?@drawable/ic_radio_checked:@drawable/ic_radio_uncheck}"
-                    android:drawablePadding="@dimen/dimen_size_6"
-                    android:gravity="center_vertical"
-                    android:text="关闭"
-                    android:textColor="@{stateVM.switchType==IOTRainStation.CLOSE?@color/title_text_color:@color/sub_title_text_color}"
-                    android:textSize="@dimen/text_size_16"
-                    tools:drawableStart="@drawable/ic_radio_checked" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="0.8dp"
-                    android:layout_marginHorizontal="@dimen/dimen_size_16"
-                    android:background="@color/divider_line_bg" />
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_Layout_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/radio_rain_gauge"
-                        onClickWithDebouncing="@{(textView)->click.onModeCheckedChanged(textView)}"
-                        android:layout_width="wrap_content"
-                        android:layout_height="50dp"
-                        android:drawableStart="@{stateVM.switchType==IOTRainStation.RAIN_OPEN?@drawable/ic_radio_checked:@drawable/ic_radio_uncheck}"
-                        android:drawablePadding="@dimen/dimen_size_6"
-                        android:gravity="center_vertical"
-                        android:text="雨量计精度（毫米）"
-                        android:textColor="@{stateVM.switchType==IOTRainStation.RAIN_OPEN?@color/title_text_color:@color/sub_title_text_color}"
-                        android:textSize="@dimen/text_size_16"
-                        tools:drawableStart="@drawable/ic_radio_checked" />
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1" />
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:id="@+id/ll_rain_resolution"
-                        onClickWithDebouncing="@{()->click.onChooseResolutionClick()}"
-                        visible="@{stateVM.switchType==IOTRainStation.RAIN_OPEN}"
-                        android:layout_width="wrap_content"
-                        android:layout_height="34dp"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:foreground="?attr/selectableItemBackground"
-                        android:gravity="center_vertical"
-                        android:paddingHorizontal="@dimen/dimen_size_10"
-                        app:drawable_radius="@{4}"
-                        app:drawable_solidColor="@{@color/gray_F5F6F8}"
-                        tools:background="@color/gray_F5F6F8">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="@{stateVM.rainResolution}"
-                            android:textColor="@color/title_text_color"
-                            android:textSize="@dimen/text_size_17"
-                            tools:text="0.1" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/iv_rain_resolution"
-                            android:layout_width="16dp"
-                            android:layout_height="16dp"
-                            android:layout_marginStart="@dimen/dimen_size_15"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/ic_arrow_down" />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_Layout_Style"
-                    visible="@{stateVM.switchType==IOTRainStation.RAIN_OPEN &amp;&amp; stateVM.isSupportDumpMInTime}"
-                    android:background="@drawable/layer_common_click_item_with_divider"
-                    android:paddingStart="@dimen/dimen_size_30">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_Title_Style"
-                        android:text="翻斗翻转最小间隔（秒）"
-                        tools:textColor="@color/title_text_color" />
-
-                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                        style="@style/Common_EditItem_EditText_Style"
-                        android:hint="请输入"
-                        android:inputType="number"
-                        android:text="@={stateVM.dumpMinTime}"
-                        app:lengthFilter="@{6}" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
+                    style="@style/Common_ClickableItem_Title_Style"
+                    android:text="工作模式" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/radio_break_alarm"
-                    onClickWithDebouncing="@{(textView)->click.onModeCheckedChanged(textView)}"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:layout_marginStart="@dimen/dimen_size_16"
-                    android:drawableStart="@{stateVM.switchType==IOTRainStation.ALARM_OPEN?@drawable/ic_radio_checked:@drawable/ic_radio_uncheck}"
-                    android:drawablePadding="@dimen/dimen_size_6"
-                    android:gravity="center_vertical"
-                    android:text="断线报警器"
-                    android:textColor="@{stateVM.switchType==IOTRainStation.ALARM_OPEN?@color/title_text_color:@color/sub_title_text_color}"
-                    android:textSize="@dimen/text_size_16"
-                    tools:drawableStart="@drawable/ic_radio_checked" />
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/rg_break_alarm_items"
-                    visible="@{stateVM.switchType==IOTRainStation.ALARM_OPEN}"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dimen_size_20"
-                    android:orientation="horizontal"
-                    android:paddingStart="@dimen/dimen_size_30"
-                    android:paddingEnd="@dimen/dimen_size_16">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/radio_break_alarm_open"
-                        onClickWithDebouncing="@{(view)->click.onBreakAlarmCheckedChanged(view)}"
-                        android:layout_width="0dp"
-                        android:layout_height="38dp"
-                        android:layout_weight="1"
-                        android:background="@{stateVM.isBreakAlarmOpen?@drawable/bg_blue_stroke_corner_19dp:@drawable/bg_gray_stroke_corner_19dp}"
-                        android:gravity="center"
-                        android:text="常开"
-                        android:textColor='@{stateVM.isBreakAlarmOpen?@color/colorPrimary:@color/sub_title_text_color}'
-                        tools:background="@drawable/bg_blue_stroke_corner_19dp"
-                        tools:textColor="@color/colorPrimary" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/radio_break_alarm_close"
-                        onClickWithDebouncing="@{(view)->click.onBreakAlarmCheckedChanged(view)}"
-                        android:layout_width="0dp"
-                        android:layout_height="38dp"
-                        android:layout_marginStart="@dimen/dimen_size_15"
-                        android:layout_weight="1"
-                        android:background="@{!stateVM.isBreakAlarmOpen?@drawable/bg_blue_stroke_corner_19dp:@drawable/bg_gray_stroke_corner_19dp}"
-                        android:gravity="center"
-                        android:text="常闭"
-                        android:textColor='@{!stateVM.isBreakAlarmOpen?@color/colorPrimary:@color/sub_title_text_color}'
-                        tools:background="@drawable/bg_gray_stroke_corner_19dp"
-                        tools:textColor="@color/title_text_color" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
+                    style="@style/Common_ClickableItem_Value_Style"
+                    android:text="@{stateVM.mode}"
+                    tools:text="关闭" />
             </androidx.appcompat.widget.LinearLayoutCompat>
-        </com.drake.brv.PageRefreshLayout>
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_Style"
-            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-            visible="@{stateVM.switchType==IOTRainStation.RAIN_OPEN}"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="50dp"
-            android:text="保存"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/refreshLayout" />
+            <androidx.appcompat.widget.LinearLayoutCompat
+                style="@style/Common_ClickableItem_Layout_Style"
+                visible='@{stateVM.mode.contains("雨量计")}'
+                android:background="@drawable/layer_common_click_item_with_divider"
+                android:onClick="@{()->click.onChooseResolutionClick()}">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <com.google.android.material.textview.MaterialTextView
+                    style="@style/Common_ClickableItem_Title_Style"
+                    android:text="雨量计分辨率（毫米）" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_rain_resolution"
+                    style="@style/Common_ClickableItem_Value_Style"
+                    android:text="@{stateVM.rainResolution}"
+                    tools:text="0.1" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                style="@style/Common_ClickableItem_Layout_Style"
+                visible='@{stateVM.supportDumpMInTime &amp;&amp; stateVM.mode.contains("雨量计")}'
+                android:background="@drawable/layer_common_click_item_with_divider">
+
+                <com.google.android.material.textview.MaterialTextView
+                    style="@style/Common_ClickableItem_Title_Style"
+                    android:text="翻斗翻转最小间隔（秒）" />
+
+                <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                    style="@style/Common_EditItem_EditText_Style"
+                    android:hint="请输入"
+                    android:inputType="number"
+                    android:text="@={stateVM.dumpMinTime}"
+                    app:lengthFilter="@{6}" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                style="@style/Common_ClickableItem_Layout_Style"
+                onClickWithDebouncing="@{()->click.onBreakAlarmModeChooseClick()}"
+                visible='@{stateVM.mode.contains("断线报警器")}'
+                android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+                <com.google.android.material.textview.MaterialTextView
+                    style="@style/Common_ClickableItem_Title_Style"
+                    android:text="断线报警器" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    style="@style/Common_ClickableItem_Value_Style"
+                    android:text="@{stateVM.breakAlarmMode}"
+                    tools:text="常开" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_reset"
+                style="@style/ResetButton_Style2"
+                android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                android:onClick="@{()->click.onResetButtonClick()}"
+                android:text="@string/button_reset_text" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_confirm"
+                style="@style/SubmitButton_Style2"
+                onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                android:enabled="@{stateVM.isDataModified}"
+                android:text="@string/button_save_text" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </com.drake.brv.PageRefreshLayout>
 </layout>

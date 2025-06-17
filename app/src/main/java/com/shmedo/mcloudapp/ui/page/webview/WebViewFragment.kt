@@ -20,6 +20,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentWebviewBinding
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import timber.log.Timber
@@ -50,15 +51,13 @@ class WebViewFragment : BaseFragment() {
                 nav().navigateUp()
             }
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if (mAgentWeb.webCreator.webView.canGoBack()) {
-                    mAgentWeb.webCreator.webView.goBack()
-                } else {
-                    nav().navigateUp()
-                }
+        registerOnBackPressedDispatcher {
+            if (mAgentWeb.webCreator.webView.canGoBack()) {
+                mAgentWeb.webCreator.webView.goBack()
+            } else {
+                nav().navigateUp()
             }
-        })
+        }
     }
 
     override fun initData() {

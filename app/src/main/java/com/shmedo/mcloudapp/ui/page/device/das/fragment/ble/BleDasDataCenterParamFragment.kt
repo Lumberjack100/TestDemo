@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.ui.page.device.das.fragment.ble
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
-import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import com.blankj.utilcode.util.ColorUtils
@@ -34,6 +33,7 @@ import com.shmedo.mcloudapp.databinding.FragmentBleDasDataCenterParamBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
@@ -77,13 +77,9 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                processBack(true)
-            }
-        })
-//        toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_device_param_edit)
-//        toolbarViewModel.toolbarTvActionText.set("取消")
+        registerOnBackPressedDispatcher {
+            processBack(true)
+        }
         toolbarViewModel.toolbarIvActionVisible.set(false)
         mStates.isEditable.set(true)
         initRefresh()

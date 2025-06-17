@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.blankj.utilcode.util.ColorUtils
@@ -31,20 +30,13 @@ import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.adapter.PageAdapter
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.collector_product.dialog.MR702PortSelectionPartShadowPopupView
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702IOPortFragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702PlusePortFragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS232Port1Fragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS232Port2Fragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port1Fragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port2Fragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port3Fragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RainPortFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -94,11 +86,9 @@ class MR702PortHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                nav().navigateUp()
-            }
-        })
+        registerOnBackPressedDispatcher {
+            nav().navigateUp()
+        }
     }
 
     override fun initData() {
