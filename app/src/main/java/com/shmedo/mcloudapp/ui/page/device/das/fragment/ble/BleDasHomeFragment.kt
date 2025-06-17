@@ -52,6 +52,7 @@ import com.shmedo.mcloudapp.ui.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasCollectorSettingFragment
 import com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasSensorHomeFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.BleDasHomeFragmentViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -262,7 +263,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
 
             is SensorConfigModule -> {//传感器配置
                 if (module.functionModule.navId != 0) {
-                    val bundle = BleDasSensorHomeFragment.newBundleArguments(
+                    val bundle = DasSensorHomeFragment.newBundleArguments(
                         mStates.collectorModel.get(),
                         productType,
                         communicateWay,

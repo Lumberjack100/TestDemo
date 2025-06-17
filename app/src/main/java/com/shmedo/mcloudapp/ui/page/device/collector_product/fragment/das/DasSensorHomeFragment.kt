@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.das.fragment.ble
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 
 import android.graphics.Typeface
 import android.os.Bundle
@@ -11,6 +11,7 @@ import com.blankj.utilcode.util.ColorUtils
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
@@ -21,6 +22,7 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentDasSensorHomeBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.adapter.PageAdapter
@@ -31,14 +33,13 @@ import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BleDa
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BleDasExternalVibratingSensorListFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.internalsensor.BleDasDigitalOsmometerFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.internalsensor.BleDasIOSensorFragment
+import com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor.DasExternalSensorListFragment
+import com.shmedo.mcloudapp.ui.page.device.das.fragment.internalsensor.DasDigitalOsmometerFragment
+import com.shmedo.mcloudapp.ui.page.device.das.fragment.internalsensor.DasIOSensorFragment
+import com.shmedo.mcloudapp.ui.page.device.das.fragment.internalsensor.DasMCUAddressFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 
-/**
- * 创建者：gonghe
- * 创建时间：2024/4/15
- * 描述： TODO
- */
-class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
+class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentDasSensorHomeBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
 
@@ -49,7 +50,7 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     private lateinit var deviceInfo: DeviceInfo
     private var bleDevice: DiscoveredBluetoothDevice? = null
 
-    private val tabNames = arrayListOf<String>("开关量", "数字式水位计", "扩展传感器")
+    private var tabNames = arrayListOf<String>()
 
 
     override fun initViewModel() {
@@ -79,55 +80,90 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
     override fun initData() {
         arguments?.let {
             collectorModel = it.getString(COLLECTOR_MODEL, "-1")
-            productType = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE)!!
-            communicateWay = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY)!!
-            deviceInfo = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO)!!
-            bleDevice = it.getParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE)
-            statusBarColor = it.getInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR)
+            productType = it.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!
+            communicateWay = it.getParcelable(AppContants.Extras.COMMUNICATION_WAY)!!
+            deviceInfo = it.getParcelable(AppContants.Extras.DEVICE_INFO)!!
+            bleDevice = it.getParcelable(AppContants.Extras.BLE_DEVICE)
+            statusBarColor = it.getInt(AppContants.Extras.STATUS_BAR_COLOR)
         }
+
+        tabNames.clear()
+        tabNames.add("开关量")
+        tabNames.add("数字式水位计")
+        // 4G模式且是MR701产品才显示MCU地址tab
+        if (communicateWay == NetPlatformConnect && deviceInfo.productName.contains("MR701")) {
+            tabNames.add("MCU地址")
+        }
+        tabNames.add("扩展传感器")
         initViewPager()
     }
 
     private fun initViewPager() {
-        val mFragments =
-            listOf<Fragment>(
-                BleDasIOSensorFragment.newInstance().apply {
-                    arguments = BaseIOTDeviceFragment.newBundleArguments(
-                        productType,
-                        communicateWay,
-                        deviceInfo,
-                        bleDevice
-                    )
-                },
-                BleDasDigitalOsmometerFragment.newInstance().apply {
-                    arguments = BaseIOTDeviceFragment.newBundleArguments(
-                        productType,
-                        communicateWay,
-                        deviceInfo,
-                        bleDevice
-                    )
-                },
-                if (collectorModel == "0${IOTSensorType.VIBRATING_SENSOR.code}")
-                    BleDasExternalVibratingSensorListFragment.newInstance().apply {
-                        arguments = BaseBleDasExternalSensorListFragment.newBundleArguments(
-                            collectorModel,
-                            productType,
-                            communicateWay,
-                            deviceInfo,
-                            bleDevice,
-                        )
-                    } else
-                    BleDasExternalDigitalSensorListFragment.newInstance().apply {
-                        arguments = BaseBleDasExternalSensorListFragment.newBundleArguments(
-                            collectorModel,
-                            productType,
-                            communicateWay,
-                            deviceInfo,
-                            bleDevice,
-                        )
-                    }
+        val fragmentList = mutableListOf<Fragment>()
+
+        if (communicateWay == BleConnect) {
+            // 蓝牙模式使用蓝牙相关的Fragment
+            val bundle = BaseIOTDeviceFragment.Companion.newBundleArguments(
+                productType,
+                communicateWay,
+                deviceInfo,
+                bleDevice
             )
-        binding.viewpager.adapter = PageAdapter(this, mFragments)
+
+            fragmentList.add(BleDasIOSensorFragment.Companion.newInstance().apply {
+                arguments = bundle
+            })
+            fragmentList.add(BleDasDigitalOsmometerFragment.Companion.newInstance().apply {
+                arguments = bundle
+            })
+
+            // 根据collectorModel决定使用哪种扩展传感器Fragment
+            val externalSensorFragment = if (collectorModel == "0${IOTSensorType.VIBRATING_SENSOR.code}")
+                BleDasExternalVibratingSensorListFragment.Companion.newInstance().apply {
+                    arguments = BaseBleDasExternalSensorListFragment.Companion.newBundleArguments(
+                        collectorModel,
+                        productType,
+                        communicateWay,
+                        deviceInfo,
+                        bleDevice,
+                    )
+                } else
+                BleDasExternalDigitalSensorListFragment.Companion.newInstance().apply {
+                    arguments = BaseBleDasExternalSensorListFragment.Companion.newBundleArguments(
+                        collectorModel,
+                        productType,
+                        communicateWay,
+                        deviceInfo,
+                        bleDevice,
+                    )
+                }
+            fragmentList.add(externalSensorFragment)
+        } else {
+            // 4G模式使用原有的Fragment
+            val bundle = BaseIOTDeviceFragment.Companion.newBundleArguments(
+                productType,
+                communicateWay,
+                deviceInfo,
+                bleDevice
+            )
+
+            fragmentList.add(DasIOSensorFragment.Companion.newInstance().apply {
+                arguments = bundle
+            })
+            fragmentList.add(DasDigitalOsmometerFragment.Companion.newInstance().apply {
+                arguments = bundle
+            })
+            if (deviceInfo.productName.contains("MR701")) {
+                fragmentList.add(DasMCUAddressFragment.Companion.newInstance().apply {
+                    arguments = bundle
+                })
+            }
+            fragmentList.add(DasExternalSensorListFragment.Companion.newInstance().apply {
+                arguments = bundle
+            })
+        }
+
+        binding.viewpager.adapter = PageAdapter(this, fragmentList)
         binding.viewpager.offscreenPageLimit = tabNames.size
         binding.viewpager.isUserInputEnabled = false
         binding.tabs.addOnTabSelectedListener(this)
@@ -183,6 +219,7 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
         private const val normalSize: Float = 15f
 
         const val COLLECTOR_MODEL = "collector_model"
+
         fun newBundleArguments(
             collectorModel: String,
             type: ProductType = ProductType.UnKnown,
@@ -192,11 +229,11 @@ class BleDasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
             putString(COLLECTOR_MODEL, collectorModel)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(com.shmedo.core.commonlib.utils.AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(com.shmedo.core.commonlib.utils.AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

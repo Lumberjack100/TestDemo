@@ -38,7 +38,7 @@ import com.shmedo.mcloudapp.model.DASSensorItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.RVEmptyFooter
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.BleDasSensorHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasSensorHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor.BaseExternalDigitalSensorFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor.DasExternalVibratingSensorFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalSensorListViewModel
@@ -510,7 +510,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             bleDevice: DiscoveredBluetoothDevice? = null,
             statusBarColor: Int = R.color.white
         ): Bundle = Bundle().apply {
-            putString(BleDasSensorHomeFragment.COLLECTOR_MODEL, collectorModel)
+            putString(COLLECTOR_MODEL, collectorModel)
             putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
             putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
             putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
