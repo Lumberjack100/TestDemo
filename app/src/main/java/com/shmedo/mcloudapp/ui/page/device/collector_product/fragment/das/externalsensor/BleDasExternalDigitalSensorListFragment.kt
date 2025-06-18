@@ -108,6 +108,9 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
     }
 
     override fun setResultData(cmdStr: String) {
+        if (isRestrictHiddenMode() && isHidden) {
+            return
+        }
         when (MDCommandUtil.extractCommandType(cmdStr)) {
             MDCommandType.COLLECTOR_CONFIG -> {
                 val result = mdParseManager.parse<DasCollectorInfo>(
@@ -125,7 +128,7 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
                 }
             }
 
-            MDCommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER -> {
+            MDCommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER -> {//获取XX采集器YY通道的传感器参数 ##101
                 val result = mdParseManager.parse<DasExternalSensorInfo>(
                     cmdStr,
                     MDCommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER
@@ -149,7 +152,7 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
             MDCommandType.SET_COLLECTOR_ADDRESS -> {
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        handleFailureResult("采集器配置出错!")
+                        handleFailureResult("采集器地址配置出错!")
                         return
                     }
                     else -> {
