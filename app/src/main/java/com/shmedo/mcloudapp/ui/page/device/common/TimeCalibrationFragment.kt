@@ -9,10 +9,16 @@ import com.blankj.utilcode.util.TimeUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.cmd.base.md_cmd.model.common.DeviceTimeInfo
+import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
+import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
+import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
@@ -20,10 +26,12 @@ import com.shmedo.mcloudapp.databinding.FragmentTimeCalibrationBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.TimeCalibrationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 /**
  * @author：gonghe
@@ -36,6 +44,9 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: TimeCalibrationViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
+    private val mdParseManager: MDParserManager by inject()
+
+    private var isDoSetTimeCmd = false
 
     override fun initViewModel() {
         super.initViewModel()
@@ -74,8 +85,27 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            initSaveCommand()
+            if (communicateWay == BleConnect && (productType == ProductType.DAS || productType == ProductType.BHY || productType == ProductType.COLLECTOR_R_1)) {
+                isDoSetTimeCmd = true
+                initDasBleSaveCommand()
+            }
+            else{
+                initSaveCommand()
+            }
         }
+    }
+
+    private fun initDasBleSaveCommand() {
+        commandItems.clear()
+        val command =
+            MDCommandUtil.getCommand(
+                MDCommandType.LOCAL_TIME, TimeUtils.getNowString(
+                    TimeUtils.getSafeDateFormat("yyMMddHHmmss")
+                )
+            )
+        commandItems.add(command)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun initSaveCommand() {
@@ -90,7 +120,11 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
     }
 
     override fun lazyLoadData() {
-        queryTerminalTime()
+        if (communicateWay == BleConnect && (productType == ProductType.DAS || productType == ProductType.BHY || productType == ProductType.COLLECTOR_R_1)) {
+            isDoSetTimeCmd = false
+            queryDasBleTerminalTime()
+        } else
+            queryTerminalTime()
     }
 
     /**
@@ -102,6 +136,21 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
             IOTCommandUtil.getCommand(IOTCommandType.QUERY_TERMINAL_TIME)
         commandItems.add(command)
 
+        showLoadingDialog(StringUtils.getString(R.string.loading))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * DAS 设备蓝牙模式下查询终端时间
+     */
+    private fun queryDasBleTerminalTime() {
+        commandItems.clear()
+
+        val command =
+            MDCommandUtil.getCommand(MDCommandType.LOCAL_TIME)
+        commandItems.add(command)
+
+        Timber.d("获取设备时间信息指令===%s", command)
         showLoadingDialog(StringUtils.getString(R.string.loading))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -160,6 +209,45 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        if (communicateWay == BleConnect && (productType == ProductType.DAS || productType == ProductType.BHY || productType == ProductType.COLLECTOR_R_1)) {
+            handleDasBleCommandResult(cmdStr)
+        } else {
+            handleCommandResult(cmdStr)
+        }
+    }
+
+    private fun handleDasBleCommandResult(cmdStr: String) {
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.LOCAL_TIME -> {
+                val result = mdParseManager.parse<DeviceTimeInfo>(
+                    cmdStr,
+                    MDCommandType.LOCAL_TIME
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询设备时间出错：${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    is MDCommandResult.Success -> {
+                        sendCommandFromCmdList { }
+                        if (!isDoSetTimeCmd) {
+                            initDeviceTime(result.data.time)
+                        }else{
+                            processNavigateUp("校准成功")
+                        }
+                    }
+                }
+            }
+
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
+        }
+    }
+
+    private fun handleCommandResult(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME -> {
                 val result = iotParseManager.parse<String>(

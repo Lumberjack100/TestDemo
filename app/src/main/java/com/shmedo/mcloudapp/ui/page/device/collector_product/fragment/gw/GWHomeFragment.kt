@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.gw
 import com.blankj.utilcode.util.ConvertUtils
 import com.drake.brv.utils.models
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
@@ -11,7 +10,6 @@ import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.model.LoraConfigModule
 import com.shmedo.mcloudapp.ui.page.device.common.NewUniversalBaseDeviceHomeFragment
 
 /**
@@ -51,7 +49,7 @@ class GWHomeFragment : NewUniversalBaseDeviceHomeFragment() {
         val configModuleTree = ConfigModuleTree()
         configModuleTree.configModules.add(
             ConfigModule(
-                LoraConfigModule(
+                CommonModule(
                     name = "电台配置",
                     resID = R.drawable.ic_module_sensor_setting_new,
                     navId = R.id.action_global_to_radioSettingsFragment
@@ -60,7 +58,7 @@ class GWHomeFragment : NewUniversalBaseDeviceHomeFragment() {
         )
         configModuleTree.configModules.add(
             ConfigModule(
-                LoraConfigModule(
+                CommonModule(
                     name = "LORA配置",
                     resID = R.drawable.ic_module_lora_new,
                     navId = R.id.action_global_to_loraSettingFragment
@@ -69,7 +67,7 @@ class GWHomeFragment : NewUniversalBaseDeviceHomeFragment() {
         )
         configModuleTree.configModules.add(
             ConfigModule(
-                AdvancedSettingsModule(
+                CommonModule(
                     name = "系统配置",
                     resID = R.drawable.ic_module_system_setting,
                     navId = R.id.action_global_to_advancedSettingFragment

@@ -38,8 +38,6 @@ import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.model.AdvancedSettingsModule
-import com.shmedo.mcloudapp.model.AlarmConfigModule
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
@@ -50,11 +48,7 @@ import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusEnum
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.model.LoraConfigModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
-import com.shmedo.mcloudapp.model.SensorConfigModule
-import com.shmedo.mcloudapp.model.TimeCalibrationModule
-import com.shmedo.mcloudapp.model.WorkModeModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
@@ -261,7 +255,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         val configModuleTree = ConfigModuleTree()
         configModuleTree.configModules.add(
             ConfigModule(
-                WorkModeModule(
+                CommonModule(
                     name = "工作模式",
                     resID = R.drawable.ic_module_work_mode_new,
                     navId = R.id.action_global_to_udWorkModelParamFragment
@@ -297,7 +291,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         )
         configModuleTree.configModules.add(
             ConfigModule(
-                SensorConfigModule(
+                CommonModule(
                     name = "传感配置",
                     resID = R.drawable.ic_module_sensor_setting_new,
                     navId = R.id.action_global_to_udProductSensorParamFragment
@@ -306,7 +300,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         )
         configModuleTree.configModules.add(
             ConfigModule(
-                SensorConfigModule(
+                CommonModule(
                     name = "端口配置",
                     resID = R.drawable.ic_module_serial_port,
                     navId = R.id.action_global_to_udSerialPortParamFragment
@@ -315,7 +309,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         )
         configModuleTree.configModules.add(
             ConfigModule(
-                LoraConfigModule(
+                CommonModule(
                     name = "电台配置",
                     resID = R.drawable.ic_module_lora_new,
                     navId = R.id.action_global_to_udRadioParamFragment
@@ -324,7 +318,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         )
         configModuleTree.configModules.add(
             ConfigModule(
-                AlarmConfigModule(
+                CommonModule(
+                    name = "报警配置",
                     resID = R.drawable.ic_module_alarm_new,
                     navId = R.id.action_global_to_alarmSettingFragment
                 )
@@ -332,7 +327,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         )
         configModuleTree.configModules.add(
             ConfigModule(
-                TimeCalibrationModule(
+                CommonModule(
                     name = "时间校准",
                     resID = R.drawable.ic_module_time_calibration_new,
                     navId = R.id.action_global_to_time_calibration
@@ -341,7 +336,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         )
         configModuleTree.configModules.add(
             ConfigModule(
-                AdvancedSettingsModule(
+                CommonModule(
                     name = "系统配置",
                     resID = R.drawable.ic_module_system_setting,
                     navId = R.id.action_global_to_advancedSettingFragment

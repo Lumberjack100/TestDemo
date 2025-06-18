@@ -36,8 +36,6 @@ import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
-import com.shmedo.mcloudapp.model.AdvancedSettingsModule
-import com.shmedo.mcloudapp.model.AlarmConfigModule
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
@@ -48,10 +46,8 @@ import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusEnum
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.model.LoraConfigModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.SensorConfigModule
-import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
@@ -288,35 +284,35 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
                 ),
 
                 ConfigModule(
-                    LoraConfigModule(
+                    CommonModule(
                         name = "LORA配置",
                         resID = R.drawable.ic_module_lora_new,
                         navId = R.id.action_global_to_loraSettingFragment
                     )
                 ),
                 ConfigModule(
-                    SensorConfigModule(
+                    CommonModule(
                         name = "传感配置",
                         resID = R.drawable.ic_module_sensor_setting_new,
                         navId = 0
                     )
                 ),
                 ConfigModule(
-                    AlarmConfigModule(
+                    CommonModule(
                         name = "报警配置",
                         resID = R.drawable.ic_module_alarm_new,
                         navId = R.id.action_global_to_alarmSettingFragment
                     )
                 ),
                 ConfigModule(
-                    TimeCalibrationModule(
+                    CommonModule(
                         name = "时间校准",
                         resID = R.drawable.ic_module_time_calibration_new,
                         navId = R.id.action_global_to_time_calibration
                     )
                 ),
                 ConfigModule(
-                    AdvancedSettingsModule(
+                    CommonModule(
                         name = "系统配置",
                         resID = R.drawable.ic_module_system_setting,
                         navId = R.id.action_global_to_advancedSettingFragment

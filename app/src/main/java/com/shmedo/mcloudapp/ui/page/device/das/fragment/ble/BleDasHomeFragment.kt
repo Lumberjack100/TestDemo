@@ -12,11 +12,9 @@ import com.hjq.toast.Toaster
 import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
-import com.lxj.xpopup.XPopup
 import com.shmedo.lib.cmd.base.md_cmd.assemble.entity.das.AuthenticationEntity
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDLowEnergyModel
-import com.shmedo.lib.cmd.base.md_cmd.model.common.DeviceTimeInfo
 import com.shmedo.lib.cmd.base.md_cmd.model.das.AuthenticationInfo
 import com.shmedo.lib.cmd.base.md_cmd.model.das.AuthenticationResultInfo
 import com.shmedo.lib.cmd.base.md_cmd.model.das.DasBaseConfigInfo
@@ -41,20 +39,18 @@ import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CollectorConfigModule
+import com.shmedo.mcloudapp.model.CommonModule
 import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.RebootModule
 import com.shmedo.mcloudapp.model.RunningStatusModule
 import com.shmedo.mcloudapp.model.SensorConfigModule
 import com.shmedo.mcloudapp.model.TelemetryDataModule
-import com.shmedo.mcloudapp.model.TimeCalibrationModule
-import com.shmedo.mcloudapp.ui.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasCollectorSettingFragment
-import com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasSensorHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.BleDasHomeFragmentViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import kotlinx.coroutines.flow.debounce
@@ -66,16 +62,13 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentBleDasHomeBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var mStates: BleDasHomeFragmentViewModel
-    private lateinit var mCommandResponseStates: CommandResponseViewModel
     private val mdParseManager: MDParserManager by inject()
 
-    private var isDoSetTimeCmd = false
 
     override fun initViewModel() {
         super.initViewModel()
         toolbarViewModel = getFragmentScopeViewModel()
         mStates = getFragmentScopeViewModel()
-        mCommandResponseStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -228,13 +221,6 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             return
         }
         when (module.functionModule) {
-            is TimeCalibrationModule -> {//时间校准
-                isDoSetTimeCmd = false
-                mCommandResponseStates.isResponseLoading.set(true)
-                queryTerminalTime()
-                showTimeCalibrationPopup()
-            }
-
             is TelemetryDataModule -> {//召测
                 doTelemetryCmd()
             }
@@ -294,35 +280,6 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    /**
-     * 显示时间校准弹窗
-     */
-    private fun showTimeCalibrationPopup() {
-        val popupView = TimeCalibrationPopupView(requireContext())
-        popupView.setTitle("时间校准", mCommandResponseStates)
-            .setClickListener(object : TimeCalibrationPopupView.OnClickListener {
-                override fun onSettingClick() {
-                    isDoSetTimeCmd = true
-                    commandItems.clear()
-                    val command =
-                        MDCommandUtil.getCommand(
-                            MDCommandType.LOCAL_TIME, TimeUtils.getNowString(
-                                TimeUtils.getSafeDateFormat("yyMMddHHmmss")
-                            )
-                        )
-                    commandItems.add(command)
-                    showLoadingDialog(StringUtils.getString(R.string.processing))
-                    sendCommandFromCmdList(isStartTimeoutJob = true)
-                }
-            })
-        XPopup.Builder(context)
-            .dismissOnBackPressed(false) // 按返回键是否关闭弹窗，默认为true
-            .dismissOnTouchOutside(false)// 点击外部是否关闭弹窗，默认为true
-            .enableDrag(false)
-            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-            .asCustom(popupView)
-            .show()
-    }
 
     override fun createObserver() {
         super.createObserver()
@@ -336,7 +293,6 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     }
 
     override fun onBleDeviceReady() {
-//        super.onBleDeviceReady()
         setAuthenticateWay()
     }
 
@@ -415,16 +371,6 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = false)
     }
 
-    private fun queryTerminalTime() {
-        commandItems.clear()
-
-        val command =
-            MDCommandUtil.getCommand(MDCommandType.LOCAL_TIME)
-        commandItems.add(command)
-
-        Timber.d("获取设备时间信息指令===%s", command)
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
 
     private fun doTelemetryCmd() {
         commandItems.clear()
@@ -455,34 +401,6 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = false,
-            isMessageDialog = isMessageDialog,
-            errMsg = errMsg
-        )
-        when (MDCommandUtil.extractCommandType(cmdStr)) {
-            MDCommandType.LOCAL_TIME,
-            -> {
-                mCommandResponseStates.isResponseLoading.set(false)
-                mCommandResponseStates.isResponseSuccess.set(false)
-                mCommandResponseStates.responseContent.set("设备未响应")
-            }
-
-            else -> {
-
-            }
-        }
-    }
 
     override fun setResultData(cmdStr: String) {
         updateLastCommunicationTime()
@@ -561,37 +479,6 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("激活成功")
-                        }
-                    }
-                }
-            }
-
-            MDCommandType.LOCAL_TIME -> {
-                val result = mdParseManager.parse<DeviceTimeInfo>(
-                    cmdStr,
-                    MDCommandType.LOCAL_TIME
-                )
-                when (result) {
-                    is MDCommandResult.Failure -> {
-                        cancelNearbyCommunicationTimeoutJob()
-                        val errMsg = "查询/设置终端时间出错"
-                        Timber.e("$errMsg: ${result.message}")
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(false)
-                        mCommandResponseStates.responseContent.set(errMsg)
-                        return
-                    }
-
-                    is MDCommandResult.Success -> {
-                        sendCommandFromCmdList()
-                        mCommandResponseStates.isResponseLoading.set(false)
-                        mCommandResponseStates.isResponseSuccess.set(true)
-                        mCommandResponseStates.isCalibratingSuccess.set(isDoSetTimeCmd)
-                        if (!isDoSetTimeCmd) {
-                            mCommandResponseStates.deviceTime.set(result.data.time)
-                            mCommandResponseStates.systemTime.set(TimeUtils.getNowString())
-                        } else {
-                            mCommandResponseStates.deviceTime.set(mCommandResponseStates.systemTime.get())
                         }
                     }
                 }
@@ -693,7 +580,13 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             )
         )
         moduleList.add(
-            ConfigModule(TimeCalibrationModule())
+            ConfigModule(
+                CommonModule(
+                    name = "时间校准",
+                    resID = R.drawable.ic_module_time_calibration_new,
+                    navId = R.id.action_global_to_time_calibration
+                )
+            )
         )
         moduleList.add(
             ConfigModule(TelemetryDataModule())

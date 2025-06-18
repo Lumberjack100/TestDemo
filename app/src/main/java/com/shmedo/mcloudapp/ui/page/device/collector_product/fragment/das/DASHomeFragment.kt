@@ -1,19 +1,10 @@
 package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 
 import com.blankj.utilcode.util.ConvertUtils
-import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
-import com.hjq.toast.Toaster
-import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
-import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
-import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.extensions.showMessage
-import com.shmedo.mcloudapp.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
@@ -23,15 +14,13 @@ import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.model.OneClickSilenceModule
-import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.ui.page.device.common.NewUniversalBaseDeviceHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/5/7
- * 描述： 物联网采集器(DAS)
+ * 描述： 物联网采集器(DAS)- 支持4G通讯方式
  */
 class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
     override fun initData() {
@@ -89,7 +78,7 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
         val configModuleTree = ConfigModuleTree()
         configModuleTree.configModules.add(
             ConfigModule(
-                DataCenterModule(
+                CommonModule(
                     name = "采集配置",
                     resID = R.drawable.ic_module_collect_setting,
                     navId = R.id.action_global_to_dasCollectorSettingFragment
@@ -107,7 +96,7 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
         )
         configModuleTree.configModules.add(
             ConfigModule(
-                DataCenterModule(
+                CommonModule(
                     name = "上报配置",
                     resID = R.drawable.ic_module_work_mode_new,
                     navId = R.id.action_global_to_dasTerminalParameterFragment
@@ -116,7 +105,7 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
         )
         configModuleTree.configModules.add(
             ConfigModule(
-                DataCenterModule(
+                CommonModule(
                     name = "传感配置",
                     resID = R.drawable.ic_module_sensor_setting_new,
                     navId = R.id.action_global_to_dasSensorHomeFragment
@@ -125,7 +114,7 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
         )
         configModuleTree.configModules.add(
             ConfigModule(
-                TimeCalibrationModule(
+                CommonModule(
                     name = "时间校准",
                     resID = R.drawable.ic_module_time_calibration_new,
                     navId = R.id.action_global_to_time_calibration
@@ -134,7 +123,7 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
         )
         configModuleTree.configModules.add(
             ConfigModule(
-                AdvancedSettingsModule(
+                CommonModule(
                     name = "系统配置",
                     resID = R.drawable.ic_module_system_setting,
                     navId = R.id.action_global_to_advancedSettingFragment
@@ -170,45 +159,10 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
                 )
             }
 
-            is OneClickSilenceModule -> {
-                showMessage("是否立即关闭语音播报？", "温馨提示", "确定", {
-                    commandItems.clear()
-                    val command =
-                        IOTCommandUtil.getCommand(IOTCommandType.SET_VOICE_BROADCAST_VOLUME_OFF)
-                    commandItems.add(command)
-
-                    showLoadingDialog(StringUtils.getString(R.string.processing))
-                    sendCommandFromCmdList(isStartTimeoutJob = true)
-                }, "取消")
-            }
-
             else -> {
                 super.processOtherItemClick(configModule)
             }
         }
     }
 
-    override fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {
-        when (commandType) {
-            IOTCommandType.SET_VOICE_BROADCAST_VOLUME_OFF -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "关闭语音播报失败:" + result.message
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            Toaster.show("已关闭语音播报")
-                        }
-                    }
-                }
-            }
-
-            else -> {
-
-            }
-        }
-    }
 }

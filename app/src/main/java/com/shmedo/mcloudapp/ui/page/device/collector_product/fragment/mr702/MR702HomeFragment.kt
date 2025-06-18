@@ -31,7 +31,6 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
-import com.shmedo.mcloudapp.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
@@ -42,10 +41,7 @@ import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusEnum
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.model.LoraConfigModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
-import com.shmedo.mcloudapp.model.SensorConfigModule
-import com.shmedo.mcloudapp.model.TimeCalibrationModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
@@ -261,35 +257,35 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 ),
 
                 ConfigModule(
-                    LoraConfigModule(
+                    CommonModule(
                         name = "上报配置",
                         resID = R.drawable.ic_module_work_mode_new,
                         navId = R.id.action_global_to_mR702ReportConfigFragment
                     )
                 ),
                 ConfigModule(
-                    SensorConfigModule(
+                    CommonModule(
                         name = "端口配置",
                         resID = R.drawable.ic_module_serial_port,
                         navId = R.id.action_global_to_mR702PortHomeFragment
                     )
                 ),
                 ConfigModule(
-                    SensorConfigModule(
+                    CommonModule(
                         name = "设备操作",
                         resID = R.drawable.ic_module_equip_operation,
                         navId = R.id.action_global_to_mR702EquipmentOperationFragment
                     )
                 ),
                 ConfigModule(
-                    TimeCalibrationModule(
+                    CommonModule(
                         name = "时间校准",
                         resID = R.drawable.ic_module_time_calibration_new,
                         navId = R.id.action_global_to_time_calibration
                     )
                 ),
                 ConfigModule(
-                    AdvancedSettingsModule(
+                    CommonModule(
                         name = "系统配置",
                         resID = R.drawable.ic_module_system_setting,
                         navId = R.id.action_global_to_advancedSettingFragment
