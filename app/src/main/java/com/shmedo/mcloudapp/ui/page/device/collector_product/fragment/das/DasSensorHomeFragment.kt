@@ -32,8 +32,6 @@ import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BaseB
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BleDasExternalDigitalSensorListFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BleDasExternalVibratingSensorListFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor.DasExternalSensorListFragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasDigitalOsmometerFragment
-import com.shmedo.mcloudapp.ui.page.device.das.fragment.internalsensor.DasMCUAddressFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 
 /**

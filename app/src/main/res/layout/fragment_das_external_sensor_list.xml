@@ -15,44 +15,45 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.drake.brv.PageRefreshLayout
+        android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/main_bg_gray">
 
-        <com.drake.brv.PageRefreshLayout
-            android:id="@+id/refreshLayout"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="wrap_content">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:paddingHorizontal="@dimen/dimen_size_15"
-                android:paddingTop="@dimen/dimen_size_15"
-                android:paddingBottom="110dp"
-                android:splitMotionEvents="false"
-                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="2"
-                tools:itemCount="16"
-                tools:listitem="@layout/item_mr702_port_sensor" />
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                android:paddingTop="@dimen/page_content_container_padding_top_12"
+                android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
-        </com.drake.brv.PageRefreshLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/shape_common_click_item_bottom_corner_4"
+                    android:clipToPadding="false"
+                    android:padding="@dimen/dimen_size_15"
+                    android:splitMotionEvents="false"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="2"
+                    tools:itemCount="6"
+                    tools:listitem="@layout/item_mr702_port_sensor" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_Style"
-            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="100dp"
-            android:text="保存"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/refreshLayout" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_confirm"
+                    style="@style/SubmitButton_Style2"
+                    onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                    android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                    android:text="@string/button_save_text" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.core.widget.NestedScrollView>
+    </com.drake.brv.PageRefreshLayout>
 </layout>

@@ -38,7 +38,6 @@ import com.shmedo.mcloudapp.model.DASSensorItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.RVEmptyFooter
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasSensorHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor.BaseExternalDigitalSensorFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor.DasExternalVibratingSensorFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalSensorListViewModel
@@ -112,7 +111,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             rv.addItemDecoration(
                 MyGridSpacingItemDecoration(
                     2,
-                    ConvertUtils.dp2px(10f),
+                    ConvertUtils.dp2px(8f),
                     false
                 )
             )

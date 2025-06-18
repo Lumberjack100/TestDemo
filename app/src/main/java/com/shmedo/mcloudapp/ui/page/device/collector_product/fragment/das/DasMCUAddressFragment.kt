@@ -1,11 +1,10 @@
-package com.shmedo.mcloudapp.ui.page.device.das.fragment.internalsensor
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 
 import android.os.Bundle
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.McuAddressInfo
@@ -14,14 +13,21 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.databinding.FragmentDasMcuAddressBinding
+import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.databinding.FragmentDasMcuAddressBinding
-import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasMCUAddressViewModel
 import org.koin.android.ext.android.inject
 
+/**
+ * @author：gonghe
+ * @time: 2025/6/18
+ * @desc: 物联网采集器(MR701)地址配置页面 - 支持 4G 通讯方式
+ *
+ */
 class DasMCUAddressFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasMcuAddressBinding
     private lateinit var mStates: DasMCUAddressViewModel
@@ -59,8 +65,25 @@ class DasMCUAddressFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    override fun initData() {
+        super.initData()
+        resetDefaultParams()
+        // 保存初始状态
+        mStates.saveInitialState()
+    }
+
+    private fun resetDefaultParams() {
+        mStates.address.set("")
+    }
+
     inner class ClickProxy : BaseClickProxy() {
-        fun onSubmitClick() {
+
+        /** 恢复默认配置 */
+        override fun onResetButtonClick() {
+            resetDefaultParams()
+        }
+
+        override fun onSubmitButtonClick() {
             KeyboardUtils.hideSoftInput(binding.root)
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
@@ -118,7 +141,7 @@ class DasMCUAddressFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询 MCU 地址出错!: ${result.message}"
+                        val errMsg = "查询参数出错!: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -128,6 +151,8 @@ class DasMCUAddressFragment : BaseIOTDeviceFragment() {
                             binding.refreshLayout.finish()
                         }
                         mStates.address.set(result.data.mcuaddr)
+                        // 保存初始状态
+                        mStates.saveInitialState()
                     }
                 }
             }
@@ -135,7 +160,7 @@ class DasMCUAddressFragment : BaseIOTDeviceFragment() {
             IOTCommandType.DAS_MD_SET_MCU_ADDRESS -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置 MCU 地址出错!: ${result.message}"
+                        val errMsg = "MCU 配置出错!: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -143,6 +168,8 @@ class DasMCUAddressFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("数据保存成功")
+                            // 保存初始状态
+                            mStates.saveInitialState()
                         }
                     }
                 }

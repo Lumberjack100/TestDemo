@@ -86,7 +86,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
             rv.addItemDecoration(
                 MyGridSpacingItemDecoration(
                     2,
-                    ConvertUtils.dp2px(10f),
+                    ConvertUtils.dp2px(8f),
                     false
                 )
             )
