@@ -49,7 +49,7 @@ import timber.log.Timber
  * 创建时间：2024/6/7
  * 描述： 物联网采集器(DAS)数字式传感器参数配置页面基类 - 支持4G和蓝牙两种通讯方式
  */
-abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
+abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentBaseExternalDigitalSensorBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
     private lateinit var sensorListViewModel: DasExternalSensorListViewModel<DasExternalSensorInfo>

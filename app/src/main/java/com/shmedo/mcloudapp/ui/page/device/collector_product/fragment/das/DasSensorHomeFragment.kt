@@ -29,9 +29,9 @@ import com.shmedo.mcloudapp.ui.adapter.PageAdapter
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.DasExternalSensorListFragment
-import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BaseBleDasExternalSensorListFragment
-import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BleDasExternalDigitalSensorListFragment
-import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BleDasExternalVibratingSensorListFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.BaseDasExternalSensorListFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.BleDasExternalDigitalSensorListFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.BleDasExternalVibratingSensorListFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 
 /**
@@ -120,7 +120,7 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                 if (collectorModel == "0${IOTSensorType.VIBRATING_SENSOR.code}")
                     BleDasExternalVibratingSensorListFragment.Companion.newInstance().apply {
                         arguments =
-                            BaseBleDasExternalSensorListFragment.Companion.newBundleArguments(
+                            BaseDasExternalSensorListFragment.Companion.newBundleArguments(
                                 collectorModel,
                                 productType,
                                 communicateWay,
@@ -130,7 +130,7 @@ class DasSensorHomeFragment : BaseFragment(), TabLayout.OnTabSelectedListener {
                     } else
                     BleDasExternalDigitalSensorListFragment.Companion.newInstance().apply {
                         arguments =
-                            BaseBleDasExternalSensorListFragment.Companion.newBundleArguments(
+                            BaseDasExternalSensorListFragment.Companion.newBundleArguments(
                                 collectorModel,
                                 productType,
                                 communicateWay,

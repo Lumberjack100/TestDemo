@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor
 
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
@@ -22,7 +22,7 @@ import timber.log.Timber
  * 创建时间：2024/4/18
  * 描述：蓝牙通讯模式 - DAS振弦式扩展传感器列表页面
  */
-class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFragment() {
+class BleDasExternalVibratingSensorListFragment : BaseDasExternalSensorListFragment() {
 
     private val mdParseManager: MDParserManager by inject()
 
@@ -33,7 +33,7 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
             MDCommandUtil.formatStringTwo(mStates.collectorType.get())
         )
         commandItems.add(command)
-        Timber.d("查询采集器配置信息===%s", command)
+        Timber.Forest.d("查询采集器配置信息===%s", command)
 
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
@@ -51,9 +51,9 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
                 "$model$address"
             )
             commandItems.add(command)
-            Timber.d(
+            Timber.Forest.d(
                 "获取 %s 采集器 %s 通道的传感器参数===%s",
-                IOTSensorType.value(mStates.collectorType.get()),
+                IOTSensorType.Companion.value(mStates.collectorType.get()),
                 address,
                 command
             )
@@ -77,6 +77,13 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 删除传感器
+     */
+    override fun onDeleteSensor() {
+        updateAdapterRemoveSensorItem()
     }
 
     override fun initSaveCommand() {
@@ -163,7 +170,7 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
                         val commandDesc = if (commandDescItems.isEmpty()) "触发值" else {
                             commandDescItems.first
                         }
-                        Timber.d("设置$commandDesc")
+                        Timber.Forest.d("设置$commandDesc")
                         sendCommandFromCmdList()
                     }
                 }
@@ -199,7 +206,7 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
                         val commandDesc = if (commandDescItems.isEmpty()) "修正值" else {
                             commandDescItems.first
                         }
-                        Timber.d("设置$commandDesc")
+                        Timber.Forest.d("设置$commandDesc")
                         sendCommandFromCmdList()
                     }
                 }
@@ -223,7 +230,7 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
                         commandDesc = if (commandDescItems.isEmpty()) "" else {
                             commandDescItems.first
                         }
-                        Timber.d("设置$commandDesc")
+                        Timber.Forest.d("设置$commandDesc")
                         sendCommandFromCmdList()
                     }
                 }
@@ -269,7 +276,7 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
             MDCommandType.SET_COLLECTOR_SENSOR,
             builderFirst.toString()
         )
-        Timber.d("设置振弦式采集器接入的传感器===%s", command)
+        Timber.Forest.d("设置振弦式采集器接入的传感器===%s", command)
         commandItems.add(command)
     }
 
@@ -296,7 +303,7 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
             MDCommandType.COLLECTOR_SENSOR_THRESHOLD_MULTI,
             triggerBuilder.toString()
         )
-        Timber.d("设置传感器触发阈值===%s", command)
+        Timber.Forest.d("设置传感器触发阈值===%s", command)
         commandItems.add(command)
     }
 
@@ -312,7 +319,7 @@ class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFr
             .forEach { sensorAddress ->
                 val sensorInfo = mStates.sensorModelMap[sensorAddress]!!
 
-                when (IOTSensorType.value(sensorInfo.type)) {
+                when (IOTSensorType.Companion.value(sensorInfo.type)) {
                     IOTSensorType.KANG_PERCOLATE -> {//基康渗压计
                         var command = MDCommandUtil.getCommand(
                             MDCommandType.VIBRATING_SENSOR_PARAMETER,

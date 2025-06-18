@@ -349,7 +349,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     mStates.extension6Title.set("初始温度T0（摄氏度）")
                     mStates.extension6Value.set(sensorInfo.temp_t0.formatDoubleValue("0", 2))
 
-                    mStates.isExtension7Support.set(true)
+                    mStates.isExtension7Support.set(sensorInfo.elastic_mod != IOTConstants.NULL_KEY)
                     mStates.extension7Title.set("膨胀系数")
                     mStates.extension7Value.set(sensorInfo.elastic_mod)
 

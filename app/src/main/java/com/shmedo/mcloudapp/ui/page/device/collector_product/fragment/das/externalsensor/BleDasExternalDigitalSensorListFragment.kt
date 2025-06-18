@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor
 
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
@@ -22,8 +22,8 @@ import timber.log.Timber
  * 创建时间：2024/4/18
  * 描述：蓝牙通讯模式 - DAS数字式扩展传感器列表页面
  */
-class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFragment() {
-    
+class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragment() {
+
     private val mdParseManager: MDParserManager by inject()
 
     override fun queryCollectorInfo() {
@@ -33,7 +33,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
             MDCommandUtil.formatStringTwo(mStates.collectorType.get())
         )
         commandItems.add(command)
-        Timber.d("查询采集器配置信息===%s", command)
+        Timber.Forest.d("查询采集器配置信息===%s", command)
 
         sendCommandFromCmdList(
             isStartTimeoutJob = true,
@@ -51,9 +51,9 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
                 "$model$address"
             )
             commandItems.add(command)
-            Timber.d(
+            Timber.Forest.d(
                 "获取 %s 采集器 %s 通道的传感器参数===%s",
-                IOTSensorType.value(mStates.collectorType.get()),
+                IOTSensorType.Companion.value(mStates.collectorType.get()),
                 address,
                 command
             )
@@ -77,6 +77,13 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 删除传感器
+     */
+    override fun onDeleteSensor() {
+        updateAdapterRemoveSensorItem()
     }
 
     override fun initSaveCommand() {
@@ -161,7 +168,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
                         val commandDesc = if (commandDescItems.isEmpty()) "触发值" else {
                             commandDescItems.first
                         }
-                        Timber.d("设置$commandDesc")
+                        Timber.Forest.d("设置$commandDesc")
                         sendCommandFromCmdList()
                     }
                 }
@@ -233,7 +240,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
             MDCommandType.SET_COLLECTOR_SENSOR,
             builderFirst.toString()
         )
-        Timber.d("设置 %s 接入的传感器===%s", iotSensorType.description, command)
+        Timber.Forest.d("设置 %s 接入的传感器===%s", iotSensorType.description, command)
         commandItems.add(command)
     }
 
@@ -331,7 +338,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
             MDCommandType.COLLECTOR_SENSOR_THRESHOLD_MULTI,
             triggerBuilder.toString()
         )
-        Timber.d("设置传感器触发阈值===%s", command)
+        Timber.Forest.d("设置传感器触发阈值===%s", command)
         commandItems.add(command)
     }
 
@@ -437,7 +444,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
             MDCommandType.SET_INCLINOMETER_LONG,
             triggerBuilder.toString()
         )
-        Timber.d("设置测斜仪测段长===%s", command)
+        Timber.Forest.d("设置测斜仪测段长===%s", command)
         commandItems.add(command)
     }
 
@@ -452,7 +459,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
                 val commandDesc = if (commandDescItems.isEmpty()) "修正值" else {
                     commandDescItems.first
                 }
-                Timber.d("设置$commandDesc")
+                Timber.Forest.d("设置$commandDesc")
                 sendCommandFromCmdList()
             }
         }
@@ -474,7 +481,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
                 commandDesc = if (commandDescItems.isEmpty()) "" else {
                     commandDescItems.first
                 }
-                Timber.d("设置$commandDesc")
+                Timber.Forest.d("设置$commandDesc")
                 sendCommandFromCmdList()
             }
         }
@@ -496,7 +503,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
                 commandDesc = if (commandDescItems.isEmpty()) "" else {
                     commandDescItems.first
                 }
-                Timber.d("设置$commandDesc")
+                Timber.Forest.d("设置$commandDesc")
                 sendCommandFromCmdList()
             }
         }
@@ -518,7 +525,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
                 commandDesc = if (commandDescItems.isEmpty()) "" else {
                     commandDescItems.first
                 }
-                Timber.d("设置$commandDesc")
+                Timber.Forest.d("设置$commandDesc")
                 sendCommandFromCmdList()
             }
         }
@@ -540,7 +547,7 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
                 commandDesc = if (commandDescItems.isEmpty()) "" else {
                     commandDescItems.first
                 }
-                Timber.d("设置$commandDesc")
+                Timber.Forest.d("设置$commandDesc")
                 sendCommandFromCmdList()
             }
         }

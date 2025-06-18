@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor
 
 import android.os.Bundle
 import android.util.Log
@@ -32,8 +32,6 @@ import com.shmedo.mcloudapp.model.DASSensorItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.RVEmptyFooter
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.BaseExternalDigitalSensorFragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.DasExternalVibratingSensorFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalSensorListViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import timber.log.Timber
@@ -43,7 +41,7 @@ import timber.log.Timber
  * 创建时间：2024/4/18
  * 描述：DAS扩展传感器列表页面基类，支持不同通讯协议
  */
-abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
+abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasExternalSensorListBinding
     protected lateinit var mStates: DasExternalSensorListViewModel<DasExternalSensorInfo>
     protected lateinit var iotSensorType: IOTSensorType
@@ -89,7 +87,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
         }
         mStates.collectorType.set(processedModel)
         mStates.isVibratingWireSensor.set(processedModel == IOTSensorType.VIBRATING_SENSOR.code)
-        iotSensorType = IOTSensorType.value(processedModel)
+        iotSensorType = IOTSensorType.Companion.value(processedModel)
     }
 
     private fun initRefresh() {
@@ -143,7 +141,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
 
                 showMessage("确定移除此传感器吗？", "提示", "删除", {
                     deleteItemIndex = modelPosition
-                    onDeleteSensor(modelPosition)
+                    onDeleteSensor()
                 }, "取消")
             }
         }
@@ -155,7 +153,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
     private fun navigateToSensorEdit(item: DASSensorItem, position: Int) {
         if (!mStates.isVibratingWireSensor.get()) {
             // 编辑数字式传感器
-            val bundle = BaseExternalDigitalSensorFragment.newBundleArguments(
+            val bundle = BaseDasExternalDigitalSensorFragment.newBundleArguments(
                 sensorEditMode = true,
                 index = position,
                 sensorAddress = item.addr,
@@ -190,7 +188,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
     private fun navigateToSensorAdd() {
         if (!mStates.isVibratingWireSensor.get()) {
             // 新增数字式传感器
-            val bundle = BaseExternalDigitalSensorFragment.newBundleArguments(
+            val bundle = BaseDasExternalDigitalSensorFragment.newBundleArguments(
                 sensorEditMode = false,
                 index = -1,
                 type = productType,
@@ -255,7 +253,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                             "地址-${sensorInfo.addr}"
                         },
                         sensorType = sensorInfo.type,
-                        sensorName = IOTSensorType.value(sensorInfo.type).description,
+                        sensorName = IOTSensorType.Companion.value(sensorInfo.type).description,
                     )
                     binding.rv.mutable.add(item)
                 }
@@ -282,7 +280,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                 "地址-${sensorInfo.addr}"
             },
             sensorType = sensorInfo.type,
-            sensorName = IOTSensorType.value(sensorInfo.type).description,
+            sensorName = IOTSensorType.Companion.value(sensorInfo.type).description,
         )
 
         if (binding.rv.models.isNullOrEmpty()) {
@@ -317,7 +315,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             queryExtendSensorConfigInfo(collectorInfo.sensornum.toInt())
         } catch (e: Exception) {
             cancelNearbyCommunicationTimeoutJob()
-            Timber.e(e)
+            Timber.Forest.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
@@ -381,10 +379,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
     /**
      * 删除传感器处理
      */
-    protected open fun onDeleteSensor(position: Int) {
-        // 默认实现：直接更新适配器
-        updateAdapterRemoveSensorItem()
-    }
+    protected abstract fun onDeleteSensor()
 
     /**
      * 采集器类型初始化后的回调

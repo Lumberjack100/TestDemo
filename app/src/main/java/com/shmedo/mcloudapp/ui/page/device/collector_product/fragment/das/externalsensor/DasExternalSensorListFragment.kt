@@ -16,14 +16,13 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BaseBleDasExternalSensorListFragment
 import org.koin.android.ext.android.inject
 /**
  * 创建者：gonghe
  * 创建时间：2024/6/7
  * 描述：4G通讯模式 - DAS扩展传感器列表页面
  */
-class DasExternalSensorListFragment : BaseBleDasExternalSensorListFragment() {
+class DasExternalSensorListFragment : BaseDasExternalSensorListFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
     /**
@@ -70,6 +69,20 @@ class DasExternalSensorListFragment : BaseBleDasExternalSensorListFragment() {
         )
         commandItems.add(command)
 
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
+     * 删除传感器
+     */
+    override fun onDeleteSensor() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(
+            IOTCommandType.DAS_MD_DEL_EXTERNAL_SENSOR,
+            "index=$deleteItemIndex"
+        )
+        commandItems.add(command)
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
