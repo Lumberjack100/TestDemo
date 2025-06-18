@@ -17,7 +17,6 @@ import timber.log.Timber
  */
 class BleDasExternalVibratingSensorListFragment : BaseBleDasExternalSensorListFragment() {
 
-
     override fun initSaveCommand() {
         commandDescItems.clear()
         commandItems.clear()

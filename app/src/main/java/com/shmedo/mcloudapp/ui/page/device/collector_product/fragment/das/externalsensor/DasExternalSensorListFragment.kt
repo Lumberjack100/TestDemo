@@ -35,7 +35,6 @@ import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.DASSensorItem
 import com.shmedo.mcloudapp.model.RVEmptyFooter
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.DasExternalVibratingSensorFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalSensorListViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.android.ext.android.inject
@@ -118,7 +117,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                             )
                         } else {
                             //编辑振弦式传感器
-                            val bundle = DasExternalVibratingSensorFragment.Companion.newBundleArguments(
+                            val bundle = DasExternalVibratingSensorFragment.newBundleArguments(
                                 sensorChannel = item.addr,
                                 productType,
                                 communicateWay,
@@ -149,7 +148,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                             )
                         } else {
                             //新增振弦式传感器
-                            val bundle = DasExternalVibratingSensorFragment.Companion.newBundleArguments(
+                            val bundle = DasExternalVibratingSensorFragment.newBundleArguments(
                                 sensorChannel = "-1",
                                 productType,
                                 communicateWay,
@@ -470,7 +469,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
             IOTCommandType.DAS_MD_SET_COLLECTOR_CONTROL -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "设置采集器参数出错: ${result.message}"
+                        val errMsg = "采集器配置出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -488,7 +487,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
             IOTCommandType.DAS_MD_SET_EXTERNAL_SENSOR -> {//
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "保存传感器参数出错: ${result.message}"
+                        val errMsg = "传感器配置出错: ${result.message}"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -563,7 +562,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
             addr = sensorInfo.addr,
             addrDesc = if (mStates.isVibratingWireSensor.get()) "通道-${sensorInfo.addr.toInt() + 1}" else "地址-${sensorInfo.addr}",
             sensorType = sensorInfo.type,
-            sensorName = IOTSensorType.Companion.value(sensorInfo.type).description,
+            sensorName = IOTSensorType.value(sensorInfo.type).description,
         )
         if (binding.rv.models.isNullOrEmpty())
             binding.rv.models = arrayListOf()

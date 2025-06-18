@@ -141,7 +141,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 bleDevice
                             )
                             nav().safeNavigate(
-                                R.id.action_global_to_bleDasExternalDigitalSensorFragment,
+                                R.id.action_global_to_dasExternalDigitalSensorFragment,
                                 bundle
                             )
                         } else {
@@ -172,7 +172,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
                                 bleDevice = bleDevice,
                             )
                             nav().safeNavigate(
-                                R.id.action_global_to_bleDasExternalDigitalSensorFragment,
+                                R.id.action_global_to_dasExternalDigitalSensorFragment,
                                 bundle
                             )
                         } else {
@@ -366,7 +366,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             MDCommandType.SET_COLLECTOR_ADDRESS -> {//
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        val errMsg = "采集器地址配置错误!"
+                        val errMsg = "采集器配置出错!"
                         handleFailureResult(errMsg)
                         return
                     }
@@ -380,7 +380,7 @@ abstract class BaseBleDasExternalSensorListFragment : BaseIOTDeviceFragment() {
             MDCommandType.SET_COLLECTOR_SENSOR -> {//
                 when (val result = mdParseManager.parse<String>(cmdStr)) {
                     is MDCommandResult.Failure -> {
-                        val errMsg = "接入传感器设置出错"
+                        val errMsg = "传感器配置出错"
                         handleFailureResult(errMsg)
                         return
                     }

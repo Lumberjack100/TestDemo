@@ -67,9 +67,9 @@
         tools:layout="@layout/fragment_das_sensor_home"/>
 
     <fragment
-        android:id="@+id/bleDasExternalDigitalSensorFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BleDasExternalDigitalSensorFragment"
-        android:label="BleDasExternalDigitalSensorFragment"
+        android:id="@+id/dasExternalDigitalSensorFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.DasExternalDigitalSensorFragment"
+        android:label="DasExternalDigitalSensorFragment"
         tools:layout="@layout/fragment_das_external_digital_sensor" />
 
     <fragment
@@ -155,8 +155,8 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_bleDasExternalDigitalSensorFragment"
-        app:destination="@id/bleDasExternalDigitalSensorFragment"
+        android:id="@+id/action_global_to_dasExternalDigitalSensorFragment"
+        app:destination="@id/dasExternalDigitalSensorFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
