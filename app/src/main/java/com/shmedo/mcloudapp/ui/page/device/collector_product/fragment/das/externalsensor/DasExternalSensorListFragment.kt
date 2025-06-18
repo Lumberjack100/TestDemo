@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor
 
 import android.os.Bundle
 import android.util.Log
@@ -35,6 +35,7 @@ import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.DASSensorItem
 import com.shmedo.mcloudapp.model.RVEmptyFooter
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.DasExternalVibratingSensorFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalSensorListViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.android.ext.android.inject
@@ -117,7 +118,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                             )
                         } else {
                             //编辑振弦式传感器
-                            val bundle = DasExternalVibratingSensorFragment.newBundleArguments(
+                            val bundle = DasExternalVibratingSensorFragment.Companion.newBundleArguments(
                                 sensorChannel = item.addr,
                                 productType,
                                 communicateWay,
@@ -148,7 +149,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                             )
                         } else {
                             //新增振弦式传感器
-                            val bundle = DasExternalVibratingSensorFragment.newBundleArguments(
+                            val bundle = DasExternalVibratingSensorFragment.Companion.newBundleArguments(
                                 sensorChannel = "-1",
                                 productType,
                                 communicateWay,
@@ -267,7 +268,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                     addr = sensorInfo.addr
                     threshold = sensorInfo.threshold
                     corrval = sensorInfo.corrval
-                    when (IOTSensorType.value(sensorInfo.type)) {
+                    when (IOTSensorType.Companion.value(sensorInfo.type)) {
                         IOTSensorType.KANG_PERCOLATE -> {//基康渗压计
                             tubealti = sensorInfo.tubealti
                             ropelen = sensorInfo.ropelen
@@ -379,7 +380,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                         addr = sensorInfo.addr,
                         addrDesc = if (mStates.isVibratingWireSensor.get()) "通道-${sensorInfo.addr.toInt() + 1}" else "地址-${sensorInfo.addr}",
                         sensorType = sensorInfo.type,
-                        sensorName = IOTSensorType.value(sensorInfo.type).description,
+                        sensorName = IOTSensorType.Companion.value(sensorInfo.type).description,
                     )
                     binding.rv.mutable.add(item)
                 }
@@ -547,7 +548,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
 
         } catch (e: Exception) {
             cancelNearbyCommunicationTimeoutJob()
-            Timber.e(e)
+            Timber.Forest.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
@@ -562,7 +563,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
             addr = sensorInfo.addr,
             addrDesc = if (mStates.isVibratingWireSensor.get()) "通道-${sensorInfo.addr.toInt() + 1}" else "地址-${sensorInfo.addr}",
             sensorType = sensorInfo.type,
-            sensorName = IOTSensorType.value(sensorInfo.type).description,
+            sensorName = IOTSensorType.Companion.value(sensorInfo.type).description,
         )
         if (binding.rv.models.isNullOrEmpty())
             binding.rv.models = arrayListOf()

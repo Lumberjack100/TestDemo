@@ -28,10 +28,10 @@ import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.adapter.PageAdapter
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.DasExternalSensorListFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BaseBleDasExternalSensorListFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BleDasExternalDigitalSensorListFragment
 import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BleDasExternalVibratingSensorListFragment
-import com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor.DasExternalSensorListFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 
 /**

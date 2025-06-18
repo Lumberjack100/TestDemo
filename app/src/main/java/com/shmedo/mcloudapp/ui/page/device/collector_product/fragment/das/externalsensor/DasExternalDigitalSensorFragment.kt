@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor
 
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models

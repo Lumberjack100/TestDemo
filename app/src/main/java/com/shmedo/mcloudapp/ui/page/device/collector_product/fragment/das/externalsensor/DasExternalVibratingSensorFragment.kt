@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor
 
 import android.os.Bundle
 import android.view.View
@@ -139,8 +139,8 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                 corrval = ""
             )
         }
-        mStates.sensorType.set(IOTSensorType.value(sensorInfo.type))
-        mStates.sensorTypeName.set(IOTSensorType.value(sensorInfo.type).description)
+        mStates.sensorType.set(IOTSensorType.Companion.value(sensorInfo.type))
+        mStates.sensorTypeName.set(IOTSensorType.Companion.value(sensorInfo.type).description)
         switchSensorType()
     }
 
@@ -506,7 +506,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     sensorInfo.threshold.toDoubleOrNull()?.let {
                         mStates.extension1Value.set(decimalFormat.format(it))
                     }
-                    
+
                     mStates.isExtension2Support.set(false)
                     mStates.isExtension3Support.set(false)
                     mStates.isExtension4Support.set(false)
@@ -521,7 +521,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                 else -> {}
             }
         } catch (e: Exception) {
-            Timber.e(e)
+            Timber.Forest.e(e)
         }
     }
 
@@ -542,7 +542,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                     { _, text ->
                         mStates.sensorTypeName.set(text)
                         mStates.sensorType.set(
-                            IOTSensorType.getSensorTypeByDescription(
+                            IOTSensorType.Companion.getSensorTypeByDescription(
                                 text.replace(MCU_PREFIX, "")
                             )
                         )

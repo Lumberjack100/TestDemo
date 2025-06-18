@@ -12,7 +12,7 @@ import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.model.ExternalDigitalSensorParamEditItem
-import com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor.BaseExternalDigitalSensorFragment
+import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.BaseExternalDigitalSensorFragment
 import org.koin.android.ext.android.inject
 
 /**

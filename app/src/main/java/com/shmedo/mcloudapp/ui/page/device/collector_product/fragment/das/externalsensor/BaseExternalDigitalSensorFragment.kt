@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.das.fragment.externalsensor
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor
 
 import android.os.Bundle
 import android.util.Log
@@ -51,7 +51,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     private lateinit var sensorListViewModel: DasExternalSensorListViewModel<DasExternalSensorInfo>
 
     protected val iotSensorType: IOTSensorType by lazy {
-        IOTSensorType.getSensorTypeByCollectorCode(sensorListViewModel.collectorType.get())
+        IOTSensorType.Companion.getSensorTypeByCollectorCode(sensorListViewModel.collectorType.get())
     }
     private val usedAddressList = ArrayList<String>()
     private var sensorAddress = ""
@@ -523,7 +523,7 @@ abstract class BaseExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
             )
             binding.recyclerview.models = groupList
         } catch (e: Exception) {
-            Timber.e(e)
+            Timber.Forest.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }

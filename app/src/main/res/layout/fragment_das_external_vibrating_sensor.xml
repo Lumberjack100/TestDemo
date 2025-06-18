@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType" />
 
         <variable
             name="toolbarVM"
@@ -16,8 +17,6 @@
         <variable
             name="click"
             type="com.shmedo.mcloudapp.baseclickproxy.BaseDasExternalVibratingSensorClickProxy" />
-
-        <import type="com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType" />
 
     </data>
 
