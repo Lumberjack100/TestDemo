@@ -1,23 +1,83 @@
 package com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor
 
 import com.blankj.utilcode.util.StringUtils
+import com.hjq.toast.Toaster
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
+import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasCollectorInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.cmd.base.md_cmd.enums.SaveConfigMode
 import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
+import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
+import com.shmedo.mcloudapp.extensions.showMessageDialog
+import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/4/18
- * 描述： TODO
+ * 描述：蓝牙通讯模式 - DAS数字式扩展传感器列表页面
  */
 class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFragment() {
+    
+    private val mdParseManager: MDParserManager by inject()
+
+    override fun queryCollectorInfo() {
+        commandItems.clear()
+        val command = MDCommandUtil.getCommand(
+            MDCommandType.COLLECTOR_CONFIG,
+            MDCommandUtil.formatStringTwo(mStates.collectorType.get())
+        )
+        commandItems.add(command)
+        Timber.d("查询采集器配置信息===%s", command)
+
+        sendCommandFromCmdList(
+            isStartTimeoutJob = true,
+            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
+        )
+    }
+
+    override fun queryExtendSensorConfigInfo(sensorNum: Int) {
+        commandItems.clear()
+        for (index in 0 until sensorNum) {
+            val model = MDCommandUtil.formatStringTwo(mStates.collectorType.get())
+            val address = MDCommandUtil.formatStringTwo(index.toString())
+            val command = MDCommandUtil.getCommand(
+                MDCommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER,
+                "$model$address"
+            )
+            commandItems.add(command)
+            Timber.d(
+                "获取 %s 采集器 %s 通道的传感器参数===%s",
+                IOTSensorType.value(mStates.collectorType.get()),
+                address,
+                command
+            )
+        }
+        sendCommandFromCmdList()
+    }
+
+    override fun closeCollector() {
+        commandItems.clear()
+        var command = MDCommandUtil.getCommand(
+            MDCommandType.SET_COLLECTOR_ADDRESS,
+            "0"
+        )
+        commandItems.add(command)
+
+        command = MDCommandUtil.getCommand(
+            MDCommandType.SAVE_CONFIG_INFO,
+            SaveConfigMode.SAVE_NO_REBOOT.toString()
+        )
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
 
     override fun initSaveCommand() {
         commandDescItems.clear()
@@ -38,6 +98,105 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
             isStartTimeoutJob = true,
             timeoutMillis = AppContants.Communication.DELAY_40000_MILLIS
         )
+    }
+
+    override fun setResultData(cmdStr: String) {
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.COLLECTOR_CONFIG -> {
+                val result = mdParseManager.parse<DasCollectorInfo>(
+                    cmdStr,
+                    MDCommandType.COLLECTOR_CONFIG
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        handleFailureResult("查询采集器参数出错")
+                        return
+                    }
+                    is MDCommandResult.Success -> {
+                        handleCollectorInfo(result.data)
+                    }
+                }
+            }
+
+            MDCommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER -> {
+                val result = mdParseManager.parse<DasExternalSensorInfo>(
+                    cmdStr,
+                    MDCommandType.COLLECTOR_CHANNEL_SENSOR_PARAMETER
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        handleFailureResult("查询传感器参数出错")
+                        initEmptySensor()
+                        return
+                    }
+                    is MDCommandResult.Success -> {
+                        processSensorParamsInfo(result.data)
+                        sendCommandFromCmdList {
+                            refreshLayout?.finish()
+                            updateFooter()
+                        }
+                    }
+                }
+            }
+
+            MDCommandType.SET_COLLECTOR_ADDRESS -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        handleFailureResult("采集器配置出错!")
+                        return
+                    }
+                    else -> {
+                        sendCommandFromCmdList()
+                    }
+                }
+            }
+
+            MDCommandType.SET_COLLECTOR_SENSOR -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        handleFailureResult("传感器配置出错")
+                        return
+                    }
+                    else -> {
+                        val commandDesc = if (commandDescItems.isEmpty()) "触发值" else {
+                            commandDescItems.first
+                        }
+                        Timber.d("设置$commandDesc")
+                        sendCommandFromCmdList()
+                    }
+                }
+            }
+
+            MDCommandType.SAVE_CONFIG_INFO -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        handleFailureResult("保存出错!")
+                        return
+                    }
+                    else -> {
+                        sendCommandFromCmdList {
+                            if (mStates.sensorModelMap.isEmpty()) {
+                                showMessageDialog("采集器地址已修改为0,如继续配置扩展传感器,请先修改采集器地址!")
+                            } else {
+                                Toaster.show("数据保存成功")
+                            }
+                        }
+                    }
+                }
+            }
+
+            // 处理其他具体的传感器配置命令
+            MDCommandType.COLLECTOR_SENSOR_THRESHOLD_MULTI -> handleTriggerThresholdMultiResult(cmdStr)
+            MDCommandType.COLLECTOR_SENSOR_THRESHOLD_SINGLE -> handleTriggerThresholdSingleResult(cmdStr)
+            MDCommandType.COLLECTOR_SENSOR_REVISED -> handleCorrectionValueResult(cmdStr)
+            MDCommandType.SENSOR_INITIAL_READING -> handleInitialReadingResult(cmdStr)
+            MDCommandType.SENSOR_WEIR_HEAD -> handleWeirHeadResult(cmdStr)
+            MDCommandType.SET_INCLINOMETER_LONG -> handleInclinometerLongResult(cmdStr)
+
+            else -> {
+                // 不处理的命令类型
+            }
+        }
     }
 
     /**
@@ -282,137 +441,120 @@ class BleDasExternalDigitalSensorListFragment : BaseBleDasExternalSensorListFrag
         commandItems.add(command)
     }
 
-    override fun setResultData(cmdStr: String) {
-        if (isRestrictHiddenMode() && isHidden) {
-            return
-        }
-        when (MDCommandUtil.extractCommandType(cmdStr)) {
-            MDCommandType.COLLECTOR_SENSOR_THRESHOLD_MULTI -> {//传感器触发阈值(多传感器设置) 162
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "传感器触发阈值配置出错"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        val commandDesc = if (commandDescItems.isEmpty()) "修正值" else {
-                            commandDescItems.first
-                        }
-                        Timber.d("设置$commandDesc")
-                        sendCommandFromCmdList()
-                    }
-                }
+    private fun handleTriggerThresholdMultiResult(cmdStr: String) {
+        when (val result = mdParseManager.parse<String>(cmdStr)) {
+            is MDCommandResult.Failure -> {
+                val errMsg = "传感器触发阈值配置出错"
+                handleFailureResult(errMsg)
+                return
             }
-
-            MDCommandType.COLLECTOR_SENSOR_THRESHOLD_SINGLE -> {//传感器触发阈值(单传感器设置) 168
-                var commandDesc = if (commandDescItems.isEmpty()) "触发值" else {
-                    commandDescItems.first
-                    commandDescItems.removeFirst()
-                }
-
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "$commandDesc 配置出错"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        commandDesc = if (commandDescItems.isEmpty()) "" else {
-                            commandDescItems.first
-                        }
-                        Timber.d("设置$commandDesc")
-                        sendCommandFromCmdList()
-                    }
-                }
-            }
-
-            MDCommandType.COLLECTOR_SENSOR_REVISED -> {//传感器修正值 165
-                var commandDesc = if (commandDescItems.isEmpty()) "修正值" else {
-                    commandDescItems.first
-                    commandDescItems.removeFirst()
-                }
-
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "$commandDesc 配置出错"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        commandDesc = if (commandDescItems.isEmpty()) "" else {
-                            commandDescItems.first
-                        }
-                        Timber.d("设置$commandDesc")
-                        sendCommandFromCmdList()
-                    }
-                }
-            }
-
-            MDCommandType.SENSOR_INITIAL_READING -> {//设置量水堰初始读数(单传感器设置) 171
-                var commandDesc = if (commandDescItems.isEmpty()) "初始读数" else {
-                    commandDescItems.first
-                    commandDescItems.removeFirst()
-                }
-
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "$commandDesc 配置出错"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        commandDesc = if (commandDescItems.isEmpty()) "" else {
-                            commandDescItems.first
-                        }
-                        Timber.d("设置$commandDesc")
-                        sendCommandFromCmdList()
-                    }
-                }
-            }
-
-            MDCommandType.SENSOR_WEIR_HEAD -> {//设置量水堰初始堰上水头(单传感器设置) 172
-                var commandDesc = if (commandDescItems.isEmpty()) "初始堰上水头" else {
-                    commandDescItems.first
-                    commandDescItems.removeFirst()
-                }
-
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "$commandDesc 配置出错"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        commandDesc = if (commandDescItems.isEmpty()) "" else {
-                            commandDescItems.first
-                        }
-                        Timber.d("设置$commandDesc")
-                        sendCommandFromCmdList()
-                    }
-                }
-            }
-
-            MDCommandType.SET_INCLINOMETER_LONG -> {//设置测斜仪测段长 166
-                when (val result = mdParseManager.parse<String>(cmdStr)) {
-                    is MDCommandResult.Failure -> {
-                        val errMsg = "传感器测段长配置出错"
-                        handleFailureResult(errMsg)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList()
-                    }
-                }
-            }
-
             else -> {
-                super.setResultData(cmdStr)
+                val commandDesc = if (commandDescItems.isEmpty()) "修正值" else {
+                    commandDescItems.first
+                }
+                Timber.d("设置$commandDesc")
+                sendCommandFromCmdList()
+            }
+        }
+    }
+
+    private fun handleTriggerThresholdSingleResult(cmdStr: String) {
+        var commandDesc = if (commandDescItems.isEmpty()) "触发值" else {
+            commandDescItems.first
+            commandDescItems.removeFirst()
+        }
+
+        when (val result = mdParseManager.parse<String>(cmdStr)) {
+            is MDCommandResult.Failure -> {
+                val errMsg = "$commandDesc 配置出错"
+                handleFailureResult(errMsg)
+                return
+            }
+            else -> {
+                commandDesc = if (commandDescItems.isEmpty()) "" else {
+                    commandDescItems.first
+                }
+                Timber.d("设置$commandDesc")
+                sendCommandFromCmdList()
+            }
+        }
+    }
+
+    private fun handleCorrectionValueResult(cmdStr: String) {
+        var commandDesc = if (commandDescItems.isEmpty()) "修正值" else {
+            commandDescItems.first
+            commandDescItems.removeFirst()
+        }
+
+        when (val result = mdParseManager.parse<String>(cmdStr)) {
+            is MDCommandResult.Failure -> {
+                val errMsg = "$commandDesc 配置出错"
+                handleFailureResult(errMsg)
+                return
+            }
+            else -> {
+                commandDesc = if (commandDescItems.isEmpty()) "" else {
+                    commandDescItems.first
+                }
+                Timber.d("设置$commandDesc")
+                sendCommandFromCmdList()
+            }
+        }
+    }
+
+    private fun handleInitialReadingResult(cmdStr: String) {
+        var commandDesc = if (commandDescItems.isEmpty()) "初始读数" else {
+            commandDescItems.first
+            commandDescItems.removeFirst()
+        }
+
+        when (val result = mdParseManager.parse<String>(cmdStr)) {
+            is MDCommandResult.Failure -> {
+                val errMsg = "$commandDesc 配置出错"
+                handleFailureResult(errMsg)
+                return
+            }
+            else -> {
+                commandDesc = if (commandDescItems.isEmpty()) "" else {
+                    commandDescItems.first
+                }
+                Timber.d("设置$commandDesc")
+                sendCommandFromCmdList()
+            }
+        }
+    }
+
+    private fun handleWeirHeadResult(cmdStr: String) {
+        var commandDesc = if (commandDescItems.isEmpty()) "初始堰上水头" else {
+            commandDescItems.first
+            commandDescItems.removeFirst()
+        }
+
+        when (val result = mdParseManager.parse<String>(cmdStr)) {
+            is MDCommandResult.Failure -> {
+                val errMsg = "$commandDesc 配置出错"
+                handleFailureResult(errMsg)
+                return
+            }
+            else -> {
+                commandDesc = if (commandDescItems.isEmpty()) "" else {
+                    commandDescItems.first
+                }
+                Timber.d("设置$commandDesc")
+                sendCommandFromCmdList()
+            }
+        }
+    }
+
+    private fun handleInclinometerLongResult(cmdStr: String) {
+        when (val result = mdParseManager.parse<String>(cmdStr)) {
+            is MDCommandResult.Failure -> {
+                val errMsg = "传感器测段长配置出错"
+                handleFailureResult(errMsg)
+                return
+            }
+            else -> {
+                sendCommandFromCmdList()
             }
         }
     }

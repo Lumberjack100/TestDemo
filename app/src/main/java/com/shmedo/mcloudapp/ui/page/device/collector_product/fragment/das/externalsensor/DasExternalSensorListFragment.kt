@@ -1,15 +1,7 @@
 package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor
 
-import android.os.Bundle
-import android.util.Log
-import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
-import com.drake.brv.utils.bindingAdapter
-import com.drake.brv.utils.models
-import com.drake.brv.utils.mutable
-import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
-import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.das.DasCollectorEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.das.DasExternalSensorEntity
@@ -21,202 +13,50 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasExternalSensorInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.network.ext.errorMsg
-import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentDasExternalSensorListBinding
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
-import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.model.DASSensorItem
-import com.shmedo.mcloudapp.model.RVEmptyFooter
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalSensorListViewModel
-import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
+import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BaseBleDasExternalSensorListFragment
 import org.koin.android.ext.android.inject
-import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/6/7
- * 描述： 物联网采集器(DAS)扩展传感器列表页面 - 支持4G通讯方式
+ * 描述：4G通讯模式 - DAS扩展传感器列表页面
  */
-class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentDasExternalSensorListBinding
-    private lateinit var mStates: DasExternalSensorListViewModel<DasExternalSensorInfo>
+class DasExternalSensorListFragment : BaseBleDasExternalSensorListFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
-    private var deleteItemIndex = 0
+    /**
+     * 查询采集器配置信息
+     */
+    override fun queryCollectorInfo() {
+        commandItems.clear()
+        val command = IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL)
+        commandItems.add(command)
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        mStates = getActivityScopeViewModel()
-    }
-
-    override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(
-            R.layout.fragment_das_external_sensor_list,
-            BR.stateVM,
-            mStates
+        sendCommandFromCmdList(
+            isStartTimeoutJob = true,
+            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
         )
-            .addBindingParam(BR.click, ClickProxy())
-    }
-
-    override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentDasExternalSensorListBinding
-        initRefresh()
-        initSensorAdapter()
-    }
-
-    private fun initRefresh() {
-        refreshLayout = binding.refreshLayout
-        binding.refreshLayout.setEnableLoadMore(false)
-        binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return@onRefresh
-            }
-            resetDefaultData()
-            queryCollectorInfo()
-        }
-    }
-
-    private fun initSensorAdapter() {
-        binding.rv.setup { rv ->
-            rv.addItemDecoration(
-                MyGridSpacingItemDecoration(
-                    2,
-                    ConvertUtils.dp2px(8f),
-                    false
-                )
-            )
-            addType<DASSensorItem>(R.layout.item_das_sensor)
-            addType<RVEmptyFooter>(R.layout.item_sensor_add_footer)
-            R.id.item.onClick {
-                if (mStates.collectorType.get().isEmpty()) {
-                    showMessageDialog("未获取到采集器信息，请尝试刷新后再试!")
-                    return@onClick
-                }
-                when (itemViewType) {
-                    R.layout.item_das_sensor -> {
-                        val item = getModel<DASSensorItem>()
-                        //编辑数字式传感器
-                        if (!mStates.isVibratingWireSensor.get()) {
-                            val bundle = BaseExternalDigitalSensorFragment.newBundleArguments(
-                                sensorEditMode = true,
-                                index = modelPosition,
-                                sensorAddress = item.addr,
-                                productType,
-                                communicateWay,
-                                deviceInfo,
-                                bleDevice
-                            )
-                            nav().safeNavigate(
-                                R.id.action_global_to_dasExternalDigitalSensorFragment,
-                                bundle
-                            )
-                        } else {
-                            //编辑振弦式传感器
-                            val bundle = DasExternalVibratingSensorFragment.newBundleArguments(
-                                sensorChannel = item.addr,
-                                productType,
-                                communicateWay,
-                                deviceInfo,
-                                bleDevice,
-                            )
-                            nav().safeNavigate(
-                                R.id.action_global_to_dasExternalVibratingSensorFragment,
-                                bundle
-                            )
-                        }
-                    }
-
-                    else -> {
-                        //新增数字式传感器
-                        if (!mStates.isVibratingWireSensor.get()) {
-                            val bundle = BaseExternalDigitalSensorFragment.newBundleArguments(
-                                sensorEditMode = false,
-                                index = -1,
-                                type = productType,
-                                communicateWay = communicateWay,
-                                deviceInfo = deviceInfo,
-                                bleDevice = bleDevice,
-                            )
-                            nav().safeNavigate(
-                                R.id.action_global_to_dasExternalDigitalSensorFragment,
-                                bundle
-                            )
-                        } else {
-                            //新增振弦式传感器
-                            val bundle = DasExternalVibratingSensorFragment.newBundleArguments(
-                                sensorChannel = "-1",
-                                productType,
-                                communicateWay,
-                                deviceInfo,
-                                bleDevice,
-                            )
-                            nav().safeNavigate(
-                                R.id.action_global_to_dasExternalVibratingSensorFragment,
-                                bundle
-                            )
-                        }
-                    }
-                }
-            }
-            R.id.item_del.onClick {
-                //最少保留一个传感器
-                showMessage("确定移除此传感器吗？", "提示", "删除", {
-                    deleteItemIndex = modelPosition
-                    deleteSensorCommand()
-                }, "取消")
-            }
-        }
-    }
-
-    inner class ClickProxy : BaseClickProxy() {
-        override fun onSubmitButtonClick() {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return
-            }
-            if (mStates.sensorModelMap.isEmpty()) {
-                showMessage(
-                    "确定将采集器接入的传感器个数设置为0吗？",
-                    "温馨提示",
-                    "确定",
-                    {
-                        closeCollector()
-                    },
-                    "取消"
-                )
-                return
-            }
-            initSaveCommand()
-        }
     }
 
     /**
-     * 删除传感器
+     * 查询采集器接入的传感器配置信息
      */
-    private fun deleteSensorCommand() {
+    override fun queryExtendSensorConfigInfo(sensorNum: Int) {
         commandItems.clear()
-        val command = IOTCommandUtil.getCommand(
-            IOTCommandType.DAS_MD_DEL_EXTERNAL_SENSOR,
-            "index=$deleteItemIndex"
-        )
-        commandItems.add(command)
-        showLoadingDialog(StringUtils.getString(R.string.processing))
-        sendCommandFromCmdList(isStartTimeoutJob = true)
+        for (i in 0 until sensorNum) {
+            val command =
+                IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_EXTERNAL_SENSOR, "index=$i")
+            commandItems.add(command)
+        }
+        sendCommandFromCmdList()
     }
 
     /**
      * 当接入的传感器个数为0时，设置采集器地址为0，关闭采集器
      */
-    private fun closeCollector() {
+    override fun closeCollector() {
         commandItems.clear()
 
         //设置采集器参数
@@ -234,7 +74,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    private fun initSaveCommand() {
+    override fun initSaveCommand() {
         commandItems.clear()
 
         //设置采集器参数
@@ -371,58 +211,6 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
             }
     }
 
-    override fun createObserver() {
-        super.createObserver()
-        mStates.isRefreshSensorList.observe(viewLifecycleOwner) { flag ->
-            if (flag) {
-                binding.rv.models = arrayListOf()
-                mStates.sensorModelMap.keys.sortedBy { addr -> addr.toInt() }.forEach { key ->
-                    val sensorInfo = mStates.sensorModelMap[key]!!
-                    val item = DASSensorItem(
-                        isPlugin = true,
-                        addr = sensorInfo.addr,
-                        addrDesc = if (mStates.isVibratingWireSensor.get()) "通道-${sensorInfo.addr.toInt() + 1}" else "地址-${sensorInfo.addr}",
-                        sensorType = sensorInfo.type,
-                        sensorName = IOTSensorType.Companion.value(sensorInfo.type).description,
-                    )
-                    binding.rv.mutable.add(item)
-                }
-                updateFooter()
-            }
-        }
-    }
-
-    override fun lazyLoadData() {
-        binding.refreshLayout.autoRefresh()
-    }
-
-    /**
-     * 查询采集器配置信息
-     */
-    private fun queryCollectorInfo() {
-        commandItems.clear()
-        val command = IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_COLLECTOR_CONTROL)
-        commandItems.add(command)
-
-        sendCommandFromCmdList(
-            isStartTimeoutJob = true,
-            timeoutMillis = AppContants.Communication.DELAY_15000_MILLIS
-        )
-    }
-
-    /**
-     * 查询采集器接入的传感器配置信息
-     */
-    private fun queryExtendSensorConfigInfo(sensorNum: Int) {
-        commandItems.clear()
-        for (i in 0 until sensorNum) {
-            val command =
-                IOTCommandUtil.getCommand(IOTCommandType.DAS_MD_GET_EXTERNAL_SENSOR, "index=$i")
-            commandItems.add(command)
-        }
-        sendCommandFromCmdList()
-    }
-
     override fun setResultData(cmdStr: String) {
         if (isRestrictHiddenMode() && isHidden) {
             return
@@ -441,7 +229,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                     }
 
                     is IOTCommandResult.Success -> {
-                        initCollectorInfo(result.data)
+                        handleCollectorInfo(result.data)
                     }
                 }
             }
@@ -463,7 +251,7 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
                         //处理此通道的传感器配置参数
                         processSensorParamsInfo(result.data)
                         sendCommandFromCmdList {
-                            binding.refreshLayout.finish()
+                            refreshLayout?.finish()
                             updateFooter()
                         }
                     }
@@ -527,89 +315,9 @@ class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    /**
-     * 初始化采集器信息
-     */
-    private fun initCollectorInfo(collectorInfo: DasCollectorInfo) {
-        try {
-            //采集器地址为 0 时，表示采集器未启用，不允许配置传感器，退出页面
-            if (collectorInfo.addr == "0") {
-                cancelNearbyCommunicationTimeoutJob()
-                showMessageDialog("采集器地址为0,无法配置扩展传感器,请先修改采集器地址!")
-                return
-            }
-            mStates.collectorType.set(collectorInfo.type)
-            mStates.isVibratingWireSensor.set(collectorInfo.type == "0")
-            if (collectorInfo.sensornum.isEmpty() || collectorInfo.sensornum.toInt() == 0) {
-                cancelNearbyCommunicationTimeoutJob()
-                initEmptySensor()
-                return
-            }
 
-            //查询采集器接入的传感器配置信息
-            queryExtendSensorConfigInfo(collectorInfo.sensornum.toInt())
-
-        } catch (e: Exception) {
-            cancelNearbyCommunicationTimeoutJob()
-            Timber.Forest.e(e)
-            addDeviceLogItem(Log.ERROR, e.errorMsg)
-        }
-    }
-
-    /**
-     * 处理获取到的单个传感器参数信息
-     */
-    private fun processSensorParamsInfo(sensorInfo: DasExternalSensorInfo) {
-        mStates.sensorModelMap[sensorInfo.addr] = sensorInfo
-        val item = DASSensorItem(
-            isPlugin = true,
-            addr = sensorInfo.addr,
-            addrDesc = if (mStates.isVibratingWireSensor.get()) "通道-${sensorInfo.addr.toInt() + 1}" else "地址-${sensorInfo.addr}",
-            sensorType = sensorInfo.type,
-            sensorName = IOTSensorType.value(sensorInfo.type).description,
-        )
-        if (binding.rv.models.isNullOrEmpty())
-            binding.rv.models = arrayListOf()
-        binding.rv.mutable.add(item)
-        binding.rv.bindingAdapter.notifyItemInserted(binding.rv.bindingAdapter.modelCount)
-    }
-
-    private fun updateAdapterRemoveSensorItem() {
-        binding.rv.bindingAdapter.mutable[deleteItemIndex].let {
-            if (it is DASSensorItem) {
-                mStates.sensorModelMap.remove(it.addr)
-            }
-        }
-        binding.rv.bindingAdapter.mutable.removeAt(deleteItemIndex)
-        binding.rv.bindingAdapter.notifyItemRemoved(deleteItemIndex)
-        updateFooter()
-    }
-
-    private fun initEmptySensor() {
-        binding.rv.models = arrayListOf<DASSensorItem>()
-        updateFooter()
-    }
-
-    private fun updateFooter() {
-        if (binding.rv.bindingAdapter.modelCount < MAX_SENSOR_COUNT) {
-            if (binding.rv.bindingAdapter.footerCount == 0)
-                binding.rv.bindingAdapter.addFooter(RVEmptyFooter())
-        } else {
-            binding.rv.bindingAdapter.clearFooter()
-        }
-        mStates.isSubmitBtnVisible.set(mStates.sensorModelMap.isNotEmpty())
-    }
-
-    private fun resetDefaultData() {
-        deleteItemIndex = 0
-        mStates.sensorModelMap.clear()
-        binding.rv.bindingAdapter.clearFooter()
-        binding.rv.models = arrayListOf<DASSensorItem>()
-        mStates.isSubmitBtnVisible.set(false)
-    }
 
     companion object {
-        const val MAX_SENSOR_COUNT = 16
         fun newInstance() = DasExternalSensorListFragment()
     }
 }
