@@ -39,7 +39,11 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalSensorListViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-
+/**
+ * 创建者：gonghe
+ * 创建时间：2024/6/7
+ * 描述： 物联网采集器(DAS)扩展传感器列表页面 - 支持4G通讯方式
+ */
 class DasExternalSensorListFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasExternalSensorListBinding
     private lateinit var mStates: DasExternalSensorListViewModel<DasExternalSensorInfo>

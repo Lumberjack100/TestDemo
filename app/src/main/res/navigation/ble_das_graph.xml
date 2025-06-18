@@ -74,8 +74,8 @@
 
     <fragment
         android:id="@+id/bleDasExternalVibratingSensorFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.externalsensor.BleDasExternalVibratingSensorFragment"
-        android:label="BleDasExternalVibratingSensorFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.DasExternalVibratingSensorFragment"
+        android:label="DasExternalVibratingSensorFragment"
         tools:layout="@layout/fragment_das_external_vibrating_sensor" />
 
     <fragment
