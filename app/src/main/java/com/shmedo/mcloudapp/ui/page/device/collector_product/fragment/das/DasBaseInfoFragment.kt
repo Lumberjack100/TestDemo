@@ -32,7 +32,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2025/6/4
- * @desc: 物联网采集器(DAS)基本信息
+ * @desc: 物联网采集器(DAS)基本信息 - 支持4G和蓝牙两种通讯方式
  *
  */
 class DasBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
@@ -483,7 +483,10 @@ class DasBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 )
             }
 
-            binding.recyclerview.models = groupList
+            binding.recyclerview.bindingAdapter.apply {
+                mutable.addAll(groupList)
+                notifyItemRangeInserted(itemCount, groupList.size)
+            }
         } catch (e: Exception) {
             Timber.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)

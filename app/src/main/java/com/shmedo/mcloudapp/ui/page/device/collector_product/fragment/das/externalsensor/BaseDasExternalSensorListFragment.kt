@@ -39,7 +39,7 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/4/18
- * 描述：DAS扩展传感器列表页面基类，支持不同通讯协议
+ * 描述：物联网采集器(DAS)扩展传感器列表页面 - 支持4G和蓝牙两种通讯方式
  */
 abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasExternalSensorListBinding

@@ -435,7 +435,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
     /**
      * 设置心跳检查
      */
-    private fun setupHeartbeat() {
+    protected open fun setupHeartbeat() {
         launchWithViewLifecycle {
             lastCommunicationTime
                 .debounce(AppContants.Communication.DELAY_20000_MILLIS)  //20秒无更新触发

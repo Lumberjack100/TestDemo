@@ -49,6 +49,7 @@ import java.util.Locale
  * 创建时间：2024/4/18
  * 描述： TODO
  */
+@Deprecated("This class is deprecated", ReplaceWith("BaseAdvancedSettingFragment"))
 class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentBleDasAdvancedSettingBinding
     private lateinit var toolbarViewModel: ToolbarViewModel

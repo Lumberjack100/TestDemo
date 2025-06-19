@@ -20,7 +20,7 @@ import org.koin.android.ext.android.inject
 /**
  * 创建者：gonghe
  * 创建时间：2024/6/7
- * 描述：4G通讯模式 - DAS扩展传感器列表页面
+ * 描述：物联网采集器(DAS)扩展传感器列表页面 - 支持4G通讯方式
  */
 class DasExternalSensorListFragment : BaseDasExternalSensorListFragment() {
     private val iotParseManager: IOTParserManager by inject()

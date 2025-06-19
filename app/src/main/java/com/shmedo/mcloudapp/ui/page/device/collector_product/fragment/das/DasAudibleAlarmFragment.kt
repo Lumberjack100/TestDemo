@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
-import androidx.activity.OnBackPressedCallback
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -37,6 +36,11 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.text.DecimalFormat
 
+/**
+ * 创建者：gonghe
+ * 创建时间：2024/5/7
+ * 描述： 物联网采集器(DAS)声光报警器参数配置页面- 支持4G通讯方式
+ */
 class DasAudibleAlarmFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasAudibleAlarmBinding
     private lateinit var toolbarViewModel: ToolbarViewModel

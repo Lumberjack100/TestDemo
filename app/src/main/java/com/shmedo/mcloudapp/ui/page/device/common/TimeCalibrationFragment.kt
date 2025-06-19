@@ -85,7 +85,7 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            if (communicateWay == BleConnect && (productType == ProductType.DAS || productType == ProductType.BHY || productType == ProductType.COLLECTOR_R_1)) {
+            if (isBleDas()) {
                 isDoSetTimeCmd = true
                 initDasBleSaveCommand()
             }
@@ -209,7 +209,7 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
-        if (communicateWay == BleConnect && (productType == ProductType.DAS || productType == ProductType.BHY || productType == ProductType.COLLECTOR_R_1)) {
+        if (isBleDas()) {
             handleDasBleCommandResult(cmdStr)
         } else {
             handleCommandResult(cmdStr)

@@ -20,7 +20,7 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/4/18
- * 描述：蓝牙通讯模式 - DAS振弦式扩展传感器列表页面
+ * 描述：物联网采集器(DAS)振弦式扩展传感器列表页面 - 支持蓝牙通讯方式
  */
 class BleDasExternalVibratingSensorListFragment : BaseDasExternalSensorListFragment() {
 

@@ -463,6 +463,10 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         )
     }
 
+    protected fun isBleDas(): Boolean {
+        return communicateWay == BleConnect && (productType == ProductType.DAS || productType == ProductType.BHY || productType == ProductType.COLLECTOR_R_1)
+    }
+
     companion object {
         fun newBundleArguments(
             type: ProductType = ProductType.UnKnown,

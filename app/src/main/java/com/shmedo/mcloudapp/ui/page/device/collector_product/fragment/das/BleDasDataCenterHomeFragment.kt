@@ -11,6 +11,7 @@ import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
+import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerOne
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerThree
@@ -324,7 +325,7 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
+                            processNavigateUp()
                         }
                     }
                 }
@@ -346,18 +347,36 @@ class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private fun initDataCenterStatus(info: DeviceNetStatus) {
         when (info.linkNumber) {
             ServerOne.centerId.toString() -> {
+                //0 未启用  1 已连接  2 未连接
+                val statusCode = info.linkEnable.compareAndReturn(
+                    "0",
+                    "0",
+                    info.linkStatus.compareAndReturn("1", "1", "2")
+                )
                 binding.recyclerView.bindingAdapter.getModel<DataCenterStatusItem>(0)
-                    .refreshStatus(info.linkEnable)
+                    .refreshStatus(statusCode)
             }
 
             ServerTwo.centerId.toString() -> {
+                //0 未启用  1 已连接  2 未连接
+                val statusCode = info.linkEnable.compareAndReturn(
+                    "0",
+                    "0",
+                    info.linkStatus.compareAndReturn("1", "1", "2")
+                )
                 binding.recyclerView.bindingAdapter.getModel<DataCenterStatusItem>(1)
-                    .refreshStatus(info.linkEnable)
+                    .refreshStatus(statusCode)
             }
 
             ServerThree.centerId.toString() -> {
+                //0 未启用  1 已连接  2 未连接
+                val statusCode = info.linkEnable.compareAndReturn(
+                    "0",
+                    "0",
+                    info.linkStatus.compareAndReturn("1", "1", "2")
+                )
                 binding.recyclerView.bindingAdapter.getModel<DataCenterStatusItem>(2)
-                    .refreshStatus(info.linkEnable)
+                    .refreshStatus(statusCode)
             }
         }
     }

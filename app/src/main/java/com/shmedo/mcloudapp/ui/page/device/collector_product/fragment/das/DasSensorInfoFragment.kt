@@ -37,7 +37,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2025/6/4
- * @desc: 物联网采集器(DAS)传感器信息
+ * @desc: 物联网采集器(DAS)传感器信息 - 支持4G和蓝牙两种通讯方式
  *
  */
 class DasSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {

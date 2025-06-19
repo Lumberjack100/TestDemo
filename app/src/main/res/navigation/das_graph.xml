@@ -7,6 +7,8 @@
 
     <include app:graph="@navigation/include_time_calibration_graph" />
     <include app:graph="@navigation/include_firmware_upgrade_graph" />
+    <include app:graph="@navigation/include_ble_command_debug_graph" />
+    <include app:graph="@navigation/include_remote_command_debug_graph" />
 
 
     <fragment
@@ -58,9 +60,21 @@
         tools:layout="@layout/fragment_data_center_param" />
 
     <fragment
-        android:id="@+id/dasTerminalParameterFragment"
+        android:id="@+id/bleDasDataCenterHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.BleDasDataCenterHomeFragment"
+        android:label="BleDasDataCenterHomeFragment"
+        tools:layout="@layout/fragment_ble_das_data_center_home"/>
+
+    <fragment
+        android:id="@+id/bleDataCenterParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.BleDasDataCenterParamFragment"
+        android:label="BleDataCenterParamFragment"
+        tools:layout="@layout/fragment_ble_das_data_center_param" />
+
+    <fragment
+        android:id="@+id/dasReportConfigFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasReportConfigFragment"
-        android:label="DasTerminalParameterFragment"
+        android:label="DasReportConfigFragment"
         tools:layout="@layout/fragment_das_terminal_parameter" />
 
     <fragment
@@ -150,8 +164,24 @@
         app:popExitAnim="@anim/activity_close_exit" />
 
     <action
-        android:id="@+id/action_global_to_dasTerminalParameterFragment"
-        app:destination="@id/dasTerminalParameterFragment"
+        android:id="@+id/action_global_to_bleDasDataCenterHomeFragment"
+        app:destination="@id/bleDasDataCenterHomeFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_bleDataCenterParamFragment"
+        app:destination="@id/bleDataCenterParamFragment"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_dasReportConfigFragment"
+        app:destination="@id/dasReportConfigFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
@@ -200,6 +230,22 @@
     <action
         android:id="@+id/action_global_to_firmwareUpgradeFragment"
         app:destination="@id/firmware_upgrade_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_commandDebug"
+        app:destination="@id/ble_command_debug_graph"
+        app:enterAnim="@anim/activity_open_enter"
+        app:exitAnim="@anim/activity_open_exit"
+        app:popEnterAnim="@anim/activity_close_enter"
+        app:popExitAnim="@anim/activity_close_exit" />
+
+    <action
+        android:id="@+id/action_global_to_remoteDebugFragment"
+        app:destination="@id/remote_command_debug_graph"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"

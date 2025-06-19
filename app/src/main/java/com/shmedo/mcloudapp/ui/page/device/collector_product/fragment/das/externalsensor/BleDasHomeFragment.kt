@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.das.fragment.ble
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor
 
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +12,7 @@ import com.hjq.toast.Toaster
 import com.kongzue.dialogx.dialogs.PopTip
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.kyleduo.switchbutton.SwitchButton
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.md_cmd.assemble.entity.das.AuthenticationEntity
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
 import com.shmedo.lib.cmd.base.md_cmd.enums.MDLowEnergyModel
@@ -58,6 +59,7 @@ import org.koin.android.ext.android.inject
 import timber.log.Timber
 import java.nio.charset.StandardCharsets
 
+@Deprecated("This class is deprecated", ReplaceWith("DASHomeFragment"))
 class BleDasHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentBleDasHomeBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
@@ -170,7 +172,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
 
     inner class ClickProxy : BaseClickProxy() {
         override fun onToolbarIvClick() {
-            val bundle = QueryDeviceDataFragment.newBundleArguments(
+            val bundle = QueryDeviceDataFragment.Companion.newBundleArguments(
                 deviceInfo.deviceToken
             )
             nav(binding.llToolbar.ivAction).safeNavigate(
@@ -233,7 +235,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
 
             is CollectorConfigModule -> {//采集器配置
                 if (module.functionModule.navId != 0) {
-                    val bundle = DasCollectorSettingFragment.newBundleArguments(
+                    val bundle = DasCollectorSettingFragment.Companion.newBundleArguments(
                         mStates.collectorModel.get(),
                         productType,
                         communicateWay,
@@ -249,7 +251,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
 
             is SensorConfigModule -> {//传感器配置
                 if (module.functionModule.navId != 0) {
-                    val bundle = DasSensorHomeFragment.newBundleArguments(
+                    val bundle = DasSensorHomeFragment.Companion.newBundleArguments(
                         mStates.collectorModel.get(),
                         productType,
                         communicateWay,
@@ -265,7 +267,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
 
             else -> {
                 if (module.functionModule.navId != 0) {
-                    val bundle = BaseIOTDeviceFragment.newBundleArguments(
+                    val bundle = newBundleArguments(
                         productType,
                         communicateWay,
                         deviceInfo,
@@ -306,7 +308,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             MDCommandUtil.getCommand(MDCommandType.AUTHENTICATION_CONFIG, entity.toCommandString())
         commandItems.add(command)
 
-        Timber.d("设置认证类型指令===%s", command)
+        Timber.Forest.d("设置认证类型指令===%s", command)
         sendCommandFromCmdList(isStartTimeoutJob = false)
     }
 
@@ -314,13 +316,13 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
      * 开始认证流程
      */
     private fun sendAuthenticateCodeCmd(authenticateParam: String) {
-        Timber.d("解密前:%s", authenticateParam)
+        Timber.Forest.d("解密前:%s", authenticateParam)
         val resultData = HexUtils.hexStringToBytes(authenticateParam)
         try {
             val deskey = "12345678"
             // 解密后认证码
             val strDecrypt = String(DesUtil.decrypt(resultData, deskey)!!, StandardCharsets.UTF_8)
-            Timber.d("解密后:%s", strDecrypt)
+            Timber.Forest.d("解密后:%s", strDecrypt)
 
             if (strDecrypt.isNotEmpty()) {
                 // 反转6位随机码
@@ -330,15 +332,15 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
                 // 加密后认证码
                 val strEncrypt = HexUtils.bytesToHexString(byteEncrypt!!)!!
                 val command =
-                    "##222,${deviceInfo.deviceToken},0,${strEncrypt.uppercase()}${MDConstants.COMMAND_FOOTER}"
-                Timber.d("设备登录验证指令===%s", command)
+                    "##222,${deviceInfo.deviceToken},0,${strEncrypt.uppercase()}${MDConstants.Companion.COMMAND_FOOTER}"
+                Timber.Forest.d("设备登录验证指令===%s", command)
 
                 commandItems.clear()
                 commandItems.add(command)
                 sendCommandFromCmdList(isStartTimeoutJob = false)
             }
         } catch (e: Exception) {
-            Timber.e(e)
+            Timber.Forest.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
@@ -353,7 +355,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             MDCommandUtil.getCommand(MDCommandType.BASE_CONFIG)
         commandItems.add(command)
 
-        Timber.d("获取基础配置信息指令===%s", command)
+        Timber.Forest.d("获取基础配置信息指令===%s", command)
         sendCommandFromCmdList(isStartTimeoutJob = false)
     }
 
@@ -367,7 +369,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             if (isActivate) MDLowEnergyModel.ACTIVATE.toString() else MDLowEnergyModel.STANDBY.toString()
         )
         commandItems.add(command)
-        Timber.d("打开/关闭设备低功耗模式指令===%s", command)
+        Timber.Forest.d("打开/关闭设备低功耗模式指令===%s", command)
         sendCommandFromCmdList(isStartTimeoutJob = false)
     }
 
@@ -379,7 +381,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             MDCommandUtil.getCommand(MDCommandType.INSTANT_COLLEACTOR)
         commandItems.add(command)
 
-        Timber.d("遥测设备指令===%s", command)
+        Timber.Forest.d("遥测设备指令===%s", command)
         showLoadingDialog(StringUtils.getString(R.string.cmd_dispatch_loading_tip))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -396,7 +398,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
             )
         commandItems.add(command)
 
-        Timber.d("发送保存配置重启设备指令===%s", command)
+        Timber.Forest.d("发送保存配置重启设备指令===%s", command)
         showLoadingDialog(StringUtils.getString(R.string.cmd_dispatch_loading_tip))
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
@@ -560,9 +562,9 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     private fun initBaseConfigInfo(info: DasBaseConfigInfo) {
         try {
             mStates.collectorModel.set(info.collectorModel)
-            mStates.isActivated.set(MDLowEnergyModel.value(info.activeStatus) == MDLowEnergyModel.ACTIVATE)
+            mStates.isActivated.set(MDLowEnergyModel.Companion.value(info.activeStatus) == MDLowEnergyModel.ACTIVATE)
         } catch (e: Exception) {
-            Timber.e(e)
+            Timber.Forest.e(e)
             addDeviceLogItem(Log.ERROR, e.errorMsg)
         }
     }
@@ -613,14 +615,14 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     private fun setupHeartbeat() {
         launchWithViewLifecycle {
             lastCommunicationTime
-                .debounce(com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
+                .debounce(AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
                 .collect { lastUpdateTime ->
                     val updateTime = TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
                     // 仅当设备连接并且需要发送心跳时，才发送心跳包
                     if (mStates.isConnected.get()) {
-                        Timber.d("发送心跳包指令 startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
+                        Timber.Forest.d("发送心跳包指令 startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
                         val command = MDCommandUtil.getCommand(MDCommandType.HEART_BEAT)
-                        Timber.d("发送心跳包指令: $command")
+                        Timber.Forest.d("发送心跳包指令: $command")
                         sendBleCommand(command)
                     }
                 }
