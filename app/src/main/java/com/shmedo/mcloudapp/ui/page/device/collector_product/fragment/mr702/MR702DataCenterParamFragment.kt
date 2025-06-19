@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
-import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
@@ -40,8 +39,15 @@ import com.shmedo.mcloudapp.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702DataCenterParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 
+/**
+ * @author：gonghe
+ * @time: 2025/6/19
+ * @desc: 数据中心参数配置页面 - 支持4G和蓝牙两种通讯方式
+ *
+ */
 class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702DataCenterParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
@@ -76,12 +82,11 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentMr702DataCenterParamBinding
         binding.llToolbar.toolbar.title = "链路配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            processBack(true)
+            nav().navigateUp()
         }
         registerOnBackPressedDispatcher {
-           processBack(true)
+            nav().navigateUp()
         }
-        mStates.isEditable.set(true)
         initRefresh()
     }
 
@@ -514,7 +519,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                     else -> {
                         sendCommandFromCmdList {
                             Toaster.show("数据保存成功")
-                            processBack()
+                            processNavigateUp()
                         }
                     }
                 }
@@ -623,14 +628,9 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         initImmersionBar(binding.llToolbar.toolbar)
     }
 
-    private fun processBack(isPressBackBtn: Boolean = false) {
+    override fun processNavigateUp(toastMsg: String, isShowToast: Boolean) {
         launchWithViewLifecycle {
-            if (isPressBackBtn) {
-                mMessenger.requestStatusBarColor(if (statusBarColor == 0) R.color.colorPrimary else statusBarColor)
-                nav().navigateUp()
-                return@launchWithViewLifecycle
-            }
-
+            delay(1000)
             //需要给上一级页面传递最新的信息
             setFragmentResult(
                 AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY,

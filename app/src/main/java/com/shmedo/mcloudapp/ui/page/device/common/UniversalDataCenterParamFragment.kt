@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.ui.page.device.common
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
@@ -45,6 +44,7 @@ import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DataCenterParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
@@ -615,6 +615,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 
     override fun processNavigateUp(toastMsg: String, isShowToast: Boolean) {
         launchWithViewLifecycle {
+            delay(1000)
             //需要给上一级页面传递最新的信息
             setFragmentResult(
                 AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY,

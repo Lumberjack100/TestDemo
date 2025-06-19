@@ -43,9 +43,9 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
-import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702HomeViewModel
@@ -319,7 +319,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
         fun onGoToSensorDataHistoryClick() {
             nav().safeNavigate(
                 R.id.action_global_to_commonSensorDataHistoryFragment,
-                CommonSensorDataHistoryFragment.Companion.newBundleArguments(
+                CommonSensorDataHistoryFragment.newBundleArguments(
                     productType,
                     deviceInfo
                 )
@@ -336,8 +336,8 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             is DataCenterModule -> {
                 nav().safeNavigate(
                     module.navId,
-                    UniversalDataCenterHomeFragment.Companion.newBundleArguments(
-                        centerNum = 4,
+                    BaseDataCenterHomeFragment.newBundleArguments(
+                        centerNum = 5,
                         productType,
                         communicateWay,
                         deviceInfo,
@@ -347,7 +347,7 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
             }
 
             is CommandDebugConfigModule -> {//指令下发
-                val bundle = BleCustomCommandLogPrintFragment.Companion.newBundleArguments(
+                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
                     true,
                     productType,
                     communicateWay,
@@ -523,8 +523,8 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            showDialogFragment(FindDeviceBeepDialog.Companion.TAG) {
-                                FindDeviceBeepDialog.Companion.newInstance(ProductType.GNSS_M_5)
+                            showDialogFragment(FindDeviceBeepDialog.TAG) {
+                                FindDeviceBeepDialog.newInstance(ProductType.GNSS_M_5)
                             }
                         }
                     }

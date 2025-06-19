@@ -38,8 +38,8 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.SensorConfigModule
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.NewUniversalBaseDeviceHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import kotlinx.coroutines.flow.debounce
 import org.koin.android.ext.android.inject
@@ -184,7 +184,7 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
             is DataCenterModule -> {
                 nav().safeNavigate(
                     configModule.navId,
-                    UniversalDataCenterHomeFragment.newBundleArguments(
+                    BaseDataCenterHomeFragment.newBundleArguments(
                         centerNum = 3,
                         productType,
                         communicateWay,

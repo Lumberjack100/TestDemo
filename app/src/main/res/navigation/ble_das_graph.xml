@@ -15,7 +15,7 @@
 
     <fragment
         android:id="@+id/bleDasHomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor.BleDasHomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.BleDasHomeFragment"
         android:label="BleDasHomeFragment"
         tools:layout="@layout/fragment_ble_das_home"/>
 

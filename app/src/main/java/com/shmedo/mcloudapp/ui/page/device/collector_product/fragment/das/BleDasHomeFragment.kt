@@ -1,4 +1,4 @@
-package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.externalsensor
+package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 
 import android.os.Bundle
 import android.util.Log
@@ -48,8 +48,6 @@ import com.shmedo.mcloudapp.model.RunningStatusModule
 import com.shmedo.mcloudapp.model.SensorConfigModule
 import com.shmedo.mcloudapp.model.TelemetryDataModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasCollectorSettingFragment
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasSensorHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.QueryDeviceDataFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.BleDasHomeFragmentViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel

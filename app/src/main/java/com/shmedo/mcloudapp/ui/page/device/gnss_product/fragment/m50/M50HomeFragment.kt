@@ -48,9 +48,9 @@ import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
-import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.M50HomeViewModel
@@ -387,7 +387,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             is DataCenterModule -> {
                 nav().safeNavigate(
                     module.navId,
-                    UniversalDataCenterHomeFragment.Companion.newBundleArguments(
+                    BaseDataCenterHomeFragment.newBundleArguments(
                         centerNum = 4,
                         productType,
                         communicateWay,

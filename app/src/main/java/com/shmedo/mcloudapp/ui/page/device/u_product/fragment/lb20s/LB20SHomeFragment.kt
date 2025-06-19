@@ -23,8 +23,8 @@ import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.OneClickSilenceModule
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.NewUniversalBaseDeviceHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 
 /**
  * 创建者：gonghe
@@ -167,7 +167,7 @@ class LB20SHomeFragment : NewUniversalBaseDeviceHomeFragment() {
             is DataCenterModule -> {
                 nav().safeNavigate(
                     configModule.navId,
-                    UniversalDataCenterHomeFragment.Companion.newBundleArguments(
+                    BaseDataCenterHomeFragment.newBundleArguments(
                         centerNum = 3,
                         productType,
                         communicateWay,
