@@ -17,7 +17,7 @@
         android:id="@+id/uProductHomeFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.UProductCommonHomeFragment"
         android:label="UProductCommonHomeFragment"
-        tools:layout="@layout/fragment_u_product_common_home" />
+        tools:layout="@layout/fragment_universal_device_home_new" />
 
     <fragment
         android:id="@+id/commonLocationInfoFragment"

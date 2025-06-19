@@ -320,7 +320,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                 super.doCmdResponseResultError(
                     cmdStr = cmdStr,
                     errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
+                    isShowErrMsg = false,
                     isMessageDialog = isMessageDialog
                 )
             }
@@ -350,7 +350,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
                     errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
+                    isShowErrMsg = false,
                     isMessageDialog = isMessageDialog
                 )
             }
@@ -382,7 +382,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
                     isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = isShowErrMsg,
+                    isShowErrMsg = false,
                     isMessageDialog = isMessageDialog,
                     errMsg = errMsg
                 )

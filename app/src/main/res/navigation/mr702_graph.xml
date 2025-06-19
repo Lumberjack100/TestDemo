@@ -15,7 +15,7 @@
         android:id="@+id/mR702HomeFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702HomeFragment"
         android:label="MR702HomeFragment"
-        tools:layout="@layout/fragment_mr702_home" />
+        tools:layout="@layout/fragment_universal_device_home_new" />
 
     <fragment
         android:id="@+id/mR702BaseInfoFragment"

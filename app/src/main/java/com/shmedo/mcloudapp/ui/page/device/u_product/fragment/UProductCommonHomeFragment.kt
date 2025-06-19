@@ -1,41 +1,22 @@
 package com.shmedo.mcloudapp.ui.page.device.u_product.fragment
 
-import android.os.Bundle
 import android.util.Log
-import android.view.View
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
-import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.TimeUtils
-import com.drake.brv.utils.linear
+import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
-import com.drake.brv.utils.setup
-import com.hjq.toast.Toaster
-import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
-import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.URCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
-import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.baseclickproxy.DoubleClickListener
-import com.shmedo.mcloudapp.databinding.FragmentUProductCommonHomeBinding
-import com.shmedo.mcloudapp.databinding.ItemSubConfigModuleBinding
-import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.notNullKey
-import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
-import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
@@ -46,174 +27,84 @@ import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusEnum
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.model.LR200MeasureDataItem
 import com.shmedo.mcloudapp.model.SensorConfigModule
+import com.shmedo.mcloudapp.model.UIMeasureDataItem
+import com.shmedo.mcloudapp.model.URMeasureDataItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
-import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.UProductCommonHomeViewModel
-import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
+import com.shmedo.mcloudapp.ui.page.device.common.NewUniversalBaseDeviceHomeFragment
+import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
-class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentUProductCommonHomeBinding
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mHeadStates: UProductCommonHomeViewModel by viewModels()
-    private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
-    private val iotParseManager: IOTParserManager by inject()
+/**
+ * 创建者：gonghe
+ * 创建时间：2024/5/7
+ * 描述：  一体式传感器配置主页 - 支持4G和蓝牙两种通讯方式
+ */
+class UProductCommonHomeFragment : NewUniversalBaseDeviceHomeFragment() {
 
-    private var lastOnlineStatus: Boolean = false//在线状态
-    private var deviceStatusCheckJob: Job? = null
-
-
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
-    override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_u_product_common_home, BR.stateVM, mHeadStates)
-            .addBindingParam(BR.toolbarVM, toolbarViewModel)
-            .addBindingParam(BR.click, ClickProxy())
-    }
-
-    override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentUProductCommonHomeBinding
-        binding.llToolbar.toolbar.title = "返回"
-        binding.llToolbar.toolbar.setNavigationOnClickListener {
-            if (bleViewModel.isConnected()) {
-                bleViewModel.disconnect()
-            }
-            mActivity.finish()
-        }
-        registerOnBackPressedDispatcher {
-            if (bleViewModel.isConnected()) {
-                bleViewModel.disconnect()
-            }
-            mActivity.finish()
-        }
-        initDeviceLogoDoubleClickListener()
-        initModuleAdapter()
-    }
-
-    private fun initDeviceLogoDoubleClickListener() {
-        binding.llDeviceInfo.ivDeviceLogo.setOnClickListener(object : DoubleClickListener() {
-            override fun onDoubleClick(v: View) {
-                if (isBleDisconnected() || isNetDisconnected()) {
-                    return
-                }
-                searchDevice()
-            }
-        })
-    }
+    // 根据产品类型使用不同的测量数据项
+    private var uiMeasureDataItem: UIMeasureDataItem = UIMeasureDataItem()
+    private var urMeasureDataItem: URMeasureDataItem = URMeasureDataItem()
+    private var lr200MeasureDataItem: LR200MeasureDataItem = LR200MeasureDataItem()
 
     override fun initData() {
         super.initData()
-        mHeadStates.productType.set(productType)
-        mHeadStates.productName.set(productType.productName)
-        mHeadStates.productToken.set(productType.productToken)
-        mHeadStates.deviceToken.set(deviceInfo.deviceToken)
+        when (productType) {
+            ProductType.U_I_1,//一体化倾斜仪
+            ProductType.U_R_1 //一体化雨量计
+                -> {
+                mHeadStates.productErrorResId.set(R.drawable.device_logo_bhy_3s_error)
+                mHeadStates.productAlarmResId.set(R.drawable.device_logo_bhy_3s_alarm)
+                mHeadStates.productOfflineResId.set(R.drawable.device_logo_bhy_3s_offline)
+                mHeadStates.productNormalResId.set(R.drawable.device_logo_bhy_3s)
+            }
 
-        toolbarViewModel.toolbarIvActionVisible.set(communicateWay is BleConnect)
+            ProductType.LR200 -> {//一体式裂缝计
+                mHeadStates.productErrorResId.set(R.drawable.device_logo_bhy_3_lr200_error)
+                mHeadStates.productAlarmResId.set(R.drawable.device_logo_bhy_3_lr200_alarm)
+                mHeadStates.productOfflineResId.set(R.drawable.device_logo_bhy_3_lr200_offline)
+                mHeadStates.productNormalResId.set(R.drawable.device_logo_bhy_3_lr200)
+            }
 
-        initModuleData()
-    }
-
-    override fun onConnectionStateChanged(isConnected: Boolean) {
-        mHeadStates.isConnected.set(isConnected)
-        if (isConnected) {
-            mHeadStates.productLogoResId.set(
-                when (productType) {
-                    ProductType.U_I_1 -> R.drawable.device_logo_bhy_3s //倾斜仪
-                    ProductType.U_R_1 -> R.drawable.device_logo_bhy_3s//一体化雨量计
-                    ProductType.LR200 -> R.drawable.device_logo_bhy_3_lr200//米度一体式裂缝计
-                    else -> 0
-                }
-            )
-            mHeadStates.iotPlatformStateText.set("蓝牙已连接")
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
-
-        } else {
-            mHeadStates.productLogoResId.set(
-                when (productType) {
-                    ProductType.U_I_1 -> R.drawable.device_logo_bhy_3s_offline //倾斜仪
-                    ProductType.U_R_1 -> R.drawable.device_logo_bhy_3s_offline//一体化雨量计
-                    ProductType.LR200 -> R.drawable.device_logo_bhy_3_lr200_offline//米度一体式裂缝计
-                    else -> 0
-                }
-            )
-            mHeadStates.iotPlatformStateText.set("蓝牙已断开")
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
-
-            mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
-        }
-
-        //刷新模块状态
-        binding.rvModule.models?.forEach {
-            if (it is ConfigModuleTree) {
-                it.configModules.forEach { configModule ->
-                    configModule.functionModule.refreshStatus(isConnected)
-                }
+            else -> {
+                mHeadStates.productErrorResId.set(R.drawable.device_logo_default_error)
+                mHeadStates.productAlarmResId.set(R.drawable.device_logo_default_alarm)
+                mHeadStates.productOfflineResId.set(R.drawable.device_logo_default_offline)
+                mHeadStates.productNormalResId.set(R.drawable.device_logo_default)
             }
         }
     }
 
-    private fun initModuleAdapter() {
-        binding.rvModule.linear().setup { rv ->
-            addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group2)
-            addType<ConfigModuleTree>(R.layout.item_sub_config_module)
-            addType<GapItem>(R.layout.item_device_status_info_gap)
-            onCreate {
-                when (itemViewType) {
-                    R.layout.item_sub_config_module -> {
-                        val itemBinding = getBinding<ItemSubConfigModuleBinding>()
-                        itemBinding.rvSubModule.setup { subRv ->
-                            subRv.addItemDecoration(
-                                MyGridSpacingItemDecoration(
-                                    4,
-                                    ConvertUtils.dp2px(10f), false
-                                )
-                            )
-                            addType<ConfigModule>(R.layout.item_device_config_module_ud)
-                            R.id.item.onClick {
-                                val configModule = getModel<ConfigModule>()
-                                processSubModuleItemClick(configModule.functionModule)
-                            }
-                        }
-                    }
+    override fun initModuleData() {
+        // 扩展适配器支持
+        when (productType) {
+            ProductType.U_I_1//一体化倾斜仪
+                -> binding.rvModule.bindingAdapter.addType<UIMeasureDataItem>(R.layout.item_ui_measure_data)
 
-                    else -> {}
-                }
-            }
-            onBind {
-                when (itemViewType) {
-                    R.layout.item_sub_config_module -> {
-                        val configModuleTree = getModel<ConfigModuleTree>()
-                        val itemBinding = getBinding<ItemSubConfigModuleBinding>()
-                        itemBinding.rvSubModule.models = configModuleTree.configModules
-                    }
+            ProductType.U_R_1 //一体化雨量计
+                -> binding.rvModule.bindingAdapter.addType<URMeasureDataItem>(R.layout.item_ur_measure_data)
 
-                    else -> {
+            ProductType.LR200 //一体化裂缝计
+                -> binding.rvModule.bindingAdapter.addType<LR200MeasureDataItem>(R.layout.item_lr200_measure_data)
 
-                    }
-                }
-            }
+            else -> {}
         }
-    }
 
-    private fun initModuleData() {
         val groupList = mutableListOf<Any>()
+
+        // 根据产品类型添加对应的测量数据作为第一个项目
+        when (productType) {
+            ProductType.U_I_1 -> groupList.add(uiMeasureDataItem)
+            ProductType.U_R_1 -> groupList.add(urMeasureDataItem)
+            ProductType.LR200 -> groupList.add(lr200MeasureDataItem)
+            else -> {}
+        }
+
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
         groupList.add(DeviceStatusInfoGroupItem("设备信息"))
         groupList.add(
@@ -333,32 +224,8 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
         binding.rvModule.models = groupList
     }
 
-    inner class ClickProxy : BaseClickProxy() {
-        override fun onToolbarIvClick() {
-            if (bleViewModel.isConnected()) {
-                bleViewModel.disconnect()
-            } else {
-                bleViewModel.launch(bleDevice!!)
-            }
-        }
-
-        fun onGoToSensorDataHistoryClick() {
-            nav().safeNavigate(
-                R.id.action_global_to_commonSensorDataHistoryFragment,
-                CommonSensorDataHistoryFragment.Companion.newBundleArguments(
-                    productType,
-                    deviceInfo
-                )
-            )
-        }
-    }
-
-    private fun processSubModuleItemClick(module: DeviceFunctionModule) {
-        if (isBleDisconnected()) {
-            Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-            return
-        }
-        when (module) {
+    override fun processOtherItemClick(configModule: DeviceFunctionModule) {
+        when (configModule) {
             is DataCenterModule -> {
                 val centerNum = when (productType) {
                     ProductType.U_I_1,//倾斜仪
@@ -369,7 +236,7 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
                     else -> 3
                 }
                 nav().safeNavigate(
-                    module.navId,
+                    configModule.navId,
                     BaseDataCenterHomeFragment.newBundleArguments(
                         centerNum,
                         productType,
@@ -397,77 +264,13 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-
             else -> {
-                if (module.navId != 0) {
-                    val bundle = newBundleArguments(
-                        productType,
-                        communicateWay,
-                        deviceInfo,
-                        bleDevice
-                    )
-                    nav().safeNavigate(
-                        module.navId,
-                        bundle
-                    )
-                } else {
-                    Toaster.show("正在开发中")
-                }
+                super.processOtherItemClick(configModule)
             }
         }
     }
 
-    override fun lazyLoadData() {
-        //4G 模式下，直接查询设备工作模式
-        if (communicateWay is NetPlatformConnect) {
-            onNetPlatformReady()
-        } else {
-            bleViewModel.launch(bleDevice!!)
-        }
-    }
-
-    private fun onNetPlatformReady() {
-        lastOnlineStatus = deviceInfo.onlineStatus
-        if (deviceInfo.onlineStatus) {
-            mHeadStates.productLogoResId.set(
-                when (productType) {
-                    ProductType.U_I_1 -> R.drawable.device_logo_bhy_3s //倾斜仪
-                    ProductType.U_R_1 -> R.drawable.device_logo_bhy_3s//一体化雨量计
-                    ProductType.LR200 -> R.drawable.device_logo_bhy_3_lr200//米度一体式裂缝计
-                    else -> 0
-                }
-            )
-            mHeadStates.iotPlatformStateText.set("米度平台在线")
-            queryStatusInfo()
-        } else {
-            mHeadStates.productLogoResId.set(
-                when (productType) {
-                    ProductType.U_I_1 -> R.drawable.device_logo_bhy_3s_offline //倾斜仪
-                    ProductType.U_R_1 -> R.drawable.device_logo_bhy_3s_offline//一体化雨量计
-                    ProductType.LR200 -> R.drawable.device_logo_bhy_3_lr200_offline//米度一体式裂缝计
-                    else -> 0
-                }
-            )
-            mHeadStates.iotPlatformStateText.set("米度平台离线")
-
-            mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
-        }
-        //刷新模块状态
-        binding.rvModule.models?.forEach {
-            if (it is ConfigModuleTree) {
-                it.configModules.forEach { configModule ->
-                    configModule.functionModule.refreshStatus(deviceInfo.onlineStatus)
-                }
-            }
-        }
-    }
-
-    override fun onBleDeviceReady() {
-        super.onBleDeviceReady()
-        queryStatusInfo()
-    }
-
-    private fun queryStatusInfo() {
+    override fun queryStatusInfo() {
         commandItems.clear()
 
         var command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
@@ -476,120 +279,7 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_DEVICE_STATUS -> {
-                dismissLoadingDialog()
-            }
-
-            IOTCommandType.MD_SEARCH_DEVICE -> {
-                super.doCmdResponseResultError(
-                    cmdStr = cmdStr,
-                    errMsg = "设备查找出错: $errMsg",
-                    isShowErrMsg = true,
-                    isMessageDialog = true
-                )
-            }
-
-            else -> {
-                super.doCmdResponseResultError(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
-                    isMessageDialog = isMessageDialog
-                )
-            }
-        }
-    }
-
-    /**
-     * 4G 下发指令响应超时
-     */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_DEVICE_STATUS -> {
-                dismissLoadingDialog()
-            }
-
-            IOTCommandType.MD_SEARCH_DEVICE -> {
-                super.doCmdResponseResultTimeOut(
-                    cmdStr = cmdStr,
-                    errMsg = "设备未响应",
-                    isShowErrMsg = true,
-                    isMessageDialog = true
-                )
-            }
-
-            else -> {
-                super.doCmdResponseResultTimeOut(
-                    cmdStr = cmdStr,
-                    errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
-                    isMessageDialog = isMessageDialog
-                )
-            }
-        }
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_DEVICE_STATUS -> {
-                super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr = cmdStr,
-                    isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = false,
-                    isMessageDialog = isMessageDialog,
-                    errMsg = errMsg
-                )
-            }
-
-            IOTCommandType.MD_SEARCH_DEVICE -> {
-                super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr = cmdStr,
-                    isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = true,
-                    isMessageDialog = true,
-                    errMsg = "设备未响应"
-                )
-            }
-
-            else -> {
-                super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr = cmdStr,
-                    isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = isShowErrMsg,
-                    isMessageDialog = isMessageDialog,
-                    errMsg = errMsg
-                )
-            }
-        }
-    }
-
-    override fun setResultData(cmdStr: String) {
-        updateLastCommunicationTime()
-
+    override fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_DEVICE_STATUS -> {
                 val result =
@@ -603,28 +293,11 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
 
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList()
-                        if (productType == ProductType.LR200) {
-                            initLR200StatusInfo(result.data)
-                        } else if (productType == ProductType.U_R_1) {
-                            initURStatusInfo(result.data)
-                        }
-                    }
-                }
-            }
-
-            IOTCommandType.MD_SEARCH_DEVICE -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "设备查找出错: ${result.message}"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            showDialogFragment(FindDeviceBeepDialog.Companion.TAG) {
-                                FindDeviceBeepDialog.Companion.newInstance(ProductType.GNSS_M_5)
-                            }
+                        when (productType) {
+                            ProductType.U_I_1 -> initUIStatusInfo(result.data)
+                            ProductType.U_R_1 -> initURStatusInfo(result.data)
+                            ProductType.LR200 -> initLR200StatusInfo(result.data)
+                            else -> {}
                         }
                     }
                 }
@@ -636,60 +309,137 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun initLR200StatusInfo(content: String) {
+    private fun initUIStatusInfo(content: String) {
         launchWithViewLifecycle {
             try {
                 val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
-                } ?: return@launchWithViewLifecycle
+                    MoshiUtil.fromJson<URCurrentStateInfo>(content)
+                }
+                if (stateInfo == null) {
+                    return@launchWithViewLifecycle
+                }
+                val uISensorInfoList = stateInfo.attach_data
+                if (uISensorInfoList.isNullOrEmpty()) {
+                    return@launchWithViewLifecycle
+                }
 
                 mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
 
-                mHeadStates.xAngle.set(
-                    DeviceStatusInfoProcessor.formatDoubleValue(
-                        stateInfo.x_Angle,
-                        "--",
-                        2
-                    ) + "°"
-                )
+                // 初始化数据
+                var xInitialAngle = "--°"
+                var yInitialAngle = "--°"
+                var zInitialAngle = "--°"
+                var xAngle = "--°"
+                var yAngle = "--°"
+                var zAngle = "--°"
+                var xAcc = "--°"
+                var yAcc = "--°"
+                var zAcc = "--°"
 
-                mHeadStates.yAngle.set(
-                    DeviceStatusInfoProcessor.formatDoubleValue(
-                        stateInfo.y_Angle,
-                        "--",
-                        2
-                    ) + "°"
-                )
+                uISensorInfoList.forEach { info ->
+                    when (info.key) {
+                        "initAngle" -> {
+                            info.value.notNullKey { value ->
+                                //根据逗号分隔
+                                val initAngle =
+                                    value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                                if (initAngle.isNotEmpty()) {
+                                    xInitialAngle = DeviceStatusInfoProcessor.formatDoubleValue(
+                                        initAngle[0],
+                                        "--",
+                                        2
+                                    ) + "°"
+                                }
+                                if (initAngle.size > 1) {
+                                    yInitialAngle = DeviceStatusInfoProcessor.formatDoubleValue(
+                                        initAngle[1],
+                                        "--",
+                                        2
+                                    ) + "°"
+                                }
+                                if (initAngle.size > 2) {
+                                    zInitialAngle = DeviceStatusInfoProcessor.formatDoubleValue(
+                                        initAngle[2],
+                                        "--",
+                                        2
+                                    ) + "°"
+                                }
+                            }
+                        }
 
-                mHeadStates.zAngle.set(
-                    DeviceStatusInfoProcessor.formatDoubleValue(
-                        stateInfo.z_Angle,
-                        "--",
-                        2
-                    ) + "°"
-                )
+                        "angle" -> {
+                            info.value.notNullKey { value ->
+                                //根据逗号分隔
+                                val angle =
+                                    value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                                if (angle.isNotEmpty()) {
+                                    xAngle = DeviceStatusInfoProcessor.formatDoubleValue(
+                                        angle[0],
+                                        "--",
+                                        2
+                                    ) + "°"
+                                }
+                                if (angle.size > 1) {
+                                    yAngle = DeviceStatusInfoProcessor.formatDoubleValue(
+                                        angle[1],
+                                        "--",
+                                        2
+                                    ) + "°"
+                                }
+                                if (angle.size > 2) {
+                                    zAngle = DeviceStatusInfoProcessor.formatDoubleValue(
+                                        angle[2],
+                                        "--",
+                                        2
+                                    ) + "°"
+                                }
+                            }
+                        }
 
-                mHeadStates.lFInitial.set(
-                    DeviceStatusInfoProcessor.formatDoubleValue(
-                        stateInfo.lF_initial,
-                        "--",
-                        2
-                    ) + "mm"
-                )
-                mHeadStates.lFCurrent.set(
-                    DeviceStatusInfoProcessor.formatDoubleValue(
-                        stateInfo.lF_current,
-                        "--",
-                        2
-                    ) + "mm"
-                )
-                mHeadStates.lFCumulative.set(
-                    DeviceStatusInfoProcessor.formatDoubleValue(
-                        stateInfo.lF_Cumulative,
-                        "--",
-                        2
-                    ) + "mm"
-                )
+                        "acc" -> {
+                            info.value.notNullKey { value ->
+                                //根据逗号分隔
+                                val acc = value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
+                                if (acc.isNotEmpty()) {
+                                    xAcc = DeviceStatusInfoProcessor.formatDoubleValue(
+                                        acc[0],
+                                        "--",
+                                        2
+                                    ) + "°"
+                                }
+                                if (acc.size > 1) {
+                                    yAcc = DeviceStatusInfoProcessor.formatDoubleValue(
+                                        acc[1],
+                                        "--",
+                                        2
+                                    ) + "°"
+                                }
+                                if (acc.size > 2) {
+                                    zAcc = DeviceStatusInfoProcessor.formatDoubleValue(
+                                        acc[2],
+                                        "--",
+                                        2
+                                    ) + "°"
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // 更新测量数据项
+                binding.rvModule.bindingAdapter.getModel<UIMeasureDataItem>(0)
+                    .refreshStatus(
+                        xInitialAngle,
+                        yInitialAngle,
+                        zInitialAngle,
+                        xAngle,
+                        yAngle,
+                        zAngle,
+                        xAcc,
+                        yAcc,
+                        zAcc
+                    )
+
             } catch (e: Exception) {
                 Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
@@ -713,123 +463,23 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
 
                 mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
 
+                var rain24h = "--mm"
+
                 uRSensorInfoList.forEach { info ->
                     when (info.key) {
                         "dayRain" -> {//24小时雨量值
-                            mHeadStates.rain24h.set(
-                                DeviceStatusInfoProcessor.formatDoubleValue(
-                                    info.value,
-                                    "--",
-                                    2
-                                ) + "mm"
-                            )
-                        }
-
-                        "initAngle" -> {
-                            info.value.notNullKey { value ->
-                                //根据逗号分隔
-                                val initAngle =
-                                    value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
-                                if (initAngle.isNotEmpty()) {
-                                    mHeadStates.xInitialAngle.set(
-                                        DeviceStatusInfoProcessor.formatDoubleValue(
-                                            initAngle[0],
-                                            "--",
-                                            2
-                                        ) + "°"
-                                    )
-                                }
-                                if (initAngle.size > 1) {
-                                    mHeadStates.yInitialAngle.set(
-                                        DeviceStatusInfoProcessor.formatDoubleValue(
-                                            initAngle[1],
-                                            "--",
-                                            2
-                                        ) + "°"
-                                    )
-                                }
-                                if (initAngle.size > 2) {
-                                    mHeadStates.zInitialAngle.set(
-                                        DeviceStatusInfoProcessor.formatDoubleValue(
-                                            initAngle[2],
-                                            "--",
-                                            2
-                                        ) + "°"
-                                    )
-                                }
-                            }
-                        }
-
-                        "angle" -> {
-                            info.value.notNullKey { value ->
-                                //根据逗号分隔
-                                val angle =
-                                    value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
-                                if (angle.isNotEmpty()) {
-                                    mHeadStates.xAngle.set(
-                                        DeviceStatusInfoProcessor.formatDoubleValue(
-                                            angle[0],
-                                            "--",
-                                            2
-                                        ) + "°"
-                                    )
-                                }
-                                if (angle.size > 1) {
-                                    mHeadStates.yAngle.set(
-                                        DeviceStatusInfoProcessor.formatDoubleValue(
-                                            angle[1],
-                                            "--",
-                                            2
-                                        ) + "°"
-                                    )
-                                }
-                                if (angle.size > 2) {
-                                    mHeadStates.zAngle.set(
-                                        DeviceStatusInfoProcessor.formatDoubleValue(
-                                            angle[2],
-                                            "--",
-                                            2
-                                        ) + "°"
-                                    )
-                                }
-                            }
-                        }
-
-                        "acc" -> {
-                            info.value.notNullKey { value ->
-                                //根据逗号分隔
-                                val acc = value.split(",".toRegex()).dropLastWhile { it.isEmpty() }
-                                if (acc.isNotEmpty()) {
-                                    mHeadStates.xAcc.set(
-                                        DeviceStatusInfoProcessor.formatDoubleValue(
-                                            acc[0],
-                                            "--",
-                                            2
-                                        ) + "°"
-                                    )
-                                }
-                                if (acc.size > 1) {
-                                    mHeadStates.yAcc.set(
-                                        DeviceStatusInfoProcessor.formatDoubleValue(
-                                            acc[1],
-                                            "--",
-                                            2
-                                        ) + "°"
-                                    )
-                                }
-                                if (acc.size > 2) {
-                                    mHeadStates.zAcc.set(
-                                        DeviceStatusInfoProcessor.formatDoubleValue(
-                                            acc[2],
-                                            "--",
-                                            2
-                                        ) + "°"
-                                    )
-                                }
-                            }
+                            rain24h = DeviceStatusInfoProcessor.formatDoubleValue(
+                                info.value,
+                                "--",
+                                2
+                            ) + "mm"
                         }
                     }
                 }
+
+                // 更新测量数据项
+                binding.rvModule.bindingAdapter.getModel<URMeasureDataItem>(0)
+                    .refreshStatus(rain24h)
 
             } catch (e: Exception) {
                 Timber.Forest.e(e)
@@ -838,69 +488,74 @@ class UProductCommonHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun createObserver() {
-        super.createObserver()
-        setupHeartbeat()
-        if (communicateWay is NetPlatformConnect) {
-            checkDeviceOnlineStatus()
-        }
-    }
-
-    /**
-     * 设置心跳检查
-     */
-    private fun setupHeartbeat() {
+    private fun initLR200StatusInfo(content: String) {
         launchWithViewLifecycle {
-            lastCommunicationTime
-                .debounce(AppContants.Communication.DELAY_20000_MILLIS)  //20秒无更新触发
-                .collect { lastUpdateTime ->
-                    val updateTime =
-                        TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
-                    //仅当设备连接并且需要发送心跳时，才发送心跳包
-                    if (mHeadStates.isConnected.get()) {
-                        Timber.Forest.d("发送心跳包指令 startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
-                        val command = IOTCommandUtil.getCommand(IOTCommandType.HEART_BEAT)
-                        Timber.Forest.d("发送心跳包指令: $command")
-                        sendBleCommand(command)
-                    }
-                }
-        }
-    }
+            try {
+                val stateInfo = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
+                } ?: return@launchWithViewLifecycle
 
-    private fun checkDeviceOnlineStatus() {
-        // 取消现有的job
-        deviceStatusCheckJob?.cancel()
+                val deviceAbnormalList =
+                    if (stateInfo.self_check.isEmpty()) arrayListOf<String>() else DeviceStatusHelper.checkDeviceAbnormal(
+                        stateInfo.self_check
+                    )
+                val status = if (deviceAbnormalList.isEmpty()) "正常" else "故障"
+                mHeadStates.productLogoResId.set(if (deviceAbnormalList.isEmpty()) mHeadStates.productNormalResId.get() else mHeadStates.productErrorResId.get())
+                mHeadStates.deviceStatusCode.set(if (deviceAbnormalList.isEmpty()) "0" else "-3")
+                mHeadStates.warnErrorText.set(status)
 
-        // 创建新的job，每30秒执行一次
-        deviceStatusCheckJob = launchWithViewLifecycle {
-            while (isActive) {
-                try {
-                    deviceRequestViewModel.getDeviceDetailInfo(deviceInfo.deviceToken) { error: Throwable ->
-                        addDeviceLogItem(Log.ERROR, error.errorMsg)
-                    }?.let { deviceDetailInfo ->
-                        // 如果设备在线状态发生变化，更新UI
-                        if (deviceDetailInfo.deviceInfo.onlineStatus != lastOnlineStatus) {
-                            onNetPlatformReady()
-                        }
-                    }
-                } catch (e: Exception) {
-                    Timber.Forest.e(e)
-                }
-                delay(30000) // 延迟30秒
+                // 更新测量数据
+                val newXAngle = DeviceStatusInfoProcessor.formatDoubleValue(
+                    stateInfo.x_Angle,
+                    "--",
+                    2
+                ) + "°"
+
+                val newYAngle = DeviceStatusInfoProcessor.formatDoubleValue(
+                    stateInfo.y_Angle,
+                    "--",
+                    2
+                ) + "°"
+
+                val newZAngle = DeviceStatusInfoProcessor.formatDoubleValue(
+                    stateInfo.z_Angle,
+                    "--",
+                    2
+                ) + "°"
+
+                val newLFInitial = DeviceStatusInfoProcessor.formatDoubleValue(
+                    stateInfo.lF_initial,
+                    "--",
+                    2
+                ) + "mm"
+
+                val newLFCurrent = DeviceStatusInfoProcessor.formatDoubleValue(
+                    stateInfo.lF_current,
+                    "--",
+                    2
+                ) + "mm"
+
+                val newLFCumulative = DeviceStatusInfoProcessor.formatDoubleValue(
+                    stateInfo.lF_Cumulative,
+                    "--",
+                    2
+                ) + "mm"
+
+                // 刷新测量数据项
+                binding.rvModule.bindingAdapter.getModel<LR200MeasureDataItem>(0)
+                    .refreshStatus(
+                        newXAngle,
+                        newYAngle,
+                        newZAngle,
+                        newLFInitial,
+                        newLFCurrent,
+                        newLFCumulative
+                    )
+
+            } catch (e: Exception) {
+                Timber.Forest.e(e)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
         }
     }
-
-    // 在 onDestroy 中取消 job
-    override fun onDestroy() {
-        super.onDestroy()
-        deviceStatusCheckJob?.cancel()
-        deviceStatusCheckJob = null
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
-
 }
