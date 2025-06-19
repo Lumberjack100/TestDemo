@@ -48,7 +48,6 @@ import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
@@ -70,7 +69,7 @@ import timber.log.Timber
 /**
  * 创建者:   gonghe <br></br>
  * 创建时间:  2020/8/27 <br></br>
- * 描述：  M20S 配置主页
+ * 描述：  普适型 GNSS 接收机(M20S)配置主页 - 支持4G和蓝牙两种通讯方式
  */
 class M20SHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentM20sHomeBinding
@@ -198,7 +197,6 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
                     }
                 }
             }
-
         }
     }
 
@@ -346,7 +344,7 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
         fun onGoToSensorDataHistoryClick() {
             nav().safeNavigate(
                 R.id.action_global_to_commonSensorDataHistoryFragment,
-                CommonSensorDataHistoryFragment.Companion.newBundleArguments(
+                CommonSensorDataHistoryFragment.newBundleArguments(
                     productType,
                     deviceInfo
                 )
@@ -371,17 +369,6 @@ class M20SHomeFragment : BaseIOTDeviceFragment() {
                         bleDevice
                     )
                 )
-            }
-
-            is CommandDebugConfigModule -> {//指令下发
-                val bundle = BleCustomCommandLogPrintFragment.Companion.newBundleArguments(
-                    true,
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().safeNavigate(module.navId, bundle)
             }
 
             else -> {

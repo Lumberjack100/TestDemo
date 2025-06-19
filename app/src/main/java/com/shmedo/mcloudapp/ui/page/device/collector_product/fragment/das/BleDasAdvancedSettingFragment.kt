@@ -140,7 +140,7 @@ class BleDasAdvancedSettingFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            val bundle = BleCustomCommandLogPrintFragment.Companion.newBundleArguments(
+            val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
                 false,
                 productType,
                 communicateWay,

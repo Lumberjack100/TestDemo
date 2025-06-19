@@ -31,7 +31,6 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.model.BleConnect
-import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
@@ -210,7 +209,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
         fun onGoToSensorDataHistoryClick() {
             nav().safeNavigate(
                 R.id.action_global_to_commonSensorDataHistoryFragment,
-                CommonSensorDataHistoryFragment.Companion.newBundleArguments(
+                CommonSensorDataHistoryFragment.newBundleArguments(
                     productType,
                     deviceInfo
                 )
@@ -224,16 +223,16 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
             return
         }
         when (module) {
-            is CommandDebugConfigModule -> {//指令下发
-                val bundle = BleCustomCommandLogPrintFragment.Companion.newBundleArguments(
-                    true,
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().safeNavigate(module.navId, bundle)
-            }
+//            is CommandDebugConfigModule -> {//指令下发
+//                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+//                    true,
+//                    productType,
+//                    communicateWay,
+//                    deviceInfo,
+//                    bleDevice
+//                )
+//                nav().safeNavigate(module.navId, bundle)
+//            }
 
             else -> {
                 processOtherItemClick(module)
@@ -405,8 +404,8 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            showDialogFragment(FindDeviceBeepDialog.Companion.TAG) {
-                                FindDeviceBeepDialog.Companion.newInstance(productType)
+                            showDialogFragment(FindDeviceBeepDialog.TAG) {
+                                FindDeviceBeepDialog.newInstance(productType)
                             }
                         }
                     }

@@ -51,7 +51,6 @@ import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
@@ -413,16 +412,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-            is CommandDebugConfigModule -> {//指令下发
-                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
-                    true,
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().safeNavigate(module.navId, bundle)
-            }
 
             else -> {
                 if (module.navId != 0) {

@@ -39,6 +39,7 @@ import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.SensorConfigModule
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
 import com.shmedo.mcloudapp.ui.page.device.common.NewUniversalBaseDeviceHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import kotlinx.coroutines.flow.debounce
@@ -49,7 +50,7 @@ import java.nio.charset.StandardCharsets
 /**
  * 创建者：gonghe
  * 创建时间：2024/5/7
- * 描述： 物联网采集器(DAS)- 支持4G和蓝牙两种通讯方式
+ * 描述： 物联网采集器(DAS) - 支持4G和蓝牙两种通讯方式
  */
 class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
     private val mdParseManager: MDParserManager by inject()
@@ -220,6 +221,17 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
                     configModule.navId,
                     bundle
                 )
+            }
+
+            is CommandDebugConfigModule -> {//指令下发
+                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+                    false,
+                    productType,
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
+                nav().safeNavigate(configModule.navId, bundle)
             }
 
 

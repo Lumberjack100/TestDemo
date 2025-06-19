@@ -346,17 +346,6 @@ class MR702HomeFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-            is CommandDebugConfigModule -> {//指令下发
-                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
-                    true,
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().safeNavigate(module.navId, bundle)
-            }
-
             else -> {
                 if (module.navId != 0) {
                     val bundle = newBundleArguments(
