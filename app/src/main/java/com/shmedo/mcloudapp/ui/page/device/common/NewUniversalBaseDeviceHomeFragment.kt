@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
+import com.drake.brv.BindingAdapter.BindingViewHolder
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -187,13 +188,14 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-
+                        processOtherItemViewBind(itemViewType)
                     }
                 }
             }
-
         }
     }
+
+    protected open fun BindingViewHolder.processOtherItemViewBind(viewId: Int) {}
 
     protected abstract fun initModuleData()
 
@@ -204,16 +206,6 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
             } else {
                 bleViewModel.launch(bleDevice!!)
             }
-        }
-
-        fun onGoToSensorDataHistoryClick() {
-            nav().safeNavigate(
-                R.id.action_global_to_commonSensorDataHistoryFragment,
-                CommonSensorDataHistoryFragment.newBundleArguments(
-                    productType,
-                    deviceInfo
-                )
-            )
         }
     }
 
