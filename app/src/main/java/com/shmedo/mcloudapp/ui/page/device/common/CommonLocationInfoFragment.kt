@@ -242,7 +242,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                 dismissLoadingDialog(measureLoadingDialogId)
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
-                    errMsg = "设备未响应",
+                    errMsg = errMsg,
                     isShowErrMsg = true,
                     isMessageDialog = true
                 )
@@ -277,7 +277,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                     isDismissLoadingDialog = isDismissLoadingDialog,
                     isShowErrMsg = true,
                     isMessageDialog = isMessageDialog,
-                    errMsg = "设备未响应"
+                    errMsg = errMsg
                 )
             }
 

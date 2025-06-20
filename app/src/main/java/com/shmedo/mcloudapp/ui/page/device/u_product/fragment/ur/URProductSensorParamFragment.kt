@@ -187,6 +187,11 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
+        (commandType == IOTCommandType.DAS_MD_GET_IO_SENSOR_INFO)
+                || (commandType == IOTCommandType.DAS_MD_SET_IO_SENSOR_INFO)
+                || (commandType == IOTCommandType.MD_SET_SENSOR_INITIAL)
+
     /**
      * 4G 下发指令响应失败
      */
@@ -196,11 +201,12 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultError(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -213,11 +219,12 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultTimeOut(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -231,11 +238,12 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean,
         errMsg: String
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.showNearbyCommunicationTimeoutAlert(
             cmdStr = cmdStr,
             isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage,
             errMsg = errMsg
         )
     }

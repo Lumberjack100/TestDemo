@@ -346,6 +346,12 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
+        (commandType == IOTCommandType.MD_GET_DEVICE_STATUS)
+                || (commandType == IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE)
+                || (commandType == IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR)
+                || (commandType == IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE)
+
     /**
      * 4G 下发指令响应失败
      */
@@ -355,11 +361,12 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultError(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -372,11 +379,12 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultTimeOut(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -390,11 +398,12 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean,
         errMsg: String
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.showNearbyCommunicationTimeoutAlert(
             cmdStr = cmdStr,
             isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage,
             errMsg = errMsg
         )
     }

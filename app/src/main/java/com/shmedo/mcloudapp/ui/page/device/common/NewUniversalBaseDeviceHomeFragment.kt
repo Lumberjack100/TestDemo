@@ -312,7 +312,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                 super.doCmdResponseResultError(
                     cmdStr = cmdStr,
                     errMsg = errMsg,
-                    isShowErrMsg = false,
+                    isShowErrMsg = isShowErrMsg,
                     isMessageDialog = isMessageDialog
                 )
             }
@@ -332,7 +332,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SEARCH_DEVICE -> {
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
-                    errMsg = "设备未响应",
+                    errMsg = errMsg,
                     isShowErrMsg = true,
                     isMessageDialog = true
                 )
@@ -342,7 +342,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
                     errMsg = errMsg,
-                    isShowErrMsg = false,
+                    isShowErrMsg = isShowErrMsg,
                     isMessageDialog = isMessageDialog
                 )
             }
@@ -366,7 +366,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                     isDismissLoadingDialog = isDismissLoadingDialog,
                     isShowErrMsg = true,
                     isMessageDialog = true,
-                    errMsg = "设备未响应"
+                    errMsg = errMsg
                 )
             }
 
@@ -374,7 +374,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
                     isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = false,
+                    isShowErrMsg = isShowErrMsg,
                     isMessageDialog = isMessageDialog,
                     errMsg = errMsg
                 )

@@ -345,7 +345,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
     ) {
         super.doCmdResponseResultTimeOut(
             cmdStr = cmdStr,
-            errMsg = "设备未响应",
+            errMsg = errMsg,
             isShowErrMsg = true,
             isMessageDialog = true
         )
@@ -366,7 +366,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
             isDismissLoadingDialog = isDismissLoadingDialog,
             isShowErrMsg = true,
             isMessageDialog = true,
-            errMsg = "设备未响应"
+            errMsg = errMsg
         )
     }
 

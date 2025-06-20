@@ -243,8 +243,10 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
             cam_module = if (mStates.rs232ExternalDevice.get() == "无") IOTConstants.NULL_KEY else captureFrequencyMinList[captureFrequencyList.indexOf(
                 mStates.captureFrequency.get()
             )],
-            pixx = if (mStates.rs232ExternalDevice.get() == "无") IOTConstants.NULL_KEY else mStates.imageResolution.get().split("x")[0],
-            pixy = if (mStates.rs232ExternalDevice.get() == "无") IOTConstants.NULL_KEY else mStates.imageResolution.get().split("x")[1],
+            pixx = if (mStates.rs232ExternalDevice.get() == "无") IOTConstants.NULL_KEY else mStates.imageResolution.get()
+                .split("x")[0],
+            pixy = if (mStates.rs232ExternalDevice.get() == "无") IOTConstants.NULL_KEY else mStates.imageResolution.get()
+                .split("x")[1],
             rs485_mode = rs485ExternalDeviceList.indexOf(mStates.rs485ExternalDevice.get())
                 .toString(),
             rs485_baud = rs485BaudRateList.indexOf(mStates.rs485BaudRate.get()).toString(),
@@ -271,6 +273,9 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
+        commandType == IOTCommandType.M50_MD_SET_SERIAL_PORT
+
     /**
      * 4G 下发指令响应失败
      */
@@ -280,11 +285,12 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultError(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -297,11 +303,12 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultTimeOut(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -315,12 +322,13 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean,
         errMsg: String
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.showNearbyCommunicationTimeoutAlert(
             cmdStr = cmdStr,
             isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
-            errMsg = "设备未响应"
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage,
+            errMsg = errMsg
         )
     }
 

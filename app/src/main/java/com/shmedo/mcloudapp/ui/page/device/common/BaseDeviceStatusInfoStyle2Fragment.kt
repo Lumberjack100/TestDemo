@@ -688,7 +688,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
     ) {
         super.doCmdResponseResultTimeOut(
             cmdStr = cmdStr,
-            errMsg = "设备未响应",
+            errMsg = errMsg,
             isShowErrMsg = true,
             isMessageDialog = true
         )
@@ -709,7 +709,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
             isDismissLoadingDialog = isDismissLoadingDialog,
             isShowErrMsg = true,
             isMessageDialog = true,
-            errMsg = "设备未响应"
+            errMsg = errMsg
         )
     }
 

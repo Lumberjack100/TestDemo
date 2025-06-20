@@ -381,7 +381,7 @@ class NewUDHomeFragment : NewUniversalBaseDeviceHomeFragment() {
                 if (!cmdStr.contains("method=0")) {
                     super.doCmdResponseResultTimeOut(
                         cmdStr = cmdStr,
-                        errMsg = "设备未响应",
+                        errMsg = errMsg,
                         isShowErrMsg = true,
                         isMessageDialog = true
                     )
@@ -423,7 +423,7 @@ class NewUDHomeFragment : NewUniversalBaseDeviceHomeFragment() {
                         isDismissLoadingDialog = isDismissLoadingDialog,
                         isShowErrMsg = true,
                         isMessageDialog = true,
-                        errMsg = "设备未响应"
+                        errMsg = errMsg
                     )
                 }
             }

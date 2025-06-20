@@ -618,7 +618,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 if (!cmdStr.contains("method=0")) {
                     super.doCmdResponseResultTimeOut(
                         cmdStr = cmdStr,
-                        errMsg = "设备未响应",
+                        errMsg = errMsg,
                         isShowErrMsg = true,
                         isMessageDialog = true
                     )
@@ -628,7 +628,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SEARCH_DEVICE -> {
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
-                    errMsg = "设备未响应",
+                    errMsg = errMsg,
                     isShowErrMsg = true,
                     isMessageDialog = true
                 )
@@ -682,7 +682,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         isDismissLoadingDialog = isDismissLoadingDialog,
                         isShowErrMsg = true,
                         isMessageDialog = true,
-                        errMsg = "设备未响应"
+                        errMsg = errMsg
                     )
                 }
             }
@@ -693,7 +693,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     isDismissLoadingDialog = isDismissLoadingDialog,
                     isShowErrMsg = true,
                     isMessageDialog = true,
-                    errMsg = "设备未响应"
+                    errMsg = errMsg
                 )
             }
 
