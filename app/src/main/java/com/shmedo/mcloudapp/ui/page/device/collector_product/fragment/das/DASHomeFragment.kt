@@ -63,6 +63,7 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
         mHeadStates.productAlarmResId.set(R.drawable.device_logo_das_alarm)
         mHeadStates.productOfflineResId.set(R.drawable.device_logo_das_offline)
         mHeadStates.productNormalResId.set(R.drawable.device_logo_das)
+        mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
     }
 
     override fun initModuleData() {

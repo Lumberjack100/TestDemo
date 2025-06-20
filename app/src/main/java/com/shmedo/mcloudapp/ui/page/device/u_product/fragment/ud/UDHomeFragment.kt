@@ -75,6 +75,7 @@ import timber.log.Timber
  * @desc: 一体化雷达水位/泥位计首页
  *
  */
+@Deprecated("This class is deprecated", ReplaceWith("NewUDHomeFragment"))
 class UDHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUdHomeBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()

@@ -7,11 +7,11 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.model.M50MeasureDataItem" />
+            type="com.shmedo.mcloudapp.model.UDMeasureDataItem" />
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50HomeFragment.M50ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.NewUDHomeFragment.UDClickProxy" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_size_10"
-                android:text="合位移量："
+                android:text="液位海拔："
                 android:textColor="@color/title_text_color_black_90"
                 android:textSize="@dimen/page_content_item_text_size_14" />
 
@@ -56,11 +56,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_size_10"
-                android:text='@{m.resultantDisplacement}'
+                android:text='@{m.waterSurfaceElevation}'
                 android:textColor="@color/title_text_color_black_90"
                 android:textSize="@dimen/text_size_18"
                 android:textStyle="bold"
-                tools:text="5.333m" />
+                tools:text="5.333 m" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -85,57 +85,65 @@
                 android:id="@+id/tv_air_distance"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dimen_size_20"
-                android:text='@{"X轴位移量："+m.xDisplacement}'
+                android:text='@{"空高距离："+m.airDistance}'
                 android:textColor="@color/title_text_color_black_90"
                 android:textSize="@dimen/page_content_item_text_size_14"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                tools:text="X轴位移量：5.38m" />
+                tools:text="空高距离：5.38 m" />
 
             <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tv_installation_angle"
+                android:id="@+id/tv_today_rain_fall"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dimen_size_20"
                 android:layout_marginStart="@dimen/dimen_size_16"
-                android:text='@{"Y轴位移量："+m.yDisplacement}'
+                android:text='@{"今日雨量："+m.todayRainfall}'
                 android:textColor="@color/title_text_color_black_90"
                 android:textSize="@dimen/page_content_item_text_size_14"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/vertical_divider_line"
-                tools:text="Y轴位移量：5.38m" />
-
+                tools:text="今日雨量：20.5 mm" />
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tv_installation_angle"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dimen_size_20"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:text='@{"安装角度："+m.installationAngle}'
+            android:textColor="@color/title_text_color_black_90"
+            android:textSize="@dimen/page_content_item_text_size_14"
+            tools:text="安装角度：89.3 °" />
 
         <com.google.android.material.textview.MaterialTextView
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dimen_size_20"
             android:layout_marginTop="@dimen/dimen_size_10"
-            android:text='@{"Z轴位移量："+m.zDisplacement}'
+            android:text='@{"测量时间："+m.measurementTime}'
             android:textColor="@color/title_text_color_black_90"
             android:textSize="@dimen/page_content_item_text_size_14"
-            tools:text="Z轴位移量：3.22m" />
+            tools:text="测量时间：2023-08-07 12:36:00" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_size_10">
 
-            <com.google.android.material.button.MaterialButton
+            <com.shmedo.mcloudapp.ui.widget.ProgressMaterialButton
+                android:id="@+id/btn_measure_data"
                 style="@style/MeasureData_Button_Style"
-                android:enabled="true"
-                android:gravity="center"
-                android:onClick="@{()->click.onGotoLocationClick()}"
-                android:text='位置'
+                android:onClick="@{()->click.onMeasureDataClick()}"
+                android:text='@{m.isMeasuring() ? "测量中" : "测量"}'
                 android:textColor="@color/measure_data_button_text_color"
                 app:backgroundTint="@drawable/measure_data_button_background_tint"
-                app:icon="@drawable/ic_module_location_info"
+                app:icon="@drawable/ic_device_measure_data"
                 app:iconSize="@dimen/dimen_size_18"
-                app:iconTint="@color/measure_data_button_icon_tint_color" />
+                app:iconTint="@color/measure_data_button_icon_tint_color"
+                tools:text="测量中" />
 
             <com.google.android.material.button.MaterialButton
                 style="@style/MeasureData_Button_Style"
                 android:layout_marginStart="@dimen/dimen_size_10"
-                android:enabled="false"
                 android:onClick="@{()->click.onTakePhotoClick()}"
                 android:text='拍照'
                 android:textColor="@color/measure_data_button_text_color"

@@ -38,6 +38,7 @@ class LB20SHomeFragment : NewUniversalBaseDeviceHomeFragment() {
         mHeadStates.productAlarmResId.set(R.drawable.device_logo_lb20s_alarm)
         mHeadStates.productOfflineResId.set(R.drawable.device_logo_lb20s_offline)
         mHeadStates.productNormalResId.set(R.drawable.device_logo_lb20s)
+        mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
     }
 
     override fun initModuleData() {

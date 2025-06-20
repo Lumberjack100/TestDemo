@@ -196,6 +196,9 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         binding.recyclerview.models = moduleList
     }
 
+    /**
+     * 是否需要同步位置
+     */
     private fun isNeedSyncLocation(): Boolean {
         return communicateWay is BleConnect &&
                 (productType == ProductType.LR200

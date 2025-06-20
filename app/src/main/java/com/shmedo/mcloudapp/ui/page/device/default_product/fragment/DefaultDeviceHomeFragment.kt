@@ -58,6 +58,7 @@ class DefaultDeviceHomeFragment : NewUniversalBaseDeviceHomeFragment() {
                 mHeadStates.productNormalResId.set(R.drawable.device_logo_default)
             }
         }
+        mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
     }
 
     override fun initModuleData() {

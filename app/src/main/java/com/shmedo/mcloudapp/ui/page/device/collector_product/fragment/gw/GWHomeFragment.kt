@@ -24,6 +24,7 @@ class GWHomeFragment : NewUniversalBaseDeviceHomeFragment() {
         mHeadStates.productAlarmResId.set(R.drawable.device_logo_gateway_alarm)
         mHeadStates.productOfflineResId.set(R.drawable.device_logo_gateway_offline)
         mHeadStates.productNormalResId.set(R.drawable.device_logo_gateway)
+        mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
     }
 
     override fun initModuleData() {

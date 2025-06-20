@@ -9,7 +9,6 @@ import com.blankj.utilcode.util.TimeUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
@@ -26,7 +25,6 @@ import com.shmedo.mcloudapp.databinding.FragmentTimeCalibrationBinding
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.TimeCalibrationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -120,7 +118,7 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
     }
 
     override fun lazyLoadData() {
-        if (communicateWay == BleConnect && (productType == ProductType.DAS || productType == ProductType.BHY || productType == ProductType.COLLECTOR_R_1)) {
+        if (isBleDas()) {
             isDoSetTimeCmd = false
             queryDasBleTerminalTime()
         } else

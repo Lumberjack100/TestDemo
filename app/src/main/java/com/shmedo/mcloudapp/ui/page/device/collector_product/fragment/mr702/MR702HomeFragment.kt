@@ -30,6 +30,7 @@ class MR702HomeFragment : NewUniversalBaseDeviceHomeFragment() {
         mHeadStates.productAlarmResId.set(R.drawable.device_logo_mr702_alarm)
         mHeadStates.productOfflineResId.set(R.drawable.device_logo_mr702_offline)
         mHeadStates.productNormalResId.set(R.drawable.device_logo_mr702)
+        mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
     }
 
     override fun initModuleData() {

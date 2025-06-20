@@ -46,7 +46,7 @@ import timber.log.Timber
  * 创建时间：2025/1/24
  * 描述：M50 设备主页 - 支持4G和蓝牙两种通讯方式（重构版本）
  */
-class NewM50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
+class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
     private var measureDataItem: M50MeasureDataItem = M50MeasureDataItem()
 
     override fun initData() {
@@ -56,6 +56,7 @@ class NewM50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
         mHeadStates.productAlarmResId.set(R.drawable.device_logo_m50_alarm)
         mHeadStates.productOfflineResId.set(R.drawable.device_logo_m50_offline)
         mHeadStates.productNormalResId.set(R.drawable.device_logo_m50)
+        mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
     }
 
     override fun initView(savedInstanceState: Bundle?) {

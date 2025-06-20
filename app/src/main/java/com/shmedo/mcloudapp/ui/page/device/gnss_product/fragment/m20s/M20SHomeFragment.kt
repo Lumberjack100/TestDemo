@@ -52,6 +52,7 @@ class M20SHomeFragment : NewUniversalBaseDeviceHomeFragment() {
         mHeadStates.productAlarmResId.set(R.drawable.device_logo_m20_alarm)
         mHeadStates.productOfflineResId.set(R.drawable.device_logo_m20_offline)
         mHeadStates.productNormalResId.set(R.drawable.device_logo_m20)
+        mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
     }
 
     override fun initView(savedInstanceState: Bundle?) {

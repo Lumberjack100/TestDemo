@@ -116,13 +116,13 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        toolbarViewModel.toolbarIvActionVisible.set(communicateWay is BleConnect)
+
         mHeadStates.productName.set(productType.productName.ifEmpty { deviceInfo.productName })
         val deviceName =
             if (deviceInfo.deviceName == deviceInfo.deviceToken) deviceInfo.productToken else deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken }
         mHeadStates.productToken.set(productType.productToken.ifEmpty { deviceName })
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
-
-        toolbarViewModel.toolbarIvActionVisible.set(communicateWay is BleConnect)
 
         initModuleData()
     }
