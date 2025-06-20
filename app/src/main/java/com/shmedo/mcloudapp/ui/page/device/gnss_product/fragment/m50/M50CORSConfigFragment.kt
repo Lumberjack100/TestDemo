@@ -33,7 +33,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/8/28
- * @desc: M50 CORS接入页面
+ * @desc: 一体化自供电 GNSS 接收机(M50)CORS 参数配置页面 - 支持4G和蓝牙两种通讯方式
  *
  */
 class M50CORSConfigFragment : BaseIOTDeviceFragment() {

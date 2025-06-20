@@ -66,7 +66,12 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
+/**
+ * @author：gonghe
+ * @time: 2025/6/20
+ * @desc: 设备远程连接调试页面
+ *
+ */
 class TcpDebugFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentTcpDebugBinding
     private lateinit var toolbarViewModel: ToolbarViewModel

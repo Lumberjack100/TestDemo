@@ -200,11 +200,11 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <!-- 广东水利平台特有配置参数 测站类型(下拉选择框) -->
+                    <!-- 广东水文平台特有配置参数 测站类型(下拉选择框) -->
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onGuangdongWaterPlatformStationTypeChooseClick()}"
-                        visible='@{stateVM.platformType.equals("广东水利平台")}'
+                        visible='@{stateVM.platformType.equals("广东水文平台")}'
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isCenterOpened}">
 

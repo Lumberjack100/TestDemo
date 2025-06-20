@@ -25,6 +25,6 @@ class MR702DataCenterParamViewModel : BaseDataCenterParamViewModel() {
     val reissuingDataValidDays = NonNullObservableField("") // 数据补发有效天数
     val reissuingDataInterval = NonNullObservableField("") // 数据补发间隔（分钟）
 
-    /** 广东水利平台特有配置参数 */
+    /** 广东水文平台特有配置参数 */
     val guangdongWaterPlatformStationType = NonNullObservableField("") // 测站分类
 }

@@ -20,6 +20,7 @@ import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.CenterNumberEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.DataCenterParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.StationCode
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -48,6 +49,12 @@ import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
+/**
+ * @author：gonghe
+ * @time: 2025/6/20
+ * @desc: 通用数据中心参数配置页面 - 支持4G和蓝牙两种通讯方式
+ *
+ */
 class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDataCenterParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
@@ -58,7 +65,13 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 
     private val dataTypeList =
         arrayListOf("CMD", "NMEA", "DIFF_IN", "DIFF_OUT", "RAW_OUT", "RES_OUT")
-    private val dataProtocolList = arrayListOf("MQTT", "TCP-C", "SL651", "NTRIP")
+    private val dataProtocolList = arrayListOf(
+        PlatformDataProtocol.MQTT.toString(),
+        PlatformDataProtocol.TCP_C.toString(),
+        PlatformDataProtocol.SL651.toString(),
+        PlatformDataProtocol.NTRIP.toString(),
+        PlatformDataProtocol.HTTP.toString()
+    )
 
     private val allPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
     private val mqttPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_mqtt_register_platform) }
@@ -66,6 +79,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
     private val sl651PlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_sl651_register_platform) }
     private val szy206PlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_szy206_register_platform) }
     private val ntripPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_ntrip_register_platform) }
+    private val httpPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_http_register_platform) }
 
     private val platformList: MutableList<String> = arrayListOf()
 
@@ -119,20 +133,20 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
     private fun resetDefaultParams() {
         binding.llToolbar.toolbar.title = statusItem.name.replace("数据", "") + "配置"
         mStates.isEditable.set(true)
+
         mStates.isCenterOpened.set(statusItem.status != "0")
+        mStates.centerServerAddress.set("")//
+        mStates.centerServerPort.set("")//
         mStates.isDataTypeVisible.set(
             productType == ProductType.GNSS_E_1 || productType == ProductType.GNSS_E_2 || productType == ProductType.GNSS_E_3
         )
-
-        mStates.centerServerAddress.set("")//
-        mStates.centerServerPort.set("")//
         mStates.dataType.set(dataTypeList.last())
-        mStates.dataProtocol.set("MQTT")//默认选择
+        mStates.dataProtocol.set(PlatformDataProtocol.MQTT.toString())//默认选择
         platformList.clear()
         platformList.addAll(mqttPlatformList.asList())
         mStates.platformType.set(allPlatformList[2])//默认选择米度物联平台
 
-        mStates.isMqttItemVisible.set(true)
+        // MQTT 协议特有配置参数
         mStates.productId.set("")//
         mStates.deviceId.set("")//
         mStates.deviceKey.set("")//
@@ -140,8 +154,16 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.registerAddress.set("")//
         mStates.registerPort.set("")//
 
+        /**
+         * SL651 水文协议特有配置参数
+         */
         mStates.stationType.set(StationCode.RESERVOIR.description)//默认选择水库(湖泊)
-        mStates.maintainReport.set(true)
+        mStates.centerStationAddr.set("")//
+        mStates.password.set("")//
+        mStates.telemetryStationAddr.set("")//
+        mStates.hourlyReport.set(false)
+        mStates.timingReport.set(false)
+        mStates.addReport.set(false)
         mStates.maintainReportInterval.set("30")//维持上报间隔（秒）
         mStates.reissuingDataValidDays.set("180")//数据补发有效天数
         mStates.reissuingDataInterval.set("30")//数据补发间隔（分钟）
@@ -185,39 +207,33 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
                     { position, text ->
                         mStates.dataProtocol.set(text)
                         when (text) {
-                            "MQTT" -> {
-                                mStates.isMqttItemVisible.set(true)
-                                mStates.isSL651ItemVisible.set(false)
-                                mStates.isNtripItemVisible.set(false)
+                            PlatformDataProtocol.MQTT.toString() -> {
                                 platformList.clear()
                                 platformList.addAll(mqttPlatformList.asList())
                                 mStates.platformType.set(platformList.first())
                             }
 
-                            "TCP-C" -> {
-                                mStates.isMqttItemVisible.set(false)
-                                mStates.isSL651ItemVisible.set(false)
-                                mStates.isNtripItemVisible.set(false)
+                            PlatformDataProtocol.TCP_C.toString() -> {
                                 platformList.clear()
                                 platformList.addAll(tcpPlatformList.asList())
                                 mStates.platformType.set(platformList.first())
                             }
 
-                            "SL651" -> {//SL651
-                                mStates.isMqttItemVisible.set(false)
-                                mStates.isSL651ItemVisible.set(true)
-                                mStates.isNtripItemVisible.set(false)
+                            PlatformDataProtocol.SL651.toString() -> {//SL651
                                 platformList.clear()
                                 platformList.addAll(sl651PlatformList.asList())
                                 mStates.platformType.set(platformList.first())
                             }
 
-                            "NTRIP" -> {//NTRIP
-                                mStates.isMqttItemVisible.set(false)
-                                mStates.isSL651ItemVisible.set(false)
-                                mStates.isNtripItemVisible.set(true)
+                            PlatformDataProtocol.NTRIP.toString() -> {//NTRIP
                                 platformList.clear()
                                 platformList.addAll(ntripPlatformList.asList())
+                                mStates.platformType.set(platformList.first())
+                            }
+
+                            PlatformDataProtocol.HTTP.toString() -> {
+                                platformList.clear()
+                                platformList.addAll(httpPlatformList.asList())
                                 mStates.platformType.set(platformList.first())
                             }
                         }
@@ -342,8 +358,8 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             protocol = mStates.dataProtocol.get(),
             plattype = allPlatformList.indexOf(mStates.platformType.get()).toString()
         )
-        
-        if (mStates.dataProtocol.get() == "MQTT") {
+
+        if (mStates.dataProtocol.get() == PlatformDataProtocol.MQTT.toString()) {
             //当产品 ID、设备 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
             if (mStates.isRegisterVisible.get() && mStates.productId.get()
                     .isEmpty() && mStates.deviceId.get().isEmpty()
@@ -382,7 +398,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             entity.httpport =
                 if (mStates.isRegisterVisible.get()) mStates.registerPort.get() else ""
 
-        } else if (mStates.dataProtocol.get() == "SL651") {//SL651
+        } else if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.toString()) {//SL651
             entity.type_code = StationCode.valueByDescription(mStates.stationType.get()).code
             entity.co_address = mStates.centerStationAddr.get()
             entity.password = mStates.password.get()
@@ -391,11 +407,15 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             entity.data_link = mStates.maintainReportInterval.get()
             entity.valid_day = mStates.reissuingDataValidDays.get()
             entity.reissue_time = mStates.reissuingDataInterval.get()
-        } else if (mStates.dataProtocol.get() == "NTRIP") {//NTRIP
+
+        } else if (mStates.dataProtocol.get() == PlatformDataProtocol.NTRIP.toString()) {//NTRIP
             entity.projid = mStates.productId.get()
             entity.deviceid = mStates.deviceId.get()
             entity.devicekey = mStates.deviceKey.get()
+        } else if (mStates.dataProtocol.get() == PlatformDataProtocol.HTTP.toString()) {
+            entity.taddress = mStates.telemetryStationAddr.get()
         }
+
         val command = IOTCommandUtil.getCommand(
             IOTCommandType.MD_SET_DATA_CENTER_PARAM,
             entity.toCommandString()
@@ -418,6 +438,10 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
+        (commandType == IOTCommandType.MD_GET_DATA_CENTER_PARAM)
+                || (commandType == IOTCommandType.MD_SET_DATA_CENTER_PARAM)
+
     /**
      * 4G 下发指令响应失败
      */
@@ -427,11 +451,12 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultError(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -444,11 +469,12 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultTimeOut(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -462,14 +488,16 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean,
         errMsg: String
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.showNearbyCommunicationTimeoutAlert(
             cmdStr = cmdStr,
             isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage,
             errMsg = errMsg
         )
     }
+
 
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
@@ -532,36 +560,29 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         }
         mStates.dataProtocol.set(data.protocol)
         when (data.protocol) {
-            "MQTT" -> {//
-                mStates.isMqttItemVisible.set(true)
-                mStates.isSL651ItemVisible.set(false)
-                mStates.isNtripItemVisible.set(false)
+            PlatformDataProtocol.MQTT.toString() -> {//
                 platformList.clear()
                 platformList.addAll(mqttPlatformList.asList())
             }
 
-            "TCP-C" -> {//
-                mStates.isMqttItemVisible.set(false)
-                mStates.isSL651ItemVisible.set(false)
-                mStates.isNtripItemVisible.set(false)
+            PlatformDataProtocol.TCP_C.toString() -> {//
                 platformList.clear()
                 platformList.addAll(tcpPlatformList.asList())
             }
 
-            "SL651" -> {//SL651
-                mStates.isMqttItemVisible.set(false)
-                mStates.isSL651ItemVisible.set(true)
-                mStates.isNtripItemVisible.set(false)
+            PlatformDataProtocol.SL651.toString() -> {//SL651
                 platformList.clear()
                 platformList.addAll(sl651PlatformList.asList())
             }
 
-            "NTRIP" -> {//NTRIP
-                mStates.isMqttItemVisible.set(false)
-                mStates.isSL651ItemVisible.set(false)
-                mStates.isNtripItemVisible.set(true)
+            PlatformDataProtocol.NTRIP.toString() -> {//NTRIP
                 platformList.clear()
                 platformList.addAll(ntripPlatformList.asList())
+            }
+
+            PlatformDataProtocol.HTTP.toString() -> {//HTTP
+                platformList.clear()
+                platformList.addAll(httpPlatformList.asList())
             }
         }
         data.plattype.toIntOrNull()?.let {
@@ -577,7 +598,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.registerCode.set(data.regcode)
         mStates.registerAddress.set(data.httpaddr)
         mStates.registerPort.set(data.httpport)
-       
+
         //重庆地灾平台不显示注册码、注册地址、注册端口号
         mStates.isRegisterVisible.set(!mStates.platformType.get().contains("重庆地灾"))
 
@@ -586,6 +607,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.centerStationAddr.set(data.co_address)
         mStates.password.set(data.password)
         mStates.telemetryStationAddr.set(data.taddress)
+
         mStates.hourlyReport.set(data.hour_report == "1")
         mStates.maintainReportInterval.set(data.data_link)
         mStates.reissuingDataValidDays.set(data.valid_day)

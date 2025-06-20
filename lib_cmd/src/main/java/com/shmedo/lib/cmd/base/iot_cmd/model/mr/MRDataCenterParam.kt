@@ -17,7 +17,7 @@ data class MRDataCenterParam(
     var port: String = "", //数据链路端口
     var plattype: String = "", //平台类型 DIDA:地大平台  ZYWL:成都理工平台  GHIOT:米度平台 DIDA2:地大平台2 HWPEC:河南水利 MDSW:米度水文
     var datatype: String = "", //数据协议,1：TCP-C 2:MQTT 3:SL651水文协议
-    var packtype: String = "", //广东水利平台测站类型 0:山洪灾害监测站 1:河道水情监测站 3:沉降监测站 4:水质监测站 5:雨量监测站 6:流量监测站
+    var packtype: String = "", //广东水文平台测站类型 0:山洪灾害监测站 1:河道水情监测站 3:沉降监测站 4:水质监测站 5:雨量监测站 6:流量监测站
     /**
      * MQTT 协议特有配置参数
      */

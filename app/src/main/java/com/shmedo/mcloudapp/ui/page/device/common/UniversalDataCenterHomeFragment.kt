@@ -28,7 +28,7 @@ import com.shmedo.mcloudapp.model.DataCenterStatusItem
 /**
  * @author：gonghe
  * @time: 2025/6/19
- * @desc: 数据中心列表页面 - 支持4G和蓝牙两种通讯方式
+ * @desc: 通用数据中心列表页面 - 支持4G和蓝牙两种通讯方式
  *
  */
 class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {

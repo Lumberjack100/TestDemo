@@ -56,7 +56,7 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2025/6/9
- * 描述： TODO
+ * 描述： 通用设备配置主页面抽象基类 - 支持4G和蓝牙两种通讯方式
  */
 abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentUniversalDeviceHomeNewBinding

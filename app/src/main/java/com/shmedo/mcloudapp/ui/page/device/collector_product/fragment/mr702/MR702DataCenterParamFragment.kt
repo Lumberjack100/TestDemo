@@ -293,7 +293,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        /** 广东水利平台测站类型 */
+        /** 广东水文平台测站类型 */
         fun onGuangdongWaterPlatformStationTypeChooseClick() {
             val selectedIndex =
                 guangdongWaterPlatformStationTypeList.indexOf(mStates.guangdongWaterPlatformStationType.get())
