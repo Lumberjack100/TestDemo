@@ -169,7 +169,7 @@
                     <!-- MQTT 协议特有参数 -->
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/ll_mqtt"
-                        visible='@{stateVM.dataProtocol.startsWith(PlatformDataProtocol.MQTT.code)}'
+                        visible='@{stateVM.dataProtocol.equals(PlatformDataProtocol.MQTT.toString())}'
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -283,7 +283,7 @@
                     <!-- SL651 协议特有参数 -->
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/ll_sl651"
-                        visible='@{stateVM.dataProtocol.startsWith(PlatformDataProtocol.SL651.code)}'
+                        visible='@{stateVM.dataProtocol.equals(PlatformDataProtocol.SL651.toString())}'
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -491,7 +491,7 @@
                     <!-- NTRIP 协议特有参数 -->
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/ll_ntrip"
-                        visible='@{stateVM.dataProtocol.startsWith(PlatformDataProtocol.NTRIP.code)}'
+                        visible='@{stateVM.dataProtocol.equals(PlatformDataProtocol.NTRIP.toString())}'
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -549,7 +549,7 @@
                     </androidx.appcompat.widget.LinearLayoutCompat>
                     <!-- HTTP 协议特有参数 -->
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        visible='@{stateVM.dataProtocol.startsWith(PlatformDataProtocol.HTTP.code)}'
+                        visible='@{stateVM.dataProtocol.equals(PlatformDataProtocol.HTTP.toString())}'
                         style="@style/Common_EditItem_Layout_Style"
                         android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
@@ -572,7 +572,7 @@
                         style="@style/ResetButton_Style2"
                         android:layout_marginTop="@dimen/reset_button_margin_top_50"
                         android:enabled="@{stateVM.isEditable }"
-                        android:onClick="@{()->click.onResetClick()}"
+                        android:onClick="@{()->click.onResetButtonClick()}"
                         android:text="@string/button_reset_text" />
 
                     <com.google.android.material.button.MaterialButton

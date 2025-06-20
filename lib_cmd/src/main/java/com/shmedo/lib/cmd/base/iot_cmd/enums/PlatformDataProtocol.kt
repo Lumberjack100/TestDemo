@@ -6,7 +6,7 @@ package com.shmedo.lib.cmd.base.iot_cmd.enums
  * @desc: 平台数据协议
  * "MQTT", "TCP-C", "SL651", "NTRIP", "HTTP"
  */
-enum class PlatformDataProtocol(val code: String) {
+enum class PlatformDataProtocol(private val code: String) {
 
     MQTT("MQTT"),
 
@@ -18,6 +18,9 @@ enum class PlatformDataProtocol(val code: String) {
 
     HTTP("HTTP"),
 
+    SZY206("SZY206"),
+
+    MQTTS("MQTTS"),
 
     ;
 

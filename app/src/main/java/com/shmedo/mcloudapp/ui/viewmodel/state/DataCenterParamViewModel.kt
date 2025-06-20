@@ -37,11 +37,7 @@ class DataCenterParamViewModel : BaseDataCenterParamViewModel() {
     override fun saveInitialState() {
         isInitializing = true
         initialState = mapOf(
-            "isEditable" to isEditable.get(),
             "isCenterOpened" to isCenterOpened.get(),
-            "centerName" to centerName.get(),
-            "centerStatus" to centerStatus.get(),
-
             "centerServerAddress" to centerServerAddress.get(),
             "centerServerPort" to centerServerPort.get(),
             "transferProtocol" to transferProtocol.get(),
@@ -73,10 +69,7 @@ class DataCenterParamViewModel : BaseDataCenterParamViewModel() {
 
     override fun registerField() {
         listOf(
-            isEditable,
             isCenterOpened,
-            centerName,
-            centerStatus,
 
             centerServerAddress,
             centerServerPort,
@@ -115,10 +108,7 @@ class DataCenterParamViewModel : BaseDataCenterParamViewModel() {
         if (isInitializing) return
         isDataModified.value = initialState.any { (key, value) ->
             when (key) {
-                "isEditable" -> isEditable.get() != value
                 "isCenterOpened" -> isCenterOpened.get() != value
-                "centerName" -> centerName.get() != value
-                "centerStatus" -> centerStatus.get() != value
 
                 "centerServerAddress" -> centerServerAddress.get() != value
                 "centerServerPort" -> centerServerPort.get() != value

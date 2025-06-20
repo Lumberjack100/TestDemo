@@ -103,6 +103,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
             handleBackByCheckDataModified()
         }
         initRefresh()
+        mStates.isEditable.set(true)
     }
 
     private fun initRefresh() {
@@ -132,7 +133,6 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
      */
     private fun resetDefaultParams() {
         binding.llToolbar.toolbar.title = statusItem.name.replace("数据", "") + "配置"
-        mStates.isEditable.set(true)
 
         mStates.isCenterOpened.set(statusItem.status != "0")
         mStates.centerServerAddress.set("")//
@@ -142,6 +142,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         )
         mStates.dataType.set(dataTypeList.last())
         mStates.dataProtocol.set(PlatformDataProtocol.MQTT.toString())//默认选择
+
         platformList.clear()
         platformList.addAll(mqttPlatformList.asList())
         mStates.platformType.set(allPlatformList[2])//默认选择米度物联平台
@@ -294,7 +295,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         /**
          * 恢复默认配置
          */
-        fun onResetClick() {
+        override fun onResetButtonClick() {
             resetDefaultParams()
         }
 
@@ -613,7 +614,7 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.reissuingDataValidDays.set(data.valid_day)
         mStates.reissuingDataInterval.set(data.reissue_time)
 
-        if (communicateWay is NetPlatformConnect && statusItem.centerid == 3) {
+        if (communicateWay is NetPlatformConnect && mStates.platformType.get().contains("米度物联平台")) {
             mStates.isEditable.set(false)
             showMessageDialog("4G模式下，米度物联平台链路不允许修改，以免设备离线")
         }
