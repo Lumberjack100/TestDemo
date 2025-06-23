@@ -196,6 +196,90 @@ class LB20SHomeFragment : NewUniversalBaseDeviceHomeFragment() {
         }
     }
 
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.SET_VOICE_BROADCAST_VOLUME_OFF -> {
+                super.doCmdResponseResultError(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
+            }
+
+            else -> {
+                super.doCmdResponseResultError(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog
+                )
+            }
+        }
+    }
+
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.SET_VOICE_BROADCAST_VOLUME_OFF -> {
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
+            }
+
+            else -> {
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog
+                )
+            }
+        }
+    }
+
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.SET_VOICE_BROADCAST_VOLUME_OFF -> {
+                super.showNearbyCommunicationTimeoutAlert(
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = true,
+                    isMessageDialog = true,
+                    errMsg = errMsg
+                )
+            }
+
+            else -> {
+                super.showNearbyCommunicationTimeoutAlert(
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = isShowErrMsg,
+                    isMessageDialog = isMessageDialog,
+                    errMsg = errMsg
+                )
+            }
+        }
+    }
+
     override fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {
         when (commandType) {
             IOTCommandType.SET_VOICE_BROADCAST_VOLUME_OFF -> {

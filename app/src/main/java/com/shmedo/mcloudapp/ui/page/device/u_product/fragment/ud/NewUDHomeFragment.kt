@@ -409,15 +409,7 @@ class NewUDHomeFragment : NewUniversalBaseDeviceHomeFragment() {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.SAMPLE -> {
                 stopMeasurementAnimation()
-                if (cmdStr.contains("method=0")) {
-                    super.showNearbyCommunicationTimeoutAlert(
-                        cmdStr = cmdStr,
-                        isDismissLoadingDialog = isDismissLoadingDialog,
-                        isShowErrMsg = false,
-                        isMessageDialog = isMessageDialog,
-                        errMsg = errMsg
-                    )
-                } else {
+                if (!cmdStr.contains("method=0")) {
                     super.showNearbyCommunicationTimeoutAlert(
                         cmdStr = cmdStr,
                         isDismissLoadingDialog = isDismissLoadingDialog,

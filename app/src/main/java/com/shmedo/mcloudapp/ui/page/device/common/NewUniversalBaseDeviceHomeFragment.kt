@@ -312,7 +312,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                 super.doCmdResponseResultError(
                     cmdStr = cmdStr,
                     errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
+                    isShowErrMsg = false,
                     isMessageDialog = isMessageDialog
                 )
             }
@@ -342,7 +342,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
                     errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
+                    isShowErrMsg = false,
                     isMessageDialog = isMessageDialog
                 )
             }
@@ -374,7 +374,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
                     isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = isShowErrMsg,
+                    isShowErrMsg = false,
                     isMessageDialog = isMessageDialog,
                     errMsg = errMsg
                 )
@@ -417,9 +417,10 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
 
     override fun createObserver() {
         super.createObserver()
-        setupHeartbeat()
         if (communicateWay is NetPlatformConnect) {
             checkDeviceOnlineStatus()
+        } else {
+            setupHeartbeat()
         }
     }
 
@@ -429,7 +430,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
     protected open fun setupHeartbeat() {
         launchWithViewLifecycle {
             lastCommunicationTime
-                .debounce(AppContants.Communication.DELAY_20000_MILLIS)  //20秒无更新触发
+                .debounce(AppContants.Communication.DELAY_BLE_HEART_BEAT)  //20秒无更新触发
                 .collect { lastUpdateTime ->
                     val updateTime =
                         TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
@@ -463,7 +464,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                 } catch (e: Exception) {
                     Timber.Forest.e(e)
                 }
-                delay(30000) // 延迟30秒
+                delay(AppContants.Communication.DELAY_CHECK_DEVICE_ONLINE_STATUS)
             }
         }
     }
@@ -479,5 +480,4 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
     }
-
 }

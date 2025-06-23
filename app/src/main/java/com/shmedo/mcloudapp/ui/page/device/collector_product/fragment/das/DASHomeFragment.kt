@@ -449,25 +449,22 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
     }
 
     override fun setupHeartbeat() {
-        if (communicateWay is NetPlatformConnect) {
-            super.setupHeartbeat()
-        } else {
-            launchWithViewLifecycle {
-                lastCommunicationTime
-                    .debounce(com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
-                    .collect { lastUpdateTime ->
-                        val updateTime =
-                            TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
-                        // 仅当设备连接并且需要发送心跳时，才发送心跳包
-                        if (mHeadStates.isConnected.get()) {
-                            Timber.d("发送心跳包指令 startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
-                            val command = MDCommandUtil.getCommand(MDCommandType.HEART_BEAT)
-                            Timber.d("发送心跳包指令: $command")
-                            sendBleCommand(command)
-                        }
+        launchWithViewLifecycle {
+            lastCommunicationTime
+                .debounce(com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
+                .collect { lastUpdateTime ->
+                    val updateTime =
+                        TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
+                    // 仅当设备连接并且需要发送心跳时，才发送心跳包
+                    if (mHeadStates.isConnected.get()) {
+                        Timber.d("发送心跳包指令 startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
+                        val command = MDCommandUtil.getCommand(MDCommandType.HEART_BEAT)
+                        Timber.d("发送心跳包指令: $command")
+                        sendBleCommand(command)
                     }
-            }
+                }
         }
+
     }
 
 }

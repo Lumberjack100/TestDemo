@@ -9,7 +9,6 @@ import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
@@ -17,7 +16,6 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
-import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
@@ -30,7 +28,6 @@ import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.M20SMeasureDataItem
 import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.NewUniversalBaseDeviceHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import com.shmedo.mcloudapp.utils.DeviceStatusHelper
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import kotlinx.coroutines.Dispatchers
@@ -229,9 +226,7 @@ class M20SHomeFragment : NewUniversalBaseDeviceHomeFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    override fun setResultData(cmdStr: String) {
-        updateLastCommunicationTime()
-
+    override fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_DEVICE_STATUS -> {
                 val result =
@@ -246,24 +241,6 @@ class M20SHomeFragment : NewUniversalBaseDeviceHomeFragment() {
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList()
                         initStatusInfo(result.data)
-                    }
-                }
-            }
-
-            IOTCommandType.MD_SEARCH_DEVICE -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "设备查找出错: ${result.message}"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            showDialogFragment(FindDeviceBeepDialog.Companion.TAG) {
-                                FindDeviceBeepDialog.Companion.newInstance(ProductType.GNSS_M_5)
-                            }
-                        }
                     }
                 }
             }

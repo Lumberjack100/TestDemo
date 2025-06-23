@@ -660,6 +660,12 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
+        (commandType == IOTCommandType.QUERY_DEVICE_STATUS)
+                || (commandType == IOTCommandType.MD_GET_DEVICE_STATUS)
+                || (commandType == IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO)
+                || (commandType == IOTCommandType.MD_GET_TERMINAL_ID)
+
     /**
      * 4G 下发指令响应失败
      */
@@ -669,11 +675,12 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultError(
             cmdStr = cmdStr,
-            errMsg = "查询状态出错: $errMsg",
-            isShowErrMsg = true,
-            isMessageDialog = true
+            errMsg = errMsg,
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -686,11 +693,12 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultTimeOut(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -704,14 +712,16 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean,
         errMsg: String
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.showNearbyCommunicationTimeoutAlert(
             cmdStr = cmdStr,
             isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage,
             errMsg = errMsg
         )
     }
+
 
     override fun setResultData(cmdStr: String) {
         //判断是否页面是否处于 resume 状态

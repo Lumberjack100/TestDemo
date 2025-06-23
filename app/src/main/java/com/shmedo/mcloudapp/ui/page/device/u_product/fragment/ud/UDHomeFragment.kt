@@ -950,9 +950,10 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     override fun createObserver() {
         super.createObserver()
-        setupHeartbeat()
         if (communicateWay is NetPlatformConnect) {
             checkDeviceOnlineStatus()
+        } else {
+            setupHeartbeat()
         }
     }
 

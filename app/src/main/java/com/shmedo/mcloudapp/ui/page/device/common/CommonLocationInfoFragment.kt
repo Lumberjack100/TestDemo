@@ -207,6 +207,16 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DEVICE_STATUS,
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
+                super.doCmdResponseResultError(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
+            }
+
             IOTCommandType.MD_GET_INSTALL_LOCATION -> {
                 dismissLoadingDialog(measureLoadingDialogId)
                 super.doCmdResponseResultError(
@@ -238,6 +248,16 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DEVICE_STATUS,
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
+            }
+
             IOTCommandType.MD_GET_INSTALL_LOCATION -> {
                 dismissLoadingDialog(measureLoadingDialogId)
                 super.doCmdResponseResultTimeOut(
@@ -270,6 +290,17 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
         errMsg: String
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DEVICE_STATUS,
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
+                super.showNearbyCommunicationTimeoutAlert(
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = true,
+                    isMessageDialog = true,
+                    errMsg = errMsg
+                )
+            }
+
             IOTCommandType.MD_GET_INSTALL_LOCATION -> {
                 dismissLoadingDialog(measureLoadingDialogId)
                 super.showNearbyCommunicationTimeoutAlert(
