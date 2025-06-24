@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/dimen_size_15"
             android:text="@{m.name}"
-            android:textColor="@{m.isChecked?m.obtainCheckedTextColorRes():@color/title_text_color}"
+            android:textColor="@{m.checked?m.obtainCheckedTextColorRes():@color/title_text_color}"
             android:textSize="@dimen/text_size_15"
             tools:text="定时定点上报"
             tools:textColor="@color/title_text_color" />

@@ -8,7 +8,6 @@ import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.Permission
 import com.hjq.permissions.XXPermissions
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentMainBinding
@@ -92,6 +91,7 @@ class MainFragment : BaseFragment() {
     override fun lazyLoadData() {
         requestPermission()
         //加载外部配置
+        loginRequestViewModel.loadProductGroupConfig()
         loginRequestViewModel.loadMR702SensorConfig()
         launchWithViewLifecycle {
             delay(1500)

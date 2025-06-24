@@ -12,7 +12,7 @@ import com.shmedo.mcloudapp.R
 data class SingleSelectionItem(
     var name: String = "",
     var extValue: String = "",
-    var isChecked: Boolean = false,
+    var checked: Boolean = false,
     var checkedTextColorRes: Int = 0,
 ) : BaseObservable() {
 
@@ -22,12 +22,11 @@ data class SingleSelectionItem(
     }
 
     fun refreshChecked(isSelect: Boolean) {
-        this.isChecked = isSelect
+        this.checked = isSelect
         notifyChange()
     }
 
     fun obtainCheckedTextColorRes(): Int {
         return if (checkedTextColorRes == 0) ColorUtils.getColor(R.color.colorPrimary) else checkedTextColorRes
     }
-
 }

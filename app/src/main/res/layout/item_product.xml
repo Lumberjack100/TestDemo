@@ -6,35 +6,27 @@
 
         <variable
             name="m"
-            type="com.shmedo.mcloudapp.model.SingleSelectionItem" />
+            type="com.shmedo.mcloudapp.model.ProductSeriesItem" />
     </data>
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/item"
+        drawable_radius="@{30}"
+        drawable_solidColor="@{m.checked?@color/colorPrimary_10:@color/black_3}"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_size_32"
+        android:gravity="center"
+        tools:background="@color/black_3">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:id="@+id/item"
-            android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:background="@{m.isChecked?@drawable/bg_product_tab_checked:@drawable/bg_product_tab_normal}"
-            android:gravity="center"
-            android:layout_marginStart="@dimen/dimen_size_6"
-            android:layout_marginBottom="@dimen/dimen_size_5"
-            android:paddingHorizontal="@dimen/dimen_size_8"
-            android:paddingVertical="@dimen/dimen_size_5"
-            tools:background="@drawable/bg_product_tab_normal">
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tabText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{m.name}"
+            android:textColor="@{m.checked?@color/colorPrimary:@color/title_text_color}"
+            android:textSize="@dimen/text_size_14"
+            tools:text="全部"
+            tools:textColor="@color/title_text_color" />
 
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/tabText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{m.name}"
-                android:textColor="@{m.isChecked?@color/white:@color/colorPrimary}"
-                android:textSize="@dimen/text_size_15"
-                tools:text="全部"
-                tools:textColor="@color/colorPrimary" />
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-    </FrameLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

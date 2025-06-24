@@ -14,6 +14,7 @@ import com.shmedo.core.data.repository.NetDataRepository
 import com.shmedo.core.model.BasicUserInfo
 import com.shmedo.core.model.CompanyInfo
 import com.shmedo.core.model.MR702PortSensorConfig
+import com.shmedo.core.model.ProductGroupConfig
 import com.shmedo.core.model.SensorModel
 import com.shmedo.core.model.UserPermissionInfo
 import com.shmedo.core.model.UserWrapperInfo
@@ -379,6 +380,32 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
 
     //<editor-fold desc="米易通远程配置接口">
     /**
+     * 加载产品配置
+     */
+    fun loadProductGroupConfig() {
+        viewModelScope.launch(Dispatchers.Default) {
+            try {
+                val localConfigInfo =
+                    ResourceUtils.readAssets2String("product_group_config.json")
+//                Timber.d("loadProductGroupConfig: $localConfigInfo")
+                val localConfigList =
+                    MoshiUtil.fromJson<List<ProductGroupConfig>>(localConfigInfo)
+                        ?: arrayListOf()
+
+                MmkvCacheUtil.setProductGroupConfig(localConfigList)
+            } catch (e: Exception) {
+                Timber.e(e)
+                val msg =
+                    "call loadProductGroupConfig() error: ${e.localizedMessage}" //这里的msg是网络请求的错误信息
+                addLogItem(
+                    sessionId = CommonMMKVOwner.appLogSessionId,
+                    priority = Log.ERROR,
+                    data = msg
+                )
+            }
+        }
+    }
+    /**
      * 加载MR702传感器配置
      */
     fun loadMR702SensorConfig() {
@@ -400,7 +427,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             } catch (e: Exception) {
                 Timber.e(e)
                 val msg =
-                    "call loadExternalConfig() error: ${e.localizedMessage}" //这里的msg是网络请求的错误信息
+                    "call loadMR702SensorConfig() error: ${e.localizedMessage}" //这里的msg是网络请求的错误信息
                 addLogItem(
                     sessionId = CommonMMKVOwner.appLogSessionId,
                     priority = Log.ERROR,
