@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:text="@{m.name}"
             android:textColor="@{m.checked?@color/colorPrimary:@color/title_text_color}"
-            android:textSize="@dimen/text_size_14"
+            android:textSize="@dimen/text_size_13"
             tools:text="全部"
             tools:textColor="@color/title_text_color" />
 

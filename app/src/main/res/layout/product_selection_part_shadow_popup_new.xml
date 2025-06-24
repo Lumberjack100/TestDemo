@@ -6,22 +6,14 @@
 
     </data>
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:orientation="vertical"
         android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
-        android:paddingVertical="@dimen/page_content_container_padding_top_12">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:scrollbars="vertical"
-            android:splitMotionEvents="false"
-            tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
+        android:paddingVertical="@dimen/dimen_size_10"
+        android:clipToPadding="false"
+        android:splitMotionEvents="false"
+        tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 </layout>

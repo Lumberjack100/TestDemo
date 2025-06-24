@@ -129,6 +129,8 @@ class NewNetDeviceListFragment : BaseFragment() {
             return
         }
         val filterDeviceTabItem = binding.rvTab.bindingAdapter.getModel<FilterDeviceTabItem>(0)
+        filterDeviceTabItem.refreshDropDown(true)
+
         productSelectionPopupView = NewProductSelectionPartShadowPopupView(requireContext()).apply {
             setData(
                 productGroupList,
@@ -136,6 +138,7 @@ class NewNetDeviceListFragment : BaseFragment() {
             )
             setSelectListener(object : NewProductSelectionPartShadowPopupView.OnSelectListener {
                 override fun onSelect(item: ProductSeriesItem, position: Int) {
+                    filterDeviceTabItem.refreshDropDown(false)
                     filterDeviceTabItem.refreshValue(item.name, position)
                     mStates.filterProductParam.set(item.name)
                     binding.devicePageRefreshLayout.showLoading()
@@ -153,6 +156,7 @@ class NewNetDeviceListFragment : BaseFragment() {
                 override fun onDismiss(popupView: BasePopupView?) {
                     super.onDismiss(popupView)
                     productSelectionPopupView = null
+                    filterDeviceTabItem.refreshDropDown(false)
                 }
             })
             .asCustom(productSelectionPopupView)
@@ -167,6 +171,8 @@ class NewNetDeviceListFragment : BaseFragment() {
             return
         }
         val filterDeviceTabItem = binding.rvTab.bindingAdapter.getModel<FilterDeviceTabItem>(1)
+        filterDeviceTabItem.refreshDropDown(true)
+
         onlineStatusSelectionPopupView =
             SingleSelectionPartShadowPopupView(requireContext()).apply {
                 setData(
@@ -176,6 +182,7 @@ class NewNetDeviceListFragment : BaseFragment() {
                 setSelectListener(object :
                     SingleSelectionPartShadowPopupView.OnSelectListener {
                     override fun onSelect(item: SingleSelectionItem, position: Int) {
+                        filterDeviceTabItem.refreshDropDown(false)
                         filterDeviceTabItem.refreshValue(item.name, position)
                         mStates.filterOnlineStatusParam.set(if (item.name == onlineStatusList[0].name) "" else if (item.name == onlineStatusList[1].name) "true" else "false")
                         binding.devicePageRefreshLayout.showLoading()
@@ -189,6 +196,13 @@ class NewNetDeviceListFragment : BaseFragment() {
             .isRequestFocus(false)
             .dismissOnTouchOutside(true)// 点击外部是否关闭弹窗，默认为true
             .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+            .setPopupCallback(object : SimpleCallback() {
+                override fun onDismiss(popupView: BasePopupView?) {
+                    super.onDismiss(popupView)
+                    onlineStatusSelectionPopupView = null
+                    filterDeviceTabItem.refreshDropDown(false)
+                }
+            })
             .asCustom(onlineStatusSelectionPopupView)
             .show()
     }
@@ -307,8 +321,7 @@ class NewNetDeviceListFragment : BaseFragment() {
         tabList.add(
             FilterDeviceTabItem(
                 name = "我的收藏",
-                value = "我的收藏",
-                isShowDropDown = false
+                value = "我的收藏"
             )
         )
         binding.rvTab.models = tabList

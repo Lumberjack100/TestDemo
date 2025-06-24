@@ -17,7 +17,7 @@
         android:paddingVertical="@dimen/dimen_size_10"
         android:text='@{m}'
         android:textColor="@color/title_text_color"
-        android:textSize="@dimen/text_size_16"
+        android:textSize="@dimen/text_size_14"
         tools:text="GNSS接收机" />
 
 </layout>
