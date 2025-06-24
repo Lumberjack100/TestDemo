@@ -61,7 +61,6 @@ class MR702StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     private fun initBaseInfo(baseInfo: MRBaseInfo) {
         launchWithViewLifecycle {
             try {
-                binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
 
                 groupList.add(DeviceStatusInfoGroupItem("供电信息"))
@@ -89,6 +88,7 @@ class MR702StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         launchWithViewLifecycle {
             try {
                 val groupList = mutableListOf<Any>()
+
                 groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
                 groupList.add(DeviceStatusInfoGroupItem("模块信息"))
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(

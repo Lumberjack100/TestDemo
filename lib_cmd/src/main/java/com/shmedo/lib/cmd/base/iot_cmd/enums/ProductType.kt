@@ -102,7 +102,7 @@ enum class ProductType(
         prefix = "",
         oldSuffix = "",
         newSuffix = "GM5",
-        productName = "一体化GNSS监测站",
+        productName = "一体式GNSS监测站",
         productToken = "M50",
         description = "自供电版"
     ),
@@ -171,7 +171,7 @@ enum class ProductType(
         description = ""
     ),
 
-    //INTEGRATION(一体化传感器产品线) D(雷达计)
+    //INTEGRATION(一体式传感器产品线) D(雷达计)
     U_D_1(
         prefix = "",
         oldSuffix = "",
@@ -197,32 +197,32 @@ enum class ProductType(
         description = "对应型号 MD-LL030"
     ),
 
-    //INTEGRATION(一体化传感器产品线) L(裂缝计)
+    //INTEGRATION(一体式传感器产品线) L(裂缝计)
     U_L_1(
         prefix = "",
         oldSuffix = "",
         newSuffix = "UL1",
-        productName = "一体化裂缝计",
+        productName = "一体式裂缝计",
         productToken = "BHY3S-LF",
         description = ""
     ),
 
-    //INTEGRATION(一体化传感器产品线) I(倾斜仪)
+    //INTEGRATION(一体式传感器产品线) I(倾斜仪)
     U_I_1(
         prefix = "",
         oldSuffix = "",
         newSuffix = "UI1",
-        productName = "一体化倾斜震动监测仪",
+        productName = "倾斜震动监测仪",
         productToken = "BHY3S-QJ",
         description = "三轴，对应BHY-3S"
     ),
 
-    //INTEGRATION(一体化传感器产品线) R(雨量计)
+    //INTEGRATION(一体式传感器产品线) R(雨量计)
     U_R_1(
         prefix = "",
         oldSuffix = "",
         newSuffix = "UR1",
-        productName = "一体化雨量计",
+        productName = "一体式雨量计",
         productToken = "BHY3S-YL",
         description = ""
     ),
@@ -244,10 +244,10 @@ enum class ProductType(
         description = ""
     ),
     BHY(
-        prefix = "BHY",
+        prefix = "BHY-3S",
         oldSuffix = "H",
         newSuffix = "",
-        productName = "一体化倾斜震动监测仪",
+        productName = "倾斜震动监测仪",
         productToken = "BHY-3S",
         description = ""
     ),
@@ -263,7 +263,7 @@ enum class ProductType(
         prefix = "LR200",
         oldSuffix = "Z",
         newSuffix = "Z",
-        productName = "一体化裂缝计",
+        productName = "一体式裂缝计",
         productToken = "BHY-3-LR200",
         description = ""
     ),

@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.das.fragment.DasTerminalParameterFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasReportConfigFragment.ClickProxy" />
 
     </data>
 
@@ -33,39 +33,91 @@
             app:layout_constraintTop_toTopOf="parent"
             app:vm="@{toolbarVM}" />
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/scrollView"
+        <com.drake.brv.PageRefreshLayout
+            android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="wrap_content">
 
-                <include
-                    android:id="@+id/ll_report_method"
-                    layout="@layout/include_das_report_method"
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/dimen_size_15"
-                    android:layout_marginTop="@dimen/dimen_size_15"
-                    app:click="@{click}"
-                    app:stateVM="@{stateVM}"
-                    tools:background="@color/white" />
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                    android:paddingTop="@dimen/page_content_container_padding_top_12"
+                    android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/btn_confirm"
-                    style="@style/SubmitButton_Style"
-                    onClickWithDebouncing="@{()->click.onSubmitClick()}"
-                    visible="@{stateVM.isEditable }"
-                    android:layout_marginTop="60dp"
-                    android:layout_marginBottom="40dp"
-                    android:text="保存" />
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_top_corner_4"
+                        android:onClick="@{()->click.onReportingMethodClick()}">
 
-            </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.core.widget.NestedScrollView>
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="上报方式" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text="@{stateVM.reportMethod}"
+                            tools:text="定时定点上报" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_ClickableItem_Layout_Style"
+                        visible='@{stateVM.reportMethod.contains("定时定点")}'
+                        android:background="@drawable/layer_common_click_item_with_divider"
+                        android:onClick="@{()->click.onReportingStartTimeClick()}">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="起始时间" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tv_start_time"
+                            style="@style/Common_ClickableItem_Value_Style"
+                            android:text="@{stateVM.startTime}"
+                            tools:text="08:00" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            android:text="时间间隔（分钟）" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            android:text="@={stateVM.interval}"
+                            app:lengthFilter="@{100}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_reset"
+                        style="@style/ResetButton_Style2"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:onClick="@{()->click.onResetButtonClick()}"
+                        android:text="@string/button_reset_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_confirm"
+                        style="@style/SubmitButton_Style2"
+                        onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                        android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                        android:enabled="@{stateVM.isDataModified}"
+                        android:text="@string/button_save_text" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.core.widget.NestedScrollView>
+        </com.drake.brv.PageRefreshLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>

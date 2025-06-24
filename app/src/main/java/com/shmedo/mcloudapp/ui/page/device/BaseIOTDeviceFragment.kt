@@ -348,7 +348,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         isDismissLoadingDialog: Boolean = true,
         isShowErrMsg: Boolean = true,
         isMessageDialog: Boolean = false,
-        errMsg: String = ""
+        errMsg: String = "设备未响应"
     ) {
         Timber.i("${javaClass.simpleName} 设备未响应")
         addDeviceLogItem(Log.ERROR, "设备未响应")
@@ -461,6 +461,10 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             },
             "取消"
         )
+    }
+
+    protected fun isBleDas(): Boolean {
+        return communicateWay == BleConnect && (productType == ProductType.DAS || productType == ProductType.BHY || productType == ProductType.COLLECTOR_R_1)
     }
 
     companion object {

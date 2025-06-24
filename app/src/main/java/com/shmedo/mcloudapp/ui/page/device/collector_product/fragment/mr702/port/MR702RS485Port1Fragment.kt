@@ -42,7 +42,6 @@ import com.shmedo.mcloudapp.model.MRSensorItem
 import com.shmedo.mcloudapp.model.RVEmptyFooter
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.page.device.collector_product.dialog.MR702SensorSelectionPopupView
-import com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port1SingleSensorAddParamFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702PortHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702RS485Port1ViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
@@ -319,6 +318,13 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
         commandItems.add(command)
     }
 
+    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
+        (commandType == IOTCommandType.MR_MD_GET_RS485_PORT1_COLL)
+                || (commandType == IOTCommandType.MR_MD_GET_RS485_PORT1_SENSOR)
+                || (commandType == IOTCommandType.MR_MD_GET_RS485_PORT1_SENSOR_PARAM)
+                || (commandType == IOTCommandType.MR_MD_DEL_RS485_PORT1_SENSOR)
+                || (commandType == IOTCommandType.MR_MD_SET_RS485_PORT1_COLL)
+
     /**
      * 4G 下发指令响应失败
      */
@@ -328,11 +334,12 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultError(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -345,11 +352,12 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultTimeOut(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -363,12 +371,13 @@ class MR702RS485Port1Fragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean,
         errMsg: String
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.showNearbyCommunicationTimeoutAlert(
             cmdStr = cmdStr,
             isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
-            errMsg = "设备未响应"
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage,
+            errMsg = errMsg
         )
     }
 

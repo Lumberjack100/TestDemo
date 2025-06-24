@@ -64,6 +64,9 @@ interface AppContants {
             const val DELAY_30000_MILLIS = 30000L
             const val DELAY_40000_MILLIS = 40000L
             const val DELAY_60000_MILLIS = 60000L
+
+            const val DELAY_CHECK_DEVICE_ONLINE_STATUS = 60000L // 检查设备物联网平台在线状态间隔
+            const val DELAY_BLE_HEART_BEAT = 20000L // 蓝牙连接心跳包发送间隔
         }
     }
 }

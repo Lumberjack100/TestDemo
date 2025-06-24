@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="com.shmedo.mcloudapp.model.M20SMeasureDataItem" />
+
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/page_content_item_padding_horizontal_16"
+        app:drawable_radius="@{4}"
+        app:drawable_solidColor="@{@color/white}"
+        tools:background="@color/white">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <View
+                android:layout_width="3dp"
+                android:layout_height="14dp"
+                android:background="@color/black" />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/Common_GroupItem_Title_Style2"
+                android:layout_marginStart="@dimen/dimen_size_8"
+                android:text="测量数据" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:text='@{"X轴角度："+m.xAngle}'
+            android:textColor="@color/title_text_color_black_90"
+            android:textSize="@dimen/page_content_item_text_size_14"
+            tools:text="X轴角度：3.22°" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:text='@{"Y轴角度："+m.yAngle}'
+            android:textColor="@color/title_text_color_black_90"
+            android:textSize="@dimen/page_content_item_text_size_14"
+            tools:text="Y轴角度：3.22°" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:text='@{"Z轴角度："+m.zAngle}'
+            android:textColor="@color/title_text_color_black_90"
+            android:textSize="@dimen/page_content_item_text_size_14"
+            tools:text="Z轴角度：3.22°" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout> 

@@ -1,22 +1,14 @@
 package com.shmedo.mcloudapp.ui.page.device.common
 
 import android.os.Bundle
-import android.view.View
-import androidx.fragment.app.setFragmentResultListener
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.bindingAdapter
-import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
-import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.utils.AppContants
-import com.shmedo.core.model.DeviceInfo
-import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.CenterNumberEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.das.DasDataReportEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerFive
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerFour
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ServerOne
@@ -26,128 +18,60 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.DataCenterStatus
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasDataReportInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentUniversalDataCenterHomeBinding
-import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
-import com.shmedo.mcloudapp.model.NetPlatformConnect
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.UniversalDataCenterHomeViewModel
-import org.koin.android.ext.android.inject
 
-class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentUniversalDataCenterHomeBinding
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mStates: UniversalDataCenterHomeViewModel by viewModels()
-    private val iotParseManager: IOTParserManager by inject()
-    private var centerNum = 0//数据链路数量
+/**
+ * @author：gonghe
+ * @time: 2025/6/19
+ * @desc: 通用数据中心列表页面 - 支持4G和蓝牙两种通讯方式
+ *
+ */
+class UniversalDataCenterHomeFragment : BaseDataCenterHomeFragment() {
 
-    override fun initViewModel() {
-        super.initViewModel()
+    override fun getNavigationActionId(): Int {
+        return R.id.action_global_dataCenterParamFragment
     }
 
-    override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(
-            R.layout.fragment_universal_data_center_home,
-            BR.stateVM,
-            mStates
-        )
-            .addBindingParam(BR.toolbarVM, toolbarViewModel)
-            .addBindingParam(BR.click, ClickProxy())
-    }
+    override fun queryData() {
+        commandItems.clear()
 
-    override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentUniversalDataCenterHomeBinding
-        binding.llToolbar.toolbar.title = "数据链路"
-        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            handleBackByCheckDataModified()
+        //获取上报时间信息
+        if (mStates.isSupportedReportInterval.get()) {
+            val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_REPORT_TIME)
+            commandItems.add(command)
         }
-        registerOnBackPressedDispatcher {
-            handleBackByCheckDataModified()
-        }
-        initRefresh()
-        initAdapter()
-    }
 
-    override fun initData() {
-        super.initData()
-        arguments?.let {
-            centerNum = it.getInt(CENTER_NUM)
-        }
-        resetDefaultParams()
-        //添加这行来保存初始状态
-        mStates.saveInitialState()
-    }
-
-    private fun resetDefaultParams() {
-        mStates.isSupportedReportInterval.set(
-            productType == ProductType.GNSS_M_1
-                    || productType == ProductType.GNSS_M_2
-                    || productType == ProductType.GNSS_M_5
-                    || productType == ProductType.U_I_1
-                    || productType == ProductType.U_R_1
-        )
-        binding.recyclerView.bindingAdapter.models = getAdapterData()
-    }
-
-    private fun initRefresh() {
-        refreshLayout = binding.refreshLayout
-        binding.refreshLayout.setEnableLoadMore(false)
-        binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return@onRefresh
-            }
-            queryData()
-        }
-    }
-
-    private fun initAdapter() {
-        binding.recyclerView.setup { rv ->
-            addType<DataCenterStatusItem>(R.layout.data_center_status_item)
-            R.id.item.onClick {
-                val item = getModel<DataCenterStatusItem>()
-                val bundle = UniversalDataCenterParamFragment.newBundleArguments(
-                    item,
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().safeNavigate(
-                    R.id.action_global_dataCenterParamFragment,
-                    bundle
-                )
-            }
-        }
-    }
-
-    override fun createObserver() {
-        super.createObserver()
-        //从编辑页面返回需要刷新事件详情页面
-        setFragmentResultListener(AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { _, bundle ->
-            val centerNumber =
-                bundle.getInt(AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
-
-            commandItems.clear()
-            val entity = CenterNumberEntity(centerNumber.toString())
+        for (i in 1..centerNum) {
+            val entity = CenterNumberEntity(i.toString())
             val command =
                 IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
             commandItems.add(command)
-
-            showLoadingDialog(StringUtils.getString(R.string.loading))
-            sendCommandFromCmdList(isStartTimeoutJob = true)
         }
+
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    override fun handleFragmentResult(bundle: Bundle) {
+        val centerNumber =
+            bundle.getInt(AppContants.Extras.REFRESH_DATA_CENTER_STATUS, ServerOne.centerId)
+
+        commandItems.clear()
+        val entity = CenterNumberEntity(centerNumber.toString())
+        val command =
+            IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.loading))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    override fun getClickProxy(): BaseClickProxy {
+        return ClickProxy()
     }
 
     inner class ClickProxy : BaseClickProxy() {
@@ -178,82 +102,6 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
         showLoadingDialog(StringUtils.getString(R.string.processing))
         sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    override fun lazyLoadData() {
-        binding.refreshLayout.autoRefresh()
-    }
-
-    private fun queryData() {
-        commandItems.clear()
-
-        //获取上报时间信息
-        if (mStates.isSupportedReportInterval.get()) {
-            val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_REPORT_TIME)
-            commandItems.add(command)
-        }
-
-        for (i in 1..centerNum) {
-            val entity = CenterNumberEntity(i.toString())
-            val command =
-                IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DATA_CENTER_STATUS, entity)
-            commandItems.add(command)
-        }
-
-        sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
-        )
-    }
-
-    /**
-     * 4G 下发指令响应超时
-     */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
-        )
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
-            errMsg = errMsg
-        )
     }
 
     override fun setResultData(cmdStr: String) {
@@ -310,9 +158,7 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            showMessageDialog("数据保存成功")
-                            //添加这行来保存初始状态
-                            mStates.saveInitialState()
+                            processNavigateUp()
                         }
                     }
                 }
@@ -356,59 +202,6 @@ class UniversalDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 binding.recyclerView.bindingAdapter.getModel<DataCenterStatusItem>(4)
                     .refreshStatus(dataCenterStatus.status)
             }
-        }
-    }
-
-    private fun getAdapterData(): MutableList<DataCenterStatusItem> {
-        val list = mutableListOf<DataCenterStatusItem>()
-        for (i in 1..centerNum) {
-            list.add(
-                DataCenterStatusItem(
-                    centerid = i,
-                    name = "数据链路$i",
-                    status = "0",
-                    bgResId = when (i) {
-                        1 -> R.drawable.layer_common_click_item_top_corner_4_with_divider
-                        centerNum -> R.drawable.shape_common_click_item_bottom_corner_4
-                        else -> R.drawable.layer_common_click_item_with_divider
-                    }
-                )
-            )
-        }
-        return list
-    }
-
-
-    override fun handleBackByCheckDataModified() {
-        if (mStates.isDataModified.value == true) {
-            showExitConfirmationDialog()
-            return
-        }
-        nav().navigateUp()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
-
-    companion object {
-        const val CENTER_NUM = "center_num"
-
-        fun newBundleArguments(
-            centerNum: Int = 1,
-            type: ProductType = ProductType.UnKnown,
-            communicateWay: CommunicateWay = NetPlatformConnect,
-            deviceInfo: DeviceInfo,
-            bleDevice: DiscoveredBluetoothDevice? = null,
-            statusBarColor: Int = R.color.white
-        ): Bundle = Bundle().apply {
-            putInt(CENTER_NUM, centerNum)
-            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
-            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
-            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }

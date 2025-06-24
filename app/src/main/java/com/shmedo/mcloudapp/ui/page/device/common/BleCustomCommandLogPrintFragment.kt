@@ -45,6 +45,7 @@ import com.shmedo.mcloudapp.databinding.FragmentBleCustomCommandLogPrintBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
@@ -98,12 +99,10 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
             closeDebugMode()
             nav().navigateUp()
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                closeDebugMode()
-                nav().navigateUp()
-            }
-        })
+        registerOnBackPressedDispatcher {
+            closeDebugMode()
+            nav().navigateUp()
+        }
         initAdapter()
     }
 

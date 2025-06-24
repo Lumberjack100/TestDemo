@@ -2,42 +2,27 @@ package com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50
 
 import android.os.Bundle
 import android.util.Log
-import android.view.View
-import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.TimeUtils
-import com.drake.brv.utils.linear
+import com.drake.brv.BindingAdapter.BindingViewHolder
+import com.drake.brv.utils.bindingAdapter
 import com.drake.brv.utils.models
-import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
-import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.extensions.compareAndReturn
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
-import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.baseclickproxy.DoubleClickListener
-import com.shmedo.mcloudapp.databinding.FragmentM50HomeBinding
-import com.shmedo.mcloudapp.databinding.ItemSubConfigModuleBinding
-import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
+import com.shmedo.mcloudapp.databinding.ItemM50MeasureDataBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
-import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
-import com.shmedo.mcloudapp.model.AdvancedSettingsModule
-import com.shmedo.mcloudapp.model.AlarmConfigModule
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
@@ -45,172 +30,62 @@ import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DataCenterModule
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
-import com.shmedo.mcloudapp.model.DeviceStatusEnum
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.model.LoraConfigModule
-import com.shmedo.mcloudapp.model.NetPlatformConnect
-import com.shmedo.mcloudapp.model.SensorConfigModule
-import com.shmedo.mcloudapp.model.TimeCalibrationModule
-import com.shmedo.mcloudapp.model.WorkModeModule
+import com.shmedo.mcloudapp.model.M50MeasureDataItem
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
-import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
-import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.M50HomeViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
+import com.shmedo.mcloudapp.ui.page.device.common.NewUniversalBaseDeviceHomeFragment
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 /**
- * @author：gonghe
- * @time: 2024/9/10
- * @desc: M50 首页
+ * 创建者：gonghe
+ * 创建时间：2025/1/24
+ * 描述：一体式自供电 GNSS 接收机(M50)设备主页 - 支持4G和蓝牙两种通讯方式
  *
  */
-class M50HomeFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentM50HomeBinding
-    private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private val mHeadStates: M50HomeViewModel by viewModels()
-    private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
-    private val iotParseManager: IOTParserManager by inject()
-
-    private var lastOnlineStatus: Boolean = false//在线状态
-    private var deviceStatusCheckJob: Job? = null
-
-
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
-    override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_m50_home, BR.stateVM, mHeadStates)
-            .addBindingParam(BR.toolbarVM, toolbarViewModel)
-            .addBindingParam(BR.click, ClickProxy())
-    }
-
-    override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentM50HomeBinding
-        binding.llToolbar.toolbar.title = "返回"
-        binding.llToolbar.toolbar.setNavigationOnClickListener {
-            if (bleViewModel.isConnected()) {
-                bleViewModel.disconnect()
-            }
-            mActivity.finish()
-        }
-        registerOnBackPressedDispatcher {
-            if (bleViewModel.isConnected()) {
-                bleViewModel.disconnect()
-            }
-            mActivity.finish()
-        }
-        initDeviceLogoDoubleClickListener()
-        initModuleAdapter()
-    }
-
-    private fun initDeviceLogoDoubleClickListener() {
-        binding.llDeviceInfo.ivDeviceLogo.setOnClickListener(object : DoubleClickListener() {
-            override fun onDoubleClick(v: View) {
-                if (isBleDisconnected() || isNetDisconnected()) {
-                    return
-                }
-                searchDevice()
-            }
-        })
-    }
+class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {
+    private var measureDataItem: M50MeasureDataItem = M50MeasureDataItem()
 
     override fun initData() {
         super.initData()
-        mHeadStates.productName.set(productType.productName)
-        mHeadStates.productToken.set(productType.productToken)
-        mHeadStates.deviceToken.set(deviceInfo.deviceToken)
-
-        toolbarViewModel.toolbarIvActionVisible.set(communicateWay is BleConnect)
-
-        initModuleData()
+        // 设置 M50 设备的 Logo 资源
+        mHeadStates.productErrorResId.set(R.drawable.device_logo_m50_error)
+        mHeadStates.productAlarmResId.set(R.drawable.device_logo_m50_alarm)
+        mHeadStates.productOfflineResId.set(R.drawable.device_logo_m50_offline)
+        mHeadStates.productNormalResId.set(R.drawable.device_logo_m50)
+        mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
     }
 
-    override fun onConnectionStateChanged(isConnected: Boolean) {
-        mHeadStates.isConnected.set(isConnected)
-        if (isConnected) {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_m50)
-            mHeadStates.iotPlatformStateText.set("蓝牙已连接")
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
-        } else {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_m50_offline)
-            mHeadStates.iotPlatformStateText.set("蓝牙已断开")
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
+    override fun initView(savedInstanceState: Bundle?) {
+        super.initView(savedInstanceState)
 
-            mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
-        }
+        // 扩展适配器支持 M50MeasureDataItem
+        binding.rvModule.bindingAdapter.addType<M50MeasureDataItem>(R.layout.item_m50_measure_data)
+    }
 
-        //刷新模块状态
-        binding.rvModule.models?.forEach {
-            if (it is ConfigModuleTree) {
-                it.configModules.forEach { configModule ->
-                    configModule.functionModule.refreshStatus(isConnected)
-                }
-            }
+    override fun BindingViewHolder.processOtherItemViewBind(itemViewType: Int) {
+        if (itemViewType == R.layout.item_m50_measure_data) {
+            val binding = getBinding<ItemM50MeasureDataBinding>()
+            val measureDataItem = getModel<M50MeasureDataItem>()
+
+            // 设置数据绑定参数
+            binding.setVariable(BR.m, measureDataItem)
+            binding.setVariable(BR.click, M50ClickProxy())
+            binding.executePendingBindings()
         }
     }
 
-    private fun initModuleAdapter() {
-        binding.rvModule.linear().setup { rv ->
-            addType<DeviceStatusInfoGroupItem>(R.layout.item_device_status_info_group2)
-            addType<ConfigModuleTree>(R.layout.item_sub_config_module)
-            addType<GapItem>(R.layout.item_device_status_info_gap)
-            onCreate {
-                when (itemViewType) {
-                    R.layout.item_sub_config_module -> {
-                        val itemBinding = getBinding<ItemSubConfigModuleBinding>()
-                        itemBinding.rvSubModule.setup { subRv ->
-                            subRv.addItemDecoration(
-                                MyGridSpacingItemDecoration(
-                                    4,
-                                    ConvertUtils.dp2px(10f), false
-                                )
-                            )
-                            addType<ConfigModule>(R.layout.item_device_config_module_ud)
-                            R.id.item.onClick {
-                                val configModule = getModel<ConfigModule>()
-                                processSubModuleItemClick(configModule.functionModule)
-                            }
-                        }
-                    }
-
-                    else -> {}
-                }
-            }
-            onBind {
-                when (itemViewType) {
-                    R.layout.item_sub_config_module -> {
-                        val configModuleTree = getModel<ConfigModuleTree>()
-                        val itemBinding = getBinding<ItemSubConfigModuleBinding>()
-                        itemBinding.rvSubModule.models = configModuleTree.configModules
-                    }
-
-                    else -> {
-
-                    }
-                }
-            }
-
-        }
-    }
-
-    private fun initModuleData() {
+    override fun initModuleData() {
         val groupList = mutableListOf<Any>()
+
+        // 添加测量数据作为第一个项目
+        groupList.add(measureDataItem)
         groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
+
         groupList.add(DeviceStatusInfoGroupItem("设备信息"))
         groupList.add(
             ConfigModuleTree(
@@ -244,7 +119,8 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                             name = "卫星信息",
                             resID = R.drawable.ic_module_satellite_info,
                             iconSize = ConvertUtils.dp2px(34f),
-                            navId = 0, //R.id.action_global_to_m50SatelliteInfoFragment
+                            navId = 0, // 暂未实现
+                            isSupport = false
                         )
                     )
                 )
@@ -256,7 +132,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         val configModuleTree = ConfigModuleTree(
             configModules = arrayListOf(
                 ConfigModule(
-                    WorkModeModule(
+                    CommonModule(
                         name = "工作模式",
                         resID = R.drawable.ic_module_work_mode_new,
                         navId = R.id.action_global_to_m50WorkModelParamFragment
@@ -276,23 +152,22 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                         navId = R.id.action_global_to_universalDataCenterHomeFragment
                     )
                 ),
-
                 ConfigModule(
-                    LoraConfigModule(
+                    CommonModule(
                         name = "电台配置",
                         resID = R.drawable.ic_module_lora_new,
                         navId = R.id.action_global_to_m50RadioSettingFragment
                     )
                 ),
                 ConfigModule(
-                    SensorConfigModule(
+                    CommonModule(
                         name = "传感配置",
                         resID = R.drawable.ic_module_sensor_setting_new,
                         navId = R.id.action_global_to_m50SensorConfigFragment
                     )
                 ),
                 ConfigModule(
-                    SensorConfigModule(
+                    CommonModule(
                         name = "端口配置",
                         resID = R.drawable.ic_module_serial_port,
                         navId = R.id.action_global_to_m50SerialPortParamFragment
@@ -302,25 +177,26 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                     CommonModule(
                         name = "CORS接入",
                         resID = R.drawable.ic_module_cors,
-                        navId = 0,//R.id.action_global_to_m50CORSConfigFragment
+                        navId = 0,
                         isSupport = false
                     )
                 ),
                 ConfigModule(
-                    AlarmConfigModule(
+                    CommonModule(
+                        name = "报警配置",
                         resID = R.drawable.ic_module_alarm_new,
                         navId = R.id.action_global_to_alarmSettingFragment
                     )
                 ),
                 ConfigModule(
-                    TimeCalibrationModule(
+                    CommonModule(
                         name = "时间校准",
                         resID = R.drawable.ic_module_time_calibration_new,
                         navId = R.id.action_global_to_time_calibration
                     )
                 ),
                 ConfigModule(
-                    AdvancedSettingsModule(
+                    CommonModule(
                         name = "系统配置",
                         resID = R.drawable.ic_module_system_setting,
                         navId = R.id.action_global_to_advancedSettingFragment
@@ -328,6 +204,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 ),
             )
         )
+
         if (communicateWay is BleConnect) {
             configModuleTree.configModules.add(
                 ConfigModule(
@@ -337,62 +214,17 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 )
             )
         }
-        groupList.add(configModuleTree)
 
+        groupList.add(configModuleTree)
         binding.rvModule.models = groupList
     }
 
-    inner class ClickProxy : BaseClickProxy() {
-        override fun onToolbarIvClick() {
-            if (bleViewModel.isConnected()) {
-                bleViewModel.disconnect()
-            } else {
-                bleViewModel.launch(bleDevice!!)
-            }
-        }
-
-        fun onGotoLocationClick() {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return
-            }
-            nav().safeNavigate(
-                R.id.action_global_to_commonLocationInfoFragment,
-                newBundleArguments(
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-            )
-        }
-
-        fun onTakePhotoClick() {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return
-            }
-            takePhoto()
-        }
-
-        fun onGoToSensorDataHistoryClick() {
-            nav().safeNavigate(
-                R.id.action_global_to_commonSensorDataHistoryFragment,
-                CommonSensorDataHistoryFragment.Companion.newBundleArguments(productType, deviceInfo)
-            )
-        }
-    }
-
-    private fun processSubModuleItemClick(module: DeviceFunctionModule) {
-        if (isBleDisconnected()) {
-            Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-            return
-        }
-        when (module) {
+    override fun processOtherItemClick(configModule: DeviceFunctionModule) {
+        when (configModule) {
             is DataCenterModule -> {
                 nav().safeNavigate(
-                    module.navId,
-                    UniversalDataCenterHomeFragment.Companion.newBundleArguments(
+                    configModule.navId,
+                    BaseDataCenterHomeFragment.newBundleArguments(
                         centerNum = 4,
                         productType,
                         communicateWay,
@@ -402,37 +234,13 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-            is CommandDebugConfigModule -> {//指令下发
-                val bundle = BleCustomCommandLogPrintFragment.Companion.newBundleArguments(
-                    true,
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().safeNavigate(module.navId, bundle)
-            }
-
             else -> {
-                if (module.navId != 0) {
-                    val bundle = newBundleArguments(
-                        productType,
-                        communicateWay,
-                        deviceInfo,
-                        bleDevice
-                    )
-                    nav().safeNavigate(
-                        module.navId,
-                        bundle
-                    )
-                } else {
-                    Toaster.show("正在开发中")
-                }
+                super.processOtherItemClick(configModule)
             }
         }
     }
 
-    private fun queryStatusInfo() {
+    override fun queryStatusInfo() {
         commandItems.clear()
 
         var command = IOTCommandUtil.getCommand(IOTCommandType.QUERY_DEVICE_STATUS)
@@ -456,44 +264,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    override fun lazyLoadData() {
-        //4G 模式下，直接查询设备工作模式
-        if (communicateWay is NetPlatformConnect) {
-            onNetPlatformReady()
-        } else {
-            bleViewModel.launch(bleDevice!!)
-        }
-    }
-
-    private fun onNetPlatformReady() {
-        lastOnlineStatus = deviceInfo.onlineStatus
-        if (deviceInfo.onlineStatus) {
-            mHeadStates.iotPlatformStateText.set("米度平台在线")
-            queryStatusInfo()
-        } else {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_m50_offline)
-            mHeadStates.iotPlatformStateText.set("米度平台离线")
-
-            mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
-        }
-        //刷新模块状态
-        binding.rvModule.models?.forEach {
-            if (it is ConfigModuleTree) {
-                it.configModules.forEach { configModule ->
-                    configModule.functionModule.refreshStatus(deviceInfo.onlineStatus)
-                }
-            }
-        }
-    }
-
-    override fun onBleDeviceReady() {
-        super.onBleDeviceReady()
-        queryStatusInfo()
-    }
-
-    /**
-     * 4G 下发指令响应失败
-     */
     override fun doCmdResponseResultError(
         cmdStr: String,
         errMsg: String,
@@ -501,10 +271,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_DEVICE_STATUS -> {
-                dismissLoadingDialog()
-            }
-
             IOTCommandType.SAMPLE -> {
                 if (cmdStr.contains("method=1")) {
                     super.doCmdResponseResultError(
@@ -516,15 +282,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.MD_SEARCH_DEVICE -> {
-                super.doCmdResponseResultError(
-                    cmdStr = cmdStr,
-                    errMsg = "设备查找出错: $errMsg",
-                    isShowErrMsg = true,
-                    isMessageDialog = true
-                )
-            }
-
             else -> {
                 super.doCmdResponseResultError(
                     cmdStr = cmdStr,
@@ -536,9 +293,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    /**
-     * 4G 下发指令响应超时
-     */
     override fun doCmdResponseResultTimeOut(
         cmdStr: String,
         errMsg: String,
@@ -546,28 +300,15 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_DEVICE_STATUS -> {
-                dismissLoadingDialog()
-            }
-
             IOTCommandType.SAMPLE -> {
                 if (cmdStr.contains("method=1")) {
                     super.doCmdResponseResultTimeOut(
                         cmdStr = cmdStr,
-                        errMsg = "设备未响应",
+                        errMsg = errMsg,
                         isShowErrMsg = true,
                         isMessageDialog = true
                     )
                 }
-            }
-
-            IOTCommandType.MD_SEARCH_DEVICE -> {
-                super.doCmdResponseResultTimeOut(
-                    cmdStr = cmdStr,
-                    errMsg = "设备未响应",
-                    isShowErrMsg = true,
-                    isMessageDialog = true
-                )
             }
 
             else -> {
@@ -581,9 +322,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    /**
-     * 蓝牙下发指令响应超时
-     */
     override fun showNearbyCommunicationTimeoutAlert(
         cmdStr: String,
         isDismissLoadingDialog: Boolean,
@@ -592,16 +330,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         errMsg: String
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
-            IOTCommandType.QUERY_DEVICE_STATUS -> {
-                super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr = cmdStr,
-                    isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = false,
-                    isMessageDialog = isMessageDialog,
-                    errMsg = errMsg
-                )
-            }
-
             IOTCommandType.SAMPLE -> {
                 if (cmdStr.contains("method=1")) {
                     super.showNearbyCommunicationTimeoutAlert(
@@ -609,19 +337,9 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                         isDismissLoadingDialog = isDismissLoadingDialog,
                         isShowErrMsg = true,
                         isMessageDialog = true,
-                        errMsg = "设备未响应"
+                        errMsg = errMsg
                     )
                 }
-            }
-
-            IOTCommandType.MD_SEARCH_DEVICE -> {
-                super.showNearbyCommunicationTimeoutAlert(
-                    cmdStr = cmdStr,
-                    isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = true,
-                    isMessageDialog = true,
-                    errMsg = "设备未响应"
-                )
             }
 
             else -> {
@@ -636,9 +354,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun setResultData(cmdStr: String) {
-        updateLastCommunicationTime()
-
+    override fun processOtherCmdResult(commandType: IOTCommandType, cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_DEVICE_STATUS -> {
                 val result =
@@ -657,14 +373,14 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                 }
             }
 
-            IOTCommandType.SAMPLE -> {//召测
+            IOTCommandType.SAMPLE -> { // 召测
                 val result = iotParseManager.parse<String>(
                     cmdStr,
                     IOTCommandType.SAMPLE
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "召测出错: ${result.message}"
+                        val errMsg = "拍照出错: ${result.message}"
                         handleFailureResult(errMsg, isShowErrMsg = false)
                         return
                     }
@@ -672,24 +388,6 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
                     is IOTCommandResult.Success -> {
                         sendCommandFromCmdList()
                         processSampleResponse(result.data)
-                    }
-                }
-            }
-
-            IOTCommandType.MD_SEARCH_DEVICE -> {
-                when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
-                    is IOTCommandResult.Failure -> {
-                        val errMsg = "设备查找出错: ${result.message}"
-                        handleFailureResult(errMsg, isMessageDialog = true)
-                        return
-                    }
-
-                    else -> {
-                        sendCommandFromCmdList {
-                            showDialogFragment(FindDeviceBeepDialog.Companion.TAG) {
-                                FindDeviceBeepDialog.Companion.newInstance(ProductType.GNSS_M_5)
-                            }
-                        }
                     }
                 }
             }
@@ -737,7 +435,7 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
      */
     private fun processSampleResponse(content: String) {
         try {
-            //{"sum_value":2,"x_value":"22","y_value":"22","z_value":"22"}
+            // {"sum_value":2,"x_value":"22","y_value":"22","z_value":"22"}
             val resultMap = MoshiUtil.fromJson<Map<String, String>>(content) ?: return
             if (resultMap.containsKey("sum_value")
                 && resultMap.containsKey("x_value")
@@ -746,21 +444,25 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
             ) {
                 val resultantDisplacement =
                     resultMap["sum_value"]?.let { "$it mm" }
-                        ?: AppContants.Companion.PLACE_HOLDER_VALUE
+                        ?: AppContants.PLACE_HOLDER_VALUE
                 val xDisplacement =
                     resultMap["x_value"]?.let { "$it mm" }
-                        ?: AppContants.Companion.PLACE_HOLDER_VALUE
+                        ?: AppContants.PLACE_HOLDER_VALUE
                 val yDisplacement =
                     resultMap["y_value"]?.let { "$it mm" }
-                        ?: AppContants.Companion.PLACE_HOLDER_VALUE
+                        ?: AppContants.PLACE_HOLDER_VALUE
                 val zDisplacement =
                     resultMap["z_value"]?.let { "$it mm" }
-                        ?: AppContants.Companion.PLACE_HOLDER_VALUE
+                        ?: AppContants.PLACE_HOLDER_VALUE
 
-                mHeadStates.resultantDisplacement.set(resultantDisplacement)
-                mHeadStates.xDisplacement.set(xDisplacement)
-                mHeadStates.yDisplacement.set(yDisplacement)
-                mHeadStates.zDisplacement.set(zDisplacement)
+                // 刷新测量数据项
+                binding.rvModule.bindingAdapter.getModel<M50MeasureDataItem>(0)
+                    .refreshStatus(
+                        resultantDisplacement,
+                        xDisplacement,
+                        yDisplacement,
+                        zDisplacement
+                    )
                 return
             }
         } catch (e: Exception) {
@@ -769,68 +471,43 @@ class M50HomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    override fun createObserver() {
-        super.createObserver()
-        setupHeartbeat()
-        if (communicateWay is NetPlatformConnect) {
-            checkDeviceOnlineStatus()
-        }
-    }
-
-    /**
-     * 设置心跳检查
-     */
-    private fun setupHeartbeat() {
-        launchWithViewLifecycle {
-            lastCommunicationTime
-                .debounce(AppContants.Communication.DELAY_20000_MILLIS)  //20秒无更新触发
-                .collect { lastUpdateTime ->
-                    val updateTime =
-                        TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
-                    //仅当设备连接并且需要发送心跳时，才发送心跳包
-                    if (mHeadStates.isConnected.get()) {
-                        Timber.Forest.d("发送心跳包指令 startTime: ${TimeUtils.getNowString()}，lastUpdateTime：$updateTime")
-                        val command = IOTCommandUtil.getCommand(IOTCommandType.HEART_BEAT)
-                        Timber.Forest.d("发送心跳包指令: $command")
-                        sendBleCommand(command)
-                    }
-                }
-        }
-    }
-
-    private fun checkDeviceOnlineStatus() {
-        // 取消现有的job
-        deviceStatusCheckJob?.cancel()
-
-        // 创建新的job，每30秒执行一次
-        deviceStatusCheckJob = launchWithViewLifecycle {
-            while (isActive) {
-                try {
-                    deviceRequestViewModel.getDeviceDetailInfo(deviceInfo.deviceToken) { error: Throwable ->
-                        addDeviceLogItem(Log.ERROR, error.errorMsg)
-                    }?.let { deviceDetailInfo ->
-                        // 如果设备在线状态发生变化，更新UI
-                        if (deviceDetailInfo.deviceInfo.onlineStatus != lastOnlineStatus) {
-                            onNetPlatformReady()
-                        }
-                    }
-                } catch (e: Exception) {
-                    Timber.Forest.e(e)
-                }
-                delay(30000) // 延迟30秒
+    // 扩展 ClickProxy 以支持 M50 特有的功能
+    inner class M50ClickProxy {
+        /**
+         * 跳转到位置信息页面
+         */
+        fun onGotoLocationClick() {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
             }
+            nav().safeNavigate(
+                R.id.action_global_to_commonLocationInfoFragment,
+                BaseIOTDeviceFragment.newBundleArguments(
+                    productType,
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
+            )
+        }
+
+        fun onTakePhotoClick() {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            takePhoto()
+        }
+
+        fun onGoToSensorDataHistoryClick() {
+            nav().safeNavigate(
+                R.id.action_global_to_commonSensorDataHistoryFragment,
+                CommonSensorDataHistoryFragment.newBundleArguments(
+                    productType,
+                    deviceInfo
+                )
+            )
         }
     }
-
-    // 在 onDestroy 中取消 job
-    override fun onDestroy() {
-        super.onDestroy()
-        deviceStatusCheckJob?.cancel()
-        deviceStatusCheckJob = null
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
-    }
-}
+} 

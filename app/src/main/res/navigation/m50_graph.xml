@@ -15,7 +15,7 @@
         android:id="@+id/m50HomeFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50HomeFragment"
         android:label="M50HomeFragment"
-        tools:layout="@layout/fragment_m50_home" />
+        tools:layout="@layout/fragment_universal_device_home_new" />
 
     <fragment
         android:id="@+id/commonLocationInfoFragment"

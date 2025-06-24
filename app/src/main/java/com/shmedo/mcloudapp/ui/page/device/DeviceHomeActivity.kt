@@ -133,7 +133,7 @@ class DeviceHomeActivity : BaseActivity() {
                 val graphId =
                     if (communicateWay == BleConnect) R.navigation.ble_das_graph else R.navigation.das_graph
                 navController.setGraph(
-                    graphId, bundle2
+                    R.navigation.das_graph, bundle2
                 )
             }
 

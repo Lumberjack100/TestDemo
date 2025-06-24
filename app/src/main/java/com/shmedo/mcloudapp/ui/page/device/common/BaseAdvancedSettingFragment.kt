@@ -44,7 +44,7 @@ import com.shmedo.mcloudapp.model.AdvancedSettingItem
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.dialog.SyncInstallationLocationPopupView
+import com.shmedo.mcloudapp.ui.page.device.collector_product.dialog.SyncInstallationLocationPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.request.LocationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.AdvancedSettingViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -196,6 +196,9 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         binding.recyclerview.models = moduleList
     }
 
+    /**
+     * 是否需要同步位置
+     */
     private fun isNeedSyncLocation(): Boolean {
         return communicateWay is BleConnect &&
                 (productType == ProductType.LR200
@@ -256,13 +259,21 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         when (item.type) {
             AdvancedSettingItem.Type.REBOOT -> {
                 showMessage("确定重启吗？", "温馨提示", "确定", {
-                    reboot()
+                    if (isBleDas()) {
+                        dasBleReboot()
+                    } else {
+                        reboot()
+                    }
                 }, "取消")
             }
 
             AdvancedSettingItem.Type.RESET -> {
                 showMessage("确定恢复出厂设置吗？", "温馨提示", "确定", {
-                    restoreFactory()
+                    if (isBleDas()) {
+                        dasBleRestoreFactory()
+                    } else {
+                        restoreFactory()
+                    }
                 }, "取消")
             }
 
@@ -306,7 +317,108 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = "出错了：$errMsg",
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = errMsg
+        )
+    }
+
     override fun setResultData(cmdStr: String) {
+        if (isBleDas()) {
+            handleDasBleCommandResult(cmdStr)
+        } else {
+            handleCommandResult(cmdStr)
+        }
+    }
+
+    private fun handleDasBleCommandResult(cmdStr: String) {
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.REBOOT_DEVICE -> {//
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg =  StringUtils.getString(R.string.reboot_failed)
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show(StringUtils.getString(R.string.device_reboot_tip))
+                        }
+                    }
+                }
+            }
+
+            MDCommandType.RESTORE_FACTORY_SETTING -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = StringUtils.getString(R.string.reset_failed)
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show(StringUtils.getString(R.string.device_reset_tip))
+                        }
+                    }
+                }
+            }
+
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
+        }
+    }
+
+    private fun handleCommandResult(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_SET_INSTALL_LOCATION -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
@@ -413,6 +525,29 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
                 }
             }
         }
+    }
+
+    private fun dasBleReboot() {
+        commandItems.clear()
+        val command =
+            MDCommandUtil.getCommand(
+                MDCommandType.REBOOT_DEVICE,
+                "1"
+            )
+        commandItems.add(command)
+
+        Timber.d("发送保存配置重启设备指令===%s", command)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    private fun dasBleRestoreFactory() {
+        commandItems.clear()
+        val command = MDCommandUtil.getCommand(MDCommandType.RESTORE_FACTORY_SETTING)
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun offsetInitialization() {

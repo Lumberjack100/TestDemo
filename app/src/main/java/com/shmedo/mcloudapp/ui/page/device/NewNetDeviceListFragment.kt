@@ -17,7 +17,9 @@ import com.lxj.xpopup.core.BasePopupView
 import com.lxj.xpopup.impl.PartShadowPopupView
 import com.lxj.xpopup.interfaces.SimpleCallback
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
+import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.model.DeviceInfo
+import com.shmedo.core.model.ProductGroupConfig
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -28,8 +30,10 @@ import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.FilterDeviceTabItem
+import com.shmedo.mcloudapp.model.ProductGroupItem
+import com.shmedo.mcloudapp.model.ProductSeriesItem
 import com.shmedo.mcloudapp.model.SingleSelectionItem
-import com.shmedo.mcloudapp.ui.dialog.ProductSelectionPartShadowPopupView
+import com.shmedo.mcloudapp.ui.dialog.NewProductSelectionPartShadowPopupView
 import com.shmedo.mcloudapp.ui.dialog.SingleSelectionPartShadowPopupView
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
@@ -37,12 +41,15 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.NetDeviceListViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.PageMessenger
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import com.shmedo.mcloudapp.ui.widget.recyclerview.RecycleViewDivider
+import kotlinx.coroutines.Dispatchers
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import timber.log.Timber
+
 
 /**
  * 创建者：gonghe
  * 创建时间：2024/5/15
- * 描述： TODO
+ * 描述： 4G 通讯下设备列表页面
  */
 class NewNetDeviceListFragment : BaseFragment() {
     private lateinit var binding: FragmentNewNetDeviceListBinding
@@ -50,7 +57,9 @@ class NewNetDeviceListFragment : BaseFragment() {
     private val mStates: NetDeviceListViewModel by viewModels()
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
 
-    private val productTabList = mutableListOf<SingleSelectionItem>()
+    // 在类的顶部添加缺少的字段定义
+    private val productSeriesIdMap = mutableMapOf<String, List<Int>>()
+    private val productGroupList = mutableListOf<Any>()
     private val onlineStatusList = mutableListOf<SingleSelectionItem>()
 
     private var productSelectionPopupView: PartShadowPopupView? = null
@@ -120,15 +129,18 @@ class NewNetDeviceListFragment : BaseFragment() {
             return
         }
         val filterDeviceTabItem = binding.rvTab.bindingAdapter.getModel<FilterDeviceTabItem>(0)
-        productSelectionPopupView = ProductSelectionPartShadowPopupView(requireContext()).apply {
+        filterDeviceTabItem.refreshDropDown(true)
+
+        productSelectionPopupView = NewProductSelectionPartShadowPopupView(requireContext()).apply {
             setData(
-                productTabList,
+                productGroupList,
                 filterDeviceTabItem.singleSelectionItemLastSelectedIndex
             )
-            setSelectListener(object : ProductSelectionPartShadowPopupView.OnSelectListener {
-                override fun onSelect(selectionItem: SingleSelectionItem, position: Int) {
-                    filterDeviceTabItem.refreshValue(selectionItem.name, position)
-                    mStates.filterProductID.set(selectionItem.extValue)
+            setSelectListener(object : NewProductSelectionPartShadowPopupView.OnSelectListener {
+                override fun onSelect(item: ProductSeriesItem, position: Int) {
+                    filterDeviceTabItem.refreshDropDown(false)
+                    filterDeviceTabItem.refreshValue(item.name, position)
+                    mStates.filterProductParam.set(item.name)
                     binding.devicePageRefreshLayout.showLoading()
                 }
             })
@@ -144,6 +156,7 @@ class NewNetDeviceListFragment : BaseFragment() {
                 override fun onDismiss(popupView: BasePopupView?) {
                     super.onDismiss(popupView)
                     productSelectionPopupView = null
+                    filterDeviceTabItem.refreshDropDown(false)
                 }
             })
             .asCustom(productSelectionPopupView)
@@ -158,6 +171,8 @@ class NewNetDeviceListFragment : BaseFragment() {
             return
         }
         val filterDeviceTabItem = binding.rvTab.bindingAdapter.getModel<FilterDeviceTabItem>(1)
+        filterDeviceTabItem.refreshDropDown(true)
+
         onlineStatusSelectionPopupView =
             SingleSelectionPartShadowPopupView(requireContext()).apply {
                 setData(
@@ -166,9 +181,10 @@ class NewNetDeviceListFragment : BaseFragment() {
                 )
                 setSelectListener(object :
                     SingleSelectionPartShadowPopupView.OnSelectListener {
-                    override fun onSelect(selectionItem: SingleSelectionItem, position: Int) {
-                        filterDeviceTabItem.refreshValue(selectionItem.name, position)
-                        mStates.filterOnlineStatus.set(if (selectionItem.name == onlineStatusList[0].name) "" else if (selectionItem.name == onlineStatusList[1].name) "true" else "false")
+                    override fun onSelect(item: SingleSelectionItem, position: Int) {
+                        filterDeviceTabItem.refreshDropDown(false)
+                        filterDeviceTabItem.refreshValue(item.name, position)
+                        mStates.filterOnlineStatusParam.set(if (item.name == onlineStatusList[0].name) "" else if (item.name == onlineStatusList[1].name) "true" else "false")
                         binding.devicePageRefreshLayout.showLoading()
                     }
                 })
@@ -180,6 +196,13 @@ class NewNetDeviceListFragment : BaseFragment() {
             .isRequestFocus(false)
             .dismissOnTouchOutside(true)// 点击外部是否关闭弹窗，默认为true
             .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+            .setPopupCallback(object : SimpleCallback() {
+                override fun onDismiss(popupView: BasePopupView?) {
+                    super.onDismiss(popupView)
+                    onlineStatusSelectionPopupView = null
+                    filterDeviceTabItem.refreshDropDown(false)
+                }
+            })
             .asCustom(onlineStatusSelectionPopupView)
             .show()
     }
@@ -233,7 +256,52 @@ class NewNetDeviceListFragment : BaseFragment() {
     override fun initData() {
         initTabData()
         initOnlineStatusData()
-        refreshProductTabList()
+        // 加载产品分组配置
+        loadProductGroupConfig()
+    }
+
+    private fun loadProductGroupConfig() {
+        launchWithViewLifecycle(Dispatchers.IO) {
+            try {
+                val sensorConfigList: List<ProductGroupConfig> =
+                    MmkvCacheUtil.getProductGroupConfig()
+
+                productGroupList.clear()
+                productSeriesIdMap.clear()
+
+                // 添加"全部产品"选项
+                productGroupList.add("全部产品")
+                val allProductsItem = ProductGroupItem(
+                    children = mutableListOf(
+                        ProductSeriesItem(name = "全部产品", productIdList = mutableListOf())
+                    )
+                )
+                productGroupList.add(allProductsItem)
+
+                // 添加到映射关系中
+                productSeriesIdMap["全部产品"] = emptyList()
+
+                sensorConfigList.forEach { productGroupConfig ->
+                    productGroupList.add(productGroupConfig.productGroup)
+
+                    val productSeriesItems = productGroupConfig.children.map { subProductConfig ->
+                        ProductSeriesItem(
+                            name = subProductConfig.productSeriesName,
+                            productIdList = subProductConfig.productIdList
+                        ).apply {
+                            // 建立产品系列名称到产品ID列表的映射关系
+                            productSeriesIdMap[subProductConfig.productSeriesName] =
+                                subProductConfig.productIdList
+                        }
+                    }.toMutableList()
+
+                    productGroupList.add(ProductGroupItem(children = productSeriesItems))
+                }
+
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
     }
 
     private fun initTabData() {
@@ -253,8 +321,7 @@ class NewNetDeviceListFragment : BaseFragment() {
         tabList.add(
             FilterDeviceTabItem(
                 name = "我的收藏",
-                value = "我的收藏",
-                isShowDropDown = false
+                value = "我的收藏"
             )
         )
         binding.rvTab.models = tabList
@@ -265,7 +332,7 @@ class NewNetDeviceListFragment : BaseFragment() {
         onlineStatusList.add(
             SingleSelectionItem(
                 name = "全部状态",
-                isChecked = true
+                checked = true
             )
         )
         onlineStatusList.add(
@@ -280,27 +347,20 @@ class NewNetDeviceListFragment : BaseFragment() {
         )
     }
 
-    /**
-     * 刷新产品列表
-     */
-    private fun refreshProductTabList() {
-        deviceRequestViewModel.getAllProductTabList(
-            companyID = AuthMMKVOwner.companyID,
-            isHasListSuperInfoPermission = AuthMMKVOwner.listSuperInfoPermission
-        )
-    }
 
     /**
      * 刷新设备列表
      */
     private fun refreshDeviceList() {
+        val productIDList: List<Int> =
+            productSeriesIdMap[mStates.filterProductParam.get()] ?: emptyList()
         deviceRequestViewModel.getDeviceList(
             companyID = AuthMMKVOwner.companyID,
-            productID = mStates.filterProductID.get(),
+            productIDList = productIDList, // 使用产品ID列表
             currentPage = binding.devicePageRefreshLayout.index,
             pageSize = PAGE_SIZE,
             isHasListSuperInfoPermission = AuthMMKVOwner.listSuperInfoPermission,
-            onlineStatus = mStates.filterOnlineStatus.get()
+            onlineStatus = mStates.filterOnlineStatusParam.get()
         )
     }
 
@@ -325,19 +385,6 @@ class NewNetDeviceListFragment : BaseFragment() {
     }
 
     override fun createObserver() {
-        launchWithViewLifecycle {
-            // 获取产品列表
-            deviceRequestViewModel.allProductTabResultFlow.collect {
-                if (!it.responseStatus.isSuccess) {
-                    Toaster.show(it.responseStatus.errorMessage)
-                    return@collect
-                }
-                it.result?.let { tempList ->
-                    productTabList.clear()
-                    productTabList.addAll(tempList)
-                }
-            }
-        }
         // 获取设备列表
         deviceRequestViewModel.deviceListResult.observe(viewLifecycleOwner) { listDataResult: DataResult<List<DeviceInfo>> ->
             if (!listDataResult.responseStatus.isSuccess) {
@@ -370,7 +417,6 @@ class NewNetDeviceListFragment : BaseFragment() {
             Toaster.show("已取消收藏")
         }
         mMessenger.isRefreshDeviceList.observe(viewLifecycleOwner) {
-            refreshProductTabList()
             binding.devicePageRefreshLayout.showLoading()
         }
     }

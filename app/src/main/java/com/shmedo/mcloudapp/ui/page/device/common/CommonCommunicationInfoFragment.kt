@@ -25,14 +25,15 @@ import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.CommonCommunicationInfoViewModel
 import com.shmedo.mcloudapp.ui.widget.tableview.CommunicationDataTableAdapter
 import com.shmedo.mcloudapp.ui.widget.tableview.model.CommunicationDataCellModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.CommonCommunicationInfoViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
+@Deprecated("This class is deprecated", ReplaceWith(""))
 class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentCommonCommunicationInfoBinding
     private lateinit var mStates: CommonCommunicationInfoViewModel
@@ -302,6 +303,5 @@ class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
             putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
 
-        fun newInstance() = CommonCommunicationInfoFragment()
     }
 }

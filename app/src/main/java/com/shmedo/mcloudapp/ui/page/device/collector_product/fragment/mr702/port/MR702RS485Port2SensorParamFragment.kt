@@ -3,7 +3,6 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.por
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -31,6 +30,7 @@ import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port2SensorParamBindin
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.CommunicateWay
@@ -79,11 +79,9 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             processBack(true)
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                processBack(true)
-            }
-        })
+        registerOnBackPressedDispatcher {
+            processBack(true)
+        }
         initRefresh()
     }
 
@@ -284,6 +282,66 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
         )
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
+        (commandType == IOTCommandType.MR_MD_GET_RS485_PORT2_SENSOR_PARAM)
+                || (commandType == IOTCommandType.MR_MD_SET_RS485_PORT2_SENSOR_PARAM)
+
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage,
+            errMsg = errMsg
+        )
     }
 
     override fun setResultData(cmdStr: String) {

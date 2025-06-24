@@ -210,7 +210,7 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
                 super.doCmdResponseResultError(
                     cmdStr = cmdStr,
                     errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
+                    isShowErrMsg = false,
                     isMessageDialog = isMessageDialog
                 )
             }
@@ -226,13 +226,27 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
-        dismissLoadingDialog(measureInitialValueLoadingDialogId)
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
-        )
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.QUERY_DEVICE_STATUS,
+            IOTCommandType.MD_SET_SENSOR_INITIAL -> {
+                dismissLoadingDialog(measureInitialValueLoadingDialogId)
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
+            }
+
+            else -> {
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = false,
+                    isMessageDialog = isMessageDialog
+                )
+            }
+        }
     }
 
     /**
@@ -253,8 +267,8 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
                     cmdStr = cmdStr,
                     isDismissLoadingDialog = isDismissLoadingDialog,
                     isShowErrMsg = true,
-                    isMessageDialog = isMessageDialog,
-                    errMsg = "设备未响应"
+                    isMessageDialog = true,
+                    errMsg = errMsg
                 )
             }
 
@@ -262,7 +276,7 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
                     isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = isShowErrMsg,
+                    isShowErrMsg = false,
                     isMessageDialog = isMessageDialog,
                     errMsg = errMsg
                 )

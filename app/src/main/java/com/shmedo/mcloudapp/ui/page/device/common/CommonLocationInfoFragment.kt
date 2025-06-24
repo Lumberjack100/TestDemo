@@ -1,15 +1,19 @@
 package com.shmedo.mcloudapp.ui.page.device.common
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import androidx.fragment.app.viewModels
 import com.baidu.mapapi.map.BaiduMap
 import com.baidu.mapapi.map.BitmapDescriptorFactory
+import com.baidu.mapapi.map.InfoWindow
 import com.baidu.mapapi.map.LogoPosition
 import com.baidu.mapapi.map.MapStatusUpdateFactory
 import com.baidu.mapapi.map.Marker
 import com.baidu.mapapi.map.MarkerOptions
+import com.baidu.mapapi.map.MarkerOptions.MarkerAnimateType
 import com.baidu.mapapi.model.LatLng
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -43,6 +47,7 @@ import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommonLocationInfoViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.utils.map.CustomLatLng
+import com.shmedo.mcloudapp.utils.map.MapNavigationHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -51,10 +56,11 @@ import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
+
 /**
  * @author：gonghe
  * @time: 2024/8/21
- * @desc: 一体化雷达水位计位置信息
+ * @desc: 一体式雷达水位计位置信息
  *
  */
 class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
@@ -201,6 +207,16 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DEVICE_STATUS,
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
+                super.doCmdResponseResultError(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
+            }
+
             IOTCommandType.MD_GET_INSTALL_LOCATION -> {
                 dismissLoadingDialog(measureLoadingDialogId)
                 super.doCmdResponseResultError(
@@ -232,11 +248,21 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DEVICE_STATUS,
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
+            }
+
             IOTCommandType.MD_GET_INSTALL_LOCATION -> {
                 dismissLoadingDialog(measureLoadingDialogId)
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
-                    errMsg = "设备未响应",
+                    errMsg = errMsg,
                     isShowErrMsg = true,
                     isMessageDialog = true
                 )
@@ -264,6 +290,17 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
         errMsg: String
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DEVICE_STATUS,
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
+                super.showNearbyCommunicationTimeoutAlert(
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = true,
+                    isMessageDialog = true,
+                    errMsg = errMsg
+                )
+            }
+
             IOTCommandType.MD_GET_INSTALL_LOCATION -> {
                 dismissLoadingDialog(measureLoadingDialogId)
                 super.showNearbyCommunicationTimeoutAlert(
@@ -271,7 +308,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                     isDismissLoadingDialog = isDismissLoadingDialog,
                     isShowErrMsg = true,
                     isMessageDialog = isMessageDialog,
-                    errMsg = "设备未响应"
+                    errMsg = errMsg
                 )
             }
 
@@ -502,12 +539,16 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
             val markerOption = MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_device_location))
                 .position(latLng)
+                .animateType(MarkerAnimateType.jump)
                 .draggable(false)
 
             //在地图上添加Marker，并显示
             curMaker = baiduMap.addOverlay(markerOption) as Marker
+
             //设置指定的可视区域地图
             moveCameraToLocation(latLng)
+
+            initInfoWindow(latLng)
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
@@ -515,6 +556,32 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
 
     private fun moveCameraToLocation(latLng: LatLng) {
         baiduMap.setMapStatus(MapStatusUpdateFactory.newLatLngZoom(latLng, mZoomLevel))
+    }
+
+    private fun initInfoWindow(latLng: LatLng) {
+        val button = Button(requireContext())
+        button.setBackgroundResource(R.drawable.bubble_sel_bg)//bubble_sel_bg   map_info_window
+        button.text = "去这里"
+        button.setTextColor(Color.WHITE)
+        button.setPadding(0, 0, 0, 5)
+        button.textSize = 12f
+
+        val infoWindow = InfoWindow(
+            button,
+            latLng,
+            -65
+        )
+        infoWindow.view.setOnClickListener {
+            // 获取设备名称作为目的地名称
+            val destinationName = deviceInfo.deviceToken
+            // 显示地图应用选择器并导航
+            MapNavigationHelper.showMapAppSelector(
+                requireContext(),
+                latLng,
+                destinationName
+            )
+        }
+        baiduMap.showInfoWindow(infoWindow)
     }
 
     private fun startTimer() {

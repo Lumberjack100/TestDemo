@@ -7,5 +7,5 @@ package com.shmedo.lib.cmd.base.iot_cmd.model.common
  */
 data class DataCenterStatus(
     var centerid: Int = 0,//数据链路编号
-    var status: String = "",//0未启用，1已上线，2未上线
+    var status: String = "",//0 未启用，1 已上线，2 未上线
 )

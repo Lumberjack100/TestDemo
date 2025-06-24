@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -15,154 +14,149 @@
 
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.drake.brv.PageRefreshLayout
+        android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/main_bg_gray">
 
-        <com.drake.brv.PageRefreshLayout
-            android:id="@+id/refreshLayout"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scrollView"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="wrap_content">
 
-            <androidx.core.widget.NestedScrollView
-                android:id="@+id/scrollView"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                android:paddingTop="@dimen/page_content_container_padding_top_12"
+                android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
+
+                <RelativeLayout
+                    style="@style/SwitchButton_Item_Layout_Style"
+                    android:background="@drawable/layer_common_click_item_top_corner_4_with_divider">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/SwitchButton_Item_Title_Style"
+                        android:text="开关" />
+
+                    <com.kyleduo.switchbutton.SwitchButton
+                        style="@style/SwitchButton_Item_Button_Style"
+                        android:checked="@={stateVM.isOpened}"
+                        app:kswAnimationDuration="100"
+                        app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                        app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
+
+                </RelativeLayout>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:paddingBottom="100dp">
+                    style="@style/Common_EditItem_Layout_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
-                    <RelativeLayout
-                        style="@style/SwitchButton_Item_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider">
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Title_Style"
+                        textViewEnabled="@{stateVM.isOpened}"
+                        android:text="地址" />
 
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/SwitchButton_Item_Title_Style"
-                            android:text="开关" />
-
-                        <com.kyleduo.switchbutton.SwitchButton
-                            style="@style/SwitchButton_Item_Button_Style"
-                            checkedImmediatelyNoEvent="@{stateVM.isOpened}"
-                            android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
-                            app:kswAnimationDuration="100"
-                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
-                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
-
-                    </RelativeLayout>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isOpened}"
-                            android:text="地址" />
-
-                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                            style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isOpened }"
-                            android:hint="数值范围[0-255]"
-                            android:text="@={stateVM.address}"
-                            android:inputType="number"
-                            app:lengthFilter="@{3}" />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isOpened}"
-                            android:text="水位报警值（毫米）" />
-
-                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                            style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isOpened }"
-                            android:text="@={stateVM.triggerValue}"
-                            app:inputTypeFilter='@{"numberDecimal"}'
-                            app:lengthFilter="@{5}" />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isOpened}"
-                            android:text="水深修正值（毫米）" />
-
-                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                            style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isOpened }"
-                            android:text="@={stateVM.correctValue}"
-                            app:inputTypeFilter='@{"numberDecimal"}'
-                            app:lengthFilter="@{8}" />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isOpened}"
-                            android:text="绳长（米）" />
-
-                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                            style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isOpened }"
-                            android:text="@={stateVM.wireRopeLength}"
-                            app:inputTypeFilter='@{"numberDecimal"}'
-                            app:lengthFilter="@{8}" />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isOpened}"
-                            android:text="安装高程值（米）" />
-
-                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                            style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isOpened }"
-                            android:text="@={stateVM.installElevation}"
-                            app:inputTypeFilter='@{"numberDecimal"}'
-                            app:lengthFilter="@{8}" />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        textViewEnabled="@{stateVM.isOpened }"
+                        android:hint="数值范围[0-255]"
+                        android:inputType="number"
+                        android:text="@={stateVM.address}"
+                        app:lengthFilter="@{3}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
-            </androidx.core.widget.NestedScrollView>
-        </com.drake.brv.PageRefreshLayout>
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_Style"
-            onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
-            visible="@{stateVM.isOpened }"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="50dp"
-            android:text="保存"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/refreshLayout" />
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_Layout_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Title_Style"
+                        textViewEnabled="@{stateVM.isOpened}"
+                        android:text="水位报警值（毫米）" />
+
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        textViewEnabled="@{stateVM.isOpened }"
+                        android:text="@={stateVM.triggerValue}"
+                        app:inputTypeFilter='@{"numberDecimal"}'
+                        app:lengthFilter="@{5}" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_Layout_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Title_Style"
+                        textViewEnabled="@{stateVM.isOpened}"
+                        android:text="水深修正值（毫米）" />
+
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        textViewEnabled="@{stateVM.isOpened }"
+                        android:text="@={stateVM.correctValue}"
+                        app:inputTypeFilter='@{"numberDecimal"}'
+                        app:lengthFilter="@{8}" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_Layout_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Title_Style"
+                        textViewEnabled="@{stateVM.isOpened}"
+                        android:text="绳长（米）" />
+
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        textViewEnabled="@{stateVM.isOpened }"
+                        android:text="@={stateVM.wireRopeLength}"
+                        app:inputTypeFilter='@{"numberDecimal"}'
+                        app:lengthFilter="@{15}" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_Layout_Style"
+                    android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_ClickableItem_Title_Style"
+                        textViewEnabled="@{stateVM.isOpened}"
+                        android:text="安装高程值（米）" />
+
+                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                        style="@style/Common_EditItem_EditText_Style"
+                        textViewEnabled="@{stateVM.isOpened }"
+                        android:text="@={stateVM.installElevation}"
+                        app:inputTypeFilter='@{"numberDecimal"}'
+                        app:lengthFilter="@{15}" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_reset"
+                    style="@style/ResetButton_Style2"
+                    android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                    android:onClick="@{()->click.onResetButtonClick()}"
+                    android:text="@string/button_reset_text" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_confirm"
+                    style="@style/SubmitButton_Style2"
+                    onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                    android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                    android:enabled="@{stateVM.isDataModified}"
+                    android:text="@string/button_save_text" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </androidx.core.widget.NestedScrollView>
+    </com.drake.brv.PageRefreshLayout>
 </layout>

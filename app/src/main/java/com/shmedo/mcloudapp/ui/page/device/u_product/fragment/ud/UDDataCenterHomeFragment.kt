@@ -1,200 +1,37 @@
 package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud
 
-import android.os.Bundle
-import android.view.View
-import androidx.fragment.app.setFragmentResultListener
-import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.bindingAdapter
-import com.drake.brv.utils.setup
-import com.hjq.toast.Toaster
-import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
-import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
-import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
-import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
-import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentUniversalDataCenterHomeBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
-import com.shmedo.mcloudapp.extensions.nav
-import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
-import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
-import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterParamFragment
-import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.UniversalDataCenterHomeViewModel
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.android.ext.android.inject
 import timber.log.Timber
 
 /**
- * 创建者：gonghe
- * 创建时间：2024/4/29
- * 描述： 一体化雷达水位/泥位计数据链路主页面
+ * @author：gonghe
+ * @time: 2025/6/19
+ * @desc: 一体式雷达水位/泥位计数据中心列表页面 - 支持4G和蓝牙两种通讯方式
+ *
  */
-class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentUniversalDataCenterHomeBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: UniversalDataCenterHomeViewModel
-    private val iotParseManager: IOTParserManager by inject()
-    private var centerNum = 0//数据链路数量
-
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
+class UDDataCenterHomeFragment : BaseDataCenterHomeFragment() {
+    override fun getNavigationActionId(): Int {
+        return R.id.action_global_to_dataCenterParamFragment
     }
 
-    override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(
-            R.layout.fragment_universal_data_center_home,
-            BR.stateVM,
-            mStates
-        )
-            .addBindingParam(BR.toolbarVM, toolbarViewModel)
-            .addBindingParam(BR.click, BaseClickProxy())
-    }
-
-    override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentUniversalDataCenterHomeBinding
-        binding.llToolbar.toolbar.title = "数据链路"
-        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            nav().navigateUp()
-        }
-        registerOnBackPressedDispatcher {
-            nav().navigateUp()
-        }
-        initRefresh()
-        initAdapter()
-    }
-
-    override fun initData() {
-        super.initData()
-        arguments?.let {
-            centerNum = it.getInt(UniversalDataCenterHomeFragment.CENTER_NUM)
-        }
-        resetDefaultParams()
-        //添加这行来保存初始状态
-        mStates.saveInitialState()
-    }
-
-    private fun resetDefaultParams() {
-        mStates.isSupportedReportInterval.set(false)
-        binding.recyclerView.bindingAdapter.models = getAdapterData()
-    }
-
-    private fun initRefresh() {
-        refreshLayout = binding.refreshLayout
-        binding.refreshLayout.setEnableLoadMore(false)
-        binding.refreshLayout.onRefresh {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                return@onRefresh
-            }
-            queryStatusInfo()
-        }
-    }
-
-    private fun initAdapter() {
-        binding.recyclerView.setup { rv ->
-            addType<DataCenterStatusItem>(R.layout.data_center_status_item)
-            R.id.item.onClick {
-                val item = getModel<DataCenterStatusItem>()
-                val bundle = UniversalDataCenterParamFragment.newBundleArguments(
-                    item,
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().safeNavigate(
-                    R.id.action_global_to_dataCenterParamFragment,
-                    bundle
-                )
-            }
-        }
-    }
-
-    override fun createObserver() {
-        super.createObserver()
-        //从编辑页面返回需要刷新事件详情页面
-        setFragmentResultListener(AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { key, bundle ->
-            binding.refreshLayout.autoRefresh()
-        }
-    }
-
-    override fun lazyLoadData() {
-        binding.refreshLayout.autoRefresh()
-    }
-
-    private fun queryStatusInfo() {
+    override fun queryData() {
         commandItems.clear()
 
         val command = IOTCommandUtil.getCommand(IOTCommandType.MD_GET_DEVICE_STATUS, "method=1")
         commandItems.add(command)
         sendCommandFromCmdList(isStartTimeoutJob = true)
-    }
-
-    /**
-     * 4G 下发指令响应失败
-     */
-    override fun doCmdResponseResultError(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        super.doCmdResponseResultError(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
-        )
-    }
-
-    /**
-     * 4G 下发指令响应超时
-     */
-    override fun doCmdResponseResultTimeOut(
-        cmdStr: String,
-        errMsg: String,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean
-    ) {
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
-        )
-    }
-
-    /**
-     * 蓝牙下发指令响应超时
-     */
-    override fun showNearbyCommunicationTimeoutAlert(
-        cmdStr: String,
-        isDismissLoadingDialog: Boolean,
-        isShowErrMsg: Boolean,
-        isMessageDialog: Boolean,
-        errMsg: String
-    ) {
-        super.showNearbyCommunicationTimeoutAlert(
-            cmdStr = cmdStr,
-            isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
-            errMsg = errMsg
-        )
     }
 
     override fun setResultData(cmdStr: String) {
@@ -259,29 +96,5 @@ class UDDataCenterHomeFragment : BaseIOTDeviceFragment() {
                 Timber.e(e)
             }
         }
-    }
-
-    private fun getAdapterData(): MutableList<DataCenterStatusItem> {
-        val list = mutableListOf<DataCenterStatusItem>()
-        for (i in 1..centerNum) {
-            list.add(
-                DataCenterStatusItem(
-                    centerid = i,
-                    name = "数据链路$i",
-                    status = "0",
-                    bgResId = when (i) {
-                        1 -> R.drawable.layer_common_click_item_top_corner_4_with_divider
-                        centerNum -> R.drawable.shape_common_click_item_bottom_corner_4
-                        else -> R.drawable.layer_common_click_item_with_divider
-                    }
-                )
-            )
-        }
-        return list
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
     }
 }

@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.BleDasDataCenterParamFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.BleDasDataCenterParamFragment.ClickProxy" />
 
     </data>
 
@@ -72,7 +72,6 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_data_server_address"
                             style="@style/Common_EditItem_EditText_Style"
-
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="@={stateVM.centerServerAddress}"
                             app:lengthFilter="@{100}" />

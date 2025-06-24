@@ -542,7 +542,7 @@ class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
                     isDismissLoadingDialog = isDismissLoadingDialog,
                     isShowErrMsg = true,
                     isMessageDialog = true,
-                    errMsg = "设备未响应"
+                    errMsg = errMsg
                 )
             }
 

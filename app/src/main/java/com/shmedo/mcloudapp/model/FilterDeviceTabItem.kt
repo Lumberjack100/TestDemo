@@ -10,13 +10,18 @@ import androidx.databinding.BaseObservable
 data class FilterDeviceTabItem(
     var name: String = "",
     var value: String = "",
-    var isShowDropDown: Boolean = true,
+    var showDropDown: Boolean = false,
     var singleSelectionItemLastSelectedIndex: Int = 0,
 ) : BaseObservable() {
 
     fun refreshValue(value: String, index: Int = 0) {
         this.value = value
         this.singleSelectionItemLastSelectedIndex = index
+        notifyChange()
+    }
+
+    fun refreshDropDown(show: Boolean) {
+        this.showDropDown = show
         notifyChange()
     }
 }

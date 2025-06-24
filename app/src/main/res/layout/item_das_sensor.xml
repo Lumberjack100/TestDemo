@@ -28,7 +28,7 @@
             android:paddingBottom="@dimen/dimen_size_2"
             android:text='@{m.isPlugin?"已接入":"未接入"}'
             android:textColor="@color/white"
-            android:textSize="12sp"
+            android:textSize="10sp"
             android:visibility="gone"
             app:drawable_radiusLT="@{6}"
             app:drawable_radiusRB="@{6}"
@@ -39,7 +39,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginVertical="@dimen/dimen_size_15"
+            android:layout_marginVertical="@dimen/dimen_size_12"
             android:orientation="vertical">
 
             <com.google.android.material.textview.MaterialTextView
@@ -48,7 +48,7 @@
                 android:layout_gravity="center"
                 android:text="@{m.addrDesc}"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_13"
+                android:textSize="@dimen/text_size_11"
                 tools:text="配置地址" />
 
             <com.google.android.material.textview.MaterialTextView
@@ -58,7 +58,7 @@
                 android:layout_marginTop="@dimen/dimen_size_2"
                 android:text="@{m.sensorName}"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_14"
+                android:textSize="@dimen/text_size_12"
                 android:textStyle="bold"
                 tools:text="雷达水位计雷达水位计雷达水位计雷达水位计雷达水位计雷达水位计" />
 

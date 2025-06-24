@@ -62,7 +62,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
-                            android:text="驱动器标压阈值(V)" />
+                            android:text="驱动器标压阈值（伏）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -80,7 +80,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
-                            android:text="驱动器低压阈值(V)" />
+                            android:text="驱动器低压阈值（伏）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -98,7 +98,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
-                            android:text="驱动器欠压阈值(V)" />
+                            android:text="驱动器欠压阈值（伏）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -120,7 +120,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
-                            android:text="测斜仪标压阈值(V)" />
+                            android:text="测斜仪标压阈值（伏）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -138,7 +138,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
-                            android:text="测斜仪低压阈值(V)" />
+                            android:text="测斜仪低压阈值（伏）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
@@ -156,7 +156,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable}"
-                            android:text="测斜仪欠压阈值(V)" />
+                            android:text="测斜仪欠压阈值（伏）" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"

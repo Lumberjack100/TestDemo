@@ -17,8 +17,8 @@ import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.NewUniversalBaseDeviceHomeFragment
-import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 
 /**
  * 创建者：gonghe
@@ -58,11 +58,11 @@ class DefaultDeviceHomeFragment : NewUniversalBaseDeviceHomeFragment() {
                 mHeadStates.productNormalResId.set(R.drawable.device_logo_default)
             }
         }
+        mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
     }
 
     override fun initModuleData() {
         val groupList = mutableListOf<Any>()
-        groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
         groupList.add(DeviceStatusInfoGroupItem("设备信息"))
         groupList.add(
             ConfigModuleTree(
@@ -152,7 +152,7 @@ class DefaultDeviceHomeFragment : NewUniversalBaseDeviceHomeFragment() {
             is DataCenterModule -> {
                 nav().safeNavigate(
                     configModule.navId,
-                    UniversalDataCenterHomeFragment.Companion.newBundleArguments(
+                    BaseDataCenterHomeFragment.newBundleArguments(
                         centerNum = 4,
                         productType,
                         communicateWay,

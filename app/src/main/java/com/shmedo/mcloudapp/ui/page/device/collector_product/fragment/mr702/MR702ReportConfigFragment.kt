@@ -190,6 +190,10 @@ class MR702ReportConfigFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
+        (commandType == IOTCommandType.MR_MD_GET_REPORT_METHOD)
+                || (commandType == IOTCommandType.MR_MD_SET_REPORT_METHOD)
+
     /**
      * 4G 下发指令响应失败
      */
@@ -199,11 +203,12 @@ class MR702ReportConfigFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultError(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -216,11 +221,12 @@ class MR702ReportConfigFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultTimeOut(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -234,12 +240,13 @@ class MR702ReportConfigFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean,
         errMsg: String
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.showNearbyCommunicationTimeoutAlert(
             cmdStr = cmdStr,
             isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
-            errMsg = "设备未响应"
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage,
+            errMsg = errMsg
         )
     }
 

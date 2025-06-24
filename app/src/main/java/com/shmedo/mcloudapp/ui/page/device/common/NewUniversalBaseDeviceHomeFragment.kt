@@ -7,6 +7,7 @@ import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
+import com.drake.brv.BindingAdapter.BindingViewHolder
 import com.drake.brv.utils.linear
 import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
@@ -31,7 +32,6 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.model.BleConnect
-import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.ConfigModule
 import com.shmedo.mcloudapp.model.ConfigModuleTree
 import com.shmedo.mcloudapp.model.DeviceFunctionModule
@@ -56,7 +56,7 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2025/6/9
- * 描述： TODO
+ * 描述： 通用设备配置主页面抽象基类 - 支持4G和蓝牙两种通讯方式
  */
 abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentUniversalDeviceHomeNewBinding
@@ -116,13 +116,13 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
+        toolbarViewModel.toolbarIvActionVisible.set(communicateWay is BleConnect)
+
         mHeadStates.productName.set(productType.productName.ifEmpty { deviceInfo.productName })
         val deviceName =
             if (deviceInfo.deviceName == deviceInfo.deviceToken) deviceInfo.productToken else deviceInfo.deviceName.ifEmpty { deviceInfo.deviceToken }
         mHeadStates.productToken.set(productType.productToken.ifEmpty { deviceName })
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
-
-        toolbarViewModel.toolbarIvActionVisible.set(communicateWay is BleConnect)
 
         initModuleData()
     }
@@ -188,13 +188,14 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                     }
 
                     else -> {
-
+                        processOtherItemViewBind(itemViewType)
                     }
                 }
             }
-
         }
     }
+
+    protected open fun BindingViewHolder.processOtherItemViewBind(viewId: Int) {}
 
     protected abstract fun initModuleData()
 
@@ -206,16 +207,6 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                 bleViewModel.launch(bleDevice!!)
             }
         }
-
-        fun onGoToSensorDataHistoryClick() {
-            nav().safeNavigate(
-                R.id.action_global_to_commonSensorDataHistoryFragment,
-                CommonSensorDataHistoryFragment.Companion.newBundleArguments(
-                    productType,
-                    deviceInfo
-                )
-            )
-        }
     }
 
     private fun processSubModuleItemClick(module: DeviceFunctionModule) {
@@ -224,16 +215,16 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
             return
         }
         when (module) {
-            is CommandDebugConfigModule -> {//指令下发
-                val bundle = BleCustomCommandLogPrintFragment.Companion.newBundleArguments(
-                    true,
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().safeNavigate(module.navId, bundle)
-            }
+//            is CommandDebugConfigModule -> {//指令下发
+//                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
+//                    true,
+//                    productType,
+//                    communicateWay,
+//                    deviceInfo,
+//                    bleDevice
+//                )
+//                nav().safeNavigate(module.navId, bundle)
+//            }
 
             else -> {
                 processOtherItemClick(module)
@@ -321,7 +312,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                 super.doCmdResponseResultError(
                     cmdStr = cmdStr,
                     errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
+                    isShowErrMsg = false,
                     isMessageDialog = isMessageDialog
                 )
             }
@@ -341,7 +332,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SEARCH_DEVICE -> {
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
-                    errMsg = "设备未响应",
+                    errMsg = errMsg,
                     isShowErrMsg = true,
                     isMessageDialog = true
                 )
@@ -351,7 +342,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
                     errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
+                    isShowErrMsg = false,
                     isMessageDialog = isMessageDialog
                 )
             }
@@ -375,7 +366,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                     isDismissLoadingDialog = isDismissLoadingDialog,
                     isShowErrMsg = true,
                     isMessageDialog = true,
-                    errMsg = "设备未响应"
+                    errMsg = errMsg
                 )
             }
 
@@ -383,7 +374,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
                     isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = isShowErrMsg,
+                    isShowErrMsg = false,
                     isMessageDialog = isMessageDialog,
                     errMsg = errMsg
                 )
@@ -405,8 +396,8 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
 
                     else -> {
                         sendCommandFromCmdList {
-                            showDialogFragment(FindDeviceBeepDialog.Companion.TAG) {
-                                FindDeviceBeepDialog.Companion.newInstance(productType)
+                            showDialogFragment(FindDeviceBeepDialog.TAG) {
+                                FindDeviceBeepDialog.newInstance(productType)
                             }
                         }
                     }
@@ -426,19 +417,20 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
 
     override fun createObserver() {
         super.createObserver()
-        setupHeartbeat()
         if (communicateWay is NetPlatformConnect) {
             checkDeviceOnlineStatus()
+        } else {
+            setupHeartbeat()
         }
     }
 
     /**
      * 设置心跳检查
      */
-    private fun setupHeartbeat() {
+    protected open fun setupHeartbeat() {
         launchWithViewLifecycle {
             lastCommunicationTime
-                .debounce(AppContants.Communication.DELAY_20000_MILLIS)  //20秒无更新触发
+                .debounce(AppContants.Communication.DELAY_BLE_HEART_BEAT)  //20秒无更新触发
                 .collect { lastUpdateTime ->
                     val updateTime =
                         TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
@@ -472,7 +464,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                 } catch (e: Exception) {
                     Timber.Forest.e(e)
                 }
-                delay(30000) // 延迟30秒
+                delay(AppContants.Communication.DELAY_CHECK_DEVICE_ONLINE_STATUS)
             }
         }
     }
@@ -488,5 +480,4 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
         super.onResume()
         initImmersionBar(binding.llToolbar.toolbar)
     }
-
 }

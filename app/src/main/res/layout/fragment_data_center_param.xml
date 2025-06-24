@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol" />
 
         <variable
             name="toolbarVM"
@@ -85,7 +86,6 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_data_server_address"
                             style="@style/Common_EditItem_EditText_Style"
-
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:text="@={stateVM.centerServerAddress}"
                             app:lengthFilter="@{100}" />
@@ -104,7 +104,6 @@
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             android:id="@+id/et_data_server_port"
                             style="@style/Common_EditItem_EditText_Style"
-
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                             android:inputType="number"
                             android:text="@={stateVM.centerServerPort}"
@@ -126,9 +125,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-
                             android:text="@{stateVM.dataType}"
                             tools:text="NMEA" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -164,17 +161,15 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-
                             android:text="@{stateVM.platformType}"
                             tools:text="成都理工平台" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
-
+                    <!-- MQTT 协议特有参数 -->
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/ll_mqtt"
-                        visible="@{stateVM.isMqttItemVisible}"
+                        visible='@{stateVM.dataProtocol.equals(PlatformDataProtocol.MQTT.toString())}'
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -190,7 +185,6 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.productId}"
                                 app:lengthFilter="@{100}" />
@@ -208,7 +202,6 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.deviceId}"
                                 app:lengthFilter="@{100}" />
@@ -226,7 +219,6 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.deviceKey}"
                                 app:lengthFilter="@{100}" />
@@ -245,7 +237,6 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.registerCode}"
                                 app:lengthFilter="@{100}" />
@@ -264,7 +255,6 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.registerAddress}"
                                 app:lengthFilter="@{100}" />
@@ -283,7 +273,6 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:inputType="number"
                                 android:text="@={stateVM.registerPort}"
@@ -291,10 +280,10 @@
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
                     </androidx.appcompat.widget.LinearLayoutCompat>
-
+                    <!-- SL651 协议特有参数 -->
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/ll_sl651"
-                        visible="@{stateVM.isSL651ItemVisible}"
+                        visible='@{stateVM.dataProtocol.equals(PlatformDataProtocol.SL651.toString())}'
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -312,9 +301,7 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Value_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
-
                                 android:text="@{stateVM.stationType}"
                                 tools:text="降水" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -330,7 +317,6 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:inputType="number"
                                 android:text="@={stateVM.centerStationAddr}"
@@ -349,7 +335,6 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:inputType="number"
                                 android:text="@={stateVM.password}"
@@ -368,7 +353,6 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.telemetryStationAddr}"
                                 app:inputTypeFilter='@{"character"}'
@@ -460,7 +444,6 @@
 
                                 <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"
-
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:inputType="number"
                                     android:text="@={stateVM.maintainReportInterval}"
@@ -479,7 +462,6 @@
 
                                 <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"
-
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:inputType="number"
                                     android:text="@={stateVM.reissuingDataValidDays}"
@@ -498,7 +480,6 @@
 
                                 <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                     style="@style/Common_EditItem_EditText_Style"
-
                                     textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                     android:inputType="number"
                                     android:text="@={stateVM.reissuingDataInterval}"
@@ -507,10 +488,10 @@
                             </androidx.appcompat.widget.LinearLayoutCompat>
                         </androidx.appcompat.widget.LinearLayoutCompat>
                     </androidx.appcompat.widget.LinearLayoutCompat>
-
+                    <!-- NTRIP 协议特有参数 -->
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:id="@+id/ll_ntrip"
-                        visible="@{stateVM.isNtripItemVisible}"
+                        visible='@{stateVM.dataProtocol.equals(PlatformDataProtocol.NTRIP.toString())}'
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
@@ -526,7 +507,6 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.deviceId}"
                                 app:lengthFilter="@{100}" />
@@ -544,12 +524,12 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.deviceKey}"
                                 app:lengthFilter="@{100}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
+
                         <androidx.appcompat.widget.LinearLayoutCompat
                             style="@style/Common_EditItem_Layout_Style"
                             android:background="@drawable/layer_common_click_item_with_divider">
@@ -561,20 +541,38 @@
 
                             <com.shmedo.mcloudapp.ui.widget.ClearEditText
                                 style="@style/Common_EditItem_EditText_Style"
-
                                 textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
                                 android:text="@={stateVM.productId}"
                                 app:lengthFilter="@{100}" />
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
                     </androidx.appcompat.widget.LinearLayoutCompat>
+                    <!-- HTTP 协议特有参数 -->
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        visible='@{stateVM.dataProtocol.equals(PlatformDataProtocol.HTTP.toString())}'
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Title_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:text="测站编码" />
+
+                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                            style="@style/Common_EditItem_EditText_Style"
+                            textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.isCenterOpened}"
+                            android:text="@={stateVM.telemetryStationAddr}"
+                            app:inputTypeFilter='@{"character"}'
+                            app:lengthFilter="@{20}" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_reset"
                         style="@style/ResetButton_Style2"
                         android:layout_marginTop="@dimen/reset_button_margin_top_50"
-                        android:onClick="@{()->click.onResetClick()}"
                         android:enabled="@{stateVM.isEditable }"
+                        android:onClick="@{()->click.onResetButtonClick()}"
                         android:text="@string/button_reset_text" />
 
                     <com.google.android.material.button.MaterialButton

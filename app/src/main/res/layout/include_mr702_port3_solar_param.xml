@@ -21,7 +21,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
-                android:text="太阳能板电压(V)" />
+                android:text="太阳能板电压（伏）" />
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Value_Style"
@@ -37,7 +37,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
-                android:text="蓄电池电压(V)" />
+                android:text="蓄电池电压（伏）" />
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Value_Style"
@@ -53,7 +53,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
-                android:text="太阳能板功率(W)" />
+                android:text="太阳能板功率（瓦）" />
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Value_Style"
@@ -69,7 +69,7 @@
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Title_Style"
-                android:text="负载功率(W)" />
+                android:text="负载功率（瓦）" />
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/Common_ClickableItem_Value_Style"

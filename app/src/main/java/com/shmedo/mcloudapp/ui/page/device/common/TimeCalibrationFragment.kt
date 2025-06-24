@@ -13,6 +13,11 @@ import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
+import com.shmedo.lib.cmd.base.md_cmd.model.common.DeviceTimeInfo
+import com.shmedo.lib.cmd.base.md_cmd.parser.MDCommandResult
+import com.shmedo.lib.cmd.base.md_cmd.parser.MDParserManager
+import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
@@ -24,6 +29,7 @@ import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.TimeCalibrationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
+import timber.log.Timber
 
 /**
  * @author：gonghe
@@ -36,6 +42,9 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: TimeCalibrationViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
+    private val mdParseManager: MDParserManager by inject()
+
+    private var isDoSetTimeCmd = false
 
     override fun initViewModel() {
         super.initViewModel()
@@ -74,8 +83,27 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            initSaveCommand()
+            if (isBleDas()) {
+                isDoSetTimeCmd = true
+                initDasBleSaveCommand()
+            }
+            else{
+                initSaveCommand()
+            }
         }
+    }
+
+    private fun initDasBleSaveCommand() {
+        commandItems.clear()
+        val command =
+            MDCommandUtil.getCommand(
+                MDCommandType.LOCAL_TIME, TimeUtils.getNowString(
+                    TimeUtils.getSafeDateFormat("yyMMddHHmmss")
+                )
+            )
+        commandItems.add(command)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun initSaveCommand() {
@@ -90,7 +118,11 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
     }
 
     override fun lazyLoadData() {
-        queryTerminalTime()
+        if (isBleDas()) {
+            isDoSetTimeCmd = false
+            queryDasBleTerminalTime()
+        } else
+            queryTerminalTime()
     }
 
     /**
@@ -107,6 +139,21 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
     }
 
     /**
+     * DAS 设备蓝牙模式下查询终端时间
+     */
+    private fun queryDasBleTerminalTime() {
+        commandItems.clear()
+
+        val command =
+            MDCommandUtil.getCommand(MDCommandType.LOCAL_TIME)
+        commandItems.add(command)
+
+        Timber.d("获取设备时间信息指令===%s", command)
+        showLoadingDialog(StringUtils.getString(R.string.loading))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    /**
      * 4G 下发指令响应失败
      */
     override fun doCmdResponseResultError(
@@ -117,7 +164,7 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
     ) {
         super.doCmdResponseResultError(
             cmdStr = cmdStr,
-            errMsg = "出错了：$errMsg",
+            errMsg = errMsg,
             isShowErrMsg = true,
             isMessageDialog = true
         )
@@ -134,7 +181,7 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
     ) {
         super.doCmdResponseResultTimeOut(
             cmdStr = cmdStr,
-            errMsg = "设备未响应",
+            errMsg = errMsg,
             isShowErrMsg = true,
             isMessageDialog = true
         )
@@ -155,11 +202,50 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
             isDismissLoadingDialog = isDismissLoadingDialog,
             isShowErrMsg = true,
             isMessageDialog = true,
-            errMsg = "设备未响应"
+            errMsg = errMsg
         )
     }
 
     override fun setResultData(cmdStr: String) {
+        if (isBleDas()) {
+            handleDasBleCommandResult(cmdStr)
+        } else {
+            handleCommandResult(cmdStr)
+        }
+    }
+
+    private fun handleDasBleCommandResult(cmdStr: String) {
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.LOCAL_TIME -> {
+                val result = mdParseManager.parse<DeviceTimeInfo>(
+                    cmdStr,
+                    MDCommandType.LOCAL_TIME
+                )
+                when (result) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "查询设备时间出错：${result.message}"
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    is MDCommandResult.Success -> {
+                        sendCommandFromCmdList { }
+                        if (!isDoSetTimeCmd) {
+                            initDeviceTime(result.data.time)
+                        }else{
+                            processNavigateUp("校准成功")
+                        }
+                    }
+                }
+            }
+
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
+        }
+    }
+
+    private fun handleCommandResult(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.QUERY_TERMINAL_TIME -> {
                 val result = iotParseManager.parse<String>(

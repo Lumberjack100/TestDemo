@@ -6,6 +6,7 @@
     android:gravity="center"
     android:minWidth="80dp"
     android:minHeight="32dp"
+    android:paddingHorizontal="@dimen/dimen_size_12"
     tools:background="@drawable/bg_mr702_port_tab_normal">
 
     <com.google.android.material.textview.MaterialTextView

@@ -69,7 +69,7 @@ class M50NetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                     groupList,
                     name = "运营商",
-                    value = when (stateInfo.operator) {
+                    value = when (stateInfo.operator.uppercase()) {
                         "CMCC" -> "中国移动"
                         "CU" -> "中国联通"
                         "CT" -> "中国电信"

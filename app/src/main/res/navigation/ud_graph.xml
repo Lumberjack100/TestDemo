@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/udHomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDHomeFragment"
-        android:label="UDHomeFragment"
-        tools:layout="@layout/fragment_ud_home" />
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.NewUDHomeFragment"
+        android:label="NewUDHomeFragment"
+        tools:layout="@layout/fragment_universal_device_home_new" />
 
     <fragment
         android:id="@+id/capturedPictureViewFragment"

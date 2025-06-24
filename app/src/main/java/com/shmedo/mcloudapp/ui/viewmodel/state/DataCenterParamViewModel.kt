@@ -15,7 +15,6 @@ class DataCenterParamViewModel : BaseDataCenterParamViewModel() {
     /**
      * SL651 水文协议特有配置参数
      */
-    val isSL651ItemVisible = NonNullObservableField(false)
     val stationType = NonNullObservableField("")//测站分类
     val centerStationAddr = NonNullObservableField("")//中心站地址
     val password = NonNullObservableField("")//密码
@@ -25,12 +24,9 @@ class DataCenterParamViewModel : BaseDataCenterParamViewModel() {
     val hourlyReport = NonNullObservableField(false)//小时报开启标识
     val timingReport = NonNullObservableField(false)//定时报开启标识
     val addReport = NonNullObservableField(false)//加报报开启标识
-    val maintainReport = NonNullObservableField(false)//维持报开启标识
     val maintainReportInterval = NonNullObservableField("")//维持上报间隔
     val reissuingDataValidDays = NonNullObservableField("")//数据补发有效天数
     val reissuingDataInterval = NonNullObservableField("")//数据补发间隔
-
-    val isNtripItemVisible = NonNullObservableField(false)//NTRIP是否可见
 
     init {
         // 在所有字段初始化后调用 registerField()
@@ -41,11 +37,7 @@ class DataCenterParamViewModel : BaseDataCenterParamViewModel() {
     override fun saveInitialState() {
         isInitializing = true
         initialState = mapOf(
-            "isEditable" to isEditable.get(),
             "isCenterOpened" to isCenterOpened.get(),
-            "centerName" to centerName.get(),
-            "centerStatus" to centerStatus.get(),
-
             "centerServerAddress" to centerServerAddress.get(),
             "centerServerPort" to centerServerPort.get(),
             "transferProtocol" to transferProtocol.get(),
@@ -67,7 +59,6 @@ class DataCenterParamViewModel : BaseDataCenterParamViewModel() {
             "hourlyReport" to hourlyReport.get(),
             "timingReport" to timingReport.get(),
             "addReport" to addReport.get(),
-            "maintainReport" to maintainReport.get(),
             "maintainReportInterval" to maintainReportInterval.get(),
             "reissuingDataValidDays" to reissuingDataValidDays.get(),
             "reissuingDataInterval" to reissuingDataInterval.get()
@@ -78,10 +69,7 @@ class DataCenterParamViewModel : BaseDataCenterParamViewModel() {
 
     override fun registerField() {
         listOf(
-            isEditable,
             isCenterOpened,
-            centerName,
-            centerStatus,
 
             centerServerAddress,
             centerServerPort,
@@ -104,7 +92,6 @@ class DataCenterParamViewModel : BaseDataCenterParamViewModel() {
             hourlyReport,
             timingReport,
             addReport,
-            maintainReport,
             maintainReportInterval,
             reissuingDataValidDays,
             reissuingDataInterval
@@ -121,10 +108,7 @@ class DataCenterParamViewModel : BaseDataCenterParamViewModel() {
         if (isInitializing) return
         isDataModified.value = initialState.any { (key, value) ->
             when (key) {
-                "isEditable" -> isEditable.get() != value
                 "isCenterOpened" -> isCenterOpened.get() != value
-                "centerName" -> centerName.get() != value
-                "centerStatus" -> centerStatus.get() != value
 
                 "centerServerAddress" -> centerServerAddress.get() != value
                 "centerServerPort" -> centerServerPort.get() != value
@@ -147,7 +131,6 @@ class DataCenterParamViewModel : BaseDataCenterParamViewModel() {
                 "hourlyReport" -> hourlyReport.get() != value
                 "timingReport" -> timingReport.get() != value
                 "addReport" -> addReport.get() != value
-                "maintainReport" -> maintainReport.get() != value
                 "maintainReportInterval" -> maintainReportInterval.get() != value
                 "reissuingDataValidDays" -> reissuingDataValidDays.get() != value
                 "reissuingDataInterval" -> reissuingDataInterval.get() != value

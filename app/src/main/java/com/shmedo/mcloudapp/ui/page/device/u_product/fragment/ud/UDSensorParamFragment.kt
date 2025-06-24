@@ -48,7 +48,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/4/26
- * @desc: 一体化雷达水位/泥位计传感参数
+ * @desc: 一体式雷达水位/泥位计传感参数
  *
  */
 class UDSensorParamFragment : BaseIOTDeviceFragment() {
@@ -327,7 +327,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                 super.doCmdResponseResultError(
                     cmdStr = cmdStr,
                     errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
+                    isShowErrMsg = false,
                     isMessageDialog = isMessageDialog
                 )
             }
@@ -343,13 +343,29 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
-        dismissLoadingDialog(measureInitialValueLoadingDialogId)
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
-        )
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DEVICE_STATUS,
+            IOTCommandType.MD_SET_SENSOR_INITIAL,
+            IOTCommandType.UD_MD_SET_MODULE_GAP,
+            IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR -> {
+                dismissLoadingDialog(measureInitialValueLoadingDialogId)
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
+            }
+
+            else -> {
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = false,
+                    isMessageDialog = isMessageDialog
+                )
+            }
+        }
     }
 
     /**
@@ -373,7 +389,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                     isDismissLoadingDialog = isDismissLoadingDialog,
                     isShowErrMsg = true,
                     isMessageDialog = isMessageDialog,
-                    errMsg = "设备未响应"
+                    errMsg = errMsg
                 )
             }
 
@@ -381,7 +397,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
                     isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = isShowErrMsg,
+                    isShowErrMsg = false,
                     isMessageDialog = isMessageDialog,
                     errMsg = errMsg
                 )

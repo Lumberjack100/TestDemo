@@ -49,6 +49,7 @@ import com.shmedo.mcloudapp.databinding.FragmentTcpDebugBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.model.NoDeviceState
 import com.shmedo.mcloudapp.model.WorkingState
@@ -65,7 +66,12 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
+/**
+ * @author：gonghe
+ * @time: 2025/6/20
+ * @desc: 设备远程连接调试页面
+ *
+ */
 class TcpDebugFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentTcpDebugBinding
     private lateinit var toolbarViewModel: ToolbarViewModel
@@ -97,6 +103,9 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentTcpDebugBinding
         binding.toolbar.title = "远程调试"
         binding.toolbar.setNavigationOnClickListener { v: View? ->
+            processBackPress()
+        }
+        registerOnBackPressedDispatcher {
             processBackPress()
         }
         mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="m"
+            type="com.shmedo.mcloudapp.model.UIMeasureDataItem" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/page_content_item_padding_horizontal_16"
+        app:drawable_radius="@{4}"
+        app:drawable_solidColor="@{@color/white}"
+        tools:background="@color/white">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <View
+                android:layout_width="3dp"
+                android:layout_height="14dp"
+                android:background="@color/black" />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/Common_GroupItem_Title_Style2"
+                android:layout_marginStart="@dimen/dimen_size_8"
+                android:text="测量数据" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10">
+
+            <View
+                android:id="@+id/vertical_divider_line1"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_marginVertical="@dimen/dimen_size_2"
+                android:background="@color/divider_line_bg2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{"X轴初始角度："+m.xInitialAngle}'
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="X轴初始角度：3.22°" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_16"
+                android:text='@{"X轴当前角度："+m.xAngle}'
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/vertical_divider_line1"
+                tools:text="X轴当前角度：5.38m" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10">
+
+            <View
+                android:id="@+id/vertical_divider_line2"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_marginVertical="@dimen/dimen_size_2"
+                android:background="@color/divider_line_bg2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{"Y轴初始角度："+m.yInitialAngle}'
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Y轴初始角度：3.22°" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_16"
+                android:text='@{"Y轴当前角度："+m.yAngle}'
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/vertical_divider_line2"
+                tools:text="Y轴当前角度：5.38m" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10">
+
+            <View
+                android:id="@+id/vertical_divider_line3"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_marginVertical="@dimen/dimen_size_2"
+                android:background="@color/divider_line_bg2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{"Z轴初始角度："+m.zInitialAngle}'
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Z轴初始角度：3.22°" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_16"
+                android:text='@{"Z轴当前角度："+m.zAngle}'
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/vertical_divider_line3"
+                tools:text="Z轴当前角度：5.38m" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10">
+
+            <View
+                android:id="@+id/vertical_divider_line4"
+                android:layout_width="1dp"
+                android:layout_height="0dp"
+                android:layout_marginVertical="@dimen/dimen_size_2"
+                android:background="@color/divider_line_bg2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{"X轴加速度："+m.xAcc}'
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="X轴加速度：3.22mg" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_size_16"
+                android:text='@{"Y轴加速度："+m.yAcc}'
+                android:textColor="@color/title_text_color_black_90"
+                android:textSize="@dimen/page_content_item_text_size_14"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/vertical_divider_line4"
+                tools:text="Y轴加速度：5.38mg" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_size_10"
+            android:text='@{"Z轴加速度："+m.zAcc}'
+            android:textColor="@color/title_text_color_black_90"
+            android:textSize="@dimen/page_content_item_text_size_14"
+            tools:text="Z轴加速度：3.22mg" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout> 

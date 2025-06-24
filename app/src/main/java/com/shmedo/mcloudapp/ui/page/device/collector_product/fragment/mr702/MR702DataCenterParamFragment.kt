@@ -2,23 +2,22 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702
 
 import android.os.Bundle
 import android.view.View
-import android.widget.CompoundButton
-import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
+import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.Utils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.kyleduo.switchbutton.SwitchButton
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.CenterNumberEntity
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.mr.MRDataCenterParamEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.PlatformDataProtocol
 import com.shmedo.lib.cmd.base.iot_cmd.enums.StationCode
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRDataCenterParam
@@ -32,15 +31,24 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentMr702DataCenterParamBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
+import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.MR702DataCenterParamViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 
+/**
+ * @author：gonghe
+ * @time: 2025/6/19
+ * @desc: 数据中心参数配置页面 - 支持4G和蓝牙两种通讯方式
+ *
+ */
 class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702DataCenterParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
@@ -53,7 +61,13 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
     private val ipLevelList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_ip_level) }
     private val transferProtocolList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_transfer_protocol) }
 
-    private val dataProtocolList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_data_protocol) }
+    private val dataProtocolList = arrayListOf(
+        PlatformDataProtocol.MQTT.toString(),
+        PlatformDataProtocol.TCP_C.toString(),
+        PlatformDataProtocol.SL651.toString(),
+        PlatformDataProtocol.SZY206.toString(),
+        PlatformDataProtocol.MQTTS.toString()
+    )
     private val allPlatformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
     private val guangdongWaterPlatformStationTypeList by lazy {
         Utils.getApp().resources.getStringArray(
@@ -73,17 +87,14 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentMr702DataCenterParamBinding
-        binding.llToolbar.toolbar.title = "链路配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            processBack(true)
+            handleBackByCheckDataModified()
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                processBack(true)
-            }
-        })
-        mStates.isEditable.set(true)
+        registerOnBackPressedDispatcher {
+            handleBackByCheckDataModified()
+        }
         initRefresh()
+        mStates.isEditable.set(true)
     }
 
     private fun initRefresh() {
@@ -103,27 +114,28 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         arguments?.let {
             statusItem = it.getParcelable(AppContants.Extras.SERVER_NUMBER)!!
         }
-        initDefaultParam()
+        resetDefaultParams()
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
     }
 
     /**
      * 初始化默认参数
      */
-    private fun initDefaultParam() {
-        mStates.centerName.set(statusItem.name)
-        mStates.centerStatus.set(statusItem.status)
-        mStates.isCenterOpened.set(statusItem.status != "0")
+    private fun resetDefaultParams() {
+        binding.llToolbar.toolbar.title = statusItem.name.replace("数据", "") + "配置"
 
+        mStates.isCenterOpened.set(statusItem.status != "0")
         mStates.centerServerAddress.set("")//
         mStates.centerServerPort.set("")//
         mStates.communicateWay.set(communicateWayList[0])//默认选择4G
         mStates.ipLeve.set(ipLevelList[0])//默认选择IPV4
         mStates.transferProtocol.set(transferProtocolList[0])//默认选择TCP
-        mStates.dataProtocol.set("MQTT")//默认选择
+        mStates.dataProtocol.set(PlatformDataProtocol.MQTT.toString())//默认选择
         mStates.platformType.set(allPlatformList[2])//默认选择米度物联平台
         mStates.guangdongWaterPlatformStationType.set(guangdongWaterPlatformStationTypeList[0])//默认选择山洪灾害监测站
 
-        mStates.isMqttItemVisible.set(true)
+        // MQTT 协议特有配置参数
         mStates.productId.set("")//
         mStates.deviceId.set("")//
         mStates.deviceKey.set("")//
@@ -131,8 +143,16 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.registerAddress.set("")//
         mStates.registerPort.set("")//
 
+        /**
+         * SL651 水文协议特有配置参数
+         */
         mStates.stationType.set(StationCode.RESERVOIR.description)//默认选择水库(湖泊)
-        mStates.timingReport.set(true)
+        mStates.centerStationAddr.set("")//
+        mStates.password.set("")//
+        mStates.telemetryStationAddr.set("")//
+        mStates.hourlyReport.set(false)
+        mStates.timingReport.set(false)
+        mStates.addReport.set(false)
         mStates.maintainReport.set(true)
         mStates.maintainReportInterval.set("30")//维持上报间隔（秒）
         mStates.reissuingDataValidDays.set("180")//数据补发有效天数
@@ -140,24 +160,6 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
     }
 
     inner class ClickProxy : BaseClickProxy() {
-
-        override fun onCheckedChanged(button: CompoundButton, isChecked: Boolean) {
-            if (isBleDisconnected()) {
-                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
-                (button as SwitchButton).setCheckedImmediatelyNoEvent(!isChecked)
-                return
-            }
-            mStates.isCenterOpened.set(isChecked)
-            if (!isChecked) {
-                showMessage("确定要关闭链路吗？", "温馨提示", "确定", {
-                    closeDataServer()
-                }, "取消", {
-                    mStates.isCenterOpened.set(true)
-                    (button as SwitchButton).setCheckedImmediatelyNoEvent(true)
-                })
-            }
-        }
-
         /**
          * 通信方式
          */
@@ -244,26 +246,11 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                 .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                 .enableDrag(false)
                 .asBottomList(
-                    "请选择数据协议", dataProtocolList,
+                    "请选择数据协议", dataProtocolList.toTypedArray(),
                     null, selectedIndex,
                     { position, text ->
                         mStates.dataProtocol.set(text)
-                        when (position) {
-                            0, 4 -> {//MQTT/MQTTS
-                                mStates.isMqttItemVisible.set(true)
-                                mStates.isSL651ItemVisible.set(false)
-                            }
 
-                            1 -> {//TCP-C
-                                mStates.isMqttItemVisible.set(false)
-                                mStates.isSL651ItemVisible.set(false)
-                            }
-
-                            else -> {//SL651、SZY206
-                                mStates.isMqttItemVisible.set(false)
-                                mStates.isSL651ItemVisible.set(true)
-                            }
-                        }
                     }, 0, R.layout.custom_xpopup_adapter_text_center
                 )
                 .show()
@@ -289,7 +276,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                 .show()
         }
 
-        /** 广东水利平台测站类型 */
+        /** 广东水文平台测站类型 */
         fun onGuangdongWaterPlatformStationTypeChooseClick() {
             val selectedIndex =
                 guangdongWaterPlatformStationTypeList.indexOf(mStates.guangdongWaterPlatformStationType.get())
@@ -336,9 +323,21 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             mStates.isAdvancedItemVisible.set(!mStates.isAdvancedItemVisible.get())
         }
 
-        fun onSubmitClick() {
+        /**
+         * 恢复默认配置
+         */
+        override fun onResetButtonClick() {
+            resetDefaultParams()
+        }
+
+        override fun onSubmitButtonClick() {
+            KeyboardUtils.hideSoftInput(binding.root)
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return
+            }
+            if (!mStates.isCenterOpened.get()) {
+                closeDataServer()
                 return
             }
             initSaveCommand()
@@ -403,7 +402,7 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                 }
             } else IOTConstants.NULL_KEY
         )
-        if (mStates.dataProtocol.get() == "MQTT" || mStates.dataProtocol.get() == "MQTTS") {//MQTT
+        if (mStates.dataProtocol.get() == PlatformDataProtocol.MQTT.toString() || mStates.dataProtocol.get() == PlatformDataProtocol.MQTTS.toString()) {//MQTT
             //当产品 ID、设备 ID 为空时，需要填写设备注册码、设备注册地址、设备注册端口号
             if (mStates.productId.get().isEmpty() && mStates.deviceId.get().isEmpty()) {
                 if (mStates.registerCode.get().isEmpty()) {
@@ -439,16 +438,16 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             entity.httpaddr = mStates.registerAddress.get()
             entity.httpport = mStates.registerPort.get()
 
-            if (mStates.dataProtocol.get() == "MQTTS")
+            if (mStates.dataProtocol.get() == PlatformDataProtocol.MQTT.toString())
                 entity.taddress = mStates.telemetryStationAddr.get()
 
-        } else if (mStates.dataProtocol.get() == "SL651" || mStates.dataProtocol.get() == "SZY206") {//SL651/SZY206
+        } else if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.toString() || mStates.dataProtocol.get() == PlatformDataProtocol.SZY206.toString()) {//SL651/SZY206
             entity.type_code =
-                if (mStates.dataProtocol.get() == "SL651") StationCode.Companion.valueByDescription(
+                if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.toString()) StationCode.Companion.valueByDescription(
                     mStates.stationType.get()
                 ).code else IOTConstants.NULL_KEY
             entity.co_address =
-                if (mStates.dataProtocol.get() == "SL651") mStates.centerStationAddr.get() else IOTConstants.NULL_KEY
+                if (mStates.dataProtocol.get() == PlatformDataProtocol.SL651.toString()) mStates.centerStationAddr.get() else IOTConstants.NULL_KEY
             entity.password = mStates.password.get()
             entity.taddress = mStates.telemetryStationAddr.get()
             entity.hour_report = if (mStates.hourlyReport.get()) "1" else "0"
@@ -481,6 +480,66 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
+        (commandType == IOTCommandType.MR_MD_GET_DATA_CENTER)
+                || (commandType == IOTCommandType.MR_MD_SET_DATA_CENTER)
+
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage,
+            errMsg = errMsg
+        )
+    }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MR_MD_GET_DATA_CENTER -> {
@@ -490,8 +549,8 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
                 )
                 when (result) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "查询数据链路参数出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        val errMsg = "查询链路参数出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
@@ -507,15 +566,14 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MR_MD_SET_DATA_CENTER -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
                     is IOTCommandResult.Failure -> {
-                        val errMsg = "数据保存出错: ${result.message}"
-                        handleFailureResult(errMsg)
+                        val errMsg = "设置链路参数出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
-                            Toaster.show("数据保存成功")
-                            processBack()
+                            processNavigateUp()
                         }
                     }
                 }
@@ -553,27 +611,19 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.dataProtocol.set(
             when (data.datatype) {
                 "1", "5" -> {//MQTT, MQTTS
-                    mStates.isMqttItemVisible.set(true)
-                    mStates.isSL651ItemVisible.set(false)
                     if (data.datatype == "1") dataProtocolList[0] else
                         dataProtocolList[4]
                 }
 
                 "2" -> {//TCP-C
-                    mStates.isMqttItemVisible.set(false)
-                    mStates.isSL651ItemVisible.set(false)
                     dataProtocolList[1]
                 }
 
                 "3" -> {//SL651
-                    mStates.isMqttItemVisible.set(false)
-                    mStates.isSL651ItemVisible.set(true)
                     dataProtocolList[2]
                 }
 
                 else -> {//SZY206
-                    mStates.isMqttItemVisible.set(false)
-                    mStates.isSL651ItemVisible.set(true)
                     dataProtocolList[3]
                 }
             }
@@ -617,6 +667,14 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.maintainReportInterval.set(data.keepalive)
         mStates.reissuingDataValidDays.set(data.valid_day)
         mStates.reissuingDataInterval.set(data.reissue_time)
+
+        if (communicateWay is NetPlatformConnect && mStates.platformType.get().contains("米度物联平台")) {
+            mStates.isEditable.set(false)
+            showMessageDialog("4G模式下，米度物联平台链路不允许修改，以免设备离线")
+        }
+
+        //添加这行来保存初始状态
+        mStates.saveInitialState()
     }
 
     override fun onResume() {
@@ -624,14 +682,17 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         initImmersionBar(binding.llToolbar.toolbar)
     }
 
-    private fun processBack(isPressBackBtn: Boolean = false) {
-        launchWithViewLifecycle {
-            if (isPressBackBtn) {
-                mMessenger.requestStatusBarColor(if (statusBarColor == 0) R.color.colorPrimary else statusBarColor)
-                nav().navigateUp()
-                return@launchWithViewLifecycle
-            }
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
+    }
 
+    override fun processNavigateUp(toastMsg: String, isShowToast: Boolean) {
+        launchWithViewLifecycle {
+            delay(1000)
             //需要给上一级页面传递最新的信息
             setFragmentResult(
                 AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY,

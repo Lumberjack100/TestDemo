@@ -31,6 +31,7 @@ import com.shmedo.mcloudapp.databinding.FragmentLogDataBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
@@ -74,11 +75,9 @@ class LogDataFragment : BaseFragment() {
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                nav().navigateUp()
-            }
-        })
+        registerOnBackPressedDispatcher {
+            nav().navigateUp()
+        }
         initAdapter()
     }
 
