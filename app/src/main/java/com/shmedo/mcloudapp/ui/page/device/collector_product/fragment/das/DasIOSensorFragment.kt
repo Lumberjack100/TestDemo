@@ -327,21 +327,21 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
     /**
      * 蓝牙下发指令响应超时
      */
-//    override fun showNearbyCommunicationTimeoutAlert(
-//        cmdStr: String,
-//        isDismissLoadingDialog: Boolean,
-//        isShowErrMsg: Boolean,
-//        isMessageDialog: Boolean,
-//        errMsg: String
-//    ) {
-//        super.showNearbyCommunicationTimeoutAlert(
-//            cmdStr = cmdStr,
-//            isDismissLoadingDialog = isDismissLoadingDialog,
-//            isShowErrMsg = true,
-//            isMessageDialog = true,
-//            errMsg = errMsg
-//        )
-//    }
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = errMsg
+        )
+    }
 
     override fun setResultData(cmdStr: String) {
         // 判断是否页面是否处于 resume 状态

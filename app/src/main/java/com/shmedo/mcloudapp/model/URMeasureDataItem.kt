@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 /**
  * 创建者：gonghe
  * 创建时间：2025/1/21
- * 描述：一体化雨量计一体化雨量计测量数据项，用于在 RecyclerView 中展示
+ * 描述：一体式雨量计一体式雨量计测量数据项，用于在 RecyclerView 中展示
  */
 @Parcelize
 data class URMeasureDataItem(

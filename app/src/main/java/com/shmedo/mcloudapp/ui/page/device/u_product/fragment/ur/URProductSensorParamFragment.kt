@@ -41,7 +41,7 @@ import java.util.Locale
 /**
  * @author：gonghe
  * @time: 2024/4/26
- * @desc: 一体化雨量计传感参数
+ * @desc: 一体式雨量计传感参数
  *
  */
 class URProductSensorParamFragment : BaseIOTDeviceFragment() {

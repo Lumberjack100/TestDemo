@@ -17,6 +17,7 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import org.koin.android.ext.android.inject
+
 /**
  * 创建者：gonghe
  * 创建时间：2024/6/7
@@ -124,24 +125,25 @@ class DasExternalSensorListFragment : BaseDasExternalSensorListFragment() {
                     addr = sensorInfo.addr
                     threshold = sensorInfo.threshold
                     corrval = sensorInfo.corrval
+
                     when (IOTSensorType.Companion.value(sensorInfo.type)) {
                         IOTSensorType.KANG_PERCOLATE -> {//基康渗压计
-                            tubealti = sensorInfo.tubealti
-                            ropelen = sensorInfo.ropelen
                             poly_a = sensorInfo.poly_a
                             poly_b = sensorInfo.poly_b
                             poly_c = sensorInfo.poly_c
                             temp_k = sensorInfo.temp_k
                             temp_t0 = sensorInfo.temp_t0
+                            ropelen = sensorInfo.ropelen
+                            tubealti = sensorInfo.tubealti
                         }
 
                         IOTSensorType.GUDAN_PERCOLATE -> {//葛南渗压计
-                            tubealti = sensorInfo.tubealti
-                            ropelen = sensorInfo.ropelen
                             sens_k = sensorInfo.sens_k
                             temp_b = sensorInfo.temp_b
-                            temp_t0 = sensorInfo.temp_t0
                             referval_f = sensorInfo.referval_f
+                            temp_t0 = sensorInfo.temp_t0
+                            ropelen = sensorInfo.ropelen
+                            tubealti = sensorInfo.tubealti
                         }
 
                         IOTSensorType.GUDAN_SOIL_PRESSURE -> {//葛南土压力计
@@ -151,30 +153,27 @@ class DasExternalSensorListFragment : BaseDasExternalSensorListFragment() {
                             referval_f = sensorInfo.referval_f
                         }
 
-                        IOTSensorType.GUDAN_STRESS -> {//葛南应力计
-                            sens_k = sensorInfo.sens_k
-                            temp_b = sensorInfo.temp_b
-                            temp_t0 = sensorInfo.temp_t0
-                            referval_f = sensorInfo.referval_f
-                            elastic_mod = sensorInfo.elastic_mod
-                        }
-
                         IOTSensorType.JUNXING_ZLJ_300T -> {//轴力计
                             sens_k = sensorInfo.sens_k
                             temp_b = sensorInfo.temp_b
-                            temp_t0 = sensorInfo.temp_t0
                             referval_f = sensorInfo.referval_f
+                            temp_t0 = sensorInfo.temp_t0
                         }
 
-                        IOTSensorType.INCLINOMETER -> {//固定测斜仪
-                            spacing = sensorInfo.spacing
-                            model_type = sensorInfo.model_type
+                        IOTSensorType.GUDAN_STRESS -> {//葛南应力计
+                            sens_k = sensorInfo.sens_k
+                            temp_b = sensorInfo.temp_b
+                            referval_f = sensorInfo.referval_f
+                            temp_t0 = sensorInfo.temp_t0
+                            elastic_mod = sensorInfo.elastic_mod
                         }
 
-                        IOTSensorType.LUYAN_INCLINOMETER -> {//倾角仪
-                            initvalx = sensorInfo.initvalx
-                            initvaly = sensorInfo.initvaly
-                            initvalz = sensorInfo.initvalz
+                        IOTSensorType.VIBRATING_SENSOR -> {//MCU_振弦传感器
+                            sens_k = sensorInfo.sens_k
+                            temp_b = sensorInfo.temp_b
+                            referval_f = sensorInfo.referval_f
+                            temp_t0 = sensorInfo.temp_t0
+                            caddr = sensorInfo.caddr
                         }
 
                         IOTSensorType.WEIR -> {//量水堰计
@@ -183,34 +182,42 @@ class DasExternalSensorListFragment : BaseDasExternalSensorListFragment() {
                             caddr = sensorInfo.caddr
                         }
 
-                        IOTSensorType.STATIC_LEVEL,//静力水准
-                        IOTSensorType.SEDIMENTATION_METER,//沉降仪
-                        -> {
-                            initval = sensorInfo.initval
-                        }
-
-                        IOTSensorType.VERTICAL_COORDINATE,//垂线坐标仪
-                        -> {
-                            initvalx = sensorInfo.initvalx
-                            initvaly = sensorInfo.initvaly
-                        }
-
-                        IOTSensorType.VIBRATING_SENSOR -> {//MCU_振弦传感器
-                            sens_k = sensorInfo.sens_k
-                            temp_b = sensorInfo.temp_b
-                            temp_t0 = sensorInfo.temp_t0
-                            referval_f = sensorInfo.referval_f
-                            caddr = sensorInfo.caddr
-                        }
-
-                        IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE,//数字式水位计
                         IOTSensorType.WATER_LEVEL_GAUGE -> {//MCU_水位(液位)计
-                            tubealti = sensorInfo.tubealti
                             ropelen = sensorInfo.ropelen
+                            tubealti = sensorInfo.tubealti
+                        }
+
+                        /** 以下是数字式传感器   **/
+                        IOTSensorType.INCLINOMETER -> {//固定测斜仪
+                            spacing = sensorInfo.spacing
+                            model_type = sensorInfo.model_type
                         }
 
                         IOTSensorType.RADAR_LEVEL_GAUGE -> {//雷达液(物)位计 设置子雷达传感器型号
                             child_type = sensorInfo.child_type
+                        }
+
+                        IOTSensorType.LUYAN_INCLINOMETER -> {//倾角仪
+                            initvalx = sensorInfo.initvalx
+                            initvaly = sensorInfo.initvaly
+                            initvalz = sensorInfo.initvalz
+                        }
+
+                        IOTSensorType.STATIC_LEVEL,//静力水准
+                        IOTSensorType.SEDIMENTATION_METER,//沉降仪
+                            -> {
+                            initval = sensorInfo.initval
+                        }
+
+                        IOTSensorType.VERTICAL_COORDINATE,//垂线坐标仪
+                            -> {
+                            initvalx = sensorInfo.initvalx
+                            initvaly = sensorInfo.initvaly
+                        }
+
+                        IOTSensorType.DIGITAL_WATER_LEVEL_GAUGE -> {//数字式水位计
+                            ropelen = sensorInfo.ropelen
+                            tubealti = sensorInfo.tubealti
                         }
 
                         else -> {}
@@ -327,7 +334,6 @@ class DasExternalSensorListFragment : BaseDasExternalSensorListFragment() {
             }
         }
     }
-
 
 
     companion object {

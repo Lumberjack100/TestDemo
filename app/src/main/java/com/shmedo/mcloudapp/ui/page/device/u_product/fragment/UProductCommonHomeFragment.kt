@@ -55,8 +55,8 @@ class UProductCommonHomeFragment : NewUniversalBaseDeviceHomeFragment() {
     override fun initData() {
         super.initData()
         when (productType) {
-            ProductType.U_I_1,//一体化倾斜仪
-            ProductType.U_R_1 //一体化雨量计
+            ProductType.U_I_1,//一体式倾斜仪
+            ProductType.U_R_1 //一体式雨量计
                 -> {
                 mHeadStates.productErrorResId.set(R.drawable.device_logo_bhy_3s_error)
                 mHeadStates.productAlarmResId.set(R.drawable.device_logo_bhy_3s_alarm)
@@ -84,13 +84,13 @@ class UProductCommonHomeFragment : NewUniversalBaseDeviceHomeFragment() {
     override fun initModuleData() {
         // 扩展适配器支持
         when (productType) {
-            ProductType.U_I_1//一体化倾斜仪
+            ProductType.U_I_1//一体式倾斜仪
                 -> binding.rvModule.bindingAdapter.addType<UIMeasureDataItem>(R.layout.item_ui_measure_data)
 
-            ProductType.U_R_1 //一体化雨量计
+            ProductType.U_R_1 //一体式雨量计
                 -> binding.rvModule.bindingAdapter.addType<URMeasureDataItem>(R.layout.item_ur_measure_data)
 
-            ProductType.LR200 //一体化裂缝计
+            ProductType.LR200 //一体式裂缝计
                 -> binding.rvModule.bindingAdapter.addType<LR200MeasureDataItem>(R.layout.item_lr200_measure_data)
 
             else -> {}
@@ -119,7 +119,7 @@ class UProductCommonHomeFragment : NewUniversalBaseDeviceHomeFragment() {
                             navId = when (productType) {
                                 ProductType.LR200 -> R.id.action_global_to_lR200BaseInfoFragment //米度一体式裂缝计
                                 ProductType.U_I_1,//倾斜仪
-                                ProductType.U_R_1 -> R.id.action_global_to_uProductBaseInfoFragment //一体化雨量计
+                                ProductType.U_R_1 -> R.id.action_global_to_uProductBaseInfoFragment //一体式雨量计
                                 else -> 0
                             }
                         )
@@ -132,7 +132,7 @@ class UProductCommonHomeFragment : NewUniversalBaseDeviceHomeFragment() {
                             navId = when (productType) {
                                 ProductType.LR200 -> R.id.action_global_to_lR200NetInfoFragment //米度一体式裂缝计
                                 ProductType.U_I_1,//倾斜仪
-                                ProductType.U_R_1 -> R.id.action_global_to_uProductNetInfoFragment //一体化雨量计
+                                ProductType.U_R_1 -> R.id.action_global_to_uProductNetInfoFragment //一体式雨量计
                                 else -> 0
                             }
                         )
@@ -145,7 +145,7 @@ class UProductCommonHomeFragment : NewUniversalBaseDeviceHomeFragment() {
                             navId = when (productType) {
                                 ProductType.LR200 -> R.id.action_global_to_lR200StatusInfoFragment //米度一体式裂缝计
                                 ProductType.U_I_1 -> R.id.action_global_to_uProductStatusInfoFragment//倾斜仪
-                                ProductType.U_R_1 -> R.id.action_global_to_uRProductStatusInfoFragment //一体化雨量计
+                                ProductType.U_R_1 -> R.id.action_global_to_uRProductStatusInfoFragment //一体式雨量计
                                 else -> 0
                             }
                         )
@@ -230,7 +230,7 @@ class UProductCommonHomeFragment : NewUniversalBaseDeviceHomeFragment() {
             is DataCenterModule -> {
                 val centerNum = when (productType) {
                     ProductType.U_I_1,//倾斜仪
-                    ProductType.U_R_1 //一体化雨量计
+                    ProductType.U_R_1 //一体式雨量计
                         -> 3
 
                     ProductType.LR200 -> 4//米度一体式裂缝计
@@ -251,7 +251,7 @@ class UProductCommonHomeFragment : NewUniversalBaseDeviceHomeFragment() {
             is SensorConfigModule -> {
                 var navId = when (productType) {
                     ProductType.U_I_1 -> R.id.action_global_to_uIProductSensorParamFragment//倾斜仪
-                    ProductType.U_R_1 -> R.id.action_global_to_uRProductSensorParamFragment//一体化雨量计
+                    ProductType.U_R_1 -> R.id.action_global_to_uRProductSensorParamFragment//一体式雨量计
                     ProductType.LR200 -> R.id.action_global_to_lR200SensorParamFragment//米度一体式裂缝计
                     else -> 0
                 }

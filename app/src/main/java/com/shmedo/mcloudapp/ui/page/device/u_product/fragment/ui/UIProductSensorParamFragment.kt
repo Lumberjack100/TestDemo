@@ -30,7 +30,7 @@ import org.koin.android.ext.android.inject
 /**
  * @author：gonghe
  * @time: 2024/4/26
- * @desc: 一体化倾斜仪传感参数
+ * @desc: 一体式倾斜仪传感参数
  *
  */
 class UIProductSensorParamFragment : BaseIOTDeviceFragment() {

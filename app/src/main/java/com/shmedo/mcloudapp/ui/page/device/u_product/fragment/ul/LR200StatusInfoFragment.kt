@@ -23,7 +23,7 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/9/19
- * 描述： 一体化裂缝计状态信息
+ * 描述： 一体式裂缝计状态信息
  */
 class LR200StatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
 

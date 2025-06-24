@@ -43,7 +43,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/8/23
- * @desc: 一体化雷达水位/泥位计上报工作模式参数设置
+ * @desc: 一体式雷达水位/泥位计上报工作模式参数设置
  */
 class UDReportModelParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUdReportModelParamBinding

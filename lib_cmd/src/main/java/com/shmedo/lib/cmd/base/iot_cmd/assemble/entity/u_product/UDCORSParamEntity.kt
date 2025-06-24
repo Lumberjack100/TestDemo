@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 /**
  * 创建者：gonghe
  * 创建时间：2024/8/28
- * 描述： 一体化雷达泥位计CORS参数
+ * 描述： 一体式雷达泥位计CORS参数
  */
 @JsonClass(generateAdapter = true)
 class UDCORSParamEntity(

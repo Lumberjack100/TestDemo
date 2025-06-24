@@ -18,7 +18,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2025/6/19
- * @desc: 一体化雷达水位/泥位计数据中心列表页面 - 支持4G和蓝牙两种通讯方式
+ * @desc: 一体式雷达水位/泥位计数据中心列表页面 - 支持4G和蓝牙两种通讯方式
  *
  */
 class UDDataCenterHomeFragment : BaseDataCenterHomeFragment() {

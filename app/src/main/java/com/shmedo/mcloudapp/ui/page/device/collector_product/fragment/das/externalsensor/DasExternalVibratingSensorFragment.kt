@@ -455,7 +455,7 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
 
                     mStates.isExtension1Support.set(true)
                     mStates.extension1Title.set("触发值")
-                    mStates.extension1Value.set(sensorInfo.threshold.formatDoubleValue("0", 0))
+                    mStates.extension1Value.set(sensorInfo.threshold.formatDoubleValue("1000", 0))
 
                     mStates.isExtension2Support.set(false)
                     mStates.isExtension3Support.set(false)
@@ -871,7 +871,6 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
 
             IOTSensorType.VIBRATING_SENSOR//MCU 振弦传感器
                 -> {
-
                 if (sensorInfo.sens_k != IOTConstants.NULL_KEY) {
                     if (mStates.extension1Value.get().isEmpty()) {
                         showMessageDialog("请输入灵敏度K")
@@ -967,6 +966,19 @@ class DasExternalVibratingSensorFragment : BaseFragment() {
                 }
             }
 
+            IOTSensorType.GENERAL_STRING_INSTRUMENT //通用弦式仪
+                -> {
+                if (mStates.extension1Value.get().isEmpty()) {
+                    showMessageDialog("请输入触发值")
+                    return
+                }
+                try {
+                    val value = mStates.extension1Value.get().toDouble()
+                } catch (ex: Exception) {
+                    showMessageDialog("请输入正确的触发值!")
+                    return
+                }
+            }
             else -> {}
         }
         updateSensorInfo()

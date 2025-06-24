@@ -144,6 +144,9 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
     }
 
     override fun setResultData(cmdStr: String) {
+        if (isRestrictHiddenMode() && isHidden) {
+            return
+        }
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.SAMPLE -> {//
                 val result = iotParseManager.parse<String>(

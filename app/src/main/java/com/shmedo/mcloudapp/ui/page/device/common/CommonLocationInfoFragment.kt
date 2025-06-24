@@ -60,7 +60,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/8/21
- * @desc: 一体化雷达水位计位置信息
+ * @desc: 一体式雷达水位计位置信息
  *
  */
 class CommonLocationInfoFragment : BaseIOTDeviceFragment() {

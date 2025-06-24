@@ -164,7 +164,7 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
     ) {
         super.doCmdResponseResultError(
             cmdStr = cmdStr,
-            errMsg = "出错了：$errMsg",
+            errMsg = errMsg,
             isShowErrMsg = true,
             isMessageDialog = true
         )

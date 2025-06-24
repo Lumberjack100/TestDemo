@@ -136,6 +136,8 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    override fun isTargetCommandType(commandType: IOTCommandType): Boolean = true
+
     override fun setResultData(cmdStr: String) {
         if (isBleMode) {
             handleBleCommandResult(cmdStr)

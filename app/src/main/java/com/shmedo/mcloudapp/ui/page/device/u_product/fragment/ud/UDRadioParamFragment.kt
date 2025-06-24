@@ -35,7 +35,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/8/22
- * @desc: 一体化雷达水位/泥位计电台配置
+ * @desc: 一体式雷达水位/泥位计电台配置
  *
  */
 class UDRadioParamFragment : BaseIOTDeviceFragment() {

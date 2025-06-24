@@ -29,7 +29,7 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/8/29
- * 描述： 一体化雷达水位/泥位计网络信息
+ * 描述： 一体式雷达水位/泥位计网络信息
  */
 class UDNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }

@@ -72,7 +72,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/8/21
- * @desc: 一体化雷达水位/泥位计首页
+ * @desc: 一体式雷达水位/泥位计首页
  *
  */
 @Deprecated("This class is deprecated", ReplaceWith("NewUDHomeFragment"))

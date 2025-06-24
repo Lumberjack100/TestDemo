@@ -24,7 +24,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/4/26
- * @desc: 一体化雷达水位/泥位计电池、传感器等信息
+ * @desc: 一体式雷达水位/泥位计电池、传感器等信息
  *
  */
 class UDStatusInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {

@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 /**
  * @author：gonghe
  * @time: 2024/8/27
- * @desc: 一体化雷达设备当前状态
+ * @desc: 一体式雷达设备当前状态
  *
  */
 @JsonClass(generateAdapter = true)

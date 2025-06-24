@@ -38,7 +38,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/9/10
- * @desc: 一体化雷达水位/泥位计端口参数配置
+ * @desc: 一体式雷达水位/泥位计端口参数配置
  *
  */
 class UDSerialPortParamFragment : BaseIOTDeviceFragment() {

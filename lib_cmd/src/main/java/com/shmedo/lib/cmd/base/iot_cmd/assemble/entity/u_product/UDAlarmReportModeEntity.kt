@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 /**
  * 创建者：gonghe
  * 创建时间：2024/4/26
- * 描述： 一体化雷达泥位计报警上报模式
+ * 描述： 一体式雷达泥位计报警上报模式
  */
 @JsonClass(generateAdapter = true)
 data class UDAlarmReportModeEntity(

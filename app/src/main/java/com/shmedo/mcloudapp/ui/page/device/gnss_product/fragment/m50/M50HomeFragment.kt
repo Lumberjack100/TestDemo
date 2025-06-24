@@ -44,7 +44,7 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2025/1/24
- * 描述：一体化自供电 GNSS 接收机(M50)设备主页 - 支持4G和蓝牙两种通讯方式
+ * 描述：一体式自供电 GNSS 接收机(M50)设备主页 - 支持4G和蓝牙两种通讯方式
  *
  */
 class M50HomeFragment : NewUniversalBaseDeviceHomeFragment() {

@@ -29,7 +29,7 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/8/28
- * 描述： 一体化雷达水位/泥位计基本信息
+ * 描述： 一体式雷达水位/泥位计基本信息
  */
 class UDBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     private var abnormalInfoJob: Job? = null

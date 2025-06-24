@@ -599,11 +599,11 @@ enum class IOTCommandType(val value: String) {
     /** 米度一体式泥位计 */
     UD_MD_SET_MODULE_GAP("md_setmodulegap"),
 
-    /** 一体化设备 485 端口参数配置 */
+    /** 一体式设备 485 端口参数配置 */
     UD_MD_GET_RS485_PARAM("md_getrs485"),
     UD_MD_SET_RS485_PARAM("md_setrs485"),
 
-    /** 一体化设备雨量计参数配置 */
+    /** 一体式设备雨量计参数配置 */
     UD_MD_GET_RAIN_GAUGE_PARAM("md_getrain"),
     UD_MD_SET_RAIN_GAUGE_PARAM("md_setrain"),
 

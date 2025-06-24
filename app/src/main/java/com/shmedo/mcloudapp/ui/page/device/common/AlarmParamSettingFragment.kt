@@ -95,7 +95,7 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         when (productType) {
             ProductType.GNSS_M_1,//M20S
             ProductType.GNSS_M_2,
-            ProductType.U_R_1 //一体化雨量计
+            ProductType.U_R_1 //一体式雨量计
                 -> {
                 mStates.firstAlarmThresholdTitle.set("一级报警阈值（毫米）")
                 mStates.secondAlarmThresholdTitle.set("二级报警阈值（毫米）")
@@ -142,7 +142,7 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         mStates.fourthAlarmReportInterval.set("3600")
 
         when (productType) {
-            ProductType.LR200 //一体化雨量计
+            ProductType.LR200 //一体式雨量计
                 -> {
                 //一级报警语音编号  [1~255] 默认 4
                 mStates.firstAlarmVoice.set("84")
@@ -464,6 +464,14 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
+        (commandType == IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL)
+                || (commandType == IOTCommandType.MD_GET_ALRAM_BROADCAST_TRIGGER_VALUE)
+                || (commandType == IOTCommandType.MD_GET_ALRAM_BROADCAST_REPORT_INTERVAL)
+                || (commandType == IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL)
+                || (commandType == IOTCommandType.MD_SET_ALRAM_BROADCAST_TRIGGER_VALUE)
+                || (commandType == IOTCommandType.MD_SET_ALRAM_BROADCAST_REPORT_INTERVAL)
+
     /**
      * 4G 下发指令响应失败
      */
@@ -473,11 +481,12 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultError(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -490,11 +499,12 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultTimeOut(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -508,11 +518,12 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean,
         errMsg: String
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.showNearbyCommunicationTimeoutAlert(
             cmdStr = cmdStr,
             isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage,
             errMsg = errMsg
         )
     }

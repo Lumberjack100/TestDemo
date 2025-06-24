@@ -48,7 +48,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/4/26
- * @desc: 一体化雷达水位/泥位计传感参数
+ * @desc: 一体式雷达水位/泥位计传感参数
  *
  */
 class UDSensorParamFragment : BaseIOTDeviceFragment() {

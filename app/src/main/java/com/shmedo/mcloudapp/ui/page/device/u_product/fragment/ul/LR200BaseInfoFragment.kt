@@ -19,7 +19,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2025/5/29
- * @desc: 一体化裂缝计基本信息
+ * @desc: 一体式裂缝计基本信息
  *
  */
 class LR200BaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {

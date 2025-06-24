@@ -6,6 +6,7 @@ import com.blankj.utilcode.util.TimeUtils
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -59,10 +60,30 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
 
     override fun initData() {
         super.initData()
-        mHeadStates.productErrorResId.set(R.drawable.device_logo_das_error)
-        mHeadStates.productAlarmResId.set(R.drawable.device_logo_das_alarm)
-        mHeadStates.productOfflineResId.set(R.drawable.device_logo_das_offline)
-        mHeadStates.productNormalResId.set(R.drawable.device_logo_das)
+        if (deviceInfo.productName.startsWith("MR701")) {
+            mHeadStates.productErrorResId.set(R.drawable.device_logo_mr701_old_error)
+            mHeadStates.productAlarmResId.set(R.drawable.device_logo_mr701_old_alarm)
+            mHeadStates.productOfflineResId.set(R.drawable.device_logo_mr701_old_offline)
+            mHeadStates.productNormalResId.set(R.drawable.device_logo_mr701_old)
+            mHeadStates.productName.set("智能遥测终端机")
+            mHeadStates.productToken.set("MR701")
+        } else {
+            when (productType) {
+                 ProductType.BHY -> {
+                    mHeadStates.productErrorResId.set(R.drawable.device_logo_bhy_3s_error)
+                    mHeadStates.productAlarmResId.set(R.drawable.device_logo_bhy_3s_alarm)
+                    mHeadStates.productOfflineResId.set(R.drawable.device_logo_bhy_3s_offline)
+                    mHeadStates.productNormalResId.set(R.drawable.device_logo_bhy_3s)
+                }
+
+                else -> {
+                    mHeadStates.productErrorResId.set(R.drawable.device_logo_das_error)
+                    mHeadStates.productAlarmResId.set(R.drawable.device_logo_das_alarm)
+                    mHeadStates.productOfflineResId.set(R.drawable.device_logo_das_offline)
+                    mHeadStates.productNormalResId.set(R.drawable.device_logo_das)
+                }
+            }
+        }
         mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
     }
 

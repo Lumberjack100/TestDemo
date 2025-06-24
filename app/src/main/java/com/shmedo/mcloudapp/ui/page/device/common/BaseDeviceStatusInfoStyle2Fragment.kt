@@ -660,7 +660,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
+    protected open fun isTargetCommandType(commandType: IOTCommandType): Boolean =
         (commandType == IOTCommandType.QUERY_DEVICE_STATUS)
                 || (commandType == IOTCommandType.MD_GET_DEVICE_STATUS)
                 || (commandType == IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO)
