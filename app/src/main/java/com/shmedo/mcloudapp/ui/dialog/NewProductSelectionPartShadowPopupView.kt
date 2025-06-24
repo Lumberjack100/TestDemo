@@ -17,9 +17,7 @@ import com.shmedo.mcloudapp.model.ProductSeriesItem
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 
 /**
- * 创建者:   gonghe <br/>
- * 创建时间:  2023/10/30 <br/>
- * 描述：     TODO
+ * 产品选择弹窗
  */
 class NewProductSelectionPartShadowPopupView(context: Context) : PartShadowPopupView(context) {
     private lateinit var binding: ProductSelectionPartShadowPopupNewBinding
@@ -63,7 +61,7 @@ class NewProductSelectionPartShadowPopupView(context: Context) : PartShadowPopup
                 when (itemViewType) {
                     R.layout.item_sub_product_series -> {
                         val itemBinding = getBinding<ItemSubProductSeriesBinding>()
-                        itemBinding.rvSubModule.setup { subRv ->
+                        itemBinding.rvSub.setup { subRv ->
                             subRv.addItemDecoration(
                                 MyGridSpacingItemDecoration(
                                     3,
@@ -73,6 +71,7 @@ class NewProductSelectionPartShadowPopupView(context: Context) : PartShadowPopup
                             addType<ProductSeriesItem>(R.layout.item_product)
                             R.id.item.onClick {
                                 val selectionItem = getModel<ProductSeriesItem>()
+                                //此处处理选中状态的逻辑有问题
                                 if (lastSelectedIndex != -1) {
                                     getModel<ProductSeriesItem>(lastSelectedIndex).refreshChecked(false)
                                 }
@@ -91,7 +90,7 @@ class NewProductSelectionPartShadowPopupView(context: Context) : PartShadowPopup
                     R.layout.item_sub_product_series -> {
                         val productGroupItem = getModel<ProductGroupItem>()
                         val itemBinding = getBinding<ItemSubProductSeriesBinding>()
-                        itemBinding.rvSubModule.models = productGroupItem.children
+                        itemBinding.rvSub.models = productGroupItem.children
                     }
 
                     else -> {
