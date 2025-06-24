@@ -10,7 +10,8 @@ import androidx.databinding.BaseObservable
 data class FilterDeviceTabItem(
     var name: String = "",
     var value: String = "",
-    var showDropDown: Boolean = false,
+    var showDropDown: Boolean = true,
+    var expand: Boolean = false,
     var singleSelectionItemLastSelectedIndex: Int = 0,
 ) : BaseObservable() {
 
@@ -20,8 +21,8 @@ data class FilterDeviceTabItem(
         notifyChange()
     }
 
-    fun refreshDropDown(show: Boolean) {
-        this.showDropDown = show
+    fun refreshExpandArrow(expand: Boolean) {
+        this.expand = expand
         notifyChange()
     }
 }

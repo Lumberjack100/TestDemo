@@ -31,11 +31,12 @@
             tools:text="定时定点上报" />
 
         <androidx.appcompat.widget.AppCompatImageView
+            visible="@{m.showDropDown}"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_marginHorizontal="@dimen/dimen_size_5"
             android:scaleType="centerCrop"
-            android:src="@{m.showDropDown ? @drawable/ic_arrow_up : @drawable/ic_arrow_down}"
+            android:src="@{m.expand ? @drawable/ic_arrow_up : @drawable/ic_arrow_down}"
             tools:src="@drawable/ic_arrow_up" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
