@@ -88,6 +88,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
     private val locationViewModel: LocationViewModel by activityViewModel()
     private val locationSyncViewModel: AdvancedSettingViewModel by viewModels()
     private var gcjLatLng: BDLocation? = null //当前定位经纬度,中国国测局地理坐标（GCJ-02）
+    private var isLocationSyncInProgress = false // 添加标志位，防止重复同步
 
     private var lastOnlineStatus: Boolean = false//在线状态
     private var deviceStatusCheckJob: Job? = null
@@ -166,9 +167,9 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
         }
 
         //刷新模块状态
-        binding.rvModule.models?.forEach {
-            if (it is ConfigModuleTree) {
-                it.configModules.forEach { configModule ->
+        binding.rvModule.models?.forEach { item ->
+            if (item is ConfigModuleTree) {
+                item.configModules.forEach { configModule ->
                     configModule.functionModule.refreshStatus(isConnected)
                 }
             }
@@ -283,9 +284,9 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
         //刷新模块状态
-        binding.rvModule.models?.forEach {
-            if (it is ConfigModuleTree) {
-                it.configModules.forEach { configModule ->
+        binding.rvModule.models?.forEach { item ->
+            if (item is ConfigModuleTree) {
+                item.configModules.forEach { configModule ->
                     configModule.functionModule.refreshStatus(deviceInfo.onlineStatus)
                 }
             }
@@ -443,29 +444,13 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
 
         // 观察定位信息
         if (isNeedAutoSyncLocation()) {
+            // 观察位置服务错误状态
             launchAndRepeatWithViewLifecycle(minActiveState = Lifecycle.State.STARTED) {
-                locationViewModel.locationState.collectLatest { bdLocation ->
-                    if (gcjLatLng == null || gcjLatLng!!.latitude == 0.0 || gcjLatLng!!.longitude == 0.0) {
-                        gcjLatLng = bdLocation
-                        //将GCJ-02火星坐标转换为WGS-84世界标准地理坐标
-                        val mWgsLatLng = JZLocationConverter.gcj02ToWgs84(
-                            CustomLatLng(
-                                bdLocation.latitude,
-                                bdLocation.longitude
-                            )
-                        )
-                        locationSyncViewModel.location.set(
-                            Html.fromHtml(
-                                String.format(
-                                    Locale.getDefault(),
-                                    "%.8f,%.8f",
-                                    mWgsLatLng.longitude,
-                                    mWgsLatLng.latitude
-                                )
-                            ).toString()
-                        )
-                        locationSyncViewModel.latitude.set(mWgsLatLng.latitude.toString())
-                        locationSyncViewModel.longitude.set(mWgsLatLng.longitude.toString())
+                locationViewModel.locationErrorState.collectLatest { error ->
+                    Timber.w("位置服务错误: ${error.message}")
+                    // 如果是自动同步过程中的错误，停止同步
+                    if (isLocationSyncInProgress) {
+                        isLocationSyncInProgress = false
                     }
                 }
             }
@@ -517,17 +502,18 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        initImmersionBar(binding.llToolbar.toolbar)
+    }
+
     // 在 onDestroy 中取消 job
     override fun onDestroy() {
         super.onDestroy()
         deviceStatusCheckJob?.cancel()
         deviceStatusCheckJob = null
-        locationViewModel.stopLocation()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        initImmersionBar(binding.llToolbar.toolbar)
+        // 不要在这里停止位置服务，因为 LocationViewModel 是 Activity 级别的
+        // locationViewModel.stopLocation()
     }
 
     //<editor-fold desc="自动位置同步相关">
@@ -553,6 +539,12 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
      */
     protected fun autoSyncLocationIfNeeded() {
         if (!isNeedAutoSyncLocation()) {
+            return
+        }
+        
+        // 如果已经在同步中，则不重复执行
+        if (isLocationSyncInProgress) {
+            Timber.d("位置同步已在进行中，跳过重复同步")
             return
         }
 
@@ -606,19 +598,56 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
      * 开始自动位置同步
      */
     private fun startAutoLocationSync() {
+        isLocationSyncInProgress = true
         gcjLatLng = null
-        locationViewModel.requestImmediateLocationUpdate()
-
-        // 设置5秒超时，如果获取不到位置则放弃
-        launchWithViewLifecycle {
-            delay(5000)
-            if (gcjLatLng != null && locationSyncViewModel.location.get().isNotEmpty()) {
-                // 位置获取成功，执行同步
-                performLocationSync()
+        
+        // 首先尝试获取缓存的位置
+        val cachedLocation = locationViewModel.getCachedLocation()
+        if (cachedLocation != null) {
+            Timber.d("使用缓存位置进行自动同步")
+            processLocationForSync(cachedLocation)
+            return
+        }
+        
+        // 没有缓存位置，请求新的位置
+        locationViewModel.requestImmediateLocationUpdate { location ->
+            if (location != null) {
+                Timber.d("获取到新位置，开始自动同步")
+                processLocationForSync(location)
             } else {
-                Timber.d("自动位置同步：获取位置超时")
+                Timber.d("自动位置同步：未能获取到位置信息")
+                isLocationSyncInProgress = false
             }
         }
+    }
+    
+    /**
+     * 处理位置信息用于同步
+     */
+    private fun processLocationForSync(bdLocation: BDLocation) {
+        gcjLatLng = bdLocation
+        //将GCJ-02火星坐标转换为WGS-84世界标准地理坐标
+        val mWgsLatLng = JZLocationConverter.gcj02ToWgs84(
+            CustomLatLng(
+                bdLocation.latitude,
+                bdLocation.longitude
+            )
+        )
+        locationSyncViewModel.location.set(
+            Html.fromHtml(
+                String.format(
+                    Locale.getDefault(),
+                    "%.8f,%.8f",
+                    mWgsLatLng.longitude,
+                    mWgsLatLng.latitude
+                )
+            ).toString()
+        )
+        locationSyncViewModel.latitude.set(mWgsLatLng.latitude.toString())
+        locationSyncViewModel.longitude.set(mWgsLatLng.longitude.toString())
+        
+        // 执行位置同步
+        performLocationSync()
     }
 
     /**
@@ -665,11 +694,13 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                 Timber.e(errMsg)
                 // 自动同步失败时不显示错误提示，静默处理
                 cancelNearbyCommunicationTimeoutJob()
+                isLocationSyncInProgress = false
             }
 
             else -> {
                 sendCommandFromCmdList {
                     Timber.d("位置自动同步成功")
+                    isLocationSyncInProgress = false
                     // 可选：显示成功提示
                     // Toaster.show("位置已自动同步")
                 }

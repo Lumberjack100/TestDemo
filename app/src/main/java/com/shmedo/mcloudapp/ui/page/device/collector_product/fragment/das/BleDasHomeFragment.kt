@@ -37,7 +37,6 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
-import com.shmedo.mcloudapp.model.AdvancedSettingsModule
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CollectorConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
@@ -602,9 +601,6 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
         )
         moduleList.add(
             ConfigModule(SensorConfigModule(navId = R.id.action_global_to_bleDasSensorHomeFragment))
-        )
-        moduleList.add(
-            ConfigModule(AdvancedSettingsModule(navId = R.id.action_global_to_bleDasAdvancedSettingFragment))
         )
         binding.rvModule.models = moduleList
     }

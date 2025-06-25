@@ -219,33 +219,35 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
 
     override fun createObserver() {
         super.createObserver()
-        //观察定位信息
-        launchAndRepeatWithViewLifecycle(minActiveState = Lifecycle.State.STARTED) {
-            locationViewModel.locationState.collectLatest { bdLocation ->
-                if (gcjLatLng == null || gcjLatLng!!.latitude == 0.0 || gcjLatLng!!.longitude == 0.0) {
-                    gcjLatLng = bdLocation
-                    //将GCJ-02火星坐标转换为WGS-84世界标准地理坐标
-                    val mWgsLatLng = JZLocationConverter.gcj02ToWgs84(
-                        CustomLatLng(
-                            bdLocation.latitude,
-                            bdLocation.longitude
-                        )
-                    )
-                    mStates.location.set(
-                        Html.fromHtml(
-                            String.format(
-                                Locale.getDefault(),
-                                "%.8f,%.8f",
-                                mWgsLatLng.longitude,
-                                mWgsLatLng.latitude
+        if (isNeedSyncLocation()) {
+            //观察定位信息
+            launchAndRepeatWithViewLifecycle(minActiveState = Lifecycle.State.STARTED) {
+                locationViewModel.locationState.collectLatest { bdLocation ->
+                    if (gcjLatLng == null || gcjLatLng!!.latitude == 0.0 || gcjLatLng!!.longitude == 0.0) {
+                        gcjLatLng = bdLocation
+                        //将GCJ-02火星坐标转换为WGS-84世界标准地理坐标
+                        val mWgsLatLng = JZLocationConverter.gcj02ToWgs84(
+                            CustomLatLng(
+                                bdLocation.latitude,
+                                bdLocation.longitude
                             )
-                        ).toString()
-                    )
-                    mStates.latitude.set(mWgsLatLng.latitude.toString())
-                    mStates.longitude.set(mWgsLatLng.longitude.toString())
+                        )
+                        mStates.location.set(
+                            Html.fromHtml(
+                                String.format(
+                                    Locale.getDefault(),
+                                    "%.8f,%.8f",
+                                    mWgsLatLng.longitude,
+                                    mWgsLatLng.latitude
+                                )
+                            ).toString()
+                        )
+                        mStates.latitude.set(mWgsLatLng.latitude.toString())
+                        mStates.longitude.set(mWgsLatLng.longitude.toString())
 
-                    mStates.address.set(bdLocation.addrStr ?: "")
-                    mStates.refreshingLocation.set(false)
+                        mStates.address.set(bdLocation.addrStr ?: "")
+                        mStates.refreshingLocation.set(false)
+                    }
                 }
             }
         }

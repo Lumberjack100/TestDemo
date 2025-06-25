@@ -79,12 +79,6 @@
         android:label="DasExternalVibratingSensorFragment"
         tools:layout="@layout/fragment_das_external_vibrating_sensor" />
 
-    <fragment
-        android:id="@+id/bleDasAdvancedSettingFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.BleDasAdvancedSettingFragment"
-        android:label="BleDasAdvancedSettingFragment"
-        tools:layout="@layout/fragment_ble_das_advanced_setting"/>
-
     <action
         android:id="@+id/action_global_to_dasBaseInfoFragment"
         app:destination="@id/dasBaseInfoFragment"
@@ -144,30 +138,6 @@
     <action
         android:id="@+id/action_global_to_bleDasSensorHomeFragment"
         app:destination="@id/bleDasSensorHomeFragment"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <action
-        android:id="@+id/action_global_to_dasExternalDigitalSensorFragment"
-        app:destination="@id/dasExternalDigitalSensorFragment"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <action
-        android:id="@+id/action_global_to_dasExternalVibratingSensorFragment"
-        app:destination="@id/dasExternalVibratingSensorFragment"
-        app:enterAnim="@anim/activity_open_enter"
-        app:exitAnim="@anim/activity_open_exit"
-        app:popEnterAnim="@anim/activity_close_enter"
-        app:popExitAnim="@anim/activity_close_exit" />
-
-    <action
-        android:id="@+id/action_global_to_bleDasAdvancedSettingFragment"
-        app:destination="@id/bleDasAdvancedSettingFragment"
         app:enterAnim="@anim/activity_open_enter"
         app:exitAnim="@anim/activity_open_exit"
         app:popEnterAnim="@anim/activity_close_enter"
