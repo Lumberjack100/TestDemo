@@ -444,12 +444,15 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
                         Timber.e(errMsg)
                         // 自动同步失败时不显示错误提示，静默处理
                         cancelNearbyCommunicationTimeoutJob()
+                        isLocationSyncInProgress = false
                         return
                     }
 
                     else -> {
                         sendCommandFromCmdList {
                             Timber.d("位置自动同步成功")
+                            isLocationSyncInProgress = false
+                            locationViewModel.stopLocation()
                         }
                     }
                 }

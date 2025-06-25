@@ -85,10 +85,10 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
     protected val iotParseManager: IOTParserManager by inject()
 
     // 位置同步相关
-    private val locationViewModel: LocationViewModel by activityViewModel()
+    protected val locationViewModel: LocationViewModel by activityViewModel()
     private val locationSyncViewModel: AdvancedSettingViewModel by viewModels()
     private var gcjLatLng: BDLocation? = null //当前定位经纬度,中国国测局地理坐标（GCJ-02）
-    private var isLocationSyncInProgress = false // 添加标志位，防止重复同步
+    protected var isLocationSyncInProgress = false // 添加标志位，防止重复同步
 
     private var lastOnlineStatus: Boolean = false//在线状态
     private var deviceStatusCheckJob: Job? = null
@@ -701,8 +701,7 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
                 sendCommandFromCmdList {
                     Timber.d("位置自动同步成功")
                     isLocationSyncInProgress = false
-                    // 可选：显示成功提示
-                    // Toaster.show("位置已自动同步")
+                    locationViewModel.stopLocation()
                 }
             }
         }

@@ -14,7 +14,7 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/4/22
- * 描述： 位置服务 ViewModel - 适配优化后的 LocationRepositoryImp
+ * 描述： 位置服务 ViewModel - 适配优化后的作用域管理 LocationRepositoryImp
  */
 class LocationViewModel(
     private val locationRepositoryImp: LocationRepositoryImp,
@@ -81,6 +81,7 @@ class LocationViewModel(
         }
     }
 
+
     /**
      * 停止位置服务
      */
@@ -99,7 +100,12 @@ class LocationViewModel(
      * 获取缓存的位置信息
      */
     fun getCachedLocation(): BDLocation? {
-        return locationRepositoryImp.getCachedLocation()
+        return try {
+            locationRepositoryImp.getCachedLocation()
+        } catch (e: Exception) {
+            Timber.w("获取缓存位置失败: ${e.message}")
+            null
+        }
     }
 
     /**
@@ -107,8 +113,13 @@ class LocationViewModel(
      */
     fun checkLocationServiceAvailability() {
         viewModelScope.launch {
-            val isAvailable = locationRepositoryImp.isLocationServiceAvailable()
-            _isLocationServiceAvailable.emit(isAvailable)
+            try {
+                val isAvailable = locationRepositoryImp.isLocationServiceAvailable()
+                _isLocationServiceAvailable.emit(isAvailable)
+            } catch (e: Exception) {
+                Timber.w("检查位置服务可用性失败: ${e.message}")
+                _isLocationServiceAvailable.emit(false)
+            }
         }
     }
 
@@ -127,6 +138,7 @@ class LocationViewModel(
 
     override fun onCleared() {
         super.onCleared()
+        Timber.d("开始清理位置服务资源")
         clearLocationService()
     }
 }

@@ -26,21 +26,18 @@ import com.shmedo.mcloudapp.ui.viewmodel.request.NetIOTCommandViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.RequestSearchViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.TcpViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.LogViewModel
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val viewModelModule = module {
+    viewModelOf(::LogViewModel)
+    viewModelOf(::BleViewModel)
+    viewModelOf(::TcpViewModel)
+    viewModelOf(::NetIOTCommandViewModel)
+    viewModelOf(::DeviceRequestViewModel)
+    viewModelOf(::RequestSearchViewModel)
+    viewModelOf(::AppUpdateViewModel)
+    viewModelOf(::LoginRequestViewModel)
+    viewModelOf(::AdmeConfigViewModel)
 
-    viewModel { LogViewModel(get()) }
-    viewModel { BleViewModel(get(), get()) }
-    viewModel { TcpViewModel(get(), get()) }
-    viewModel { NetIOTCommandViewModel(get(), get()) }
-    viewModel { DeviceRequestViewModel(get(), get()) }
-    viewModel { RequestSearchViewModel(get()) }
-    viewModel { AppUpdateViewModel(get(), get()) }
-    viewModel { LoginRequestViewModel(get()) }
-    viewModel { AdmeConfigViewModel(get(), get()) }
-
-
-//  viewModel { (posterId: Long) -> PosterDetailViewModel(posterId, get()) }
 }

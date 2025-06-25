@@ -2,7 +2,7 @@ package com.shmedo.lib.ble.koin
 
 import com.shmedo.lib.ble.communicate.service.MedoBleRepository
 import com.shmedo.lib.ble.communicate.service.base.ServiceManager
-import org.koin.android.ext.koin.androidApplication
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 /**
@@ -11,6 +11,6 @@ import org.koin.dsl.module
  * 描述： TODO
  */
 val bleCommunicateKoinModule = module {
-    single { ServiceManager(androidApplication()) }
-    single { MedoBleRepository(androidApplication(), get()) }
+    singleOf(::ServiceManager)
+    singleOf(::MedoBleRepository)
 }

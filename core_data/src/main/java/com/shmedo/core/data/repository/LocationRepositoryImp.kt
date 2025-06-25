@@ -11,6 +11,7 @@ import com.shmedo.core.data.extensions.getLogItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -20,7 +21,6 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeoutOrNull
 import timber.log.Timber
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.math.abs
 
 /**
  * 创建者:   gonghe <br/>
@@ -31,9 +31,9 @@ class LocationRepositoryImp(private val loggerRepositoryImp: LoggerRepositoryImp
 
     companion object {
         private const val LOCATION_CACHE_DURATION = 30_000L // 30秒缓存时间
-        private const val MIN_DISTANCE_CHANGE = 10.0 // 最小距离变化（米）
         private const val MAX_RETRY_COUNT = 3
         private const val RETRY_DELAY = 2_000L // 重试延迟2秒
+        private const val CLEAR_TIMEOUT = 5_000L // 清理超时时间5秒
     }
 
     // 线程安全的 locationClient 访问
@@ -47,19 +47,21 @@ class LocationRepositoryImp(private val loggerRepositoryImp: LoggerRepositoryImp
     // 定位状态管理
     private val isInitialized = AtomicBoolean(false)
     private val isLocationRequesting = AtomicBoolean(false)
+    private val isClearing = AtomicBoolean(false) // 新增清理状态标志
 
     // 位置信息状态流
     private val _locationStateFlow = MutableStateFlow<BDLocation?>(null)
     val locationStateFlow: StateFlow<BDLocation?> = _locationStateFlow
+
+    // 错误状态流
+    private val _errorStateFlow = MutableStateFlow<LocationError?>(null)
+    val errorStateFlow: StateFlow<LocationError?> = _errorStateFlow
 
     // 缓存相关
     private var cachedLocation: BDLocation? = null
     private var lastLocationTime: Long = 0L
     private var retryCount = 0
 
-    // 错误状态流
-    private val _errorStateFlow = MutableStateFlow<LocationError?>(null)
-    val errorStateFlow: StateFlow<LocationError?> = _errorStateFlow
 
     /**
      * 延迟初始化定位客户端 - 按需初始化，避免不必要的电量消耗
@@ -196,24 +198,6 @@ class LocationRepositoryImp(private val loggerRepositoryImp: LoggerRepositoryImp
 
         // 如果没有缓存或者缓存过期，则更新
         return cachedLoc == null || currentTime - lastLocationTime > LOCATION_CACHE_DURATION
-
-//        // 计算距离变化
-//        val distance = calculateDistance(
-//            cachedLoc.latitude, cachedLoc.longitude,
-//            newLocation.latitude, newLocation.longitude
-//        )
-//        // 如果距离变化超过阈值，则更新
-//        return distance > MIN_DISTANCE_CHANGE
-    }
-
-    /**
-     * 计算两点之间的距离（简化版）
-     */
-    private fun calculateDistance(lat1: Double, lng1: Double, lat2: Double, lng2: Double): Double {
-        val deltaLat = abs(lat1 - lat2)
-        val deltaLng = abs(lng1 - lng2)
-        // 简化计算，实际项目中可使用更精确的地球距离计算公式
-        return (deltaLat + deltaLng) * 111_000 // 大约转换为米
     }
 
     /**
@@ -303,10 +287,110 @@ class LocationRepositoryImp(private val loggerRepositoryImp: LoggerRepositoryImp
     }
 
     /**
-     * 清理资源
+     * 清理资源 - 优化版本
+     * 解决了 managerJob.cancel() 和日志记录的时序问题
      */
     suspend fun clear() {
+        // 防止重复清理
+        if (!isClearing.compareAndSet(false, true)) {
+            Timber.w("清理操作已在进行中，跳过重复调用")
+            return
+        }
+
+        try {
+            // 1. 先记录开始清理的日志（此时 managerScope 仍可用）
+            logWithDirectTimber("开始清理定位服务资源...")
+
+            // 2. 停止所有正在进行的定位请求
+            isLocationRequesting.set(false)
+            
+            // 3. 清理 LocationClient 相关资源
+            cleanupLocationClient()
+            
+            // 4. 清理状态和缓存数据
+            cleanupStateAndCache()
+            
+            // 5. 记录清理完成日志（在取消 managerJob 之前）
+            logWithDirectTimber("定位服务基础资源清理完成")
+            
+            // 6. 优雅地取消协程作用域
+            gracefullyShutdownCoroutines()
+            
+            // 7. 使用 Timber 直接记录最终日志（不依赖 managerScope）
+            Timber.i("定位服务资源已完全清理")
+            
+        } catch (e: Exception) {
+            Timber.e(e, "清理定位服务资源时发生异常")
+            // 即使发生异常也要尝试强制清理
+            forceCleanup()
+        } finally {
+            isClearing.set(false)
+        }
+    }
+    
+    /**
+     * 清理 LocationClient 相关资源
+     */
+    private suspend fun cleanupLocationClient() {
         clientMutex.withLock {
+            locationClient?.let { client ->
+                try {
+                    // 取消注册监听器
+                    client.unRegisterLocationListener(locationListener)
+                    Timber.d("已取消注册位置监听器")
+                    
+                    // 停止定位服务
+                    if (client.isStarted) {
+                        client.stop()
+                        Timber.d("已停止定位客户端")
+                    }
+                } catch (e: Exception) {
+                    Timber.e(e, "清理 LocationClient 时发生异常")
+                } finally {
+                    locationClient = null
+                }
+            }
+        }
+    }
+    
+    /**
+     * 清理状态和缓存数据
+     */
+    private fun cleanupStateAndCache() {
+        isInitialized.set(false)
+        isLocationRequesting.set(false)
+        cachedLocation = null
+        lastLocationTime = 0L
+        retryCount = 0
+        
+        // 清空状态流
+        _locationStateFlow.value = null
+        _errorStateFlow.value = null
+        
+        Timber.d("已清理状态和缓存数据")
+    }
+    
+    /**
+     * 优雅地关闭协程
+     */
+    private suspend fun gracefullyShutdownCoroutines() {
+        try {
+            // 给正在进行的协程一些时间完成
+            withTimeoutOrNull(CLEAR_TIMEOUT) {
+                managerJob.cancelAndJoin()
+            }
+            Timber.d("协程作用域已优雅关闭")
+        } catch (e: Exception) {
+            Timber.w(e, "优雅关闭协程时发生异常，将强制取消")
+            managerJob.cancel()
+        }
+    }
+    
+    /**
+     * 强制清理（异常情况下使用）
+     */
+    private fun forceCleanup() {
+        try {
             locationClient?.let { client ->
                 client.unRegisterLocationListener(locationListener)
                 if (client.isStarted) {
@@ -314,16 +398,75 @@ class LocationRepositoryImp(private val loggerRepositoryImp: LoggerRepositoryImp
                 }
             }
             locationClient = null
+            
+            managerJob.cancel()
+            
+            cleanupStateAndCache()
+            
+            Timber.w("已执行强制清理")
+        } catch (e: Exception) {
+            Timber.e(e, "强制清理时仍发生异常")
         }
+    }
+    
+    /**
+     * 直接使用 Timber 记录日志（不依赖 managerScope）
+     */
+    private fun logWithDirectTimber(message: String, level: Int = Log.INFO) {
+        when (level) {
+            Log.ERROR -> Timber.e(message)
+            Log.WARN -> Timber.w(message)
+            Log.DEBUG -> Timber.d(message)
+            else -> Timber.i(message)
+        }
+        
+        // 尝试异步记录到数据库，如果失败则忽略
+        try {
+            if (managerJob.isActive) {
+                managerScope.launch {
+                    loggerRepositoryImp.insertLogItem(
+                        getLogItem(
+                            sessionId = CommonMMKVOwner.appLogSessionId,
+                            priority = level,
+                            data = message
+                        )
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            // 静默处理，不影响清理流程
+            Timber.d("记录日志到数据库失败，继续清理流程")
+        }
+    }
 
-        isInitialized.set(false)
-        isLocationRequesting.set(false)
-        cachedLocation = null
-        lastLocationTime = 0L
-        retryCount = 0
-
-        managerJob.cancel()
-        logAndRecord("定位服务资源已清理")
+    /**
+     * 统一日志记录逻辑 - 优化版本
+     */
+    private fun logAndRecord(message: String, level: Int = Log.INFO) {
+        // 如果正在清理，使用直接日志记录
+        if (isClearing.get()) {
+            logWithDirectTimber(message, level)
+            return
+        }
+        
+        // 正常情况下的日志记录
+        Timber.i(message)
+        
+        try {
+            if (managerJob.isActive) {
+                managerScope.launch {
+                    loggerRepositoryImp.insertLogItem(
+                        getLogItem(
+                            sessionId = CommonMMKVOwner.appLogSessionId,
+                            priority = level,
+                            data = message
+                        )
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            Timber.d("记录日志到数据库失败: ${e.message}")
+        }
     }
 
     /**
@@ -343,22 +486,6 @@ class LocationRepositoryImp(private val loggerRepositoryImp: LoggerRepositoryImp
      */
     fun isLocationServiceAvailable(): Boolean {
         return isInitialized.get() && locationClient != null
-    }
-
-    /**
-     * 统一日志记录逻辑
-     */
-    private fun logAndRecord(message: String, level: Int = Log.INFO) {
-        Timber.i(message)
-        managerScope.launch {
-            loggerRepositoryImp.insertLogItem(
-                getLogItem(
-                    sessionId = CommonMMKVOwner.appLogSessionId,
-                    priority = level,
-                    data = message
-                )
-            )
-        }
     }
 }
 

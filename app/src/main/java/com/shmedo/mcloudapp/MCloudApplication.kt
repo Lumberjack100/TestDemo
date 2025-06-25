@@ -40,8 +40,11 @@ class MCloudApplication : BaseApp() {
     override fun onCreate() {
         super.onCreate()
         startKoin {
-            androidContext(this@MCloudApplication)
+            // Log Koin into Android logger
             androidLogger()
+            // Reference Android context
+            androidContext(this@MCloudApplication)
+            // Load modules
             modules(appKoinModule)
         }
 
