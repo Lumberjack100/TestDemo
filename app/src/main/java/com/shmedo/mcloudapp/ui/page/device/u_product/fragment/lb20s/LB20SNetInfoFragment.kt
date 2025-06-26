@@ -38,21 +38,22 @@ class LB20SNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     override fun <T> initStatusInfo(content: T) {
         launchWithViewLifecycle {
             try {
-                val dataMap = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<Map<String, LB20SCurrentStateInfo>>(content as String)
+                val cmdContent = content as String
+                
+                // 兼容处理老固件和新固件的返回数据
+                val stateInfo = withContext(Dispatchers.IO) {
+                    parseStateInfo(cmdContent)
                 }
-                if (dataMap.isNullOrEmpty()) {
-                    binding.refreshLayout.showEmpty()
-                    return@launchWithViewLifecycle
-                }
-                val stateInfo = dataMap["000_1"]
+                
                 if (stateInfo == null) {
                     binding.refreshLayout.showEmpty()
                     return@launchWithViewLifecycle
                 }
+                
                 binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
 
+                // 数据网络信息组
                 groupList.add(DeviceStatusInfoGroupItem("数据网络"))
                 stateInfo._4g_signal.notNullKey {
                     var temp = it
@@ -89,10 +90,12 @@ class LB20SNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     )
                 }
 
+                // 数据链路信息组
                 if (stateInfo.datacenterStatus != IOTConstants.NULL_KEY) {
                     groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
                     groupList.add(DeviceStatusInfoGroupItem("数据链路"))
-                    //根据逗号分隔
+                    
+                    // 根据逗号分隔状态信息
                     val statusList = stateInfo.datacenterStatus.split(",".toRegex())
                         .dropLastWhile { it.isEmpty() }
 
@@ -119,6 +122,35 @@ class LB20SNetInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
             } catch (e: Exception) {
                 Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
+    /**
+     * 解析状态信息，兼容老固件和新固件格式
+     * 老固件格式：{"000_1": { LB20SCurrentStateInfo数据 }}
+     * 新固件格式：直接是 LB20SCurrentStateInfo 数据
+     */
+    private suspend fun parseStateInfo(jsonContent: String): LB20SCurrentStateInfo? {
+        return try {
+            // 首先尝试解析老固件格式
+            val dataMap = MoshiUtil.fromJson<Map<String, LB20SCurrentStateInfo>>(jsonContent)
+            if (!dataMap.isNullOrEmpty() && dataMap.containsKey("000_1")) {
+                Timber.d("解析为老固件格式数据")
+                dataMap["000_1"]
+            } else {
+                // 如果老固件格式解析失败或没有期望的key，尝试新固件格式
+                Timber.d("尝试解析为新固件格式数据")
+                MoshiUtil.fromJson<LB20SCurrentStateInfo>(jsonContent)
+            }
+        } catch (e: Exception) {
+            // 如果老固件格式解析失败，尝试新固件格式
+            try {
+                Timber.d("老固件格式解析失败，尝试解析为新固件格式数据")
+                MoshiUtil.fromJson<LB20SCurrentStateInfo>(jsonContent)
+            } catch (e2: Exception) {
+                Timber.e(e2, "无法解析设备状态信息")
+                null
             }
         }
     }

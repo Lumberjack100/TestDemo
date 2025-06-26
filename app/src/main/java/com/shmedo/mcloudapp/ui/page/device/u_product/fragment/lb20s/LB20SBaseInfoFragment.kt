@@ -33,21 +33,22 @@ class LB20SBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     override fun <T> initStatusInfo(content: T) {
         launchWithViewLifecycle {
             try {
-                val dataMap = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<Map<String, LB20SCurrentStateInfo>>(content as String)
+                val cmdContent = content as String
+                
+                // 兼容处理老固件和新固件的返回数据
+                val stateInfo = withContext(Dispatchers.IO) {
+                    parseStateInfo(cmdContent)
                 }
-                if (dataMap.isNullOrEmpty()) {
-                    binding.refreshLayout.showEmpty()
-                    return@launchWithViewLifecycle
-                }
-                val stateInfo = dataMap["000_1"]
+                
                 if (stateInfo == null) {
                     binding.refreshLayout.showEmpty()
                     return@launchWithViewLifecycle
                 }
+                
                 binding.refreshLayout.showContent()
                 val groupList = mutableListOf<Any>()
 
+                // 设备信息组
                 groupList.add(DeviceStatusInfoGroupItem("设备信息"))
                 stateInfo.attach_data?.get("SN")?.let {
                     groupList.add(DeviceStatusInfoBasicItem(name = "设备SN", value = it))
@@ -61,26 +62,16 @@ class LB20SBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                     )
                 }
 
-                stateInfo.volumelevel.notNullKey { volumeLevelStr ->
+                // 工作信息组 - 优先从 volumelevel 字段获取音量等级，如果没有则从 attach_data 中获取
+                val volumeLevel = getVolumeLevel(stateInfo)
+                if (volumeLevel.isNotEmpty()) {
                     groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
                     groupList.add(DeviceStatusInfoGroupItem("工作信息"))
                     DeviceStatusInfoProcessor.addDeviceStatusInfoBasicItemFromString(
                         groupList,
                         name = "音量等级",
-                        value = if (volumeLevelStr == "0") "无" else if (volumeLevelStr == "1") "低" else if (volumeLevelStr == "2") "中" else if (volumeLevelStr == "3") "高" else "无",
+                        value = volumeLevel,
                         isBottomItem = true
-                    )
-                }
-
-                stateInfo.attach_data?.get("volumelevel")?.let { volumeLevelStr ->
-                    groupList.add(GapItem(height = ConvertUtils.dp2px(12f)))
-                    groupList.add(DeviceStatusInfoGroupItem("工作信息"))
-                    groupList.add(
-                        DeviceStatusInfoBasicItem(
-                            name = "音量等级",
-                            value = if (volumeLevelStr == "0") "无" else if (volumeLevelStr == "1") "低" else if (volumeLevelStr == "2") "中" else if (volumeLevelStr == "3") "高" else "无",
-                            isBottomItem = true
-                        )
                     )
                 }
 
@@ -89,6 +80,54 @@ class LB20SBaseInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
                 Timber.Forest.e(e)
                 addDeviceLogItem(Log.ERROR, e.errorMsg)
             }
+        }
+    }
+
+    /**
+     * 解析状态信息，兼容老固件和新固件格式
+     * 老固件格式：{"000_1": { LB20SCurrentStateInfo数据 }}
+     * 新固件格式：直接是 LB20SCurrentStateInfo 数据
+     */
+    private suspend fun parseStateInfo(jsonContent: String): LB20SCurrentStateInfo? {
+        return try {
+            // 首先尝试解析老固件格式
+            val dataMap = MoshiUtil.fromJson<Map<String, LB20SCurrentStateInfo>>(jsonContent)
+            if (!dataMap.isNullOrEmpty() && dataMap.containsKey("000_1")) {
+                Timber.d("解析为老固件格式数据")
+                dataMap["000_1"]
+            } else {
+                // 如果老固件格式解析失败或没有期望的key，尝试新固件格式
+                Timber.d("尝试解析为新固件格式数据")
+                MoshiUtil.fromJson<LB20SCurrentStateInfo>(jsonContent)
+            }
+        } catch (e: Exception) {
+            // 如果老固件格式解析失败，尝试新固件格式
+            try {
+                Timber.d("老固件格式解析失败，尝试解析为新固件格式数据")
+                MoshiUtil.fromJson<LB20SCurrentStateInfo>(jsonContent)
+            } catch (e2: Exception) {
+                Timber.e(e2, "无法解析设备状态信息")
+                null
+            }
+        }
+    }
+
+    /**
+     * 获取音量等级，优先从 volumelevel 字段获取，如果没有则从 attach_data 中获取
+     */
+    private fun getVolumeLevel(stateInfo: LB20SCurrentStateInfo): String {
+        val volumeLevelStr = if (stateInfo.volumelevel.isNotEmpty() && stateInfo.volumelevel != "null") {
+            stateInfo.volumelevel
+        } else {
+            stateInfo.attach_data?.get("volumelevel") ?: ""
+        }
+        
+        return when (volumeLevelStr) {
+            "0" -> "无"
+            "1" -> "低"
+            "2" -> "中"
+            "3" -> "高"
+            else -> ""
         }
     }
 

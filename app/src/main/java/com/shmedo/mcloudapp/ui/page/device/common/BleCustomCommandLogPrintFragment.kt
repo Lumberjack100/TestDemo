@@ -6,21 +6,19 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.view.View
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.FileIOUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.UriUtils
 import com.blankj.utilcode.util.Utils
 import com.drake.brv.utils.bindingAdapter
-import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -30,19 +28,11 @@ import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DebugCmdLogInfo
 import com.shmedo.core.model.DeviceInfo
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
-import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
-import com.shmedo.lib.cmd.base.md_cmd.enums.MDCommandType
-import com.shmedo.lib.cmd.base.md_cmd.enums.MDLogOutputStatus
-import com.shmedo.lib.cmd.base.md_cmd.enums.MDWorkModel
-import com.shmedo.lib.cmd.base.md_cmd.utils.MDCommandUtil
-import com.shmedo.lib.cmd.base.md_cmd.utils.MDConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseCommandLogPrintClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentBleCustomCommandLogPrintBinding
-import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.model.BleConnect
@@ -53,6 +43,7 @@ import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.BleCustomCommandLogPrintViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.File
@@ -71,9 +62,6 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: BleCustomCommandLogPrintViewModel by viewModels()
     private var isIotCmd = true
-
-    private val debugModelList: MutableList<String> =
-        arrayListOf("关", "debug模式", "info模式")
 
     private val cmdTypeList = mutableListOf<String>()
 
@@ -94,233 +82,242 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentBleCustomCommandLogPrintBinding
-        //设置menu 关键代码
+        setupToolbar()
+        setupRecyclerView()
+        observeViewModel()
+    }
+
+    private fun setupToolbar() {
         (mActivity as BaseActivity).setToolBar(binding.llToolbar.toolbar)
         addMenu()
         binding.llToolbar.toolbar.title = "指令下发"
-        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
-            closeDebugMode()
-            nav().navigateUp()
+        binding.llToolbar.toolbar.setNavigationOnClickListener {
+            handleBackPressed()
         }
         registerOnBackPressedDispatcher {
-            closeDebugMode()
-            nav().navigateUp()
+            handleBackPressed()
         }
-        initAdapter()
     }
 
-    private fun initAdapter() {
+    private fun setupRecyclerView() {
         binding.recyclerview.setup { rv ->
             addType<DebugCmdLogInfo>(R.layout.item_debug_cmd_log)
-        }.models = mutableListOf<DebugCmdLogInfo>()
+        }
+    }
+
+    private fun observeViewModel() {
+        // 观察日志数据变化
+        mStates.logItems.observe(viewLifecycleOwner) { logItems ->
+            try {
+                binding.recyclerview.bindingAdapter.models = logItems
+                if (logItems.isNotEmpty()) {
+                    binding.recyclerview.smoothScrollToPosition(logItems.size - 1)
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "更新日志列表失败")
+            }
+        }
+
+        // 观察需要发送的命令
+        mStates.commandsToSend.observe(viewLifecycleOwner) { commands ->
+            if (commands.isNotEmpty()) {
+                commandItems.clear()
+                commandItems.addAll(commands)
+                sendCommandFromCmdList()
+            }
+        }
     }
 
     override fun initData() {
         super.initData()
-        //开启命令调试模式
+        try {
+            enableCommandDebugMode()
+            parseArguments()
+            initializeCommandTypes()
+            resetCommandInput()
+        } catch (e: Exception) {
+            Timber.e(e, "初始化数据失败")
+            Toaster.show("初始化失败")
+        }
+    }
+
+    private fun enableCommandDebugMode() {
         CommonMMKVOwner.isCommandDebugMode = true
+    }
+
+    private fun parseArguments() {
         arguments?.let {
             isIotCmd = it.getBoolean(IOT_CMD, true)
         }
-        mStates.debugMode.set(debugModelList[0])
+    }
+
+    private fun initializeCommandTypes() {
+        mStates.setDebugMode(BleCustomCommandLogPrintViewModel.DEBUG_MODES[0])
         cmdTypeList.clear()
+
         if (communicateWay is BleConnect) {
             cmdTypeList.addAll(listOf("物联网自定义指令", "##指令", "米度透传指令"))
         } else {
             cmdTypeList.addAll(listOf("物联网自定义指令", "米度透传指令"))
         }
-        mStates.command.set("\$cmd=")
-        //etCustomCommand 移除焦点
+    }
+
+    private fun resetCommandInput() {
+        mStates.updateCommand(BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_IOT)
         binding.etCustomCommand.clearFocus()
     }
 
     inner class ClickProxy : BaseCommandLogPrintClickProxy() {
+
         override fun onDebugModeChooseClick() {
-            val selectedIndex = debugModelList.indexOf(mStates.debugMode.get())
-            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
-            XPopup.Builder(context)
-                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
-                .enableDrag(false)
-                .asBottomList(
-                    "", debugModelList.toTypedArray(),
-                    null, selectedIndex,
-                    { position, text ->
-                        mStates.debugMode.set(text)
-                        when (position) {
-                            0 -> {//关
-                                closeDebugMode()
-                            }
-
-                            1 -> {//debug模式
-                                setDebugMode()
-                            }
-
-                            2 -> {//info模式
-                                setInfoMode()
-                            }
-                        }
-                    }, 0, R.layout.custom_xpopup_adapter_text_center
-                )
-                .show()
+            showDebugModeSelector()
         }
 
         override fun onSwitchCmdTypeClick() {
+            showCommandTypeSelector()
+        }
+
+        override fun onSendClick() {
+            handleSendCommand()
+        }
+    }
+
+    private fun showDebugModeSelector() {
+        try {
+            val selectedIndex =
+                BleCustomCommandLogPrintViewModel.DEBUG_MODES.indexOf(mStates.debugMode.get())
+            XPopup.setPrimaryColor(ColorUtils.getColor(R.color.colorPrimary))
+            XPopup.Builder(context)
+                .maxHeight((ScreenUtils.getAppScreenHeight() * 0.6f).toInt())
+                .isDestroyOnDismiss(true)
+                .enableDrag(false)
+                .asBottomList(
+                    "",
+                    BleCustomCommandLogPrintViewModel.DEBUG_MODES.toTypedArray(),
+                    null,
+                    selectedIndex
+                ) { position, text ->
+                    handleDebugModeSelection(position, text)
+                }
+                .show()
+        } catch (e: Exception) {
+            Timber.e(e, "显示调试模式选择器失败")
+            Toaster.show("操作失败")
+        }
+    }
+
+    private fun handleDebugModeSelection(position: Int, text: String) {
+        try {
+            mStates.setDebugMode(text)
+            val debugMode = when (position) {
+                0 -> BleCustomCommandLogPrintViewModel.DebugMode.CLOSE
+                1 -> BleCustomCommandLogPrintViewModel.DebugMode.DEBUG
+                2 -> BleCustomCommandLogPrintViewModel.DebugMode.INFO
+                else -> return
+            }
+            updateDebugMode(debugMode)
+        } catch (e: Exception) {
+            Timber.e(e, "处理调试模式选择失败")
+            Toaster.show("设置调试模式失败")
+        }
+    }
+
+    private fun showCommandTypeSelector() {
+        try {
             XPopup.Builder(context)
                 .hasShadowBg(false)
-                .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
+                .isDestroyOnDismiss(true)
                 .enableDrag(false)
                 .isDarkTheme(false)
-                .atView(binding.ivSwitchCmdType)  // 依附于所点击的View，内部会自动判断在上方或者下方显示
+                .atView(binding.ivSwitchCmdType)
                 .asAttachList(
                     cmdTypeList.toTypedArray(),
                     null
                 ) { position, text ->
-                    when (text) {
-                        "米度透传指令" -> {
-                            mStates.command.set("\$cmd=md_raw&content=")
-                        }
-
-                        "物联网自定义指令" -> {
-                            mStates.command.set("\$cmd=")
-                        }
-
-                        "##指令" -> {
-                            mStates.command.set("##")
-                        }
-                    }
-                    binding.etCustomCommand.clearFocus()
+                    handleCommandTypeSelection(text)
                 }
                 .show()
+        } catch (e: Exception) {
+            Timber.e(e, "显示命令类型选择器失败")
         }
+    }
 
-        override fun onSendClick() {
+    private fun handleCommandTypeSelection(commandType: String) {
+        try {
+            val command = when (commandType) {
+                "米度透传指令" -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_MD_RAW
+                "物联网自定义指令" -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_IOT
+                "##指令" -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_HASH
+                else -> BleCustomCommandLogPrintViewModel.COMMAND_PREFIX_IOT
+            }
+            mStates.updateCommand(command)
+            binding.etCustomCommand.clearFocus()
+        } catch (e: Exception) {
+            Timber.e(e, "处理命令类型选择失败")
+        }
+    }
+
+    private fun handleSendCommand() {
+        try {
             KeyboardUtils.hideSoftInput(binding.root)
             if (isBleDisconnected()) {
                 Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
                 return
             }
-            sendCmd()
+
+            val command = mStates.command.get()
+            if (!validateAndSendCommand(command)) {
+                return
+            }
+
+            executeCommand(command)
+        } catch (e: Exception) {
+            Timber.e(e, "发送命令失败")
+            Toaster.show("发送命令失败: ${e.localizedMessage}")
         }
     }
 
-    private fun sendCmd() {
-        if (mStates.command.get().isEmpty())
-            return
+    private fun validateAndSendCommand(command: String): Boolean {
+        if (command.isEmpty()) {
+            Toaster.show("请输入指令")
+            return false
+        }
 
-        val input = mStates.command.get()
-        val cmdStr = if (input.startsWith("##"))
-            input.plus(MDConstants.COMMAND_FOOTER)
-        else
-            input
+        if (!mStates.validateCommand(command)) {
+            Toaster.show("指令格式不正确，请以 \$cmd=、## 开头或包含 md_raw")
+            return false
+        }
 
+        return true
+    }
+
+    private fun executeCommand(command: String) {
+        val processedCommand = mStates.processCommand(command)
         commandItems.clear()
-        commandItems.add(cmdStr)
-        addLog(input)
+        commandItems.add(processedCommand)
+        mStates.addLog(command)
         sendCommandFromCmdList()
     }
 
-    private fun closeDebugMode() {
-        commandItems.clear()
-        if (!isIotCmd) {
-            var command = MDCommandUtil.getCommand(
-                MDCommandType.LOG_OUTPUT_STATUS,
-                MDLogOutputStatus.CLOSE.toString()
-            )
-            addLog(command)
-            commandItems.add(command)
-
-            command = MDCommandUtil.getCommand(
-                MDCommandType.WORK_MODE,
-                MDWorkModel.WORK.toString()
-            )
-            addLog(command)
-            commandItems.add(command)
-        } else {
-            val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_LOG_OUTPUT_MODE_LEVEL,
-                "level=off&type=bt"
-            )
-            addLog(command)
-            commandItems.add(command)
+    private fun updateDebugMode(mode: BleCustomCommandLogPrintViewModel.DebugMode) {
+        try {
+            val commands = mStates.generateDebugModeCommands(mode, isIotCmd)
+            commands.forEach { command ->
+                mStates.addLog(command)
+            }
+            mStates.requestSendCommands(commands)
+        } catch (e: Exception) {
+            Timber.e(e, "更新调试模式失败")
         }
-        sendCommandFromCmdList()
-    }
-
-    private fun setDebugMode() {
-        commandItems.clear()
-        if (!isIotCmd) {
-            var command = MDCommandUtil.getCommand(
-                MDCommandType.LOG_OUTPUT_STATUS,
-                MDLogOutputStatus.OPEN.toString()
-            )
-            addLog(command)
-            commandItems.add(command)
-
-            command = MDCommandUtil.getCommand(
-                MDCommandType.WORK_MODE,
-                MDWorkModel.DEBUG.toString()
-            )
-            addLog(command)
-            commandItems.add(command)
-        } else {
-            val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_LOG_OUTPUT_MODE_LEVEL,
-                "level=debug&type=bt"
-            )
-            addLog(command)
-            commandItems.add(command)
-        }
-        sendCommandFromCmdList()
-    }
-
-    private fun setInfoMode() {
-        commandItems.clear()
-        if (!isIotCmd) {
-            var command = MDCommandUtil.getCommand(
-                MDCommandType.LOG_OUTPUT_STATUS,
-                MDLogOutputStatus.OPEN.toString()
-            )
-            addLog(command)
-            commandItems.add(command)
-
-            command = MDCommandUtil.getCommand(
-                MDCommandType.WORK_MODE,
-                MDWorkModel.INFO.toString()
-            )
-            addLog(command)
-            commandItems.add(command)
-        } else {
-            val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_LOG_OUTPUT_MODE_LEVEL,
-                "level=info&type=bt"
-            )
-            addLog(command)
-            commandItems.add(command)
-        }
-        sendCommandFromCmdList()
     }
 
     override fun setResultData(cmdStr: String) {
-        addLog(cmdStr, ColorUtils.getColor(R.color.receive_data_color))
-        sendCommandFromCmdList()
-    }
-
-    private fun addLog(
-        cmdStr: String,
-        colorRes: Int = ColorUtils.getColor(R.color.send_data_color)
-    ) {
-        val logInfo = DebugCmdLogInfo(
-            logTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm:ss.SSS")),
-            content = cmdStr.replace(MDConstants.COMMAND_FOOTER, ""),
-            colorRes = colorRes,
-            byteCount = cmdStr.length
-        )
-        binding.recyclerview.bindingAdapter.apply {
-            mutable.add(logInfo)
-            notifyItemInserted(itemCount)
+        try {
+            mStates.addLog(cmdStr, ColorUtils.getColor(R.color.receive_data_color))
+            sendCommandFromCmdList()
+        } catch (e: Exception) {
+            Timber.e(e, "处理返回数据失败")
         }
-//        binding.recyclerview.scrollToPosition(binding.recyclerview.bindingAdapter.itemCount - 1)
     }
 
     private fun addMenu() {
@@ -336,7 +333,6 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.action_share -> {
-                        //分享
                         shareLogToFile()
                         true
                     }
@@ -351,43 +347,51 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
      * 分享日志到文件
      */
     private fun shareLogToFile() {
-        launchWithViewLifecycle(Dispatchers.IO) {
-            binding.recyclerview.models?.let { logList ->
-                val logContent = StringBuilder()
-                logList.forEach { logInfo ->
-                    (logInfo as DebugCmdLogInfo).apply {
-                        logContent.append(logTime)
-                        logContent.append(" ")
-                        logContent.append(content)
-                        logContent.append("\n")
-                    }
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val logContent = withContext(Dispatchers.Default) {
+                    mStates.generateLogContent()
                 }
 
-                // 创建文件并写入日志内容
-                val fileName = "${getString(R.string.app_name)}_ble_realtime_log_${
-                    SimpleDateFormat(
-                        "yyyyMMddHHmmss",
-                        Locale.getDefault(Locale.Category.FORMAT)
-                    ).format(
-                        Date()
-                    )
-                }.txt"
-                val file = File(Utils.getApp().cacheDir.path, fileName)
-                try {
-                    if (FileIOUtils.writeFileFromString(file, logContent.toString())) {
-                        // 切换回主线程进行文件分享
-                        withContext(Dispatchers.Main) {
-                            shareFile(file)
-                        }
-                    }
-                } catch (e: Exception) {
-                    Timber.e(e)
-                    // 异常处理，显示错误信息等
-                    withContext(Dispatchers.Main) {
-                        Toaster.show("Error sharing file: ${e.localizedMessage}")
-                    }
+                if (logContent.isEmpty()) {
+                    Toaster.show("暂无日志内容")
+                    return@launch
                 }
+
+                val file = withContext(Dispatchers.IO) {
+                    createLogFile(logContent)
+                }
+
+                if (file != null) {
+                    shareFile(file)
+                } else {
+                    Toaster.show("导出日志失败")
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "分享日志失败")
+                Toaster.show("分享日志失败: ${e.localizedMessage}")
             }
+        }
+    }
+
+    private suspend fun createLogFile(logContent: String): File? {
+        return try {
+            val fileName = "${getString(R.string.app_name)}_ble_realtime_log_${
+                SimpleDateFormat(
+                    "yyyyMMddHHmmss",
+                    Locale.getDefault(Locale.Category.FORMAT)
+                ).format(Date())
+            }.txt"
+
+            val file = File(Utils.getApp().cacheDir.path, fileName)
+            if (FileIOUtils.writeFileFromString(file, logContent)) {
+                file
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "创建日志文件失败")
+            null
         }
     }
 
@@ -395,19 +399,24 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
      * 分享文件
      */
     private fun shareFile(file: File) {
-        val uri = UriUtils.file2Uri(file)
-        val shareIntent = Intent().apply {
-            action = Intent.ACTION_SEND
-            type = "text/plain"
-            putExtra(Intent.EXTRA_STREAM, uri)
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        try {
+            val uri = UriUtils.file2Uri(file)
+            val shareIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                type = "text/plain"
+                putExtra(Intent.EXTRA_STREAM, uri)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-            //设置剪贴板数据以授予接收应用对URI的访问权限
-            val clip = ClipData.newRawUri("", uri)
-            clipData = clip
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                // 设置剪贴板数据以授予接收应用对URI的访问权限
+                val clip = ClipData.newRawUri("", uri)
+                clipData = clip
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            startActivity(Intent.createChooser(shareIntent, "分享到"))
+        } catch (e: Exception) {
+            Timber.e(e, "分享文件失败")
+            Toaster.show("分享失败")
         }
-        startActivity(Intent.createChooser(shareIntent, "分享到"))
     }
 
     override fun onResume() {
@@ -415,15 +424,26 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         initImmersionBar(binding.llToolbar.toolbar, isKeyboardEnable = true)
     }
 
+    private fun handleBackPressed() {
+        updateDebugMode(BleCustomCommandLogPrintViewModel.DebugMode.CLOSE)
+        nav().navigateUp()
+    }
+
     override fun onDestroy() {
-        //关闭命令调试模式
-        CommonMMKVOwner.isCommandDebugMode = false
-        closeDebugMode()
-        super.onDestroy()
+        try {
+            // 关闭命令调试模式
+            CommonMMKVOwner.isCommandDebugMode = false
+            updateDebugMode(BleCustomCommandLogPrintViewModel.DebugMode.CLOSE)
+        } catch (e: Exception) {
+            Timber.e(e, "销毁时清理资源失败")
+        } finally {
+            super.onDestroy()
+        }
     }
 
     companion object {
         private const val IOT_CMD = "com.shmedo.mcloudapp.iot.IOT_CMD"
+
         fun newBundleArguments(
             isIotCmd: Boolean = true,
             type: ProductType = ProductType.UnKnown,
