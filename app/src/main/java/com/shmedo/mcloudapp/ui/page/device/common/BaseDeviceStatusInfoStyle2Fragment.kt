@@ -18,6 +18,7 @@ import com.lxj.xpopup.interfaces.SimpleCallback
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTSensorType
 import com.shmedo.lib.cmd.base.iot_cmd.model.das.DasSensorStatusInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.mr.MRDeviceInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -195,7 +196,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "温度(℃)",
+                            monitorType = "温度（摄氏度）",
                             monitorValue = dataList[0]
                         )
                     )
@@ -239,7 +240,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            "温度(℃)",
+                            "温度（摄氏度）",
                             monitorValue = dataList[0]
                         )
                     )
@@ -292,7 +293,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "水深(m)",
+                            monitorType = "水深（米）",
                             monitorValue = dataList[0]
                         )
                     )
@@ -300,7 +301,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "空管(m)",
+                            monitorType = "空管（米）",
                             monitorValue = dataList[1]
                         )
                     )
@@ -308,7 +309,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 3) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "水温(℃)",
+                            monitorType = "水温（摄氏度）",
                             monitorValue = dataList[2]
                         )
                     )
@@ -320,7 +321,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "X轴角度(°)",
+                            monitorType = "X轴角度（度）",
                             monitorValue = dataList[0]
                         )
                     )
@@ -328,7 +329,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "Y轴角度(°)",
+                            monitorType = "Y轴角度（度）",
                             monitorValue = dataList[1]
                         )
                     )
@@ -336,7 +337,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 3) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "Z轴角度(°)",
+                            monitorType = "Z轴角度（度）",
                             monitorValue = dataList[2]
                         )
                     )
@@ -348,7 +349,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "触发值(Hz)",
+                            monitorType = "触发值（赫兹）",
                             monitorValue = dataList[0]
                         )
                     )
@@ -405,7 +406,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "风速(m/s)",
+                            monitorType = "风速（米/秒）",
                             monitorValue = dataList[0]
                         )
                     )
@@ -413,7 +414,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "风向(°)",
+                            monitorType = "风向（度）",
                             monitorValue = dataList[1]
                         )
                     )
@@ -429,7 +430,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 4) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "温度(℃)",
+                            monitorType = "温度（摄氏度）",
                             monitorValue = dataList[3]
                         )
                     )
@@ -437,7 +438,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 5) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "气压(KPa)",
+                            monitorType = "气压（千帕）",
                             monitorValue = dataList[4]
                         )
                     )
@@ -473,7 +474,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "溶氧率(mg/L)",
+                            monitorType = "溶氧率（毫克/升）",
                             monitorValue = dataList[0]
                         )
                     )
@@ -505,7 +506,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 5) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "温度(°)",
+                            monitorType = "温度（度）",
                             monitorValue = dataList[4]
                         )
                     )
@@ -513,7 +514,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 6) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "氧化还原电位(mV)",
+                            monitorType = "氧化还原电位（毫伏）",
                             monitorValue = dataList[5]
                         )
                     )
@@ -521,7 +522,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 7) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "叶绿素(ug)",
+                            monitorType = "叶绿素（微克）",
                             monitorValue = dataList[6]
                         )
                     )
@@ -537,7 +538,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 9) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "盐度(%)",
+                            monitorType = "盐度（百分比）",
                             monitorValue = dataList[8]
                         )
                     )
@@ -549,7 +550,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "水位(m)",
+                            monitorType = "水位（米）",
                             monitorValue = dataList[0]
                         )
                     )
@@ -557,7 +558,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "温度(℃)",
+                            monitorType = "温度（摄氏度）",
                             monitorValue = dataList[1]
                         )
                     )
@@ -570,7 +571,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.isNotEmpty()) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "水深(m)",
+                            monitorType = "水深（米）",
                             monitorValue = dataList[0]
                         )
                     )
@@ -578,7 +579,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "空管(m)",
+                            monitorType = "空管（米）",
                             monitorValue = dataList[1]
                         )
                     )
@@ -586,7 +587,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 3) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "水温(℃)",
+                            monitorType = "水温（摄氏度）",
                             monitorValue = dataList[2]
                         )
                     )
@@ -606,7 +607,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "温度(℃)",
+                            monitorType = "温度（摄氏度）",
                             monitorValue = dataList[1]
                         )
                     )
@@ -626,7 +627,7 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 if (dataList.size >= 2) {
                     subMonitorStatusList.add(
                         DasSensorSubMonitorStatusItem(
-                            monitorType = "温度(℃)",
+                            monitorType = "温度（摄氏度）",
                             monitorValue = dataList[1]
                         )
                     )
@@ -659,6 +660,12 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    protected open fun isTargetCommandType(commandType: IOTCommandType): Boolean =
+        (commandType == IOTCommandType.QUERY_DEVICE_STATUS)
+                || (commandType == IOTCommandType.MD_GET_DEVICE_STATUS)
+                || (commandType == IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO)
+                || (commandType == IOTCommandType.MD_GET_TERMINAL_ID)
+
     /**
      * 4G 下发指令响应失败
      */
@@ -668,11 +675,12 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultError(
             cmdStr = cmdStr,
-            errMsg = "查询状态出错: $errMsg",
-            isShowErrMsg = true,
-            isMessageDialog = true
+            errMsg = errMsg,
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -685,11 +693,12 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultTimeOut(
             cmdStr = cmdStr,
-            errMsg = "设备未响应",
-            isShowErrMsg = true,
-            isMessageDialog = true
+            errMsg = errMsg,
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -703,14 +712,16 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean,
         errMsg: String
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.showNearbyCommunicationTimeoutAlert(
             cmdStr = cmdStr,
             isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
-            errMsg = "设备未响应"
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage,
+            errMsg = errMsg
         )
     }
+
 
     override fun setResultData(cmdStr: String) {
         //判断是否页面是否处于 resume 状态
@@ -760,12 +771,38 @@ abstract class BaseDeviceStatusInfoStyle2Fragment : BaseIOTDeviceFragment() {
                 }
             }
 
+            IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO -> {
+                val result = iotParseManager.parse<MRDeviceInfo>(
+                    cmdStr,
+                    IOTCommandType.MR_MD_GET_DEVICE_BASE_INFO
+                )
+                when (result) {
+                    is IOTCommandResult.Failure -> {
+                        val errMsg = "查询状态出错: ${result.message}"
+                        handleFailureResult(errMsg, isMessageDialog = true)
+                        return
+                    }
+
+                    is IOTCommandResult.Success -> {
+                        sendCommandFromCmdList {
+                            binding.refreshLayout.finish()
+                        }
+                        initStatusInfo(result.data)
+                    }
+                }
+            }
+
             else -> {
                 cancelNearbyCommunicationTimeoutJob()
             }
         }
     }
 
-    protected open fun initStatusInfo(content: String) {}
+    protected open fun <T> initStatusInfo(content: T) {}
 
+
+    override fun onResume() {
+        super.onResume()
+        initImmersionBar(binding.llToolbar.toolbar)
+    }
 }

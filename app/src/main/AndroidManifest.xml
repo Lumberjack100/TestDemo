@@ -75,6 +75,16 @@
         <intent>
             <action android:name="android.media.action.ACTION_VIDEO_CAPTURE" />
         </intent>
+        
+        <!-- 声明地图应用的包名，用于包可见性 -->
+        <!-- 百度地图 -->
+        <package android:name="com.baidu.BaiduMap" />
+        <!-- 高德地图 -->
+        <package android:name="com.autonavi.minimap" />
+        <!-- 腾讯地图 -->
+        <package android:name="com.tencent.map" />
+        <!-- 谷歌地图 -->
+        <package android:name="com.google.android.apps.maps" />
     </queries>
 
     <application
@@ -194,7 +204,7 @@
             tools:node="merge">
             <meta-data
                 android:name="com.shmedo.core.commonlib.mmkv.MMKVInitializer"
-                tools:node="remove" />
+                android:value="androidx.startup" />
         </provider>
     </application>
 

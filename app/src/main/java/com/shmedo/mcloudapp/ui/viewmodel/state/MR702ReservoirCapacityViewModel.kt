@@ -1,9 +1,10 @@
 package com.shmedo.mcloudapp.ui.viewmodel.state
 
-import androidx.lifecycle.ViewModel
+import androidx.databinding.Observable
+import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseStateViewModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
-class MR702ReservoirCapacityViewModel : ViewModel() {
+class MR702ReservoirCapacityViewModel : BaseStateViewModel() {
     val isOpened = NonNullObservableField(true)
 
     val pointCount = NonNullObservableField("0")//坐标点数量
@@ -111,4 +112,132 @@ class MR702ReservoirCapacityViewModel : ViewModel() {
     val y48 = NonNullObservableField("")
     val y49 = NonNullObservableField("")
     val y50 = NonNullObservableField("")
+
+    init {
+        // 在所有字段初始化后调用 registerField()
+        registerField()
+    }
+
+    // 设置初始状态
+    override fun saveInitialState() {
+        isInitializing = true
+        
+        // 创建一个包含所有字段的初始状态映射
+        val stateMap = mutableMapOf<String, Any>(
+            "isOpened" to isOpened.get(),
+            "pointCount" to pointCount.get()
+        )
+        
+        // 添加所有 X 坐标值
+        for (i in 1..50) {
+            val field = this::class.java.getDeclaredField("x$i")
+            field.isAccessible = true
+            val value = (field.get(this) as NonNullObservableField<String>).get()
+            stateMap["x$i"] = value
+        }
+        
+        // 添加所有 Y 坐标值
+        for (i in 1..50) {
+            val field = this::class.java.getDeclaredField("y$i")
+            field.isAccessible = true
+            val value = (field.get(this) as NonNullObservableField<String>).get()
+            stateMap["y$i"] = value
+        }
+        
+        initialState = stateMap
+        isDataModified.value = false
+        isInitializing = false
+    }
+
+    override fun registerField() {
+        // 为 isOpened 添加监听器
+        isOpened.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
+            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+                updateModificationStatus()
+            }
+        })
+        
+        // 为 pointCount 添加监听器
+        pointCount.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
+            override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+                updateModificationStatus()
+            }
+        })
+        
+        // 为所有 X 坐标值添加监听器
+        for (i in 1..50) {
+            try {
+                val field = this::class.java.getDeclaredField("x$i")
+                field.isAccessible = true
+                val observableField = field.get(this) as NonNullObservableField<String>
+                observableField.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
+                    override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+                        updateModificationStatus()
+                    }
+                })
+            } catch (e: Exception) {
+                // 处理异常
+            }
+        }
+        
+        // 为所有 Y 坐标值添加监听器
+        for (i in 1..50) {
+            try {
+                val field = this::class.java.getDeclaredField("y$i")
+                field.isAccessible = true
+                val observableField = field.get(this) as NonNullObservableField<String>
+                observableField.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
+                    override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
+                        updateModificationStatus()
+                    }
+                })
+            } catch (e: Exception) {
+                // 处理异常
+            }
+        }
+    }
+
+    override fun updateModificationStatus() {
+        if (isInitializing) return
+        
+        // 检查 isOpened 和 pointCount 是否已修改
+        var modified = isOpened.get() != initialState["isOpened"] ||
+                      pointCount.get() != initialState["pointCount"]
+        
+        // 如果尚未检测到修改，检查所有 X 坐标值
+        if (!modified) {
+            for (i in 1..50) {
+                try {
+                    val field = this::class.java.getDeclaredField("x$i")
+                    field.isAccessible = true
+                    val observableField = field.get(this) as NonNullObservableField<String>
+                    if (observableField.get() != initialState["x$i"]) {
+                        modified = true
+                        break
+                    }
+                } catch (e: Exception) {
+                    // 处理异常
+                }
+            }
+        }
+        
+        // 如果尚未检测到修改，检查所有 Y 坐标值
+        if (!modified) {
+            for (i in 1..50) {
+                try {
+                    val field = this::class.java.getDeclaredField("y$i")
+                    field.isAccessible = true
+                    val observableField = field.get(this) as NonNullObservableField<String>
+                    if (observableField.get() != initialState["y$i"]) {
+                        modified = true
+                        break
+                    }
+                } catch (e: Exception) {
+                    // 处理异常
+                }
+            }
+        }
+        
+        isDataModified.value = modified
+    }
 }

@@ -47,7 +47,7 @@ data class MRDataCenterParamEntity(
     var reissue_time: String = IOTConstants.NULL_KEY, //数据补发间隔 (min)
 
     /**
-     * 广东水利平台特有配置参数
+     * 广东水文平台特有配置参数
      */
     var packtype: String = IOTConstants.NULL_KEY, //测站类型
 ){

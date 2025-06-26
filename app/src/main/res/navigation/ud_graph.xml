@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/udHomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDHomeFragment"
-        android:label="UDHomeFragment"
-        tools:layout="@layout/fragment_ud_home" />
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.NewUDHomeFragment"
+        android:label="NewUDHomeFragment"
+        tools:layout="@layout/fragment_universal_device_home_new" />
 
     <fragment
         android:id="@+id/capturedPictureViewFragment"
@@ -31,19 +31,19 @@
 
     <fragment
         android:id="@+id/udBaseInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDBaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDBaseInfoFragment"
         android:label="UDBaseInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
         android:id="@+id/udNetInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDNetInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDNetInfoFragment"
         android:label="UDNetInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
         android:id="@+id/udSensorInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.deviceinfo.UDSensorInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDStatusInfoFragment"
         android:label="UDSensorInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
@@ -87,7 +87,7 @@
         android:id="@+id/udProductSensorParamFragment"
         android:name="com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ud.UDSensorParamFragment"
         android:label="UDProductSensorParamFragment"
-        tools:layout="@layout/fragment_u_d_product_sensor_param" />
+        tools:layout="@layout/fragment_ud_product_sensor_param" />
 
     <fragment
         android:id="@+id/udSerialPortParamFragment"

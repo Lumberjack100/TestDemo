@@ -90,18 +90,6 @@ class TelemetryDataModule(
     navId = navId,
 )
 
-class WorkModeModule(
-    name: String = "工作模式",
-    desc: String = "GNSS模式设置",
-    resID: Int = R.drawable.ic_module_work_mode,
-    navId: Int = 0,
-) : DeviceFunctionModule(
-    name = name,
-    desc = desc,
-    resID = resID,
-    navId = navId,
-)
-
 class RebootModule(
     name: String = "重启",
     desc: String = "重新启动当前设备",
@@ -138,30 +126,6 @@ class AdvancedSettingsModule(
     navId = navId,
 )
 
-class LoraConfigModule(
-    name: String = "LORA设置",
-    desc: String = "传感器LORA电台设置",
-    resID: Int = R.drawable.ic_module_lora,
-    navId: Int = 0,
-) : DeviceFunctionModule(
-    name = name,
-    desc = desc,
-    resID = resID,
-    navId = navId,
-)
-
-class AlarmConfigModule(
-    name: String = "报警配置",
-    desc: String = "报警功能设置",
-    resID: Int = R.drawable.ic_module_alarm,
-    navId: Int = 0,
-) : DeviceFunctionModule(
-    name = name,
-    desc = desc,
-    resID = resID,
-    navId = navId,
-)
-
 class CommandDebugConfigModule(
     name: String = "指令下发",
     desc: String = "调试指令日志输出",
@@ -187,18 +151,6 @@ class BasicConfigModule(
     navId = navId,
 )
 // </editor-fold>
-
-class SetupWizard(
-    name: String = "设置向导",
-    desc: String = "一键配置",
-    resID: Int = R.drawable.ic_setup_wizard,
-    navId: Int = 0,
-) : DeviceFunctionModule(
-    name = name,
-    desc = desc,
-    resID = resID,
-    navId = navId,
-)
 
 //<editor-fold desc="DAS 功能模块">
 class CollectorConfigModule(
@@ -227,46 +179,10 @@ class SensorConfigModule(
 // </editor-fold>
 
 //<editor-fold desc="MR702 功能模块">
-class MR702PortConfigModule(
-    name: String = "接口配置",
-    desc: String = "串口、ADC、DI、DO配置",
-    resID: Int = R.drawable.ic_device_sensor_config,
-    navId: Int = 0,
-) : DeviceFunctionModule(
-    name = name,
-    desc = desc,
-    resID = resID,
-    navId = navId,
-)
-
-class MR702TerminalParameterModule(
-    name: String = "终端参数",
-    desc: String = "本机触摸屏和上报规则设置",
-    resID: Int = R.drawable.ic_device_data_center,
-    navId: Int = 0,
-) : DeviceFunctionModule(
-    name = name,
-    desc = desc,
-    resID = resID,
-    navId = navId,
-)
-
 class DeviceOperationModule(
     name: String = "设备操作",
     desc: String = "时间校准、人工置数、召测等",
     resID: Int = R.drawable.ic_module_setting,
-    navId: Int = 0,
-) : DeviceFunctionModule(
-    name = name,
-    desc = desc,
-    resID = resID,
-    navId = navId,
-)
-
-class NetworkCommunicationModule(
-    name: String = "网络通信",
-    desc: String = "无线、有线配置",
-    resID: Int = R.drawable.ic_device_net_communicate,
     navId: Int = 0,
 ) : DeviceFunctionModule(
     name = name,

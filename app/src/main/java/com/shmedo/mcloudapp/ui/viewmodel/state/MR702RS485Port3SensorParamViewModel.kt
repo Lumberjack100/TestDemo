@@ -9,7 +9,6 @@ class MR702RS485Port3SensorParamViewModel : ViewModel() {
     val status = NonNullObservableField("已接入")
     val isOpened = NonNullObservableField(true)
     val sensorType = NonNullObservableField(1)//1 太阳能控制器 2 声光报警器 3 LED屏
-    val sensorName = NonNullObservableField("")
     val address = NonNullObservableField("")
 
     val baudRate = NonNullObservableField("")

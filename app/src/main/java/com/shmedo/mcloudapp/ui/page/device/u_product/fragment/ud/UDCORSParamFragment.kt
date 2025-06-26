@@ -40,7 +40,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/8/28
- * @desc:  一体化雷达泥位计RTK测高参数
+ * @desc:  一体式雷达水位/泥位计RTK测高参数
  *
  */
 class UDCORSParamFragment : BaseIOTDeviceFragment() {
@@ -71,7 +71,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdCorsParamBinding
-        toolbarViewModel.toolbarTitleText.set("海拔配置")
+        binding.llToolbar.toolbar.title = "海拔配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }
@@ -255,7 +255,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
                 super.doCmdResponseResultError(
                     cmdStr = cmdStr,
                     errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
+                    isShowErrMsg = false,
                     isMessageDialog = isMessageDialog
                 )
             }
@@ -271,13 +271,26 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
-        dismissLoadingDialog(measureAltitudeLoadingDialogId)
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = "设备未响应",
-            isShowErrMsg = true,
-            isMessageDialog = true
-        )
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_DIFF_LOCATE -> {
+                dismissLoadingDialog(measureAltitudeLoadingDialogId)
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
+            }
+
+            else -> {
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = false,
+                    isMessageDialog = isMessageDialog
+                )
+            }
+        }
     }
 
     /**
@@ -298,7 +311,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
                     isDismissLoadingDialog = isDismissLoadingDialog,
                     isShowErrMsg = true,
                     isMessageDialog = isMessageDialog,
-                    errMsg = "设备未响应"
+                    errMsg = errMsg
                 )
             }
 
@@ -306,7 +319,7 @@ class UDCORSParamFragment : BaseIOTDeviceFragment() {
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
                     isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = isShowErrMsg,
+                    isShowErrMsg = false,
                     isMessageDialog = isMessageDialog,
                     errMsg = errMsg
                 )

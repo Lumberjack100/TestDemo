@@ -38,7 +38,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/9/10
- * @desc: UD 端口参数配置
+ * @desc: 一体式雷达水位/泥位计端口参数配置
  *
  */
 class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
@@ -70,7 +70,7 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdSerialPortParamBinding
-        toolbarViewModel.toolbarTitleText.set("端口配置")
+        binding.llToolbar.toolbar.title = "端口配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }
@@ -239,6 +239,12 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
     }
 
 
+    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
+        (commandType == IOTCommandType.UD_MD_GET_RS485_PARAM)
+                || (commandType == IOTCommandType.UD_MD_GET_RAIN_GAUGE_PARAM)
+                || (commandType == IOTCommandType.UD_MD_SET_RS485_PARAM)
+                || (commandType == IOTCommandType.UD_MD_SET_RAIN_GAUGE_PARAM)
+
     /**
      * 4G 下发指令响应失败
      */
@@ -248,11 +254,12 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultError(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -265,11 +272,12 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultTimeOut(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -283,12 +291,13 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean,
         errMsg: String
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.showNearbyCommunicationTimeoutAlert(
             cmdStr = cmdStr,
             isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
-            errMsg = "设备未响应"
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage,
+            errMsg = errMsg
         )
     }
 

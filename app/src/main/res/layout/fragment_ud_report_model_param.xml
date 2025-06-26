@@ -65,7 +65,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.reportModel}"
                             tools:text="自动" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -87,7 +87,7 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Value_Style"
-                                android:drawableEnd="@drawable/ic_arrow_down"
+
                                 android:text="@{stateVM.alarmModel}"
                                 tools:text="四级报警" />
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -200,7 +200,7 @@
 
                             <com.google.android.material.textview.MaterialTextView
                                 style="@style/Common_ClickableItem_Value_Style"
-                                android:drawableEnd="@drawable/ic_arrow_down"
+
                                 android:text="@{stateVM.reportFrequency}"
                                 tools:text="自动" />
                         </androidx.appcompat.widget.LinearLayoutCompat>

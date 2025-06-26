@@ -1,7 +1,7 @@
 package com.shmedo.mcloudapp.koin
 
 import com.shmedo.mcloudapp.ui.viewmodel.request.LocationViewModel
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 /**
@@ -11,5 +11,5 @@ import org.koin.dsl.module
  */
 
 val locationKoinModule = module {
-    viewModel { LocationViewModel(get(), get()) }
+    viewModelOf(::LocationViewModel)
 }

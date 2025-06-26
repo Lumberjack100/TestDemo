@@ -23,6 +23,7 @@
         <com.google.android.material.textview.MaterialTextView
             style="@style/Common_ClickableItem_Value_Style"
             dataCenterStatus='@{m.status}'
+            android:drawableEnd="@drawable/ic_arrow_right"
             tools:text="已连接" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>

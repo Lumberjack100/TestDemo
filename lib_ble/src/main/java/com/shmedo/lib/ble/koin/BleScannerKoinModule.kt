@@ -3,7 +3,8 @@ package com.shmedo.lib.ble.koin
 import com.shmedo.lib.ble.scanner.repository.DevicesDataStore
 import com.shmedo.lib.ble.scanner.repository.ScannerRepository
 import com.shmedo.lib.ble.scanner.viewmodel.ScannerViewModel
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 /**
@@ -12,8 +13,8 @@ import org.koin.dsl.module
  * 描述： TODO
  */
 val bleScannerKoinModule = module {
-    single { DevicesDataStore() }
-    single { ScannerRepository(get()) }
+    singleOf(::DevicesDataStore)
+    singleOf(::ScannerRepository)
 
-    viewModel { ScannerViewModel(get()) }
+    viewModelOf(::ScannerViewModel)
 }

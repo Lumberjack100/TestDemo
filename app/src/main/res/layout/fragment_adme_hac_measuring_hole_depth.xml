@@ -197,7 +197,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.measureWay }"
                             tools:text="手动测孔深" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -287,7 +287,7 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
-                            android:drawableEnd="@drawable/ic_arrow_down"
+
                             android:text="@{stateVM.motionType }"
                             tools:text="上拉" />
                     </androidx.appcompat.widget.LinearLayoutCompat>

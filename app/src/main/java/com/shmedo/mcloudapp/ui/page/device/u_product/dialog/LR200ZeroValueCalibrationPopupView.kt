@@ -8,11 +8,10 @@ import com.shmedo.mcloudapp.databinding.CustomLr200ZeroValueCalibrationPopupBind
 import com.shmedo.mcloudapp.ui.viewmodel.state.LR200ZeroValueCalibrationViewModel
 
 /**
- * 创建者：gonghe
+ * @author：gonghe
+ * @time: 2025/5/29
+ * @desc: LR200 一体式裂缝计零值校准
  *
- * 创建时间：2023/12/6
- *
- * 描述：LR200 一体式裂缝计零值校准
  */
 class LR200ZeroValueCalibrationPopupView(context: Context) : CenterPopupView(context) {
     private lateinit var binding: CustomLr200ZeroValueCalibrationPopupBinding

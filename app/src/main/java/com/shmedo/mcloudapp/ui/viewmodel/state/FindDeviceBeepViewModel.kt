@@ -10,5 +10,5 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
  * 描述： TODO
  */
 class FindDeviceBeepViewModel : ViewModel() {
-    val deviceLogoResId = NonNullObservableField(R.drawable.ic_device_logo_def)
+    val deviceLogoResId = NonNullObservableField(R.drawable.device_logo_default)
 }

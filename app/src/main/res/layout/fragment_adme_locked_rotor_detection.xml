@@ -193,7 +193,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEditable &amp;&amp;stateVM.downEnable}"
-                            android:text="堵转检测区间(%)" />
+                            android:text="堵转检测区间（百分比）" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/tv_down_stall_detection_interval"

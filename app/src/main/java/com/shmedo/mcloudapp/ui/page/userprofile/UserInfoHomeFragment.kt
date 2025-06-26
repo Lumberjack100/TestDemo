@@ -32,6 +32,7 @@ import com.shmedo.mcloudapp.databinding.FragmentUserInfoHomeBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
@@ -69,15 +70,13 @@ class UserInfoHomeFragment : BaseFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUserInfoHomeBinding
-        toolbarViewModel.toolbarTitleText.set("个人资料")
+        binding.llToolbar.toolbar.title = "个人资料"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                nav().navigateUp()
-            }
-        })
+        registerOnBackPressedDispatcher {
+            nav().navigateUp()
+        }
         val filter = InputFilter { source, start, end, _, _, _ ->
             for (i in start until end) {
                 if (!"0123456789".contains(source[i].toString())) {

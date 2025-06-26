@@ -6,16 +6,16 @@
     <data>
 
         <variable
-            name="stateVM"
-            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702NetworkCommunicationViewModel" />
-
-        <variable
             name="toolbarVM"
             type="com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel" />
 
         <variable
+            name="stateVM"
+            type="com.shmedo.mcloudapp.ui.viewmodel.state.MR702NetworkConfigViewModel" />
+
+        <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.MR702NetworkCommunicationFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.MR702NetworkConfigFragment.ClickProxy" />
 
     </data>
 
@@ -33,166 +33,61 @@
             app:layout_constraintTop_toTopOf="parent"
             app:vm="@{toolbarVM}" />
 
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/scrollView"
+        <com.drake.brv.PageRefreshLayout
+            android:id="@+id/refreshLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_toolbar">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/scrollView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingBottom="@dimen/dimen_size_25">
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_GroupItem_Title_Style"
-                    android:text="无线配置" />
-
-                <RelativeLayout
-                    style="@style/SwitchButton_Item_Layout_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/SwitchButton_Item_Title_Style"
-                        android:text="4G通信"
-                        android:textColor="@{!stateVM.isWirelessDisabled?@color/title_text_color:@color/sub_title_text_color}" />
-
-                    <com.kyleduo.switchbutton.SwitchButton
-                        android:id="@+id/mobileCommunicationSB"
-                        style="@style/SwitchButton_Item_Button_Style"
-                        checkedImmediatelyNoEvent="@{stateVM.isWirelessOpened}"
-                        android:enabled="@{!stateVM.isWirelessDisabled }"
-                        android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
-                        app:kswAnimationDuration="100"
-                        app:kswBackDrawable="@drawable/sl_switchbutton_back"
-                        app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
-
-                </RelativeLayout>
+                android:layout_height="wrap_content">
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_Layout_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isWirelessOpened}"
-                        android:text="APN接入点"
-                        tools:textColor="@color/title_text_color" />
-
-                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                        android:id="@+id/apnNameET"
-                        style="@style/Common_EditItem_EditText_Style"
-                        textViewEnabled="@{stateVM.isWirelessOpened}"
-                        android:hint="请输入 (非必填)"
-                        android:text="@={stateVM.apnName}"
-                        app:lengthFilter="@{20}" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_Layout_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isWirelessOpened}"
-                        android:text="用户名" />
-
-                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                        android:id="@+id/userNameET"
-                        style="@style/Common_EditItem_EditText_Style"
-                        textViewEnabled="@{stateVM.isWirelessOpened}"
-                        android:hint="请输入 (非必填)"
-                        android:text="@={stateVM.userName}"
-                        app:lengthFilter="@{20}" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_EditItem_Layout_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isWirelessOpened}"
-                        android:text="密码" />
-
-                    <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                        android:id="@+id/pwdET"
-                        style="@style/Common_EditItem_EditText_Style"
-                        textViewEnabled="@{stateVM.isWirelessOpened}"
-                        android:hint="请输入 (非必填)"
-                        android:text="@={stateVM.pwd}"
-                        app:lengthFilter="@{20}" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_GroupItem_Title_Style"
-                    android:text="以太网配置" />
-
-                <RelativeLayout
-                    style="@style/SwitchButton_Item_Layout_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/SwitchButton_Item_Title_Style"
-                        android:text="以太网接入"
-                       />
-
-                    <com.kyleduo.switchbutton.SwitchButton
-                        android:id="@+id/ethernetAccessSB"
-                        style="@style/SwitchButton_Item_Button_Style"
-                        checkedImmediatelyNoEvent="@{stateVM.isEthernetOpened}"
-                        android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
-                        app:kswAnimationDuration="100"
-                        app:kswBackDrawable="@drawable/sl_switchbutton_back"
-                        app:kswThumbDrawable="@drawable/shape_switchbutton_thumb"
-                        app:kswThumbHeight="20dp"
-                        app:kswThumbRangeRatio="2.3"
-                        app:kswThumbWidth="18dp" />
-
-                </RelativeLayout>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    style="@style/Common_ClickableItem_Layout_Style"
-                    onClickWithDebouncing="@{()->click.onIPModeChooseClick()}"
-                    android:enabled="@{stateVM.isEthernetOpened}">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        style="@style/Common_ClickableItem_Title_Style"
-                        textViewEnabled="@{stateVM.isEthernetOpened}"
-                        android:text="IP分配" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/tv_dhcp"
-                        style="@style/Common_ClickableItem_Value_Style"
-                        textViewEnabled="@{stateVM.isEthernetOpened}"
-                        android:drawableEnd="@null"
-                        android:text="@{stateVM.ipMode}"
-                        android:textSize="17sp"
-                        tools:text="自动" />
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/ivExpand"
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginStart="@dimen/dimen_size_8"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/ic_arrow_down" />
-
-                </androidx.appcompat.widget.LinearLayoutCompat>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    visible="@{stateVM.isManualVisible}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_size_8"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                    android:paddingTop="@dimen/page_content_container_padding_top_12"
+                    android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        style="@style/Common_EditItem_Layout_Style"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="14dp"
+                            android:background="@color/black" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_GroupItem_Title_Style2"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:text="移动网络" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <RelativeLayout
+                        style="@style/SwitchButton_Item_Layout_Style"
+                        android:background="@drawable/layer_common_click_item_with_divider">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/SwitchButton_Item_Title_Style"
+                            android:text="4G通信"
+                            textViewEnabled="@{!stateVM.isWirelessDisabled}"/>
+
+                        <com.kyleduo.switchbutton.SwitchButton
+                            android:id="@+id/mobileCommunicationSB"
+                            style="@style/SwitchButton_Item_Button_Style"
+                            android:checked="@={stateVM.isWirelessOpened}"
+                            android:enabled="@{!stateVM.isWirelessDisabled }"
+                            app:kswAnimationDuration="100"
+                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
+
+                    </RelativeLayout>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
@@ -200,15 +95,15 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEthernetOpened}"
-                            android:text="IP地址" />
+                            textViewEnabled="@{stateVM.isWirelessOpened}"
+                            android:text="APN"
+                            tools:textColor="@color/title_text_color" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                            android:id="@+id/ipET"
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEthernetOpened}"
-                            android:text="@={stateVM.ip}"
-                            app:lengthFilter="@{100}" />
+                            textViewEnabled="@{stateVM.isWirelessOpened}"
+                            android:text="@={stateVM.apnName}"
+                            app:lengthFilter="@{20}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -218,90 +113,180 @@
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEthernetOpened}"
-                            android:text="子网掩码" />
+                            textViewEnabled="@{stateVM.isWirelessOpened}"
+                            android:text="用户名" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                            android:id="@+id/subnetMaskET"
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEthernetOpened}"
-                            android:text="@={stateVM.subnetMask}"
-                            app:lengthFilter="@{15}" />
+                            textViewEnabled="@{stateVM.isWirelessOpened}"
+                            android:text="@={stateVM.userName}"
+                            app:lengthFilter="@{20}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
-                        android:background="@drawable/layer_common_click_item_with_divider">
+                        android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEthernetOpened}"
-                            android:text="网关" />
+                            textViewEnabled="@{stateVM.isWirelessOpened}"
+                            android:text="密码" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                            android:id="@+id/gatewayET"
                             style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEthernetOpened}"
-                            android:text="@={stateVM.gateway}"
-                            app:lengthFilter="@{15}" />
+                            textViewEnabled="@{stateVM.isWirelessOpened}"
+                            android:text="@={stateVM.pwd}"
+                            app:lengthFilter="@{20}" />
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
+                        android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                        android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                        <View
+                            android:layout_width="3dp"
+                            android:layout_height="14dp"
+                            android:background="@color/black" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_GroupItem_Title_Style2"
+                            android:layout_marginStart="@dimen/dimen_size_8"
+                            android:text="以太网络" />
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <RelativeLayout
+                        style="@style/SwitchButton_Item_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
-                            style="@style/Common_ClickableItem_Title_Style"
-                            textViewEnabled="@{stateVM.isEthernetOpened}"
-                            android:text="首选DNS" />
+                            style="@style/SwitchButton_Item_Title_Style"
+                            android:text="以太网接入" />
 
-                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                            android:id="@+id/preferredDNSET"
-                            style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{stateVM.isEthernetOpened}"
-                            android:text="@={stateVM.preferredDNS}"
-                            app:lengthFilter="@{15}" />
+                        <com.kyleduo.switchbutton.SwitchButton
+                            android:id="@+id/ethernetAccessSB"
+                            style="@style/SwitchButton_Item_Button_Style"
+                            android:checked="@={stateVM.isEthernetOpened}"
+                            app:kswAnimationDuration="100"
+                            app:kswBackDrawable="@drawable/sl_switchbutton_back"
+                            app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
 
-                    </androidx.appcompat.widget.LinearLayoutCompat>
+                    </RelativeLayout>
 
                     <androidx.appcompat.widget.LinearLayoutCompat
-                        style="@style/Common_EditItem_Layout_Style"
+                        style="@style/Common_ClickableItem_Layout_Style"
                         android:background="@drawable/layer_common_click_item_with_divider"
-                        android:visibility="gone">
+                        android:enabled="@{stateVM.isEthernetOpened}"
+                        android:onClick="@{()->click.onIPModeChooseClick()}">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isEthernetOpened}"
-                            android:text="备用DNS" />
+                            android:text="IP分配" />
 
-                        <com.shmedo.mcloudapp.ui.widget.ClearEditText
-                            android:id="@+id/alternateDNSET"
-                            style="@style/Common_EditItem_EditText_Style"
-                            textViewEnabled="@{ stateVM.isEthernetOpened}"
-                            android:text="@={stateVM.alternateDNS}"
-                            app:lengthFilter="@{15}" />
+                        <com.google.android.material.textview.MaterialTextView
+                            style="@style/Common_ClickableItem_Value_Style"
+                            textViewEnabled="@{stateVM.isEthernetOpened}"
+                            android:text="@{stateVM.ipMode}"
+                            tools:text="自动" />
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        visible="@{stateVM.isManualVisible}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEthernetOpened}"
+                                android:text="IP地址" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEthernetOpened}"
+                                android:text="@={stateVM.ip}"
+                                app:lengthFilter="@{100}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEthernetOpened}"
+                                android:text="子网掩码" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEthernetOpened}"
+                                android:text="@={stateVM.subnetMask}"
+                                app:lengthFilter="@{15}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/layer_common_click_item_with_divider">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEthernetOpened}"
+                                android:text="网关" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEthernetOpened}"
+                                android:text="@={stateVM.gateway}"
+                                app:lengthFilter="@{15}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            style="@style/Common_EditItem_Layout_Style"
+                            android:background="@drawable/shape_common_click_item_bottom_corner_4">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                style="@style/Common_ClickableItem_Title_Style"
+                                textViewEnabled="@{stateVM.isEthernetOpened}"
+                                android:text="首选DNS" />
+
+                            <com.shmedo.mcloudapp.ui.widget.ClearEditText
+                                style="@style/Common_EditItem_EditText_Style"
+                                textViewEnabled="@{stateVM.isEthernetOpened}"
+                                android:text="@={stateVM.preferredDNS}"
+                                app:lengthFilter="@{15}" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_reset"
+                        style="@style/ResetButton_Style2"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:onClick="@{()->click.onResetClick()}"
+                        android:text="@string/button_reset_text" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_confirm"
+                        style="@style/SubmitButton_Style2"
+                        onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                        android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                        android:enabled="@{stateVM.isDataModified}"
+                        android:text="@string/button_save_text" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
-            </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.core.widget.NestedScrollView>
-
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/btn_confirm"
-            style="@style/SubmitButton_Style"
-            onClickWithDebouncing="@{()->click.onSubmitClick()}"
-            visible="@{(stateVM.isWirelessOpened || stateVM.isEthernetOpened)}"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="15dp"
-            android:text="保存"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/scrollView" />
-
+            </androidx.core.widget.NestedScrollView>
+        </com.drake.brv.PageRefreshLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </layout>

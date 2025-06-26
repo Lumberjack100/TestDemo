@@ -1,15 +1,19 @@
 package com.shmedo.mcloudapp.ui.page.device.common
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import androidx.fragment.app.viewModels
 import com.baidu.mapapi.map.BaiduMap
 import com.baidu.mapapi.map.BitmapDescriptorFactory
+import com.baidu.mapapi.map.InfoWindow
 import com.baidu.mapapi.map.LogoPosition
 import com.baidu.mapapi.map.MapStatusUpdateFactory
 import com.baidu.mapapi.map.Marker
 import com.baidu.mapapi.map.MarkerOptions
+import com.baidu.mapapi.map.MarkerOptions.MarkerAnimateType
 import com.baidu.mapapi.model.LatLng
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -19,8 +23,8 @@ import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
-import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.gnss_m.M50CurrentStateInfo
+import com.shmedo.lib.cmd.base.iot_cmd.model.lb20s.LB20SCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.model.u_product.UDCurrentStateInfo
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTCommandResult
 import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
@@ -43,6 +47,7 @@ import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommonLocationInfoViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.utils.map.CustomLatLng
+import com.shmedo.mcloudapp.utils.map.MapNavigationHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -51,10 +56,11 @@ import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import timber.log.Timber
 
+
 /**
  * @author：gonghe
  * @time: 2024/8/21
- * @desc: 一体化雷达水位计位置信息
+ * @desc: 查询位置信息
  *
  */
 class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
@@ -97,7 +103,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
         registerOnBackPressedDispatcher {
             nav().navigateUp()
         }
-        toolbarViewModel.toolbarTitleText.set("位置")
+        binding.llToolbar.toolbar.title = "位置信息"
         setUpMap()
     }
 
@@ -201,6 +207,16 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DEVICE_STATUS,
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
+                super.doCmdResponseResultError(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
+            }
+
             IOTCommandType.MD_GET_INSTALL_LOCATION -> {
                 dismissLoadingDialog(measureLoadingDialogId)
                 super.doCmdResponseResultError(
@@ -232,11 +248,21 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DEVICE_STATUS,
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
+            }
+
             IOTCommandType.MD_GET_INSTALL_LOCATION -> {
                 dismissLoadingDialog(measureLoadingDialogId)
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
-                    errMsg = "设备未响应",
+                    errMsg = errMsg,
                     isShowErrMsg = true,
                     isMessageDialog = true
                 )
@@ -264,6 +290,17 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
         errMsg: String
     ) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DEVICE_STATUS,
+            IOTCommandType.QUERY_DEVICE_STATUS -> {
+                super.showNearbyCommunicationTimeoutAlert(
+                    cmdStr = cmdStr,
+                    isDismissLoadingDialog = isDismissLoadingDialog,
+                    isShowErrMsg = true,
+                    isMessageDialog = true,
+                    errMsg = errMsg
+                )
+            }
+
             IOTCommandType.MD_GET_INSTALL_LOCATION -> {
                 dismissLoadingDialog(measureLoadingDialogId)
                 super.showNearbyCommunicationTimeoutAlert(
@@ -271,7 +308,7 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                     isDismissLoadingDialog = isDismissLoadingDialog,
                     isShowErrMsg = true,
                     isMessageDialog = isMessageDialog,
-                    errMsg = "设备未响应"
+                    errMsg = errMsg
                 )
             }
 
@@ -324,9 +361,9 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                         sendCommandFromCmdList {}
 
                         when (productType) {
-                            ProductType.GNSS_M_1, ProductType.GNSS_M_2 -> initM20StatusInfo(result.data)
                             ProductType.GNSS_M_5 -> initM50StatusInfo(result.data)
-                            else -> {}
+                            ProductType.LB20S -> initLB20StatusInfo(result.data)
+                            else -> initCommonStatusInfo(result.data)
                         }
                     }
                 }
@@ -375,37 +412,13 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                     mStates.longitude.set("${stateInfo.longitudeDirection} ${stateInfo.longitude}°")
                     mStates.latitude.set("${stateInfo.latitudeDirection} ${stateInfo.latitude}°")
 
-                    val longitude = stateInfo.longitude.toDouble()
-                    val latitude = stateInfo.latitude.toDouble()
+                    var longitude = stateInfo.longitude.toDoubleOrNull() ?: 121.59840681
+                    var latitude = stateInfo.latitude.toDoubleOrNull() ?: 31.21032874
+                    if (longitude < 1) longitude = 121.59840681
+                    if (latitude < 1) latitude = 31.21032874
+
                     gcjLatLng = CustomLatLng(latitude, longitude).toGcj02LatLng().apply {
                         addMarker(this)
-                    }
-                }
-            } catch (e: Exception) {
-                Timber.e(e)
-                addDeviceLogItem(Log.ERROR, e.errorMsg)
-            }
-        }
-    }
-
-    private fun initM20StatusInfo(content: String) {
-        launchWithViewLifecycle {
-            try {
-                val stateInfo = withContext(Dispatchers.IO) {
-                    MoshiUtil.fromJson<CommonCurrentStateInfo>(content)
-                } ?: return@launchWithViewLifecycle
-
-                //109.709961E,31.139160N,33.0862
-                stateInfo.location.split(",".toRegex()).dropLastWhile { it.isEmpty() }.let {
-                    if (it.size >= 2) {
-                        mStates.longitude.set("E ${it[0].replace("E", "")}°")
-                        mStates.latitude.set("N ${it[1].replace("N", "")}°")
-
-                        val longitude = it[0].replace("E", "").toDoubleOrNull() ?: 121.59840681
-                        val latitude = it[1].replace("N", "").toDoubleOrNull() ?: 31.21032874
-                        gcjLatLng = CustomLatLng(latitude, longitude).toGcj02LatLng().apply {
-                            addMarker(this)
-                        }
                     }
                 }
             } catch (e: Exception) {
@@ -429,12 +442,87 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
                         mStates.latitude.set("N ${it[1]}°")
                         mStates.elevation.set("${it[2]} m")
 
-                        val longitude = it[0].replace("E", "").toDoubleOrNull() ?: 121.59840681
-                        val latitude = it[1].replace("N", "").toDoubleOrNull() ?: 31.21032874
+                        var longitude = it[0].replace("E", "").toDoubleOrNull() ?: 121.59840681
+                        var latitude = it[1].replace("N", "").toDoubleOrNull() ?: 31.21032874
+                        if (longitude < 1) longitude = 121.59840681
+                        if (latitude < 1) latitude = 31.21032874
+
                         gcjLatLng = CustomLatLng(latitude, longitude).toGcj02LatLng().apply {
                             addMarker(this)
                         }
                     }
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
+    private fun initLB20StatusInfo(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val dataMap = withContext(Dispatchers.IO) {
+                    MoshiUtil.fromJson<Map<String, LB20SCurrentStateInfo>>(content)
+                }
+                if (dataMap.isNullOrEmpty()) {
+                    return@launchWithViewLifecycle
+                }
+                val stateInfo = dataMap["000_1"]
+                if (stateInfo == null) {
+                    return@launchWithViewLifecycle
+                }
+                stateInfo.location.split(",".toRegex()).dropLastWhile { it.isEmpty() }.let {
+                    if (it.size >= 2) {
+                        mStates.longitude.set("E ${it[0].replace("E", "")}°")
+                        mStates.latitude.set("N ${it[1].replace("N", "")}°")
+
+                        var longitude =
+                            it[0].replace("E", "").toDoubleOrNull() ?: 121.59840681
+                        var latitude =
+                            it[1].replace("N", "").toDoubleOrNull() ?: 31.21032874
+                        if (longitude < 1) longitude = 121.59840681
+                        if (latitude < 1) latitude = 31.21032874
+
+                        gcjLatLng =
+                            CustomLatLng(latitude, longitude).toGcj02LatLng().apply {
+                                addMarker(this)
+                            }
+                    }
+                }
+            } catch (e: Exception) {
+                Timber.e(e)
+                addDeviceLogItem(Log.ERROR, e.errorMsg)
+            }
+        }
+    }
+
+    private fun initCommonStatusInfo(content: String) {
+        launchWithViewLifecycle {
+            try {
+                val resultMap =
+                    MoshiUtil.fromJson<Map<String, Any>>(content) ?: return@launchWithViewLifecycle
+
+                if (resultMap.containsKey("location")) {
+                    resultMap["location"].toString().split(",".toRegex())
+                        .dropLastWhile { it.isEmpty() }.let {
+                            if (it.size >= 2) {
+                                mStates.longitude.set("E ${it[0].replace("E", "")}°")
+                                mStates.latitude.set("N ${it[1].replace("N", "")}°")
+
+                                var longitude =
+                                    it[0].replace("E", "").toDoubleOrNull() ?: 121.59840681
+                                var latitude =
+                                    it[1].replace("N", "").toDoubleOrNull() ?: 31.21032874
+                                if (longitude < 1) longitude = 121.59840681
+                                if (latitude < 1) latitude = 31.21032874
+
+                                gcjLatLng =
+                                    CustomLatLng(latitude, longitude).toGcj02LatLng().apply {
+                                        addMarker(this)
+                                    }
+                            }
+                        }
                 }
             } catch (e: Exception) {
                 Timber.e(e)
@@ -451,12 +539,16 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
             val markerOption = MarkerOptions()
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_device_location))
                 .position(latLng)
+                .animateType(MarkerAnimateType.jump)
                 .draggable(false)
 
             //在地图上添加Marker，并显示
             curMaker = baiduMap.addOverlay(markerOption) as Marker
+
             //设置指定的可视区域地图
             moveCameraToLocation(latLng)
+
+            initInfoWindow(latLng)
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
@@ -464,6 +556,32 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
 
     private fun moveCameraToLocation(latLng: LatLng) {
         baiduMap.setMapStatus(MapStatusUpdateFactory.newLatLngZoom(latLng, mZoomLevel))
+    }
+
+    private fun initInfoWindow(latLng: LatLng) {
+        val button = Button(requireContext())
+        button.setBackgroundResource(R.drawable.bubble_sel_bg)//bubble_sel_bg   map_info_window
+        button.text = "去这里"
+        button.setTextColor(Color.WHITE)
+        button.setPadding(0, 0, 0, 5)
+        button.textSize = 12f
+
+        val infoWindow = InfoWindow(
+            button,
+            latLng,
+            -65
+        )
+        infoWindow.view.setOnClickListener {
+            // 获取设备名称作为目的地名称
+            val destinationName = deviceInfo.deviceToken
+            // 显示地图应用选择器并导航
+            MapNavigationHelper.showMapAppSelector(
+                requireContext(),
+                latLng,
+                destinationName
+            )
+        }
+        baiduMap.showInfoWindow(infoWindow)
     }
 
     private fun startTimer() {

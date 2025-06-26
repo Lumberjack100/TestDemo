@@ -26,34 +26,38 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="60dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                android:paddingTop="@dimen/page_content_container_padding_top_12"
+                android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
                 <include
                     layout="@layout/include_mr702_port_common_head"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_size_1"
+                    android:background="@drawable/shape_common_click_item_top_corner_4"
                     app:vm="@{homeVM}" />
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_Layout_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider">
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_size_15"
-                    android:layout_marginTop="@dimen/dimen_size_15"
-                    android:layout_marginBottom="@dimen/dimen_size_15"
-                    android:drawablePadding="-80dp"
-                    android:text="外接设备"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_17"
-                    android:textStyle="bold"
-                    app:drawableStartCompat="@drawable/ic_mr702_interface_info_sensor_config" />
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="14dp"
+                        android:background="@color/black" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_GroupItem_Title_Style2"
+                        android:layout_marginStart="@dimen/dimen_size_8"
+                        android:text="外接设备" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
+                    android:background="@drawable/shape_common_click_item_bottom_corner_4"
                     android:clipToPadding="false"
                     android:padding="@dimen/dimen_size_15"
                     android:splitMotionEvents="false"

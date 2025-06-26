@@ -44,7 +44,7 @@ import com.shmedo.mcloudapp.model.AdvancedSettingItem
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.das.fragment.ble.dialog.SyncInstallationLocationPopupView
+import com.shmedo.mcloudapp.ui.page.device.collector_product.dialog.SyncInstallationLocationPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.request.LocationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.AdvancedSettingViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -90,7 +90,7 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentAdvancedSettingBinding
-        toolbarViewModel.toolbarTitleText.set("系统配置")
+        binding.llToolbar.toolbar.title = "系统配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }
@@ -147,12 +147,14 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         }
 
         if (communicateWay is NetPlatformConnect) {
-            moduleList.add(
-                AdvancedSettingItem(
-                    "固件升级",
-                    AdvancedSettingItem.Type.FIRMWARE,
+            if (productType != ProductType.COLLECTOR_G_0) {
+                moduleList.add(
+                    AdvancedSettingItem(
+                        "固件升级",
+                        AdvancedSettingItem.Type.FIRMWARE,
+                    )
                 )
-            )
+            }
         }
 
         moduleList.add(
@@ -172,12 +174,15 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         }
 
         if (communicateWay is BleConnect) {
-            moduleList.add(
-                AdvancedSettingItem(
-                    "远程调试",
-                    AdvancedSettingItem.Type.REMOTE_DEBUG,
+            if (productType != ProductType.COLLECTOR_G_0) {
+                moduleList.add(
+                    AdvancedSettingItem(
+                        "远程调试",
+                        AdvancedSettingItem.Type.REMOTE_DEBUG,
+                    )
                 )
-            )
+            }
+
             if (productType == ProductType.U_I_1) {
                 moduleList.add(
                     AdvancedSettingItem(
@@ -191,10 +196,18 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         binding.recyclerview.models = moduleList
     }
 
+    /**
+     * 是否需要同步位置
+     */
     private fun isNeedSyncLocation(): Boolean {
-        return communicateWay is BleConnect && (productType == ProductType.LR200
-                || productType == ProductType.LB20S
-                || productType == ProductType.U_R_1 || productType == ProductType.U_I_1)
+//        return communicateWay is BleConnect &&
+//                (productType == ProductType.LR200
+//                        || productType == ProductType.LB20S
+//                        || productType == ProductType.U_R_1
+//                        || productType == ProductType.U_I_1)
+
+
+        return false
     }
 
     /**
@@ -204,38 +217,39 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         return productType == ProductType.M20
                 || productType == ProductType.GNSS_M_1
                 || productType == ProductType.GNSS_M_2
-                || productType == ProductType.COLLECTOR_R_3
     }
 
     override fun createObserver() {
         super.createObserver()
-        //观察定位信息
-        launchAndRepeatWithViewLifecycle(minActiveState = Lifecycle.State.STARTED) {
-            locationViewModel.locationState.collectLatest { bdLocation ->
-                if (gcjLatLng == null || gcjLatLng!!.latitude == 0.0 || gcjLatLng!!.longitude == 0.0) {
-                    gcjLatLng = bdLocation
-                    //将GCJ-02火星坐标转换为WGS-84世界标准地理坐标
-                    val mWgsLatLng = JZLocationConverter.gcj02ToWgs84(
-                        CustomLatLng(
-                            bdLocation.latitude,
-                            bdLocation.longitude
-                        )
-                    )
-                    mStates.location.set(
-                        Html.fromHtml(
-                            String.format(
-                                Locale.getDefault(),
-                                "%.8f,%.8f",
-                                mWgsLatLng.longitude,
-                                mWgsLatLng.latitude
+        if (isNeedSyncLocation()) {
+            //观察定位信息
+            launchAndRepeatWithViewLifecycle(minActiveState = Lifecycle.State.STARTED) {
+                locationViewModel.locationState.collectLatest { bdLocation ->
+                    if (gcjLatLng == null || gcjLatLng!!.latitude == 0.0 || gcjLatLng!!.longitude == 0.0) {
+                        gcjLatLng = bdLocation
+                        //将GCJ-02火星坐标转换为WGS-84世界标准地理坐标
+                        val mWgsLatLng = JZLocationConverter.gcj02ToWgs84(
+                            CustomLatLng(
+                                bdLocation.latitude,
+                                bdLocation.longitude
                             )
-                        ).toString()
-                    )
-                    mStates.latitude.set(mWgsLatLng.latitude.toString())
-                    mStates.longitude.set(mWgsLatLng.longitude.toString())
+                        )
+                        mStates.location.set(
+                            Html.fromHtml(
+                                String.format(
+                                    Locale.getDefault(),
+                                    "%.8f,%.8f",
+                                    mWgsLatLng.longitude,
+                                    mWgsLatLng.latitude
+                                )
+                            ).toString()
+                        )
+                        mStates.latitude.set(mWgsLatLng.latitude.toString())
+                        mStates.longitude.set(mWgsLatLng.longitude.toString())
 
-                    mStates.address.set(bdLocation.addrStr ?: "")
-                    mStates.refreshingLocation.set(false)
+                        mStates.address.set(bdLocation.addrStr ?: "")
+                        mStates.refreshingLocation.set(false)
+                    }
                 }
             }
         }
@@ -249,13 +263,21 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         when (item.type) {
             AdvancedSettingItem.Type.REBOOT -> {
                 showMessage("确定重启吗？", "温馨提示", "确定", {
-                    reboot()
+                    if (isBleDas()) {
+                        dasBleReboot()
+                    } else {
+                        reboot()
+                    }
                 }, "取消")
             }
 
             AdvancedSettingItem.Type.RESET -> {
                 showMessage("确定恢复出厂设置吗？", "温馨提示", "确定", {
-                    restoreFactory()
+                    if (isBleDas()) {
+                        dasBleRestoreFactory()
+                    } else {
+                        restoreFactory()
+                    }
                 }, "取消")
             }
 
@@ -299,7 +321,108 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = "出错了：$errMsg",
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = true,
+            isMessageDialog = true
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = true,
+            isMessageDialog = true,
+            errMsg = errMsg
+        )
+    }
+
     override fun setResultData(cmdStr: String) {
+        if (isBleDas()) {
+            handleDasBleCommandResult(cmdStr)
+        } else {
+            handleCommandResult(cmdStr)
+        }
+    }
+
+    private fun handleDasBleCommandResult(cmdStr: String) {
+        when (MDCommandUtil.extractCommandType(cmdStr)) {
+            MDCommandType.REBOOT_DEVICE -> {//
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg =  StringUtils.getString(R.string.reboot_failed)
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show(StringUtils.getString(R.string.device_reboot_tip))
+                        }
+                    }
+                }
+            }
+
+            MDCommandType.RESTORE_FACTORY_SETTING -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = StringUtils.getString(R.string.reset_failed)
+                        handleFailureResult(errMsg)
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Toaster.show(StringUtils.getString(R.string.device_reset_tip))
+                        }
+                    }
+                }
+            }
+
+            else -> {
+                cancelNearbyCommunicationTimeoutJob()
+            }
+        }
+    }
+
+    private fun handleCommandResult(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MD_SET_INSTALL_LOCATION -> {
                 when (val result = iotParseManager.parse<CommonSettingCmdResult>(cmdStr)) {
@@ -406,6 +529,29 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
                 }
             }
         }
+    }
+
+    private fun dasBleReboot() {
+        commandItems.clear()
+        val command =
+            MDCommandUtil.getCommand(
+                MDCommandType.REBOOT_DEVICE,
+                "1"
+            )
+        commandItems.add(command)
+
+        Timber.d("发送保存配置重启设备指令===%s", command)
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
+    }
+
+    private fun dasBleRestoreFactory() {
+        commandItems.clear()
+        val command = MDCommandUtil.getCommand(MDCommandType.RESTORE_FACTORY_SETTING)
+        commandItems.add(command)
+
+        showLoadingDialog(StringUtils.getString(R.string.processing))
+        sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
     private fun offsetInitialization() {

@@ -51,7 +51,7 @@ object DeviceStatusInfoProcessor {
         isClipboard: Boolean = false,
         isBottomItem: Boolean = false,
     ) {
-        value.notNullKey(action = {
+        value.notNullKey(notNullKeyAction = {
             groupList.add(
                 DeviceStatusInfoBasicItem(
                     name = name,
@@ -148,7 +148,7 @@ object DeviceStatusInfoProcessor {
      * @param upLimitValue 高于此值时字体颜色变红
      * @param digit 小数点位数
      * @param unit 单位
-     *
+     * @param isBottomItem 是否是底部项
      */
     fun addMR702SerialPortStatusInfoItem(
         groupList: MutableList<Any>,
@@ -158,7 +158,8 @@ object DeviceStatusInfoProcessor {
         downLimitValue: Double = 4.0,
         upLimitValue: Double = 20.0,
         digit: Int = 2,
-        unit: String = ""
+        unit: String = "",
+        isBottomItem: Boolean = false,
     ) {
         value.notNullKey {
             val tempValue = formatDoubleValue(
@@ -173,7 +174,8 @@ object DeviceStatusInfoProcessor {
                     textColorRes = if (tempValue.toDouble() < downLimitValue || tempValue.toDouble() > upLimitValue)
                         ColorUtils.getColor(R.color.error_FF4400)
                     else
-                        ColorUtils.getColor(R.color.online_colorPrimary)
+                        0,
+                    isBottomItem = isBottomItem
                 )
             )
         }

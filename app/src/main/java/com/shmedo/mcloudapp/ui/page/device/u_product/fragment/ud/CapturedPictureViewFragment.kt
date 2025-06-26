@@ -25,7 +25,7 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
-import com.shmedo.mcloudapp.ui.page.device.image_preview.CustomPreviewAdapter
+import com.shmedo.mcloudapp.ui.adapter.CustomPreviewAdapter
 import com.shmedo.mcloudapp.ui.viewmodel.state.CapturedPictureViewViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.utils.permission.PermissionInterceptor
@@ -67,7 +67,7 @@ class CapturedPictureViewFragment : BaseFragment() {
     }
 
     private fun initToolbar() {
-        toolbarViewModel.toolbarTitleText.set("返回")
+        binding.llToolbar.toolbar.title = "返回"
         binding.llToolbar.toolbar.apply {
             setNavigationOnClickListener { nav().navigateUp() }
         }

@@ -10,23 +10,33 @@ import com.shmedo.core.model.UserInfo
  */
 object AuthMMKVOwner : MMKVOwner(mmapID = "auth_settings") {
     var account by mmkvString(default = "")
+
     var password by mmkvString(default = "")
+
     var token by mmkvString(default = "")
-    var realName by mmkvString(default = "")
-    var phone by mmkvString(default = "")
-    var userID by mmkvInt(default = 0)
-    var companyID by mmkvInt(default = 0)
+
     var userInfo by mmkvParcelable<UserInfo>()
+
+    var userID by mmkvInt(default = 0)
+
+    var companyID by mmkvInt(default = 0)
+
+    var realName by mmkvString(default = "")
+
+    var phone by mmkvString(default = "")
+
     var listSuperInfoPermission by mmkvBool(default = false)
+
+
 
     fun clear() {
         password = ""
         token = ""
-        realName = ""
-        phone = ""
+        userInfo = null
         userID = 0
         companyID = 0
-        userInfo = null
+        realName = ""
+        phone = ""
         listSuperInfoPermission = false
     }
 }

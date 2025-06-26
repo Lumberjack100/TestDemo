@@ -1,0 +1,281 @@
+package com.shmedo.mcloudapp.ui.page.device.common
+
+import android.os.Bundle
+import android.view.View
+import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
+import com.blankj.utilcode.util.StringUtils
+import com.drake.brv.utils.bindingAdapter
+import com.drake.brv.utils.setup
+import com.hjq.toast.Toaster
+import com.kunminx.architecture.ui.page.DataBindingConfig
+import com.shmedo.core.commonlib.utils.AppContants
+import com.shmedo.core.model.DeviceInfo
+import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
+import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
+import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
+import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParserManager
+import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
+import com.shmedo.mcloudapp.BR
+import com.shmedo.mcloudapp.R
+import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
+import com.shmedo.mcloudapp.databinding.FragmentUniversalDataCenterHomeBinding
+import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
+import com.shmedo.mcloudapp.extensions.safeNavigate
+import com.shmedo.mcloudapp.model.CommunicateWay
+import com.shmedo.mcloudapp.model.DataCenterStatusItem
+import com.shmedo.mcloudapp.model.NetPlatformConnect
+import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
+import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.state.UniversalDataCenterHomeViewModel
+import org.koin.android.ext.android.inject
+
+/**
+ * @author：gonghe
+ * @time: 2025/1/12
+ * @desc: 数据中心列表页面抽象基类 - 支持4G和蓝牙两种通讯方式
+ */
+abstract class BaseDataCenterHomeFragment : BaseIOTDeviceFragment() {
+    protected lateinit var binding: FragmentUniversalDataCenterHomeBinding
+    protected val toolbarViewModel: ToolbarViewModel by viewModels()
+    protected val mStates: UniversalDataCenterHomeViewModel by viewModels()
+    protected val iotParseManager: IOTParserManager by inject()
+    protected var centerNum = 0 // 数据链路数量
+
+    override fun initViewModel() {
+        super.initViewModel()
+    }
+
+    override fun getDataBindingConfig(): DataBindingConfig {
+        return DataBindingConfig(
+            R.layout.fragment_universal_data_center_home,
+            BR.stateVM,
+            mStates
+        )
+            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+            .addBindingParam(BR.click, getClickProxy())
+    }
+
+    override fun initView(savedInstanceState: Bundle?) {
+        binding = getBinding() as FragmentUniversalDataCenterHomeBinding
+        binding.llToolbar.toolbar.title = "数据链路"
+        binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
+            handleBackByCheckDataModified()
+        }
+        registerOnBackPressedDispatcher {
+            handleBackByCheckDataModified()
+        }
+        initRefresh()
+        initAdapter()
+    }
+
+    private fun initRefresh() {
+        refreshLayout = binding.refreshLayout
+        binding.refreshLayout.setEnableLoadMore(false)
+        binding.refreshLayout.onRefresh {
+            if (isBleDisconnected()) {
+                Toaster.show(StringUtils.getString(R.string.ble_config_disconnect_warn))
+                return@onRefresh
+            }
+            queryData()
+        }
+    }
+
+    override fun initData() {
+        super.initData()
+        arguments?.let {
+            centerNum = it.getInt(CENTER_NUM, 1)
+        }
+        resetDefaultParams()
+        // 保存初始状态
+        mStates.saveInitialState()
+    }
+
+    protected open fun resetDefaultParams() {
+        mStates.isSupportedReportInterval.set(
+            productType == ProductType.GNSS_M_1
+                    || productType == ProductType.GNSS_M_2
+                    || productType == ProductType.GNSS_M_5
+                    || productType == ProductType.U_I_1
+                    || productType == ProductType.U_R_1
+        )
+        mStates.reportInterval.set("")
+        binding.recyclerView.bindingAdapter.models = getAdapterData()
+    }
+
+    private fun initAdapter() {
+        binding.recyclerView.setup { rv ->
+            addType<DataCenterStatusItem>(R.layout.data_center_status_item)
+            R.id.item.onClick {
+                val item = getModel<DataCenterStatusItem>()
+                val bundle = UniversalDataCenterParamFragment.newBundleArguments(
+                    item,
+                    productType,
+                    communicateWay,
+                    deviceInfo,
+                    bleDevice
+                )
+                nav().safeNavigate(
+                    getNavigationActionId(),
+                    bundle
+                )
+            }
+        }
+    }
+
+    override fun createObserver() {
+        super.createObserver()
+        setFragmentResultListener(AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY) { _, bundle ->
+            handleFragmentResult(bundle)
+        }
+    }
+
+    override fun lazyLoadData() {
+        binding.refreshLayout.autoRefresh()
+    }
+
+    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
+        (commandType == IOTCommandType.MD_GET_DEVICE_STATUS)
+                || (commandType == IOTCommandType.MR_MD_GET_DATA_CENTER_STATUS)
+                || (commandType == IOTCommandType.MD_GET_DATA_CENTER_STATUS)
+                || (commandType == IOTCommandType.MD_GET_DATA_REPORT_TIME)
+                || (commandType == IOTCommandType.MD_SET_DATA_REPORT_TIME)
+
+    /**
+     * 4G 下发指令响应失败
+     */
+    override fun doCmdResponseResultError(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
+        super.doCmdResponseResultError(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
+        )
+    }
+
+    /**
+     * 4G 下发指令响应超时
+     */
+    override fun doCmdResponseResultTimeOut(
+        cmdStr: String,
+        errMsg: String,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean
+    ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
+        super.doCmdResponseResultTimeOut(
+            cmdStr = cmdStr,
+            errMsg = errMsg,
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
+        )
+    }
+
+    /**
+     * 蓝牙下发指令响应超时
+     */
+    override fun showNearbyCommunicationTimeoutAlert(
+        cmdStr: String,
+        isDismissLoadingDialog: Boolean,
+        isShowErrMsg: Boolean,
+        isMessageDialog: Boolean,
+        errMsg: String
+    ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
+        super.showNearbyCommunicationTimeoutAlert(
+            cmdStr = cmdStr,
+            isDismissLoadingDialog = isDismissLoadingDialog,
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage,
+            errMsg = errMsg
+        )
+    }
+
+    protected fun getAdapterData(): MutableList<DataCenterStatusItem> {
+        val list = mutableListOf<DataCenterStatusItem>()
+        for (i in 1..centerNum) {
+            list.add(
+                DataCenterStatusItem(
+                    centerid = i,
+                    name = "数据链路$i",
+                    status = "0",
+                    bgResId = when (i) {
+                        1 -> R.drawable.layer_common_click_item_top_corner_4_with_divider
+                        centerNum -> R.drawable.shape_common_click_item_bottom_corner_4
+                        else -> R.drawable.layer_common_click_item_with_divider
+                    }
+                )
+            )
+        }
+        return list
+    }
+
+    override fun onResume() {
+        super.onResume()
+        initImmersionBar(binding.llToolbar.toolbar)
+    }
+
+    // 抽象方法，由子类实现
+    /**
+     * 查询数据，子类实现具体的查询逻辑
+     */
+    protected abstract fun queryData()
+
+    /**
+     * 获取导航动作ID
+     */
+    protected abstract fun getNavigationActionId(): Int
+
+    /**
+     * 处理从编辑页面返回的结果
+     */
+    protected open fun handleFragmentResult(bundle: Bundle){
+        binding.refreshLayout.autoRefresh()
+    }
+
+    // 可以被重写的方法
+    /**
+     * 获取点击代理，子类可以重写以提供自定义的点击处理逻辑
+     */
+    protected open fun getClickProxy(): BaseClickProxy {
+        return BaseClickProxy()
+    }
+
+    /**
+     * 处理返回导航
+     */
+    override fun handleBackByCheckDataModified() {
+        if (mStates.isDataModified.value == true) {
+            showExitConfirmationDialog()
+            return
+        }
+        nav().navigateUp()
+    }
+
+    companion object {
+        const val CENTER_NUM = "center_num"
+
+        fun newBundleArguments(
+            centerNum: Int = 1,
+            type: ProductType = ProductType.UnKnown,
+            communicateWay: CommunicateWay = NetPlatformConnect,
+            deviceInfo: DeviceInfo,
+            bleDevice: DiscoveredBluetoothDevice? = null,
+            statusBarColor: Int = R.color.white
+        ): Bundle = Bundle().apply {
+            putInt(CENTER_NUM, centerNum)
+            putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
+            putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
+            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
+        }
+    }
+} 

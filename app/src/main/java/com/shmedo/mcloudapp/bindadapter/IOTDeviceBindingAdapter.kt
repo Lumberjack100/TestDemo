@@ -41,22 +41,6 @@ object IOTDeviceBindingAdapter {
     }
 
     @JvmStatic
-    @BindingAdapter(value = ["bind_errno"], requireAll = false)
-    fun setErrnoStatus(view: TextView, errno: String) {
-        when (errno) {
-            "1" -> {
-                view.text = "正常"
-                view.setTextColor(ColorUtils.getColor(R.color.online_colorPrimary))
-            }
-
-            else -> {
-                view.text = "异常"
-                view.setTextColor(ColorUtils.getColor(R.color.error_FF4400))
-            }
-        }
-    }
-
-    @JvmStatic
     @BindingAdapter(value = ["bind_sensor_errno"], requireAll = false)
     fun setSensorErrnoStatus(view: TextView, errno: String) {
         view.text = SensorErrorType.getErrorMessageByCode(errno.toString())
@@ -79,17 +63,37 @@ object IOTDeviceBindingAdapter {
     fun setTextViewEnabled(
         textView: TextView,
         enabled: Boolean,
-        enabledColorRes: Int,
-        disabledColorRes: Int
+        enabledColorRes: Int = 0,
+        disabledColorRes: Int = 0
     ) {
+        // 使用特定的 tag key 来存储原始颜色
+        val originalColorKey = R.id.tag_original_text_color
+
+        // 第一次调用时保存原始颜色
+        if (textView.getTag(originalColorKey) == null) {
+            textView.setTag(originalColorKey, textView.currentTextColor)
+        }
+
         textView.isEnabled = enabled
-        textView.setTextColor(
-            if (enabled) {
-                if (enabledColorRes == 0) ColorUtils.getColor(R.color.title_text_color_black_90) else enabledColorRes
+
+        if (enabled) {
+            // 启用状态：使用指定的启用颜色，如果未指定则恢复原始颜色
+            val colorToUse = if (enabledColorRes != 0) {
+                enabledColorRes
             } else {
-                if (disabledColorRes == 0) ColorUtils.getColor(R.color.title_text_color_black_25) else disabledColorRes
+                // 恢复原始颜色
+                textView.getTag(originalColorKey) as Int
             }
-        )
+            textView.setTextColor(colorToUse)
+        } else {
+            // 禁用状态：统一使用 title_text_color_black_25
+            val disabledColor = if (disabledColorRes != 0) {
+                disabledColorRes
+            } else {
+                ColorUtils.getColor(R.color.title_text_color_black_25)
+            }
+            textView.setTextColor(disabledColor)
+        }
     }
 
     @JvmStatic
@@ -145,30 +149,6 @@ object IOTDeviceBindingAdapter {
         }
     }
 
-    @JvmStatic
-    @BindingAdapter("bind_voltage_color")
-    fun setVoltageColor(textView: TextView, value: String = "") {
-        if (value.isNullOrEmpty()) {
-            textView.setTextColor(textView.currentTextColor)
-            return
-        }
-        if (value.contains("%")) {
-            //移除 % 并转成 Double类型数值,如果值小于等于 10 textView 设置 R.color.device_offline_platform，否则 textView 设置 R.color.text_color_3AD094
-            val volt = value.replace("%", "").toDoubleOrNull() ?: 0.0
-            if (volt <= 10) {
-                textView.setTextColor(ColorUtils.getColor(R.color.error_FF4400))
-            } else {
-                textView.setTextColor(ColorUtils.getColor(R.color.online_colorPrimary))
-            }
-        } else {
-            val volt = value.toDoubleOrNull() ?: 0.0
-            if (volt <= 5) {
-                textView.setTextColor(ColorUtils.getColor(R.color.error_FF4400))
-            } else {
-                textView.setTextColor(ColorUtils.getColor(R.color.online_colorPrimary))
-            }
-        }
-    }
 
     @JvmStatic
     @BindingAdapter("progressDrawableReadingData")

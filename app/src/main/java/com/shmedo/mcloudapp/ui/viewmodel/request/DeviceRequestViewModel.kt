@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.json.JSONArray
 import org.json.JSONObject
 import timber.log.Timber
 
@@ -59,9 +60,6 @@ class DeviceRequestViewModel(
         MutableSharedFlow()
     val allProductTabResultFlow = _allProductTabResultFlow.asSharedFlow()
 
-    private val _productListResult = MutableResult<DataResult<List<ProductInfo>>>()
-    val productListResult: Result<DataResult<List<ProductInfo>>> =
-        _productListResult
 
     private val _deviceListResult = MutableResult<DataResult<List<DeviceInfo>>>()
     val deviceListResult: Result<DataResult<List<DeviceInfo>>> =
@@ -177,7 +175,7 @@ class DeviceRequestViewModel(
                 if (responseStatus.isSuccess) {
                     filterList.apply {
                         clear()
-                        add(SingleSelectionItem(name = "全部产品", isChecked = true))
+                        add(SingleSelectionItem(name = "全部产品", checked = true))
 
                         tempList.filter { product ->
                             product.deviceNum > 0  // Filter out products with 0 devices
@@ -215,7 +213,7 @@ class DeviceRequestViewModel(
      */
     fun getDeviceList(
         companyID: Int,
-        productID: String = "",
+        productIDList: List<Int>? = emptyList(), // 新增参数，逗号分隔的产品ID列表
         deviceToken: String = "",
         currentPage: Int,
         pageSize: Int,
@@ -227,8 +225,10 @@ class DeviceRequestViewModel(
                 put("companyID", companyID)
                 if (deviceToken.isNotEmpty())
                     put("deviceToken", deviceToken)//SN号,支持模糊查询
-                if (productID.isNotEmpty() && productID != "-1")
-                    put("productID", productID)//产品ID,null则不指定产品
+                if (!productIDList.isNullOrEmpty()) {
+                    // 优先使用 productIDList
+                    put("productIDList", JSONArray(productIDList))//产品ID列表,逗号分隔
+                }
                 if (onlineStatus.isNotEmpty())
                     put("onlineStatus", onlineStatus)//在线状态
                 if (isHasListSuperInfoPermission)

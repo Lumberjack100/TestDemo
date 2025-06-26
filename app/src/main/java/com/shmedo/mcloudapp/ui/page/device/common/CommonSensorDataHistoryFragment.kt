@@ -29,6 +29,7 @@ import com.shmedo.mcloudapp.databinding.ItemUdSensorDataBinding
 import com.shmedo.mcloudapp.databinding.ItemUdSensorDataHeaderBinding
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.HoverHeaderModel
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
@@ -77,15 +78,13 @@ class CommonSensorDataHistoryFragment : BaseFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentCommonSensorDataHistoryBinding
-        toolbarViewModel.toolbarTitleText.set("历史数据")
+        binding.llToolbar.toolbar.title = "历史数据"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             nav().navigateUp()
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                nav().navigateUp()
-            }
-        })
+        registerOnBackPressedDispatcher {
+            nav().navigateUp()
+        }
         initRefresh()
         initAdapter()
     }
@@ -218,9 +217,9 @@ class CommonSensorDataHistoryFragment : BaseFragment() {
                 )
                 modelValueDescList.addAll(
                     arrayListOf(
-                        "高度(m)",
-                        "高度(m)",
-                        "角度(°)",
+                        "高度（米）",
+                        "高度（米）",
+                        "角度（度）",
                         "操作"
                     )
                 )
@@ -248,8 +247,8 @@ class CommonSensorDataHistoryFragment : BaseFragment() {
                 )
                 modelValueDescList.addAll(
                     arrayListOf(
-                        "高度(mm)",
-                        "角度(°)"
+                        "高度（毫米）",
+                        "角度（度）"
                     )
                 )
                 modelFieldJsonPathList.addAll(
@@ -277,8 +276,8 @@ class CommonSensorDataHistoryFragment : BaseFragment() {
                 )
                 modelValueDescList.addAll(
                     arrayListOf(
-                        "高度(mm)",
-                        "角度(°)",
+                        "高度（毫米）",
+                        "角度（度）",
                         "操作"
                     )
                 )

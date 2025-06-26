@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.ui.page.debug.logger
 
 import android.os.Bundle
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.viewModels
 import com.drake.brv.PageRefreshLayout
@@ -12,7 +11,7 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.data.source.local.entity.LogSession
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -21,6 +20,7 @@ import com.shmedo.mcloudapp.databinding.FragmentLogSessionListBinding
 import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
+import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.HoverHeaderModel
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
@@ -51,15 +51,13 @@ class LogSessionListFragment : BaseFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentLogSessionListBinding
-        toolbarViewModel.toolbarTitleText.set("应用日志")
+        binding.llToolbar.toolbar.title = "应用日志"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                nav().navigateUp()
-            }
-        })
+        registerOnBackPressedDispatcher {
+            nav().navigateUp()
+        }
         initRefresh()
         initAdapter()
     }
@@ -133,7 +131,8 @@ class LogSessionListFragment : BaseFragment() {
 
     private fun loadLogSessionList() {
         launchWithViewLifecycle {
-            logViewModel.getLogSessionList(MmkvCacheUtil.getAccount())
+            
+            logViewModel.getLogSessionList(AuthMMKVOwner.account)
                 .let { logSessionList ->
                     if (logSessionList.isEmpty()) {
                         binding.refreshLayout.showEmpty()

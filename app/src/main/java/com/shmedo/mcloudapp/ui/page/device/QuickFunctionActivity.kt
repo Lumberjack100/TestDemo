@@ -90,7 +90,6 @@ class QuickFunctionActivity : BaseActivity() {
                     ///根据设备 SN 用旧的产品规则判断所属产品类型
                     type = ProductType.valueByOldSuffix(deviceInfo.deviceToken)
                     if (type == ProductType.UnKnown) {
-                        type = ProductType.TEST_DEVICE
 //                        return
                     }
                 }

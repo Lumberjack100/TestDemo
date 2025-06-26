@@ -1,6 +1,6 @@
 package com.shmedo.core.data.repository
 
-import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.model.DispatchCmdItem
 import com.shmedo.core.model.QueryCmdResult
 import com.shmedo.lib.network.util.BaseURL
@@ -19,7 +19,7 @@ class DeviceInteractiveRepositoryImp : BaseRepositoryImp() {
     suspend fun batchDispatchRawCmd(
         jsonParam: String
     ): List<DispatchCmdItem> {
-        val headers: Map<String, String> = mapOf("Authorization" to MmkvCacheUtil.getToken())
+        val headers: Map<String, String> = mapOf("Authorization" to AuthMMKVOwner.token)
 
         return commonPostResponseStringCallAwait<List<DispatchCmdItem>>(
             baseUrl = BaseURL.IOT_INTERACTIVE_SERVICE_ADDRESS.baseUrl,
@@ -36,7 +36,7 @@ class DeviceInteractiveRepositoryImp : BaseRepositoryImp() {
     suspend fun queryCmdResultByMsgID(
         jsonParam: String
     ): List<QueryCmdResult> {
-        val headers: Map<String, String> = mapOf("Authorization" to MmkvCacheUtil.getToken())
+        val headers: Map<String, String> = mapOf("Authorization" to AuthMMKVOwner.token)
 
         return commonPostResponseStringCallAwait<List<QueryCmdResult>>(
             baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,

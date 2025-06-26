@@ -32,9 +32,9 @@ import com.shmedo.mcloudapp.model.NetPlatformConnect
 import com.shmedo.mcloudapp.model.RebootModule
 import com.shmedo.mcloudapp.model.TelemetryDataModule
 import com.shmedo.mcloudapp.model.TimeCalibrationModule
+import com.shmedo.mcloudapp.ui.dialog.TelemetryPopupView
+import com.shmedo.mcloudapp.ui.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.TelemetryPopupView
-import com.shmedo.mcloudapp.ui.page.device.mr702.dialog.TimeCalibrationPopupView
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommandResponseViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.CommonDeviceHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
@@ -119,7 +119,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     override fun initData() {
         super.initData()
         toolbarViewModel.toolbarIvActionVisible.set(true)
-        mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
+        mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
         mHeadStates.productName.set(deviceInfo.productName)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
         val deviceName =
@@ -157,11 +157,11 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
         if (isConnected) {
             mHeadStates.deviceStateTagText.set("已连接")
             mHeadStates.connectOperateText.set("断开连接")
-            mHeadStates.productLogoResId.set(mHeadStates.productLightResId.get())
+            mHeadStates.productLogoResId.set(mHeadStates.productNormalResId.get())
         } else {
             mHeadStates.deviceStateTagText.set("未连接")
             mHeadStates.connectOperateText.set("蓝牙连接")
-            mHeadStates.productLogoResId.set(mHeadStates.productGrayResId.get())
+            mHeadStates.productLogoResId.set(mHeadStates.productOfflineResId.get())
         }
         //刷新模块状态
         binding.rvModule.models?.forEach {
@@ -183,15 +183,7 @@ abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
 
         override fun onConnectOperateClick() {
             if (bleViewModel.isConnected()) {
-                showMessage(
-                    StringUtils.getString(R.string.disconnect_device_warn),
-                    "温馨提示",
-                    "确定",
-                    {
-                        bleViewModel.disconnect()
-                    },
-                    "取消"
-                )
+                bleViewModel.disconnect()
             } else {
                 bleViewModel.launch(bleDevice!!)
             }

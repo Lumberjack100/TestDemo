@@ -66,6 +66,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             android:text='@{stateVM.isAllowLocation ? "已允许" : "去设置"}'
+                            android:drawableEnd="@drawable/ic_arrow_right"
                             tools:text="去设置" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -97,6 +98,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             android:text='@{stateVM.isAllowBluetooth ? "已允许" : "去设置"}'
+                            android:drawableEnd="@drawable/ic_arrow_right"
                             tools:text="去设置" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -128,6 +130,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             android:text='@{stateVM.isAllowCamera ? "已允许" : "去设置"}'
+                            android:drawableEnd="@drawable/ic_arrow_right"
                             tools:text="去设置" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -159,6 +162,7 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             android:text='@{stateVM.isAllowStorage ? "已允许" : "去设置"}'
+                            android:drawableEnd="@drawable/ic_arrow_right"
                             tools:text="去设置" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
 

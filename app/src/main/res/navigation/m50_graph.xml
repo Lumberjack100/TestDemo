@@ -13,9 +13,9 @@
 
     <fragment
         android:id="@+id/m50HomeFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50HomeFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50HomeFragment"
         android:label="M50HomeFragment"
-        tools:layout="@layout/fragment_m50_home" />
+        tools:layout="@layout/fragment_universal_device_home_new" />
 
     <fragment
         android:id="@+id/commonLocationInfoFragment"
@@ -31,61 +31,61 @@
 
     <fragment
         android:id="@+id/m50BaseInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50BaseInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50BaseInfoFragment"
         android:label="M50BaseInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
         android:id="@+id/m50NetInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50NetInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50NetInfoFragment"
         android:label="M50NetInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
         android:id="@+id/m50StatusInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50StatusInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50StatusInfoFragment"
         android:label="M50StatusInfoFragment"
         tools:layout="@layout/fragment_base_device_status_info_style2" />
 
     <fragment
         android:id="@+id/m50SatelliteInfoFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50SatelliteInfoFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50SatelliteInfoFragment"
         android:label="M50SatelliteInfoFragment"
         tools:layout="@layout/fragment_m50_satellite_info" />
 
     <fragment
         android:id="@+id/m50WorkModelParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50ReportModelParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50ReportModelParamFragment"
         android:label="M50ReportModelParamFragment"
         tools:layout="@layout/fragment_m50_report_model_param" />
 
     <fragment
         android:id="@+id/m50NetworkConfigFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50NetworkConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50NetworkConfigFragment"
         android:label="M50NetworkConfigFragment"
         tools:layout="@layout/fragment_m50_network_config" />
 
     <fragment
         android:id="@+id/m50RadioSettingFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50RadioSettingFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50RadioSettingFragment"
         android:label="M50RadioSettingFragment"
         tools:layout="@layout/fragment_m50_radio_setting" />
 
     <fragment
         android:id="@+id/m50SensorConfigFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50SensorConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50SensorConfigFragment"
         android:label="M50SensorConfigFragment"
         tools:layout="@layout/fragment_m50_sensor_config" />
 
     <fragment
         android:id="@+id/m50SerialPortParamFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50SerialPortParamFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50SerialPortParamFragment"
         android:label="M50SerialPortParamFragment"
         tools:layout="@layout/fragment_m50_serial_port_param" />
 
     <fragment
         android:id="@+id/m50CORSConfigFragment"
-        android:name="com.shmedo.mcloudapp.ui.page.device.m50.fragment.M50CORSConfigFragment"
+        android:name="com.shmedo.mcloudapp.ui.page.device.gnss_product.fragment.m50.M50CORSConfigFragment"
         android:label="M50CORSConfigFragment"
         tools:layout="@layout/fragment_m50_cors_config" />
 

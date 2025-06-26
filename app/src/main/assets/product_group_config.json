@@ -1,0 +1,151 @@
+[
+  {
+    "productGroup": "GNSS接收机",
+    "children": [
+      {
+        "productSeriesName": "M20",
+        "productIdList": [
+          348,
+          243
+        ]
+      },
+      {
+        "productSeriesName": "M50",
+        "productIdList": [
+          614
+        ]
+      },
+      {
+        "productSeriesName": "E40",
+        "productIdList": [
+          242
+        ]
+      },
+      {
+        "productSeriesName": "E50Pro",
+        "productIdList": [
+          624
+        ]
+      },
+      {
+        "productSeriesName": "GT600",
+        "productIdList": [
+          513
+        ]
+      }
+    ]
+  },
+  {
+    "productGroup": "智能监测传感器",
+    "children": [
+      {
+        "productSeriesName": "DR030",
+        "productIdList": [
+          625,
+          602
+        ]
+      },
+      {
+        "productSeriesName": "BHY-3S",
+        "productIdList": [
+          349
+        ]
+      },
+      {
+        "productSeriesName": "LB20S",
+        "productIdList": [
+          520
+        ]
+      },
+      {
+        "productSeriesName": "LR200",
+        "productIdList": [
+          336
+        ]
+      }
+    ]
+  },
+  {
+    "productGroup": "采集器",
+    "children": [
+      {
+        "productSeriesName": "MR702",
+        "productIdList": [
+          554
+        ]
+      },
+      {
+        "productSeriesName": "MR701",
+        "productIdList": [
+          617,
+          515,
+          510,
+          506,
+          500,
+          490,
+          489,
+          466,
+          465,
+          464,
+          457,
+          456,
+          455,
+          394,
+          355,
+          354,
+          353,
+          352
+        ]
+      },
+      {
+        "productSeriesName": "DAS",
+        "productIdList": [
+          447,
+          445,
+          433,
+          393,
+          392,
+          391,
+          390,
+          389,
+          343,
+          245,
+          240,
+          239,
+          238,
+          236,
+          234,
+          233,
+          227,
+          226,
+          225,
+          132
+        ]
+      }
+    ]
+  },
+  {
+    "productGroup": "自动测斜仪",
+    "children": [
+      {
+        "productSeriesName": "ADME",
+        "productIdList": [
+          345,
+          428
+        ]
+      }
+    ]
+  },
+  {
+    "productGroup": "其他产品",
+    "children": [
+      {
+        "productSeriesName": "其他",
+        "productIdList": [
+          630,
+          573
+        ]
+      }
+    ]
+  }
+]

@@ -25,7 +25,12 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.androidx.viewmodel.ext.android.getViewModel
-
+/**
+ * @author：gonghe
+ * @time: 2025/6/23
+ * @desc: 收藏的设备列表页面
+ *
+ */
 class FollowDeviceListFragment : BaseFragment() {
     private lateinit var binding: FragmentFollowDeviceListBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
@@ -48,7 +53,7 @@ class FollowDeviceListFragment : BaseFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentFollowDeviceListBinding
-        toolbarViewModel.toolbarTitleText.set("我的收藏")
+        binding.llToolbar.toolbar.title = "我的收藏"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             nav().navigateUp()
         }

@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS485Port1Fragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS485Port1Fragment.ClickProxy" />
     </data>
 
     <com.drake.brv.PageRefreshLayout
@@ -32,28 +32,33 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="60dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                android:paddingTop="@dimen/page_content_container_padding_top_12"
+                android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
                 <include
                     layout="@layout/include_mr702_port_common_head"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_size_1"
+                    android:background="@drawable/shape_common_click_item_top_corner_4"
                     app:vm="@{homeVM}" />
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_size_15"
-                    android:layout_marginTop="@dimen/dimen_size_15"
-                    android:layout_marginBottom="@dimen/dimen_size_15"
-                    android:drawablePadding="-80dp"
-                    android:text="采集参数"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_17"
-                    android:textStyle="bold"
-                    app:drawableStartCompat="@drawable/ic_mr702_interface_info_collection_param" />
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_Layout_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="14dp"
+                        android:background="@color/black" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_GroupItem_Title_Style2"
+                        android:layout_marginStart="@dimen/dimen_size_8"
+                        android:text="采集参数" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_Layout_Style"
@@ -61,15 +66,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        
                         android:text="采集频率（毫秒）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        
-                        android:text="@={stateVM.acquisitionFrequency}"
                         android:inputType="number"
-                        app:lengthFilter="@{5}" />
+                        android:maxLength="5"
+                        android:text="@={stateVM.acquisitionFrequency}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -79,15 +82,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        
                         android:text="采集周期（分钟）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        
-                        android:text="@={stateVM.collectionDuration}"
                         android:inputType="number"
-                        app:lengthFilter="@{5}" />
+                        android:maxLength="5"
+                        android:text="@={stateVM.collectionDuration}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -97,15 +98,13 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        
                         android:text="采集次数(N)" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        
-                        android:text="@={stateVM.collectionTimes}"
                         android:inputType="number"
-                        app:lengthFilter="@{5}" />
+                        android:maxLength="5"
+                        android:text="@={stateVM.collectionTimes}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -115,54 +114,54 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        
                         android:text="无应答次数" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        
-                        android:text="@={stateVM.noResponseTimes}"
                         android:inputType="number"
-                        app:lengthFilter="@{5}" />
+                        android:maxLength="5"
+                        android:text="@={stateVM.noResponseTimes}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_Layout_Style"
-                    android:background="@drawable/layer_common_click_item_with_divider">
+                    android:background="@drawable/shape_common_click_item_bottom_corner_4">
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        
                         android:text="延时时间（秒）" />
 
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
-                        
-                        android:text="@={stateVM.delayDuration}"
                         android:inputType="number"
-                        app:lengthFilter="@{5}" />
+                        android:maxLength="5"
+                        android:text="@={stateVM.delayDuration}" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimen_size_15"
-                    android:layout_marginTop="@dimen/dimen_size_15"
-                    android:layout_marginBottom="@dimen/dimen_size_15"
-                    android:drawablePadding="-80dp"
-                    android:text="传感器配置"
-                    android:textColor="@color/title_text_color"
-                    android:textSize="@dimen/text_size_17"
-                    android:textStyle="bold"
-                    app:drawableStartCompat="@drawable/ic_mr702_interface_info_sensor_config" />
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_Layout_Style"
+                    android:layout_marginTop="@dimen/page_content_item_margin_top_12"
+                    android:background="@drawable/shape_common_click_item_top_corner_4">
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="14dp"
+                        android:background="@color/black" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_GroupItem_Title_Style2"
+                        android:layout_marginStart="@dimen/dimen_size_8"
+                        android:text="传感器" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
+                    android:background="@drawable/shape_common_click_item_bottom_corner_4"
                     android:clipToPadding="false"
                     android:padding="@dimen/dimen_size_15"
                     android:splitMotionEvents="false"
@@ -171,12 +170,20 @@
                     tools:itemCount="6"
                     tools:listitem="@layout/item_mr702_port_sensor" />
 
-                <com.google.android.material.textview.MaterialTextView
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_reset"
+                    style="@style/ResetButton_Style2"
+                    android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                    android:onClick="@{()->click.onResetClick()}"
+                    android:text="@string/button_reset_text" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_confirm"
-                    style="@style/SubmitButton_Style"
-                    onClickWithDebouncing="@{()->click.onSubmitClick()}"
-                    android:layout_marginBottom="15dp"
-                    android:text="保存" />
+                    style="@style/SubmitButton_Style2"
+                    onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                    android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                    android:enabled="@{stateVM.isDataModified}"
+                    android:text="@string/button_save_text" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.core.widget.NestedScrollView>

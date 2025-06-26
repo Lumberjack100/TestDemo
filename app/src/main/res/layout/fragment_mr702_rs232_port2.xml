@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.mr702.fragment.port.MR702RS232Port2Fragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port.MR702RS232Port2Fragment.ClickProxy" />
     </data>
 
     <com.drake.brv.PageRefreshLayout
@@ -32,19 +32,33 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="60dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingHorizontal="@dimen/page_content_container_padding_horizontal_12"
+                android:paddingTop="@dimen/page_content_container_padding_top_12"
+                android:paddingBottom="@dimen/page_content_container_padding_bottom_100">
 
                 <include
                     layout="@layout/include_mr702_port_common_head"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_size_1"
+                    android:background="@drawable/shape_common_click_item_top_corner_4"
                     app:vm="@{homeVM}" />
 
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_GroupItem_Title_Style"
-                    android:text="北斗数据终端配置" />
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    style="@style/Common_EditItem_Layout_Style"
+                    android:background="@drawable/layer_common_click_item_with_divider">
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="14dp"
+                        android:background="@color/black" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="@style/Common_GroupItem_Title_Style2"
+                        android:layout_marginStart="@dimen/dimen_size_8"
+                        android:text="串口参数" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
@@ -52,13 +66,12 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Title_Style"
-                        android:text="状态" />
+                        android:text="接入状态" />
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
                         android:drawableEnd="@null"
                         android:text="@{stateVM.status}"
-                        android:textSize="17sp"
                         tools:text="已接入" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -69,23 +82,16 @@
 
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/SwitchButton_Item_Title_Style"
-                        android:text="开关"
-                         />
+                        android:text="开关" />
 
                     <com.kyleduo.switchbutton.SwitchButton
-                        android:id="@+id/sensorSB"
                         style="@style/SwitchButton_Item_Button_Style"
-                        checkedImmediatelyNoEvent="@{stateVM.isOpened}"
-                        android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
+                        android:checked="@={stateVM.isOpened}"
                         app:kswAnimationDuration="100"
                         app:kswBackDrawable="@drawable/sl_switchbutton_back"
                         app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
 
                 </RelativeLayout>
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="@style/Common_GroupItem_Title_Style"
-                    android:text="串口参数" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_EditItem_Layout_Style"
@@ -100,7 +106,6 @@
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{stateVM.isOpened}"
-                        android:hint="请输入"
                         android:text="@={stateVM.address}"
                         app:lengthFilter="@{20}" />
 
@@ -119,9 +124,8 @@
                     <com.shmedo.mcloudapp.ui.widget.ClearEditText
                         style="@style/Common_EditItem_EditText_Style"
                         textViewEnabled="@{stateVM.isOpened}"
-                        android:hint="请输入"
-                        android:text="@={stateVM.baudRate}"
                         android:inputType="number"
+                        android:text="@={stateVM.baudRate}"
                         app:lengthFilter="@{6}" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -139,7 +143,6 @@
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
                         textViewEnabled="@{stateVM.isOpened}"
-                        android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.dataBit}"
                         tools:text="5" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -158,7 +161,6 @@
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
                         textViewEnabled="@{stateVM.isOpened}"
-                        android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.checkBit}"
                         tools:text="NONE" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
@@ -166,7 +168,7 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     style="@style/Common_ClickableItem_Layout_Style"
                     onClickWithDebouncing="@{()->click.onStopBitChooseClick()}"
-                    android:background="@drawable/layer_common_click_item_with_divider"
+                    android:background="@drawable/shape_common_click_item_bottom_corner_4"
                     android:enabled="@{stateVM.isOpened}">
 
                     <com.google.android.material.textview.MaterialTextView
@@ -177,18 +179,24 @@
                     <com.google.android.material.textview.MaterialTextView
                         style="@style/Common_ClickableItem_Value_Style"
                         textViewEnabled="@{stateVM.isOpened}"
-                        android:drawableEnd="@drawable/ic_arrow_down"
                         android:text="@{stateVM.stopBit}"
                         tools:text="2" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
 
-                <com.google.android.material.textview.MaterialTextView
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_reset"
+                    style="@style/ResetButton_Style2"
+                    android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                    android:onClick="@{()->click.onResetClick()}"
+                    android:text="@string/button_reset_text" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_confirm"
-                    style="@style/SubmitButton_Style"
-                    onClickWithDebouncing="@{()->click.onSubmitClick()}"
-                    visible="@{stateVM.isOpened}"
-                    android:layout_marginBottom="15dp"
-                    android:text="保存" />
+                    style="@style/SubmitButton_Style2"
+                    onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                    android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                    android:enabled="@{stateVM.isDataModified}"
+                    android:text="@string/button_save_text" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
         </androidx.core.widget.NestedScrollView>

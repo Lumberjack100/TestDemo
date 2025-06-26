@@ -11,6 +11,7 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 open class BaseDataCenterParamViewModel : BaseStateViewModel() {
     val isEditable = NonNullObservableField(false)
     val isCenterOpened = NonNullObservableField(true)
+
     val centerName = NonNullObservableField("")
     val centerStatus = NonNullObservableField("已开启")
 

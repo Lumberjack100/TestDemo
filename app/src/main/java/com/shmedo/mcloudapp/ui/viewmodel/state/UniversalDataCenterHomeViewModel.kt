@@ -23,7 +23,6 @@ class UniversalDataCenterHomeViewModel : BaseStateViewModel() {
     override fun saveInitialState() {
         isInitializing = true
         initialState = mapOf(
-            "isSupportedReportInterval" to isSupportedReportInterval.get(),
             "reportInterval" to reportInterval.get()
         )
         isDataModified.value = false
@@ -32,7 +31,6 @@ class UniversalDataCenterHomeViewModel : BaseStateViewModel() {
 
     override fun registerField() {
         listOf(
-            isSupportedReportInterval,
             reportInterval
         ).forEach { field ->
             field.addOnPropertyChangedCallback(object : Observable.OnPropertyChangedCallback() {
@@ -47,7 +45,6 @@ class UniversalDataCenterHomeViewModel : BaseStateViewModel() {
         if (isInitializing) return
         isDataModified.value = initialState.any { (key, value) ->
             when (key) {
-                "isSupportedReportInterval" -> isSupportedReportInterval.get() != value
                 "reportInterval" -> reportInterval.get() != value
                 else -> false
             }

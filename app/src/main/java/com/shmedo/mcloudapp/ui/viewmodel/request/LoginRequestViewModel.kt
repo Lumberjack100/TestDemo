@@ -14,6 +14,7 @@ import com.shmedo.core.data.repository.NetDataRepository
 import com.shmedo.core.model.BasicUserInfo
 import com.shmedo.core.model.CompanyInfo
 import com.shmedo.core.model.MR702PortSensorConfig
+import com.shmedo.core.model.ProductGroupConfig
 import com.shmedo.core.model.SensorModel
 import com.shmedo.core.model.UserPermissionInfo
 import com.shmedo.core.model.UserWrapperInfo
@@ -110,9 +111,9 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             handleLogin(
                 loginMethod = { loginByAccount(mAccount, mPassword) },
                 onTokenReceived = { token ->
-                    MmkvCacheUtil.setAccount(mAccount)
-                    MmkvCacheUtil.setPassword(mPassword)
-                    MmkvCacheUtil.setToken(token.toString())
+                    AuthMMKVOwner.account = mAccount
+                    AuthMMKVOwner.password = mPassword
+                    AuthMMKVOwner.token = token.toString()
                 }
             )
         }
@@ -126,7 +127,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             handleLogin(
                 loginMethod = { loginByPhone(phone, captcha) },
                 onTokenReceived = { token ->
-                    MmkvCacheUtil.setToken(token.toString())
+                    AuthMMKVOwner.token = token.toString()
                 }
             )
         }
@@ -147,6 +148,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
         AuthMMKVOwner.userID = basicUserInfo.subjectID
         AuthMMKVOwner.companyID = basicUserInfo.companyID
         AuthMMKVOwner.realName = basicUserInfo.subjectName.trim()
+        AuthMMKVOwner.phone = basicUserInfo.phone
 
         val userWrapperInfo: UserWrapperInfo =
             queryUserByID(basicUserInfo.companyID, basicUserInfo.subjectID) ?: return
@@ -154,7 +156,6 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
 
         val iotPermissionList =
             queryAllPermissionInService(basicUserInfo.companyID) ?: return
-        MmkvCacheUtil.setUserPermissionList(iotPermissionList)
         iotPermissionList.forEach {
             if (it.permissionToken == "ListSuperInfo") {
                 AuthMMKVOwner.listSuperInfoPermission = true
@@ -379,6 +380,33 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
 
     //<editor-fold desc="米易通远程配置接口">
     /**
+     * 加载产品配置
+     */
+    fun loadProductGroupConfig() {
+        viewModelScope.launch(Dispatchers.Default) {
+            try {
+                val localConfigInfo =
+                    ResourceUtils.readAssets2String("product_group_config.json")
+//                Timber.d("loadProductGroupConfig: $localConfigInfo")
+                val localConfigList =
+                    MoshiUtil.fromJson<List<ProductGroupConfig>>(localConfigInfo)
+                        ?: arrayListOf()
+
+                MmkvCacheUtil.setProductGroupConfig(localConfigList)
+            } catch (e: Exception) {
+                Timber.e(e)
+                val msg =
+                    "call loadProductGroupConfig() error: ${e.localizedMessage}" //这里的msg是网络请求的错误信息
+                addLogItem(
+                    sessionId = CommonMMKVOwner.appLogSessionId,
+                    priority = Log.ERROR,
+                    data = msg
+                )
+            }
+        }
+    }
+
+    /**
      * 加载MR702传感器配置
      */
     fun loadMR702SensorConfig() {
@@ -400,7 +428,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             } catch (e: Exception) {
                 Timber.e(e)
                 val msg =
-                    "call loadExternalConfig() error: ${e.localizedMessage}" //这里的msg是网络请求的错误信息
+                    "call loadMR702SensorConfig() error: ${e.localizedMessage}" //这里的msg是网络请求的错误信息
                 addLogItem(
                     sessionId = CommonMMKVOwner.appLogSessionId,
                     priority = Log.ERROR,
@@ -414,8 +442,8 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
      * 获取远程 MR702 传感器配置列表
      */
     suspend fun queryRemoteMR702SensorConfigList(): List<SensorModel> {
-        val amsToken: String = appConfigLogin() ?: return arrayListOf()
-        MmkvCacheUtil.setRemoteConfigToken(amsToken)
+        val token: String = appConfigLogin() ?: return arrayListOf()
+        CommonMMKVOwner.deviceRemoteConfigToken = token
 
         val remoteAppConfigInfo: MR702PortSensorConfig =
             queryMR702SensorConfigList() ?: return arrayListOf()

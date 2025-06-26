@@ -1,7 +1,6 @@
 package com.shmedo.core.data.repository
 
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
-import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.model.CloudDeviceData
 import com.shmedo.core.model.DeviceDetailInfo
 import com.shmedo.core.model.DeviceInfo
@@ -36,7 +35,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
         isHasListSuperInfoPermission: Boolean = false,
         onCatch: ((Throwable) -> Unit)? = null
     ): DeviceStatisticInfo? {
-        val headers: Map<String, String> = mapOf("Authorization" to MmkvCacheUtil.getToken())
+        val headers: Map<String, String> = mapOf("Authorization" to AuthMMKVOwner.token)
 
         return commonPostResponseString<DeviceStatisticInfo>(
             baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
@@ -57,7 +56,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
         isHasListSuperInfoPermission: Boolean = false,
         onCatch: ((Throwable) -> Unit)? = null
     ): PageList<ProductInfo>? {
-        val headers: Map<String, String> = mapOf("Authorization" to MmkvCacheUtil.getToken())
+        val headers: Map<String, String> = mapOf("Authorization" to AuthMMKVOwner.token)
 
         return commonPostResponseString<PageList<ProductInfo>>(
             baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
@@ -78,7 +77,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
         isHasListSuperInfoPermission: Boolean = false,
         onCatch: ((Throwable) -> Unit)? = null
     ): PageList<DeviceInfo>? {
-        val headers: Map<String, String> = mapOf("Authorization" to MmkvCacheUtil.getToken())
+        val headers: Map<String, String> = mapOf("Authorization" to AuthMMKVOwner.token)
 
         return commonPostResponseString<PageList<DeviceInfo>>(
             baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
@@ -96,7 +95,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
     ): PageList<DeviceInfo>? {
-        val headers: Map<String, String> = mapOf("Authorization" to MmkvCacheUtil.getToken())
+        val headers: Map<String, String> = mapOf("Authorization" to AuthMMKVOwner.token)
 
         return commonPostResponseString<PageList<DeviceInfo>>(
             baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
@@ -114,7 +113,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
     ): String? {
-        val headers: Map<String, String> = mapOf("Authorization" to MmkvCacheUtil.getToken())
+        val headers: Map<String, String> = mapOf("Authorization" to AuthMMKVOwner.token)
 
         return commonPostResponseString<String>(
             baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
@@ -132,7 +131,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
     ): String? {
-        val headers: Map<String, String> = mapOf("Authorization" to MmkvCacheUtil.getToken())
+        val headers: Map<String, String> = mapOf("Authorization" to AuthMMKVOwner.token)
 
         return commonPostResponseString<String>(
             baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
@@ -150,7 +149,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
     ): DeviceDetailInfo? {
-        val headers: Map<String, String> = mapOf("Authorization" to MmkvCacheUtil.getToken())
+        val headers: Map<String, String> = mapOf("Authorization" to AuthMMKVOwner.token)
 
         return commonPostResponseString<DeviceDetailInfo>(
             baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
@@ -168,7 +167,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
     ): String? {
-        val headers: Map<String, String> = mapOf("Authorization" to MmkvCacheUtil.getToken())
+        val headers: Map<String, String> = mapOf("Authorization" to AuthMMKVOwner.token)
 
         return commonPostResponseString<String>(
             baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
@@ -186,7 +185,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
     ): PageList<FirmWareInfo>? {
-        val headers: Map<String, String> = mapOf("Authorization" to MmkvCacheUtil.getToken())
+        val headers: Map<String, String> = mapOf("Authorization" to AuthMMKVOwner.token)
 
         return commonPostResponseString<PageList<FirmWareInfo>>(
             baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
@@ -204,7 +203,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
         jsonParam: String,
         onCatch: ((Throwable) -> Unit)? = null
     ): String? {
-        val headers: Map<String, String> = mapOf("Authorization" to MmkvCacheUtil.getToken())
+        val headers: Map<String, String> = mapOf("Authorization" to AuthMMKVOwner.token)
 
         return commonPostResponseString<String>(
             baseUrl = BaseURL.IOT_INTERACTIVE_SERVICE_ADDRESS.baseUrl,
@@ -235,7 +234,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
             put("currentPage", currentPage)
             put("pageSize", pageSize)
         }
-        val headers: Map<String, String> = mapOf("Authorization" to MmkvCacheUtil.getToken())
+        val headers: Map<String, String> = mapOf("Authorization" to AuthMMKVOwner.token)
 
         return commonPostResponseString<PageList<DeviceSensorBasicInfo>>(
             baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
@@ -257,7 +256,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
         val jsonObject = JSONObject().apply {
             put("sensorID", sensorID)
         }
-        val headers: Map<String, String> = mapOf("Authorization" to MmkvCacheUtil.getToken())
+        val headers: Map<String, String> = mapOf("Authorization" to AuthMMKVOwner.token)
 
         return commonPostResponseString<List<Map<String, String>>>(
             baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
@@ -295,7 +294,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
             put("currentPage", currentPage)
             put("pageSize", pageSize)
         }
-        val headers: Map<String, String> = mapOf("Authorization" to MmkvCacheUtil.getToken())
+        val headers: Map<String, String> = mapOf("Authorization" to AuthMMKVOwner.token)
 
         return commonPostResponseString<DeviceSensorDataPageInfo>(
             baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
@@ -334,7 +333,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
             put("currentPage", currentPage)
             put("pageSize", pageSize)
         }
-        val headers: Map<String, String> = mapOf("Authorization" to MmkvCacheUtil.getToken())
+        val headers: Map<String, String> = mapOf("Authorization" to AuthMMKVOwner.token)
 
         return commonPostResponseString<PageList<Map<String, String>>>(
             baseUrl = BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl,
@@ -355,7 +354,7 @@ class DeviceManageRepositoryImp : BaseRepositoryImp() {
     ): PageList<CloudDeviceData>? =
         RxHttp.postJson("/QueryCloudDataEx")
             .setDomainIfAbsent(BaseURL.CLOUD_PLATFORM_DATA_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addHeader("Authorization", AuthMMKVOwner.token)
             .addAll(jsonParam)
             .toAwait(object : CloudPlatformApiResponseParser<PageList<CloudDeviceData>>() {})
             .tryAwait(onCatch)

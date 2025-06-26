@@ -33,7 +33,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/8/22
- * @desc: 一体化雷达泥位计移动网络参数
+ * @desc: 一体式雷达水位/泥位计移动网络参数
  *
  */
 class UDMobileNetworkParamFragment : BaseIOTDeviceFragment() {
@@ -59,7 +59,7 @@ class UDMobileNetworkParamFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdMobileNetworkParamBinding
-        toolbarViewModel.toolbarTitleText.set("网络配置")
+        binding.llToolbar.toolbar.title = "网络配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }
@@ -144,6 +144,10 @@ class UDMobileNetworkParamFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
+        (commandType == IOTCommandType.MR_MD_GET_DATA_NETWORK)
+                || (commandType == IOTCommandType.MR_MD_SET_DATA_NETWORK)
+
     /**
      * 4G 下发指令响应失败
      */
@@ -153,11 +157,12 @@ class UDMobileNetworkParamFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultError(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -170,11 +175,12 @@ class UDMobileNetworkParamFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultTimeOut(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -188,12 +194,13 @@ class UDMobileNetworkParamFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean,
         errMsg: String
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.showNearbyCommunicationTimeoutAlert(
             cmdStr = cmdStr,
             isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
-            errMsg = "设备未响应"
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage,
+            errMsg = errMsg
         )
     }
 

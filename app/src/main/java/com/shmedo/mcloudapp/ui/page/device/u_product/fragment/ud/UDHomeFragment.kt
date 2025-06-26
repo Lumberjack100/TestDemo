@@ -37,10 +37,7 @@ import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showDialogFragment
 import com.shmedo.mcloudapp.extensions.showLoadingWithUUID
-import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.extensions.showMessageDialog
-import com.shmedo.mcloudapp.model.AdvancedSettingsModule
-import com.shmedo.mcloudapp.model.AlarmConfigModule
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommandDebugConfigModule
 import com.shmedo.mcloudapp.model.CommonModule
@@ -51,21 +48,16 @@ import com.shmedo.mcloudapp.model.DeviceFunctionModule
 import com.shmedo.mcloudapp.model.DeviceStatusEnum
 import com.shmedo.mcloudapp.model.DeviceStatusInfoGroupItem
 import com.shmedo.mcloudapp.model.GapItem
-import com.shmedo.mcloudapp.model.LoraConfigModule
 import com.shmedo.mcloudapp.model.NetPlatformConnect
-import com.shmedo.mcloudapp.model.SensorConfigModule
-import com.shmedo.mcloudapp.model.TimeCalibrationModule
-import com.shmedo.mcloudapp.model.WorkModeModule
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
-import com.shmedo.mcloudapp.ui.page.device.common.BleCustomCommandLogPrintFragment
+import com.shmedo.mcloudapp.ui.page.device.common.BaseDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.common.CommonSensorDataHistoryFragment
-import com.shmedo.mcloudapp.ui.page.device.common.UniversalDataCenterHomeFragment
 import com.shmedo.mcloudapp.ui.page.device.u_product.dialog.FindDeviceBeepDialog
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.UDHomeViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
-import com.shmedo.mcloudapp.utils.UDDeviceStatusProcessor
+import com.shmedo.mcloudapp.utils.UDDeviceStatusHelper
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -80,9 +72,10 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/8/21
- * @desc: 一体化雷达水位计首页
+ * @desc: 一体式雷达水位/泥位计首页
  *
  */
+@Deprecated("This class is deprecated", ReplaceWith("NewUDHomeFragment"))
 class UDHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUdHomeBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
@@ -90,6 +83,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
     private val iotParseManager: IOTParserManager by inject()
 
+    private var lastOnlineStatus: Boolean = false//在线状态
     private var deviceStatusCheckJob: Job? = null
     private var abnormalInfoJob: Job? = null
     private var queryMeasureResultTimeoutJob: Job? = null
@@ -107,7 +101,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdHomeBinding
-        toolbarViewModel.toolbarTitleText.set("返回")
+        binding.llToolbar.toolbar.title = "返回"
         binding.llToolbar.toolbar.setNavigationOnClickListener {
             if (bleViewModel.isConnected()) {
                 bleViewModel.disconnect()
@@ -137,46 +131,25 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     override fun initData() {
         super.initData()
-        when (productType) {
-            ProductType.U_D_1 -> {
-                mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
-            }
-
-            ProductType.U_D_2 -> {
-                mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
-            }
-
-            else -> {}
-        }
         mHeadStates.productName.set(productType.productName)
         mHeadStates.productToken.set(productType.productToken)
         mHeadStates.deviceToken.set(deviceInfo.deviceToken)
 
-        when (communicateWay) {
-            NetPlatformConnect -> {
-                toolbarViewModel.toolbarIvActionVisible.set(false)
-            }
+        toolbarViewModel.toolbarIvActionVisible.set(communicateWay is BleConnect)
 
-            BleConnect -> {
-                toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
-                toolbarViewModel.toolbarIvActionVisible.set(true)
-            }
-
-            else -> {}
-        }
         initModuleData()
     }
 
     override fun onConnectionStateChanged(isConnected: Boolean) {
         mHeadStates.isConnected.set(isConnected)
         if (isConnected) {
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030)
             mHeadStates.iotPlatformStateText.set("蓝牙已连接")
+            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_disconnect)
         } else {
-            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030_offline)
             mHeadStates.iotPlatformStateText.set("蓝牙已断开")
+            toolbarViewModel.toolbarIvActionResId.set(R.drawable.ic_ble_connect)
 
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
@@ -282,7 +255,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         val configModuleTree = ConfigModuleTree()
         configModuleTree.configModules.add(
             ConfigModule(
-                WorkModeModule(
+                CommonModule(
                     name = "工作模式",
                     resID = R.drawable.ic_module_work_mode_new,
                     navId = R.id.action_global_to_udWorkModelParamFragment
@@ -318,7 +291,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         )
         configModuleTree.configModules.add(
             ConfigModule(
-                SensorConfigModule(
+                CommonModule(
                     name = "传感配置",
                     resID = R.drawable.ic_module_sensor_setting_new,
                     navId = R.id.action_global_to_udProductSensorParamFragment
@@ -327,17 +300,16 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         )
         configModuleTree.configModules.add(
             ConfigModule(
-                SensorConfigModule(
+                CommonModule(
                     name = "端口配置",
                     resID = R.drawable.ic_module_serial_port,
                     navId = R.id.action_global_to_udSerialPortParamFragment
                 )
             )
         )
-//        if (productType == ProductType.U_D_2) {
         configModuleTree.configModules.add(
             ConfigModule(
-                LoraConfigModule(
+                CommonModule(
                     name = "电台配置",
                     resID = R.drawable.ic_module_lora_new,
                     navId = R.id.action_global_to_udRadioParamFragment
@@ -346,16 +318,16 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         )
         configModuleTree.configModules.add(
             ConfigModule(
-                AlarmConfigModule(
-                    resID = R.drawable.ic_module_lora_new,
+                CommonModule(
+                    name = "报警配置",
+                    resID = R.drawable.ic_module_alarm_new,
                     navId = R.id.action_global_to_alarmSettingFragment
                 )
             )
         )
-//        }
         configModuleTree.configModules.add(
             ConfigModule(
-                TimeCalibrationModule(
+                CommonModule(
                     name = "时间校准",
                     resID = R.drawable.ic_module_time_calibration_new,
                     navId = R.id.action_global_to_time_calibration
@@ -364,7 +336,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         )
         configModuleTree.configModules.add(
             ConfigModule(
-                AdvancedSettingsModule(
+                CommonModule(
                     name = "系统配置",
                     resID = R.drawable.ic_module_system_setting,
                     navId = R.id.action_global_to_advancedSettingFragment
@@ -388,15 +360,8 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     inner class ClickProxy : BaseClickProxy() {
         override fun onToolbarIvClick() {
             if (bleViewModel.isConnected()) {
-                showMessage(
-                    StringUtils.getString(R.string.disconnect_device_warn),
-                    "温馨提示",
-                    "确定",
-                    {
-                        bleViewModel.disconnect()
-                    },
-                    "取消"
-                )
+                bleViewModel.disconnect()
+
             } else {
                 bleViewModel.launch(bleDevice!!)
             }
@@ -438,7 +403,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             is DataCenterModule -> {
                 nav().safeNavigate(
                     module.navId,
-                    UniversalDataCenterHomeFragment.newBundleArguments(
+                    BaseDataCenterHomeFragment.newBundleArguments(
                         centerNum = 4,
                         productType,
                         communicateWay,
@@ -448,16 +413,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 )
             }
 
-            is CommandDebugConfigModule -> {//指令下发
-                val bundle = BleCustomCommandLogPrintFragment.newBundleArguments(
-                    true,
-                    productType,
-                    communicateWay,
-                    deviceInfo,
-                    bleDevice
-                )
-                nav().safeNavigate(module.navId, bundle)
-            }
 
             else -> {
                 if (module.navId != 0) {
@@ -534,13 +489,15 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     }
 
     private fun onNetPlatformReady() {
+        lastOnlineStatus = deviceInfo.onlineStatus
         if (deviceInfo.onlineStatus) {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji)
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030)
             mHeadStates.iotPlatformStateText.set("米度平台在线")
             queryDeviceStatusInfo()
         } else {
-            mHeadStates.productLogoResId.set(R.drawable.device_logo_niweiji_offline)
+            mHeadStates.productLogoResId.set(R.drawable.device_logo_dr030_offline)
             mHeadStates.iotPlatformStateText.set("米度平台离线")
+
             mHeadStates.deviceStatusCode.set(DeviceStatusEnum.UNKNOWN.code)
         }
         //刷新模块状态
@@ -661,7 +618,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 if (!cmdStr.contains("method=0")) {
                     super.doCmdResponseResultTimeOut(
                         cmdStr = cmdStr,
-                        errMsg = "设备未响应",
+                        errMsg = errMsg,
                         isShowErrMsg = true,
                         isMessageDialog = true
                     )
@@ -671,7 +628,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
             IOTCommandType.MD_SEARCH_DEVICE -> {
                 super.doCmdResponseResultTimeOut(
                     cmdStr = cmdStr,
-                    errMsg = "设备未响应",
+                    errMsg = errMsg,
                     isShowErrMsg = true,
                     isMessageDialog = true
                 )
@@ -725,7 +682,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                         isDismissLoadingDialog = isDismissLoadingDialog,
                         isShowErrMsg = true,
                         isMessageDialog = true,
-                        errMsg = "设备未响应"
+                        errMsg = errMsg
                     )
                 }
             }
@@ -736,7 +693,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     isDismissLoadingDialog = isDismissLoadingDialog,
                     isShowErrMsg = true,
                     isMessageDialog = true,
-                    errMsg = "设备未响应"
+                    errMsg = errMsg
                 )
             }
 
@@ -837,11 +794,11 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                 mHeadStates.productLogoResId.set(
                     status.compareAndReturn(
                         "故障",
-                        R.drawable.device_logo_niweiji_error,
+                        R.drawable.device_logo_dr030_error,
                         status.compareAndReturn(
                             "告警",
-                            R.drawable.device_logo_niweiji_alarm,
-                            R.drawable.device_logo_niweiji
+                            R.drawable.device_logo_dr030_alarm,
+                            R.drawable.device_logo_dr030
                         )
                     )
                 )
@@ -862,7 +819,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
         deviceWarn: Map<String, String>? = null
     ) {
         try {
-            val errorInfoList = UDDeviceStatusProcessor.processAbnormalInfo(deviceError, deviceWarn)
+            val errorInfoList = UDDeviceStatusHelper.processAbnormalInfo(deviceError, deviceWarn)
             handleAbnormalInfo(errorInfoList)
         } catch (e: Exception) {
             Timber.e(e)
@@ -993,9 +950,10 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
 
     override fun createObserver() {
         super.createObserver()
-        setupHeartbeat()
         if (communicateWay is NetPlatformConnect) {
             checkDeviceOnlineStatus()
+        } else {
+            setupHeartbeat()
         }
     }
 
@@ -1033,7 +991,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
                     }?.let { deviceDetailInfo ->
                         deviceInfo = deviceDetailInfo.deviceInfo
                         // 如果设备在线状态发生变化，更新UI
-                        if (deviceInfo.onlineStatus != mHeadStates.isConnected.get()) {
+                        if (deviceInfo.onlineStatus != lastOnlineStatus) {
                             onNetPlatformReady()
                         }
                     }

@@ -15,7 +15,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.device.das.fragment.DasDataCenterHomeFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.DasDataCenterHomeFragment.ClickProxy" />
 
     </data>
 
@@ -80,10 +80,8 @@
                             android:text="开关" />
 
                         <com.kyleduo.switchbutton.SwitchButton
-                            android:id="@+id/bdSB"
                             style="@style/SwitchButton_Item_Button_Style"
-                            checkedImmediatelyNoEvent="@{stateVM.isBdOpened}"
-                            android:onCheckedChanged="@{(button, checked)->click.onCheckedChanged(button, checked)}"
+                            android:checked="@={stateVM.isBdOpened}"
                             app:kswAnimationDuration="100"
                             app:kswBackDrawable="@drawable/sl_switchbutton_back"
                             app:kswThumbDrawable="@drawable/shape_switchbutton_thumb" />
@@ -92,19 +90,16 @@
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_EditItem_Layout_Style"
-                        visible="@{stateVM.isBdOpened }"
                         android:background="@drawable/layer_common_click_item_with_divider">
 
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Title_Style"
                             textViewEnabled="@{stateVM.isBdOpened}"
-                            android:text="目标地址"
-                            tools:textColor="@color/title_text_color" />
+                            android:text="目标地址" />
 
                         <com.shmedo.mcloudapp.ui.widget.ClearEditText
                             style="@style/Common_EditItem_EditText_Style"
                             textViewEnabled="@{stateVM.isBdOpened}"
-                            android:hint="请输入"
                             android:inputType="number"
                             android:text="@={stateVM.address}"
                             app:lengthFilter="@{6}" />
@@ -114,7 +109,6 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         style="@style/Common_ClickableItem_Layout_Style"
                         onClickWithDebouncing="@{()->click.onBaudRateChooseClick()}"
-                        visible="@{stateVM.isBdOpened }"
                         android:background="@drawable/layer_common_click_item_with_divider"
                         android:enabled="@{stateVM.isBdOpened}">
 
@@ -126,7 +120,6 @@
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/Common_ClickableItem_Value_Style"
                             textViewEnabled="@{stateVM.isBdOpened}"
-                            android:drawableEnd="@drawable/ic_arrow_down"
                             android:text="@{stateVM.baudRate}"
                             tools:text="115200" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -163,12 +156,19 @@
                         tools:listitem="@layout/data_center_status_item" />
 
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_reset"
+                        style="@style/ResetButton_Style2"
+                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
+                        android:onClick="@{()->click.onResetButtonClick()}"
+                        android:text="@string/button_reset_text" />
+
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_confirm"
                         style="@style/SubmitButton_Style2"
-                        onClickWithDebouncing="@{()->click.onSubmitClick()}"
-                        visible="@{stateVM.isBdOpened }"
-                        android:layout_marginTop="@dimen/reset_button_margin_top_50"
-                        android:text="保存" />
+                        onClickWithDebouncing="@{()->click.onSubmitButtonClick()}"
+                        android:layout_marginTop="@dimen/summit_button_margin_top_20"
+                        android:enabled="@{stateVM.isDataModified}"
+                        android:text="@string/button_save_text" />
 
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.core.widget.NestedScrollView>

@@ -42,7 +42,7 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/8/23
- * @desc: 一体化雷达泥位计报警参数设置
+ * @desc: 一体式雷达水位/泥位计报警参数设置
  *
  */
 class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
@@ -70,7 +70,7 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentUdAlarmParamSettingBinding
-        toolbarViewModel.toolbarTitleText.set("报警参数配置")
+        binding.llToolbar.toolbar.title = "报警参数配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }
@@ -428,6 +428,15 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
+    private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
+        (commandType == IOTCommandType.MD_GET_ALRAM_BROADCAST_SWITCH)
+                || (commandType == IOTCommandType.MD_GET_ALRAM_BROADCAST_CTRL)
+                || (commandType == IOTCommandType.MD_GET_ALRAM_BROADCAST_REPORT_INTERVAL)
+                || (commandType == IOTCommandType.MD_SET_ALRAM_BROADCAST_SWITCH)
+                || (commandType == IOTCommandType.MD_SET_ALRAM_BROADCAST_CTRL)
+                || (commandType == IOTCommandType.MD_SET_ALRAM_BROADCAST_REPORT_INTERVAL)
+                || (commandType == IOTCommandType.MD_TEST_ALRAM_BROADCAST)
+
     /**
      * 4G 下发指令响应失败
      */
@@ -437,11 +446,12 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultError(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -454,11 +464,12 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.doCmdResponseResultTimeOut(
             cmdStr = cmdStr,
             errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage
         )
     }
 
@@ -472,12 +483,13 @@ class UDAlarmParamSettingFragment : BaseIOTDeviceFragment() {
         isMessageDialog: Boolean,
         errMsg: String
     ) {
+        val isShowMessage = isTargetCommandType(IOTCommandUtil.extractCommandType(cmdStr))
         super.showNearbyCommunicationTimeoutAlert(
             cmdStr = cmdStr,
             isDismissLoadingDialog = isDismissLoadingDialog,
-            isShowErrMsg = true,
-            isMessageDialog = true,
-            errMsg = "设备未响应"
+            isShowErrMsg = isShowMessage,
+            isMessageDialog = isShowMessage,
+            errMsg = errMsg
         )
     }
 

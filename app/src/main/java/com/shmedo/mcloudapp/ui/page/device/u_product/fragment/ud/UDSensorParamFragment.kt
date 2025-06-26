@@ -27,7 +27,7 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
-import com.shmedo.mcloudapp.databinding.FragmentUDProductSensorParamBinding
+import com.shmedo.mcloudapp.databinding.FragmentUdProductSensorParamBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -48,11 +48,11 @@ import timber.log.Timber
 /**
  * @author：gonghe
  * @time: 2024/4/26
- * @desc: 一体化雷达泥位计传感参数
+ * @desc: 一体式雷达水位/泥位计传感参数
  *
  */
 class UDSensorParamFragment : BaseIOTDeviceFragment() {
-    private lateinit var binding: FragmentUDProductSensorParamBinding
+    private lateinit var binding: FragmentUdProductSensorParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: UDSensorParamViewModel by activityViewModels()
     private val iotParseManager: IOTParserManager by inject()
@@ -74,7 +74,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
-            R.layout.fragment_u_d_product_sensor_param,
+            R.layout.fragment_ud_product_sensor_param,
             BR.stateVM,
             mStates
         )
@@ -83,8 +83,8 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
     }
 
     override fun initView(savedInstanceState: Bundle?) {
-        binding = getBinding() as FragmentUDProductSensorParamBinding
-        toolbarViewModel.toolbarTitleText.set("传感配置")
+        binding = getBinding() as FragmentUdProductSensorParamBinding
+        binding.llToolbar.toolbar.title = "传感配置"
         binding.llToolbar.toolbar.setNavigationOnClickListener { v: View? ->
             handleBackByCheckDataModified()
         }
@@ -327,7 +327,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                 super.doCmdResponseResultError(
                     cmdStr = cmdStr,
                     errMsg = errMsg,
-                    isShowErrMsg = isShowErrMsg,
+                    isShowErrMsg = false,
                     isMessageDialog = isMessageDialog
                 )
             }
@@ -343,13 +343,29 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
         isShowErrMsg: Boolean,
         isMessageDialog: Boolean
     ) {
-        dismissLoadingDialog(measureInitialValueLoadingDialogId)
-        super.doCmdResponseResultTimeOut(
-            cmdStr = cmdStr,
-            errMsg = errMsg,
-            isShowErrMsg = true,
-            isMessageDialog = true
-        )
+        when (IOTCommandUtil.extractCommandType(cmdStr)) {
+            IOTCommandType.MD_GET_DEVICE_STATUS,
+            IOTCommandType.MD_SET_SENSOR_INITIAL,
+            IOTCommandType.UD_MD_SET_MODULE_GAP,
+            IOTCommandType.MD_SET_MUD_LEVEL_METER_SENSOR -> {
+                dismissLoadingDialog(measureInitialValueLoadingDialogId)
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = true,
+                    isMessageDialog = true
+                )
+            }
+
+            else -> {
+                super.doCmdResponseResultTimeOut(
+                    cmdStr = cmdStr,
+                    errMsg = errMsg,
+                    isShowErrMsg = false,
+                    isMessageDialog = isMessageDialog
+                )
+            }
+        }
     }
 
     /**
@@ -373,7 +389,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                     isDismissLoadingDialog = isDismissLoadingDialog,
                     isShowErrMsg = true,
                     isMessageDialog = isMessageDialog,
-                    errMsg = "设备未响应"
+                    errMsg = errMsg
                 )
             }
 
@@ -381,7 +397,7 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
                 super.showNearbyCommunicationTimeoutAlert(
                     cmdStr = cmdStr,
                     isDismissLoadingDialog = isDismissLoadingDialog,
-                    isShowErrMsg = isShowErrMsg,
+                    isShowErrMsg = false,
                     isMessageDialog = isMessageDialog,
                     errMsg = errMsg
                 )
