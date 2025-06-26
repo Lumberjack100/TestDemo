@@ -7,9 +7,9 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.FileIOUtils
@@ -42,7 +42,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseCommandLogPrintClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentBleCustomCommandLogPrintBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -61,10 +60,16 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
+/**
+ * @author：gonghe
+ * @time: 2025/6/26
+ * @desc: 蓝牙通讯下自定义指令调试打印输出
+ *
+ */
 class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentBleCustomCommandLogPrintBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: BleCustomCommandLogPrintViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: BleCustomCommandLogPrintViewModel by viewModels()
     private var isIotCmd = true
 
     private val debugModelList: MutableList<String> =
@@ -75,8 +80,6 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -117,7 +120,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         //开启命令调试模式
         CommonMMKVOwner.isCommandDebugMode = true
         arguments?.let {
-            isIotCmd = it.getBoolean(IOT_CMD)
+            isIotCmd = it.getBoolean(IOT_CMD, true)
         }
         mStates.debugMode.set(debugModelList[0])
         cmdTypeList.clear()
@@ -431,19 +434,10 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         ): Bundle = Bundle().apply {
             putBoolean(IOT_CMD, isIotCmd)
             putParcelable(AppContants.Extras.PRODUCT_TYPE, type)
-            putParcelable(
-                AppContants.Extras.COMMUNICATION_WAY,
-                communicateWay
-            )
-            putParcelable(
-                AppContants.Extras.DEVICE_INFO,
-                deviceInfo
-            )
+            putParcelable(AppContants.Extras.COMMUNICATION_WAY, communicateWay)
+            putParcelable(AppContants.Extras.DEVICE_INFO, deviceInfo)
             putParcelable(AppContants.Extras.BLE_DEVICE, bleDevice)
-            putInt(
-                AppContants.Extras.STATUS_BAR_COLOR,
-                statusBarColor
-            )
+            putInt(AppContants.Extras.STATUS_BAR_COLOR, statusBarColor)
         }
     }
 }
