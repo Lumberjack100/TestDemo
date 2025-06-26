@@ -200,11 +200,14 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
      * 是否需要同步位置
      */
     private fun isNeedSyncLocation(): Boolean {
-        return communicateWay is BleConnect &&
-                (productType == ProductType.LR200
-                        || productType == ProductType.LB20S
-                        || productType == ProductType.U_R_1
-                        || productType == ProductType.U_I_1)
+//        return communicateWay is BleConnect &&
+//                (productType == ProductType.LR200
+//                        || productType == ProductType.LB20S
+//                        || productType == ProductType.U_R_1
+//                        || productType == ProductType.U_I_1)
+
+
+        return false
     }
 
     /**
@@ -214,7 +217,6 @@ open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
         return productType == ProductType.M20
                 || productType == ProductType.GNSS_M_1
                 || productType == ProductType.GNSS_M_2
-                || productType == ProductType.COLLECTOR_R_3
     }
 
     override fun createObserver() {

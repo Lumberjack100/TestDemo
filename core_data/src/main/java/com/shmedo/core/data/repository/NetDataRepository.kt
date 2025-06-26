@@ -1,7 +1,8 @@
 package com.shmedo.core.data.repository
 
 import android.annotation.SuppressLint
-import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.model.BasicCompanyInfo
 import com.shmedo.core.model.BasicUserInfo
 import com.shmedo.core.model.CompanyInfo
@@ -40,7 +41,7 @@ class NetDataRepository private constructor() {
             .tryAwait(onCatch)
 
     /**
-     * 获取配置信息
+     * 获取 MR702 传感器远程配置信息
      */
     suspend fun queryMR702SensorConfigList(
         jsonParam: String,
@@ -48,7 +49,7 @@ class NetDataRepository private constructor() {
     ): MR702PortSensorConfig? =
         RxHttp.postJson("/config/QueryMR702SensorConfigList")
             .setDomainIfAbsent(BaseURL.MIYITONG_REMOTE_CONFIG_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getRemoteConfigToken())
+            .addHeader("Authorization", CommonMMKVOwner.deviceRemoteConfigToken)
             .addAll(jsonParam)
             .toAwaitResponse<MR702PortSensorConfig>()
             .tryAwait(onCatch)
@@ -117,7 +118,7 @@ class NetDataRepository private constructor() {
     suspend fun getUserByToken(onCatch: ((Throwable) -> Unit)? = null): BasicUserInfo? =
         RxHttp.get("/GetUserByToken")
             .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addHeader("Authorization", AuthMMKVOwner.token)
             .toAwaitResponse<BasicUserInfo>()
             .tryAwait(onCatch)
 
@@ -130,7 +131,7 @@ class NetDataRepository private constructor() {
     ): UserWrapperInfo? =
         RxHttp.postJson("/QueryUserByID")
             .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addHeader("Authorization", AuthMMKVOwner.token)
             .addAll(jsonParam)
             .toAwaitResponse<UserWrapperInfo>()
             .tryAwait(onCatch)
@@ -144,7 +145,7 @@ class NetDataRepository private constructor() {
     ): String? =
         RxHttp.postJson("/UpdateUser")
             .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addHeader("Authorization", AuthMMKVOwner.token)
             .addAll(jsonParam)
             .toAwaitResponse<String>()
             .tryAwait(onCatch)
@@ -158,7 +159,7 @@ class NetDataRepository private constructor() {
     ): String? =
         RxHttp.postJson("/UploadUserAvatar")
             .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addHeader("Authorization", AuthMMKVOwner.token)
             .addAll(jsonParam)
             .toAwaitResponse<String>()
             .tryAwait(onCatch)
@@ -172,7 +173,7 @@ class NetDataRepository private constructor() {
     ): String? =
         RxHttp.postJson("/ResetPassword")
             .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addHeader("Authorization", AuthMMKVOwner.token)
             .addAll(jsonParam)
             .toAwaitResponse<String>()
             .tryAwait(onCatch)
@@ -186,7 +187,7 @@ class NetDataRepository private constructor() {
     ): List<UserPermissionInfo>? =
         RxHttp.postJson("/QueryAllPermissionInService")
             .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addHeader("Authorization", AuthMMKVOwner.token)
             .addAll(jsonParam)
             .toAwaitResponse<List<UserPermissionInfo>>()
             .tryAwait(onCatch)
@@ -197,7 +198,7 @@ class NetDataRepository private constructor() {
     ): CompanyInfo? =
         RxHttp.postJson("/GetCompanyInfo")
             .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addHeader("Authorization", AuthMMKVOwner.token)
             .addAll(jsonParam)
             .toAwaitResponse<CompanyInfo>()
             .tryAwait(onCatch)
@@ -211,7 +212,7 @@ class NetDataRepository private constructor() {
     ): List<BasicCompanyInfo>? =
         RxHttp.postJson("/QueryUserInCompanyList")
             .setDomainIfAbsent(BaseURL.AUTHORITY_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addHeader("Authorization", AuthMMKVOwner.token)
             .addAll(jsonParam)
             .toAwaitResponse<List<BasicCompanyInfo>>()
             .tryAwait(onCatch)
@@ -226,7 +227,7 @@ class NetDataRepository private constructor() {
     ): DeviceDetailInfo? =
         RxHttp.postJson("/GetDeviceDetail")
             .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addHeader("Authorization", AuthMMKVOwner.token)
             .addAll(jsonParam)
             .toAwaitResponse<DeviceDetailInfo>()
             .tryAwait(onCatch)
@@ -240,7 +241,7 @@ class NetDataRepository private constructor() {
     ): PageList<DeviceBackupInfo>? =
         RxHttp.postJson("/QueryDeviceBackup")
             .setDomainIfAbsent(BaseURL.IOT_MANAGER_SERVICE_ADDRESS.baseUrl)
-            .addHeader("Authorization", MmkvCacheUtil.getToken())
+            .addHeader("Authorization", AuthMMKVOwner.token)
             .addAll(jsonParam)
             .toAwaitResponse<PageList<DeviceBackupInfo>>()
             .tryAwait(onCatch)

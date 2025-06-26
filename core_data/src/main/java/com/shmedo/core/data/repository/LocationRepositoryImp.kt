@@ -299,7 +299,7 @@ class LocationRepositoryImp(private val loggerRepositoryImp: LoggerRepositoryImp
 
         try {
             // 1. 先记录开始清理的日志（此时 managerScope 仍可用）
-            logWithDirectTimber("开始清理定位服务资源...")
+            logAndRecord("开始清理定位服务资源...")
 
             // 2. 停止所有正在进行的定位请求
             isLocationRequesting.set(false)
@@ -311,7 +311,7 @@ class LocationRepositoryImp(private val loggerRepositoryImp: LoggerRepositoryImp
             cleanupStateAndCache()
             
             // 5. 记录清理完成日志（在取消 managerJob 之前）
-            logWithDirectTimber("定位服务基础资源清理完成")
+            logAndRecord("定位服务基础资源清理完成")
             
             // 6. 优雅地取消协程作用域
             gracefullyShutdownCoroutines()
@@ -408,50 +408,23 @@ class LocationRepositoryImp(private val loggerRepositoryImp: LoggerRepositoryImp
             Timber.e(e, "强制清理时仍发生异常")
         }
     }
-    
+
     /**
-     * 直接使用 Timber 记录日志（不依赖 managerScope）
+     * 统一日志记录逻辑 - 优化版本
      */
-    private fun logWithDirectTimber(message: String, level: Int = Log.INFO) {
+    private fun logAndRecord(message: String, level: Int = Log.INFO) {
         when (level) {
             Log.ERROR -> Timber.e(message)
             Log.WARN -> Timber.w(message)
             Log.DEBUG -> Timber.d(message)
             else -> Timber.i(message)
         }
-        
-        // 尝试异步记录到数据库，如果失败则忽略
-        try {
-            if (managerJob.isActive) {
-                managerScope.launch {
-                    loggerRepositoryImp.insertLogItem(
-                        getLogItem(
-                            sessionId = CommonMMKVOwner.appLogSessionId,
-                            priority = level,
-                            data = message
-                        )
-                    )
-                }
-            }
-        } catch (e: Exception) {
-            // 静默处理，不影响清理流程
-            Timber.d("记录日志到数据库失败，继续清理流程")
-        }
-    }
 
-    /**
-     * 统一日志记录逻辑 - 优化版本
-     */
-    private fun logAndRecord(message: String, level: Int = Log.INFO) {
-        // 如果正在清理，使用直接日志记录
+        // 如果正在清理，返回
         if (isClearing.get()) {
-            logWithDirectTimber(message, level)
             return
         }
-        
-        // 正常情况下的日志记录
-        Timber.i(message)
-        
+
         try {
             if (managerJob.isActive) {
                 managerScope.launch {

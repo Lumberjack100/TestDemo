@@ -10,7 +10,7 @@
 
         <variable
             name="click"
-            type="com.shmedo.mcloudapp.ui.page.webview.WebViewFragment.ClickProxy" />
+            type="com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

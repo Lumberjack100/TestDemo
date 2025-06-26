@@ -120,7 +120,7 @@
                             android:singleLine="true"
                             android:paddingStart="10dp"
                             android:paddingEnd="20dp"
-                            android:text="@={vm.name}"
+                            android:text="@={vm.account}"
                             android:textColor="@color/title_text_color"
                             android:textColorHint="@color/text_color_CCCCCC"
                             android:textSize="@dimen/text_size_18"

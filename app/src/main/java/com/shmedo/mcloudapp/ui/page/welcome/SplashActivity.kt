@@ -4,17 +4,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.TextUtils
-import com.baidu.location.LocationClient
-import com.baidu.mapapi.SDKInitializer
 import com.blankj.utilcode.util.NetworkUtils
-import com.blankj.utilcode.util.Utils
 import com.gyf.immersionbar.ktx.immersionBar
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
-import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil.getAccount
-import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil.getToken
-import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil.isAgreePrivate
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -61,7 +56,7 @@ class SplashActivity : BaseActivity() {
 
     override fun initData() {
         logViewModel.insertSystemLogSession()
-        if (!isAgreePrivate()) {
+        if (!CommonMMKVOwner.isAgreePrivate) {
             showPrivateDialog()
         } else {
             goToLogin()
@@ -83,7 +78,7 @@ class SplashActivity : BaseActivity() {
                 redirectToLoginActivity(500)
                 return@observe
             }
-            CrashReport.setUserId("${getAccount()}/${AuthMMKVOwner.realName}") //该用户本次启动后的异常日志用户account
+            CrashReport.setUserId("${AuthMMKVOwner.account}/${AuthMMKVOwner.realName}") //该用户本次启动后的异常日志用户account
             redirectToMainActivity(500)
         }
     }
@@ -95,7 +90,7 @@ class SplashActivity : BaseActivity() {
         }
 
         //自动登录
-        if (!TextUtils.isEmpty(getToken())) {
+        if (!TextUtils.isEmpty(AuthMMKVOwner.token)) {
             loginRequestViewModel.requestLoginByToken()
         } else {
             redirectToLoginActivity(500)

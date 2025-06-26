@@ -2,9 +2,9 @@ package com.shmedo.core.data.extensions
 
 import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.TimeUtils
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 
-import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.data.source.local.entity.LogItem
 import com.shmedo.core.data.source.local.entity.LogSession
 import java.util.UUID
@@ -19,7 +19,7 @@ fun getSystemLogSession(): LogSession {
         id = UUID.randomUUID().toString(),
         key = "V " + AppUtils.getAppVersionName(),
         name = "系统日志",
-        createBy = MmkvCacheUtil.getAccount(),
+        createBy = AuthMMKVOwner.account,
         createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
         createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
     )
@@ -32,7 +32,7 @@ fun getIOTDeviceLogSession(mKey: String, mName: String): LogSession {
         id = UUID.randomUUID().toString(),
         key = mKey,
         name = mName,
-        createBy = MmkvCacheUtil.getAccount(),
+        createBy = AuthMMKVOwner.account,
         createDate = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")),
         createTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm")),
     )

@@ -52,7 +52,7 @@ enum class ProductType(
         newSuffix = "CR3",
         productName = "遥测终端倾斜仪",
         productToken = "MR501",
-        description = "暂时对应M20"
+        description = ""
     ),
 
     //GNSS产品线 E(分体机)

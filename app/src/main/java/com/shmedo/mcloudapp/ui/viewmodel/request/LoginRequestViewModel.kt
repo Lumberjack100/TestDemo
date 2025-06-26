@@ -111,9 +111,9 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             handleLogin(
                 loginMethod = { loginByAccount(mAccount, mPassword) },
                 onTokenReceived = { token ->
-                    MmkvCacheUtil.setAccount(mAccount)
-                    MmkvCacheUtil.setPassword(mPassword)
-                    MmkvCacheUtil.setToken(token.toString())
+                    AuthMMKVOwner.account = mAccount
+                    AuthMMKVOwner.password = mPassword
+                    AuthMMKVOwner.token = token.toString()
                 }
             )
         }
@@ -127,7 +127,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             handleLogin(
                 loginMethod = { loginByPhone(phone, captcha) },
                 onTokenReceived = { token ->
-                    MmkvCacheUtil.setToken(token.toString())
+                    AuthMMKVOwner.token = token.toString()
                 }
             )
         }
@@ -148,6 +148,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
         AuthMMKVOwner.userID = basicUserInfo.subjectID
         AuthMMKVOwner.companyID = basicUserInfo.companyID
         AuthMMKVOwner.realName = basicUserInfo.subjectName.trim()
+        AuthMMKVOwner.phone = basicUserInfo.phone
 
         val userWrapperInfo: UserWrapperInfo =
             queryUserByID(basicUserInfo.companyID, basicUserInfo.subjectID) ?: return
@@ -155,7 +156,6 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
 
         val iotPermissionList =
             queryAllPermissionInService(basicUserInfo.companyID) ?: return
-        MmkvCacheUtil.setUserPermissionList(iotPermissionList)
         iotPermissionList.forEach {
             if (it.permissionToken == "ListSuperInfo") {
                 AuthMMKVOwner.listSuperInfoPermission = true
@@ -405,6 +405,7 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
             }
         }
     }
+
     /**
      * 加载MR702传感器配置
      */
@@ -441,8 +442,8 @@ class LoginRequestViewModel(private val loggerRepositoryImp: LoggerRepositoryImp
      * 获取远程 MR702 传感器配置列表
      */
     suspend fun queryRemoteMR702SensorConfigList(): List<SensorModel> {
-        val amsToken: String = appConfigLogin() ?: return arrayListOf()
-        MmkvCacheUtil.setRemoteConfigToken(amsToken)
+        val token: String = appConfigLogin() ?: return arrayListOf()
+        CommonMMKVOwner.deviceRemoteConfigToken = token
 
         val remoteAppConfigInfo: MR702PortSensorConfig =
             queryMR702SensorConfigList() ?: return arrayListOf()

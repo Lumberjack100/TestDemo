@@ -14,19 +14,19 @@ import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
+import androidx.activity.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.RegexUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.model.ContentType
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.ActivityLoginBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
 import com.shmedo.mcloudapp.ui.page.base.activity.BaseActivity
@@ -36,18 +36,13 @@ import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.LoginViewModel
 import com.shmedo.mcloudapp.ui.widget.MyCountDownTimer
 import com.tencent.bugly.crashreport.CrashReport
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginActivity : BaseActivity() {
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var mStates: LoginViewModel
-    private lateinit var loginRequestViewModel: LoginRequestViewModel
+    private val mStates: LoginViewModel by viewModels()
+    private val loginRequestViewModel: LoginRequestViewModel by viewModel()
 
-
-    override fun initViewModel() {
-        mStates = getActivityScopeViewModel()
-        loginRequestViewModel = getViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.activity_login, BR.vm, mStates)
@@ -57,16 +52,6 @@ class LoginActivity : BaseActivity() {
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as ActivityLoginBinding
         initImmersionBar(binding.statusBarView, isTitleBar = false, isStatusBarDarkFont = false)
-    }
-
-    override fun initData() {
-        val mAccount = MmkvCacheUtil.getAccount()
-        //自动登录
-        if (!TextUtils.isEmpty(mAccount)) {
-            binding.accountET.setText(mAccount)
-            binding.accountET.setSelection(mAccount.length)
-        }
-        initLoginUserProtocol()
     }
 
     private fun initLoginUserProtocol() {
@@ -84,6 +69,11 @@ class LoginActivity : BaseActivity() {
         binding.tvUserProtocol.text = spannableString
         binding.tvUserProtocol.movementMethod = LinkMovementMethod.getInstance() //不设置 没有点击事件
         binding.tvUserProtocol.highlightColor = Color.TRANSPARENT //设置点击后的颜色为透明
+    }
+
+    override fun initData() {
+        mStates.account.set(AuthMMKVOwner.account)
+        initLoginUserProtocol()
     }
 
     override fun createObserver() {
@@ -127,7 +117,7 @@ class LoginActivity : BaseActivity() {
                 }
                 return@observe
             }
-            CrashReport.setUserId(MmkvCacheUtil.getAccount()) //该用户本次启动后的异常日志用户account
+            CrashReport.setUserId(AuthMMKVOwner.account) //该用户本次启动后的异常日志用户account
             redirectToMainActivity(500)
         }
     }
@@ -166,7 +156,7 @@ class LoginActivity : BaseActivity() {
         fun login() {
             //账号登录
             if (mStates.isAccountLogin.get()) {
-                if (TextUtils.isEmpty(mStates.name.get())) {
+                if (TextUtils.isEmpty(mStates.account.get())) {
                     Toaster.show("请输入账号")
                     binding.accountET.requestFocus()
                     return
@@ -177,7 +167,10 @@ class LoginActivity : BaseActivity() {
                     return
                 }
                 showLoadingDialog("正在登录...")
-                loginRequestViewModel.requestLoginByAccount(mStates.name.get(), mStates.password.get())
+                loginRequestViewModel.requestLoginByAccount(
+                    mStates.account.get(),
+                    mStates.password.get()
+                )
             } else {
                 //验证码登录
                 if (TextUtils.isEmpty(mStates.phone.get())) {
@@ -195,7 +188,10 @@ class LoginActivity : BaseActivity() {
                     return
                 }
                 showLoadingDialog("正在登录...")
-                loginRequestViewModel.requestLoginByPhoneCaptcha(mStates.phone.get(), mStates.code.get())
+                loginRequestViewModel.requestLoginByPhoneCaptcha(
+                    mStates.phone.get(),
+                    mStates.code.get()
+                )
             }
         }
     }

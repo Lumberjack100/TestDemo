@@ -8,7 +8,7 @@ import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
  * 描述：     TODO
  */
 class LoginViewModel : ViewModel() {
-    val name = NonNullObservableField("")
+    val account = NonNullObservableField("")
     val password = NonNullObservableField("")
     val phone = NonNullObservableField("")
     val code = NonNullObservableField("")

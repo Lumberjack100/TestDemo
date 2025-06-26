@@ -9,7 +9,6 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.widget.LinearLayout
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import com.just.agentweb.AgentWeb
 import com.just.agentweb.WebChromeClient
@@ -39,7 +38,7 @@ class WebViewFragment : BaseFragment() {
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_webview, BR.toolbarVM, toolbarViewModel)
-            .addBindingParam(BR.click, ClickProxy())
+            .addBindingParam(BR.click, BaseClickProxy())
     }
 
     override fun initView(savedInstanceState: Bundle?) {
@@ -100,10 +99,6 @@ class WebViewFragment : BaseFragment() {
     override fun onDestroyView() {
         mAgentWeb.webLifeCycle.onDestroy()
         super.onDestroyView()
-    }
-
-    inner class ClickProxy : BaseClickProxy() {
-
     }
 
     private val mWebViewClient: WebViewClient = object : WebViewClient() {
