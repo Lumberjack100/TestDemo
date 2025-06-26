@@ -3,15 +3,9 @@ package com.shmedo.core.commonlib.mmkv
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
 import com.shmedo.core.model.ProductGroupConfig
 import com.shmedo.core.model.SensorModel
-import com.shmedo.core.model.UserPermissionInfo
 import com.tencent.mmkv.MMKV
 
 object MmkvCacheUtil {
-
-    fun setUserPermissionList(list: List<UserPermissionInfo>?) {
-        val kv = MMKV.defaultMMKV()
-        list?.let { kv.encode("user_permission_list", MoshiUtil.toJson(it)) }
-    }
 
     /** 获取搜索历史缓存数据 */
     fun getSearchHistoryData(): List<String> {

@@ -21,7 +21,6 @@ import com.shmedo.mcloudapp.ui.page.base.activity.ErrorActivity
 import com.shmedo.mcloudapp.ui.page.welcome.SplashActivity
 import com.shmedo.mcloudapp.utils.CrashReportingTree
 import com.tencent.bugly.crashreport.CrashReport
-import com.tencent.mmkv.MMKV
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
@@ -49,24 +48,36 @@ class MCloudApplication : BaseApp() {
         }
 
         //初始化MMKV
-        MMKV.initialize(this)
-        //异常上报和升级
-        initCrashReport()
-        //初始化吐司消息组件
-        initToastUtil()
+//        MMKV.initialize(this)
+
         //初始化日志输出
         initTimber()
+
+        //异常上报和升级
+        initCrashReport()
+
+        //初始化吐司消息组件
+        initToastUtil()
+
         DialogX.init(this)
+
         RxHttpManager.initial(this)
+
         //Android 快速构建 RecyclerView
         initBrv()
-        try {
-            LocationClient.setAgreePrivacy(true)
-            SDKInitializer.setAgreePrivacy(this, true)
-            //在使用SDK各组件之前初始化context信息，传入ApplicationContext
-            SDKInitializer.initialize(this)
-            SDKInitializer.setCoordType(CoordType.GCJ02);
-        } catch (e: BaiduMapSDKException) { }
+
+        initBaiduMapSDK()
+    }
+
+    /**
+     * 设置日志输出
+     */
+    private fun initTimber() {
+        if (BuildConfig.DEBUG) {
+            plant(Timber.DebugTree())
+        } else {
+            plant(CrashReportingTree())
+        }
     }
 
     /**
@@ -106,17 +117,6 @@ class MCloudApplication : BaseApp() {
     }
 
     /**
-     * 设置日志输出
-     */
-    private fun initTimber() {
-        if (BuildConfig.DEBUG) {
-            plant(Timber.DebugTree())
-        } else {
-            plant(CrashReportingTree())
-        }
-    }
-
-    /**
      * 初始化 Toast 工具类
      * https://github.com/getActivity/ToastUtils
      */
@@ -148,6 +148,17 @@ class MCloudApplication : BaseApp() {
         }
         SmartRefreshLayout.setDefaultRefreshFooterCreator { context, _ ->
             ClassicsFooter(context)
+        }
+    }
+
+    private fun initBaiduMapSDK() {
+        try {
+            LocationClient.setAgreePrivacy(true)
+            SDKInitializer.setAgreePrivacy(this, true)
+            //在使用SDK各组件之前初始化context信息，传入ApplicationContext
+            SDKInitializer.initialize(this)
+            SDKInitializer.setCoordType(CoordType.GCJ02);
+        } catch (e: BaiduMapSDKException) {
         }
     }
 }
