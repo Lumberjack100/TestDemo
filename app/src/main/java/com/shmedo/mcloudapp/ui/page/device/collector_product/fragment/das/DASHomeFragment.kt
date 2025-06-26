@@ -437,6 +437,27 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
                 }
             }
 
+            MDCommandType.INSTALL_LOCATION -> {
+                when (val result = mdParseManager.parse<String>(cmdStr)) {
+                    is MDCommandResult.Failure -> {
+                        val errMsg = "位置同步失败"
+                        Timber.e(errMsg)
+                        // 自动同步失败时不显示错误提示，静默处理
+                        cancelNearbyCommunicationTimeoutJob()
+                        isLocationSyncInProgress = false
+                        return
+                    }
+
+                    else -> {
+                        sendCommandFromCmdList {
+                            Timber.d("位置自动同步成功")
+                            isLocationSyncInProgress = false
+                            locationViewModel.stopLocation()
+                        }
+                    }
+                }
+            }
+
             else -> {
                 if (cmdStr.contains("Please verify the equipment.")) {
                     Toaster.show("设备认证失败!")
@@ -457,6 +478,7 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
         cancelNearbyCommunicationTimeoutJob()
         if (isSuccess) {
             queryBleDASConfigInfo()
+            autoSyncLocationIfNeeded()
         }
     }
 

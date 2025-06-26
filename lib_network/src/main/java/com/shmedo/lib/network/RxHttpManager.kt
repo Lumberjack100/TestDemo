@@ -37,7 +37,7 @@ object RxHttpManager {
             .setDebug(BuildConfig.DEBUG, false, -1)      //调试模式/分段打印/json数据缩进空间
             .setConverter(MyMoshiConverter.create()) //设置数据解析器，非必须
 //            .setOnParamAssembly { p: Param<*> ->                  //设置公共参数，非必须
-//                p.addHeader("Authorization", MmkvCacheUtil.getToken()) //添加公共请求头
+//                p.addHeader("Authorization", AuthMMKVOwner.token) //添加公共请求头
 //            }
     }
 

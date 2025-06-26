@@ -20,7 +20,7 @@ import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.jsonhelper.MoshiUtil
-import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
+import com.shmedo.core.commonlib.mmkv.ADMEMMKVOwner
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.AdmeConfigInfo
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.hac.HacMeasuringHoleDepthInfoEntity
@@ -260,7 +260,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
      * 自动测孔深模式加载本地缓存的参数
      */
     private fun loadAutoLastHistoryData() {
-        mStates.downSpeed.set(MmkvCacheUtil.getAdmeAutoLastMotorDropSpeed())
+        mStates.downSpeed.set(ADMEMMKVOwner.autoLastMotorDropSpeed)
     }
 
     /**
@@ -268,11 +268,11 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
      */
     private fun loadManualLastHistoryData() {
         if (mStates.motionType.get() == motionTypeList[0]) {//上拉
-            mStates.speed.set(MmkvCacheUtil.getAdmeManualLastMotorPullUpSpeed())
-            mStates.distanceGoal.set(MmkvCacheUtil.getAdmeManualLastMotorPullUpDistance())
+            mStates.speed.set(ADMEMMKVOwner.manualLastMotorPullUpSpeed)
+            mStates.distanceGoal.set(ADMEMMKVOwner.manualLastMotorPullUpDistance)
         } else {
-            mStates.speed.set(MmkvCacheUtil.getAdmeManualLastMotorDropSpeed())
-            mStates.distanceGoal.set(MmkvCacheUtil.getAdmeManualLastMotorDropDistance())
+            mStates.speed.set(ADMEMMKVOwner.manualLastMotorDropSpeed)
+            mStates.distanceGoal.set(ADMEMMKVOwner.manualLastMotorDropDistance)
         }
     }
 
@@ -676,7 +676,7 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
      */
     private fun setAutoMeasuringHoleDepth() {
         //持久化保存电机速度
-        MmkvCacheUtil.setAdmeAutoLastMotorDropSpeed(mStates.downSpeed.get())
+        ADMEMMKVOwner.autoLastMotorDropSpeed = mStates.downSpeed.get()
         mStates.realHoleDepth.set("0")
         mStates.recommendHoleDepth.set("0")
 
@@ -702,11 +702,11 @@ class AdmeHacMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
      */
     private fun setManualMeasuringHoleDepth() {
         if (mStates.motionType.get() == motionTypeList[0]) {//上拉
-            MmkvCacheUtil.setAdmeManualLastMotorPullUpSpeed(mStates.speed.get())
-            MmkvCacheUtil.setAdmeManualLastMotorPullUpDistance(mStates.distanceGoal.get())
+            ADMEMMKVOwner.manualLastMotorPullUpSpeed = mStates.speed.get()
+            ADMEMMKVOwner.manualLastMotorPullUpDistance = mStates.distanceGoal.get()
         } else {
-            MmkvCacheUtil.setAdmeManualLastMotorDropSpeed(mStates.speed.get())
-            MmkvCacheUtil.setAdmeManualLastMotorDropDistance(mStates.distanceGoal.get())
+            ADMEMMKVOwner.manualLastMotorDropSpeed= mStates.speed.get()
+            ADMEMMKVOwner.manualLastMotorDropDistance= mStates.distanceGoal.get()
         }
 
         val entity = HacMeasuringHoleDepthInfoEntity(

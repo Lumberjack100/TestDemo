@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.TimeUtils
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
-import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
 import com.shmedo.core.commonlib.utils.LogHelper
 import com.shmedo.core.data.extensions.getIOTDeviceLogSession
 import com.shmedo.core.data.extensions.getLogItem
@@ -29,7 +29,7 @@ class LogViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) : ViewM
      */
     fun insertSystemLogSession() = viewModelScope.launch {
         val sessionList = loggerRepositoryImp.getLogSessionListByName(
-            MmkvCacheUtil.getAccount(),
+            AuthMMKVOwner.account,
             "系统日志",
             TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd"))
         )
@@ -55,7 +55,7 @@ class LogViewModel(private val loggerRepositoryImp: LoggerRepositoryImp) : ViewM
     fun insertIOTDeviceLogSession(mKey: String, mName: String) =
         viewModelScope.launch {
             val sessionList = loggerRepositoryImp.getLogSessionListByName(
-                MmkvCacheUtil.getAccount(),
+                AuthMMKVOwner.account,
                 mName,
                 TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd"))
             )

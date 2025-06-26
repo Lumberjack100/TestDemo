@@ -22,13 +22,16 @@ import com.shmedo.core.data.repository.DeviceInteractiveRepositoryImp
 import com.shmedo.core.data.repository.DeviceManageRepositoryImp
 import com.shmedo.core.data.repository.LocationRepositoryImp
 import com.shmedo.core.data.repository.LoggerRepositoryImp
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val repositoryModule = module {
-    single { LoggerRepositoryImp(get()) }
-    single { AppUpdateRepositoryImp() }
-    single { DeviceManageRepositoryImp() }
-    single { DeviceInteractiveRepositoryImp() }
-    single { AdmeConfigRepositoryImp() }
-    single { LocationRepositoryImp(get()) }
+    singleOf(::LoggerRepositoryImp)
+    singleOf(::AppUpdateRepositoryImp)
+    singleOf(::DeviceManageRepositoryImp)
+    singleOf(::DeviceInteractiveRepositoryImp)
+    singleOf(::AdmeConfigRepositoryImp)
+
+    factoryOf(::LocationRepositoryImp)
 }

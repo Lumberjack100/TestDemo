@@ -3,8 +3,8 @@ package com.shmedo.lib.ble.koin
 import com.shmedo.lib.ble.permission.bluetooth.BluetoothStateManager
 import com.shmedo.lib.ble.permission.location.LocationStateManager
 import com.shmedo.lib.ble.permission.viewmodel.PermissionViewModel
-import org.koin.android.ext.koin.androidApplication
-import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 /**
@@ -14,8 +14,8 @@ import org.koin.dsl.module
  */
 
 val blePermissionKoinModule = module {
-    single { BluetoothStateManager( androidApplication()) }
-    single { LocationStateManager(androidApplication()) }
+    singleOf(::BluetoothStateManager)
+    singleOf(::LocationStateManager)
 
-    viewModel { PermissionViewModel(get(),get()) }
+    viewModelOf(::PermissionViewModel)
 }

@@ -12,13 +12,10 @@ import android.text.style.ClickableSpan
 import android.view.Gravity
 import android.view.View
 import androidx.fragment.app.viewModels
-import com.baidu.location.LocationClient
-import com.baidu.mapapi.SDKInitializer
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.Utils
 import com.kunminx.architecture.ui.page.DataBindingConfig
-import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil.setAgreePrivate
+import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.model.ContentType
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -80,7 +77,7 @@ class PolicyDialog : BaseVmDbDialogFragment() {
             //更新同意隐私状态,需要在初始化地图之前完成
 //            SDKInitializer.setAgreePrivacy(Utils.getApp(), true)
 //            LocationClient.setAgreePrivacy(true)
-            setAgreePrivate(true)
+            CommonMMKVOwner.isAgreePrivate = true
             mMessenger.updateIsAgreePolicy(true)
             dismiss()
         }
@@ -88,7 +85,7 @@ class PolicyDialog : BaseVmDbDialogFragment() {
         fun disAgree() {
 //            SDKInitializer.setAgreePrivacy(Utils.getApp(), false)
 //            LocationClient.setAgreePrivacy(false)
-            setAgreePrivate(false)
+            CommonMMKVOwner.isAgreePrivate = false
             Process.killProcess(Process.myPid())
         }
     }

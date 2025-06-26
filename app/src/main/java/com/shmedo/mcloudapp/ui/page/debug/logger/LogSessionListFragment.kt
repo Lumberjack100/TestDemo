@@ -2,7 +2,6 @@ package com.shmedo.mcloudapp.ui.page.debug.logger
 
 import android.os.Bundle
 import android.view.View
-import androidx.activity.OnBackPressedCallback
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.viewModels
 import com.drake.brv.PageRefreshLayout
@@ -12,7 +11,7 @@ import com.drake.brv.utils.models
 import com.drake.brv.utils.setup
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.lxj.xpopup.XPopup
-import com.shmedo.core.commonlib.mmkv.MmkvCacheUtil
+import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.data.source.local.entity.LogSession
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -132,7 +131,8 @@ class LogSessionListFragment : BaseFragment() {
 
     private fun loadLogSessionList() {
         launchWithViewLifecycle {
-            logViewModel.getLogSessionList(MmkvCacheUtil.getAccount())
+            
+            logViewModel.getLogSessionList(AuthMMKVOwner.account)
                 .let { logSessionList ->
                     if (logSessionList.isEmpty()) {
                         binding.refreshLayout.showEmpty()

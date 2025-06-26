@@ -204,7 +204,7 @@
             tools:node="merge">
             <meta-data
                 android:name="com.shmedo.core.commonlib.mmkv.MMKVInitializer"
-                tools:node="remove" />
+                android:value="androidx.startup" />
         </provider>
     </application>
 

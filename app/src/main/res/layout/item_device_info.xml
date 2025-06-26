@@ -63,7 +63,7 @@
                 android:ellipsize="end"
                 android:gravity="start"
                 android:maxLines="1"
-                android:text='@{"固件："+m.firmwareVersion}'
+                android:text='@{m.firmwareVersion.empty?"固件：--":"固件："+m.firmwareVersion}'
                 android:textColor="@{m.onlineStatus?@color/title_text_color_black_90:@color/offline_BABABA}"
                 android:textSize="@dimen/text_size_12"
                 tools:text="19D95B"

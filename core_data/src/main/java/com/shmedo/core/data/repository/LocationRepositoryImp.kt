@@ -11,48 +11,93 @@ import com.shmedo.core.data.extensions.getLogItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withTimeoutOrNull
 import timber.log.Timber
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * 创建者:   gonghe <br/>
  * 创建时间:  2023/9/11 <br/>
- * 描述：     TODO
+ * 描述：     位置服务仓库实现类 - 优化版本
  */
 class LocationRepositoryImp(private val loggerRepositoryImp: LoggerRepositoryImp) {
+
+    companion object {
+        private const val LOCATION_CACHE_DURATION = 30_000L // 30秒缓存时间
+        private const val MAX_RETRY_COUNT = 3
+        private const val RETRY_DELAY = 2_000L // 重试延迟2秒
+        private const val CLEAR_TIMEOUT = 5_000L // 清理超时时间5秒
+    }
+
+    // 线程安全的 locationClient 访问
     private var locationClient: LocationClient? = null
+    private val clientMutex = Mutex()
+
     private val locationListener = MyLocationListener()
     private val managerJob = SupervisorJob()
     private val managerScope = CoroutineScope(Dispatchers.Default + managerJob)
 
+    // 定位状态管理
+    private val isInitialized = AtomicBoolean(false)
+    private val isLocationRequesting = AtomicBoolean(false)
+    private val isClearing = AtomicBoolean(false) // 新增清理状态标志
+
+    // 位置信息状态流
     private val _locationStateFlow = MutableStateFlow<BDLocation?>(null)
     val locationStateFlow: StateFlow<BDLocation?> = _locationStateFlow
 
+    // 错误状态流
+    private val _errorStateFlow = MutableStateFlow<LocationError?>(null)
+    val errorStateFlow: StateFlow<LocationError?> = _errorStateFlow
 
-    init {
-        initializeLocationClient()
-    }
+    // 缓存相关
+    private var cachedLocation: BDLocation? = null
+    private var lastLocationTime: Long = 0L
+    private var retryCount = 0
 
-    private fun initializeLocationClient() {
-        locationClient = LocationClient(Utils.getApp().applicationContext).apply {
-            registerLocationListener(locationListener) // Register listener before starting
-            locOption = defaultOption
-            start() // Start the client after registering the listener
+
+    /**
+     * 延迟初始化定位客户端 - 按需初始化，避免不必要的电量消耗
+     */
+    private suspend fun ensureLocationClientInitialized() = clientMutex.withLock {
+        if (locationClient == null && !isInitialized.get()) {
+            try {
+                locationClient = LocationClient(Utils.getApp().applicationContext).apply {
+                    registerLocationListener(locationListener)
+                    locOption = defaultOption
+                }
+                isInitialized.set(true)
+                logAndRecord("定位客户端延迟初始化成功")
+            } catch (e: Exception) {
+                val error = LocationError.InitializationError("定位客户端初始化失败: ${e.message}")
+                _errorStateFlow.value = error
+                logAndRecord("定位客户端初始化失败: ${e.message}", Log.ERROR)
+                throw e
+            }
         }
-        logAndRecord("Location client initialized and started.")
     }
 
-    //抽象出通用的定位参数配置方法
+    /**
+     * 抽象出通用的定位参数配置方法
+     */
     private fun createLocationOption(
         highAccuracy: Boolean,
         interval: Int
     ): LocationClientOption {
         return LocationClientOption().apply {
             //可选，设置定位模式，可选的模式有高精度、仅设备、低功耗、模糊定位。默认高精度
-            locationMode =
-                if (highAccuracy) LocationClientOption.LocationMode.Hight_Accuracy else LocationClientOption.LocationMode.Battery_Saving
+            locationMode = if (highAccuracy) {
+                LocationClientOption.LocationMode.Hight_Accuracy
+            } else {
+                LocationClientOption.LocationMode.Battery_Saving
+            }
             //可选，首次定位时可以选择定位的返回是准确性优先还是速度优先，默认为速度优先
             firstLocType = LocationClientOption.FirstLocType.ACCURACY_IN_FIRST_LOC
             //可选，发起定位请求的间隔，int类型，单位ms；如果设置为0，则代表单次定位，即仅定位一次，默认为0  如果设置非0，需设置1000ms以上才有效
@@ -79,71 +124,352 @@ class LocationRepositoryImp(private val loggerRepositoryImp: LoggerRepositoryImp
     private val defaultOption: LocationClientOption
         get() = createLocationOption(highAccuracy = true, interval = 15 * 1000)
 
+    /**
+     * 内部定位监听器
+     */
     inner class MyLocationListener : BDAbstractLocationListener() {
         override fun onReceiveLocation(bdLocation: BDLocation?) {
-            if (bdLocation == null) {
-                val msg = "定位失败: bdLocation 对象为空"
-                logAndRecord(msg, Log.ERROR)
-                return
-            }
-
-            if (bdLocation.locType != BDLocation.TypeServerError) {
-                Timber.i("定位成功, latitude=${bdLocation.latitude},longitude=${bdLocation.longitude},altitude=${bdLocation.altitude},coordType=${bdLocation.coorType},locationType=${bdLocation.locType},speed=${bdLocation.speed},adCode=${bdLocation.adCode}")
-                _locationStateFlow.value = bdLocation
-                return
-            }
-
-            val msg =
-                "定位失败: 错误码=${bdLocation.locType}, 错误信息=${bdLocation.locTypeDescription}"
-            logAndRecord(msg, Log.ERROR)
-        }
-    }
-
-    fun requestImmediateLocationUpdate() {
-        val msg = "Requesting immediate location update"
-        logAndRecord(msg)
-        //立即请求一个位置更新
-        locationClient?.isStarted?.let {
-            if (it) {
-                locationClient?.requestLocation()
-            } else {
-                locationClient?.start()
+            managerScope.launch {
+                processLocationResult(bdLocation)
             }
         }
     }
 
-    fun requestDefaultLocation() {
-        locationClient?.apply {
-            if (isStarted) {
-                stop()
-            }
-            locOption = defaultOption
-            start()
+    /**
+     * 处理定位结果
+     */
+    private suspend fun processLocationResult(bdLocation: BDLocation?) {
+        isLocationRequesting.set(false)
+
+        if (bdLocation == null) {
+            handleLocationError(LocationError.NullLocationError("定位结果为空"))
+            return
         }
-    }
 
-    fun stopLocation() {
-        locationClient?.stop()
-    }
+        when (bdLocation.locType) {
+            BDLocation.TypeGpsLocation,
+            BDLocation.TypeNetWorkLocation,
+            BDLocation.TypeOffLineLocation -> {
+                // 定位成功
+                handleLocationSuccess(bdLocation)
+                retryCount = 0 // 重置重试计数
+            }
 
-    fun clear() {
-        locationClient?.unRegisterLocationListener(locationListener)
-        locationClient?.stop()
-        locationClient = null
-        managerJob.cancel() //取消与这个作用域关联的所有协程
-    }
-
-    // 统一日志记录逻辑
-    private fun logAndRecord(message: String, level: Int = Log.INFO) {
-        Timber.i(message)
-        managerScope.launch {
-            loggerRepositoryImp.insertLogItem(
-                getLogItem(
-                    sessionId = CommonMMKVOwner.appLogSessionId,
-                    priority = level,
-                    data = message
+            else -> {
+                // 定位失败
+                val error = LocationError.LocationFailedError(
+                    code = bdLocation.locType,
+                    error = bdLocation.locTypeDescription ?: "未知定位错误"
                 )
-            )
+                handleLocationError(error)
+            }
         }
     }
+
+    /**
+     * 处理定位成功
+     */
+    private fun handleLocationSuccess(bdLocation: BDLocation) {
+        val currentTime = System.currentTimeMillis()
+
+        // 检查是否需要更新缓存（基于时间和距离变化）
+        val shouldUpdateCache = shouldUpdateLocationCache(bdLocation, currentTime)
+
+        if (shouldUpdateCache) {
+            cachedLocation = bdLocation
+            lastLocationTime = currentTime
+            _locationStateFlow.value = bdLocation
+            _errorStateFlow.value = null // 清除错误状态
+
+            logAndRecord(
+                "定位成功: lat=${bdLocation.latitude}, lng=${bdLocation.longitude}, " +
+                        "type=${bdLocation.locType}, address=${bdLocation.addrStr}"
+            )
+        } else {
+            logAndRecord("定位结果未发生显著变化，使用缓存位置")
+        }
+    }
+
+    /**
+     * 判断是否应该更新位置缓存
+     */
+    private fun shouldUpdateLocationCache(newLocation: BDLocation, currentTime: Long): Boolean {
+        val cachedLoc = cachedLocation
+
+        // 如果没有缓存或者缓存过期，则更新
+        return cachedLoc == null || currentTime - lastLocationTime > LOCATION_CACHE_DURATION
+    }
+
+    /**
+     * 处理定位错误
+     */
+    private suspend fun handleLocationError(error: LocationError) {
+        _errorStateFlow.value = error
+        logAndRecord("定位错误: ${error.message}", Log.ERROR)
+
+        // 实现重试机制
+        if (retryCount < MAX_RETRY_COUNT && error is LocationError.LocationFailedError) {
+            retryCount++
+            logAndRecord("定位失败，准备进行第 $retryCount 次重试")
+            delay(RETRY_DELAY)
+            requestLocationWithRetry()
+        }
+    }
+
+    /**
+     * 立即请求位置更新 - 优先返回缓存的有效位置
+     */
+    suspend fun requestImmediateLocationUpdate(): BDLocation? {
+        // 首先检查缓存是否有效
+        val currentTime = System.currentTimeMillis()
+        cachedLocation?.let { cached ->
+            if (currentTime - lastLocationTime < LOCATION_CACHE_DURATION) {
+                logAndRecord("返回缓存的位置信息")
+                return cached
+            }
+        }
+
+        // 缓存无效或不存在，请求新的位置
+        return requestLocationWithRetry()
+    }
+
+    /**
+     * 带重试机制的定位请求
+     */
+    private suspend fun requestLocationWithRetry(): BDLocation? {
+        if (isLocationRequesting.get()) {
+            logAndRecord("定位请求正在进行中，跳过重复请求")
+            return cachedLocation
+        }
+
+        return try {
+            ensureLocationClientInitialized()
+            isLocationRequesting.set(true)
+
+            clientMutex.withLock {
+                locationClient?.let { client ->
+                    if (!client.isStarted) {
+                        client.start()
+                        logAndRecord("启动定位服务")
+                    }
+                    client.requestLocation()
+                    logAndRecord("请求位置更新")
+                }
+            }
+
+            // 等待定位结果或超时
+            withTimeoutOrNull(30_000L) {
+                while (isLocationRequesting.get()) {
+                    delay(100)
+                }
+                _locationStateFlow.value
+            }
+        } catch (e: Exception) {
+            isLocationRequesting.set(false)
+            val error = LocationError.RequestError("定位请求失败: ${e.message}")
+            handleLocationError(error)
+            null
+        }
+    }
+
+
+    /**
+     * 停止定位服务
+     */
+    suspend fun stopLocation() {
+        clientMutex.withLock {
+            locationClient?.takeIf { it.isStarted }?.let {
+                it.stop()
+                logAndRecord("停止定位服务")
+            }
+        }
+        isLocationRequesting.set(false)
+    }
+
+    /**
+     * 清理资源 - 优化版本
+     * 解决了 managerJob.cancel() 和日志记录的时序问题
+     */
+    suspend fun clear() {
+        // 防止重复清理
+        if (!isClearing.compareAndSet(false, true)) {
+            Timber.w("清理操作已在进行中，跳过重复调用")
+            return
+        }
+
+        try {
+            // 1. 先记录开始清理的日志（此时 managerScope 仍可用）
+            logAndRecord("开始清理定位服务资源...")
+
+            // 2. 停止所有正在进行的定位请求
+            isLocationRequesting.set(false)
+            
+            // 3. 清理 LocationClient 相关资源
+            cleanupLocationClient()
+            
+            // 4. 清理状态和缓存数据
+            cleanupStateAndCache()
+            
+            // 5. 记录清理完成日志（在取消 managerJob 之前）
+            logAndRecord("定位服务基础资源清理完成")
+            
+            // 6. 优雅地取消协程作用域
+            gracefullyShutdownCoroutines()
+            
+            // 7. 使用 Timber 直接记录最终日志（不依赖 managerScope）
+            Timber.i("定位服务资源已完全清理")
+            
+        } catch (e: Exception) {
+            Timber.e(e, "清理定位服务资源时发生异常")
+            // 即使发生异常也要尝试强制清理
+            forceCleanup()
+        } finally {
+            isClearing.set(false)
+        }
+    }
+    
+    /**
+     * 清理 LocationClient 相关资源
+     */
+    private suspend fun cleanupLocationClient() {
+        clientMutex.withLock {
+            locationClient?.let { client ->
+                try {
+                    // 取消注册监听器
+                    client.unRegisterLocationListener(locationListener)
+                    Timber.d("已取消注册位置监听器")
+                    
+                    // 停止定位服务
+                    if (client.isStarted) {
+                        client.stop()
+                        Timber.d("已停止定位客户端")
+                    }
+                } catch (e: Exception) {
+                    Timber.e(e, "清理 LocationClient 时发生异常")
+                } finally {
+                    locationClient = null
+                }
+            }
+        }
+    }
+    
+    /**
+     * 清理状态和缓存数据
+     */
+    private fun cleanupStateAndCache() {
+        isInitialized.set(false)
+        isLocationRequesting.set(false)
+        cachedLocation = null
+        lastLocationTime = 0L
+        retryCount = 0
+        
+        // 清空状态流
+        _locationStateFlow.value = null
+        _errorStateFlow.value = null
+        
+        Timber.d("已清理状态和缓存数据")
+    }
+    
+    /**
+     * 优雅地关闭协程
+     */
+    private suspend fun gracefullyShutdownCoroutines() {
+        try {
+            // 给正在进行的协程一些时间完成
+            withTimeoutOrNull(CLEAR_TIMEOUT) {
+                managerJob.cancelAndJoin()
+            }
+            Timber.d("协程作用域已优雅关闭")
+        } catch (e: Exception) {
+            Timber.w(e, "优雅关闭协程时发生异常，将强制取消")
+            managerJob.cancel()
+        }
+    }
+    
+    /**
+     * 强制清理（异常情况下使用）
+     */
+    private fun forceCleanup() {
+        try {
+            locationClient?.let { client ->
+                client.unRegisterLocationListener(locationListener)
+                if (client.isStarted) {
+                    client.stop()
+                }
+            }
+            locationClient = null
+            
+            managerJob.cancel()
+            
+            cleanupStateAndCache()
+            
+            Timber.w("已执行强制清理")
+        } catch (e: Exception) {
+            Timber.e(e, "强制清理时仍发生异常")
+        }
+    }
+
+    /**
+     * 统一日志记录逻辑 - 优化版本
+     */
+    private fun logAndRecord(message: String, level: Int = Log.INFO) {
+        when (level) {
+            Log.ERROR -> Timber.e(message)
+            Log.WARN -> Timber.w(message)
+            Log.DEBUG -> Timber.d(message)
+            else -> Timber.i(message)
+        }
+
+        // 如果正在清理，返回
+        if (isClearing.get()) {
+            return
+        }
+
+        try {
+            if (managerJob.isActive) {
+                managerScope.launch {
+                    loggerRepositoryImp.insertLogItem(
+                        getLogItem(
+                            sessionId = CommonMMKVOwner.appLogSessionId,
+                            priority = level,
+                            data = message
+                        )
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            Timber.d("记录日志到数据库失败: ${e.message}")
+        }
+    }
+
+    /**
+     * 获取缓存的位置信息
+     */
+    fun getCachedLocation(): BDLocation? {
+        val currentTime = System.currentTimeMillis()
+        return if (cachedLocation != null && currentTime - lastLocationTime < LOCATION_CACHE_DURATION) {
+            cachedLocation
+        } else {
+            null
+        }
+    }
+
+    /**
+     * 检查定位服务是否可用
+     */
+    fun isLocationServiceAvailable(): Boolean {
+        return isInitialized.get() && locationClient != null
+    }
+}
+
+/**
+ * 定位错误类型定义
+ */
+sealed class LocationError(val message: String) {
+    data class InitializationError(val error: String) : LocationError("初始化错误: $error")
+    data class NullLocationError(val error: String) : LocationError("空位置错误: $error")
+    data class LocationFailedError(val code: Int, val error: String) :
+        LocationError("定位失败[code:$code]: $error")
+
+    data class RequestError(val error: String) : LocationError("请求错误: $error")
 }

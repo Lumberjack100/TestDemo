@@ -7,8 +7,6 @@ package com.shmedo.core.commonlib.mmkv
  * 描述： TODO
  */
 object CommonMMKVOwner : MMKVOwner(mmapID = "common_settings") {
-    var isFirstOpenApp by mmkvBool(default = true)
-
     var isAgreePrivate by mmkvBool(default = false)
 
     var primaryColor by mmkvInt(default = 0)
@@ -18,5 +16,7 @@ object CommonMMKVOwner : MMKVOwner(mmapID = "common_settings") {
     var iotDeviceLogSessionId by mmkvString(default = "")//物联网设备日志
 
     var isCommandDebugMode by mmkvBool(default = false)//指令下发模式
+
+    var deviceRemoteConfigToken by mmkvString(default = "")//物联网设备远程配置服务 token
 
 }
