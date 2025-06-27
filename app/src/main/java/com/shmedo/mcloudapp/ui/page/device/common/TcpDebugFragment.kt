@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.FileIOUtils
 import com.blankj.utilcode.util.StringUtils
@@ -46,7 +46,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseCommandLogPrintClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentTcpDebugBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -60,12 +59,13 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.TcpDebugViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
 /**
  * @author：gonghe
  * @time: 2025/6/20
@@ -74,19 +74,15 @@ import java.util.Locale
  */
 class TcpDebugFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentTcpDebugBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: TcpDebugViewModel
-    private lateinit var tcpViewModel: TcpViewModel
-    private lateinit var deviceRequestViewModel: DeviceRequestViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: TcpDebugViewModel by viewModels()
+    private val tcpViewModel: TcpViewModel by viewModel()
+    private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
 
     private var isIotCmd = true
 
     override fun initViewModel() {
         super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-        tcpViewModel = getViewModel()
-        deviceRequestViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
@@ -108,11 +104,6 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
         registerOnBackPressedDispatcher {
             processBackPress()
         }
-        mActivity.onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                processBackPress()
-            }
-        })
         initLogAdapter()
     }
 

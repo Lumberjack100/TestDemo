@@ -21,6 +21,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.request.AdmeConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.AppUpdateViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.request.LocationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.NetIOTCommandViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.RequestSearchViewModel
@@ -39,5 +40,6 @@ val viewModelModule = module {
     viewModelOf(::AppUpdateViewModel)
     viewModelOf(::LoginRequestViewModel)
     viewModelOf(::AdmeConfigViewModel)
+    viewModelOf(::LocationViewModel)
 
 }
