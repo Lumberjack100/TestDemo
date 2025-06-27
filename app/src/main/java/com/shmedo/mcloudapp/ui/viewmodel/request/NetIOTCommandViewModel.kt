@@ -31,8 +31,8 @@ import kotlin.coroutines.cancellation.CancellationException
  * 物联网平台透传指令ViewModel
  *
  * 优化特点：
- * 1. 使用Flow代替回调管理命令状态
- * 2. 命令队列和批处理
+ * 1. 使用Flow代替回调管理指令状态
+ * 2. 指令队列和批处理
  * 3. 幂等性处理
  * 4. 错误处理和自动重试
  */
@@ -41,31 +41,31 @@ class NetIOTCommandViewModel(
     loggerRepositoryImp: LoggerRepositoryImp
 ) : BaseRequestViewModel(loggerRepositoryImp) {
 
-    // 命令派发流
+    // 指令派发流
     private val _cmdDispatchFlow: MutableSharedFlow<CmdDispatch> = MutableSharedFlow()
     val cmdDispatchFlow = _cmdDispatchFlow.asSharedFlow()
 
     // 消息ID列表
     private val msgIDList = ArrayList<String>()
 
-    // 命令跟踪映射，记录已发送命令的信息
+    // 指令跟踪映射，记录已发送指令的信息
     private val commandTracking = ConcurrentHashMap<String, CommandTrackingInfo>()
 
-    // 正在执行的命令作业
+    // 正在执行的指令作业
     private var currentCommandJob: Job? = null
 
-    // 命令队列，存储待执行的命令
+    // 指令队列，存储待执行的指令
     private val commandQueue = ArrayDeque<CommandQueueItem>()
 
-    // 命令队列项
+    // 指令队列项
     private data class CommandQueueItem(
-        val content: String, //命令内容
+        val content: String, //指令内容
         val deviceTokenList: List<String>, //目标设备列表
         val priority: Int = 0, // 优先级，数字越大优先级越高
         val retryCount: Int = 0 // 重试次数
     )
 
-    // 命令跟踪信息
+    // 指令跟踪信息
     private data class CommandTrackingInfo(
         val msgIDs: List<String>,//消息 ID
         val timestamp: Long,//时间戳和设备
@@ -73,35 +73,35 @@ class NetIOTCommandViewModel(
     )
 
     /**
-     * 分发原始命令
-     * 1. 将命令封装成 CommandQueueItem 并加入命令队列
-     * 2. 如果当前没有命令在执行，则处理队列
+     * 分发原始指令
+     * 1. 将指令封装成 CommandQueueItem 并加入指令队列
+     * 2. 如果当前没有指令在执行，则处理队列
      */
     fun batchDispatchRawCmd(
         content: String,
         deviceTokenList: List<String>,
         priority: Int = 0
     ) {
-        // 如果相同命令在2秒内已经被发送并且仍在处理中，则会跳过该重复命令，防止不必要的重复下发。
+        // 如果相同指令在2秒内已经被发送并且仍在处理中，则会跳过该重复指令，防止不必要的重复下发。
         val now = System.currentTimeMillis()
         val trackingInfo = commandTracking[content]
         if (trackingInfo != null && now - trackingInfo.timestamp < 2000) {
-            Timber.d("跳过重复命令: $content")
+            Timber.d("跳过重复指令: $content")
             return
         }
 
-        // 将命令加入队列
+        // 将指令加入队列
         val queueItem = CommandQueueItem(content, deviceTokenList, priority)
         addToQueue(queueItem)
 
-        // 如果没有命令在执行，则开始执行队列
+        // 如果没有指令在执行，则开始执行队列
         if (currentCommandJob == null || currentCommandJob?.isActive == false) {
             processCommandQueue()
         }
     }
 
     /**
-     * 添加命令到队列，根据优先级排序，高优先级的命令会先执行。
+     * 添加指令到队列，根据优先级排序，高优先级的指令会先执行。
      */
     private fun addToQueue(item: CommandQueueItem) {
         // 查找合适的位置插入，保持队列按优先级排序
@@ -128,9 +128,9 @@ class NetIOTCommandViewModel(
     }
 
     /**
-     * 按顺序处理队列中的命令
+     * 按顺序处理队列中的指令
      * 1. 如果队列为空，将加载状态设置为空闲
-     * 2. 如果队列不为空，取出队首命令并调用 executeCommand 执行
+     * 2. 如果队列不为空，取出队首指令并调用 executeCommand 执行
      */
     private fun processCommandQueue() {
         if (commandQueue.isEmpty()) {
@@ -142,12 +142,12 @@ class NetIOTCommandViewModel(
     }
 
     /**
-     * 执行命令
+     * 执行指令
      * 1. 设置加载状态为 Loading。
-     * 2. 调用 deviceInteractiveRepositoryImp.batchDispatchRawCmd() 发送命令。
+     * 2. 调用 deviceInteractiveRepositoryImp.batchDispatchRawCmd() 发送指令。
      * 3. 成功后，保存 msgIDList，更新 commandTracking，并发射 DispatchSuccess 事件。
-     * 4. 调用 pollForCommandResult() 轮询命令结果。
-     * 5. 捕获异常，发射 DispatchFailed 事件，并根据情况执行重试逻辑或者调用 processCommandQueue() 处理下一个命令。
+     * 4. 调用 pollForCommandResult() 轮询指令结果。
+     * 5. 捕获异常，发射 DispatchFailed 事件，并根据情况执行重试逻辑或者调用 processCommandQueue() 处理下一个指令。
      */
     private fun executeCommand(queueItem: CommandQueueItem) {
         currentCommandJob = viewModelScope.launch {
@@ -161,7 +161,7 @@ class NetIOTCommandViewModel(
                 msgIDList.clear()
                 msgIDList.addAll(data.map { it.msgID })
 
-                // 记录命令跟踪信息
+                // 记录指令跟踪信息
                 commandTracking[queueItem.content] = CommandTrackingInfo(
                     msgIDs = msgIDList.toList(),
                     timestamp = System.currentTimeMillis(),
@@ -173,26 +173,26 @@ class NetIOTCommandViewModel(
 
             } catch (e: CancellationException) {
                 // 协程被取消，不处理
-                Timber.d("命令执行被取消: ${queueItem.content}")
+                Timber.d("指令执行被取消: ${queueItem.content}")
             } catch (e: Exception) {
                 Timber.e(e)
                 _cmdDispatchFlow.emit(DispatchFailed(queueItem.content, e.errorMsg))
 
                 // 重试逻辑
 //                if (queueItem.retryCount < 3) {  // 最多重试3次
-//                    Timber.d("命令执行失败，重试 (${queueItem.retryCount + 1}/3): ${queueItem.content}")
+//                    Timber.d("指令执行失败，重试 (${queueItem.retryCount + 1}/3): ${queueItem.content}")
 //                    val retryItem = queueItem.copy(retryCount = queueItem.retryCount + 1)
 //                    addToQueue(retryItem)
 //                }
 
-                // 继续处理队列中的下一个命令
+                // 继续处理队列中的下一个指令
                 processCommandQueue()
             }
         }
     }
 
     /**
-     * 此方法用于主动查询命令的结果
+     * 此方法用于主动查询指令的结果
      * 1. 调用 pollForCommandResult() 进行轮询
      * 2. 处理可能发生的异常，并更新加载状态和发射错误事件
      */
@@ -215,14 +215,14 @@ class NetIOTCommandViewModel(
                     )
                 )
 
-                // 继续处理队列中的下一个命令
+                // 继续处理队列中的下一个指令
                 processCommandQueue()
             }
         }
     }
 
     /**
-     * 轮询命令响应结果
+     * 轮询指令响应结果
      * 1. 它会尝试多次（默认20次，每次间隔500ms）调用 queryCmdResultByMsgID() 查询结果。
      * 2. 如果查询到成功结果 ( cmdStatus == 2 )，则发射 CmdResponseResultSuccess 事件。
      * 3. 如果超时未获得成功结果，则发射 CmdResponseResultTimeOut 事件。
@@ -251,12 +251,12 @@ class NetIOTCommandViewModel(
         // 轮询超时
         _cmdDispatchFlow.emit(CmdResponseResultTimeOut(cmdStr))
 
-        // 继续处理队列中的下一个命令
+        // 继续处理队列中的下一个指令
         processCommandQueue()
     }
 
     /**
-     * 查询命令结果
+     * 查询指令结果
      */
     private suspend fun queryCmdResultByMsgID(jsonParam: String): QueryCmdResult {
         return withContext(Dispatchers.IO) {
@@ -267,7 +267,7 @@ class NetIOTCommandViewModel(
     }
 
     /**
-     * 取消当前命令
+     * 取消当前指令
      */
     fun cancelCurrentCommand() {
         currentCommandJob?.cancel()
@@ -278,7 +278,7 @@ class NetIOTCommandViewModel(
     }
 
     /**
-     * 清空命令队列
+     * 清空指令队列
      */
     fun clearCommandQueue() {
         commandQueue.clear()
@@ -286,12 +286,12 @@ class NetIOTCommandViewModel(
     }
 
     /**
-     * 获取队列中命令数量
+     * 获取队列中指令数量
      */
     fun getQueueSize(): Int = commandQueue.size
 
     /**
-     * 判断是否有命令在执行
+     * 判断是否有指令在执行
      */
     fun isCommandRunning(): Boolean = currentCommandJob?.isActive == true
 }

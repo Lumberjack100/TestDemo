@@ -18,7 +18,6 @@ val appKoinModule = module {
         deviceBaseKoinModule,
         viewModelModule,
         bleKoinModule,
-        locationKoinModule,
         tcpKoinModule
     )
 }

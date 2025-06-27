@@ -195,7 +195,7 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
                 }
             }
 
-            // 处理其他具体的传感器配置命令
+            // 处理其他具体的传感器配置指令
             MDCommandType.COLLECTOR_SENSOR_THRESHOLD_MULTI -> handleTriggerThresholdMultiResult(cmdStr)
             MDCommandType.COLLECTOR_SENSOR_THRESHOLD_SINGLE -> handleTriggerThresholdSingleResult(cmdStr)
             MDCommandType.COLLECTOR_SENSOR_REVISED -> handleCorrectionValueResult(cmdStr)
@@ -204,7 +204,7 @@ class BleDasExternalDigitalSensorListFragment : BaseDasExternalSensorListFragmen
             MDCommandType.SET_INCLINOMETER_LONG -> handleInclinometerLongResult(cmdStr)
 
             else -> {
-                // 不处理的命令类型
+                // 不处理的指令类型
             }
         }
     }

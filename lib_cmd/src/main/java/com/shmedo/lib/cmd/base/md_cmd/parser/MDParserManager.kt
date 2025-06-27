@@ -30,7 +30,7 @@ class MDParserManager constructor(
         }
 
         val parser = parserMap[cmdType] ?: return MDCommandResult.Failure(
-            "未找到命令：$cmdType 的解析器",
+            "未找到指令：$cmdType 的解析器",
             cmdType
         )
 

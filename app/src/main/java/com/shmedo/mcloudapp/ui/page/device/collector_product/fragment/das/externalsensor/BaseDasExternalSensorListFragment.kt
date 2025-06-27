@@ -372,7 +372,7 @@ abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
     protected abstract fun closeCollector()
 
     /**
-     * 初始化保存命令
+     * 初始化保存指令
      */
     protected abstract fun initSaveCommand()
 

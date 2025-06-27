@@ -56,7 +56,7 @@ class DeviceHomeActivity : BaseActivity() {
     }
 
     override fun initData() {
-        //关闭命令调试模式
+        //关闭指令调试模式
         CommonMMKVOwner.isCommandDebugMode = false
         intent.extras?.let { bundle ->
             productType = bundle.getParcelable(AppContants.Extras.PRODUCT_TYPE)!!

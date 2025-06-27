@@ -181,7 +181,7 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    /** 蓝牙通讯模式保存命令 */
+    /** 蓝牙通讯模式保存指令 */
     private fun initBleSaveCommand() {
         commandItems.clear()
 
@@ -233,7 +233,7 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    /** 4G通讯模式保存命令 */
+    /** 4G通讯模式保存指令 */
     private fun init4GSaveCommand() {
         val entity =
             DasIOSensorEntity(

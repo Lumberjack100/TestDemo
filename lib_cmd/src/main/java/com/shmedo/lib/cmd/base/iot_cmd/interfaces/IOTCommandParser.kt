@@ -8,7 +8,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 /**
  * 创建者：gonghe
  * 创建时间：2024/10/30
- * 描述：  IOT 命令解析器接口
+ * 描述：  IOT 指令解析器接口
  */
 
 interface IOTCommandParser<T : Any> {
@@ -67,6 +67,6 @@ interface IOTCommandParser<T : Any> {
      */
     fun parseKeyValueMap(keyValueMap: Map<String, String>): T
 
-    /** 命令类型 */
+    /** 指令类型 */
     val commandType: IOTCommandType
 }

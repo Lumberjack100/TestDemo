@@ -9,14 +9,14 @@ import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
  */
 
 /**
- * IOT 命令执行结果密封类
+ * IOT 指令执行结果密封类
  * @param T 结果数据类型
  */
 sealed class IOTCommandResult<out T> {
     /**
-     * 命令执行成功
+     * 指令执行成功
      * @property data 结果数据
-     * @property commandType 命令类型
+     * @property commandType 指令类型
      */
     data class Success<out T>(
         val data: T,
@@ -24,9 +24,9 @@ sealed class IOTCommandResult<out T> {
     ) : IOTCommandResult<T>()
 
     /**
-     * 命令执行失败
+     * 指令执行失败
      * @property message 错误信息
-     * @property commandType 命令类型,可能为空
+     * @property commandType 指令类型,可能为空
      */
     data class Failure(
         val message: String,
