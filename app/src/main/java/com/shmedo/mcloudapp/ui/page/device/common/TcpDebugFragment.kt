@@ -3,17 +3,16 @@ package com.shmedo.mcloudapp.ui.page.device.common
 import android.content.ClipData
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.view.WindowManager
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.FileIOUtils
 import com.blankj.utilcode.util.StringUtils
-import com.blankj.utilcode.util.TimeUtils
 import com.blankj.utilcode.util.UriUtils
 import com.blankj.utilcode.util.Utils
 import com.drake.brv.utils.bindingAdapter
-import com.drake.brv.utils.models
+import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kongzue.dialogx.dialogs.BottomMenu
@@ -58,6 +57,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.request.TcpViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.TcpDebugViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -97,57 +97,126 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
 
     override fun initView(savedInstanceState: Bundle?) {
         binding = getBinding() as FragmentTcpDebugBinding
-        binding.toolbar.title = "远程调试"
-        binding.toolbar.setNavigationOnClickListener { v: View? ->
-            processBackPress()
-        }
-        registerOnBackPressedDispatcher {
-            processBackPress()
-        }
-        initLogAdapter()
+        setupToolbar()
+        setupRecyclerView()
     }
 
-    private fun initLogAdapter() {
+    private fun setupToolbar() {
+        binding.toolbar.title = "远程调试"
+        binding.toolbar.setNavigationOnClickListener {
+            handleBackPressed()
+        }
+        registerOnBackPressedDispatcher {
+            handleBackPressed()
+        }
+    }
+
+    private fun setupRecyclerView() {
         binding.recyclerview.setup { rv ->
             addType<DebugCmdLogInfo>(R.layout.item_debug_cmd_log)
-        }.models = mutableListOf<DebugCmdLogInfo>()
+        }
+    }
+
+    private fun observeLogItems() {
+        // 观察日志数据变化
+        mStates.logItems.observe(viewLifecycleOwner) { logItems ->
+            try {
+                binding.recyclerview.bindingAdapter.addModels(logItems, true)
+                if (logItems.isNotEmpty()) {
+                    binding.recyclerview.smoothScrollToPosition(binding.recyclerview.mutable.size - 1)
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "更新日志列表失败")
+            }
+        }
     }
 
     override fun initData() {
         super.initData()
-        isIotCmd =
-            productType != ProductType.COLLECTOR_R_1 && productType != ProductType.DAS && productType != ProductType.BHY
+        try {
+            enableCommandDebugMode()
+            parseArguments()
+            clearLogs()
+        } catch (e: Exception) {
+            Timber.e(e, "初始化数据失败")
+            Toaster.show("初始化失败")
+        }
+    }
+
+    private fun enableCommandDebugMode() {
         //开启指令调试模式
         CommonMMKVOwner.isCommandDebugMode = true
     }
 
+    private fun parseArguments() {
+        isIotCmd = productType != ProductType.COLLECTOR_R_1 &&
+                productType != ProductType.DAS &&
+                productType != ProductType.BHY
+    }
+
     override fun lazyLoadData() {
-        printLog("正在建立远程 TCP 连接...", ColorUtils.getColor(R.color.title_text_color))
-        launchWithViewLifecycle {
-            val deviceDebugAddress = deviceRequestViewModel.getRemoteDeviceLogin(
-                deviceSn = deviceInfo.deviceToken,
-                deviceKey = deviceInfo.apikey.ifEmpty { "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9" },
-            ) { error: Throwable ->
-                printLog(
-                    "TCP 连接异常，获取远程服务器地址和端口信息失败：${error.message}",
-                    ColorUtils.getColor(R.color.error_FF4400)
-                )
+        establishTcpConnection()
+    }
 
-            } ?: return@launchWithViewLifecycle
+    private fun establishTcpConnection() {
+        try {
+            addLog("正在建立远程 TCP 连接...", ColorUtils.getColor(R.color.title_text_color))
 
-            binding.toolbar.subtitle =
-                "${deviceDebugAddress.deviceServerInfo.serverAddr}:${deviceDebugAddress.deviceServerInfo.serverPort}"
+            launchWithViewLifecycle {
+                try {
+                    val deviceDebugAddress = deviceRequestViewModel.getRemoteDeviceLogin(
+                        deviceSn = deviceInfo.deviceToken,
+                        deviceKey = deviceInfo.apikey.ifEmpty { "b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9" },
+                    ) { error: Throwable ->
+                        handleConnectionError("获取远程服务器地址和端口信息失败", error)
+                    } ?: return@launchWithViewLifecycle
 
+                    updateConnectionInfo(
+                        deviceDebugAddress.deviceServerInfo.serverAddr,
+                        deviceDebugAddress.deviceServerInfo.serverPort
+                    )
+
+                    initializeTcpClient(
+                        deviceDebugAddress.deviceServerInfo.serverAddr,
+                        deviceDebugAddress.deviceServerInfo.serverPort
+                    )
+                } catch (e: Exception) {
+                    handleConnectionError("建立TCP连接失败", e)
+                }
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "建立TCP连接异常")
+            Toaster.show("连接失败")
+        }
+    }
+
+    private fun updateConnectionInfo(serverAddr: String, serverPort: Int) {
+        binding.toolbar.subtitle = "$serverAddr:$serverPort"
+    }
+
+    private fun initializeTcpClient(serverAddr: String, serverPort: Int) {
+        try {
             tcpViewModel.initTcpClient(
-                deviceDebugAddress.deviceServerInfo.serverAddr,
-                deviceDebugAddress.deviceServerInfo.serverPort,
+                serverAddr,
+                serverPort,
                 false,
                 MDConstants.COMMAND_FOOTER
             )
-            withContext(Dispatchers.IO) {
-                tcpViewModel.connect()
+
+            launchWithViewLifecycle {
+                withContext(Dispatchers.IO) {
+                    tcpViewModel.connect()
+                }
             }
+        } catch (e: Exception) {
+            handleConnectionError("初始化TCP客户端失败", e)
         }
+    }
+
+    private fun handleConnectionError(message: String, error: Throwable) {
+        val errorMsg = "$message：${error.message}"
+        addLog(errorMsg, ColorUtils.getColor(R.color.error_FF4400))
+        Timber.e(error, message)
     }
 
     override fun createObserver() {
@@ -156,116 +225,126 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
             try {
                 collectTcpData()
             } catch (e: Exception) {
-                Timber.e(e)
+                Timber.e(e, "观察TCP数据失败")
             }
         }
+        observeLogItems()
     }
 
     private suspend fun collectTcpData() {
         tcpViewModel.data.collect { state ->
             Timber.v("${javaClass.simpleName} Tcp State: $state")
-            when (state) {
-                is TcpIdleResult -> {
-                    //do nothing
-                }
+            try {
+                when (state) {
+                    is TcpIdleResult -> {
+                        // 空闲状态，无需处理
+                    }
 
-                is TcpConnectedResult -> {
-                    mStates.tcpConnected.set(true)
-                    printLog("TCP 连接成功", ColorUtils.getColor(R.color.online_colorPrimary))
-                }
+                    is TcpConnectedResult -> {
+                        handleTcpConnected()
+                    }
 
-                is TcpSuccessResult -> {
-                    val data = state.data
-                    if (data.isNotEmpty()) {
-                        Timber.d("Received TCP Message:$data")
-                        handleReceiveMsgFromTCPServer(data)
+                    is TcpSuccessResult -> {
+                        val data = state.data
+                        if (data.isNotEmpty()) {
+                            Timber.d("Received TCP Message:$data")
+                            handleReceiveMsgFromTCPServer(data)
+                        }
+                    }
+
+                    is TcpConnectClosed -> {
+                        handleTcpDisconnected("TCP 连接断开")
+                    }
+
+                    is TcpConnectError -> {
+                        handleTcpDisconnected("TCP 连接异常")
                     }
                 }
-
-                is TcpConnectClosed -> {
-                    mStates.tcpConnected.set(false)
-                    printLog("TCP 连接断开", ColorUtils.getColor(R.color.error_FF4400))
-                }
-
-                is TcpConnectError -> {
-                    mStates.tcpConnected.set(false)
-                    printLog("TCP 连接异常", ColorUtils.getColor(R.color.error_FF4400))
-                }
+            } catch (e: Exception) {
+                Timber.e(e, "处理TCP状态失败")
             }
         }
+    }
+
+    private fun handleTcpConnected() {
+        mStates.tcpConnected.set(true)
+        addLog("TCP 连接成功", ColorUtils.getColor(R.color.online_colorPrimary))
+    }
+
+    private fun handleTcpDisconnected(message: String) {
+        mStates.tcpConnected.set(false)
+        addLog(message, ColorUtils.getColor(R.color.error_FF4400))
     }
 
     override suspend fun collectBleData() {
         bleViewModel.state.collect { state ->
             Timber.v("${javaClass.simpleName} MedoBle: $state")
-            when (state) {
-                NoDeviceState -> {}
-                is WorkingState -> when (state.result) {
-                    is IdleResult,
-                    is ConnectingResult -> {
-                        printLog(
-                            "正在连接蓝牙(${bleDevice?.address})...",
-                            ColorUtils.getColor(R.color.title_text_color)
-                        )
-                    }
-
-                    is ConnectedResult -> {
-                        printLog(
-                            "蓝牙连接成功",
-                            ColorUtils.getColor(R.color.online_colorPrimary)
-                        )
-                    }
-
-                    is ReadyResult -> {
-                        printLog(
-                            "蓝牙已就绪",
-                            ColorUtils.getColor(R.color.title_text_color)
-                        )
-                    }
-
-                    is SuccessResult -> {
-                        handleBleResponseContentFromDevice(state.result.data.response)
-                    }
-
-                    is DisconnectedResult -> {
-                        printLog(
-                            "蓝牙连接断开, reason: ${state.result.reason}",
-                            ColorUtils.getColor(R.color.error_FF4400)
-                        )
-                    }
-
-                    is LinkLossResult -> {
-                        printLog(
-                            "蓝牙连接断开, reason: device link loss",
-                            ColorUtils.getColor(R.color.error_FF4400)
-                        )
-                    }
-
-                    is MissingServiceResult -> {
-                        printLog(
-                            "蓝牙连接失败, reason: device missing service",
-                            ColorUtils.getColor(R.color.error_FF4400)
-                        )
-                    }
-
-                    is UnknownErrorResult -> {
-                        printLog(
-                            "蓝牙连接失败, reason: device unknown error",
-                            ColorUtils.getColor(R.color.error_FF4400)
-                        )
-                    }
+            try {
+                when (state) {
+                    NoDeviceState -> {}
+                    is WorkingState -> handleBleWorkingState(state)
                 }
+            } catch (e: Exception) {
+                Timber.e(e, "处理蓝牙状态失败")
+            }
+        }
+    }
+
+    private fun handleBleWorkingState(state: WorkingState) {
+        when (state.result) {
+            is IdleResult,
+            is ConnectingResult -> {
+                addLog(
+                    "正在连接蓝牙(${bleDevice?.address})...",
+                    ColorUtils.getColor(R.color.title_text_color)
+                )
+            }
+
+            is ConnectedResult -> {
+                addLog("蓝牙连接成功", ColorUtils.getColor(R.color.online_colorPrimary))
+            }
+
+            is ReadyResult -> {
+                addLog("蓝牙已就绪", ColorUtils.getColor(R.color.title_text_color))
+            }
+
+            is SuccessResult -> {
+                handleBleResponseContentFromDevice(state.result.data.response)
+            }
+
+            is DisconnectedResult -> {
+                addLog(
+                    "蓝牙连接断开, reason: ${state.result.reason}",
+                    ColorUtils.getColor(R.color.error_FF4400)
+                )
+            }
+
+            is LinkLossResult -> {
+                addLog(
+                    "蓝牙连接断开, reason: device link loss",
+                    ColorUtils.getColor(R.color.error_FF4400)
+                )
+            }
+
+            is MissingServiceResult -> {
+                addLog(
+                    "蓝牙连接失败, reason: device missing service",
+                    ColorUtils.getColor(R.color.error_FF4400)
+                )
+            }
+
+            is UnknownErrorResult -> {
+                addLog(
+                    "蓝牙连接失败, reason: device unknown error",
+                    ColorUtils.getColor(R.color.error_FF4400)
+                )
             }
         }
     }
 
     inner class ClickProxy : BaseCommandLogPrintClickProxy() {
         override fun onConnectOperateClick() {
-            if (tcpViewModel.isConnected()) {
-                tcpViewModel.disconnect()
-            } else {
-                tcpViewModel.connect()
-            }
+            handleTcpConnectionToggle()
         }
 
         override fun onToolbarIvClick() {
@@ -273,229 +352,300 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
         }
     }
 
+    private fun handleTcpConnectionToggle() {
+        try {
+            if (tcpViewModel.isConnected()) {
+                tcpViewModel.disconnect()
+            } else {
+                tcpViewModel.connect()
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "切换TCP连接状态失败")
+            Toaster.show("操作失败")
+        }
+    }
+
     /**
      * 处理接收的 TCP 消息，通过蓝牙转发给设备
      */
-    private fun handleReceiveMsgFromTCPServer(msg: String) {
-        if (msg.isEmpty())
-            return
+    private fun handleReceiveMsgFromTCPServer(cmdStr: String) {
+        try {
+            if (cmdStr.isEmpty()) return
 
-        printLog(
-            msg.replace(MDConstants.COMMAND_FOOTER, ""),
-            ColorUtils.getColor(R.color.receive_data_color)
-        )
+            val cleanedMsg = cmdStr.replace(MDConstants.COMMAND_FOOTER, "")
+            addLog(cleanedMsg, ColorUtils.getColor(R.color.receive_data_color))
 
-        if (isBleDisconnected()) {
-            printLog(
-                "蓝牙连接已断开",
-                ColorUtils.getColor(R.color.error_FF4400)
-            )
-            return
+            if (isBleDisconnected()) {
+                addLog("蓝牙连接已断开", ColorUtils.getColor(R.color.error_FF4400))
+                return
+            }
+
+            sendBleCommand(cmdStr)
+        } catch (e: Exception) {
+            Timber.e(e, "处理TCP消息失败")
         }
-        sendBleCommand(msg)
-    }
-
-    override fun setResultData(cmdStr: String) {
-        printLog(cmdStr, ColorUtils.getColor(R.color.send_data_color))
-        handleBleResponseContentFromDevice(cmdStr)
     }
 
     /**
      * 处理设备响应内容，通过 TCP 转发给远程调试客户端
      */
     private fun handleBleResponseContentFromDevice(cmdStr: String) {
-        if (!tcpViewModel.isConnected()) {
-            printLog(
-                "TCP 连接已断开",
-                ColorUtils.getColor(R.color.error_FF4400)
-            )
-            return
+        try {
+            addLog(cmdStr, ColorUtils.getColor(R.color.send_data_color))
+
+            if (!tcpViewModel.isConnected()) {
+                addLog("TCP 连接已断开", ColorUtils.getColor(R.color.error_FF4400))
+                return
+            }
+            tcpViewModel.sendMsgToServer(cmdStr)
+        } catch (e: Exception) {
+            Timber.e(e, "转发蓝牙响应失败")
         }
-        tcpViewModel.sendMsgToServer(cmdStr)
+    }
+
+    override fun setResultData(cmdStr: String) {
     }
 
     private fun showMoreMenu() {
-        val menuItems = if (bleViewModel.isConnected()) arrayOf<String>(
-            "清空日志",
-            "分享日志",
-            "打开debug模式",
-            "打开info模式",
-            "测试"
-        ) else arrayOf<String>("蓝牙重连", "清空日志", "分享日志")
-        BottomMenu.show(menuItems)
-            .setMessage("")
-            .setOnMenuItemClickListener { dialog, text, index ->
-                when (text) {
-                    "蓝牙重连" -> {
-                        bleViewModel.launch(bleDevice!!)
-                    }
-
-                    "清空日志" -> {
-                        binding.recyclerview.bindingAdapter.models = mutableListOf()
-                    }
-
-                    "分享日志" -> {
-                        shareLogToFile()
-                    }
-
-                    "打开debug模式" -> {
-                        setDebugMode()
-                    }
-
-                    "打开info模式" -> {
-                        setInfoMode()
-                    }
-
-                    "测试" -> {
-                        handleReceiveMsgFromTCPServer(if (!isIotCmd) "##000\r\n" else "\$cmd=sample")
-                    }
-                }
-                false
+        try {
+            val menuItems = if (bleViewModel.isConnected()) {
+                arrayOf<String>(
+                    "清空日志",
+                    "分享日志",
+                    "打开debug模式",
+                    "打开info模式",
+                    "关闭debug模式",
+                    "测试"
+                )
+            } else {
+                arrayOf<String>("蓝牙重连", "清空日志", "分享日志")
             }
+
+            BottomMenu.show(menuItems)
+                .setMessage("")
+                .setOnMenuItemClickListener { dialog, text, index ->
+                    handleMenuItemClick(text as String)
+                    false
+                }
+        } catch (e: Exception) {
+            Timber.e(e, "显示菜单失败")
+        }
+    }
+
+    private fun handleMenuItemClick(text: String) {
+        try {
+            when (text) {
+                "蓝牙重连" -> {
+                    reconnectBle()
+                }
+
+                "清空日志" -> {
+                    clearLogs()
+                }
+
+                "分享日志" -> {
+                    shareLogToFile()
+                }
+
+                "打开debug模式" -> {
+                    setDebugMode()
+                }
+
+                "打开info模式" -> {
+                    setInfoMode()
+                }
+
+                "关闭debug模式" -> {
+                    closeDebugMode()
+                }
+
+                "测试" -> {
+                    testConnection()
+                }
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "处理菜单点击失败")
+            Toaster.show("操作失败")
+        }
+    }
+
+    private fun reconnectBle() {
+        try {
+            bleDevice?.let { device ->
+                bleViewModel.launch(device)
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "重连蓝牙失败")
+            Toaster.show("重连失败")
+        }
+    }
+
+    private fun clearLogs() {
+        try {
+            mStates.clearLogs()
+            binding.recyclerview.bindingAdapter.models = emptyList()
+        } catch (e: Exception) {
+            Timber.e(e, "清空日志失败")
+        }
+    }
+
+    private fun testConnection() {
+        try {
+            val testMsg = if (!isIotCmd) "##000\r\n" else "\$cmd=sample"
+            handleReceiveMsgFromTCPServer(testMsg)
+        } catch (e: Exception) {
+            Timber.e(e, "测试连接失败")
+        }
     }
 
     private fun closeDebugMode() {
-        commandItems.clear()
-        if (!isIotCmd) {
-            var command = MDCommandUtil.getCommand(
-                MDCommandType.LOG_OUTPUT_STATUS,
-                MDLogOutputStatus.CLOSE.toString()
-            )
-            printLog(command)
-            commandItems.add(command)
-
-            command = MDCommandUtil.getCommand(
-                MDCommandType.WORK_MODE,
-                MDWorkModel.WORK.toString()
-            )
-            printLog(command)
-            commandItems.add(command)
-        } else {
-            val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_LOG_OUTPUT_MODE_LEVEL,
-                "level=off&type=bt"
-            )
-            printLog(command)
-            commandItems.add(command)
+        try {
+            val commands = generateDebugModeCommands(false)
+            executeCommandBatch(commands)
+        } catch (e: Exception) {
+            Timber.e(e, "关闭调试模式失败")
+            Toaster.show("关闭调试模式失败")
         }
-        sendCommandFromCmdList()
     }
 
     private fun setDebugMode() {
-        commandItems.clear()
-        if (!isIotCmd) {
-            var command = MDCommandUtil.getCommand(
-                MDCommandType.LOG_OUTPUT_STATUS,
-                MDLogOutputStatus.OPEN.toString()
-            )
-            printLog(command)
-            commandItems.add(command)
-
-            command = MDCommandUtil.getCommand(
-                MDCommandType.WORK_MODE,
-                MDWorkModel.DEBUG.toString()
-            )
-            printLog(command)
-            commandItems.add(command)
-        } else {
-            val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_LOG_OUTPUT_MODE_LEVEL,
-                "level=debug&type=bt"
-            )
-            printLog(command)
-            commandItems.add(command)
+        try {
+            val commands = generateDebugModeCommands(true, "debug")
+            executeCommandBatch(commands)
+        } catch (e: Exception) {
+            Timber.e(e, "设置调试模式失败")
+            Toaster.show("设置调试模式失败")
         }
-        sendCommandFromCmdList()
     }
 
     private fun setInfoMode() {
-        commandItems.clear()
-        if (!isIotCmd) {
-            var command = MDCommandUtil.getCommand(
-                MDCommandType.LOG_OUTPUT_STATUS,
-                MDLogOutputStatus.OPEN.toString()
-            )
-            printLog(command)
-            commandItems.add(command)
-
-            command = MDCommandUtil.getCommand(
-                MDCommandType.WORK_MODE,
-                MDWorkModel.INFO.toString()
-            )
-            printLog(command)
-            commandItems.add(command)
-        } else {
-            val command = IOTCommandUtil.getCommand(
-                IOTCommandType.MD_SET_LOG_OUTPUT_MODE_LEVEL,
-                "level=info&type=bt"
-            )
-            printLog(command)
-            commandItems.add(command)
+        try {
+            val commands = generateDebugModeCommands(true, "info")
+            executeCommandBatch(commands)
+        } catch (e: Exception) {
+            Timber.e(e, "设置info模式失败")
+            Toaster.show("设置info模式失败")
         }
-        sendCommandFromCmdList()
     }
 
-    private fun printLog(
+    private fun generateDebugModeCommands(enable: Boolean, level: String = "off"): List<String> {
+        val commands = mutableListOf<String>()
+
+        if (!isIotCmd) {
+            if (enable) {
+                commands.add(
+                    MDCommandUtil.getCommand(
+                        MDCommandType.LOG_OUTPUT_STATUS,
+                        MDLogOutputStatus.OPEN.toString()
+                    )
+                )
+                val workMode = if (level == "debug") MDWorkModel.DEBUG else MDWorkModel.INFO
+                commands.add(
+                    MDCommandUtil.getCommand(
+                        MDCommandType.WORK_MODE,
+                        workMode.toString()
+                    )
+                )
+            } else {
+                commands.add(
+                    MDCommandUtil.getCommand(
+                        MDCommandType.LOG_OUTPUT_STATUS,
+                        MDLogOutputStatus.CLOSE.toString()
+                    )
+                )
+                commands.add(
+                    MDCommandUtil.getCommand(
+                        MDCommandType.WORK_MODE,
+                        MDWorkModel.WORK.toString()
+                    )
+                )
+            }
+        } else {
+            val logLevel = if (enable) level else "off"
+            commands.add(
+                IOTCommandUtil.getCommand(
+                    IOTCommandType.MD_SET_LOG_OUTPUT_MODE_LEVEL,
+                    "level=$logLevel&type=bt"
+                )
+            )
+        }
+
+        return commands
+    }
+
+    private fun executeCommandBatch(commands: List<String>) {
+        try {
+            commandItems.clear()
+            commands.forEach { command ->
+                addLog(command)
+                commandItems.add(command)
+            }
+            sendCommandFromCmdList()
+        } catch (e: Exception) {
+            Timber.e(e, "执行指令批次失败")
+        }
+    }
+
+    private fun addLog(
         cmdStr: String,
         colorRes: Int = ColorUtils.getColor(R.color.send_data_color)
     ) {
-        val logInfo = DebugCmdLogInfo(
-            logTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm:ss.SSS")),
-            content = cmdStr.replace(MDConstants.COMMAND_FOOTER, ""),
-            colorRes = colorRes,
-            byteCount = cmdStr.length
-        )
-        binding.recyclerview.bindingAdapter.apply {
-            mutable.add(logInfo)
-            notifyItemInserted(itemCount)
+        try {
+            mStates.addLog(cmdStr, colorRes)
+        } catch (e: Exception) {
+            Timber.e(e, "添加日志失败")
         }
-//        binding.recyclerview.scrollToPosition(binding.recyclerview.bindingAdapter.itemCount - 1)
     }
 
     /**
      * 分享日志到文件
      */
     private fun shareLogToFile() {
-        launchWithViewLifecycle {
-            binding.recyclerview.models?.let { logList ->
-                val logContent = StringBuilder()
-                logList.forEach { logInfo ->
-                    (logInfo as DebugCmdLogInfo).apply {
-                        logContent.append(logTime)
-                        logContent.append(" ")
-                        logContent.append(content)
-                        logContent.append("\n")
-                    }
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val logContent = withContext(Dispatchers.Default) {
+                    mStates.generateLogContent()
                 }
 
-                // 创建文件并写入日志内容
-                val fileName = "${getString(R.string.app_name)}_ble_realtime_log_${
-                    SimpleDateFormat(
-                        "yyyyMMddHHmmss",
-                        Locale.getDefault(Locale.Category.FORMAT)
-                    ).format(
-                        Date()
-                    )
-                }.txt"
-                val file = File(Utils.getApp().cacheDir.path, fileName)
-                try {
-                    // 在IO线程进行文件写入操作
-                    withContext(Dispatchers.IO) {
-                        if (FileIOUtils.writeFileFromString(file, logContent.toString())) {
-                            // 切换回主线程进行文件分享
-                            withContext(Dispatchers.Main) {
-                                shareFile(file)
-                            }
-                        }
-                    }
-                } catch (e: Exception) {
-                    Timber.e(e)
-                    // 异常处理，显示错误信息等
-                    withContext(Dispatchers.Main) {
-                        Toaster.show("Error sharing file: ${e.localizedMessage}")
-                    }
+                if (logContent.isEmpty()) {
+                    Toaster.show("暂无日志内容")
+                    return@launch
                 }
+
+                val file = withContext(Dispatchers.IO) {
+                    createLogFile(logContent)
+                }
+
+                if (file != null) {
+                    shareFile(file)
+                } else {
+                    Toaster.show("导出日志失败")
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "分享日志失败")
+                Toaster.show("分享日志失败: ${e.message}")
             }
+        }
+    }
+
+    private suspend fun createLogFile(logContent: String): File? {
+        return try {
+            val fileName = "${getString(R.string.app_name)}_tcp_debug_log_${
+                SimpleDateFormat(
+                    "yyyyMMddHHmmss",
+                    Locale.getDefault(Locale.Category.FORMAT)
+                ).format(Date())
+            }.txt"
+
+            val file = File(Utils.getApp().cacheDir.path, fileName)
+            if (FileIOUtils.writeFileFromString(file, logContent)) {
+                file
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "创建日志文件失败")
+            null
         }
     }
 
@@ -503,55 +653,99 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
      * 分享文件
      */
     private fun shareFile(file: File) {
-        val uri = UriUtils.file2Uri(file)
-        val shareIntent = Intent().apply {
-            action = Intent.ACTION_SEND
-            type = "text/plain"
-            putExtra(Intent.EXTRA_STREAM, uri)
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        try {
+            val uri = UriUtils.file2Uri(file)
+            val shareIntent = Intent().apply {
+                action = Intent.ACTION_SEND
+                type = "text/plain"
+                putExtra(Intent.EXTRA_STREAM, uri)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
 
-            //设置剪贴板数据以授予接收应用对URI的访问权限
-            val clip = ClipData.newRawUri("", uri)
-            clipData = clip
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                // 设置剪贴板数据以授予接收应用对URI的访问权限
+                val clip = ClipData.newRawUri("", uri)
+                clipData = clip
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
+            startActivity(Intent.createChooser(shareIntent, "分享到"))
+        } catch (e: Exception) {
+            Timber.e(e, "分享文件失败")
+            Toaster.show("分享失败")
         }
-        startActivity(Intent.createChooser(shareIntent, "分享到"))
     }
 
     override fun onResume() {
         super.onResume()
-        // 开启屏幕长亮
-        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        initImmersionBar(binding.toolbar, isKeyboardEnable = true)
+        try {
+            // 开启屏幕长亮
+            activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            initImmersionBar(binding.toolbar, isKeyboardEnable = true)
+        } catch (e: Exception) {
+            Timber.e(e, "Resume时设置失败")
+        }
     }
 
     override fun onStop() {
         super.onStop()
-        // 禁用屏幕长亮
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        try {
+            // 禁用屏幕长亮
+            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        } catch (e: Exception) {
+            Timber.e(e, "Stop时清理失败")
+        }
+    }
+
+    private fun handleBackPressed() {
+        try {
+            if (tcpViewModel.isConnected()) {
+                showDisconnectConfirmDialog()
+            } else {
+                navigateUp()
+            }
+        } catch (e: Exception) {
+            Timber.e(e, "处理返回按键失败")
+            navigateUp()
+        }
+    }
+
+    private fun showDisconnectConfirmDialog() {
+        showMessage(
+            StringUtils.getString(R.string.finish_activity_disconnect_tcp_device),
+            "温馨提示",
+            "确定",
+            {
+                disconnectAndExit()
+            },
+            "取消"
+        )
+    }
+
+    private fun disconnectAndExit() {
+        try {
+            tcpViewModel.disconnect()
+            navigateUp()
+        } catch (e: Exception) {
+            Timber.e(e, "断开连接并退出失败")
+            navigateUp()
+        }
+    }
+
+    private fun navigateUp() {
+        try {
+            nav().navigateUp()
+        } catch (e: Exception) {
+            Timber.e(e, "导航返回失败")
+        }
     }
 
     override fun onDestroy() {
-        //关闭指令调试模式
-        CommonMMKVOwner.isCommandDebugMode = false
-        closeDebugMode()
-        super.onDestroy()
-    }
-
-    private fun processBackPress() {
-        if (tcpViewModel.isConnected()) {
-            showMessage(
-                StringUtils.getString(R.string.finish_activity_disconnect_tcp_device),
-                "温馨提示",
-                "确定",
-                {
-                    tcpViewModel.disconnect()
-                    nav().navigateUp()
-                },
-                "取消"
-            )
-        } else {
-            nav().navigateUp()
+        try {
+            // 关闭指令调试模式
+            CommonMMKVOwner.isCommandDebugMode = false
+            closeDebugMode()
+        } catch (e: Exception) {
+            Timber.e(e, "销毁时清理资源失败")
+        } finally {
+            super.onDestroy()
         }
     }
 }

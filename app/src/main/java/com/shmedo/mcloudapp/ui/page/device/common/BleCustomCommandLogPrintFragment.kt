@@ -85,7 +85,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         binding = getBinding() as FragmentBleCustomCommandLogPrintBinding
         setupToolbar()
         setupRecyclerView()
-        observeViewModel()
+        observeLogItems()
     }
 
     private fun setupToolbar() {
@@ -106,7 +106,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    private fun observeViewModel() {
+    private fun observeLogItems() {
         // 观察日志数据变化
         mStates.logItems.observe(viewLifecycleOwner) { logItems ->
             try {
