@@ -648,7 +648,7 @@ enum class IOTCommandType(val value: String) {
     /** 设置指令类型，在解析设置指令响应结果时使用 */
     COMMON_SETTING_COMMAND("common_setting_command"),
 
-    /** 未知的命令类型 */
+    /** 未知的指令类型 */
     UNKNOWN_TYPE("unknown_type");
 
     override fun toString(): String {
@@ -657,9 +657,9 @@ enum class IOTCommandType(val value: String) {
 
     companion object {
         /**
-         * 从字符串解析命令类型
-         * @param value 命令字符串
-         * @return 对应的命令类型,如果未找到则返回Unknown
+         * 从字符串解析指令类型
+         * @param value 指令字符串
+         * @return 对应的指令类型,如果未找到则返回Unknown
          */
         fun fromString(value: String): IOTCommandType {
             return entries.firstOrNull { it.value == value } ?: UNKNOWN_TYPE

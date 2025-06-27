@@ -10,10 +10,10 @@ package com.shmedo.lib.cmd.base.iot_cmd.utils
  * IOT 相关常量
  */
 object IOTConstants {
-    /** 命令头 */
+    /** 指令头 */
     const val COMMAND_HEADER = "\$cmd="
 
-    /** 命令分隔符 */
+    /** 指令分隔符 */
     const val COMMAND_SPLICER = "&"
 
     /** 结果最小长度 */

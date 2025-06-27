@@ -36,7 +36,7 @@ class PacketMerger : DataMerger {
         if (CommonMMKVOwner.isCommandDebugMode) return true
 
         val mergeDataPacket = output.toByteArray()
-        //每条响应命令结尾以&&(物联网指令)或\r\n(##指令)作为分隔符
+        //每条响应指令结尾以&&(物联网指令)或\r\n(##指令)作为分隔符
         return if (mergeDataPacket.size < 2) false
         else
             (mergeDataPacket[mergeDataPacket.size - 2].toInt() == 38 && mergeDataPacket[mergeDataPacket.size - 1].toInt() == 38)

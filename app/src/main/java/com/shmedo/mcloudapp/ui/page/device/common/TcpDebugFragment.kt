@@ -126,7 +126,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
         super.initData()
         isIotCmd =
             productType != ProductType.COLLECTOR_R_1 && productType != ProductType.DAS && productType != ProductType.BHY
-        //开启命令调试模式
+        //开启指令调试模式
         CommonMMKVOwner.isCommandDebugMode = true
     }
 
@@ -541,7 +541,7 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
     }
 
     override fun onDestroy() {
-        //关闭命令调试模式
+        //关闭指令调试模式
         CommonMMKVOwner.isCommandDebugMode = false
         closeDebugMode()
         super.onDestroy()

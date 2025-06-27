@@ -185,11 +185,11 @@ mCloudapp_V5/
 │       ├── communicate/      # 通信实现
 │       ├── scanner/          # 扫描功能
 │       └── permission/       # 权限处理
-├── lib_cmd/                   # 命令处理
+├── lib_cmd/                   # 指令处理
 │   └── src/main/java/com/shmedo/lib/cmd/
-│       ├── base/             # 基础命令
-│       │   ├── iot_cmd/      # IoT设备命令
-│       │   └── md_cmd/       # 其他设备命令
+│       ├── base/             # 基础指令
+│       │   ├── iot_cmd/      # IoT设备指令
+│       │   └── md_cmd/       # 其他设备指令
 ├── lib_tcp/                   # TCP通信
 │   └── src/main/java/com/shmedo/lib/tcp/
 │       └── netty/            # Netty实现
@@ -275,7 +275,7 @@ mCloudapp_V5/
 ### 构建与运行
 1. 选择开发变体（通常为`debug`）
 2. 连接测试设备或创建模拟器
-3. 点击运行按钮或使用`./gradlew :app:installDebug`命令
+3. 点击运行按钮或使用`./gradlew :app:installDebug`指令
 
 ### 添加新设备支持
 1. 在`core_model`模块中定义设备模型

@@ -21,7 +21,7 @@ class IOTParserManager(parsers: List<IOTCommandParser<*>>) {
     /**
      * 解析响应数据
      * @param resultCmdStr 响应字符串
-     * @param cmdType 命令类型
+     * @param cmdType 指令类型
      * @return 解析结果
      */
     @Suppress("UNCHECKED_CAST")

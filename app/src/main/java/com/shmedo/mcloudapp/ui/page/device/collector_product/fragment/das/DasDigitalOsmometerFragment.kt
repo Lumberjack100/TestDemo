@@ -125,7 +125,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    /** 蓝牙通讯模式保存命令 */
+    /** 蓝牙通讯模式保存指令 */
     private fun initBleSaveCommand() {
         commandItems.clear()
 
@@ -163,7 +163,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    /** 4G通讯模式保存命令 */
+    /** 4G通讯模式保存指令 */
     private fun init4GSaveCommand() {
         val entity = DasDigitalPiezometerEntity(
             sw = if (mStates.isOpened.get()) "1" else "0",
@@ -353,7 +353,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 处理蓝牙通讯命令结果
+     * 处理蓝牙通讯指令结果
      */
     private fun handleBleCommandResult(cmdStr: String) {
         when (MDCommandUtil.extractCommandType(cmdStr)) {
@@ -495,7 +495,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 处理4G通讯命令结果
+     * 处理4G通讯指令结果
      */
     private fun handle4GCommandResult(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {

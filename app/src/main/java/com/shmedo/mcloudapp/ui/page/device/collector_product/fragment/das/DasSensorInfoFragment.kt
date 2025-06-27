@@ -147,7 +147,7 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     }
 
     /**
-     * 处理4G通讯命令结果
+     * 处理4G通讯指令结果
      */
     private fun handle4GCommandResult(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
@@ -200,7 +200,7 @@ class DasSensorInfoFragment : BaseDeviceStatusInfoStyle2Fragment() {
     }
 
     /**
-     * 处理蓝牙通讯命令结果
+     * 处理蓝牙通讯指令结果
      */
     private fun handleBleCommandResult(cmdStr: String) {
         when (MDCommandUtil.extractCommandType(cmdStr)) {

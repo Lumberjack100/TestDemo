@@ -45,7 +45,12 @@ class BleCustomCommandLogPrintViewModel : ViewModel() {
         val DEBUG_MODES = listOf("关", "debug模式", "info模式")
     }
 
+    /**
+     * 添加单条日志
+     */
     fun addLog(cmdStr: String, colorRes: Int = ColorUtils.getColor(R.color.send_data_color)) {
+         val tempLogList = mutableListOf<DebugCmdLogInfo>()
+
         val logInfo = DebugCmdLogInfo(
             logTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm:ss.SSS")),
             content = cmdStr.replace(MDConstants.COMMAND_FOOTER, ""),
@@ -53,7 +58,30 @@ class BleCustomCommandLogPrintViewModel : ViewModel() {
             byteCount = cmdStr.length
         )
         currentLogList.add(logInfo)
-        _logItems.value = currentLogList.toList()
+        tempLogList.add(logInfo)
+        _logItems.value = tempLogList.toList()
+    }
+
+    /**
+     * 批量添加日志
+     */
+    fun addLogBatch(logs: List<Pair<String, Int>>) {
+        if (logs.isEmpty()) return
+
+        val tempLogList = mutableListOf<DebugCmdLogInfo>()
+        logs.forEach { (cmdStr, colorRes) ->
+            val logInfo = DebugCmdLogInfo(
+                logTime = TimeUtils.getNowString(TimeUtils.getSafeDateFormat("HH:mm:ss.SSS")),
+                content = cmdStr.replace(MDConstants.COMMAND_FOOTER, ""),
+                colorRes = colorRes,
+                byteCount = cmdStr.length
+            )
+            currentLogList.add(logInfo)
+            tempLogList.add(logInfo)
+        }
+        
+        // 批量更新后一次性通知
+        _logItems.value = tempLogList.toList()
     }
 
     fun setDebugMode(mode: String) {

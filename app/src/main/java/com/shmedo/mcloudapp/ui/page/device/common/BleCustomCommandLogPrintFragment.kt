@@ -19,6 +19,7 @@ import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.UriUtils
 import com.blankj.utilcode.util.Utils
 import com.drake.brv.utils.bindingAdapter
+import com.drake.brv.utils.mutable
 import com.drake.brv.utils.setup
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -109,16 +110,16 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
         // 观察日志数据变化
         mStates.logItems.observe(viewLifecycleOwner) { logItems ->
             try {
-                binding.recyclerview.bindingAdapter.models = logItems
+                binding.recyclerview.bindingAdapter.addModels(logItems,true)
                 if (logItems.isNotEmpty()) {
-                    binding.recyclerview.smoothScrollToPosition(logItems.size - 1)
+                    binding.recyclerview.smoothScrollToPosition(binding.recyclerview.mutable.size - 1)
                 }
             } catch (e: Exception) {
                 Timber.e(e, "更新日志列表失败")
             }
         }
 
-        // 观察需要发送的命令
+        // 观察需要发送的指令
         mStates.commandsToSend.observe(viewLifecycleOwner) { commands ->
             if (commands.isNotEmpty()) {
                 commandItems.clear()
@@ -238,7 +239,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
                 }
                 .show()
         } catch (e: Exception) {
-            Timber.e(e, "显示命令类型选择器失败")
+            Timber.e(e, "显示指令类型选择器失败")
         }
     }
 
@@ -253,7 +254,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
             mStates.updateCommand(command)
             binding.etCustomCommand.clearFocus()
         } catch (e: Exception) {
-            Timber.e(e, "处理命令类型选择失败")
+            Timber.e(e, "处理指令类型选择失败")
         }
     }
 
@@ -272,8 +273,8 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
 
             executeCommand(command)
         } catch (e: Exception) {
-            Timber.e(e, "发送命令失败")
-            Toaster.show("发送命令失败: ${e.localizedMessage}")
+            Timber.e(e, "发送指令失败")
+            Toaster.show("发送指令失败: ${e.message}")
         }
     }
 
@@ -302,12 +303,17 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
     private fun updateDebugMode(mode: BleCustomCommandLogPrintViewModel.DebugMode) {
         try {
             val commands = mStates.generateDebugModeCommands(mode, isIotCmd)
-            commands.forEach { command ->
-                mStates.addLog(command)
+
+            // 使用批量添加优化性能，避免多次触发 DiffUtil 计算
+            val logsToAdd = commands.map { command ->
+                Pair(command, ColorUtils.getColor(R.color.send_data_color))
             }
+            mStates.addLogBatch(logsToAdd)
+
             mStates.requestSendCommands(commands)
         } catch (e: Exception) {
             Timber.e(e, "更新调试模式失败")
+            Toaster.show("设置调试模式失败")
         }
     }
 
@@ -369,7 +375,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
                 }
             } catch (e: Exception) {
                 Timber.e(e, "分享日志失败")
-                Toaster.show("分享日志失败: ${e.localizedMessage}")
+                Toaster.show("分享日志失败: ${e.message}")
             }
         }
     }
@@ -431,7 +437,7 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
 
     override fun onDestroy() {
         try {
-            // 关闭命令调试模式
+            // 关闭指令调试模式
             CommonMMKVOwner.isCommandDebugMode = false
             updateDebugMode(BleCustomCommandLogPrintViewModel.DebugMode.CLOSE)
         } catch (e: Exception) {
