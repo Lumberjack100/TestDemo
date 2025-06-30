@@ -1,9 +1,9 @@
 package com.shmedo.mcloudapp.koin
 
-import com.shmedo.core.data.koin.coreKoinModule
+import com.shmedo.core.data.koin.coreDataKoinModule
 import com.shmedo.lib.ble.koin.bleKoinModule
-import com.shmedo.lib.cmd.base.koin.deviceBaseKoinModule
-import com.shmedo.lib.tcp.koin.tcpKoinModule
+import com.shmedo.lib.cmd.base.koin.libCmdKoinModule
+import com.shmedo.lib.tcp.koin.libTcpKoinModule
 import org.koin.dsl.module
 
 /**
@@ -14,10 +14,11 @@ import org.koin.dsl.module
 
 val appKoinModule = module {
     includes(
-        coreKoinModule,
-        deviceBaseKoinModule,
-        viewModelModule,
+        coreDataKoinModule,
+        libCmdKoinModule,
         bleKoinModule,
-        tcpKoinModule
+        libTcpKoinModule,
+        viewModelModule
+
     )
 }

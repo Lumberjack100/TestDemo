@@ -13,7 +13,7 @@ import org.koin.dsl.module
  * 描述： TODO
  */
 
-val tcpKoinModule = module {
+val libTcpKoinModule = module {
     single { TcpManager() }
     single { MedoTcpRepository(get(), get()) }
 

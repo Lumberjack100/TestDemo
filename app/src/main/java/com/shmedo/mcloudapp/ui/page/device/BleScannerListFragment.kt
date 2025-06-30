@@ -5,6 +5,7 @@ import android.bluetooth.BluetoothAdapter
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
@@ -26,7 +27,6 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentBleScannerListBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
 import com.shmedo.mcloudapp.extensions.getAppViewModel
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
@@ -41,16 +41,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class BleScannerListFragment : BaseFragment() {
     private lateinit var binding: FragmentBleScannerListBinding
     private lateinit var mMessenger: PageMessenger
-    private lateinit var mStates: BleScannerListViewModel
-    private lateinit var deviceRequestViewModel: DeviceRequestViewModel
-    private lateinit var permissionViewModel: PermissionViewModel
-    private lateinit var scannerViewModel: ScannerViewModel
+    private val mStates: BleScannerListViewModel by viewModels()
+    private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
+    private val permissionViewModel: PermissionViewModel by viewModel()
+    private val scannerViewModel: ScannerViewModel by viewModel()
 
     private var discoveredBluetoothDevice: DiscoveredBluetoothDevice? = null
     private var isFilterNameByScanningQRCode = false//是否通过扫描设备二维码来过滤查找设备
@@ -71,10 +71,6 @@ class BleScannerListFragment : BaseFragment() {
 
     override fun initViewModel() {
         mMessenger = getAppViewModel()
-        mStates = getFragmentScopeViewModel()
-        deviceRequestViewModel = getViewModel()
-        permissionViewModel = getViewModel()
-        scannerViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
