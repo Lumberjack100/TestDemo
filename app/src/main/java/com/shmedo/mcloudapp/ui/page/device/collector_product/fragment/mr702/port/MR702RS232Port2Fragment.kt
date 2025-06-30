@@ -2,6 +2,8 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.por
 
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -22,8 +24,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs232Port2Binding
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
@@ -34,20 +34,14 @@ import timber.log.Timber
 
 class MR702RS232Port2Fragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs232Port2Binding
-    private lateinit var mInterfaceHomeViewModel: MR702PortHomeViewModel
-    private lateinit var mStates: MR702RS232Port2ViewModel
+    private val mInterfaceHomeViewModel: MR702PortHomeViewModel by activityViewModels()
+    private val mStates: MR702RS232Port2ViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val dataBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_data_bit) }
     private val checkBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_check_bit) }
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        mStates = getFragmentScopeViewModel()
-        mInterfaceHomeViewModel = getActivityScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_rs232_port2, BR.stateVM, mStates)

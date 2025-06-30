@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 
 import android.os.Bundle
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
@@ -15,7 +16,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentDasMcuAddressBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
@@ -30,14 +30,10 @@ import org.koin.android.ext.android.inject
  */
 class DasMCUAddressFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasMcuAddressBinding
-    private lateinit var mStates: DasMCUAddressViewModel
+    private val mStates: DasMCUAddressViewModel  by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

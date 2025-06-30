@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.adme.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -22,7 +23,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAdmeGuideGrooveCalibrationBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.isViewLifecycleActive
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -48,8 +48,8 @@ import kotlin.math.abs
  */
 class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentAdmeGuideGrooveCalibrationBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: AdmeGuideGrooveCalibrationViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: AdmeGuideGrooveCalibrationViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val motionTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_guide_groove_calibration_motor_motion_type) }
@@ -61,12 +61,6 @@ class AdmeGuideGrooveCalibrationFragment : BaseIOTDeviceFragment() {
     private var motorMotionAngleFragmentBottomDialog: AdmeMotorMotionAngleBottomDialog? = null
     private var queryMotionStateJob: Job? = null
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

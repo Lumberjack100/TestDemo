@@ -55,9 +55,6 @@ class DasDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private val baudRateList: MutableList<String> = arrayListOf("9600", "115200")
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

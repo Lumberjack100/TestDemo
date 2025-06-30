@@ -94,10 +94,6 @@ abstract class NewUniversalBaseDeviceHomeFragment : BaseIOTDeviceFragment() {
     private var deviceStatusCheckJob: Job? = null
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_universal_device_home_new,

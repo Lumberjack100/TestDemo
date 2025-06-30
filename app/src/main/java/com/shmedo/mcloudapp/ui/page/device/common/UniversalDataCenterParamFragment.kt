@@ -85,10 +85,6 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
     private val platformList: MutableList<String> = arrayListOf()
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_data_center_param, BR.stateVM, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)

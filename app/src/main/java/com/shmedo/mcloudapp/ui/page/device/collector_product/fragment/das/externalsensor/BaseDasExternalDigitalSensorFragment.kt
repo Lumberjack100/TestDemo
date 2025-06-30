@@ -3,6 +3,8 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.exter
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.KeyboardUtils
@@ -27,8 +29,6 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentBaseExternalDigitalSensorBinding
 import com.shmedo.mcloudapp.extensions.formatDoubleValue
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.notNullKeyEmpty
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -44,6 +44,7 @@ import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasExternalSensorListViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import timber.log.Timber
+
 /**
  * 创建者：gonghe
  * 创建时间：2024/6/7
@@ -51,8 +52,8 @@ import timber.log.Timber
  */
 abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentBaseExternalDigitalSensorBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var sensorListViewModel: DasExternalSensorListViewModel<DasExternalSensorInfo>
+    private val toolbarViewModel: ToolbarViewModel  by viewModels()
+    private val sensorListViewModel: DasExternalSensorListViewModel<DasExternalSensorInfo> by activityViewModels()
 
     protected val iotSensorType: IOTSensorType by lazy {
         IOTSensorType.Companion.getSensorTypeByCollectorCode(sensorListViewModel.collectorType.get())
@@ -69,12 +70,6 @@ abstract class BaseDasExternalDigitalSensorFragment : BaseIOTDeviceFragment() {
     //子雷达类型
     private val childRadarTypeList = arrayOf("雷达物位计", "精波雷达")
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        sensorListViewModel = getActivityScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

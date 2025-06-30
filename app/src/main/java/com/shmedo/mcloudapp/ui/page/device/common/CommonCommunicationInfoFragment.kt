@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.ui.page.device.common
 
 import android.os.Bundle
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -19,7 +20,6 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTConstants
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentCommonCommunicationInfoBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.notNullKey
 import com.shmedo.mcloudapp.model.CommunicateWay
@@ -36,15 +36,10 @@ import timber.log.Timber
 @Deprecated("This class is deprecated", ReplaceWith(""))
 class CommonCommunicationInfoFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentCommonCommunicationInfoBinding
-    private lateinit var mStates: CommonCommunicationInfoViewModel
+    private val mStates: CommonCommunicationInfoViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
     private val tableAdapter: CommunicationDataTableAdapter by lazy { CommunicationDataTableAdapter() }
     private var centerNum = 0//数据链路数量
-
-    override fun initViewModel() {
-        super.initViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

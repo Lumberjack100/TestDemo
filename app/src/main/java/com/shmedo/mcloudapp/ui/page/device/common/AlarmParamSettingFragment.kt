@@ -45,10 +45,6 @@ class AlarmParamSettingFragment : BaseIOTDeviceFragment() {
 
     private val monitorPointList: List<String> = (1..10).map { it.toString() }
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_alarm_param_setting,

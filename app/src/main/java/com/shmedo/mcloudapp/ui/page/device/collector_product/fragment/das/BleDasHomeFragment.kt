@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 import android.os.Bundle
 import android.util.Log
 import android.widget.CompoundButton
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -30,7 +31,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentBleDasHomeBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -59,16 +59,10 @@ import java.nio.charset.StandardCharsets
 @Deprecated("This class is deprecated", ReplaceWith("DASHomeFragment"))
 class BleDasHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentBleDasHomeBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: BleDasHomeFragmentViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: BleDasHomeFragmentViewModel by viewModels()
     private val mdParseManager: MDParserManager by inject()
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_ble_das_home, BR.stateVM, mStates)

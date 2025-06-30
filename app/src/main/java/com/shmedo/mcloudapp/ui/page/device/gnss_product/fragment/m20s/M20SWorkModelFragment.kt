@@ -41,10 +41,6 @@ class M20SWorkModelFragment : BaseIOTDeviceFragment() {
     private val modelList = arrayListOf("基站", "测站")
     private val frontCalcList = arrayListOf("关", "开", "自动")
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_m20s_work_model,

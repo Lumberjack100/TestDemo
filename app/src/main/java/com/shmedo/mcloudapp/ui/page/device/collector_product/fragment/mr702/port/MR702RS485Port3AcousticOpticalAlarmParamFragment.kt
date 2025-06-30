@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.CompoundButton
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -34,7 +35,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port3AcousticOpticalAlarmParamBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -53,8 +53,8 @@ import timber.log.Timber
 /** 创建者: gonghe <br/> 创建时间: 2023/10/16 <br/> 描述： RS485-3接口声光报警器参数配置 */
 class MR702RS485Port3AcousticOpticalAlarmParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port3AcousticOpticalAlarmParamBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: MR702RS485Port3AcousticOpticalAlarmParamViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: MR702RS485Port3AcousticOpticalAlarmParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val dataBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_data_bit) }
@@ -62,12 +62,6 @@ class MR702RS485Port3AcousticOpticalAlarmParamFragment : BaseIOTDeviceFragment()
         Utils.getApp().resources.getStringArray(R.array.mr_check_bit)
     }
     private val stopBitList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_stop_bit) }
-
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -465,6 +459,7 @@ class MR702RS485Port3AcousticOpticalAlarmParamFragment : BaseIOTDeviceFragment()
 
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
+
     private fun isTargetCommandType(commandType: IOTCommandType): Boolean =
         (commandType == IOTCommandType.MR_MD_GET_RS485_PORT3_SENSOR_PARAM)
                 || (commandType == IOTCommandType.MR_MD_GET_ALARM_MODULE)
@@ -526,6 +521,7 @@ class MR702RS485Port3AcousticOpticalAlarmParamFragment : BaseIOTDeviceFragment()
             errMsg = errMsg
         )
     }
+
     override fun setResultData(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.MR_MD_GET_RS485_PORT3_SENSOR_PARAM -> {

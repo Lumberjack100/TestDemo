@@ -1,14 +1,12 @@
 package com.shmedo.mcloudapp.ui.viewmodel.state
 
 import androidx.databinding.Observable
-import com.shmedo.lib.cmd.base.md_cmd.model.das.MDDasDigitalPiezometerInfo
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseStateViewModel
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.NonNullObservableField
 
 
 class DasDigitalOsmometerViewModel : BaseStateViewModel() {
-    val wrapInfoBackUp = NonNullObservableField(MDDasDigitalPiezometerInfo())
-    
+
     val isOpened = NonNullObservableField(false)
     val address = NonNullObservableField("")//地址
     val triggerValue = NonNullObservableField("")//触发值

@@ -53,10 +53,6 @@ class MR702NetworkConfigFragment : BaseIOTDeviceFragment() {
     private val ipModeList by lazy { Utils.getApp().resources.getStringArray(R.array.ip_mode) }
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_network_communication, BR.stateVM, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)

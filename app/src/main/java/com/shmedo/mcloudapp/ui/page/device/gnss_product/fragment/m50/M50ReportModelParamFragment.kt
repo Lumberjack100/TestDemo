@@ -51,10 +51,6 @@ class M50ReportModelParamFragment : BaseIOTDeviceFragment() {
     private val networkModelList = arrayListOf("4G传输", "电台传输", "自动")
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_m50_report_model_param,

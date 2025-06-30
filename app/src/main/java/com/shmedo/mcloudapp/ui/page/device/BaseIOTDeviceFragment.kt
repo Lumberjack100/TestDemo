@@ -51,8 +51,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
-import org.koin.androidx.viewmodel.ext.android.getActivityViewModel
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.util.LinkedList
 
@@ -63,8 +63,8 @@ import java.util.LinkedList
  */
 abstract class BaseIOTDeviceFragment : BaseFragment() {
     protected lateinit var mMessenger: PageMessenger
-    protected lateinit var netIotCommandViewModel: NetIOTCommandViewModel
-    protected lateinit var bleViewModel: BleViewModel
+    protected val netIotCommandViewModel: NetIOTCommandViewModel by viewModel()
+    protected val bleViewModel: BleViewModel by activityViewModel()
 
     protected var refreshLayout: PageRefreshLayout? = null
 
@@ -87,8 +87,6 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     @CallSuper
     override fun initViewModel() {
         mMessenger = getAppViewModel()
-        netIotCommandViewModel = getViewModel()
-        bleViewModel = getActivityViewModel()
     }
 
     @CallSuper

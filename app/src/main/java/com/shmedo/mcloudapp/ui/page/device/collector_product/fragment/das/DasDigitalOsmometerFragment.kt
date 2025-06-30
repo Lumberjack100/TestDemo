@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
@@ -26,7 +27,6 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentDasDigitalOsmometerBinding
 import com.shmedo.mcloudapp.extensions.formatDoubleValue
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.BleConnect
@@ -43,15 +43,11 @@ import timber.log.Timber
  */
 class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasDigitalOsmometerBinding
-    private lateinit var mStates: DasDigitalOsmometerViewModel
+    private val mStates: DasDigitalOsmometerViewModel by viewModels()
     private val mdParseManager: MDParserManager by inject()
     private val iotParseManager: IOTParserManager by inject()
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -552,8 +548,18 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
             mStates.address.set(digitalPiezometerInfo.osmometerAddress)
             mStates.triggerValue.set(digitalPiezometerInfo.depthTrigger.formatDoubleValue("100", 1))
             mStates.correctValue.set(digitalPiezometerInfo.depthCorrect.formatDoubleValue("0", 1))
-            mStates.wireRopeLength.set(digitalPiezometerInfo.wireRopeLength.formatDoubleValue("0", 1))
-            mStates.installElevation.set(digitalPiezometerInfo.installElevation.formatDoubleValue("0", 1))
+            mStates.wireRopeLength.set(
+                digitalPiezometerInfo.wireRopeLength.formatDoubleValue(
+                    "0",
+                    1
+                )
+            )
+            mStates.installElevation.set(
+                digitalPiezometerInfo.installElevation.formatDoubleValue(
+                    "0",
+                    1
+                )
+            )
 
             // 保存初始状态
             mStates.saveInitialState()

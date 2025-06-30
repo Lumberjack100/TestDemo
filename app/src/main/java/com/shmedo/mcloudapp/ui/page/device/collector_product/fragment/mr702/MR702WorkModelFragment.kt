@@ -41,10 +41,6 @@ class MR702WorkModelFragment : BaseIOTDeviceFragment() {
 
     private val modelList = arrayListOf("正常", "低功耗")
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_mr702_work_model,

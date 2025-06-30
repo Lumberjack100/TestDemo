@@ -22,7 +22,6 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentMr702EquipmentOperationBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -55,6 +54,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.MR702EquipmentOperationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
 import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * @author：gonghe
@@ -64,20 +64,14 @@ import org.koin.android.ext.android.inject
  */
 class MR702EquipmentOperationFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702EquipmentOperationBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: MR702EquipmentOperationViewModel
-    private val deviceRequestViewModel: DeviceRequestViewModel by viewModels()
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: MR702EquipmentOperationViewModel by viewModels()
+    private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
     private val iotParseManager: IOTParserManager by inject()
 
     private val monitoringElementList = arrayListOf<MonitoringElement>()
     private var takePhotoLoadingDialogId = ""
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

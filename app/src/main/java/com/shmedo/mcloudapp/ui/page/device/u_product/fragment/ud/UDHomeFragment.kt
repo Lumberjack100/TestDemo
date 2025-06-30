@@ -89,9 +89,6 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     private var queryMeasureResultTimeoutJob: Job? = null
     private var repeatPollNum = 0 //重复轮询次数
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_ud_home, BR.stateVM, mHeadStates)

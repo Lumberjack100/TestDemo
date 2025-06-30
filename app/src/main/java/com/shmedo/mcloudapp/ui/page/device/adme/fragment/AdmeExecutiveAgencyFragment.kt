@@ -5,6 +5,7 @@ import android.app.TimePickerDialog.OnTimeSetListener
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
@@ -30,7 +31,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseAdmeExecutiveAgencyClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAdmeExecutiveAgencyBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
@@ -49,8 +49,8 @@ import java.util.Locale
 
 class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentAdmeExecutiveAgencyBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: AdmeExecutiveAgencyViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: AdmeExecutiveAgencyViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val measureMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_method) }
@@ -66,12 +66,6 @@ class AdmeExecutiveAgencyFragment : BaseIOTDeviceFragment() {
         )
     }
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

@@ -41,10 +41,6 @@ class MR702ReservoirCapacityFragment : BaseIOTDeviceFragment() {
     private val mStates: MR702ReservoirCapacityViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_reservoir_capacity, BR.stateVM, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)

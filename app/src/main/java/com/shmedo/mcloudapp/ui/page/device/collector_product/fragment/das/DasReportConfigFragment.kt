@@ -49,10 +49,6 @@ class DasReportConfigFragment : BaseIOTDeviceFragment() {
     private val reportMethodList: MutableList<String> = arrayListOf("固定间隔上报", "定时定点上报")
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_das_terminal_parameter, BR.stateVM, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)

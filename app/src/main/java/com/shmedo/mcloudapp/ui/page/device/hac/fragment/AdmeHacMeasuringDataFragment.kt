@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.Filter
 import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.RegexUtils
@@ -36,7 +37,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAdmeHacMeasuringDataBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -56,8 +56,8 @@ import timber.log.Timber
 
 class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentAdmeHacMeasuringDataBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: AdmeHacMeasuringDataViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: AdmeHacMeasuringDataViewModel by viewModels()
     private val admeConfigViewModel: AdmeConfigViewModel by viewModel()
     private val iotParseManager: IOTParserManager by inject()
 
@@ -70,12 +70,6 @@ class AdmeHacMeasuringDataFragment : BaseIOTDeviceFragment() {
     private var lastConfigAreaNum: String = "" //之前配置的区域编号
     private var lastConfigHoleNum: String = "" //之前配置的孔编号
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

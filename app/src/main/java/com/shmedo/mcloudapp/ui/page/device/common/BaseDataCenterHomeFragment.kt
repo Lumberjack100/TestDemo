@@ -43,9 +43,6 @@ abstract class BaseDataCenterHomeFragment : BaseIOTDeviceFragment() {
     protected val iotParseManager: IOTParserManager by inject()
     protected var centerNum = 0 // 数据链路数量
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

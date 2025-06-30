@@ -53,10 +53,6 @@ class UDSerialPortParamFragment : BaseIOTDeviceFragment() {
     var cmdRainGauge = ""
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_ud_serial_port_param,
