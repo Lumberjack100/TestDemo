@@ -8,6 +8,6 @@ import org.koin.dsl.module
  * 描述： TODO
  */
 
-val coreKoinModule = module {
+val coreDataKoinModule = module {
     includes(databaseModule, repositoryModule)
 }

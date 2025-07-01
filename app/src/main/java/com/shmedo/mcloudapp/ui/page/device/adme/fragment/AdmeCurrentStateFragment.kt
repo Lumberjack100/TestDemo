@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.core.view.ViewCompat
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ClipboardUtils
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.StringUtils
@@ -34,7 +35,6 @@ import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAdmeCurrentStateBinding
 import com.shmedo.mcloudapp.databinding.ItemDeviceStatusInfoBasicBinding
 import com.shmedo.mcloudapp.extensions.getAdmeErrorMsg
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.notNullKey
@@ -59,18 +59,13 @@ import timber.log.Timber
  */
 class AdmeCurrentStateFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentAdmeCurrentStateBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: AdmeCurrentStateViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: AdmeCurrentStateViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val deviceAbnormalList: ArrayList<String> = ArrayList()
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_adme_current_state, BR.stateVM, mStates)

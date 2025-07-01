@@ -39,9 +39,6 @@ class M50RadioSettingFragment : BaseIOTDeviceFragment() {
     private var alarmChannelList: List<String> = emptyList()//报警频点
     private var localAddressList: List<String> = emptyList()//本机地址
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

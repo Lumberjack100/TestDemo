@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.adme.fragment
 import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -28,7 +29,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAdmeIntelligentControlBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
@@ -47,18 +47,12 @@ import timber.log.Timber
  */
 class AdmeIntelligentControlFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentAdmeIntelligentControlBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: AdmeIntelligentControlViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: AdmeIntelligentControlViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val brakePadControlList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_brakepad_control) }
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

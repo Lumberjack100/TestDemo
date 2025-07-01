@@ -32,14 +32,13 @@ import org.koin.dsl.module
 
 val viewModelModule = module {
     viewModelOf(::LogViewModel)
+    viewModelOf(::LoginRequestViewModel)
+    viewModelOf(::AppUpdateViewModel)
+    viewModelOf(::DeviceRequestViewModel)
+    viewModelOf(::RequestSearchViewModel)
+    viewModelOf(::AdmeConfigViewModel)
+    viewModelOf(::LocationViewModel)
     viewModelOf(::BleViewModel)
     viewModelOf(::TcpViewModel)
     viewModelOf(::NetIOTCommandViewModel)
-    viewModelOf(::DeviceRequestViewModel)
-    viewModelOf(::RequestSearchViewModel)
-    viewModelOf(::AppUpdateViewModel)
-    viewModelOf(::LoginRequestViewModel)
-    viewModelOf(::AdmeConfigViewModel)
-    viewModelOf(::LocationViewModel)
-
 }

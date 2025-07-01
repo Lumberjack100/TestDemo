@@ -48,10 +48,6 @@ class LoraSettingFragment : BaseIOTDeviceFragment() {
     private val localAddressList: List<String> = (1..20).map { it.toString() }
     private val targetAddressList: List<String> = (1..20).map { it.toString() }
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_lora_setting,

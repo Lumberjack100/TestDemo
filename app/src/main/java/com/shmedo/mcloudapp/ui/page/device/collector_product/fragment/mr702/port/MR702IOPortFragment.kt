@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.por
 
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.bindingAdapter
@@ -21,7 +22,6 @@ import com.shmedo.lib.network.ext.errorMsg
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentMr702IoPortBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessage
@@ -35,14 +35,9 @@ import timber.log.Timber
 
 class MR702IOPortFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702IoPortBinding
-    private lateinit var mStates: EmptyViewModel
+    private val mStates: EmptyViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_io_port, BR.vm, mStates)

@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.por
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -30,7 +31,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SingleSensorParamBinding
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -52,7 +52,7 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port1SingleSensorParamBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
     private val mStates: MR702RS485Port1SingleSensorParamViewModel by viewModels()
-    private lateinit var portHomeViewModel: MR702PortHomeViewModel
+    private val portHomeViewModel: MR702PortHomeViewModel by activityViewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private lateinit var sensorItem: MRSensorItem
@@ -64,10 +64,6 @@ class MR702RS485Port1SingleSensorParamFragment : BaseIOTDeviceFragment() {
     private val calculateList = mutableListOf("不计算", "线性方程计算", "传感器联合计算")
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-        portHomeViewModel = getActivityScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

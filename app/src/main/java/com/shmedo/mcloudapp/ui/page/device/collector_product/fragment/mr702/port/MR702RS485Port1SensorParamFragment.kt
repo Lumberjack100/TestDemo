@@ -6,7 +6,8 @@ import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.widget.TextView
-import androidx.activity.OnBackPressedCallback
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -33,8 +34,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1SensorParamBinding
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -58,9 +57,9 @@ import timber.log.Timber
 class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
     TabLayout.OnTabSelectedListener {
     private lateinit var binding: FragmentMr702Rs485Port1SensorParamBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: MR702RS485Port1SensorParamViewModel
-    private lateinit var portHomeViewModel: MR702PortHomeViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: MR702RS485Port1SensorParamViewModel by viewModels()
+    private val portHomeViewModel: MR702PortHomeViewModel by activityViewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private lateinit var sensorItem: MRSensorItem
@@ -78,13 +77,6 @@ class MR702RS485Port1SensorParamFragment : BaseIOTDeviceFragment(),
 
     private val tabList: MutableList<String> = arrayListOf()
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-        portHomeViewModel = getActivityScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

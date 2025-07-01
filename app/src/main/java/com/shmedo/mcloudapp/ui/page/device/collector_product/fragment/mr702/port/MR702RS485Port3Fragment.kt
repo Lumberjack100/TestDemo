@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.port
 
 import android.os.Bundle
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
@@ -20,7 +21,6 @@ import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port3Binding
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.model.MRSensorItem
@@ -31,14 +31,8 @@ import org.koin.android.ext.android.inject
 
 class MR702RS485Port3Fragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port3Binding
-    private lateinit var mInterfaceHomeViewModel: MR702PortHomeViewModel
+    private val mInterfaceHomeViewModel: MR702PortHomeViewModel by activityViewModels()
     private val iotParseManager: IOTParserManager by inject()
-
-
-    override fun initViewModel() {
-        super.initViewModel()
-        mInterfaceHomeViewModel = getActivityScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

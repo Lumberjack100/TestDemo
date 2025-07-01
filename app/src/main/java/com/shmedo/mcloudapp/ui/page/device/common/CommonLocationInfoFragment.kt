@@ -81,10 +81,6 @@ class CommonLocationInfoFragment : BaseIOTDeviceFragment() {
     private var measureLoadingDialogId = ""
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_common_location_info,

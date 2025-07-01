@@ -16,15 +16,14 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentFollowDeviceListBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
 /**
  * @author：gonghe
  * @time: 2025/6/23
@@ -34,20 +33,20 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 class FollowDeviceListFragment : BaseFragment() {
     private lateinit var binding: FragmentFollowDeviceListBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private lateinit var mStates: EmptyViewModel
-    private lateinit var deviceRequestViewModel: DeviceRequestViewModel
+    private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
 
     private var deleteItemIndex = 0
 
 
     override fun initViewModel() {
-        mStates = getFragmentScopeViewModel()
-        deviceRequestViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_follow_device_list, BR.vm, mStates)
-            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+        return DataBindingConfig(
+            R.layout.fragment_follow_device_list,
+            BR.toolbarVM,
+            toolbarViewModel
+        )
             .addBindingParam(BR.click, BaseClickProxy())
     }
 

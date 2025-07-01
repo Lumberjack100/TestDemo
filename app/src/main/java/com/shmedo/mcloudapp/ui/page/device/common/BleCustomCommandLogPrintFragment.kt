@@ -67,10 +67,6 @@ class BleCustomCommandLogPrintFragment : BaseIOTDeviceFragment() {
     private val cmdTypeList = mutableListOf<String>()
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_ble_custom_command_log_print,

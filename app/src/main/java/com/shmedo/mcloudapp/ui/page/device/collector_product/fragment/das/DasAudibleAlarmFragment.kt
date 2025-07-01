@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -24,7 +25,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentDasAudibleAlarmBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
@@ -43,19 +43,13 @@ import java.text.DecimalFormat
  */
 class DasAudibleAlarmFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasAudibleAlarmBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: DasAudibleAlarmViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: DasAudibleAlarmViewModel  by viewModels()
     private val iotParseManager: IOTParserManager by inject()
     private val alarmTypeList = arrayOf("降雨量", "水位")
 
     private val decimalFormat = DecimalFormat("#.#")
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

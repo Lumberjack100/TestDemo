@@ -75,9 +75,6 @@ class MR702DataCenterParamFragment : BaseIOTDeviceFragment() {
         )
     }
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_data_center_param, BR.stateVM, mStates)

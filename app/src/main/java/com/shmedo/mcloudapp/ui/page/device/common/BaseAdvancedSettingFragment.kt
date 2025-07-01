@@ -6,6 +6,7 @@ import android.text.Html
 import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import com.baidu.location.BDLocation
 import com.blankj.utilcode.util.StringUtils
@@ -33,7 +34,6 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAdvancedSettingBinding
 import com.shmedo.mcloudapp.databinding.ItemAdvancedSettingBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchAndRepeatWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -65,19 +65,14 @@ import java.util.Locale
  */
 open class BaseAdvancedSettingFragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentAdvancedSettingBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: AdvancedSettingViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: AdvancedSettingViewModel by viewModels()
     private val locationViewModel: LocationViewModel by activityViewModel()
     private val iotParseManager: IOTParserManager by inject()
     private val mdParseManager: MDParserManager by inject()
 
     private var gcjLatLng: BDLocation? = null //当前定位经纬度,中国国测局地理坐标（GCJ-02）
 
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

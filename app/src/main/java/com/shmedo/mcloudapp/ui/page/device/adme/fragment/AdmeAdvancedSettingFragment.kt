@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.adme.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -20,7 +21,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAdmeAdvancedSettingBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
@@ -39,18 +39,12 @@ import org.koin.android.ext.android.inject
  */
 class AdmeAdvancedSettingFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentAdmeAdvancedSettingBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: AdmeAdvancedSettingViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: AdmeAdvancedSettingViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val measureWorkModeList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_work_mode) }
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

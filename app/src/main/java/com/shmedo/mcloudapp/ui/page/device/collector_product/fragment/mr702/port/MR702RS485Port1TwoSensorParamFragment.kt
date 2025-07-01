@@ -3,6 +3,8 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.por
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -29,8 +31,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port1TwoSensorParamBinding
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -50,9 +50,9 @@ import timber.log.Timber
 
 class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port1TwoSensorParamBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: MR702RS485Port1TwoSensorParamViewModel
-    private lateinit var portHomeViewModel: MR702PortHomeViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: MR702RS485Port1TwoSensorParamViewModel by viewModels()
+    private val portHomeViewModel: MR702PortHomeViewModel by activityViewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private lateinit var sensorItem: MRSensorItem
@@ -63,13 +63,6 @@ class MR702RS485Port1TwoSensorParamFragment : BaseIOTDeviceFragment() {
     private val siteTypeList = mutableListOf("无", "测点", "参考点")
     private val calculateList = mutableListOf("不计算", "线性方程计算", "传感器联合计算")
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-        portHomeViewModel = getActivityScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

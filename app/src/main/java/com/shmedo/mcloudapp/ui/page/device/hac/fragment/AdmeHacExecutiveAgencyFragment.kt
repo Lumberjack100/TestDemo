@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.hac.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -22,7 +23,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseAdmeExecutiveAgencyClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAdmeExecutiveAgencyBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
@@ -33,9 +33,6 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.utils.DeviceStatusInfoProcessor
 import org.koin.android.ext.android.inject
 import timber.log.Timber
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
 
 /**
  * 创建者：gonghe
@@ -44,21 +41,15 @@ import java.util.Locale
  */
 class AdmeHacExecutiveAgencyFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentAdmeExecutiveAgencyBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: AdmeExecutiveAgencyViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: AdmeExecutiveAgencyViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val settlementMethodList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_settlement_method) }
     private val dataResponseTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_data_response_type) }
 
-    private val decimalFormat = DecimalFormat("#.#", DecimalFormatSymbols(Locale.getDefault()))
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.u_product.fragment.ui
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -18,7 +19,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentUiProductSensorParamBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
@@ -35,19 +35,14 @@ import org.koin.android.ext.android.inject
  */
 class UIProductSensorParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentUiProductSensorParamBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: UIProductSensorParamViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: UIProductSensorParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val measureIntervalList = arrayListOf("1", "2", "5", "10")
     private val averageTimesList = arrayListOf("2", "3", "5", "10")
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

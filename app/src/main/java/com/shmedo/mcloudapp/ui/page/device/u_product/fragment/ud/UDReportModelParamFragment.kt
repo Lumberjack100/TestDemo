@@ -59,10 +59,6 @@ class UDReportModelParamFragment : BaseIOTDeviceFragment() {
         arrayListOf("15", "30", "60", "120")//上报频率
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_ud_report_model_param,

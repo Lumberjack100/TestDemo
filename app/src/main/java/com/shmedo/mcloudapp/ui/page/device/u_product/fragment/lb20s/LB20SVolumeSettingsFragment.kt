@@ -41,9 +41,6 @@ class LB20SVolumeSettingsFragment : BaseIOTDeviceFragment() {
 
     private val volumeLevelList = arrayListOf("无", "低", "中", "高")
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

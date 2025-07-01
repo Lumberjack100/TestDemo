@@ -1,6 +1,7 @@
 package com.shmedo.mcloudapp.ui.page.device.common
 
 import android.os.Bundle
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.blankj.utilcode.util.TimeUtils
@@ -19,7 +20,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentUniversalDeviceHomeBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
@@ -43,17 +43,11 @@ import org.koin.android.ext.android.inject
 
 abstract class UniversalDeviceHomeFragment : BaseIOTDeviceFragment() {
     protected lateinit var binding: FragmentUniversalDeviceHomeBinding
-    protected lateinit var toolbarViewModel: ToolbarViewModel
-    protected lateinit var mHeadStates: CommonDeviceHomeViewModel
-    protected lateinit var mCommandResponseStates: CommandResponseViewModel
+    protected val toolbarViewModel: ToolbarViewModel by viewModels()
+    protected val mHeadStates: CommonDeviceHomeViewModel by viewModels()
+    protected val mCommandResponseStates: CommandResponseViewModel by viewModels()
     protected val iotParseManager: IOTParserManager by inject()
 
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mHeadStates = getFragmentScopeViewModel()
-        mCommandResponseStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_universal_device_home, BR.stateVM, mHeadStates)

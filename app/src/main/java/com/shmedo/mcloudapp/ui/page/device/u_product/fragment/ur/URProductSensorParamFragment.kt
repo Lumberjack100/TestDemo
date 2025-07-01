@@ -53,10 +53,6 @@ class URProductSensorParamFragment : BaseIOTDeviceFragment() {
 
     private val rainResolutionList by lazy { Utils.getApp().resources.getStringArray(R.array.rain_value) }
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_ur_product_sensor_param,

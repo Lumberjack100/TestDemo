@@ -60,9 +60,6 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
 
     private var collectorModel = "-1"
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

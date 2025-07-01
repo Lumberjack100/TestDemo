@@ -56,9 +56,6 @@ class M50SerialPortParamFragment : BaseIOTDeviceFragment() {
     private val rs485ExternalDeviceList = arrayListOf("无", "压电式雨量计")
     private val rs485BaudRateList = arrayListOf("2400", "4800", "9600", "14400", "19200")
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

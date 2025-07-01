@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -39,6 +40,8 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.BleDasDataCenterHomeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+import kotlin.getValue
+
 /**
  * @author：gonghe
  * @time: 2025/6/17
@@ -47,17 +50,12 @@ import timber.log.Timber
  */
 class BleDasDataCenterHomeFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentBleDasDataCenterHomeBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: BleDasDataCenterHomeViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: BleDasDataCenterHomeViewModel by viewModels()
     private val mdParseManager: MDParserManager by inject()
     private val communicatModeList: MutableList<String> = arrayListOf("4G", "SMS", "BD", "BD+4G")
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
