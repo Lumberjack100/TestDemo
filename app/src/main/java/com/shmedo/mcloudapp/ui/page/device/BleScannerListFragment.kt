@@ -188,38 +188,53 @@ class BleScannerListFragment : BaseFragment() {
     }
 
     private suspend fun processScanResult() {
-        scannerViewModel.scannerState.collect { state ->
-            when (state) {
-                ScanningState.Loading -> {
-                    Timber.i("scannerViewModel.state: Loading")
-                }
-
-                is ScanningState.Error -> {
-                    Timber.e("scannerViewModel.state: Error: ${state.errorMsg}")
-                }
-
-                is ScanningState.DevicesDiscovered -> {
-                    Timber.i("scannerViewModel.state: DevicesDiscovered=${state.devices.size}")
-                    if (state.devices.isNotEmpty())
-                        binding.refreshLayout.showContent()
-                    else
-                        binding.refreshLayout.showEmpty()
-                    binding.recyclerviewDevice.models = state.devices
-
-                    if (isFilterNameByScanningQRCode && state.devices.isNotEmpty()) {
-                        discoveredBluetoothDevice = state.devices[0]
-                        discoveredBluetoothDevice?.name?.let { deviceToken ->
-                            if (deviceToken.contains(mStates.keyWords.value.toString())) {
-                                stopScanningSearchDeviceTimeoutJob()
-                                deviceRequestViewModel.getDeviceDetailInfo(
-                                    deviceToken.replaceFirst(
-                                        Regex("^MD-?"),
-                                        ""
-                                    )
-                                )
-                            }
-                        }
+        scannerViewModel.scannerState
+            .collect { state ->
+                when (state) {
+                    ScanningState.Loading -> {
+                        Timber.i("scannerViewModel.state: Loading")
                     }
+
+                    is ScanningState.Error -> {
+                        Timber.e("scannerViewModel.state: Error: ${state.errorMsg}")
+                        binding.refreshLayout.showError()
+                    }
+
+                    is ScanningState.DevicesDiscovered -> {
+                        Timber.i("scannerViewModel.state: DevicesDiscovered=${state.devices.size}")
+
+                        updateDeviceList(state.devices)
+
+                        // 处理扫码搜索逻辑
+                        handleQRCodeScan(state.devices)
+                    }
+                }
+            }
+    }
+
+    private fun updateDeviceList(devices: List<DiscoveredBluetoothDevice>) {
+        if (devices.isNotEmpty()) {
+            binding.refreshLayout.showContent()
+        } else {
+            binding.refreshLayout.showEmpty()
+        }
+
+        binding.recyclerviewDevice.models = devices
+    }
+
+    private fun handleQRCodeScan(devices: List<DiscoveredBluetoothDevice>) {
+        if (isFilterNameByScanningQRCode && devices.isNotEmpty()) {
+            val targetDevice = devices.firstOrNull { device ->
+                device.name?.contains(mStates.keyWords.value.toString(), ignoreCase = true) == true
+            }
+
+            targetDevice?.let { device ->
+                discoveredBluetoothDevice = device
+                stopScanningSearchDeviceTimeoutJob()
+                device.name?.let { deviceToken ->
+                    deviceRequestViewModel.getDeviceDetailInfo(
+                        deviceToken.replaceFirst(Regex("^MD-?"), "")
+                    )
                 }
             }
         }

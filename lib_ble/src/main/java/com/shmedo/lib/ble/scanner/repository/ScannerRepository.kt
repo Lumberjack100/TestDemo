@@ -49,7 +49,7 @@ class ScannerRepository internal constructor( private val devicesDataStore: Devi
             val settings = ScanSettings.Builder()
                 .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
                 .setLegacy(false)
-                .setReportDelay(500)
+                .setReportDelay(1000)
                 .setUseHardwareBatchingIfSupported(false)
                 .build()
 
