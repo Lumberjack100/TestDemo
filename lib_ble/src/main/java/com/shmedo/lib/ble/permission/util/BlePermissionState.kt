@@ -31,13 +31,22 @@
 
 package com.shmedo.lib.ble.permission.util
 
-enum class FeatureNotAvailableReason {
-    PERMISSION_REQUIRED,
-    NOT_AVAILABLE,
-    DISABLED,
+import com.shmedo.lib.ble.permission.BlePermissionNotAvailableReason
+
+
+/**
+ * The state of Bluetooth permission.
+ */
+sealed class BlePermissionState {
+    /** Bluetooth permission is granted. */
+    data object Available : BlePermissionState()
+    /**
+     * Bluetooth is not available.
+     *
+     * @param reason The reason why the BLE permission is not available.
+     */
+    data class NotAvailable(
+        val reason: BlePermissionNotAvailableReason,
+    ) : BlePermissionState()
 }
 
-sealed class FeatureState
-
-data object Available : FeatureState()
-data class NotAvailable(val reason: FeatureNotAvailableReason) : FeatureState()

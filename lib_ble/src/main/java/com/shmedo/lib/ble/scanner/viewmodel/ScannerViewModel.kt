@@ -34,8 +34,8 @@ class ScannerViewModel(private val scannerRepository: ScannerRepository) : ViewM
         )
     )
 
-    val scannerState = scannerRepository.getScannerState()
-        .combine(filterConfig) { result, config ->
+    val scannerState = filterConfig
+        .combine(scannerRepository.getScannerState()) { config, result ->
             when (result) {
                 is ScanningState.DevicesDiscovered -> result.applyFilters(config)
                 else -> result
@@ -45,7 +45,6 @@ class ScannerViewModel(private val scannerRepository: ScannerRepository) : ViewM
             WhileSubscribed(5000),
             ScanningState.Loading
         )
-
     // This can't be observed in View Model Scope, as it can exist even when the
     // scanner is not visible. Scanner state stops scanning when it is not observed.
     // .stateIn(viewModelScope, SharingStarted.Lazily, ScanningState.Loading)

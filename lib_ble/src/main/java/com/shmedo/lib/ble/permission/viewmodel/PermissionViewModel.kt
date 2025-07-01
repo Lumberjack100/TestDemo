@@ -34,10 +34,11 @@ package com.shmedo.lib.ble.permission.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.shmedo.lib.ble.permission.BlePermissionNotAvailableReason
 import com.shmedo.lib.ble.permission.bluetooth.BluetoothStateManager
 import com.shmedo.lib.ble.permission.location.LocationStateManager
-import com.shmedo.lib.ble.permission.util.FeatureNotAvailableReason
-import com.shmedo.lib.ble.permission.util.NotAvailable
+import com.shmedo.lib.ble.permission.util.BlePermissionState
+
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 
@@ -54,14 +55,14 @@ class PermissionViewModel(
         .stateIn(
             viewModelScope,
             SharingStarted.Lazily,
-            NotAvailable(FeatureNotAvailableReason.NOT_AVAILABLE)
+            BlePermissionState.NotAvailable(BlePermissionNotAvailableReason.NOT_AVAILABLE)
         )
 
     val locationPermission = locationManager.locationState()
         .stateIn(
             viewModelScope,
             SharingStarted.Lazily,
-            NotAvailable(FeatureNotAvailableReason.NOT_AVAILABLE)
+            BlePermissionState.NotAvailable(BlePermissionNotAvailableReason.NOT_AVAILABLE)
         )
 
 
