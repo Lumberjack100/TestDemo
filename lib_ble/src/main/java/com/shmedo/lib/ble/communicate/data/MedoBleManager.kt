@@ -46,13 +46,8 @@ import com.shmedo.lib.ble.communicate.service.base.MissingServiceResult
 import com.shmedo.lib.ble.communicate.service.base.ReadyResult
 import com.shmedo.lib.ble.communicate.service.base.SuccessResult
 import com.shmedo.lib.ble.communicate.service.base.UnknownErrorResult
-import com.shmedo.lib.ble.communicate.spec.ESP32ASpec
-import com.shmedo.lib.ble.communicate.spec.ESP32BSpec
-import com.shmedo.lib.ble.communicate.spec.GOC400Spec
-import com.shmedo.lib.ble.communicate.spec.GOCW91200Spec
-import com.shmedo.lib.ble.communicate.spec.MS52SF1Spec
+import com.shmedo.lib.ble.communicate.spec.BleDeviceSpecManager
 import com.shmedo.lib.ble.communicate.spec.PacketMerger
-import com.shmedo.lib.ble.communicate.spec.USRSpec
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
@@ -75,6 +70,9 @@ class MedoBleManager(
 ) : BleManager(context) {
     private var notifyCharacteristic: BluetoothGattCharacteristic? = null
     private var writeCharacteristic: BluetoothGattCharacteristic? = null
+
+    // 设备规格管理器
+    private val deviceSpecManager = BleDeviceSpecManager()
 
     private val _data = MutableSharedFlow<BleManagerResult<CommandData>>(
         replay = 1,
@@ -165,63 +163,19 @@ class MedoBleManager(
     }
 
     override fun isRequiredServiceSupported(gatt: BluetoothGatt): Boolean {
-        //ESP32ASpec、MS52SF1Spec SERVICE_UUID 相同，但是写特征值不同
-        gatt.getService(ESP32ASpec.ESP32_SERVICE_UUID)?.run {
-            notifyCharacteristic = getCharacteristic(
-                ESP32ASpec.ESP32_NOTIFY_CHARACTERISTIC_UUID
-            )
-            writeCharacteristic = getCharacteristic(
-                ESP32ASpec.ESP32_WRITABLE_CHARACTERISTIC_UUID
-            ) ?: getCharacteristic(
-                MS52SF1Spec.MS52SF1_WRITABLE_CHARACTERISTIC_UUID
-            )
+        val discoveryResult = deviceSpecManager.identifyDevice(gatt)
+        
+        return if (discoveryResult != null) {
+            // 保存发现的设备信息
+            notifyCharacteristic = discoveryResult.notifyCharacteristic
+            writeCharacteristic = discoveryResult.writeCharacteristic
+            
+            Timber.d("设备识别成功: ${discoveryResult.spec.deviceName}")
+            true
+        } else {
+            Timber.w("未找到支持的设备规格")
+            false
         }
-        gatt.getService(ESP32BSpec.ESP32B_SERVICE_UUID)?.run {
-            notifyCharacteristic = getCharacteristic(
-                ESP32BSpec.ESP32B_NOTIFY_CHARACTERISTIC_UUID
-            )
-            writeCharacteristic = getCharacteristic(
-                ESP32BSpec.ESP32B_WRITABLE_CHARACTERISTIC_UUID
-            )
-        }
-        gatt.getService(GOC400Spec.GOC400_SERVICE_UUID)?.run {
-            notifyCharacteristic = getCharacteristic(
-                GOC400Spec.GOC400_NOTIFY_CHARACTERISTIC_UUID
-            )
-            writeCharacteristic = getCharacteristic(
-                GOC400Spec.GOC400_WRITABLE_CHARACTERISTIC_UUID
-            )
-        }
-        gatt.getService(GOCW91200Spec.GOCW91200_SERVICE_UUID)?.run {
-            notifyCharacteristic = getCharacteristic(
-                GOCW91200Spec.GOCW91200_NOTIFY_CHARACTERISTIC_UUID
-            )
-            writeCharacteristic = getCharacteristic(
-                GOCW91200Spec.GOCW91200_WRITABLE_CHARACTERISTIC_UUID
-            )
-        }
-        gatt.getService(USRSpec.USR_SERVICE_UUID)?.run {
-            notifyCharacteristic = getCharacteristic(
-                USRSpec.USR_NOTIFY_CHARACTERISTIC_UUID
-            )
-            writeCharacteristic = getCharacteristic(
-                USRSpec.USR_WRITABLE_CHARACTERISTIC_UUID
-            )
-        }
-
-        var writeRequest = false
-        var writeCommand = false
-        writeCharacteristic?.let {
-            val rxProperties = it.properties
-            writeRequest = rxProperties and BluetoothGattCharacteristic.PROPERTY_WRITE > 0
-            writeCommand =
-                rxProperties and BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE > 0
-        }
-
-        val supported =
-            notifyCharacteristic != null && writeCharacteristic != null && (writeRequest || writeCommand)
-
-        return supported
     }
 
     override fun onServicesInvalidated() {
