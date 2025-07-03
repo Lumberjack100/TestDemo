@@ -35,7 +35,7 @@ abstract class CommandDataCallback : ProfileReadResponse(), CommandCallback {
                 return
             }
 
-            if (cmdContent.contains("\$\$")) {
+            if (cmdContent.contains("$$")) {
                 cmdContent.split("\r\n".toRegex()).filter { it.isNotEmpty() }
                     .forEach { tempCmd ->
                         Timber.v(
@@ -44,7 +44,7 @@ abstract class CommandDataCallback : ProfileReadResponse(), CommandCallback {
                             tempCmd
                         )
                         var cmd = tempCmd
-                        val index = cmd.lastIndexOf("\$\$")
+                        val index = cmd.lastIndexOf("$$")
                         if (index != -1) cmd = cmd.substring(index)
                         onResponseReceived(device, cmdResult = cmd)
                     }

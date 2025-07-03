@@ -603,7 +603,7 @@ class BleDasHomeFragment : BaseIOTDeviceFragment() {
     private fun setupHeartbeat() {
         launchWithViewLifecycle {
             lastCommunicationTime
-                .debounce(AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
+                .debounce(AppContants.Communication.DELAY_BLE_HEART_BEAT)  // 30秒无更新触发
                 .collect { lastUpdateTime ->
                     val updateTime = TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
                     // 仅当设备连接并且需要发送心跳时，才发送心跳包

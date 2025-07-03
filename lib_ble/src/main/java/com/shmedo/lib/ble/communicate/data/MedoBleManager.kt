@@ -51,22 +51,45 @@ import com.shmedo.lib.ble.communicate.spec.PacketMerger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import no.nordicsemi.android.ble.BleManager
 import no.nordicsemi.android.ble.data.Data
 import no.nordicsemi.android.ble.ktx.asValidResponseFlow
 import no.nordicsemi.android.ble.ktx.suspend
 import no.nordicsemi.android.ble.observer.ConnectionObserver
 import timber.log.Timber
+import java.util.concurrent.ConcurrentLinkedQueue
 
+/**
+ * 指令发送配置
+ */
+data class SendConfig(
+    val useResponseBasedFlow: Boolean = true,  // 是否使用基于响应的流控
+    val responseTimeoutMs: Long = 3000,        // 响应超时时间（毫秒）
+    val fallbackDelayMs: Long = 500,           // 备用延时（毫秒）
+    val useWriteWithResponse: Boolean = false   // 是否使用 Write with Response
+)
+
+/**
+ * 待发送的指令
+ */
+private data class PendingCommand(
+    val command: String,
+    val timestamp: Long = System.currentTimeMillis()
+)
 
 class MedoBleManager(
     context: Context,
     private val scope: CoroutineScope,
     private val device: BluetoothDevice,
+    private val sendConfig: SendConfig = SendConfig()
 ) : BleManager(context) {
     private var notifyCharacteristic: BluetoothGattCharacteristic? = null
     private var writeCharacteristic: BluetoothGattCharacteristic? = null
@@ -74,12 +97,21 @@ class MedoBleManager(
     // 设备规格管理器
     private val deviceSpecManager = BleDeviceSpecManager()
 
+    // 指令队列管理 - 使用线程安全的 ConcurrentLinkedQueue
+    private val commandQueue = ConcurrentLinkedQueue<PendingCommand>()
+
+    @Volatile
+    private var isProcessingQueue = false
+    private val queueMutex = Mutex()
+
+    @Volatile
+    private var lastResponseTime = System.currentTimeMillis()
+
     private val _data = MutableSharedFlow<BleManagerResult<CommandData>>(
         replay = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
     val data = _data.asSharedFlow()
-
 
     init {
         connectionObserver = object : ConnectionObserver {
@@ -145,13 +177,21 @@ class MedoBleManager(
             // Merges packets until the entire text is present in the stream [PacketMerger.merge].
             .merge(PacketMerger())
             .asValidResponseFlow<CommandResponse>()
-            .onEach {
-                _data.emit(
-                    SuccessResult(
-                        device,
-                        CommandData(response = it.response, responseList = it.responseList)
-                    )
+            .onEach {commandResponse ->
+                // 创建成功结果
+                val successResult = SuccessResult(
+                    device,
+                    CommandData(response = commandResponse.response, responseList = commandResponse.responseList)
                 )
+
+                // 发射到数据流
+                _data.emit(successResult)
+
+                // 如果启用了响应驱动的流控，触发下一个指令发送
+                if (sendConfig.useResponseBasedFlow) {
+                    lastResponseTime = System.currentTimeMillis()
+                    processNextCommand()
+                }
             }
             .launchIn(scope)
 
@@ -183,31 +223,149 @@ class MedoBleManager(
         notifyCharacteristic = null
     }
 
+    /**
+     * 发送数据 - 改进版本，支持智能流控
+     */
     fun sendData(command: String) {
-        try {
-            writeCharacteristic?.let {
-                Timber.v(
-                    "发送数据: length=%s bytes;content: %s",
-                    command.toByteArray().size,
-                    command
-                )
-                writeCharacteristic(
-                    it,
-                    Data.from(command),
-                    it.writeType
-                )
-                    // Outgoing data can use automatic splitting.
-                    //.split() with no parameters uses the default MTU splitter.
-                    .split()
-                    .enqueue()
-
-                //用于解决同时发送多条指令过快导致设备处理不过来响应数据丢失的问题
-                sleep(1000).enqueue()
-            }
-        } catch (e: Exception) {
-            //处理异常
-            Timber.e(e, "发送数据时出现异常")
+        if (command.isBlank()) {
+            Timber.w("尝试发送空指令，已忽略")
+            return
         }
+
+        val pendingCommand = PendingCommand(command)
+        commandQueue.offer(pendingCommand)
+
+        Timber.v("指令已加入队列: $command, 队列大小: ${commandQueue.size}")
+
+        // 如果当前没有正在处理队列，则开始处理
+        if (!isProcessingQueue) {
+            scope.launch {
+                processCommandQueue()
+            }
+        }
+    }
+
+    /**
+     * 立即发送数据（不使用队列，用于紧急指令）
+     */
+    fun sendDataImmediate(command: String) {
+        scope.launch {
+            sendDataInternal(command)
+        }
+    }
+
+    /**
+     * 处理下一个指令（由响应触发）
+     */
+    private fun processNextCommand() {
+        if (commandQueue.isNotEmpty() && !isProcessingQueue) {
+            scope.launch {
+                processCommandQueue()
+            }
+        }
+    }
+
+    /**
+     * 处理指令队列
+     */
+    private suspend fun processCommandQueue() {
+        if (isProcessingQueue) {
+            return // 已经有其他协程在处理队列
+        }
+
+        isProcessingQueue = true
+
+        try {
+            while (commandQueue.isNotEmpty()) {
+                val pendingCommand = commandQueue.poll() ?: break
+
+                // 检查指令是否超时
+                val isExpired =
+                    System.currentTimeMillis() - pendingCommand.timestamp > sendConfig.responseTimeoutMs
+                if (isExpired) {
+                    Timber.w("指令已过期，跳过: ${pendingCommand.command}")
+                    continue
+                }
+
+                val success = sendDataInternal(pendingCommand.command)
+
+                // 成功发送或达到最大重试次数，使用正常的流控机制
+                if (sendConfig.useResponseBasedFlow) {
+                    waitForResponseOrTimeout()
+                } else {
+                    delay(sendConfig.fallbackDelayMs)
+                }
+            }
+        } finally {
+            isProcessingQueue = false
+        }
+    }
+
+    /**
+     * 等待响应或超时
+     */
+    private suspend fun waitForResponseOrTimeout() {
+        val startTime = System.currentTimeMillis()
+        val initialResponseTime = lastResponseTime
+
+        while (System.currentTimeMillis() - startTime < sendConfig.responseTimeoutMs) {
+            if (lastResponseTime > initialResponseTime) {
+                // 收到新的响应
+                Timber.v("收到响应，继续处理下一个指令")
+                return
+            }
+            delay(50) // 短暂等待
+        }
+
+        Timber.w("等待响应超时，使用备用延时继续")
+        delay(sendConfig.fallbackDelayMs)
+    }
+
+    /**
+     * 内部发送数据方法
+     */
+    private suspend fun sendDataInternal(command: String): Boolean {
+        return queueMutex.withLock {
+            try {
+                writeCharacteristic?.let { characteristic ->
+                    Timber.v("发送数据: length=${command.toByteArray().size} bytes;content: $command")
+
+                    // 根据配置选择写入类型
+                    val writeType = if (sendConfig.useWriteWithResponse) {
+                        BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+                    } else {
+                        characteristic.writeType
+                    }
+
+                    writeCharacteristic(characteristic, Data.from(command), writeType)
+                        .split()
+                        .enqueue()
+
+                    true
+                } ?: run {
+                    Timber.e("writeCharacteristic 为空，无法发送数据")
+                    false
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "发送数据时出现异常: $command")
+                false
+            }
+        }
+    }
+
+    /**
+     * 清空指令队列
+     */
+    fun clearCommandQueue() {
+        commandQueue.clear()
+        Timber.i("指令队列已清空")
+    }
+
+    /**
+     * 获取队列状态
+     */
+    fun getQueueStatus(): Pair<Int, Boolean> {
+        return commandQueue.size to isProcessingQueue
     }
 
     suspend fun connect() {
@@ -228,6 +386,7 @@ class MedoBleManager(
     }
 
     fun release() {
+        clearCommandQueue()
         cancelQueue()
         disconnect().enqueue()
     }
