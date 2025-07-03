@@ -72,9 +72,8 @@ import java.util.concurrent.ConcurrentLinkedQueue
  */
 data class SendConfig(
     val useResponseBasedFlow: Boolean = true,  // 是否使用基于响应的流控
-    val responseTimeoutMs: Long = 3000,        // 响应超时时间（毫秒）
-    val fallbackDelayMs: Long = 500,           // 备用延时（毫秒）
-    val useWriteWithResponse: Boolean = false   // 是否使用 Write with Response
+    val responseTimeoutMs: Long = 5000,        // 响应超时时间（毫秒）
+    val fallbackDelayMs: Long = 1000,           // 备用延时（毫秒）
 )
 
 /**
@@ -330,12 +329,13 @@ class MedoBleManager(
                 writeCharacteristic?.let { characteristic ->
                     Timber.v("发送数据: length=${command.toByteArray().size} bytes;content: $command")
 
-                    // 根据配置选择写入类型
-                    val writeType = if (sendConfig.useWriteWithResponse) {
-                        BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-                    } else {
-                        characteristic.writeType
-                    }
+                    // 智能选择写入类型
+                    val writeType =
+                        if ((characteristic.properties and BluetoothGattCharacteristic.PROPERTY_WRITE) != 0) {
+                            BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+                        } else {
+                            characteristic.writeType
+                        }
 
                     writeCharacteristic(characteristic, Data.from(command), writeType)
                         .split()

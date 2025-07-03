@@ -15,6 +15,7 @@ sealed class BleDeviceSpec(
     val writeCharacteristicUuid: UUID
 ) {
 
+    //WRITE、WRITE_NO_RESPONSE
     object ESP32A : BleDeviceSpec(
         deviceName = "ESP32A",
         serviceUuid = UUID.fromString("0000fff0-0000-1000-8000-00805f9b34fb"),
@@ -43,6 +44,7 @@ sealed class BleDeviceSpec(
         writeCharacteristicUuid = UUID.fromString("0000fff4-0000-1000-8000-00805f9b34fb")
     )
 
+    //WRITE、WRITE_NO_RESPONSE
     object MS52SF1 : BleDeviceSpec(
         deviceName = "MS52SF1",
         serviceUuid = UUID.fromString("0000fff0-0000-1000-8000-00805f9b34fb"),
@@ -50,7 +52,7 @@ sealed class BleDeviceSpec(
         writeCharacteristicUuid = UUID.fromString("0000fff2-0000-1000-8000-00805f9b34fb")
     )
 
-    //济南有人物联网公司低功耗蓝牙模块服务和特征值
+    //济南有人物联网公司低功耗蓝牙模块服务和特征值  WRITE、WRITE_NO_RESPONSE
     object USR : BleDeviceSpec(
         deviceName = "USR",
         serviceUuid = UUID.fromString("0003cdd0-0000-1000-8000-00805f9b0131"),
