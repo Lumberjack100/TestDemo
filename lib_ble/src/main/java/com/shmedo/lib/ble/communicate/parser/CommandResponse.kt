@@ -7,17 +7,22 @@ import android.bluetooth.BluetoothDevice
  *
  * 创建时间：2023/9/6
  *
- * 描述： TODO
- *
- *
+ * 描述：优化后的指令响应处理器，支持多种结果类型
  */
-class CommandResponse : CommandDataCallback() {
-    var response: String = ""
+class CommandResponse(
+    parsers: List<CommandParserStrategy> = listOf(
+        IoTCommandParser(),
+        StandardCommandParser(),
+        DefaultCommandParser()
+    ),
+) : CommandDataCallback(parsers) {
+    /**
+     * 最新的响应内容
+     */
+    var latestResponse: String = ""
+        private set
 
-    override fun onResponseReceived(
-        device: BluetoothDevice,
-        cmdResult: String,
-    ) {
-        response = cmdResult
+    override fun onResponseReceived(device: BluetoothDevice, cmdResult: String) {
+        latestResponse = cmdResult
     }
 }

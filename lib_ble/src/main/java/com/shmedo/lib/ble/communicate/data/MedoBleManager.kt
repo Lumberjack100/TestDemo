@@ -174,22 +174,14 @@ class MedoBleManager(
         // Enable notifications
         setNotificationCallback(notifyCharacteristic)
             // Merges packets until the entire text is present in the stream [PacketMerger.merge].
-            .merge(PacketMerger())
+            .merge(PacketMerger(enableDetailedLogging = true))
             .asValidResponseFlow<CommandResponse>()
-            .onEach {commandResponse ->
-                // 创建成功结果
-                val successResult = SuccessResult(
-                    device,
-                    CommandData(response = commandResponse.response)
-                )
-
-                // 发射到数据流
-                _data.emit(successResult)
-
-                // 如果启用了响应驱动的流控，触发下一个指令发送
-                if (sendConfig.useResponseBasedFlow) {
-                    lastResponseTime = System.currentTimeMillis()
-                    processNextCommand()
+            .onEach { commandResponse ->
+                try {
+                    processCommandResponse(commandResponse)
+                } catch (e: Exception) {
+                    Timber.e(e, "处理指令响应时出错")
+                    _data.emit(UnknownErrorResult(device))
                 }
             }
             .launchIn(scope)
@@ -203,12 +195,12 @@ class MedoBleManager(
 
     override fun isRequiredServiceSupported(gatt: BluetoothGatt): Boolean {
         val discoveryResult = deviceSpecManager.identifyDevice(gatt)
-        
+
         return if (discoveryResult != null) {
             // 保存发现的设备信息
             notifyCharacteristic = discoveryResult.notifyCharacteristic
             writeCharacteristic = discoveryResult.writeCharacteristic
-            
+
             Timber.d("设备识别成功: ${discoveryResult.spec.deviceName}")
             true
         } else {
@@ -220,6 +212,31 @@ class MedoBleManager(
     override fun onServicesInvalidated() {
         writeCharacteristic = null
         notifyCharacteristic = null
+    }
+
+    /**
+     * 处理指令响应
+     */
+    private suspend fun processCommandResponse(commandResponse: CommandResponse) {
+        if (commandResponse.latestResponse.isEmpty()) {
+            Timber.w("收到空响应内容")
+            return
+        }
+        
+        // 处理成功响应
+        val successResult = SuccessResult(
+            device,
+            CommandData(response = commandResponse.latestResponse)
+        )
+
+        _data.emit(successResult)
+
+        // 如果启用了响应驱动的流控，触发下一个指令发送
+        if (sendConfig.useResponseBasedFlow) {
+            lastResponseTime = System.currentTimeMillis()
+            processNextCommand()
+        }
+
     }
 
     /**
