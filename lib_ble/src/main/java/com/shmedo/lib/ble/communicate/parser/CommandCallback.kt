@@ -15,6 +15,5 @@ interface CommandCallback {
     fun onResponseReceived(
         device: BluetoothDevice,
         cmdResult: String = "",
-        cmdResultList: List<String> = listOf()
     )
 }

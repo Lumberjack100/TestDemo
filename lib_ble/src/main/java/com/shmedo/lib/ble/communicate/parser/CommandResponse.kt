@@ -13,14 +13,11 @@ import android.bluetooth.BluetoothDevice
  */
 class CommandResponse : CommandDataCallback() {
     var response: String = ""
-    var responseList: List<String> = listOf()
 
     override fun onResponseReceived(
         device: BluetoothDevice,
         cmdResult: String,
-        cmdResultList: List<String>
     ) {
         response = cmdResult
-        responseList = cmdResultList
     }
 }

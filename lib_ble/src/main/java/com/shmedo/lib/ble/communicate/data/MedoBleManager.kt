@@ -37,6 +37,7 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
 import android.util.Log
 import com.shmedo.lib.ble.communicate.parser.CommandResponse
+import com.shmedo.lib.ble.communicate.parser.PacketMerger
 import com.shmedo.lib.ble.communicate.service.base.BleManagerResult
 import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
 import com.shmedo.lib.ble.communicate.service.base.ConnectingResult
@@ -47,7 +48,6 @@ import com.shmedo.lib.ble.communicate.service.base.ReadyResult
 import com.shmedo.lib.ble.communicate.service.base.SuccessResult
 import com.shmedo.lib.ble.communicate.service.base.UnknownErrorResult
 import com.shmedo.lib.ble.communicate.spec.BleDeviceSpecManager
-import com.shmedo.lib.ble.communicate.spec.PacketMerger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
@@ -180,7 +180,7 @@ class MedoBleManager(
                 // 创建成功结果
                 val successResult = SuccessResult(
                     device,
-                    CommandData(response = commandResponse.response, responseList = commandResponse.responseList)
+                    CommandData(response = commandResponse.response)
                 )
 
                 // 发射到数据流
