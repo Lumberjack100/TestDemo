@@ -18,7 +18,7 @@ import timber.log.Timber
 /**
  * 创建者：gonghe
  * 创建时间：2024/4/19
- * 描述： TODO
+ * 描述：蓝牙通知服务基类，提供前台服务和通知管理功能
  */
 abstract class BleNotificationService : LifecycleService() {
 
@@ -41,12 +41,6 @@ abstract class BleNotificationService : LifecycleService() {
             startForeground(BLE_NOTIFICATION_ID, createForegroundNotification())
         }
         return result
-    }
-
-    override fun onDestroy() {
-        Timber.d("BleNotificationService onDestroy")
-        NotificationManagerCompat.from(this@BleNotificationService).cancel(BLE_NOTIFICATION_ID)
-        super.onDestroy()
     }
 
     private fun createForegroundNotification(): Notification {
@@ -88,7 +82,10 @@ abstract class BleNotificationService : LifecycleService() {
             }
     }
 
-    private fun getOpenAppIntent(): PendingIntent {
+    /**
+     * 获取打开应用的 PendingIntent
+     */
+    protected fun getOpenAppIntent(): PendingIntent {
         val intent: Intent? =
             Utils.getApp().packageManager.getLaunchIntentForPackage(Utils.getApp().packageName)
         val pendingIntent =
@@ -100,6 +97,50 @@ abstract class BleNotificationService : LifecycleService() {
             )
 
         return pendingIntent
+    }
+
+    /**
+     * 清理通知
+     */
+    protected fun clearNotification() {
+        NotificationManagerCompat.from(this@BleNotificationService).cancel(BLE_NOTIFICATION_ID)
+        Timber.d("通知已清理")
+    }
+
+    /**
+     * 抽象方法：更新通知内容，子类必须实现
+     */
+    protected abstract fun updateNotification(message: String)
+
+
+    /**
+     * 安全停止服务 - 确保通知被清理
+     */
+    protected fun safeStopService() {
+        try {
+            // 先清理通知
+            clearNotification()
+            Timber.d("服务停止前已清理通知")
+
+            // 再停止服务
+            stopSelf()
+        } catch (e: Exception) {
+            Timber.e(e, "停止服务时发生异常")
+            // 即使出现异常也要尝试清理通知
+            try {
+                clearNotification()
+            } catch (clearException: Exception) {
+                Timber.e(clearException, "清理通知时发生异常")
+            }
+            stopSelf()
+        }
+    }
+
+    override fun onDestroy() {
+        Timber.d("BleNotificationService onDestroy")
+        // 清理通知
+        clearNotification()
+        super.onDestroy()
     }
 
     companion object {
