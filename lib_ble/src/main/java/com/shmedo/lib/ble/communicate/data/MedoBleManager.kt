@@ -38,15 +38,6 @@ import android.content.Context
 import android.util.Log
 import com.shmedo.lib.ble.communicate.parser.CommandResponse
 import com.shmedo.lib.ble.communicate.parser.PacketMerger
-import com.shmedo.lib.ble.communicate.service.base.BleManagerResult
-import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
-import com.shmedo.lib.ble.communicate.service.base.ConnectingResult
-import com.shmedo.lib.ble.communicate.service.base.DisconnectedResult
-import com.shmedo.lib.ble.communicate.service.base.LinkLossResult
-import com.shmedo.lib.ble.communicate.service.base.MissingServiceResult
-import com.shmedo.lib.ble.communicate.service.base.ReadyResult
-import com.shmedo.lib.ble.communicate.service.base.SuccessResult
-import com.shmedo.lib.ble.communicate.service.base.UnknownErrorResult
 import com.shmedo.lib.ble.communicate.spec.BleDeviceSpecManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -62,8 +53,8 @@ import kotlinx.coroutines.sync.withLock
 import no.nordicsemi.android.ble.BleManager
 import no.nordicsemi.android.ble.data.Data
 import no.nordicsemi.android.ble.ktx.asValidResponseFlow
+import no.nordicsemi.android.ble.ktx.stateAsFlow
 import no.nordicsemi.android.ble.ktx.suspend
-import no.nordicsemi.android.ble.observer.ConnectionObserver
 import timber.log.Timber
 import java.util.concurrent.ConcurrentLinkedQueue
 
@@ -106,60 +97,23 @@ class MedoBleManager(
     @Volatile
     private var lastResponseTime = System.currentTimeMillis()
 
-    private val _data = MutableSharedFlow<BleManagerResult<CommandData>>(
+    // 使用 stateAsFlow() 获取连接状态
+    val connectionState = stateAsFlow()
+    
+    // 只发送数据响应
+    private val _commandData = MutableSharedFlow<CommandData>(
         replay = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
-    val data = _data.asSharedFlow()
-
-    init {
-        connectionObserver = object : ConnectionObserver {
-            override fun onDeviceConnecting(device: BluetoothDevice) {
-                Timber.v("onDeviceConnecting()")
-                _data.tryEmit(ConnectingResult(device))
-            }
-
-            override fun onDeviceConnected(device: BluetoothDevice) {
-                Timber.v("onDeviceConnected()")
-                _data.tryEmit(ConnectedResult(device))
-            }
-
-            override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {
-                Timber.e("onDeviceFailedToConnect(), reason: $reason")
-                _data.tryEmit(MissingServiceResult(device))
-            }
-
-            override fun onDeviceReady(device: BluetoothDevice) {
-                Timber.v("onDeviceReady()")
-                _data.tryEmit(ReadyResult(device))
-            }
-
-            override fun onDeviceDisconnecting(device: BluetoothDevice) {
-                Timber.w("onDeviceDisconnecting()")
-            }
-
-            override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {
-                Timber.e("onDeviceDisconnected(), reason: $reason")
-                _data.tryEmit(
-                    when (reason) {
-                        ConnectionObserver.REASON_NOT_SUPPORTED -> MissingServiceResult(device)
-                        ConnectionObserver.REASON_LINK_LOSS -> LinkLossResult(device, null)
-                        ConnectionObserver.REASON_SUCCESS -> DisconnectedResult(device, reason)
-                        else -> UnknownErrorResult(device)
-                    }
-                )
-            }
-        }
-    }
+    val commandData = _commandData.asSharedFlow()
 
     override fun log(priority: Int, message: String) {
-//        logger.log(priority, message)
+        // logger.log(priority, message)
     }
 
     override fun getMinLogPriority(): Int {
         return Log.VERBOSE
     }
-
 
     @SuppressLint("MissingPermission")
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -167,7 +121,7 @@ class MedoBleManager(
         // Increase the MTU
         requestMtu(512)
             .fail { device, status ->
-                Timber.e("requestMtu  error:${device.name} $status")
+                Timber.e("requestMtu error: ${device.name} $status")
             }
             .enqueue()
 
@@ -181,14 +135,13 @@ class MedoBleManager(
                     processCommandResponse(commandResponse)
                 } catch (e: Exception) {
                     Timber.e(e, "处理指令响应时出错")
-                    _data.emit(UnknownErrorResult(device))
                 }
             }
             .launchIn(scope)
 
         enableNotifications(notifyCharacteristic)
             .fail { device, status ->
-                Timber.e("enableNotifications  error:${device.name} $status")
+                Timber.e("enableNotifications error: ${device.name} $status")
             }
             .enqueue()
     }
@@ -201,7 +154,7 @@ class MedoBleManager(
             notifyCharacteristic = discoveryResult.notifyCharacteristic
             writeCharacteristic = discoveryResult.writeCharacteristic
 
-            Timber.d("设备识别成功: ${discoveryResult.spec.deviceName}")
+            Timber.d("设备蓝牙芯片识别成功: ${discoveryResult.spec.deviceName}")
             true
         } else {
             Timber.w("未找到支持的设备规格")
@@ -223,20 +176,14 @@ class MedoBleManager(
             return
         }
         
-        // 处理成功响应
-        val successResult = SuccessResult(
-            device,
-            CommandData(response = commandResponse.latestResponse)
-        )
-
-        _data.emit(successResult)
+        // 只发送数据响应
+        _commandData.emit(CommandData(response = commandResponse.latestResponse))
 
         // 如果启用了响应驱动的流控，触发下一个指令发送
         if (sendConfig.useResponseBasedFlow) {
             lastResponseTime = System.currentTimeMillis()
             processNextCommand()
         }
-
     }
 
     /**
@@ -303,9 +250,9 @@ class MedoBleManager(
                     continue
                 }
 
-                val success = sendDataInternal(pendingCommand.command)
+                sendDataInternal(pendingCommand.command)
 
-                // 成功发送或达到最大重试次数，使用正常的流控机制
+                // 使用正常的流控机制
                 if (sendConfig.useResponseBasedFlow) {
                     waitForResponseOrTimeout()
                 } else {

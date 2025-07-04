@@ -19,17 +19,6 @@ import com.kongzue.dialogx.dialogs.BottomMenu
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.model.DebugCmdLogInfo
-import com.shmedo.lib.ble.communicate.data.CommandData
-import com.shmedo.lib.ble.communicate.service.base.BleManagerResult
-import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
-import com.shmedo.lib.ble.communicate.service.base.ConnectingResult
-import com.shmedo.lib.ble.communicate.service.base.DisconnectedResult
-import com.shmedo.lib.ble.communicate.service.base.IdleResult
-import com.shmedo.lib.ble.communicate.service.base.LinkLossResult
-import com.shmedo.lib.ble.communicate.service.base.MissingServiceResult
-import com.shmedo.lib.ble.communicate.service.base.ReadyResult
-import com.shmedo.lib.ble.communicate.service.base.SuccessResult
-import com.shmedo.lib.ble.communicate.service.base.UnknownErrorResult
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.utils.IOTCommandUtil
@@ -59,6 +48,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import no.nordicsemi.android.ble.ktx.state.ConnectionState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.io.File
@@ -273,66 +263,68 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
         addLog(message, ColorUtils.getColor(R.color.error_FF4400))
     }
 
-    override suspend fun collectBleData() {
-        bleViewModel.data.collect { result ->
-            Timber.v("${javaClass.simpleName} MedoBle: $result")
+    override suspend fun collectBleConnectionState() {
+        // 监听连接状态变化
+        bleViewModel.connectionState.collect { state ->
             try {
-                handleBleWorkingState(result)
+                handleBleConnectionState(state)
             } catch (e: Exception) {
                 Timber.e(e, "处理蓝牙状态失败")
             }
         }
     }
 
-    private fun handleBleWorkingState(result: BleManagerResult<CommandData>) {
-        when (result) {
-            is IdleResult,
-            is ConnectingResult -> {
+    override suspend fun collectBleCommandData() {
+        bleViewModel.commandData.collect { data ->
+            try {
+                handleBleResponseContentFromDevice(data.response)
+            } catch (e: Exception) {
+                Timber.e(e, "处理蓝牙数据失败")
+            }
+        }
+    }
+
+    private fun handleBleConnectionState(state: ConnectionState) {
+        when (state) {
+            ConnectionState.Connecting -> {
                 addLog(
                     "正在连接蓝牙(${bleDevice?.address})...",
                     ColorUtils.getColor(R.color.title_text_color)
                 )
             }
 
-            is ConnectedResult -> {
+            is ConnectionState.Initializing -> {
                 addLog("蓝牙连接成功", ColorUtils.getColor(R.color.online_colorPrimary))
             }
 
-            is ReadyResult -> {
+            is ConnectionState.Ready -> {
                 addLog("蓝牙已就绪", ColorUtils.getColor(R.color.title_text_color))
             }
 
-            is SuccessResult -> {
-                handleBleResponseContentFromDevice(result.data.response)
+            is ConnectionState.Disconnected -> {
+                when (state.reason) {
+                    ConnectionState.Disconnected.Reason.LINK_LOSS -> {
+                        addLog(
+                            "蓝牙连接断开, reason: device link loss",
+                            ColorUtils.getColor(R.color.error_FF4400)
+                        )
+                    }
+                    ConnectionState.Disconnected.Reason.NOT_SUPPORTED -> {
+                        addLog(
+                            "蓝牙连接失败, reason: device missing service",
+                            ColorUtils.getColor(R.color.error_FF4400)
+                        )
+                    }
+                    else -> {
+                        addLog(
+                            "蓝牙连接断开, reason: ${state.reason}",
+                            ColorUtils.getColor(R.color.error_FF4400)
+                        )
+                    }
+                }
             }
 
-            is DisconnectedResult -> {
-                addLog(
-                    "蓝牙连接断开, reason: ${result.reason}",
-                    ColorUtils.getColor(R.color.error_FF4400)
-                )
-            }
-
-            is LinkLossResult -> {
-                addLog(
-                    "蓝牙连接断开, reason: device link loss",
-                    ColorUtils.getColor(R.color.error_FF4400)
-                )
-            }
-
-            is MissingServiceResult -> {
-                addLog(
-                    "蓝牙连接失败, reason: device missing service",
-                    ColorUtils.getColor(R.color.error_FF4400)
-                )
-            }
-
-            is UnknownErrorResult -> {
-                addLog(
-                    "蓝牙连接失败, reason: device unknown error",
-                    ColorUtils.getColor(R.color.error_FF4400)
-                )
-            }
+            else -> {}
         }
     }
 
