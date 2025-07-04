@@ -40,8 +40,6 @@ import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.DispatchFailed
 import com.shmedo.mcloudapp.model.DispatchSuccess
 import com.shmedo.mcloudapp.model.NetPlatformConnect
-import com.shmedo.mcloudapp.model.NoDeviceState
-import com.shmedo.mcloudapp.model.WorkingState
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.NetIOTCommandViewModel
@@ -192,49 +190,47 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
 
     //<editor-fold desc="处理蓝牙下发指令">
     protected open suspend fun collectBleData() {
-        bleViewModel.state.collect { state ->
-            Timber.v("${javaClass.simpleName} MedoBle: $state")
+        bleViewModel.data.collect { result ->
+            Timber.v("${javaClass.simpleName} MedoBle: $result")
 //                if (isRestrictHiddenMode() && isHidden) {
 //                    return@collect
 //                }
-            when (state) {
-                NoDeviceState -> {}
-                is WorkingState -> when (state.result) {
-                    is IdleResult, is ConnectingResult -> {
-                        showLoadingDialog(StringUtils.getString(R.string.ble_state_connecting))
-                    }
+            when (result) {
+                is IdleResult,
+                is ConnectingResult -> {
+                    showLoadingDialog(StringUtils.getString(R.string.ble_state_connecting))
+                }
 
-                    is ConnectedResult -> {
-                    }
+                is ConnectedResult -> {
+                }
 
-                    is ReadyResult -> {
-                        onConnectionStateChanged(true)
-                        onBleDeviceReady()
-                    }
+                is ReadyResult -> {
+                    onConnectionStateChanged(true)
+                    onBleDeviceReady()
+                }
 
-                    is SuccessResult -> {
-                        setResultData(state.result.data.response)
-                    }
+                is SuccessResult -> {
+                    setResultData(result.data.response)
+                }
 
-                    is DisconnectedResult -> {
-                        dismissLoadingDialog()
-                        onConnectionStateChanged(false)
-                    }
+                is DisconnectedResult -> {
+                    dismissLoadingDialog()
+                    onConnectionStateChanged(false)
+                }
 
-                    is LinkLossResult -> {
-                        dismissLoadingDialog()
-                        onConnectionStateChanged(false)
-                    }
+                is LinkLossResult -> {
+                    dismissLoadingDialog()
+                    onConnectionStateChanged(false)
+                }
 
-                    is MissingServiceResult -> {
-                        dismissLoadingDialog()
-                        onConnectionStateChanged(false)
-                    }
+                is MissingServiceResult -> {
+                    dismissLoadingDialog()
+                    onConnectionStateChanged(false)
+                }
 
-                    is UnknownErrorResult -> {
-                        dismissLoadingDialog()
-                        onConnectionStateChanged(false)
-                    }
+                is UnknownErrorResult -> {
+                    dismissLoadingDialog()
+                    onConnectionStateChanged(false)
                 }
             }
         }

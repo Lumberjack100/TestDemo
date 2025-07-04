@@ -71,7 +71,7 @@ class PacketMerger(
         try {
             val utf8Content = String(lastPacket, Charsets.UTF_8)
             Timber.d(
-                "$LOG_TAG: 数据包[%d] - 长度=%d, \n内容=%s, \n内容(UTF-8)=%s",
+                "$LOG_TAG: 数据包[%d] - 长度=%d \n内容(Byte)=%s \n内容(UTF-8)=%s",
                 index,
                 lastPacket.size,
                 lastPacket.contentToString(),

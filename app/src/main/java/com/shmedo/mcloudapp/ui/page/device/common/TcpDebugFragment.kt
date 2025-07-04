@@ -19,6 +19,8 @@ import com.kongzue.dialogx.dialogs.BottomMenu
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.model.DebugCmdLogInfo
+import com.shmedo.lib.ble.communicate.data.CommandData
+import com.shmedo.lib.ble.communicate.service.base.BleManagerResult
 import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
 import com.shmedo.lib.ble.communicate.service.base.ConnectingResult
 import com.shmedo.lib.ble.communicate.service.base.DisconnectedResult
@@ -49,8 +51,6 @@ import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showMessage
-import com.shmedo.mcloudapp.model.NoDeviceState
-import com.shmedo.mcloudapp.model.WorkingState
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.TcpViewModel
@@ -274,21 +274,18 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
     }
 
     override suspend fun collectBleData() {
-        bleViewModel.state.collect { state ->
-            Timber.v("${javaClass.simpleName} MedoBle: $state")
+        bleViewModel.data.collect { result ->
+            Timber.v("${javaClass.simpleName} MedoBle: $result")
             try {
-                when (state) {
-                    NoDeviceState -> {}
-                    is WorkingState -> handleBleWorkingState(state)
-                }
+                handleBleWorkingState(result)
             } catch (e: Exception) {
                 Timber.e(e, "处理蓝牙状态失败")
             }
         }
     }
 
-    private fun handleBleWorkingState(state: WorkingState) {
-        when (state.result) {
+    private fun handleBleWorkingState(result: BleManagerResult<CommandData>) {
+        when (result) {
             is IdleResult,
             is ConnectingResult -> {
                 addLog(
@@ -306,12 +303,12 @@ class TcpDebugFragment : BaseIOTDeviceFragment() {
             }
 
             is SuccessResult -> {
-                handleBleResponseContentFromDevice(state.result.data.response)
+                handleBleResponseContentFromDevice(result.data.response)
             }
 
             is DisconnectedResult -> {
                 addLog(
-                    "蓝牙连接断开, reason: ${state.result.reason}",
+                    "蓝牙连接断开, reason: ${result.reason}",
                     ColorUtils.getColor(R.color.error_FF4400)
                 )
             }

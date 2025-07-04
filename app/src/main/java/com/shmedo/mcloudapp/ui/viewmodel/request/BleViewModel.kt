@@ -18,8 +18,6 @@ import com.shmedo.lib.ble.communicate.service.base.SuccessResult
 import com.shmedo.lib.ble.communicate.service.base.UnknownErrorResult
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDConstants
-import com.shmedo.mcloudapp.model.MedoViewState
-import com.shmedo.mcloudapp.model.WorkingState
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -44,14 +42,14 @@ class BleViewModel(
 ) :
     BaseRequestViewModel(loggerRepositoryImp) {
 
-    private val _state: MutableSharedFlow<MedoViewState> = MutableSharedFlow()
-    val state = _state.asSharedFlow()
+    private val _data = MutableSharedFlow<BleManagerResult<CommandData>>()
+    val data = _data.asSharedFlow()
 
 
     init {
         medoBleRepository.data.onEach {
             logResult(it)
-            _state.emit(WorkingState(it))
+            _data.emit(it)
         }.launchIn(viewModelScope)
     }
 

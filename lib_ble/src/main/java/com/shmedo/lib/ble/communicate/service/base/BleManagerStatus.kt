@@ -31,7 +31,6 @@
 
 package com.shmedo.lib.ble.communicate.service.base
 
-import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 
 sealed interface BleManagerResult<T> {
@@ -49,27 +48,21 @@ sealed interface BleManagerResult<T> {
     }
 }
 
-sealed class DeviceHolder(val device: BluetoothDevice) {
-
-    @SuppressLint("MissingPermission")
-    fun deviceName(): String = device.name ?: device.address
-
-}
 
 class IdleResult<T> : BleManagerResult<T>
 
-class ConnectingResult<T>(device: BluetoothDevice) : DeviceHolder(device), BleManagerResult<T>
-class ConnectedResult<T>(device: BluetoothDevice) : DeviceHolder(device), BleManagerResult<T>
-class ReadyResult<T>(device: BluetoothDevice) : DeviceHolder(device), BleManagerResult<T>
-class SuccessResult<T>(device: BluetoothDevice, val data: T) : DeviceHolder(device),
+class ConnectingResult<T>(device: BluetoothDevice) : BleManagerResult<T>
+class ConnectedResult<T>(device: BluetoothDevice) : BleManagerResult<T>
+class ReadyResult<T>(device: BluetoothDevice) : BleManagerResult<T>
+class SuccessResult<T>(device: BluetoothDevice, val data: T) :
     BleManagerResult<T>
 
-class LinkLossResult<T>(device: BluetoothDevice, val data: T?) : DeviceHolder(device),
+class LinkLossResult<T>(device: BluetoothDevice, val data: T?) :
     BleManagerResult<T>
 
-class DisconnectedResult<T>(device: BluetoothDevice, val reason: Int = -1) : DeviceHolder(device),
+class DisconnectedResult<T>(device: BluetoothDevice, val reason: Int = -1) :
     BleManagerResult<T>
 
-class MissingServiceResult<T>(device: BluetoothDevice) : DeviceHolder(device), BleManagerResult<T>
-class UnknownErrorResult<T>(device: BluetoothDevice) : DeviceHolder(device), BleManagerResult<T>
+class MissingServiceResult<T>(device: BluetoothDevice) : BleManagerResult<T>
+class UnknownErrorResult<T>(device: BluetoothDevice) : BleManagerResult<T>
 
