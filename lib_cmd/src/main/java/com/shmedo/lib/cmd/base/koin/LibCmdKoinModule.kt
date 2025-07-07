@@ -10,7 +10,7 @@ import org.koin.dsl.module
  * 描述： TODO
  */
 
-val deviceBaseKoinModule= module {
+val libCmdKoinModule= module {
     includes(
         mdCommandModule,
         iotCommandModule

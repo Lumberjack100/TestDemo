@@ -13,7 +13,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.IOTParser
 
 
 /**
- * 通用设置命令结果解析器
+ * 通用设置指令结果解析器
  */
 @IOTParser
 class CommonSettingParser : IOTCommandParser<CommonSettingCmdResult> {

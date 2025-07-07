@@ -13,14 +13,14 @@ import com.shmedo.lib.cmd.base.md_cmd.parser.das.MDBreakAlarmStatusInfoParser
 import com.shmedo.lib.cmd.base.md_cmd.parser.das.MDDasBaseConfigInfoParser
 import com.shmedo.lib.cmd.base.md_cmd.parser.das.MDDasCollectorInfoParser
 import com.shmedo.lib.cmd.base.md_cmd.parser.das.MDDasDigitalPiezometerInfoParser
+import com.shmedo.lib.cmd.base.md_cmd.parser.das.MDDasExternalSensorInfoParser
 import com.shmedo.lib.cmd.base.md_cmd.parser.das.MDDeviceStatusInfoOneParser
 import com.shmedo.lib.cmd.base.md_cmd.parser.das.MDDeviceStatusInfoThreeParser
 import com.shmedo.lib.cmd.base.md_cmd.parser.das.MDDeviceStatusInfoTwoParser
 import com.shmedo.lib.cmd.base.md_cmd.parser.das.MDInclinometerInfoParser
 import com.shmedo.lib.cmd.base.md_cmd.parser.das.MDSystemRunStateInfoParser
 import com.shmedo.lib.cmd.base.md_cmd.parser.das.MDVersionMessageInfoParser
-import com.shmedo.lib.cmd.base.md_cmd.parser.das.MDDasExternalSensorInfoParser
-
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 /**
@@ -29,24 +29,24 @@ import org.koin.dsl.module
  * 描述： TODO
  */
 val mdCommandModule = module {
-    factory { CommonSettingMDCommandResponseParser() }
-    factory { MDLocalTimeParser() }
-    factory { MDDeviceNetStatusParser() }
-    factory { MDBleDataCenterInfoParser() }
-    factory { MDServerAddressInfoParser() }
-    factory { MDAuthenticationInfoParser() }
-    factory { MDAuthenticationResultInfoParser() }
-    factory { MDDasBaseConfigInfoParser() }
-    factory { MDDasCollectorInfoParser() }
-    factory { MDDeviceStatusInfoOneParser() }
-    factory { MDVersionMessageInfoParser() }
-    factory { MDSystemRunStateInfoParser() }
-    factory { MDDeviceStatusInfoTwoParser() }
-    factory { MDInclinometerInfoParser() }
-    factory { MDDeviceStatusInfoThreeParser() }
-    factory { MDBreakAlarmStatusInfoParser() }
-    factory { MDDasDigitalPiezometerInfoParser() }
-    factory { MDDasExternalSensorInfoParser() }
+    singleOf(::CommonSettingMDCommandResponseParser)
+    singleOf(::MDLocalTimeParser)
+    singleOf(::MDDeviceNetStatusParser)
+    singleOf(::MDBleDataCenterInfoParser)
+    singleOf(::MDServerAddressInfoParser)
+    singleOf(::MDAuthenticationInfoParser)
+    singleOf(::MDAuthenticationResultInfoParser)
+    singleOf(::MDDasBaseConfigInfoParser)
+    singleOf(::MDDasCollectorInfoParser)
+    singleOf(::MDDeviceStatusInfoOneParser)
+    singleOf(::MDVersionMessageInfoParser)
+    singleOf(::MDSystemRunStateInfoParser)
+    singleOf(::MDDeviceStatusInfoTwoParser)
+    singleOf(::MDInclinometerInfoParser)
+    singleOf(::MDDeviceStatusInfoThreeParser)
+    singleOf(::MDBreakAlarmStatusInfoParser)
+    singleOf(::MDDasDigitalPiezometerInfoParser)
+    singleOf(::MDDasExternalSensorInfoParser)
 
     // 提供 IOTParseManager 的实例
     single {

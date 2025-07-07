@@ -39,6 +39,7 @@ import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
+import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.DataCenterStatusItem
 import com.shmedo.mcloudapp.model.NetPlatformConnect
@@ -83,10 +84,6 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
 
     private val platformList: MutableList<String> = arrayListOf()
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_data_center_param, BR.stateVM, mStates)
@@ -614,7 +611,9 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         mStates.reissuingDataValidDays.set(data.valid_day)
         mStates.reissuingDataInterval.set(data.reissue_time)
 
-        if (communicateWay is NetPlatformConnect && mStates.platformType.get().contains("米度物联平台")) {
+        if (communicateWay is NetPlatformConnect && mStates.platformType.get()
+                .contains("米度物联平台")
+        ) {
             mStates.isEditable.set(false)
             showMessageDialog("4G模式下，米度物联平台链路不允许修改，以免设备离线")
         }
@@ -640,12 +639,22 @@ class UniversalDataCenterParamFragment : BaseIOTDeviceFragment() {
         launchWithViewLifecycle {
             delay(1000)
             //需要给上一级页面传递最新的信息
-            setFragmentResult(
-                AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY,
-                bundleOf(AppContants.Extras.REFRESH_DATA_CENTER_STATUS to statusItem.centerid)
-            )
+            if (isNeedRefreshDataCenterStatus()) {
+                setFragmentResult(
+                    AppContants.Extras.FRAGMENT_DATA_CENTER_HOME_RESULT_REQUEST_KEY,
+                    bundleOf(AppContants.Extras.REFRESH_DATA_CENTER_STATUS to statusItem.centerid)
+                )
+            }
             nav().navigateUp()
         }
+    }
+
+    /**
+     * 是否需要给上一级页面传递最新的信息
+     */
+    private fun isNeedRefreshDataCenterStatus(): Boolean {
+        return communicateWay is BleConnect &&
+                (productType != ProductType.LB20S)
     }
 
     companion object {

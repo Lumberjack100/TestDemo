@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.main
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.navigation.NavigationBarView
 import com.hjq.permissions.OnPermissionCallback
@@ -11,7 +12,6 @@ import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentMainBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.ui.adapter.PageAdapter
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
@@ -20,20 +20,18 @@ import com.shmedo.mcloudapp.ui.viewmodel.request.AppUpdateViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
 import kotlinx.coroutines.delay
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MainFragment : BaseFragment() {
     private lateinit var binding: FragmentMainBinding
-    private lateinit var mStates: EmptyViewModel
-    private lateinit var appUpdateViewModel: AppUpdateViewModel
-    private lateinit var loginRequestViewModel: LoginRequestViewModel
+    private val mStates: EmptyViewModel by viewModels()
+    private val appUpdateViewModel: AppUpdateViewModel by viewModel()
+    private val loginRequestViewModel: LoginRequestViewModel by viewModel()
 
 
     override fun initViewModel() {
-        mStates = getFragmentScopeViewModel()
-        appUpdateViewModel = getViewModel()
-        loginRequestViewModel = getViewModel()
+
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {

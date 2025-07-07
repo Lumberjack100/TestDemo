@@ -45,9 +45,6 @@ class M50NetworkConfigFragment : BaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
     private val networkTypeList = arrayListOf("eSIM", "外置SIM", "自动")
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_m50_network_config, BR.stateVM, mStates)

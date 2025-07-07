@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.StringUtils
 import com.hjq.toast.Toaster
@@ -26,7 +27,6 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentDasDigitalOsmometerBinding
 import com.shmedo.mcloudapp.extensions.formatDoubleValue
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.model.BleConnect
@@ -43,15 +43,11 @@ import timber.log.Timber
  */
 class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasDigitalOsmometerBinding
-    private lateinit var mStates: DasDigitalOsmometerViewModel
+    private val mStates: DasDigitalOsmometerViewModel by viewModels()
     private val mdParseManager: MDParserManager by inject()
     private val iotParseManager: IOTParserManager by inject()
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -125,7 +121,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    /** 蓝牙通讯模式保存命令 */
+    /** 蓝牙通讯模式保存指令 */
     private fun initBleSaveCommand() {
         commandItems.clear()
 
@@ -163,7 +159,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    /** 4G通讯模式保存命令 */
+    /** 4G通讯模式保存指令 */
     private fun init4GSaveCommand() {
         val entity = DasDigitalPiezometerEntity(
             sw = if (mStates.isOpened.get()) "1" else "0",
@@ -353,7 +349,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 处理蓝牙通讯命令结果
+     * 处理蓝牙通讯指令结果
      */
     private fun handleBleCommandResult(cmdStr: String) {
         when (MDCommandUtil.extractCommandType(cmdStr)) {
@@ -495,7 +491,7 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 处理4G通讯命令结果
+     * 处理4G通讯指令结果
      */
     private fun handle4GCommandResult(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
@@ -552,8 +548,18 @@ class DasDigitalOsmometerFragment : BaseIOTDeviceFragment() {
             mStates.address.set(digitalPiezometerInfo.osmometerAddress)
             mStates.triggerValue.set(digitalPiezometerInfo.depthTrigger.formatDoubleValue("100", 1))
             mStates.correctValue.set(digitalPiezometerInfo.depthCorrect.formatDoubleValue("0", 1))
-            mStates.wireRopeLength.set(digitalPiezometerInfo.wireRopeLength.formatDoubleValue("0", 1))
-            mStates.installElevation.set(digitalPiezometerInfo.installElevation.formatDoubleValue("0", 1))
+            mStates.wireRopeLength.set(
+                digitalPiezometerInfo.wireRopeLength.formatDoubleValue(
+                    "0",
+                    1
+                )
+            )
+            mStates.installElevation.set(
+                digitalPiezometerInfo.installElevation.formatDoubleValue(
+                    "0",
+                    1
+                )
+            )
 
             // 保存初始状态
             mStates.saveInitialState()

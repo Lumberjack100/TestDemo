@@ -13,6 +13,7 @@ import android.view.View
 import android.view.WindowManager
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.constant.RegexConstants
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
@@ -36,7 +37,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAdmeHacMeasuringDataProcedureBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -60,8 +60,8 @@ import java.util.Locale
 
 class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentAdmeHacMeasuringDataProcedureBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: AdmeHacMeasuringDataProcedureViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: AdmeHacMeasuringDataProcedureViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private var soundPool: SoundPool? = null
@@ -76,11 +76,6 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         initSoundPool()
     }
 
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -239,12 +234,12 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
         )
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
             IOTCommandType.ADME_HAC_MD_GET_MOTION_STATE,
-            -> {
+                -> {
                 getMotorMotionData(DELAY_3000_MILLIS)
             }
 
             IOTCommandType.ADME_HAC_MD_SET_DATA_MEASURE_PARAM,
-            -> {
+                -> {
                 stopMeasureAction()
             }
 
@@ -579,7 +574,7 @@ class AdmeHacMeasuringDataProcedureFragment : BaseIOTDeviceFragment() {
                 mStates.processDataNum.set(
                     "${values[1]}/${values[1]}"
                 )
-            }else{
+            } else {
                 mStates.processDataNum.set(
                     "0/0"
                 )

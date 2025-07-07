@@ -44,10 +44,6 @@ class ChongQingRadioSettingsFragment : BaseIOTDeviceFragment() {
     private val airSpeedList: List<String> = arrayListOf("0", "1", "2")//空中速率
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_chongqing_radio_settings,

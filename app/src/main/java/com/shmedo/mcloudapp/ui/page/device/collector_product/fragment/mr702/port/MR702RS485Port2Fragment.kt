@@ -2,6 +2,8 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.por
 
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.KeyboardUtils
@@ -31,8 +33,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port2Binding
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
@@ -54,8 +54,8 @@ import timber.log.Timber
 
 class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port2Binding
-    private lateinit var portHomeViewModel: MR702PortHomeViewModel
-    private lateinit var mStates: MR702RS485Port2ViewModel
+    private val mStates: MR702RS485Port2ViewModel by viewModels()
+    private val portHomeViewModel: MR702PortHomeViewModel by activityViewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val collectorTypeList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_rs485_port2_collector_type) }
@@ -65,12 +65,6 @@ class MR702RS485Port2Fragment : BaseIOTDeviceFragment() {
 
     private var deleteItemIndex = 0
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        mStates = getFragmentScopeViewModel()
-        portHomeViewModel = getActivityScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_rs485_port2, BR.stateVM, mStates)

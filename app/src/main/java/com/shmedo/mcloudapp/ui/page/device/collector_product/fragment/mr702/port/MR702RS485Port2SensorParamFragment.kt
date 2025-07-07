@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.por
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -27,7 +28,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentMr702Rs485Port2SensorParamBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -46,8 +46,8 @@ import timber.log.Timber
 
 class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702Rs485Port2SensorParamBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: MR702RS485Port2SensorParamViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: MR702RS485Port2SensorParamViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private var isAdd: Boolean = false
@@ -56,12 +56,6 @@ class MR702RS485Port2SensorParamFragment : BaseIOTDeviceFragment() {
     private val calculateList = mutableListOf("不计算", "计算")
     private val calculateFormulaList = mutableListOf("直线式")
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

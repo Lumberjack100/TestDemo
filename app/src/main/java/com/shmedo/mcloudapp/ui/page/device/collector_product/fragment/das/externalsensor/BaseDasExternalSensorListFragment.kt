@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das.exter
 
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.activityViewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.bindingAdapter
@@ -22,7 +23,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentDasExternalSensorListBinding
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showMessage
@@ -43,14 +43,10 @@ import timber.log.Timber
  */
 abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasExternalSensorListBinding
-    protected lateinit var mStates: DasExternalSensorListViewModel<DasExternalSensorInfo>
+    protected val mStates: DasExternalSensorListViewModel<DasExternalSensorInfo> by activityViewModels()
     protected lateinit var iotSensorType: IOTSensorType
     protected var deleteItemIndex = 0
 
-    override fun initViewModel() {
-        super.initViewModel()
-        mStates = getActivityScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -372,7 +368,7 @@ abstract class BaseDasExternalSensorListFragment : BaseIOTDeviceFragment() {
     protected abstract fun closeCollector()
 
     /**
-     * 初始化保存命令
+     * 初始化保存指令
      */
     protected abstract fun initSaveCommand()
 

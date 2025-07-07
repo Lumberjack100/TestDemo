@@ -37,100 +37,83 @@ import android.bluetooth.BluetoothGattCharacteristic
 import android.content.Context
 import android.util.Log
 import com.shmedo.lib.ble.communicate.parser.CommandResponse
-import com.shmedo.lib.ble.communicate.service.base.BleManagerResult
-import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
-import com.shmedo.lib.ble.communicate.service.base.ConnectingResult
-import com.shmedo.lib.ble.communicate.service.base.DisconnectedResult
-import com.shmedo.lib.ble.communicate.service.base.LinkLossResult
-import com.shmedo.lib.ble.communicate.service.base.MissingServiceResult
-import com.shmedo.lib.ble.communicate.service.base.ReadyResult
-import com.shmedo.lib.ble.communicate.service.base.SuccessResult
-import com.shmedo.lib.ble.communicate.service.base.UnknownErrorResult
-import com.shmedo.lib.ble.communicate.spec.ESP32ASpec
-import com.shmedo.lib.ble.communicate.spec.ESP32BSpec
-import com.shmedo.lib.ble.communicate.spec.GOC400Spec
-import com.shmedo.lib.ble.communicate.spec.GOCW91200Spec
-import com.shmedo.lib.ble.communicate.spec.MS52SF1Spec
-import com.shmedo.lib.ble.communicate.spec.PacketMerger
-import com.shmedo.lib.ble.communicate.spec.USRSpec
+import com.shmedo.lib.ble.communicate.parser.PacketMerger
+import com.shmedo.lib.ble.communicate.spec.BleDeviceSpecManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import no.nordicsemi.android.ble.BleManager
 import no.nordicsemi.android.ble.data.Data
 import no.nordicsemi.android.ble.ktx.asValidResponseFlow
+import no.nordicsemi.android.ble.ktx.stateAsFlow
 import no.nordicsemi.android.ble.ktx.suspend
-import no.nordicsemi.android.ble.observer.ConnectionObserver
 import timber.log.Timber
+import java.util.concurrent.ConcurrentLinkedQueue
 
+/**
+ * 指令发送配置
+ */
+data class SendConfig(
+    val useResponseBasedFlow: Boolean = true,  // 是否使用基于响应的流控
+    val responseTimeoutMs: Long = 5000,        // 响应超时时间（毫秒）
+    val fallbackDelayMs: Long = 1000,           // 备用延时（毫秒）
+)
+
+/**
+ * 待发送的指令
+ */
+private data class PendingCommand(
+    val command: String,
+    val timestamp: Long = System.currentTimeMillis()
+)
 
 class MedoBleManager(
     context: Context,
     private val scope: CoroutineScope,
     private val device: BluetoothDevice,
+    private val sendConfig: SendConfig = SendConfig()
 ) : BleManager(context) {
     private var notifyCharacteristic: BluetoothGattCharacteristic? = null
     private var writeCharacteristic: BluetoothGattCharacteristic? = null
 
-    private val _data = MutableSharedFlow<BleManagerResult<CommandData>>(
+    // 设备规格管理器
+    private val deviceSpecManager = BleDeviceSpecManager()
+
+    // 指令队列管理 - 使用线程安全的 ConcurrentLinkedQueue
+    private val commandQueue = ConcurrentLinkedQueue<PendingCommand>()
+
+    @Volatile
+    private var isProcessingQueue = false
+    private val queueMutex = Mutex()
+
+    @Volatile
+    private var lastResponseTime = System.currentTimeMillis()
+
+    // 使用 stateAsFlow() 获取连接状态
+    val connectionState = stateAsFlow()
+    
+    // 只发送数据响应
+    private val _commandData = MutableSharedFlow<CommandData>(
         replay = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
-    val data = _data.asSharedFlow()
-
-
-    init {
-        connectionObserver = object : ConnectionObserver {
-            override fun onDeviceConnecting(device: BluetoothDevice) {
-                Timber.v("onDeviceConnecting()")
-                _data.tryEmit(ConnectingResult(device))
-            }
-
-            override fun onDeviceConnected(device: BluetoothDevice) {
-                Timber.v("onDeviceConnected()")
-                _data.tryEmit(ConnectedResult(device))
-            }
-
-            override fun onDeviceFailedToConnect(device: BluetoothDevice, reason: Int) {
-                Timber.e("onDeviceFailedToConnect(), reason: $reason")
-                _data.tryEmit(MissingServiceResult(device))
-            }
-
-            override fun onDeviceReady(device: BluetoothDevice) {
-                Timber.v("onDeviceReady()")
-                _data.tryEmit(ReadyResult(device))
-            }
-
-            override fun onDeviceDisconnecting(device: BluetoothDevice) {
-                Timber.w("onDeviceDisconnecting()")
-            }
-
-            override fun onDeviceDisconnected(device: BluetoothDevice, reason: Int) {
-                Timber.e("onDeviceDisconnected(), reason: $reason")
-                _data.tryEmit(
-                    when (reason) {
-                        ConnectionObserver.REASON_NOT_SUPPORTED -> MissingServiceResult(device)
-                        ConnectionObserver.REASON_LINK_LOSS -> LinkLossResult(device, null)
-                        ConnectionObserver.REASON_SUCCESS -> DisconnectedResult(device, reason)
-                        else -> UnknownErrorResult(device)
-                    }
-                )
-            }
-        }
-    }
+    val commandData = _commandData.asSharedFlow()
 
     override fun log(priority: Int, message: String) {
-//        logger.log(priority, message)
+        // logger.log(priority, message)
     }
 
     override fun getMinLogPriority(): Int {
         return Log.VERBOSE
     }
-
 
     @SuppressLint("MissingPermission")
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -138,90 +121,45 @@ class MedoBleManager(
         // Increase the MTU
         requestMtu(512)
             .fail { device, status ->
-                Timber.e("requestMtu  error:${device.name} $status")
+                Timber.e("requestMtu error: ${device.name} $status")
             }
             .enqueue()
 
         // Enable notifications
         setNotificationCallback(notifyCharacteristic)
             // Merges packets until the entire text is present in the stream [PacketMerger.merge].
-            .merge(PacketMerger())
+            .merge(PacketMerger(enableDetailedLogging = true))
             .asValidResponseFlow<CommandResponse>()
-            .onEach {
-                _data.emit(
-                    SuccessResult(
-                        device,
-                        CommandData(response = it.response, responseList = it.responseList)
-                    )
-                )
+            .onEach { commandResponse ->
+                try {
+                    processCommandResponse(commandResponse)
+                } catch (e: Exception) {
+                    Timber.e(e, "处理指令响应时出错")
+                }
             }
             .launchIn(scope)
 
         enableNotifications(notifyCharacteristic)
             .fail { device, status ->
-                Timber.e("enableNotifications  error:${device.name} $status")
+                Timber.e("enableNotifications error: ${device.name} $status")
             }
             .enqueue()
     }
 
     override fun isRequiredServiceSupported(gatt: BluetoothGatt): Boolean {
-        //ESP32ASpec、MS52SF1Spec SERVICE_UUID 相同，但是写特征值不同
-        gatt.getService(ESP32ASpec.ESP32_SERVICE_UUID)?.run {
-            notifyCharacteristic = getCharacteristic(
-                ESP32ASpec.ESP32_NOTIFY_CHARACTERISTIC_UUID
-            )
-            writeCharacteristic = getCharacteristic(
-                ESP32ASpec.ESP32_WRITABLE_CHARACTERISTIC_UUID
-            ) ?: getCharacteristic(
-                MS52SF1Spec.MS52SF1_WRITABLE_CHARACTERISTIC_UUID
-            )
-        }
-        gatt.getService(ESP32BSpec.ESP32B_SERVICE_UUID)?.run {
-            notifyCharacteristic = getCharacteristic(
-                ESP32BSpec.ESP32B_NOTIFY_CHARACTERISTIC_UUID
-            )
-            writeCharacteristic = getCharacteristic(
-                ESP32BSpec.ESP32B_WRITABLE_CHARACTERISTIC_UUID
-            )
-        }
-        gatt.getService(GOC400Spec.GOC400_SERVICE_UUID)?.run {
-            notifyCharacteristic = getCharacteristic(
-                GOC400Spec.GOC400_NOTIFY_CHARACTERISTIC_UUID
-            )
-            writeCharacteristic = getCharacteristic(
-                GOC400Spec.GOC400_WRITABLE_CHARACTERISTIC_UUID
-            )
-        }
-        gatt.getService(GOCW91200Spec.GOCW91200_SERVICE_UUID)?.run {
-            notifyCharacteristic = getCharacteristic(
-                GOCW91200Spec.GOCW91200_NOTIFY_CHARACTERISTIC_UUID
-            )
-            writeCharacteristic = getCharacteristic(
-                GOCW91200Spec.GOCW91200_WRITABLE_CHARACTERISTIC_UUID
-            )
-        }
-        gatt.getService(USRSpec.USR_SERVICE_UUID)?.run {
-            notifyCharacteristic = getCharacteristic(
-                USRSpec.USR_NOTIFY_CHARACTERISTIC_UUID
-            )
-            writeCharacteristic = getCharacteristic(
-                USRSpec.USR_WRITABLE_CHARACTERISTIC_UUID
-            )
-        }
+        val discoveryResult = deviceSpecManager.identifyDevice(gatt)
 
-        var writeRequest = false
-        var writeCommand = false
-        writeCharacteristic?.let {
-            val rxProperties = it.properties
-            writeRequest = rxProperties and BluetoothGattCharacteristic.PROPERTY_WRITE > 0
-            writeCommand =
-                rxProperties and BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE > 0
+        return if (discoveryResult != null) {
+            // 保存发现的设备信息
+            notifyCharacteristic = discoveryResult.notifyCharacteristic
+            writeCharacteristic = discoveryResult.writeCharacteristic
+
+            Timber.d("设备蓝牙芯片识别成功: ${discoveryResult.spec.deviceName}")
+            true
+        } else {
+            Timber.w("未找到支持的设备规格")
+            false
         }
-
-        val supported =
-            notifyCharacteristic != null && writeCharacteristic != null && (writeRequest || writeCommand)
-
-        return supported
     }
 
     override fun onServicesInvalidated() {
@@ -229,31 +167,169 @@ class MedoBleManager(
         notifyCharacteristic = null
     }
 
-    fun sendData(command: String) {
-        try {
-            writeCharacteristic?.let {
-                Timber.v(
-                    "发送数据: length=%s bytes;content: %s",
-                    command.toByteArray().size,
-                    command
-                )
-                writeCharacteristic(
-                    it,
-                    Data.from(command),
-                    it.writeType
-                )
-                    // Outgoing data can use automatic splitting.
-                    //.split() with no parameters uses the default MTU splitter.
-                    .split()
-                    .enqueue()
-
-                //用于解决同时发送多条指令过快导致设备处理不过来响应数据丢失的问题
-                sleep(1000).enqueue()
-            }
-        } catch (e: Exception) {
-            //处理异常
-            Timber.e(e, "发送数据时出现异常")
+    /**
+     * 处理指令响应
+     */
+    private suspend fun processCommandResponse(commandResponse: CommandResponse) {
+        if (commandResponse.latestResponse.isEmpty()) {
+            Timber.w("收到空响应内容")
+            return
         }
+        
+        // 只发送数据响应
+        _commandData.emit(CommandData(response = commandResponse.latestResponse))
+
+        // 如果启用了响应驱动的流控，触发下一个指令发送
+        if (sendConfig.useResponseBasedFlow) {
+            lastResponseTime = System.currentTimeMillis()
+            processNextCommand()
+        }
+    }
+
+    /**
+     * 发送数据 - 改进版本，支持智能流控
+     */
+    fun sendData(command: String) {
+        if (command.isBlank()) {
+            Timber.w("尝试发送空指令，已忽略")
+            return
+        }
+
+        val pendingCommand = PendingCommand(command)
+        commandQueue.offer(pendingCommand)
+
+        Timber.v("指令已加入队列: $command, 队列大小: ${commandQueue.size}")
+
+        // 如果当前没有正在处理队列，则开始处理
+        if (!isProcessingQueue) {
+            scope.launch {
+                processCommandQueue()
+            }
+        }
+    }
+
+    /**
+     * 立即发送数据（不使用队列，用于紧急指令）
+     */
+    fun sendDataImmediate(command: String) {
+        scope.launch {
+            sendDataInternal(command)
+        }
+    }
+
+    /**
+     * 处理下一个指令（由响应触发）
+     */
+    private fun processNextCommand() {
+        if (commandQueue.isNotEmpty() && !isProcessingQueue) {
+            scope.launch {
+                processCommandQueue()
+            }
+        }
+    }
+
+    /**
+     * 处理指令队列
+     */
+    private suspend fun processCommandQueue() {
+        if (isProcessingQueue) {
+            return // 已经有其他协程在处理队列
+        }
+
+        isProcessingQueue = true
+
+        try {
+            while (commandQueue.isNotEmpty()) {
+                val pendingCommand = commandQueue.poll() ?: break
+
+                // 检查指令是否超时
+                val isExpired =
+                    System.currentTimeMillis() - pendingCommand.timestamp > sendConfig.responseTimeoutMs
+                if (isExpired) {
+                    Timber.w("指令已过期，跳过: ${pendingCommand.command}")
+                    continue
+                }
+
+                sendDataInternal(pendingCommand.command)
+
+                // 使用正常的流控机制
+                if (sendConfig.useResponseBasedFlow) {
+                    waitForResponseOrTimeout()
+                } else {
+                    delay(sendConfig.fallbackDelayMs)
+                }
+            }
+        } finally {
+            isProcessingQueue = false
+        }
+    }
+
+    /**
+     * 等待响应或超时
+     */
+    private suspend fun waitForResponseOrTimeout() {
+        val startTime = System.currentTimeMillis()
+        val initialResponseTime = lastResponseTime
+
+        while (System.currentTimeMillis() - startTime < sendConfig.responseTimeoutMs) {
+            if (lastResponseTime > initialResponseTime) {
+                // 收到新的响应
+                Timber.v("收到响应，继续处理下一个指令")
+                return
+            }
+            delay(50) // 短暂等待
+        }
+
+        Timber.w("等待响应超时，使用备用延时继续")
+        delay(sendConfig.fallbackDelayMs)
+    }
+
+    /**
+     * 内部发送数据方法
+     */
+    private suspend fun sendDataInternal(command: String): Boolean {
+        return queueMutex.withLock {
+            try {
+                writeCharacteristic?.let { characteristic ->
+                    Timber.v("发送数据: length=${command.toByteArray().size} bytes;content: $command")
+
+                    // 智能选择写入类型
+                    val writeType =
+                        if ((characteristic.properties and BluetoothGattCharacteristic.PROPERTY_WRITE) != 0) {
+                            BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+                        } else {
+                            characteristic.writeType
+                        }
+
+                    writeCharacteristic(characteristic, Data.from(command), writeType)
+                        .split()
+                        .enqueue()
+
+                    true
+                } ?: run {
+                    Timber.e("writeCharacteristic 为空，无法发送数据")
+                    false
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "发送数据时出现异常: $command")
+                false
+            }
+        }
+    }
+
+    /**
+     * 清空指令队列
+     */
+    fun clearCommandQueue() {
+        commandQueue.clear()
+        Timber.i("指令队列已清空")
+    }
+
+    /**
+     * 获取队列状态
+     */
+    fun getQueueStatus(): Pair<Int, Boolean> {
+        return commandQueue.size to isProcessingQueue
     }
 
     suspend fun connect() {
@@ -274,6 +350,7 @@ class MedoBleManager(
     }
 
     fun release() {
+        clearCommandQueue()
         cancelQueue()
         disconnect().enqueue()
     }

@@ -34,18 +34,20 @@ package com.shmedo.lib.ble.communicate.service
 import android.content.Context
 import com.shmedo.lib.ble.communicate.data.CommandData
 import com.shmedo.lib.ble.communicate.data.MedoBleManager
-import com.shmedo.lib.ble.communicate.service.base.BleManagerResult
 import com.shmedo.lib.ble.communicate.service.base.ServiceManager
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import no.nordicsemi.android.ble.ktx.state.ConnectionState
 import timber.log.Timber
 
 class MedoBleRepository(
@@ -54,10 +56,14 @@ class MedoBleRepository(
 ) {
     private var medoBleManager: MedoBleManager? = null
 
-    private val _data = MutableSharedFlow<BleManagerResult<CommandData>>()
-    val data = _data.asSharedFlow()
+    // 分离的连接状态流
+    private val _connectionState = MutableSharedFlow<ConnectionState>()
+    val connectionState = _connectionState.asSharedFlow()
+    
+    // 分离的数据流
+    private val _commandData = MutableSharedFlow<CommandData>()
+    val commandData = _commandData.asSharedFlow()
 
-    val hasBeenDisconnected = data.map { it.hasBeenDisconnected() }
 
     fun launch(device: DiscoveredBluetoothDevice) {
         serviceManager.startService(MedoBleService::class.java, device)
@@ -67,9 +73,16 @@ class MedoBleRepository(
         val manager = MedoBleManager(context, scope, device.device)
         this.medoBleManager = manager
 
-        manager.data.onEach {
-            _data.emit(it)
+        // 收集连接状态
+        manager.connectionState.onEach { state ->
+            _connectionState.emit(state)
         }.launchIn(scope)
+
+        // 收集数据响应
+        manager.commandData.onEach { commandData ->
+            _commandData.emit(commandData)
+        }.launchIn(scope)
+
 
         val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
             Timber.e("MedoBle Error", throwable)
@@ -92,5 +105,4 @@ class MedoBleRepository(
     fun isConnected(): Boolean {
         return medoBleManager?.isReady ?: false
     }
-
 }

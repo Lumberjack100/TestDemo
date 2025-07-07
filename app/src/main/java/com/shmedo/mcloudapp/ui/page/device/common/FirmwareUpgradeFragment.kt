@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.common
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -13,7 +14,6 @@ import com.lxj.xpopup.XPopup
 import com.scwang.smart.refresh.layout.constant.RefreshState
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.model.FirmWareInfo
-import com.shmedo.core.model.UserInfo
 import com.shmedo.lib.cmd.base.iot_cmd.assemble.entity.common.FirmWareEntity
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -26,7 +26,6 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentFirmwareUpgradeBinding
 import com.shmedo.mcloudapp.extensions.dismissLoadingDialog
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -38,7 +37,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.FirmwareUpgradeViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * @author：gonghe
@@ -48,21 +47,13 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
  */
 class FirmwareUpgradeFragment : BaseIOTDeviceFragment() {
     private val binding: FragmentFirmwareUpgradeBinding by lazy { getBinding() as FragmentFirmwareUpgradeBinding }
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: FirmwareUpgradeViewModel
-    private lateinit var deviceRequestViewModel: DeviceRequestViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: FirmwareUpgradeViewModel by viewModels()
+    private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
     private val iotParseManager: IOTParserManager by inject()
 
-    private val userInfo: UserInfo by lazy {  AuthMMKVOwner.userInfo!! }
     private val firmwareStatusList: MutableList<String> = arrayListOf("全部", "测试", "运营")
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-        deviceRequestViewModel = getViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_firmware_upgrade, BR.stateVM, mStates)

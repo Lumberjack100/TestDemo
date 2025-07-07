@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.adme.fragment
 
 import android.os.Bundle
 import android.view.View
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.StringUtils
 import com.drake.brv.utils.models
@@ -13,7 +14,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAdmeAdvancedConfigurationBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.extensions.safeNavigate
@@ -32,13 +32,8 @@ import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
  */
 class AdmeAdvancedConfigurationFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentAdmeAdvancedConfigurationBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

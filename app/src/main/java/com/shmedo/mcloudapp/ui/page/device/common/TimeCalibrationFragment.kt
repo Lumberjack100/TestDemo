@@ -46,9 +46,6 @@ class TimeCalibrationFragment : BaseIOTDeviceFragment() {
 
     private var isDoSetTimeCmd = false
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

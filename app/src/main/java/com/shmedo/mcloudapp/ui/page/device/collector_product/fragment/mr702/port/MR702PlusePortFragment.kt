@@ -2,6 +2,7 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.mr702.por
 
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
@@ -23,7 +24,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentMr702PlusePortBinding
-import com.shmedo.mcloudapp.extensions.getActivityScopeViewModel
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.extensions.showMessageDialog
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
@@ -40,16 +40,12 @@ import timber.log.Timber
  */
 class MR702PlusePortFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentMr702PlusePortBinding
-    private lateinit var mInterfaceHomeViewModel: MR702PortHomeViewModel
+    private val mInterfaceHomeViewModel: MR702PortHomeViewModel by activityViewModels()
     private val mStates: MR702PlusePortViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val modeList by lazy { Utils.getApp().resources.getStringArray(R.array.pulse_mode_value) }
 
-    override fun initViewModel() {
-        super.initViewModel()
-        mInterfaceHomeViewModel = getActivityScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_pluse_port, BR.stateVM, mStates)

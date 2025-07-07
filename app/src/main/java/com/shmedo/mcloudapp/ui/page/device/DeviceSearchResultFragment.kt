@@ -12,21 +12,18 @@ import com.lxj.xpopup.XPopup
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
-import com.shmedo.core.model.UserInfo
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentDeviceSearchResultBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
-import com.shmedo.mcloudapp.ui.viewmodel.state.EmptyViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import com.shmedo.mcloudapp.ui.widget.recyclerview.MyGridSpacingItemDecoration
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * 创建者：gonghe
@@ -40,22 +37,21 @@ import org.koin.androidx.viewmodel.ext.android.getViewModel
 class DeviceSearchResultFragment : BaseFragment() {
     private lateinit var binding: FragmentDeviceSearchResultBinding
     private val toolbarViewModel: ToolbarViewModel by viewModels()
-    private lateinit var mStates: EmptyViewModel
-    private lateinit var deviceRequestViewModel: DeviceRequestViewModel
-    private val userInfo: UserInfo by lazy {  AuthMMKVOwner.userInfo!! }
+    private val deviceRequestViewModel: DeviceRequestViewModel by viewModel()
 
     private var statusBarColor = 0
     private lateinit var keyWord: String
 
 
     override fun initViewModel() {
-        mStates = getFragmentScopeViewModel()
-        deviceRequestViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {
-        return DataBindingConfig(R.layout.fragment_device_search_result, BR.vm, mStates)
-            .addBindingParam(BR.toolbarVM, toolbarViewModel)
+        return DataBindingConfig(
+            R.layout.fragment_device_search_result,
+            BR.toolbarVM,
+            toolbarViewModel
+        )
             .addBindingParam(BR.click, BaseClickProxy())
     }
 

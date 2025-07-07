@@ -102,7 +102,7 @@ class MR702RS485Port3AcousticOpticalAlarmParamViewModel : ViewModel() {
         val voiceNumberHex =
             voiceNumber.toIntOrNull()?.toString(16)?.uppercase()?.padStart(2, '0') ?: "00"
 
-        // 构建完整的命令字符串 (模板 + 语音编号)
+        // 构建完整的指令字符串 (模板 + 语音编号)
         val fullCommand = base + voiceNumberHex + broadcastTimesHex
 
         // 计算 CRC-16 校验码

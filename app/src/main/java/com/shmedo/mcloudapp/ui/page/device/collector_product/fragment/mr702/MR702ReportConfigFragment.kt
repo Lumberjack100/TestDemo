@@ -50,10 +50,6 @@ class MR702ReportConfigFragment : BaseIOTDeviceFragment() {
     private val reportStartTimeList by lazy { Utils.getApp().resources.getStringArray(R.array.mr_report_start_time) }
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_mr702_report_config, BR.stateVM, mStates)
             .addBindingParam(BR.toolbarVM, toolbarViewModel)

@@ -21,6 +21,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.request.AdmeConfigViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.AppUpdateViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.DeviceRequestViewModel
+import com.shmedo.mcloudapp.ui.viewmodel.request.LocationViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.NetIOTCommandViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.RequestSearchViewModel
@@ -31,13 +32,13 @@ import org.koin.dsl.module
 
 val viewModelModule = module {
     viewModelOf(::LogViewModel)
+    viewModelOf(::LoginRequestViewModel)
+    viewModelOf(::AppUpdateViewModel)
+    viewModelOf(::DeviceRequestViewModel)
+    viewModelOf(::RequestSearchViewModel)
+    viewModelOf(::AdmeConfigViewModel)
+    viewModelOf(::LocationViewModel)
     viewModelOf(::BleViewModel)
     viewModelOf(::TcpViewModel)
     viewModelOf(::NetIOTCommandViewModel)
-    viewModelOf(::DeviceRequestViewModel)
-    viewModelOf(::RequestSearchViewModel)
-    viewModelOf(::AppUpdateViewModel)
-    viewModelOf(::LoginRequestViewModel)
-    viewModelOf(::AdmeConfigViewModel)
-
 }

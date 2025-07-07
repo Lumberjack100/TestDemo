@@ -38,12 +38,10 @@ import android.content.IntentFilter
 import android.location.LocationManager
 import androidx.core.content.ContextCompat
 import androidx.core.location.LocationManagerCompat
-import com.shmedo.lib.ble.permission.util.Available
+import com.shmedo.lib.ble.permission.BlePermissionNotAvailableReason
+import com.shmedo.lib.ble.permission.util.BlePermissionState
 import com.shmedo.lib.ble.permission.util.BluetoothPermissionUtil
-import com.shmedo.lib.ble.permission.util.FeatureNotAvailableReason
-import com.shmedo.lib.ble.permission.util.FeatureState
 import com.shmedo.lib.ble.permission.util.LocalDataProvider
-import com.shmedo.lib.ble.permission.util.NotAvailable
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 
@@ -83,18 +81,18 @@ class LocationStateManager constructor(private val context: Context) {
         return BluetoothPermissionUtil.isLocationPermissionDeniedForever(context)
     }
 
-    private fun getLocationState(): FeatureState {
+    private fun getLocationState(): BlePermissionState {
         val lm = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return when {
             !BluetoothPermissionUtil.isLocationPermissionGranted ->
-                NotAvailable(FeatureNotAvailableReason.PERMISSION_REQUIRED)
+                BlePermissionState.NotAvailable(BlePermissionNotAvailableReason.PERMISSION_REQUIRED)
 
             LocalDataProvider.isLocationPermissionRequired && !LocationManagerCompat.isLocationEnabled(
                 lm
             ) ->
-                NotAvailable(FeatureNotAvailableReason.DISABLED)
+                BlePermissionState.NotAvailable(BlePermissionNotAvailableReason.DISABLED)
 
-            else -> Available
+            else -> BlePermissionState.Available
         }
     }
 }

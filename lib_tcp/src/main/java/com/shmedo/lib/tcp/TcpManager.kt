@@ -17,11 +17,11 @@ import java.util.UUID
  */
 class TcpManager : NettyClientListener<String> {
     private val maxPacketLong = 1024 * 60 //设置一次发送数据的最大长度 60K
-    private val HEART_BEAT = "ble_keepalive"
+    private val TCP_HEART_BEAT = "tcp_keepalive"
 
     //自定义心跳包指令
     private val heartBeat =
-        "\$cmd=$HEART_BEAT&apikey=b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9&msgid=${
+        "\$cmd=$TCP_HEART_BEAT&apikey=b12aac6b-0bd2-4a01-80fd-97fe4f5d4ff9&msgid=${
             UUID.randomUUID().toString()
         }"
 
@@ -86,7 +86,7 @@ class TcpManager : NettyClientListener<String> {
      */
     override fun onMessageResponseClient(msg: String, index: Int) {
         // 跳过心跳包数据的分发处理
-        if (msg.contains(HEART_BEAT)) return
+        if (msg.contains(TCP_HEART_BEAT)) return
 
         _data.tryEmit(TcpSuccessResult(msg))
     }

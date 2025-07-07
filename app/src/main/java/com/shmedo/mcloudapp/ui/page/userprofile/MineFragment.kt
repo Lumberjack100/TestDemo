@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.userprofile
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.AppUtils
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
@@ -14,7 +15,6 @@ import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.databinding.FragmentMineBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.safeNavigate
 import com.shmedo.mcloudapp.extensions.showMessage
@@ -23,20 +23,17 @@ import com.shmedo.mcloudapp.ui.page.login.LoginActivity
 import com.shmedo.mcloudapp.ui.viewmodel.request.AppUpdateViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.LoginRequestViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.state.MineViewModel
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MineFragment : BaseFragment() {
     private lateinit var binding: FragmentMineBinding
-    private lateinit var mStates: MineViewModel
-    private lateinit var appUpdateViewModel: AppUpdateViewModel
-    private lateinit var loginRequestViewModel: LoginRequestViewModel
+    private val mStates: MineViewModel by viewModels()
+    private val appUpdateViewModel: AppUpdateViewModel by viewModel()
+    private val loginRequestViewModel: LoginRequestViewModel by viewModel()
     private val userInfo: UserInfo by lazy { AuthMMKVOwner.userInfo!! }
 
 
     override fun initViewModel() {
-        mStates = getFragmentScopeViewModel()
-        appUpdateViewModel = getViewModel()
-        loginRequestViewModel = getViewModel()
     }
 
     override fun getDataBindingConfig(): DataBindingConfig {

@@ -3,6 +3,7 @@ package com.shmedo.mcloudapp.ui.page.device.collector_product.fragment.das
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -35,13 +36,13 @@ import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentDasIoSensorBinding
 import com.shmedo.mcloudapp.extensions.formatDoubleValue
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.showLoadingDialog
 import com.shmedo.mcloudapp.model.BleConnect
 import com.shmedo.mcloudapp.ui.page.device.BaseIOTDeviceFragment
 import com.shmedo.mcloudapp.ui.viewmodel.state.DasIOSensorViewModel
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+
 /**
  * @author：gonghe
  * @time: 2025/6/17
@@ -50,7 +51,7 @@ import timber.log.Timber
  */
 class DasIOSensorFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentDasIoSensorBinding
-    private lateinit var mStates: DasIOSensorViewModel
+    private val mStates: DasIOSensorViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
     private val mdParseManager: MDParserManager by inject()
 
@@ -62,11 +63,6 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
 
     private var breakAlarmStatus: MDBreakAlarmStatus = MDBreakAlarmStatus.QUERY
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_das_io_sensor, BR.stateVM, mStates)
@@ -181,7 +177,7 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
         }
     }
 
-    /** 蓝牙通讯模式保存命令 */
+    /** 蓝牙通讯模式保存指令 */
     private fun initBleSaveCommand() {
         commandItems.clear()
 
@@ -233,7 +229,7 @@ class DasIOSensorFragment : BaseIOTDeviceFragment() {
         sendCommandFromCmdList(isStartTimeoutJob = true)
     }
 
-    /** 4G通讯模式保存命令 */
+    /** 4G通讯模式保存指令 */
     private fun init4GSaveCommand() {
         val entity =
             DasIOSensorEntity(

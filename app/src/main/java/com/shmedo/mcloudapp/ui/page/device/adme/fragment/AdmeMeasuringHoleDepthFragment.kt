@@ -6,6 +6,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.CompoundButton
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
@@ -34,7 +35,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentAdmeMeasuringHoleDepthBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.isViewLifecycleActive
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
@@ -57,8 +57,8 @@ import kotlin.math.abs
 
 class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentAdmeMeasuringHoleDepthBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: AdmeMeasuringHoleDepthViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: AdmeMeasuringHoleDepthViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
     private val measureWayList by lazy { Utils.getApp().resources.getStringArray(R.array.adme_measure_hole_depth_method) }
@@ -75,12 +75,6 @@ class AdmeMeasuringHoleDepthFragment : BaseIOTDeviceFragment() {
 
     private var queryMotionStateJob: Job? = null
 
-
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

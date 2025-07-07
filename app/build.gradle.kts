@@ -15,7 +15,7 @@ val patchVersion = 23
 
 val testMajorVersion = 5
 val testMinorVersion = 2
-val testPatchVersion = 52
+val testPatchVersion = 54
 
 /**
  * 获取Git库HEAD的SHA1码前5位
@@ -28,11 +28,11 @@ fun gitShortCommitId(): String {
 fun getReversion(): Int {
     var buildnum = 1
     try {
-        // 使用 ProcessBuilder 更可靠地执行命令
+        // 使用 ProcessBuilder 更可靠地执行指令
         val processBuilder = ProcessBuilder("git", "rev-list", "--count", "HEAD")
         processBuilder.redirectErrorStream(true) // 将错误输出和标准输出合并
         val process = processBuilder.start()
-        val output = process.inputStream.reader().use { it.readText().trim() } // 读取命令输出
+        val output = process.inputStream.reader().use { it.readText().trim() } // 读取指令输出
 
         // 确保正确地关闭了进程的输入输出流
         process.inputStream.close()

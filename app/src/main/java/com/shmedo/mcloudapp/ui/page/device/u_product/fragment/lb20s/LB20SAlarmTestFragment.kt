@@ -39,9 +39,7 @@ class LB20SAlarmTestFragment : BaseIOTDeviceFragment() {
     private val mStates: LB20SAlarmTestViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
+
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

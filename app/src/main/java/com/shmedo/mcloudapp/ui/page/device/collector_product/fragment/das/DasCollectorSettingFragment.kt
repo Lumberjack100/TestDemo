@@ -60,9 +60,6 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
 
     private var collectorModel = "-1"
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
@@ -202,7 +199,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 4G通讯模式保存命令
+     * 4G通讯模式保存指令
      */
     private fun init4GSaveCommand() {
         val entity = DasCollectorEntity(
@@ -226,7 +223,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 蓝牙通讯模式保存命令
+     * 蓝牙通讯模式保存指令
      */
     private fun initBleSaveCommand() {
         commandItems.clear()
@@ -371,7 +368,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 处理4G通讯命令结果
+     * 处理4G通讯指令结果
      */
     private fun handle4GCommandResult(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
@@ -419,7 +416,7 @@ class DasCollectorSettingFragment : BaseIOTDeviceFragment() {
     }
 
     /**
-     * 处理蓝牙通讯命令结果
+     * 处理蓝牙通讯指令结果
      */
     private fun handleBleCommandResult(cmdStr: String) {
         when (MDCommandUtil.extractCommandType(cmdStr)) {

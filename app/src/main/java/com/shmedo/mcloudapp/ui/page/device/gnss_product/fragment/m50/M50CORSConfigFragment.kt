@@ -43,9 +43,6 @@ class M50CORSConfigFragment : BaseIOTDeviceFragment() {
     private val iotParseManager: IOTParserManager by inject()
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

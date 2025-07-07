@@ -42,9 +42,6 @@ class LR200SensorParamFragment : BaseIOTDeviceFragment() {
     private val mCommandResponseStates: LR200ZeroValueCalibrationViewModel by viewModels()
     private val iotParseManager: IOTParserManager by inject()
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

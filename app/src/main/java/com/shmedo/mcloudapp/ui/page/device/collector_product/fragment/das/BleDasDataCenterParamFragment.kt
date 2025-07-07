@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.CompoundButton
 import androidx.core.os.bundleOf
 import androidx.fragment.app.setFragmentResult
+import androidx.fragment.app.viewModels
 import com.blankj.utilcode.util.ColorUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.StringUtils
@@ -30,7 +31,6 @@ import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
 import com.shmedo.mcloudapp.baseclickproxy.BaseClickProxy
 import com.shmedo.mcloudapp.databinding.FragmentBleDasDataCenterParamBinding
-import com.shmedo.mcloudapp.extensions.getFragmentScopeViewModel
 import com.shmedo.mcloudapp.extensions.launchWithViewLifecycle
 import com.shmedo.mcloudapp.extensions.nav
 import com.shmedo.mcloudapp.extensions.registerOnBackPressedDispatcher
@@ -46,6 +46,7 @@ import com.shmedo.mcloudapp.ui.viewmodel.state.ToolbarViewModel
 import kotlinx.coroutines.delay
 import org.koin.android.ext.android.inject
 import timber.log.Timber
+
 /**
  * @author：gonghe
  * @time: 2025/6/17
@@ -54,8 +55,8 @@ import timber.log.Timber
  */
 class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
     private lateinit var binding: FragmentBleDasDataCenterParamBinding
-    private lateinit var toolbarViewModel: ToolbarViewModel
-    private lateinit var mStates: BleDasDataCenterParamViewModel
+    private val toolbarViewModel: ToolbarViewModel by viewModels()
+    private val mStates: BleDasDataCenterParamViewModel by viewModels()
     private val mdParseManager: MDParserManager by inject()
 
     private lateinit var statusItem: DataCenterStatusItem
@@ -64,11 +65,6 @@ class BleDasDataCenterParamFragment : BaseIOTDeviceFragment() {
     private val platformList by lazy { Utils.getApp().resources.getStringArray(R.array.data_center_register_platform) }
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-        toolbarViewModel = getFragmentScopeViewModel()
-        mStates = getFragmentScopeViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(R.layout.fragment_ble_das_data_center_param, BR.stateVM, mStates)

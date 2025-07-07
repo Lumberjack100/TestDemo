@@ -44,9 +44,6 @@ class M20SRadioSettingFragment : BaseIOTDeviceFragment() {
     private var transmitPowerList: List<String> = emptyList()//发射功率
     private var airSpeedList: List<String> = emptyList()//空中速率
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

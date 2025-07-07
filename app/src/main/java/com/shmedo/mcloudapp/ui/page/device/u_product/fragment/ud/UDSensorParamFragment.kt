@@ -68,10 +68,6 @@ class UDSensorParamFragment : BaseIOTDeviceFragment() {
     private var measureInitialValueLoadingDialogId = ""
 
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(
             R.layout.fragment_ud_product_sensor_param,

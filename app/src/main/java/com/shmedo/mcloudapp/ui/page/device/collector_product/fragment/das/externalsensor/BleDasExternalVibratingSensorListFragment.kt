@@ -240,7 +240,7 @@ class BleDasExternalVibratingSensorListFragment : BaseDasExternalSensorListFragm
             }
 
             else -> {
-                // 不处理的命令类型
+                // 不处理的指令类型
             }
         }
     }

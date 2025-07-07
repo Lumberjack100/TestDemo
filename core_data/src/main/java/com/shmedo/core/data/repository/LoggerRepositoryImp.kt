@@ -1,10 +1,10 @@
 package com.shmedo.core.data.repository
 
 import com.blankj.utilcode.util.TimeUtils
-import com.shmedo.core.data.source.local.AppDatabase
+import com.shmedo.core.data.source.local.dao.LogItemDao
+import com.shmedo.core.data.source.local.dao.LogSessionDao
 import com.shmedo.core.data.source.local.entity.LogItem
 import com.shmedo.core.data.source.local.entity.LogSession
-
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -17,11 +17,14 @@ import kotlinx.coroutines.withContext
  *
  *
  */
-class LoggerRepositoryImp(private val database: AppDatabase) {
+class LoggerRepositoryImp(
+    private val logSessionDao: LogSessionDao,
+    private val logItemDao: LogItemDao
+) {
 
     suspend fun getLogSessionList(account: String): List<LogSession> =
         withContext(Dispatchers.IO) {
-            database.logSessionDao().getLogSessionList(account)
+            logSessionDao.getLogSessionList(account)
         }
 
     //查询当前用户下当天内 name 相同的会话
@@ -30,39 +33,39 @@ class LoggerRepositoryImp(private val database: AppDatabase) {
         name: String,
         createDate: String
     ): List<LogSession> = withContext(Dispatchers.IO) {
-        database.logSessionDao().getLogSessionListByName(account, name, createDate)
+        logSessionDao.getLogSessionListByName(account, name, createDate)
     }
 
     suspend fun insertLogSession(info: LogSession) = withContext(Dispatchers.IO) {
-        database.logSessionDao().insert(info)
+        logSessionDao.insert(info)
     }
 
     suspend fun deleteLogSessionById(id: String) = withContext(Dispatchers.IO) {
-        database.logSessionDao().deleteById(id)
+        logSessionDao.deleteById(id)
     }
 
     suspend fun getLogItemListBySessionId(
         sessionId: String,
         level: Int
     ): List<LogItem> = withContext(Dispatchers.IO) {
-        database.logItemDao().getLogItemListBySessionId(sessionId, level)
+        logItemDao.getLogItemListBySessionId(sessionId, level)
     }
 
     suspend fun insertLogItem(info: LogItem) = withContext(Dispatchers.IO) {
-        database.logItemDao().insert(info)
+        logItemDao.insert(info)
     }
 
     suspend fun batchDeleteLogItemBySessionId(id: String) = withContext(Dispatchers.IO) {
-        database.logItemDao().batchDeleteBySessionId(id)
+        logItemDao.batchDeleteBySessionId(id)
     }
 
     /**
      * 清除历史日志,保留当天的日志
      */
     suspend fun clearHistoryLog() = withContext(Dispatchers.IO) {
-        database.logItemDao()
+        logItemDao
             .clearHistoryData(TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")))
-        database.logSessionDao()
+        logSessionDao
             .clearHistoryData(TimeUtils.getNowString(TimeUtils.getSafeDateFormat("yyyy-MM-dd")))
     }
 }

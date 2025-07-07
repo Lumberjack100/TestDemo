@@ -10,15 +10,6 @@ import com.hjq.toast.Toaster
 import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.core.model.DeviceInfo
-import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
-import com.shmedo.lib.ble.communicate.service.base.ConnectingResult
-import com.shmedo.lib.ble.communicate.service.base.DisconnectedResult
-import com.shmedo.lib.ble.communicate.service.base.IdleResult
-import com.shmedo.lib.ble.communicate.service.base.LinkLossResult
-import com.shmedo.lib.ble.communicate.service.base.MissingServiceResult
-import com.shmedo.lib.ble.communicate.service.base.ReadyResult
-import com.shmedo.lib.ble.communicate.service.base.SuccessResult
-import com.shmedo.lib.ble.communicate.service.base.UnknownErrorResult
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
@@ -40,8 +31,6 @@ import com.shmedo.mcloudapp.model.CommunicateWay
 import com.shmedo.mcloudapp.model.DispatchFailed
 import com.shmedo.mcloudapp.model.DispatchSuccess
 import com.shmedo.mcloudapp.model.NetPlatformConnect
-import com.shmedo.mcloudapp.model.NoDeviceState
-import com.shmedo.mcloudapp.model.WorkingState
 import com.shmedo.mcloudapp.ui.page.base.fragment.BaseFragment
 import com.shmedo.mcloudapp.ui.viewmodel.request.BleViewModel
 import com.shmedo.mcloudapp.ui.viewmodel.request.NetIOTCommandViewModel
@@ -51,8 +40,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
-import org.koin.androidx.viewmodel.ext.android.getActivityViewModel
-import org.koin.androidx.viewmodel.ext.android.getViewModel
+import no.nordicsemi.android.ble.ktx.state.ConnectionState
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 import java.util.LinkedList
 
@@ -63,8 +53,8 @@ import java.util.LinkedList
  */
 abstract class BaseIOTDeviceFragment : BaseFragment() {
     protected lateinit var mMessenger: PageMessenger
-    protected lateinit var netIotCommandViewModel: NetIOTCommandViewModel
-    protected lateinit var bleViewModel: BleViewModel
+    protected val netIotCommandViewModel: NetIOTCommandViewModel by viewModel()
+    protected val bleViewModel: BleViewModel by activityViewModel()
 
     protected var refreshLayout: PageRefreshLayout? = null
 
@@ -87,8 +77,6 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     @CallSuper
     override fun initViewModel() {
         mMessenger = getAppViewModel()
-        netIotCommandViewModel = getViewModel()
-        bleViewModel = getActivityViewModel()
     }
 
     @CallSuper
@@ -113,7 +101,14 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
         }
         launchWithViewLifecycle {
             try {
-                collectBleData()
+                collectBleConnectionState()
+            } catch (e: Exception) {
+                Timber.e(e)
+            }
+        }
+        launchWithViewLifecycle {
+            try {
+                collectBleCommandData()
             } catch (e: Exception) {
                 Timber.e(e)
             }
@@ -193,52 +188,41 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     // </editor-fold>
 
     //<editor-fold desc="处理蓝牙下发指令">
-    protected open suspend fun collectBleData() {
-        bleViewModel.state.collect { state ->
-            Timber.v("${javaClass.simpleName} MedoBle: $state")
-//                if (isRestrictHiddenMode() && isHidden) {
-//                    return@collect
-//                }
+    protected open suspend fun collectBleConnectionState() {
+        // 监听连接状态变化
+        bleViewModel.connectionState.collect { state ->
+            addDeviceLogItem(Log.INFO, "BLE Service 状态变化: $state")
             when (state) {
-                NoDeviceState -> {}
-                is WorkingState -> when (state.result) {
-                    is IdleResult, is ConnectingResult -> {
-                        showLoadingDialog(StringUtils.getString(R.string.ble_state_connecting))
-                    }
-
-                    is ConnectedResult -> {
-                    }
-
-                    is ReadyResult -> {
-                        onConnectionStateChanged(true)
-                        onBleDeviceReady()
-                    }
-
-                    is SuccessResult -> {
-                        setResultData(state.result.data.response)
-                    }
-
-                    is DisconnectedResult -> {
-                        dismissLoadingDialog()
-                        onConnectionStateChanged(false)
-                    }
-
-                    is LinkLossResult -> {
-                        dismissLoadingDialog()
-                        onConnectionStateChanged(false)
-                    }
-
-                    is MissingServiceResult -> {
-                        dismissLoadingDialog()
-                        onConnectionStateChanged(false)
-                    }
-
-                    is UnknownErrorResult -> {
-                        dismissLoadingDialog()
-                        onConnectionStateChanged(false)
-                    }
+                ConnectionState.Connecting -> {
+                    showLoadingDialog(StringUtils.getString(R.string.ble_state_connecting))
                 }
+
+                is ConnectionState.Initializing -> {
+                    // 连接成功，正在初始化
+                }
+
+                is ConnectionState.Ready -> {
+                    onConnectionStateChanged(true)
+                    onBleDeviceReady()
+                }
+
+                is ConnectionState.Disconnected -> {
+                    dismissLoadingDialog()
+                    onConnectionStateChanged(false)
+                }
+
+                else -> {}
             }
+        }
+    }
+
+    /**
+     * 监听BLE数据响应
+     */
+    protected open suspend fun collectBleCommandData() {
+        bleViewModel.commandData.collect { data ->
+            addDeviceLogItem(Log.INFO, "BLE 响应内容: ${data.response}")
+            setResultData(data.response)
         }
     }
 
@@ -254,7 +238,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
     abstract fun setResultData(cmdStr: String)
 
     protected fun sendBleCommand(command: String, delaySendMillis: Long = 0) {//默认不延迟发送
-        addDeviceLogItem(Log.DEBUG, "ble 发送指令: $command")
+        addDeviceLogItem(Log.DEBUG, "BLE 发送指令: $command")
 
         //发送物联网指令
         if (command.startsWith(IOTConstants.COMMAND_HEADER)) {
@@ -296,7 +280,7 @@ abstract class BaseIOTDeviceFragment : BaseFragment() {
             finishAction()
             return
         }
-        addDeviceLogItem(Log.DEBUG, "ble 发送指令: $command")
+        addDeviceLogItem(Log.DEBUG, "BLE 发送指令: $command")
         //发送物联网指令
         if (command.startsWith(IOTConstants.COMMAND_HEADER)) bleViewModel.sendIOTCommand(
             command,

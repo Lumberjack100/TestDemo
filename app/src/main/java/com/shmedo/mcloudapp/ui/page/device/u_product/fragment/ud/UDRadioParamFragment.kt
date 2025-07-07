@@ -50,9 +50,6 @@ class UDRadioParamFragment : BaseIOTDeviceFragment() {
     private val transmitPowerList: List<String> = (10..22).map { it.toString() }//发射功率
     private val airSpeedList: List<String> = (1..3).map { it.toString() }//空中速率
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

@@ -53,9 +53,6 @@ class M50SensorConfigFragment : BaseIOTDeviceFragment() {
     private var repeatPollNum = 0 //重复轮询次数
     private var measureInitialValueLoadingDialogId = ""
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
 
     override fun getDataBindingConfig(): DataBindingConfig {
         return DataBindingConfig(

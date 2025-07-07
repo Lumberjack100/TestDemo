@@ -37,11 +37,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import androidx.core.content.ContextCompat
-import com.shmedo.lib.ble.permission.util.Available
+import com.shmedo.lib.ble.permission.BlePermissionNotAvailableReason
+import com.shmedo.lib.ble.permission.util.BlePermissionState
 import com.shmedo.lib.ble.permission.util.BluetoothPermissionUtil
-import com.shmedo.lib.ble.permission.util.FeatureNotAvailableReason
 import com.shmedo.lib.ble.permission.util.LocalDataProvider
-import com.shmedo.lib.ble.permission.util.NotAvailable
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 
@@ -83,9 +82,15 @@ class BluetoothStateManager constructor(private val context: Context) {
     }
 
     private fun getBluetoothPermissionState() = when {
-        !BluetoothPermissionUtil.isBluetoothAvailable -> NotAvailable(FeatureNotAvailableReason.NOT_AVAILABLE)
-        !BluetoothPermissionUtil.areNecessaryBluetoothPermissionsGranted -> NotAvailable(FeatureNotAvailableReason.PERMISSION_REQUIRED)
-        !BluetoothPermissionUtil.isBleEnabled -> NotAvailable(FeatureNotAvailableReason.DISABLED)
-        else -> Available
+        !BluetoothPermissionUtil.isBluetoothAvailable -> BlePermissionState.NotAvailable(
+            BlePermissionNotAvailableReason.NOT_AVAILABLE
+        )
+        !BluetoothPermissionUtil.areNecessaryBluetoothPermissionsGranted -> BlePermissionState.NotAvailable(
+            BlePermissionNotAvailableReason.PERMISSION_REQUIRED
+        )
+        !BluetoothPermissionUtil.isBleEnabled -> BlePermissionState.NotAvailable(
+            BlePermissionNotAvailableReason.DISABLED
+        )
+        else -> BlePermissionState.Available
     }
 }

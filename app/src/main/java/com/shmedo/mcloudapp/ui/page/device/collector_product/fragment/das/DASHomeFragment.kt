@@ -5,6 +5,7 @@ import com.blankj.utilcode.util.ConvertUtils
 import com.blankj.utilcode.util.TimeUtils
 import com.drake.brv.utils.models
 import com.hjq.toast.Toaster
+import com.shmedo.core.commonlib.utils.AppContants
 import com.shmedo.lib.cmd.base.iot_cmd.enums.IOTCommandType
 import com.shmedo.lib.cmd.base.iot_cmd.enums.ProductType
 import com.shmedo.lib.cmd.base.iot_cmd.model.common.CommonSettingCmdResult
@@ -337,7 +338,7 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
     }
 
     /**
-     * 处理4G通讯命令结果
+     * 处理4G通讯指令结果
      */
     private fun handle4GCommandResult(cmdStr: String) {
         when (IOTCommandUtil.extractCommandType(cmdStr)) {
@@ -369,7 +370,7 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
     }
 
     /**
-     * 处理蓝牙通讯命令结果
+     * 处理蓝牙通讯指令结果
      */
     private fun handleBleCommandResult(cmdStr: String) {
         updateLastCommunicationTime()
@@ -494,7 +495,7 @@ class DASHomeFragment : NewUniversalBaseDeviceHomeFragment() {
     override fun setupHeartbeat() {
         launchWithViewLifecycle {
             lastCommunicationTime
-                .debounce(com.shmedo.core.commonlib.utils.AppContants.Communication.DELAY_10000_MILLIS)  // 30秒无更新触发
+                .debounce(AppContants.Communication.DELAY_BLE_HEART_BEAT)  // 30秒无更新触发
                 .collect { lastUpdateTime ->
                     val updateTime =
                         TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
