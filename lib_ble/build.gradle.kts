@@ -42,7 +42,7 @@ dependencies {
 
     //The Scanner Compat library solves the problem with scanning for Bluetooth Low Energy devices on Android.
     implementation(libs.nordicsemi.scanner)
-    implementation(libs.nordicsemi.ble.ktx)
+    api(libs.nordicsemi.ble.ktx)
 
     //依赖注入框架
     implementation(libs.koin.android)

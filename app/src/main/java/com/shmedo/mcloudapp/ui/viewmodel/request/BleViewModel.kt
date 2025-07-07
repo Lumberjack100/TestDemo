@@ -6,27 +6,12 @@ import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.core.data.repository.LoggerRepositoryImp
 import com.shmedo.lib.ble.communicate.data.CommandData
 import com.shmedo.lib.ble.communicate.service.MedoBleRepository
-import com.shmedo.lib.ble.communicate.service.base.BleManagerResult
-import com.shmedo.lib.ble.communicate.service.base.ConnectedResult
-import com.shmedo.lib.ble.communicate.service.base.ConnectingResult
-import com.shmedo.lib.ble.communicate.service.base.DisconnectedResult
-import com.shmedo.lib.ble.communicate.service.base.IdleResult
-import com.shmedo.lib.ble.communicate.service.base.LinkLossResult
-import com.shmedo.lib.ble.communicate.service.base.MissingServiceResult
-import com.shmedo.lib.ble.communicate.service.base.ReadyResult
-import com.shmedo.lib.ble.communicate.service.base.SuccessResult
-import com.shmedo.lib.ble.communicate.service.base.UnknownErrorResult
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.cmd.base.md_cmd.utils.MDConstants
-import com.shmedo.mcloudapp.model.MedoViewState
-import com.shmedo.mcloudapp.model.WorkingState
 import com.shmedo.mcloudapp.ui.page.base.viewmodel.BaseRequestViewModel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import no.nordicsemi.android.ble.ktx.state.ConnectionState
 import java.util.UUID
 
 /**
@@ -34,26 +19,19 @@ import java.util.UUID
  *
  * 创建时间：2023/9/5
  *
- * 描述： TODO
- *
- *
+ * 描述：BLE 通信 ViewModel，管理连接状态和数据交换
  */
 class BleViewModel(
     private val medoBleRepository: MedoBleRepository,
     loggerRepositoryImp: LoggerRepositoryImp
-) :
-    BaseRequestViewModel(loggerRepositoryImp) {
+) : BaseRequestViewModel(loggerRepositoryImp) {
 
-    private val _state: MutableSharedFlow<MedoViewState> = MutableSharedFlow()
-    val state = _state.asSharedFlow()
+    // 连接状态流
+    val connectionState = medoBleRepository.connectionState
 
+    // 数据响应流
+    val commandData = medoBleRepository.commandData
 
-    init {
-        medoBleRepository.data.onEach {
-            logResult(it)
-            _state.emit(WorkingState(it))
-        }.launchIn(viewModelScope)
-    }
 
     fun launch(device: DiscoveredBluetoothDevice) {
         medoBleRepository.launch(device)
@@ -99,64 +77,69 @@ class BleViewModel(
         }
     }
 
-    private fun logResult(result: BleManagerResult<CommandData>) {
-        when (result) {
-            is IdleResult, is ConnectingResult -> {
+    /**
+     * 记录连接状态变化
+     */
+    private fun logConnectionState(state: ConnectionState) {
+        when (state) {
+            ConnectionState.Connecting -> {
                 addLogItem(
                     CommonMMKVOwner.iotDeviceLogSessionId,
                     Log.INFO,
                     "ble device connecting"
                 )
             }
-
-            is ConnectedResult -> {
+            is ConnectionState.Initializing -> {
                 addLogItem(
                     CommonMMKVOwner.iotDeviceLogSessionId,
                     Log.INFO,
-                    "ble device  connected"
+                    "ble device connected"
                 )
             }
-
-            is ReadyResult -> {
-                addLogItem(CommonMMKVOwner.iotDeviceLogSessionId, Log.INFO, "ble device ready")
-            }
-
-            is SuccessResult -> {
+            is ConnectionState.Ready -> {
                 addLogItem(
                     CommonMMKVOwner.iotDeviceLogSessionId,
                     Log.INFO,
-                    "ble 响应内容: ${result.data.response}"
+                    "ble device ready"
                 )
             }
-
-            is DisconnectedResult -> {
-                addLogItem(
-                    CommonMMKVOwner.iotDeviceLogSessionId,
-                    Log.ERROR,
-                    "ble device disconnected, reason: ${result.reason}"
-                )
+            is ConnectionState.Disconnected -> {
+                when (state.reason) {
+                    ConnectionState.Disconnected.Reason.LINK_LOSS -> {
+                        addLogItem(
+                            CommonMMKVOwner.iotDeviceLogSessionId,
+                            Log.ERROR,
+                            "ble device link loss"
+                        )
+                    }
+                    ConnectionState.Disconnected.Reason.NOT_SUPPORTED -> {
+                        addLogItem(
+                            CommonMMKVOwner.iotDeviceLogSessionId,
+                            Log.ERROR,
+                            "ble device missing service"
+                        )
+                    }
+                    else -> {
+                        addLogItem(
+                            CommonMMKVOwner.iotDeviceLogSessionId,
+                            Log.ERROR,
+                            "ble device disconnected, reason: ${state.reason}"
+                        )
+                    }
+                }
             }
-
-            is LinkLossResult -> {
-                addLogItem(CommonMMKVOwner.iotDeviceLogSessionId, Log.ERROR, "ble device link loss")
-            }
-
-            is MissingServiceResult -> {
-                addLogItem(
-                    CommonMMKVOwner.iotDeviceLogSessionId,
-                    Log.ERROR,
-                    "ble device missing service"
-                )
-            }
-
-            is UnknownErrorResult -> {
-                addLogItem(
-                    CommonMMKVOwner.iotDeviceLogSessionId,
-                    Log.ERROR,
-                    "ble device unknown error"
-                )
-            }
+            else -> {}
         }
     }
 
+    /**
+     * 记录数据响应
+     */
+    private fun logDataResponse(data: CommandData) {
+        addLogItem(
+            CommonMMKVOwner.iotDeviceLogSessionId,
+            Log.INFO,
+            "ble 响应内容: ${data.response}"
+        )
+    }
 }

@@ -29,30 +29,24 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.shmedo.lib.ble.communicate.extensions
+package com.shmedo.lib.ble.permission.util
 
-import android.app.ActivityManager
-import android.content.Context
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import timber.log.Timber
+import com.shmedo.lib.ble.permission.BlePermissionNotAvailableReason
 
-val String.Companion.EMPTY
-    get() = ""
 
-fun Context.isServiceRunning(serviceClassName: String): Boolean {
-    val activityManager = getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-    val services = activityManager.getRunningServices(Integer.MAX_VALUE)
-    return services.find { it.service.className == serviceClassName } != null
+/**
+ * The state of Bluetooth permission.
+ */
+sealed class BlePermissionState {
+    /** Bluetooth permission is granted. */
+    data object Available : BlePermissionState()
+    /**
+     * Bluetooth is not available.
+     *
+     * @param reason The reason why the BLE permission is not available.
+     */
+    data class NotAvailable(
+        val reason: BlePermissionNotAvailableReason,
+    ) : BlePermissionState()
 }
 
-private val exceptionHandler = CoroutineExceptionHandler { _, t ->
-    Timber.tag("COROUTINE-EXCEPTION").e(t, "Uncaught exception")
-}
-
-fun CoroutineScope.launchWithCatch(block: suspend CoroutineScope.() -> Unit) =
-    launch(Job() + exceptionHandler) {
-        block()
-    }

@@ -14,9 +14,8 @@ import com.hjq.permissions.OnPermissionCallback
 import com.hjq.permissions.XXPermissions
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.model.DeviceInfo
-import com.shmedo.lib.ble.permission.util.Available
-import com.shmedo.lib.ble.permission.util.FeatureNotAvailableReason
-import com.shmedo.lib.ble.permission.util.NotAvailable
+import com.shmedo.lib.ble.permission.BlePermissionNotAvailableReason
+import com.shmedo.lib.ble.permission.util.BlePermissionState
 import com.shmedo.lib.ble.permission.viewmodel.PermissionViewModel
 import com.shmedo.lib.ble.scanner.model.DiscoveredBluetoothDevice
 import com.shmedo.lib.ble.scanner.repository.ScanningState
@@ -111,15 +110,15 @@ class BleScannerListFragment : BaseFragment() {
             permissionViewModel.bluetoothState.collect { state ->
                 Timber.d("bluetoothState: $state")
                 when (state) {
-                    is NotAvailable -> {
+                    is BlePermissionState.NotAvailable -> {
                         when (state.reason) {
-                            FeatureNotAvailableReason.NOT_AVAILABLE -> {
+                            BlePermissionNotAvailableReason.NOT_AVAILABLE -> {
                                 mStates.bluetoothNotAvailable.set(true)
                                 mStates.bluetoothMissPermission.set(false)
                                 mStates.bluetoothDisabled.set(false)
                             }
 
-                            FeatureNotAvailableReason.PERMISSION_REQUIRED -> {
+                            BlePermissionNotAvailableReason.PERMISSION_REQUIRED -> {
                                 mStates.bluetoothNotAvailable.set(false)
                                 mStates.bluetoothDisabled.set(false)
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -127,7 +126,7 @@ class BleScannerListFragment : BaseFragment() {
                                 }
                             }
 
-                            FeatureNotAvailableReason.DISABLED -> {
+                            BlePermissionNotAvailableReason.DISABLED -> {
                                 mStates.bluetoothNotAvailable.set(false)
                                 mStates.bluetoothMissPermission.set(false)
                                 mStates.bluetoothDisabled.set(true)
@@ -135,7 +134,7 @@ class BleScannerListFragment : BaseFragment() {
                         }
                     }
 
-                    Available -> {
+                    BlePermissionState.Available -> {
                         mStates.bluetoothNotAvailable.set(false)
                         mStates.bluetoothMissPermission.set(false)
                         mStates.bluetoothDisabled.set(false)
@@ -189,38 +188,53 @@ class BleScannerListFragment : BaseFragment() {
     }
 
     private suspend fun processScanResult() {
-        scannerViewModel.scannerState.collect { state ->
-            when (state) {
-                ScanningState.Loading -> {
-                    Timber.i("scannerViewModel.state: Loading")
-                }
-
-                is ScanningState.Error -> {
-                    Timber.e("scannerViewModel.state: Error: ${state.errorMsg}")
-                }
-
-                is ScanningState.DevicesDiscovered -> {
-                    Timber.i("scannerViewModel.state: DevicesDiscovered=${state.devices.size}")
-                    if (state.devices.isNotEmpty())
-                        binding.refreshLayout.showContent()
-                    else
-                        binding.refreshLayout.showEmpty()
-                    binding.recyclerviewDevice.models = state.devices
-
-                    if (isFilterNameByScanningQRCode && state.devices.isNotEmpty()) {
-                        discoveredBluetoothDevice = state.devices[0]
-                        discoveredBluetoothDevice?.name?.let { deviceToken ->
-                            if (deviceToken.contains(mStates.keyWords.value.toString())) {
-                                stopScanningSearchDeviceTimeoutJob()
-                                deviceRequestViewModel.getDeviceDetailInfo(
-                                    deviceToken.replaceFirst(
-                                        Regex("^MD-?"),
-                                        ""
-                                    )
-                                )
-                            }
-                        }
+        scannerViewModel.scannerState
+            .collect { state ->
+                when (state) {
+                    ScanningState.Loading -> {
+                        Timber.i("scannerViewModel.state: Loading")
                     }
+
+                    is ScanningState.Error -> {
+                        Timber.e("scannerViewModel.state: Error: ${state.errorMsg}")
+                        binding.refreshLayout.showError()
+                    }
+
+                    is ScanningState.DevicesDiscovered -> {
+                        Timber.i("scannerViewModel.state: DevicesDiscovered=${state.devices.size}")
+
+                        updateDeviceList(state.devices)
+
+                        // 处理扫码搜索逻辑
+                        handleQRCodeScan(state.devices)
+                    }
+                }
+            }
+    }
+
+    private fun updateDeviceList(devices: List<DiscoveredBluetoothDevice>) {
+        if (devices.isNotEmpty()) {
+            binding.refreshLayout.showContent()
+        } else {
+            binding.refreshLayout.showEmpty()
+        }
+
+        binding.recyclerviewDevice.models = devices
+    }
+
+    private fun handleQRCodeScan(devices: List<DiscoveredBluetoothDevice>) {
+        if (isFilterNameByScanningQRCode && devices.isNotEmpty()) {
+            val targetDevice = devices.firstOrNull { device ->
+                device.name?.contains(mStates.keyWords.value.toString(), ignoreCase = true) == true
+            }
+
+            targetDevice?.let { device ->
+                discoveredBluetoothDevice = device
+                stopScanningSearchDeviceTimeoutJob()
+                device.name?.let { deviceToken ->
+                    deviceRequestViewModel.getDeviceDetailInfo(
+                        deviceToken.replaceFirst(Regex("^MD-?"), "")
+                    )
                 }
             }
         }

@@ -960,7 +960,7 @@ class UDHomeFragment : BaseIOTDeviceFragment() {
     private fun setupHeartbeat() {
         launchWithViewLifecycle {
             lastCommunicationTime
-                .debounce(AppContants.Communication.DELAY_20000_MILLIS)  //20秒无更新触发
+                .debounce(AppContants.Communication.DELAY_BLE_HEART_BEAT)  //20秒无更新触发
                 .collect { lastUpdateTime ->
                     val updateTime =
                         TimeUtils.millis2String(lastUpdateTime, "yyyy-MM-dd HH:mm:ss")
