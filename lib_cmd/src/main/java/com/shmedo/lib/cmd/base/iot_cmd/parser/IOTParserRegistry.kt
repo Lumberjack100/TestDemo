@@ -31,6 +31,7 @@ import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DataCenterInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DataCenterStatusParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DeviceCurrentStateParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DeviceCurrentStateParser2
+import com.shmedo.lib.cmd.base.iot_cmd.parser.common.DeviceHistorySensorDataParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.GNSSSateliteInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.LoraCommunicateInfoParser
 import com.shmedo.lib.cmd.base.iot_cmd.parser.common.RadioCommunicateInfoParser
@@ -113,6 +114,8 @@ object IOTParserRegistry {
         DataCenterStatusParser(),
         UpdateLocationInfoParser(),
         DataCenterInfoParser(),
+        DeviceHistorySensorDataParser(),
+
         AdmeBaseInfoParser(),
         AdmeMotionStateParser(),
         AdmeCurrentStateInfoParser(),
