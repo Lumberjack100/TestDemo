@@ -497,7 +497,7 @@ class MR702RS485Port1TwoSensorAddParamFragment : BaseIOTDeviceFragment() {
             sgbk = mStates.modelName.get().stringToGBK16UByteString(),//传感器名称GBK编码
             mgbk = mStates.modelFieldName2.get().stringToGBK16UByteString(),//采集项名称GBK编码
             egbk = mStates.modelFieldUnit2.get().stringToGBK16UByteString(),//采集项单位GBK编码
-            swtoken = mStates.hydrologicalIdentification2.get(),
+            swtoken = mStates.hydrologicalIdentification2.get().hexStringToDecimalString(),
             cmd = mStates.collectionInstructions2.get(),
             ratio = mStates.ratio2.get(),
             dataformat = (dataFormatList.indexOf(mStates.dataFormat2.get())).toString(),
