@@ -9,7 +9,6 @@ import com.gyf.immersionbar.ktx.immersionBar
 import com.hjq.toast.Toaster
 import com.kunminx.architecture.ui.page.DataBindingConfig
 import com.shmedo.core.commonlib.mmkv.AuthMMKVOwner
-import com.shmedo.core.commonlib.mmkv.CommonMMKVOwner
 import com.shmedo.lib.network.response.DataResult
 import com.shmedo.mcloudapp.BR
 import com.shmedo.mcloudapp.R
@@ -56,11 +55,12 @@ class SplashActivity : BaseActivity() {
 
     override fun initData() {
         logViewModel.insertSystemLogSession()
-        if (!CommonMMKVOwner.isAgreePrivate) {
-            showPrivateDialog()
-        } else {
-            goToLogin()
-        }
+//        if (!CommonMMKVOwner.isAgreePrivate) {
+//            showPrivateDialog()
+//        } else {
+//            goToLogin()
+//        }
+        goToLogin()
     }
 
     override fun createObserver() {

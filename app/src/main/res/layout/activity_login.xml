@@ -275,6 +275,7 @@
                 android:textSize="@dimen/text_size_17" />
 
             <com.google.android.material.textview.MaterialTextView
+                android:visibility="invisible"
                 android:id="@+id/tv_user_protocol"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -310,6 +311,7 @@
                 android:layout_weight="1" />
 
             <com.google.android.material.textview.MaterialTextView
+                android:visibility="invisible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
